@@ -1,0 +1,62 @@
+{
+ "zone": "1F public escalator",
+ "root": "실내 트윈 마감/1F 공용 에스컬레이터",
+ "replaces": [
+  "맞이방 · 원본 정합/Majibang_2F_Floor",
+  "실내 트윈 마감/2F 본관 보강/Kit_Floor",
+  "실내 트윈 마감/1F/Kit_Ceiling",
+  "실내 트윈 마감/1F/Kit_Light",
+  "실내 트윈 마감/1F/Kit_Bulkhead"
+ ],
+ "basis": {
+  "frame": "station UVY (root)",
+  "dependsOn": "plan edit: majibang-plan.json slabOpenings += OPEN-2F-ESC-UMINUS (public1f/slab-opening-uminus-esc.json) + the same hole in the 1F SuspendedCeiling (1f-detail.json, make_1f_detail.py) and the 2F 본관 보강 FloorFinish / atrium ceiling (Services23F5)",
+  "evidence": "Naver 1F/2F vectors + POIs; walks SY0 2024 308-312 s, mJrJ8 2020 1030-1070 s; well trimmed to RegTech6 .planning/2026-09-26-full-twin/reg-requests/Public1F-1.done.json",
+  "generator": ".planning/2026-09-24-interior-twin/specs/full/make_public_1f.py"
+ },
+ "elements": [
+  {
+   "type": "Escalator",
+   "id": "1Fp-esc-uminus",
+   "zone": "1F public escalator",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    "asset-library/research-public/2026-09-26/Services23F/naver-indoor-harvest/overlays/ov-2f-west.png",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/sy0-walk/observations.json",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/rear-row-walk/observations.json",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/footage-hunt/candidates.json",
+    "asset-library/research-public/2026-09-26/Public1F/frames/mJrJ8-sheet-1030-1070.jpg",
+    ".planning/2026-09-26-full-twin/reg-requests/Public1F-1.done.json"
+   ],
+   "frame": "root",
+   "geometry": {
+    "foot": [
+     -59.32,
+     -15.495
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "heading": [
+     0.998,
+     0.07
+    ],
+    "rise": 7.0,
+    "angle": 30.0,
+    "width": 1.0,
+    "flatSteps": 3,
+    "runout": 0.65,
+    "truss": 1.0,
+    "count": 2,
+    "spacing": 1.6,
+    "directions": [
+     "up",
+     "down"
+    ]
+   },
+   "note": "Pair centred on the Naver outlines (1.45 u each; kit spacing 1.6). Flight k=0 (south, V-) = UP, k=1 (north) = DN per the 2F raster labels [INFERENCE: label reading]. Naver length 15.8 vs kit 15.8. The Naver stair north of the pair (V -9.8..-13.9) is NOT built: hCyroXn0Jhg 2023 shows walkable 2F floor and a column line over it (RegTech6, .planning/2026-09-26-full-twin/reg-requests/Public1F-1.done.json)."
+  }
+ ]
+}

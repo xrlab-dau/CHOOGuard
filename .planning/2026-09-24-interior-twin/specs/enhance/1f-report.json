@@ -1,0 +1,416 @@
+{
+ "schema": "chooguard.1f-enhance-report.v1",
+ "lane": "Enhance1F",
+ "date": "2026-09-25",
+ "outputs": {
+  "enhanceSpec": "specs/enhance/1f-enhance.json (root 실내 트윈 마감/1F 보강)",
+  "enhanceGenerator": "specs/enhance/make_1f_enhance.py",
+  "measurements": "specs/enhance/1f-measurements.json (specs/enhance/measure_1f_rays.py)",
+  "detailSpec": "specs/1f-detail.json (specs/make_1f_detail.py, root 실내 트윈 마감/1F)",
+  "escalatorCore": "specs/escalator-core/escalator-core.json (3 walls y1 2.25 -> 2.31)",
+  "overlay": "specs/enhance/1f-overlay.png (plot_1f_overlay.py)",
+  "report": "specs/enhance/1f-report.json"
+ },
+ "checks": "check_spec.py: 1f-enhance.json 0 errors (1 warning: the double door touches the OLD #16 walls still in geometry-after11; gone after Main rebuilds the units with UNIT16_EAST); 1f-detail.json 0 errors (warnings: pre-existing bulkhead/fascia contacts with the MainShell, and #8 fronts touching the OLD #8 walls until the rebuild); escalator-core.json unchanged except 3 wall heights. Walk corridors clear.",
+ "estimates": {
+  "enhanceElements": {
+   "WallCladding": 7,
+   "ServiceDoor": 2,
+   "Column": 2,
+   "WallSign": 8,
+   "HangingSign": 1,
+   "Fixture": 4,
+   "FloorFinish": 7
+  },
+  "enhanceTriangles": 2482,
+  "enhanceLights": 0,
+  "detailChangedElements": [
+   "1F-ceiling-approach-0",
+   "1F-unit08-front4",
+   "1F-unit08-bulkhead4",
+   "1F-unit08-front5",
+   "1F-unit08-bulkhead5",
+   "1F-unit16-front2",
+   "1F-unit16-bulkhead2"
+  ],
+  "detailChangedTriangles": 2880,
+  "detailAddedLights": "approach ceiling ~3 mixed lights (pitch 7 over 111 u²); lobby patch adds ~1",
+  "method": "kit-spec.md showcase budgets per type (ceiling 2.3/u² + fixtures, 16 per wall panel, ...)"
+ },
+ "requestedBuilderPlanEdits": [
+  {
+   "file": ".planning/2026-09-23-video-twin/1f-implementation/interior-spec.json",
+   "edit": "unit 16 east edge + frontEdges [1,2]",
+   "status": "applied by Main (UNIT16_EAST)"
+  },
+  {
+   "file": ".planning/2026-09-23-video-twin/1f-implementation/interior-spec.json",
+   "edit": "unit 8 frontEdges [4,5], doorEdge 5",
+   "status": "applied by Main (UNIT8_FRONTS)"
+  },
+  {
+   "file": ".planning/2026-09-23-video-twin/1f-implementation/walks/route-1f-up-escalator-to-2f.json",
+   "edit": "start waypoint (12.0,-22.0) -> (10.2,-21.0): the header column stands there",
+   "status": "applied by Main"
+  },
+  {
+   "file": "none outstanding",
+   "edit": "no \"replaces\" entries; nothing in majibang-plan.json"
+  }
+ ],
+ "buildOrder": "rebuild 1층 · 원본 정합 units (interior-spec with UNIT16_EAST/UNIT8_FRONTS) first, then 실내 트윈 마감/1F (1f-detail.json), 실내 트윈 마감/수직 동선 (escalator-core.json), then 실내 트윈 마감/1F 보강 (1f-enhance.json)",
+ "items": [
+  {
+   "item": "1a",
+   "what": "central approach low suspended ceiling (U 5-21, V -22.5..-14)",
+   "status": "built-new",
+   "elements": [
+    "1F-ceiling-approach-0 (1f-detail.json)"
+   ],
+   "tier": "a",
+   "result": "111.3 u² at y 2.31, 600 grid with LED panels (+3 mixed lights, pitch 7)",
+   "positionBasis": "polygon = registered header line (triangulated header signs V -21.85..-22.11), header column, core left face, observed void edge U = -0.09942V + 18.5651 (cl-ceiling-void-edge), core returns, class-a right approach wall, stainless cabinet, office frontage plane (a-failed), office corner and #16 corrected east edge; units subtracted",
+   "height": "2.31 above the local floor = March class-a plane Y 2.23-2.26 + local floor offset .056 (scene floor Y 0); p10 2.25 / p90 2.52; S23 2.43, SY0 2.47 (pedestrian gauge)",
+   "escalator": "ceiling ends on the void edge, .05-.35 u past the lower working point U 20.176 (.planning/2026-09-24-interior-twin/specs/escalator-core/report.json derived.lowerWorkingPointU): nosing rise <= .2, clear height >= 2.1 over the steps; flights, walking ramp and well are not cut; the lower landing is covered as seen in S20, kmCz, S23 and SY0 K02",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json central approach",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json cl-low-suspended-ceiling, cl-ceiling-void-edge, cl-entry-high-fascia",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json",
+    ".planning/2026-09-23-video-twin/1f-implementation/interior-spec.json unit 16 (UNIT16_EAST)"
+   ]
+  },
+  {
+   "item": "1b",
+   "what": "lobby patch box(5.5,-29.7,12.2,-23.5) ~4.97",
+   "status": "fixed",
+   "elements": [
+    "1F-ceiling-central-0 (1f-detail.json)"
+   ],
+   "tier": "b",
+   "result": "no longer kept open: part of the 4.98 central lobby ceiling (315.4 u² total)",
+   "positionBasis": "central lobby zone clip; the deleted observed patch (FPSWorld/1층 · 관측 마감/*) is dropped from the pre-build duplicate test",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json central lobby 4.98 (March 4.98 abs, class-a record Y 4.97)",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json cl-higher-lobby-ceiling"
+   ]
+  },
+  {
+   "item": "1c",
+   "what": "entry header step between the 4.98 lobby ceiling and the 2.31 approach ceiling",
+   "status": "built-new",
+   "elements": [
+    "1F-enh-header-column",
+    "1F-enh-header-band-west",
+    "1F-enh-header-fascia-west",
+    "1F-enh-header-band-east",
+    "1F-enh-header-fascia-east",
+    "1F-enh-rear-mouth-closure"
+   ],
+   "tier": "b",
+   "result": "stainless band y 2.31-2.89 + white fascia 2.89-4.98 on both header runs (ARTBOX pier -> header column -> core); gypsum closure 2.31-4.98 where the approach ceiling meets the 4.98 ceiling at the rear-corridor mouth [INFERENCE: topological closure, face not seen]",
+   "positionBasis": "header face V -22.05 (triangulated signs), band top 2.83+.056 from 000066",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json cl-entry-high-fascia",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg"
+   ]
+  },
+  {
+   "item": "1d",
+   "what": "right approach wall (observed patch deleted with the ceilings)",
+   "status": "built-new",
+   "elements": [
+    "1F-enh-approach-right-wall"
+   ],
+   "tier": "a",
+   "result": "kit panel wall on the class-a plane up to the 2.31 ceiling, joining escalator-core WALL-1F-APPROACH-RIGHT-END",
+   "positionBasis": "wl-right-approach-wall officeFit (held-out median .006, p95 .019); first .96 u to the cabinet extends the same plane",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json wl-right-approach-wall"
+   ]
+  },
+  {
+   "item": "1e",
+   "what": "escalator-core 1F walls that stopped at the old 2.25 patch",
+   "status": "fixed",
+   "elements": [
+    "STAINLESS-1F-RETURN-RIGHT",
+    "STAINLESS-1F-FACE-LEFT",
+    "WALL-1F-APPROACH-RIGHT-END"
+   ],
+   "result": "y1 2.25 -> 2.31 (CEIL_1F) so they meet the kit ceiling; make_escalator_core.py checks re-run against geometry-after11 (the bins of geometry-after4 no longer exist) with the core root excluded: all checks pass as before, no other element changed",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/escalator-core/make_escalator_core.py",
+    ".planning/2026-09-24-interior-twin/specs/escalator-core/report.json"
+   ]
+  },
+  {
+   "item": "2a",
+   "what": "U -8..20, V -19..-5 without ceiling",
+   "status": "partly built / rest still-c",
+   "elements": [
+    "1F-ceiling-approach-0"
+   ],
+   "result": "the public part (approach, U 5-20, V -22..-14/-15) is now under the 2.31 ceiling. Behind the observed office frontage and right approach wall (V > -15..-14) and in the #16 notch nothing is observed: the area is back-of-house (union office behind the red doors, 전기실 band behind it on the KORAIL underlay; all 1F boards show the notch as non-public). No floor+ceiling view exists, so the measure-1f-ceilings method cannot run there. The new walls and the approach ceiling hide it from the public floor.",
+   "reasonC": "no registered or unregistered view of the interior; plan labels only (underlay, superseded partitions)",
+   "evidence": [
+    "asset-library/research-public/2026-09-24/metric-controls/korail-1f-underlay-readable.png",
+    "asset-library/research-public/2026-09-24/busan-1f/report.json",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json svc-union-office",
+    "agent scout report (TrackStripScout) 2026-09-25"
+   ]
+  },
+  {
+   "item": "2b",
+   "what": "track-side strip V > -5 (~2,000 u², the main empty blob of metrics-before/after)",
+   "status": "still-c (boundary position not evidenced within ~1 u)",
+   "reasonC": "not observed from inside in any walk (footage-hunt gapsStillUncovered \"Z5 track-side band: not observed from inside\"; rear-row-walk and uplus-service-end unobserved lists). The KORAIL tender underlay labels it back-of-house: 전기실 behind #11-#16 and the centre, 역무공간 behind #9/#10, 방재센터 and 대공상담실/군관련 업무시설 at the U+ rear, then an outer track-side strip with columns, 3 stairs and a lift beyond a thick rear wall; the 2024/2026 boards and the 2025 Zimcarry map leave it outside the public floor. So the strip is not public, but WHERE the closing walls run is not evidenced: an affine registration of the underlay to the source shell (fit_1f_underlay.py -> 1f-underlay-fit.json; 10 shell controls, rms .62, max 1.07) holds the shell (track wall .5-1.5, GATE3/4 doors .3-1.1) and the U- half of the observed rear frontage (.2-1.2), but the drawn central escalator lands 3.4-3.5 u V- (and 1.9-3.7 u U) off the class-a registered bank, and the drawn partitions are superseded (역무공간 drawn where 2026 #9 복순도가 stands; open central block where the registered 2026 office frontage and #16 glazing stand). The closing walls would run exactly through those areas (U- hall back wall / U- escalator / 역무공간 at U -42..-92; 군인 맞이방 / 대공상담실 front at U 20..60), so they cannot be placed within ~1 u. The only registered boundary is the centre (office frontage, cabinet, right approach wall, core well walls, U 5..33.8), already built. No ceiling height or type is observable. Open floor there is a model artefact of the source shell, not observed public space.",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/footage-hunt/candidates.json",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/rear-row-walk/observations.json",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/uplus-service-end/observations.json",
+    "asset-library/research-public/2026-09-24/metric-controls/korail-1f-underlay-readable.png",
+    "asset-library/research-public/2026-09-24/busan-1f/report.json",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-underlay-fit.json"
+   ]
+  },
+  {
+   "item": "3a",
+   "what": "floor guide lines / bands in the central lobby",
+   "status": "built-new",
+   "elements": [
+    "1F-enh-floor-header-band",
+    "1F-enh-floor-guide-platforms",
+    "1F-enh-floor-guide-dash-0",
+    "1F-enh-floor-guide-dash-1",
+    "1F-enh-floor-guide-dash-2",
+    "1F-enh-floor-guide-cross-0",
+    "1F-enh-floor-guide-cross-1"
+   ],
+   "tier": "b",
+   "result": "dark stone band along the header (V -22.1..-22.8, U 5.5-16.6); navy guide band (.36 wide, U ~8.2, V -22.9..-32.5); narrow navy dash line (3 dashes, U 9.2-9.7); thin navy cross line pieces (V -25.3)",
+   "positionBasis": "registered camera rays ∩ floor Y 0 (000057/61/66/72); +-.3 u at grazing angles; extents only as far as the frames see",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json fx-tactile-floor-bands",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json"
+   ]
+  },
+  {
+   "item": "3b",
+   "what": "escalator warning pads / lane markings",
+   "status": "unchanged-already-built",
+   "elements": [
+    "FLOOR-ESC-1F-* (escalator-core.json)"
+   ],
+   "result": "the yellow pads, green/red entry signs and lane band at the 1F foot match 000106/000121",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/escalator-core/escalator-core.json"
+   ]
+  },
+  {
+   "item": "3c",
+   "what": "tactile guide lines GATE3/4 -> escalator, along corridors; shopfront bands, borders",
+   "status": "still-c",
+   "reasonC": "the registered March frames 000043-000133 show no yellow tactile guide line between GATE3/4 and the escalator (yellow tactile only at the escalator entry, already built); tactile/border bands elsewhere (rear corridor, U+/U- halls) are visual-only in unregistered footage with no measurable position",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json fx-tactile-floor-bands",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/"
+   ]
+  },
+  {
+   "item": "4a",
+   "what": "signs at the approach / lobby (exits, 2F 타는 곳, tickets, elevator, meeting rooms, AED)",
+   "status": "built-new",
+   "elements": [
+    "1F-enh-sign-header-elevatorEast",
+    "1F-enh-sign-header-tickets",
+    "1F-enh-sign-header-elevatorWest",
+    "1F-enh-sign-hanging-platforms",
+    "1F-enh-sign-approach-wall",
+    "1F-enh-sign-column-west",
+    "1F-enh-sign-column-directory",
+    "1F-enh-sign-column-aed",
+    "1F-enh-board-escalator-rules"
+   ],
+   "tier": "b",
+   "result": "hanging \"↑ 타는 곳 Platforms\" (3-view triangulation, single-sided: back not seen); 3 header signs (엘리베이터 ↙ / 2층 표사는 곳·승차권자동발매기 / 엘리베이터 ↘); navy wall sign and yellow escalator-rules board on the right approach wall; 타는 곳/승차권 sign, meeting-room directory and AED sign on the header column",
+   "positionBasis": "rays on registered planes (header face, class-a right-approach-wall, column faces) or 2-3-view triangulation; heights registered Y + .056",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json"
+   ]
+  },
+  {
+   "item": "4b",
+   "what": "other 1F signs: U+ corridor \"← 나가는 곳 | 타는 곳 →\", TMO lounge sign, rear-corridor \"↑ 표사는 곳/타는 곳/화장실\", U- hall departure board and exit signs, GATE5/6 signs, escalator landing sign",
+   "status": "still-c",
+   "reasonC": "positions only from rejected registrations (eluhiZ P2 envelope 3.0-4.8 u; kmCz sign point = camera position, provisional placement off by up to 8 u at the #4 corner) or pixel-only views; none within ~1 u",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/uplus-service-end/observations.json",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/rear-row-walk/observations.json",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/sy0-walk/observations.json"
+   ]
+  },
+  {
+   "item": "5a",
+   "what": "office public frontage with red service doors (wl-office-public-frontage; union office)",
+   "status": "built-new",
+   "elements": [
+    "1F-enh-office-frontage",
+    "1F-enh-office-door-single",
+    "1F-enh-office-door-double"
+   ],
+   "tier": "a-failed",
+   "result": "panel wall U 4.97-11.60 on the fitted plane with openings; single door U 10.52-11.39 (h 2.04), double door U 5.32-7.06 (h 2.03), red-brown; plates not invented (unreadable). Window (U 8.82-10.25, Y 1.61-2.16) observed but not built (no kit window type)",
+   "positionBasis": "a-failed plane (S20 within .1), jambs from 000072 and 000079 (agree within .08)",
+   "identity": "[INFERENCE] 노조지부사무실: AED 12-0017748 registry text \"1층 노조지부사무실 앞(E/S 8,28호기)\" + AED sign on the column in front of it (000072/000075/000079)",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json wl-office-public-frontage",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json",
+    "asset-library/research-public/2026-09-24/safety-equipment/evidence/web/aed-registry/egen_busan_station_aed_records_extracted.json"
+   ]
+  },
+  {
+   "item": "5b",
+   "what": "AED (union office)",
+   "status": "sign built / cabinet still-c",
+   "elements": [
+    "1F-enh-sign-column-aed"
+   ],
+   "tier": "b",
+   "reasonC": "the green AED location sign (arrow down) is on the header column (U 12.27-12.33, Y 1.49); the cabinet itself is not visible in 000072/000075/000079; registry lat/lon is not usable (implies ~11 m from the KTX AED against ~40 u observed)",
+   "evidence": [
+    "asset-library/research-public/2026-09-24/safety-equipment/evidence/web/aed-registry/egen_busan_station_aed_records_extracted.json",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json fx-aed-union-office"
+   ]
+  },
+  {
+   "item": "5c",
+   "what": "columns: rectangular stainless (core approach), stainless piers, cylindrical column by 환공어묵",
+   "status": "built-new (2) / rest still-c",
+   "elements": [
+    "1F-enh-header-column",
+    "1F-enh-stainless-cabinet"
+   ],
+   "tier": "b",
+   "result": "header column U 12.05-13.51 x V -22.12..-20.71 to y 4.98 (3 frames); stainless cabinet U 11.60-13.02 proud .4 of the wall line to y 2.31",
+   "reasonC": "st-cylindrical-column-hwangong: May photo topology only, no dimensions/position; U+ atrium column (43.1,-27.7) P2 envelope 2.55; rear-corridor piers 0 triangulated points; other stainless piers are plumb-line marks only",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json st-rectangular-columns-topology, st-stainless-piers-pixel, st-cylindrical-column-hwangong",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/uplus-service-end/observations.json"
+   ]
+  },
+  {
+   "item": "5d",
+   "what": "small fixtures in the approach",
+   "status": "built-new",
+   "elements": [
+    "1F-enh-standee-no-scooter",
+    "1F-enh-extinguisher-office-corner",
+    "1F-enh-cctv-approach-a",
+    "1F-enh-cctv-approach-b"
+   ],
+   "tier": "b",
+   "positionBasis": "floor rays (standee 000079, extinguisher 000072) and low-ceiling rays (CCTV 000079)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json"
+   ]
+  },
+  {
+   "item": "5e",
+   "what": "svc-toilets (2 recesses)",
+   "status": "still-c",
+   "reasonC": "no photo/video of either toilet; board/underlay topology only (U+ block by GATE6, U- block behind #8), underlay mapping +-4-5 u",
+   "evidence": [
+    "asset-library/research-public/2026-09-24/busan-1f/report.json",
+    "asset-library/research-public/2026-09-24/metric-controls/korail-1f-underlay-readable.png",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/rear-row-walk/observations.json"
+   ]
+  },
+  {
+   "item": "5f",
+   "what": "svc-zimcarry, svc-ktx-express, fx-aed-ktx-express",
+   "status": "still-c",
+   "reasonC": "eluhiZ P2 planes/points with envelopes 1.4-2.4 u (registration rejected); the Zimcarry front faces U- while unit #1 (짐캐리 identity) has V+ front edges; the live model has no wall there to anchor to",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/uplus-service-end/observations.json",
+    ".planning/2026-09-23-video-twin/1f-implementation/interior-spec.json"
+   ]
+  },
+  {
+   "item": "5g",
+   "what": "svc-tmo",
+   "status": "still-c",
+   "reasonC": "only the direction sign (P2 envelope 3.03) and a door photo without context; underlay \"군인 맞이방\" unregistered",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/uplus-service-end/observations.json",
+    "asset-library/research-public/2026-09-24/metric-controls/korail-1f-underlay-readable.png"
+   ]
+  },
+  {
+   "item": "5h",
+   "what": "coin lockers #17 / vending bank (locker corridor, eluhiZ 2026-09)",
+   "status": "still-c",
+   "reasonC": "lockers: topology only (\"U+ side of the central escalator bank, between the core and 짐캐리\"; glass alcove beside an escalator in photos), no geometry; not in the registered March frames 000097-000133 around the central foot. Vending bank: P2 floor line (24.34,-27.83)-(29.90,-27.24), envelope 4.62, and the corridor wall it stands on (core A front) is not in the live model; March 000115-000121 see that wall with a grey double door but the 0.5 u baseline at ~12 u range gives +-1.5-2 u",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/sy0-walk/observations.json",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/uplus-service-end/observations.json",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/footage-hunt/candidates.json"
+   ]
+  },
+  {
+   "item": "5i",
+   "what": "U+ end elevator doors (vc-elevator-arrival-zimcarry)",
+   "status": "still-c",
+   "reasonC": "camera-centre threshold (29.94,-30.52) only, envelope 3.95; core A has no walls in the live model",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/uplus-service-end/observations.json",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json vc-core-A"
+   ]
+  },
+  {
+   "item": "6a",
+   "what": "#16 east side (dark box on the approach)",
+   "status": "fixed",
+   "elements": [
+    "1F-unit16-front2",
+    "1F-unit16-bulkhead2 (1f-detail.json)"
+   ],
+   "tier": "b",
+   "result": "Main applied UNIT16_EAST (east edge moved ~1.1 u to U 4.95-5.10, frontEdges [1,2]); the front under the approach ceiling is full-height glass to 2.31 without fascia (000072), closure to 4.78 faces the shop",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json unit16.eastGlass.*, office.corner",
+    ".planning/2026-09-23-video-twin/1f-implementation/interior-spec.json"
+   ]
+  },
+  {
+   "item": "6b",
+   "what": "#8 hall-facing sides (audit/views/1f-uminus-lobby.png)",
+   "status": "fixed",
+   "elements": [
+    "1F-unit08-front4",
+    "1F-unit08-front5",
+    "bulkheads (1f-detail.json)"
+   ],
+   "tier": "b",
+   "result": "Main applied UNIT8_FRONTS (frontEdges [4,5], door 5; the unobserved track-side edge 6 is now opaque)",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/sy0-walk/observations.json unit-08 (SY0 313-326 s)",
+    ".planning/2026-09-23-video-twin/1f-implementation/interior-spec.json"
+   ]
+  },
+  {
+   "item": "6c",
+   "what": "other exposed opaque unit sides",
+   "status": "still-c",
+   "reasonC": "no footage of: rear-row back walls (#9-#15 edge 3, #16 edges 3-5: face the unobserved back-of-house strip), front-row plaza-side edges (#1 0/1/5, #2 0-2, #6 1/2, #7 0/3), #4 edge 0 and #5 0/5 (core B gap), #3 edge 9 (core A gap), #9 edges 0/3-5 (U- escalator end). Left as builder walls.",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-implementation/interior-spec.json",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/sy0-walk/observations.json",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/rear-row-walk/observations.json"
+   ]
+  }
+ ]
+}

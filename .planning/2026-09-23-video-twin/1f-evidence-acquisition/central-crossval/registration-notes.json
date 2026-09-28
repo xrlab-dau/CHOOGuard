@@ -1,0 +1,32 @@
+{
+  "selectionChange": "Class-a-plane registration checks: v1 selection (plane-box foot + 0.5 u slab) was replaced by v2 nearest-surface assignment after v1 results showed adjacent perpendicular surfaces (wall tops counted as ceiling, ceiling edges as wall) inside the slab. Thresholds in thresholds.json were NOT changed; v1 numbers are kept inside each row (checks-*.json v1FootSlabSelection). The v2 selection still includes unmodelled structures (e.g. the sign band / bulkhead at U 12-14, V -16..-15, Y~1.85 counted against the low ceiling) and far sparse points with ~0.3 u depth noise, which dominate the p95 failures.",
+  "attemptNotes": {
+    "v1-global-sim3": "Sim3 on every PnP-verified cross-epoch 3D pair. Showed a smooth 0.25 u PnP-vs-Sim3 camera trend along the corridor (segment drift vs March) and fitted pairs lying on the tested surfaces; superseded.",
+    "v2-heldout-sim3": "Sim3 with March points within 0.3 u of every evaluated surface (controls, targets, portals) excluded from the fit. Rigid model cannot absorb segment drift.",
+    "v3-march-anchored-ba": "Non-rigid localisation: segment points matched to non-surface March sparse points held constant; all segment poses, remaining points and intrinsics (incl. principal point) re-estimated with a Cauchy loss. Evaluated surfaces and portals remain held out. S20 principal point moved cy 360 -> 340.3 px (this removed the 1.35 deg pitch-plumb bias of v1/v2).",
+    "escalator-ride-chained": "Escalator-ride sub-model chained onto the anchored corridor model through shared images. Rejected: shared camera centres disagree by 0.30 u (S22) / 0.92 u (S20, single shared frame); plumb 4.5 deg / 46 deg.",
+    "v2-heldout-sim3-relaxed-localisation": "S23 localisation relaxed (Lowe 0.85, PnP 8 px, >=10 inliers) to gain correspondences: still only 10 frames (159.7-163 s, escalator foot) localise; the reverse-direction walk shares almost no view overlap with the inbound March walk.",
+    "escalator-ride-direct-sim3": "Direct cross-epoch registration of the escalator-ride sub-model: only 12 (S20) / 4 (S22) PnP-verified 3D pairs from 4-5 frames; no held-out check can be evaluated -> rejected."
+  },
+  "limits": {
+    "all": [
+      "Source-model units inherited from the March registration (metric-registration/registration.json); not surveyed metres.",
+      "Sparse SIFT points only (no dense MVS for the new epochs: disk/CPU budget); far points with 2-5 deg triangulation carry ~0.1-0.3 u depth noise.",
+      "Registration controls are March SfM points; any March SfM distortion propagates into anchored new-epoch poses (evaluated surfaces are excluded from anchoring, so they stay held out)."
+    ],
+    "S20": [
+      "2020-11 epoch: #4 tenant DESIGN SKIN, #3 not the B&C of 2026; architecture compared only.",
+      "Exterior approach (83-94 s) has no cross-epoch correspondences (outdoor lighting); portal frames are constrained only through the anchored interior and facade anchors.",
+      "Escalator ascent (123-158 s) is a separate SfM model; its chained registration was rejected."
+    ],
+    "S22": [
+      "2022-12 night walk, crowded; exterior portal frame (216 s) is 3.5 u from the portals and unanchored (night vs day appearance).",
+      "#4-side bakery with PARIS BAGUETTE signage beyond the pier (tenant era differs); architecture compared only.",
+      "Escalator ride (243-285 s) separate model; chained registration rejected."
+    ],
+    "S23": [
+      "2023-10 DJI Action 4 (HFOV ~94 deg) outbound walk, opposite viewing direction to the March walk; only frames at the escalator foot localise.",
+      "Watermark (top-right) masked."
+    ]
+  }
+}

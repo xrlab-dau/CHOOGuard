@@ -1,0 +1,129 @@
+{
+  "exit_code": 0,
+  "elapsed_s": 0.4,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "model": "typesafe/jev-1.13.0",
+  "caller": "omp judge_batch (noul questions sent as bool; answer 'bool' = P(true))",
+  "result": [
+    {
+      "answers": {
+        "tutorial_space": {
+          "type": "choice",
+          "choice": "same_map_separate_mode",
+          "confidence": 0.76,
+          "probabilities": {
+            "same_map_separate_mode": 0.82,
+            "same_map_staff_zone": 0.16,
+            "synthetic_lab": 0.01,
+            "separate_scene_extract": 0.01
+          }
+        },
+        "tutorial_structure": {
+          "type": "choice",
+          "choice": "first_shift_in_world",
+          "confidence": 0.91,
+          "probabilities": {
+            "free_discovery": 0.01,
+            "main_game_day_one": 0.03,
+            "first_shift_in_world": 0.94,
+            "lesson_menu": 0.02
+          }
+        },
+        "guidance_style": {
+          "type": "choice",
+          "choice": "diegetic_minimal",
+          "confidence": 1,
+          "probabilities": {
+            "highlight_overlay": 0,
+            "diegetic_minimal": 1,
+            "objective_tracker": 0,
+            "none": 0
+          }
+        },
+        "role_rollout": {
+          "type": "choice",
+          "choice": "station_staff_first",
+          "confidence": 0.96,
+          "probabilities": {
+            "role_shell_first": 0.03,
+            "all_four_parallel": 0,
+            "station_staff_first": 0.97
+          }
+        },
+        "entry_flow": {
+          "type": "choice",
+          "choice": "title_then_station",
+          "confidence": 0.46,
+          "probabilities": {
+            "direct_station": 0.35,
+            "title_then_station": 0.65,
+            "developer_menu_scene": 0
+          }
+        },
+        "core_reuse": {
+          "type": "bool",
+          "bool": 0.88
+        },
+        "astra_disposition": {
+          "type": "choice",
+          "choice": "remove_presentation_keep_core_for_review",
+          "confidence": 0.41,
+          "probabilities": {
+            "keep_and_retarget": 0,
+            "remove_all_from_worktree": 0.39,
+            "remove_presentation_keep_core_for_review": 0.61
+          }
+        },
+        "scene_boundary": {
+          "type": "choice",
+          "choice": "additive_gameplay_scene",
+          "confidence": 0.76,
+          "probabilities": {
+            "runtime_prefab_spawn": 0.06,
+            "additive_gameplay_scene": 0.85,
+            "gameplay_root_in_scene": 0.09
+          }
+        },
+        "ambient_passengers": {
+          "type": "bool",
+          "bool": 0.44
+        },
+        "astra_fit": {
+          "type": "score",
+          "score": 0.99,
+          "confidence": 0.43,
+          "legend": {
+            "0": "contradicts it",
+            "1": "mostly off",
+            "2": "partially fits",
+            "3": "mostly fits",
+            "4": "fits"
+          },
+          "probabilities": {
+            "0": 0.35,
+            "1": 0.37,
+            "2": 0.23,
+            "3": 0.04,
+            "4": 0.01
+          }
+        },
+        "first_question_to_user": {
+          "type": "choice",
+          "choice": "meaning_of_separate",
+          "confidence": 0.79,
+          "probabilities": {
+            "meaning_of_separate": 0.84,
+            "first_role_and_lesson": 0.03,
+            "astra_code_disposition": 0.1,
+            "entry_and_menu": 0.02,
+            "guidance_level": 0.01
+          }
+        }
+      }
+    }
+  ],
+  "cost_usd": 0.00013969200000000002,
+  "authority": 0,
+  "note": "Advice distribution only. Not user approval, not implementation evidence."
+}

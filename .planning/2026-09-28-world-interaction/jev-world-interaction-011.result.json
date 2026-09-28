@@ -1,0 +1,59 @@
+{
+ "via": "omp eval judge() -> modelRoles.judge typesafe/jev-latest (no fallback chain); TYPESAFE_API_KEY absent from the shell, so .tools/jev/jev.mjs was not used",
+ "ranUtc": "2026-09-27T18:44:35Z",
+ "elapsed_ms": 300,
+ "authority": 0,
+ "answers": {
+  "elevator_scope_after_research": {
+   "type": "choice",
+   "choice": "keep_ev0_only",
+   "confidence": 0.95,
+   "probabilities": {
+    "build_corner_2f_landing": 0,
+    "build_core_2f_landings": 0.03,
+    "keep_ev0_only": 0.96,
+    "build_both": 0.01
+   }
+  },
+  "inoperable_landing_feedback": {
+   "type": "choice",
+   "choice": "silent",
+   "confidence": 0.99,
+   "probabilities": {
+    "reason_like_sealed_doors": 0.01,
+    "out_of_service_display": 0,
+    "silent": 0.99
+   }
+  },
+  "escalator_foot_gates": {
+   "type": "choice",
+   "choice": "mirror_escalator",
+   "confidence": 0.86,
+   "probabilities": {
+    "mirror_plus_staff_switch": 0.07,
+    "mirror_escalator": 0.91,
+    "leave_static": 0.02
+   }
+  },
+  "aed_use": {
+   "type": "choice",
+   "choice": "carry_and_hand_over",
+   "confidence": 0.93,
+   "probabilities": {
+    "full_sequence": 0,
+    "carry_and_hand_over": 0.96,
+    "aed_without_cpr": 0.04
+   }
+  },
+  "first_aid_outcome": {
+   "type": "choice",
+   "choice": "logged_only",
+   "confidence": 0.99,
+   "probabilities": {
+    "logged_only": 1,
+    "chance_of_recovery": 0,
+    "always_stabilises": 0
+   }
+  }
+ }
+}

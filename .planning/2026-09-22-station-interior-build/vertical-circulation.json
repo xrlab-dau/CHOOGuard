@@ -1,0 +1,658 @@
+{
+ "schema": "chooguard.vertical-circulation.v1",
+ "authoredAt": "2026-09-22",
+ "method": "원본 부산역 모델에서 계측한 규격(경사 30.0°, 재질 50종)을 파라메트릭 생성기로 마이그레이션. 균일 축소 금지 — 층고에 맞춰 단수를 재계산한다.",
+ "dimensionBasis": {
+  "escalatorSlopeDeg": 30.0,
+  "escalatorGoing": 0.4,
+  "escalatorClearWidth": 2.4,
+  "escalatorFinishedWidth": 3.4,
+  "stairRiser": 0.175,
+  "stairTread": 0.3,
+  "stairClearWidth": 3.0,
+  "landingLength": 1.2,
+  "landingEveryRise": 3.0,
+  "source": "metric-standards.json · 교통약자법 별표1 · 건축법 방화구조규칙 제15조 · 원본 실측 30.0°"
+ },
+ "materialsReused": [
+  "금속#002",
+  "금속_원형#001",
+  "타일#025(계단)",
+  "스트라이프#023"
+ ],
+ "units": [
+  {
+   "name": "에스컬레이터 코어1 1F-2F 상행",
+   "kind": "escalator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -40.34,
+    0.0,
+    -52.84
+   ],
+   "yaw": 16.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어1 1F-2F 하행",
+   "kind": "escalator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -36.5,
+    0.0,
+    -53.96
+   ],
+   "yaw": 196.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어1 2F-3F 상행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -35.6,
+    7.0,
+    -36.52
+   ],
+   "yaw": 16.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어1 2F-3F 하행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -31.76,
+    7.0,
+    -37.63
+   ],
+   "yaw": 196.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어2 1F-2F 상행",
+   "kind": "escalator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -34.21,
+    0.0,
+    -31.72
+   ],
+   "yaw": 16.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어2 1F-2F 하행",
+   "kind": "escalator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -30.37,
+    0.0,
+    -32.83
+   ],
+   "yaw": 196.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어2 2F-3F 상행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -29.46,
+    7.0,
+    -15.39
+   ],
+   "yaw": 16.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어2 2F-3F 하행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -25.62,
+    7.0,
+    -16.51
+   ],
+   "yaw": 196.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어3 1F-2F 상행",
+   "kind": "escalator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -42.32,
+    0.0,
+    -2.28
+   ],
+   "yaw": 16.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어3 1F-2F 하행",
+   "kind": "escalator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -38.48,
+    0.0,
+    -3.4
+   ],
+   "yaw": 196.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어3 2F-3F 상행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -37.57,
+    7.0,
+    14.04
+   ],
+   "yaw": 16.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어3 2F-3F 하행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -33.73,
+    7.0,
+    12.92
+   ],
+   "yaw": 196.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어4 1F-2F 상행",
+   "kind": "escalator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -21.37,
+    0.0,
+    12.46
+   ],
+   "yaw": 16.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어4 1F-2F 하행",
+   "kind": "escalator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -17.53,
+    0.0,
+    11.34
+   ],
+   "yaw": 196.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어4 2F-3F 상행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -16.63,
+    7.0,
+    28.78
+   ],
+   "yaw": 16.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어4 2F-3F 하행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -12.79,
+    7.0,
+    27.67
+   ],
+   "yaw": 196.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어5 1F-2F 상행",
+   "kind": "escalator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -22.36,
+    0.0,
+    37.74
+   ],
+   "yaw": 16.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어5 1F-2F 하행",
+   "kind": "escalator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -18.52,
+    0.0,
+    36.62
+   ],
+   "yaw": 196.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어5 2F-3F 상행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -17.62,
+    7.0,
+    54.06
+   ],
+   "yaw": 16.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어5 2F-3F 하행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -13.78,
+    7.0,
+    52.95
+   ],
+   "yaw": 196.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어6 1F-2F 상행",
+   "kind": "escalator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -5.5,
+    0.0,
+    59.91
+   ],
+   "yaw": 16.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어6 1F-2F 하행",
+   "kind": "escalator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -1.66,
+    0.0,
+    58.8
+   ],
+   "yaw": 196.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어6 2F-3F 상행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -0.76,
+    7.0,
+    76.24
+   ],
+   "yaw": 16.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "에스컬레이터 코어6 2F-3F 하행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    3.08,
+    7.0,
+    75.12
+   ],
+   "yaw": 196.2,
+   "clearWidth": 2.4
+  },
+  {
+   "name": "피난계단 1 1F-2F",
+   "kind": "stair",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -50.57,
+    0.0,
+    -66.53
+   ],
+   "yaw": 16.2,
+   "clearWidth": 3.0
+  },
+  {
+   "name": "피난계단 1 2F-3F",
+   "kind": "stair",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -44.99,
+    7.0,
+    -47.33
+   ],
+   "yaw": 16.2,
+   "clearWidth": 3.0
+  },
+  {
+   "name": "피난계단 2 1F-2F",
+   "kind": "stair",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -25.02,
+    0.0,
+    57.25
+   ],
+   "yaw": 16.2,
+   "clearWidth": 3.0
+  },
+  {
+   "name": "피난계단 2 2F-3F",
+   "kind": "stair",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    -19.44,
+    7.0,
+    76.46
+   ],
+   "yaw": 16.2,
+   "clearWidth": 3.0
+  },
+  {
+   "name": "승강기 01 (1F-3F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 12.0,
+   "pos": [
+    -51.13,
+    0.0,
+    -68.45
+   ],
+   "yaw": 16.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "승강기 02 (1F-3F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 12.0,
+   "pos": [
+    -60.67,
+    0.0,
+    -51.1
+   ],
+   "yaw": 106.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "승강기 03 (1F-3F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 12.0,
+   "pos": [
+    -27.95,
+    0.0,
+    -46.03
+   ],
+   "yaw": 16.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "승강기 04 (1F-3F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 12.0,
+   "pos": [
+    -52.85,
+    0.0,
+    -24.22
+   ],
+   "yaw": 106.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "승강기 05 (1F-3F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 12.0,
+   "pos": [
+    -18.22,
+    0.0,
+    -19.7
+   ],
+   "yaw": 16.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "승강기 06 (1F-3F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 12.0,
+   "pos": [
+    -42.56,
+    0.0,
+    4.04
+   ],
+   "yaw": 106.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "승강기 07 (1F-3F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 12.0,
+   "pos": [
+    -9.85,
+    0.0,
+    9.11
+   ],
+   "yaw": 16.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "승강기 08 (1F-3F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 12.0,
+   "pos": [
+    -32.27,
+    0.0,
+    32.29
+   ],
+   "yaw": 106.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "승강기 09 (1F-3F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 12.0,
+   "pos": [
+    -4.76,
+    0.0,
+    40.96
+   ],
+   "yaw": 16.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "승강기 10 (1F-2F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -21.98,
+    0.0,
+    60.54
+   ],
+   "yaw": 106.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "승강기 11 (1F-2F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    4.41,
+    0.0,
+    65.36
+   ],
+   "yaw": 16.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "승강기 12 (1F-2F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -31.05,
+    0.0,
+    -63.87
+   ],
+   "yaw": 106.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "승강기 13 (1F-2F)",
+   "kind": "elevator",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    -39.71,
+    0.0,
+    28.2
+   ],
+   "yaw": 16.2,
+   "clearWidth": 1.8
+  },
+  {
+   "name": "피난계단 3 2F-3F",
+   "kind": "stair",
+   "bottomY": 7.0,
+   "topY": 12.0,
+   "pos": [
+    34.5,
+    7.0,
+    69.5
+   ],
+   "yaw": 16.2,
+   "clearWidth": 3.0
+  },
+  {
+   "name": "피난계단 3 1F-2F",
+   "kind": "stair",
+   "bottomY": 0.0,
+   "topY": 7.0,
+   "pos": [
+    34.5,
+    0.0,
+    69.5
+   ],
+   "yaw": 16.2,
+   "clearWidth": 3.0
+  },
+  {
+   "name": "지하연결 계단 1 B1-1F",
+   "kind": "stair",
+   "bottomY": -6.0,
+   "topY": 0.0,
+   "pos": [
+    -100.0,
+    -6.0,
+    120.0
+   ],
+   "yaw": 16.2,
+   "clearWidth": 3.0
+  },
+  {
+   "name": "지하연결 계단 2 B1-1F",
+   "kind": "stair",
+   "bottomY": -6.0,
+   "topY": 0.0,
+   "pos": [
+    -112.0,
+    -6.0,
+    70.0
+   ],
+   "yaw": 196.2,
+   "clearWidth": 3.0
+  },
+  {
+   "name": "에스컬레이터 지하연결 B1-1F 상행",
+   "kind": "escalator",
+   "bottomY": -6.0,
+   "topY": 0.0,
+   "pos": [
+    -104.0,
+    -6.0,
+    112.0
+   ],
+   "yaw": 16.2,
+   "clearWidth": 1.2
+  },
+  {
+   "name": "에스컬레이터 지하연결 B1-1F 하행",
+   "kind": "escalator",
+   "bottomY": -6.0,
+   "topY": 0.0,
+   "pos": [
+    -107.0,
+    -6.0,
+    108.0
+   ],
+   "yaw": 196.2,
+   "clearWidth": 1.2
+  },
+  {
+   "name": "엘리베이터 지하연결 B1-1F",
+   "kind": "elevator",
+   "bottomY": -6.0,
+   "topY": 0.0,
+   "pos": [
+    -96.0,
+    -6.0,
+    126.0
+   ],
+   "yaw": 16.2,
+   "clearWidth": 1.6
+  }
+ ],
+ "roster": {
+  "escalators": 24,
+  "stairs": 6,
+  "elevators": 13,
+  "officialCounts": "data.go.kr 15090379(2024-12-31): 부산역 엘리베이터 13 / 에스컬레이터 24",
+  "match": "에스컬레이터 24/24, 승강기 13/13",
+  "addedForTravelDistance": "3F 최원거리 61m(법정 50m 초과) 해소를 위해 피난계단 3 신설"
+ },
+ "b1Note": "B1 지하도상가(네이버 실내 벡터타일 실측 기하)와 지상 1층을 잇는 수직동선. 위치는 B1 동측(역사 방향) 바닥 구획 안. 실제 부산역 지하도상가는 다수 출입구로 지상과 연결되며, 본 모델은 그중 역사 직결 경로만 구축."
+}

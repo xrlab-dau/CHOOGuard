@@ -1,0 +1,400 @@
+{
+  "schema": "chooguard.float-sweep.v1",
+  "audit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after60",
+  "scene": "Assets/ChooGuard/Scenes/FpsStation.unity",
+  "auditUtc": "2026-09-25T20:29:15.3214720Z",
+  "walkEvidence": {
+    "source": "interpolated walk routes; eye height 1.55 m",
+    "routeSamples": 459,
+    "routes": [
+      "route-1f-uminus-escalator-to-2f.json",
+      "route-1f-up-escalator-to-2f.json",
+      "route-2f-corridor-west.json",
+      "route-2f-exit10-to-sky-plaza-gate.json",
+      "route-2f-exit9-to-sky-plaza-gate.json",
+      "route-2f-main-to-box-hall.json",
+      "route-2f-seam-north-opening.json",
+      "route-2f-south-gate-strip.json",
+      "route-3f-centre-to-foodcourt.json",
+      "route-central-to-uminus-v2.json",
+      "route-central-to-uplus.json",
+      "route-into-unit10.json"
+    ]
+  },
+  "lightingEvidence": {
+    "source": "enabled active-hierarchy Point/Spot/Area Light components parsed from scene YAML",
+    "localLights": 330,
+    "minimumDistanceM": 6.0,
+    "noLocalLightsPolicy": "a visible, nonemissive downward surface with no active local lights qualifies; reported nearest light is null"
+  },
+  "rules": {
+    "supportDistanceM": 0.05,
+    "componentAreaM2": ">=2.0; built roots only: 맞이방 · 원본 정합/* and 실내 트윈 마감/*",
+    "supportGeometry": "all active scene geometry, including FPSWorld; FPSWorld is never a support-candidate owner",
+    "visibility": "direct walk-route eye-cell line of sight against active renderer bounds; conservative AABB blocker approximation",
+    "score": "surface area m2 x number of visible route eye cells",
+    "darkDownFacing": "down-facing area >=4 m2; visible from walk-route eye cells; every assigned renderer material is known and has no emission lift; nearest active local light >6 m",
+    "openEdges": "route-near unguarded top-face boundaries; lower surface determines exposed drop where modeled",
+    "doorVoid": "route-near glass/door panels with roofed void but no floor behind; see confidence field"
+  },
+  "validation": {
+    "Box_Majibang_3F_EdgeBand": {
+      "band3PresentInAudit": false,
+      "band3Absent": true,
+      "bands1And2Present": true,
+      "bands1And2NotFlagged": true,
+      "unsupportedByBand": {
+        "1": false,
+        "2": false
+      }
+    },
+    "skyPlazaDeck": {
+      "presentInAudit": true,
+      "expectedElementId": "sky-plaza-deck-2f",
+      "deckSupportedByPiers": true,
+      "piersReachApron": true,
+      "supportEvidence": {
+        "presentInAudit": true,
+        "expectedPiers": 30,
+        "renderedPiers": 30,
+        "deckContactCount": 30,
+        "apronContactCount": 30,
+        "deckSupportedByPiers": true,
+        "piersReachApron": true,
+        "deckContactRangeM": [
+          0.016,
+          0.016
+        ],
+        "apronContactRangeM": [
+          0.004,
+          0.004
+        ],
+        "spec": ".planning/2026-09-24-interior-twin/specs/full/sky-plaza-fit.json",
+        "receipt": ".planning/2026-09-24-interior-twin/specs/full/sky-plaza-fit.receipt.json",
+        "pierChecks": [
+          {
+            "id": "sky-plaza-pier-00-00",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-00-01",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-00-02",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-00-03",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-00-04",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-01-00",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-01-01",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-01-02",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-01-03",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-01-04",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-02-00",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-02-01",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-02-02",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-02-03",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-02-04",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-03-00",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-03-01",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-03-02",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-03-03",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-03-04",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-04-00",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-04-01",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-04-02",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-04-03",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-pier-04-04",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-north-edge-pier-00",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-north-edge-pier-01",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-north-edge-pier-02",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-north-edge-pier-03",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          },
+          {
+            "id": "sky-plaza-north-edge-pier-04",
+            "rendered": true,
+            "baseY": 0.004,
+            "topY": 6.596,
+            "deckContactM": 0.016,
+            "apronContactM": 0.004
+          }
+        ],
+        "status": "grounded-and-deck-supported"
+      }
+    },
+    "seamLedScreen": {
+      "presentInAudit": true,
+      "expectedElementId": "seam-led-screen",
+      "supported": true,
+      "flaggedUnsupported": false,
+      "status": "present-and-supported"
+    },
+    "activeBaselineChecksPassed": true,
+    "allPassed": true
+  },
+  "summary": {
+    "unsupportedComponents": 0,
+    "darkDownFacingUnlit": 0,
+    "wallLessEdges": 1,
+    "doorOrGlassVoid": 0,
+    "byLane": {
+      "SkyPlaza": 0,
+      "HallJunction": 0,
+      "SeamMain": 0,
+      "Main": 1
+    },
+    "rankedItems": 1,
+    "top30Picks": [
+      {
+        "rank": 1,
+        "path": "float-sweep-picks/item-01-owner-pick.png",
+        "crop": "float-sweep-picks/item-01-owner-crop.png",
+        "ownerPick": "24x14 CPU raycast, per-pixel renderer owner within a 50 m centroid clip; red centre marks aim point",
+        "targetOwner": "맞이방 · 원본 정합/Majibang_2F_Floor",
+        "centrePixelOwner": "실내 트윈 마감/2F 본관 보강/Kit_Floor_Canopy_Dark"
+      }
+    ]
+  },
+  "items": [
+    {
+      "category": "wall-less-edge",
+      "owner": "맞이방 · 원본 정합/Majibang_2F_Floor",
+      "ownerElement": null,
+      "material": [],
+      "area": 1.89,
+      "areaEstimateBasis": "edge length × min(modeled drop, 4 m); 1 m if no lower surface is modeled",
+      "bboxUVY": [
+        -43.46,
+        -15.97,
+        7.0,
+        -43.42,
+        -15.5,
+        7.0
+      ],
+      "edgeUV": [
+        [
+          -43.4567985534668,
+          -15.5
+        ],
+        [
+          -43.42399978637695,
+          -15.970999717712402
+        ]
+      ],
+      "dropM": 7.0,
+      "componentTarget": [
+        -43.440399169921875,
+        -15.735499858856201,
+        7.45
+      ],
+      "visibility": {
+        "samples": 1,
+        "nearestDistance": 0.61,
+        "bestRoute": "route-1f-uminus-escalator-to-2f.json",
+        "bestPosition": [
+          -43.75,
+          -15.21,
+          8.55
+        ]
+      },
+      "score": 1.889,
+      "evidence": "walk-route-near top collider boundary; same-level floor absent across edge and no collider section crosses the edge at +0.35 or +0.9 m; drop is measured to the nearest modeled lower up-facing surface, or unbounded when none is modeled",
+      "lane": "Main",
+      "rank": 1
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+ "schema": "chooguard.sy0-thresholds.v1",
+ "fixedAt": "2026-09-24 (written after frame extraction, BEFORE any SfM model or registration result of this lane existed)",
+ "units": "station UVY source-model units (March registration), never surveyed metres; pixels at 1920x1080",
+ "designA": {
+  "fit": "Sim3 (then optional March-anchored BA) from PnP-verified cross-epoch 3D-3D pairs between this lane's model and the registered March model (1f-2026-sfm/sparse/2) at BOTH centre passes (pass 1 = K01/K02, pass 2 = K08-K12). March points within 0.3 u of any evaluated class-a surface/portal are excluded from the fit.",
+  "heldOut": ["centre class-a planes (evidence-inventory)", "MainShell facade near GATE1 (U- end, far-end control)", "MainShell central plaza facade (K01 exterior)", "MainShell U+ end facade (if visible)", "plumb", "floor normals", "travel continuity"]
+ },
+ "designB": {
+  "when": "only if design A fails ONLY at far-end MainShell controls because of along-walk scale drift",
+  "fit": "design A anchors + MainShell GATE1 facade (point-to-plane) in an anchored BA",
+  "heldOut": "MainShell surfaces not used in the fit (U- end surfaces perpendicular to the GATE1 facade, U+ end facade), centre class-a planes, plumb, floor normals, continuity; the rear-row interior (#9-#16) then has NO independent metric check and components there cannot exceed class b unless a held-out surface covers them"
+ },
+ "anchors": {"minVerifiedPairsPerPass": 100, "sim3InlierThresholdU": 0.20, "inlierResidualMedianU": 0.10},
+ "interPassDrift": {"what": "pass-1-only vs pass-2-only Sim3 applied to the same model", "centreDisagreementMedianU": 0.10, "scaleRatioAbs": 0.01, "rotationDeg": 0.5},
+ "classAPlanes": {"what": "lane points (>=3 views, err<=2 px, tri>=2 deg) inside each March class-a plane box (+0.3 u)", "medianAbsU": 0.05, "p95AbsU": 0.15, "minPoints": 20},
+ "mainShellControl": {"what": "lane points (>=3 views, err<=2 px, tri>=2 deg) within 1.0 u of MainShell facade triangles in the control zone", "medianAbsU": 0.10, "fractionWithin020U": 0.70, "minPoints": 30},
+ "plumb": {"what": "vertical vanishing direction (LSD) vs registered camera up, frames with >=10 supporting segments", "medianDeg": 0.5, "p95Deg": 1.0},
+ "floorNormal": {"what": "robust plane over lane floor points per section (centre / rear row / U- end / U+ end)", "tiltDeg": 1.0, "gating": true, "floorYDiagnostic": "Ground_Floor Y0 is a generated fill; median floor Y reported, not gated"},
+ "travelContinuity": {"maxStepU": 1.0, "maxStepOverMedian": 3.0, "scope": "consecutive frames within a clip at 3 fps"},
+ "crossVideo": {"what": "RearRowWalkReg / UPlusEndReg provisional placements", "gating": false, "note": "both sibling registrations were rejected; comparison is informational"},
+ "componentClassA": {"views": 3, "triangulationAngleDeg": 2.0, "reprojRMSPx": 2.0, "heldOutViewMedianPx": 3.0, "planeInlierRMSU": 0.03, "planeHeldOutWithin005Fraction": 0.85, "requires": "accepted registration"}
+}

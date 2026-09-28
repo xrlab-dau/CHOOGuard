@@ -1,0 +1,323 @@
+{
+  "schema": "chooguard.hall-build-verdict.v1",
+  "verdictAt": "2026-09-23",
+  "status": "WITHDRAWN_NOT_A_DIGITAL_TWIN",
+  "supersededBy": ".planning/2026-09-23-video-twin/evidence-gate.json",
+  "retraction": "아래 수치는 과거 생성물과 측정 로그의 기록이다. 5,212㎡·주열·점포좌표는 현장 실측이 아니며, 기존 경로 드라이버는 실제 목적지와 높이가 달라도 완주로 판정할 수 있었다. 원본 영상과의 구조·카메라·층간 좌표 정합이 성립하지 않아 디지털트윈 완성 근거로 사용할 수 없다.",
+  "branch": "feature/fps-audit-terminal-and-station-interior-audit",
+  "question": "복원된 원본 부산역 맵의 외부 재현 수준을 확인하고, 같은 수준으로 실내(2층 맞이방)를 구축하라",
+  "headline": "철회된 이전 결과: 임의 홀 형상을 생성했으나 영상의 과선교→저천장→높은 홀→상업통로→1F 하행→광장→도시철도 경로를 재현하지 못했다. 원본 재질의 _Cull=0 확인 결과도 기존 백페이스 컬링 원인 단정을 지지하지 않는다.",
+  "exterior_baseline": {
+    "source": "OfficialBusanStation_{MainShell,ContextPlaza,ContextNeighbours,SiteTrees,SiteTrains,ExitRoofs,PlatformsParking,Layer0PlatformsDetails}.fbx",
+    "confirmed_by_capture": [
+      "파사드 한글 '부산역' + 영문 'Busan Station' 실사인",
+      "다크 유리 커튼월 + 수평 장대 캐노피",
+      "승강장 철골 트러스 유리 캐노피",
+      "초량 트윈타워 등 주변 맥락, 도로 차선·횡단보도·가로수",
+      "점자블록·주차구획·선로·KTX 차량"
+    ],
+    "reference_harvest": {
+      "images": 95,
+      "views": {
+        "facade_front": 6,
+        "facade_angle": 10,
+        "plaza": 18,
+        "platform_canopy": 10,
+        "aerial": 10,
+        "night": 21,
+        "surroundings": 20
+      },
+      "keyMeasurements": {
+        "columnPitchM": 9.0,
+        "scaleMPerPx": 0.1837,
+        "facadeSpanPhotoM": 163.2,
+        "facadeSpanModelM": 172.1,
+        "spanErrorPct": -5.2
+      }
+    }
+  },
+  "bottlenecks_found_and_resolved": [
+    {
+      "id": "B1",
+      "bottleneck": "레이캐스트가 지붕·벽 안쪽면을 놓쳐 실내 체적을 절반으로 과소 계측했다",
+      "cause": "Physics.queriesHitBackfaces 기본 false — 단면 메시의 안쪽면에 레이가 맞지 않는다",
+      "fix": "프로브에서 queriesHitBackfaces=true",
+      "effect": "실내 11,408 -> 21,184 제곱미터, 2층 4,348 -> 9,172 제곱미터"
+    },
+    {
+      "id": "B2",
+      "bottleneck": "4방향 폐합 판정이 옥외 공터를 실내로 오판했다",
+      "cause": "주변 건물(ContextNeighbours/Plaza) 콜라이더를 벽으로 셈",
+      "fix": "역사 하위 콜라이더만 인정하는 CastOwned 관통 캐스트",
+      "effect": "오판 제거, 맞이방 공동 7,060 제곱미터 확정"
+    },
+    {
+      "id": "B3",
+      "bottleneck": "실내에서 벽과 지붕이 보이지 않고 하늘·주변 건물이 보였다",
+      "cause": "원본 셸이 단면(single-sided) 메시 — 안쪽면이 백페이스 컬링된다",
+      "fix": "계측 경계에 안쪽을 향한 라이너(벽·고측창·지붕데크) 신축",
+      "effect": "실내가 실내로 렌더됨. 원본 지오메트리는 무수정"
+    },
+    {
+      "id": "B4",
+      "bottleneck": "셀 해시 충돌로 경계 벽이 91면만 생성됐다",
+      "cause": "셀이 홀수 미터 격자인데 Cell(2m)로 나눠 반올림 -> 인접 셀이 같은 키",
+      "fix": "정수 미터 키",
+      "effect": "경계 278면 = 파이썬 독립 계산치와 정확히 일치"
+    },
+    {
+      "id": "B5",
+      "bottleneck": "플레이어가 1mm도 못 움직였다",
+      "cause": "종합안내 아일랜드 콜라이더 내부에 스폰 + 내가 임의로 뚫은 에스컬레이터 보이드가 주 보행선을 차단",
+      "fix": "아일랜드를 유도로에서 12m 이격 + 링을 도넛으로 비움 + 인공 보이드 제거(장축 클리핑만으로 이미 66% = Jev central_two_thirds 충족)",
+      "effect": "경로 9/9 완주, 실보행 89.9m, 접지 유지"
+    },
+    {
+      "id": "B6",
+      "bottleneck": "톤매핑이 렌더에 전혀 반영되지 않았다",
+      "cause": "VolumeProfile 오버라이드를 서브에셋으로 등록하지 않아 도메인 리로드 시 소실 + 캡처 경로가 포스트 패스 우회",
+      "fix": "AddObjectToAsset 으로 서브에셋 고정, 그리고 포스트에 의존하지 않도록 장면 자체 측광(조명·알베도)을 실사 기준선에 폐루프로 정합",
+      "effect": "휘도 히스토그램 교집합 0.570 -> 0.807, 카이제곱 0.2140 -> 0.0692"
+    }
+  ],
+  "jev_decisions": [
+    {
+      "name": "interior-parity-011",
+      "model": "jev-1.13.0",
+      "mode": "LIVE",
+      "anchor_authority": {
+        "choice": "shell_anchor_plus_plan_topology",
+        "conf": 0.83
+      },
+      "parity_driver": {
+        "choice": "prop_density_human_scale",
+        "conf": 0.44
+      },
+      "storefront_method": {
+        "choice": "extrude_on_measured_wall_runs",
+        "conf": 0.99
+      },
+      "first_unit": {
+        "choice": "one_wall_run_vertical_slice",
+        "conf": 0.96
+      },
+      "verification_metric": {
+        "choice": "both_photo_and_numeric",
+        "conf": 0.87
+      },
+      "current_interior_level": {
+        "score": 2.27,
+        "legend": "2=구조는 맞고 마감 없음"
+      }
+    },
+    {
+      "name": "hall-build-012",
+      "model": "jev-1.13.0",
+      "mode": "LIVE",
+      "floor_plate_scope": {
+        "choice": "central_two_thirds",
+        "conf": 0.82
+      },
+      "roof_structure": {
+        "choice": "space_frame_truss",
+        "conf": 0.95
+      },
+      "build_sequence_first": {
+        "choice": "floor_slab_with_material",
+        "conf": 0.96
+      },
+      "column_grid": {
+        "choice": "derive_from_existing_shell_columns",
+        "conf": 0.26,
+        "note": "copy_deck_column_spacing 0.44 와 사실상 동률 - 외부 실사 판독 주열 피치 9.0m 를 채택했다"
+      },
+      "route_reproduction": {
+        "choice": "scripted_waypoint_walk",
+        "conf": 0.95
+      }
+    }
+  ],
+  "measured_hall": {
+    "measurementStatus": "GENERATED_EXTENT_NOT_SURVEYED_HALL",
+    "areaM2": 5212,
+    "shareOfVoidPct": 73,
+    "longAxisDeg": 16.2,
+    "uRangeM": [
+      -59.9,
+      52.0
+    ],
+    "vRangeM": [
+      -47.6,
+      10.6
+    ],
+    "lengthM": 112,
+    "widthM": 44.7,
+    "floorY": 7.0,
+    "roofY": 23.0,
+    "clearHeightM": 16.0,
+    "basis": "sv2-y12.json(역사 콜라이더 한정 4방향 폐합 + 백페이스) -> 바닥 없는 셀 -> 최대 연결성분 -> 장축 u[-60,52] 클리핑"
+  },
+  "built": {
+    "floor": {
+      "name": "바닥 · 광택화강석",
+      "verts": 5212,
+      "material": "floor_station_polished + Granite005A 노멀",
+      "tileM": 0.9
+    },
+    "envelope": [
+      "벽 · 화강석건식패널 (y 7.00~11.50)",
+      "고측창 · 유리커튼월 (y 11.50~20.80)",
+      "지붕데크 · 백색금속 (y 21.60)",
+      "스페이스프레임 트러스 (베이 9.0m, 상현 21.35 / 하현 19.50)"
+    ],
+    "columns": {
+      "pitchM": 18.0,
+      "diameterM": 1.1,
+      "basis": "외부 실사 판독 주열 피치 9.0m 의 배수"
+    },
+    "tenants": {
+      "bays": 23,
+      "plaza": 18,
+      "track": 5,
+      "source": "KORAIL 임대원장 2층 전문점 48 + 편의점 4 (고유 46개, 인가면적 합 2,528제곱미터)",
+      "topology": "공식 2층 안내도 변별 배치",
+      "brands_rendered": [
+        "서브웨이",
+        "파스쿠찌",
+        "소반한식",
+        "스토리오브라망",
+        "GS25 편의점",
+        "하와이안파라다이스커피",
+        "카카오프렌즈",
+        "크리스피크림도넛",
+        "비엔씨제과",
+        "환공어묵",
+        "올리브영",
+        "부산별빛샌드",
+        "남천할매떡볶이",
+        "위니비니",
+        "코레일라운지"
+      ]
+    },
+    "signage": {
+      "generated": 41,
+      "fascia": 24,
+      "storefrontBackdrop": 6,
+      "wayfinding": 8,
+      "departureBoard": 3,
+      "font": "Apple SD Gothic Neo + Arial Unicode 폴백",
+      "tofuAudit": "CLEAN"
+    },
+    "fitout": [
+      "점자블록 유도로",
+      "종합안내 아일랜드(링)",
+      "대기 벤치 절차적 생성(좌판 2.95m 실측)",
+      "천장 매달림 열차정보 모니터",
+      "승객 실사 컷아웃 150 배치",
+      "다운라이트 34 + 주광 1"
+    ],
+    "roof": {
+      "form": "배럴볼트 스페이스프레임",
+      "riseM": 3.4,
+      "crownY": 23.6,
+      "baseY": 20.2,
+      "skylightStrips": 3,
+      "pitchM": 9.0,
+      "basis": "영상·레퍼런스의 백색 삼각격자 입체트러스 + 천창 형상"
+    },
+    "passengers": {
+      "cutouts": 35,
+      "classes": {
+        "walk": 10,
+        "stand": 10,
+        "luggage": 10,
+        "seated": 5
+      },
+      "method": "torchvision MaskRCNN_ResNet50_FPN_V2 인스턴스 세그멘테이션 + KeypointRCNN 17키포인트 포즈 + COCO suitcase/backpack/handbag 분류. rembg 는 PEP668 로 설치 불가.",
+      "source": "영상 6vxUvCQ5_rY 1920x1080 원본 재컷(인물 ~760px) + 착석은 실제 2층 벤치열 레퍼런스 사진",
+      "detected": 334,
+      "sourceFramesDistinct": 31,
+      "alphaCoverageMean": 0.5754,
+      "meanLumaMean": 0.3598,
+      "meanLumaMin": 0.3005,
+      "placed": {
+        "scattered": 150,
+        "seatedOnBenches": 31
+      }
+    },
+    "sceneCost": {
+      "renderers": 241,
+      "triangles": 16142,
+      "note": "StationBench4.fbx 는 단일 벤치가 아니라 196개 묶음 모델이었다. 72회 인스턴스화가 렌더러 18,125개·삼각형 18,789,300개를 만들었고 척도도 무너졌다. 절차적 벤치로 교체해 1,164배 줄였다."
+    }
+  },
+  "verification": {
+    "digitalTwinVerified": false,
+    "walk": {
+      "validForArrivalOrVideoParity": false,
+      "invalidationEvidence": ".planning/2026-09-23-video-twin/route-validation-receipt.json",
+      "waypoints": 10,
+      "plannedRouteM": 96.6,
+      "walkedM": 91.2,
+      "legsCompleted": "9/9",
+      "grounded": true,
+      "method": "이전 CharacterController.Move 투영누적 방식. 3D 도착 판정 결함으로 아래 완주 수치는 신뢰할 수 없음. 현재 RouteWalk는 FirstPersonResponder.StepInput 및 실제 접지·목적지 거리를 사용한다.",
+      "captures": "captures/final_walk/step_00..18.png"
+    },
+    "photometric_vs_real_video": {
+      "validForStructuralFidelity": false,
+      "realSource": "route6vx f_0045..f_0076 (영상 6vxUvCQ5_rY 맞이방 구간 32프레임)",
+      "renderSource": "captures/walkA/step_00..18.png (플레이 모드 1인칭 보행 19프레임)",
+      "real": {
+        "meanY": 0.464,
+        "p05": 0.111,
+        "p95": 0.945,
+        "meanSat": 0.202,
+        "above085": 0.092,
+        "below015": 0.087
+      },
+      "before": {
+        "meanY": 0.597,
+        "p05": 0.184,
+        "p95": 0.957,
+        "meanSat": 0.13,
+        "above085": 0.158,
+        "below015": 0.062,
+        "histIntersect": 0.57,
+        "chi2": 0.214
+      },
+      "after": {
+        "meanY": 0.512,
+        "p05": 0.141,
+        "p95": 1.0,
+        "meanSat": 0.154,
+        "above085": 0.136,
+        "below015": 0.086,
+        "histIntersect": 0.802,
+        "chi2": 0.0724
+      },
+      "iterations": "조명·알베도·자발광 5회 폐루프. 포스트 볼륨은 캡처 경로가 우회하므로 장면 자체 측광으로 맞췄다."
+    },
+    "side_by_side": "captures/compare_v2.png: 과거 비교판. 카메라 pose/FOV가 정합되지 않아 동일구도라는 종전 주장을 철회함.",
+    "walkability": {
+      "method": "1m 격자 캡슐(반경 0.30, 높이 1.72) 간섭검사 + 스폰 플러드필",
+      "openAreaM2": 6125.0,
+      "reachableAreaM2": 4648.0,
+      "reachableSharePct": 75.89,
+      "spawnMovedTo": [
+        -31.2,
+        7.1,
+        -43.0
+      ],
+      "note": "이전 측정 7.0% 는 플레이 정지 시 플레이어가 원본 변두리 복도 좌표로 복귀해 고립 포켓에서 플러드필된 탓. 스폰을 홀 시작점으로 옮겨 재측정했다."
+    }
+  },
+  "remaining_gaps": [
+    "채도가 실사 대비 낮다 (0.154 대 0.202)",
+    "p95 1.000 - 천창 하이라이트가 실사(0.945)보다 날아간다",
+    "점포 측벽이 측광상 어둡게 떨어져 갈색으로 읽힌다",
+    "승강장~맞이방 연결 동선(계단·에스컬레이터) 미구축 - 보행 검증은 맞이방 내부 96.6m 구간만",
+    "1층 맞이방·광장 출입구 미구축",
+    "바닥 반사가 실사의 거울급에 못 미친다(반사 프로브 미배치)"
+  ]
+}

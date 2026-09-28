@@ -1,0 +1,63 @@
+{
+ "zone": "seam-main-fix",
+ "root": "실내 트윈 마감/본관 접합부",
+ "basis": {
+  "method": "make_seam_main_fix.py (SeamMain, deterministic source-face finish only)",
+  "audit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after49",
+  "position": "the existing MainShell_5 north-facade polyline clipped to U 55-65, Y 10.47-12.05; no protected source mesh changes",
+  "appearance": "9yw seam frames 203/209 show a light panel wall and continuous 600-grid ceiling; exact substrate finish is [INFERENCE]"
+ },
+ "elements": [
+  {
+   "type": "WallCladding",
+   "id": "ms5-ne-bulkhead-cladding",
+   "zone": "2F main NE seam",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after49: MainShell_5 source face section at U 55-65 / V 11.69-12.16, above the opened public passage",
+    ".planning/2026-09-27-openings-extension/diag/sections/pick-ms5-main-up.txt: MainShell_5 visible from the registered walkable-cell view",
+    ".planning/2026-09-24-interior-twin/specs/full/seam-north-report.json: main ceiling Y 10.47; seam ceiling Y 12.05; source facade remains as the transition bulkhead",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg: light panel wall and continuous 600-grid ceiling at the seam exit end",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg: 600-grid ceiling and light wall finish along the passage",
+    "[INFERENCE] The registered source-face substrate finish is not recoverable from the dark source material; use light painted gypsum panels consistent with the visible station interior, without changing the protected source mesh."
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      55.0,
+      11.837
+     ],
+     [
+      58.5,
+      12.09
+     ],
+     [
+      58.52,
+      11.69
+     ],
+     [
+      64.95,
+      12.16
+     ]
+    ],
+    "y0": 10.47,
+    "y1": 12.05
+   },
+   "params": {
+    "faceToward": [
+     0.0,
+     1.0
+    ],
+    "finish": "gypsum",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "joint": 0.008,
+    "standoff": 0.03,
+    "skirting": 0,
+    "cap": 0.04,
+    "collider": false
+   }
+  }
+ ]
+}

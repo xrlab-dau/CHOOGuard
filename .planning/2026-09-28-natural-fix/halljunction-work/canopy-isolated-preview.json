@@ -1,0 +1,29 @@
+{
+  "zone": "hall-junction-canopy-isolated-preview",
+  "root": "실내 트윈 마감/홀 접합부 단독 프리뷰",
+  "basis": {
+    "purpose": "KitPreview-only copy of the measured HallJunction soffit translated +400 m in U and V to avoid source-scene overlap.",
+    "source": "Assets/ChooGuard/Scenes/FpsStation.unity source mesh face vertices 33893, 33894, 33906, 33896 from geometry-after56/mesh-0011.bin; no scene changes.",
+    "translationUV": [400, 400],
+    "note": "Camera tuples use KitPreview [U,V,Y]. Geometry and vertex heights are unchanged except the plan translation; never integrate this shifted preview."
+  },
+  "elements": [
+    {
+      "type": "Canopy",
+      "id": "HJ-measured-soffit-isolated-preview",
+      "zone": "hall-junction-canopy-isolated-preview",
+      "tier": "b",
+      "frame": "root",
+      "evidence": ["measured after56 source soffit vertices; translated only for KitPreview"],
+      "geometry": {
+        "polygon": [[394.837357,414.225865],[454.394602,418.531206],[463.551411,437.438863],[393.525240,432.376711]],
+        "y": 17.043741,
+        "vertexY": [17.043741,17.043739,17.358529,17.358532]
+      },
+      "params": {"finish":"plaster","colour":"gypsumLit","topFinish":"gypsumLit","thickness":0.05,"fascia":0,"collider":false}
+    }
+  ],
+  "views": [
+    {"name":"soffit-from-below","eye":[427,425.6,10],"target":[427,425.6,17.2],"fov":60,"width":1600,"height":900}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "chooguard.majibang-rebuild-reproducibility.v1",
+  "purpose": "Before applying the reconciled 2F plan / kit storefronts, verify that MajibangBuilder.Main (with the interior-kit edits, default modes) reproduces the live '맞이방 · 원본 정합' root.",
+  "backup": ".planning/2026-09-24-interior-twin/backups/FpsStation.before-2f-rebuild.unity (EditorSceneManager.SaveScene copy of the in-memory scene; original scene path and dirty state untouched)",
+  "audits": {
+    "before": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after4",
+    "after": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after5"
+  },
+  "result": {
+    "renderersAddedRemoved": 0,
+    "collidersAddedRemoved": 0,
+    "shopBatches": "Majibang_ShopFrames/FrontGlass/Fascia/Ceiling/LED vertex sets identical (hash-only differences from vertex order)",
+    "signboardTransforms": "13 SignBoards_Shop_*_Fascia objects had a prior 0.06 outward nudge not produced by the builder; restored to their before-audit world positions",
+    "photoFascias": "5 photo fascia quads (Bibimga, StoryWay, CAFFE PASCUCCI, HawaiianParadise, KAKAO FRIENDS) regenerate ≤0.3 narrower/wider from current texture aspect; accepted — superseded when 2F switches to kit Storefront fascias",
+    "textSigns": "Sign · 부산옥 / Sign · 코레일라운지 편의점 regenerated"
+  },
+  "conclusion": "Builder default path reproduces the live 2F/3F build except the listed appearance nudges; a rebuild with the reconciled plan changes only what the plan changes plus these."
+}

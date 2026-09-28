@@ -1,0 +1,20 @@
+{
+ "lane": "Evidence3F", "created": "2026-09-25T21:25",
+ "goal": "Metric positions for 3F still-c items: SW-corner toilet corridor + glass elevator (men's toilet), 빈티지38 striped portal, food-court stalls a 46-56. Please localize against the existing RY2 3F anchor (.planning/2026-09-26-full-twin/regtech/ry2-3f, anchor fl-hash, sigma ~1.5 m) or extend that SfM with these frames, whichever gives poses + points.",
+ "inputs": [
+  {"id": "8eY", "video": "asset-library/research-public/2026-09-27/Evidence3F/clips/8eYGke7JQRc.720.mp4 (YouTube 8eYGke7JQRc, 2020-10-24, 27 s, 1280x720 night, empty station)",
+   "frames": "asset-library/research-public/2026-09-27/Evidence3F/frames/8eY_{001..053}.jpg (2 fps, frame k = t (k-1)/2 s)",
+   "scene": "3F wing cross-corridor b 36.5-48 (box frame) looking -a (west): left = 비빔가 glass front (b 48 face), right = 부산옥 glass box (a -2.35..6.75, b 26.5-36.5, fascia grey band), ahead a white wall with a free-standing glass elevator shaft (Naver 3F elevator POI box (-4.4, 42.2)) and, left of it, a recessed corridor with blue hanging signs (toilets? Naver 여자화장실 box (-8.3, 37.4), 남자 (-13.6, 37.3)). From ~8 s the camera pans right (to -b) and walks -b along the wing corridor a 6.75-16 with the a=16 balustrade on the right (RY2 walked this corridor at a ~9-17).",
+   "rough_pose_guess": "8eY_001-010: camera ~ box (a 12, b 42), Y 13.6, facing -a; my twin render from that guess: .planning/2026-09-27-openings-extension/evidence3f-work/renders/8eY-hypA.png (+ .pose.json)",
+   "want": ["poses of 8eY_001, 005, 010, 015, 020, 030, 040", "UVY of: glass elevator shaft corners (floor), the recess corridor opening edges left of the elevator, the white end-wall plane, 부산옥 box front corner, 비빔가 glass-front west end"]},
+  {"id": "0NU", "video": "asset-library/research-public/2026-09-27/Evidence3F/clips/0NUMJz-ihwI.720.mp4 (YouTube 0NUMJz-ihwI, 2020-10-24, 23 s)",
+   "frames": "asset-library/research-public/2026-09-27/Evidence3F/frames/0NU_{001..047}.jpg (2 fps)",
+   "scene": "3F: corridor with wooden slat ceiling between glass shops opening onto the balustrade over the 2F hall; then walks along the band. Location unknown (maybe wing a 6.75-16); low priority - only if it localizes."},
+  {"id": "qgo", "video": "asset-library/research-public/2026-09-27/Evidence3F/clips/QgOs2sothUw.720.mp4 (YouTube QgOs2sothUw, 2019-02-07)",
+   "frames": "asset-library/research-public/2026-09-27/Evidence3F/frames/qgo_{001..125}.jpg (1 fps; qgo_k = t 59+k s for k<=90, t 59+k s continues for 91..125)",
+   "scene": "빈티지38 Cafe glass front with black fascia seen from the corridor (qgo_019-027, t 78-86 s): the yellow-black striped portal with a 빈티지38 lintel board stands inside behind the glass; qgo_080-125 (t 139-184 s): café interior, seating, columns, lantern frames. RY2 frames 241/246 show the same portal from inside (camera b 53-54).",
+   "want": ["poses of qgo_019, 023, 027, 082, 086, 090", "UVY of the two striped posts (floor) and the lintel board centre", "UVY of the corridor glass front corners of the café (fascia ends)"]}
+ ],
+ "controls_hint": "3F floor Y 12.2; the b=48 unit row face and the a=6.75 shopfront plane are builder planes from RY2 SfM (majibang-plan thirdFloor); box frame (a,b)->UV: u=-3+a cos4.13-b sin4.13, v=33.25+a sin4.13+b cos4.13",
+ "answer": ".planning/2026-09-26-full-twin/reg-requests/Evidence3F-1.done.json"
+}

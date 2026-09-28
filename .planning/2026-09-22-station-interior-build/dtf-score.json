@@ -1,0 +1,89 @@
+{
+ "schema": "chooguard.dtf-score.v1",
+ "rubric": "dtf-rubric.json",
+ "axes": {
+  "M_material": 91.04,
+  "S_signage": 84.03,
+  "L_photometric": 84.77,
+  "G_geometry": 57.21,
+  "N_navigation": 66.9,
+  "P_program": 100.0
+ },
+ "weights": {
+  "M_material": 23.5,
+  "S_signage": 20.0,
+  "L_photometric": 17.9,
+  "G_geometry": 16.8,
+  "N_navigation": 11.8,
+  "P_program": 10.0
+ },
+ "weighted": {
+  "M_material": 21.4,
+  "S_signage": 16.81,
+  "L_photometric": 15.17,
+  "G_geometry": 9.61,
+  "N_navigation": 7.89,
+  "P_program": 10.0
+ },
+ "total": 80.88,
+ "passBar": 82,
+ "gateFailures": [],
+ "verdict": "FAIL",
+ "unscored": [
+  "L.emissiveFixtureCoverage (조명계획 미수령, 경험칙 대체)"
+ ],
+ "detail": {
+  "M": {
+   "texturedAreaRatio": 0.9997,
+   "paletteDistance": 0.2981,
+   "distinctMaterials": 104,
+   "distinctMaterialRatio": 1.0
+  },
+  "S": {
+   "tenantFasciaInScene": 34,
+   "tenants": 51,
+   "tenantSignTextRatio": 0.6667,
+   "wayfindingInScene": 156,
+   "wayfindingPer1000m2": 5.548,
+   "floorAreaM2": 28119.0,
+   "criticalSigns": {
+    "행선안내": true,
+    "타는곳번호": true,
+    "매표소": true,
+    "화장실": true,
+    "비상구": true
+   }
+  },
+  "L": {
+   "luminanceDistance": 0.3385,
+   "emissiveMaterials": 70,
+   "fixturesNeeded": 1124,
+   "emissiveRenderers": 1990,
+   "luminousAreaM2": 84387.5,
+   "requiredLuminousAreaM2": 404.6,
+   "pointLights": 1241,
+   "emissiveFixtureCoverage": 1.0,
+   "flags": {
+    "emissiveFixtures": true,
+    "ambient3Color": true,
+    "shadowLight": true,
+    "coveLighting": true
+   }
+  },
+  "G": {
+   "IoU_plan": 0.2828,
+   "unitRecall": 1.0,
+   "MAPE_area": 0.3465
+  },
+  "N": {
+   "meanLevelCoverage": 0.8725,
+   "pathCompleteRatio": 0.8,
+   "egressCompliance": 0.0
+  },
+  "P": {
+   "present": 20,
+   "required": 20,
+   "missing": []
+  }
+ }
+}

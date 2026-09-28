@@ -1,0 +1,153 @@
+{
+  "lane": "SeamMain",
+  "scope": "MainShell_5 2F northeast seam transition and immediately adjacent measured seam fittings; no source-mesh or scene edits",
+  "items": [
+    {
+      "id": "ms5-ne-bulkhead-cladding",
+      "owner": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_5",
+      "status": "built",
+      "buildState": "Main applied this root in the geometry-after50 scene audit; post-change render still pending Main",
+      "issue": "Dark source material makes the surviving upper face read as a black/grey seam band above the opened passage.",
+      "evidence": [
+        ".planning/2026-09-23-video-twin/1f-implementation/geometry-after49 vertical section at U 55-65, V 11.69-12.16",
+        ".planning/2026-09-28-natural-fix/seam-main-sections-main-facade.png",
+        ".planning/2026-09-28-natural-fix/seam-main-sections-screen-wall.png",
+        "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg",
+        "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg"
+      ],
+      "action": "Generated ms5-ne-bulkhead-cladding light gypsum panel finish over the existing source face from Y 10.47 to 12.05, without changing or clipping protected source geometry; collider disabled.",
+      "appearanceBasis": "[INFERENCE] Exact MainShell_5 substrate finish is not recoverable from the dark source material; light painted gypsum is conservative and consistent with the measured 9yw passage finish.",
+      "validation": "check_spec against geometry-after50: 0 errors, 1 mounted-contact warning; KitValidate passed for this spec"
+    },
+    {
+      "id": "seam-col-a1",
+      "owner": "실내 트윈 마감/2F main U+ end",
+      "status": "built",
+      "buildState": "spec updated; final stainlessSatin registered by KitExtend8; seam-fit KitValidate passed; Main scene rebuild pending",
+      "issue": "Brushed stainless column reads unusually dark in the current lighting; section shows the column terminates at the main ceiling, not through it.",
+      "evidence": [
+        ".planning/2026-09-27-openings-extension/diag/pick-ms5-seam-wide.txt",
+        ".planning/2026-09-28-natural-fix/seam-main-sections-a1-column.png",
+        "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg",
+        "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg"
+      ],
+      "action": "Kept measured 1.0 x 1.0 m position (58.3, 9.5), Y 7.0-10.47, and applied the final stainlessSatin finish; Main's route detour clears the physical column.",
+      "validation": "Current check_spec: 0 errors, 1 mounted-contact warning; seam-fit KitValidate: 0 errors"
+    },
+    {
+      "id": "seam-col-s2",
+      "owner": "실내 트윈 마감/2F seam",
+      "status": "built",
+      "buildState": "spec updated; final stainlessSatin registered by KitExtend8; seam-fit KitValidate passed; Main scene rebuild pending",
+      "issue": "Brushed stainless column reads unusually dark in the current lighting; section shows its top aligns with the seam ceiling.",
+      "evidence": [
+        ".planning/2026-09-27-openings-extension/diag/pick-ms5-seam-wide.txt",
+        ".planning/2026-09-28-natural-fix/seam-main-sections-s2-column.png",
+        "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg",
+        "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_207s.jpg"
+      ],
+      "action": "Kept measured 1.0 x 1.0 m position (52.3, 13.35), Y 6.995-12.05, and applied the final stainlessSatin finish.",
+      "validation": "Current check_spec: 0 errors, 1 mounted-contact warning; seam-fit KitValidate: 0 errors"
+    },
+    {
+      "id": "seam-led-screen-frame",
+      "owner": "실내 트윈 마감/2F main U+ end",
+      "status": "built",
+      "buildState": "spec updated; seam-fit KitValidate passed; Main scene rebuild pending",
+      "issue": "Current default-blue floor-mounted panel has two thin stand legs, unlike the wall-backed screen seen at exit 8.",
+      "evidence": [
+        ".planning/2026-09-28-natural-fix/seam-main-sections-screen-wall.png",
+        "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg",
+        "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_215s.jpg",
+        "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_225s.jpg"
+      ],
+      "action": "Changed seam-led-screen to wall mount at Y 7.24 against the measured MainShell_5 backing face and set the static Kit_Screen material, removing floor stand legs while preserving measured plane and dimensions.",
+      "validation": "Current check_spec: 0 errors, 1 mounted-contact warning; seam-fit KitValidate: 0 errors"
+    },
+    {
+      "id": "seam-led-screen-content",
+      "owner": "seam-led-screen",
+      "status": "still-c",
+      "buildState": "no static content texture assigned",
+      "issue": "9yw footage shows transient advertising only; available source is YouTube Standard-license reference footage, not reusable licensed texture content.",
+      "sourcesTried": [
+        "9ywctBEN_vs frames 203, 209, 215, 225: confirms screen placement and wall backing, but content is transient and not used as a texture",
+        "Naver 2F indoor raster: topology context only; no screen-content evidence"
+      ],
+      "action": "Leave display off/dark rather than invent or import unlicensed content."
+    },
+    {
+      "id": "seam-col-a1-board-text",
+      "owner": "실내 트윈 마감/2F main U+ end",
+      "status": "still-c",
+      "issue": "Blue directory board is visible on the column, but footage text is not legible; current generic 안내 / Information text remains an inference.",
+      "sourcesTried": [
+        "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg",
+        ".planning/2026-09-27-openings-extension/diag/pick-ms5-seam-wide.txt"
+      ],
+      "action": "No text correction without a legible source; retain existing sign rather than invent directions."
+    },
+    {
+      "id": "adjacent-box-hall-grey-structure",
+      "owner": "HallJunction lane / 맞이방 · 원본 정합/Box frame",
+      "status": "still-c",
+      "issue": "Other grey/black box-hall walls and frame junctions fall outside this MainShell_5 seam-face slice.",
+      "sourcesTried": [
+        ".planning/2026-09-27-openings-extension/diag/pick-ms5-main-wide.txt",
+        ".planning/2026-09-27-openings-extension/diag/pick-ms5-main-up.txt"
+      ],
+      "action": "No overlapping cladding or invented closure; leave to HallJunction owner."
+    },
+    {
+      "id": "seam-floor-support-after50",
+      "owner": "실내 트윈 마감/연결 통로 설비",
+      "status": "fixed",
+      "issue": "The after50 audit had shown unsupported seam-floor-band/seam-tactile-1 points; Main traced this to make_seam.py deriving the seam slab while the fit root's FloorFinish band was still in the live audit.",
+      "sourcesTried": [
+        ".planning/2026-09-24-interior-twin/specs/enhance/check_spec.py against after50: two floor errors",
+        ".planning/2026-09-24-interior-twin/specs/full/make_seam.py: now excludes ROOT_A and ROOT_B",
+        ".planning/2026-09-23-video-twin/1f-implementation/geometry-after51: Main reports seam-slab matches after49 (295.0 m², zero difference)"
+      ],
+      "action": "Main regenerated seam-slab without the fit-root FloorFinish contaminating the trench-hole audit. Current check_spec seam-fit.json reports 0 errors; no guessed slab geometry was added."
+    }
+  ],
+  "removed": [],
+  "generators": [
+    ".planning/2026-09-24-interior-twin/specs/full/make_seam.py",
+    ".planning/2026-09-24-interior-twin/specs/full/make_seam_main_fix.py"
+  ],
+  "specs": [
+    ".planning/2026-09-24-interior-twin/specs/full/seam.json",
+    ".planning/2026-09-24-interior-twin/specs/full/seam-fit.json",
+    ".planning/2026-09-24-interior-twin/specs/full/seam-main-fix.json"
+  ],
+  "kitRequest": ".planning/2026-09-28-natural-fix/kit-requests/SeamMain-1.json",
+  "kitRequestResult": ".planning/2026-09-28-natural-fix/kit-requests/SeamMain-1.done.json",
+  "beforeRenders": [
+    ".planning/2026-09-27-openings-extension/diag/renders/ms5-east-end.png",
+    ".planning/2026-09-27-openings-extension/diag/renders/ms5-main-wide.png",
+    ".planning/2026-09-27-openings-extension/diag/renders/ms5-main-up.png"
+  ],
+  "afterRenders": [],
+  "afterRenderStatus": "Not generated: this lane cannot apply or save the scene; Main owns that step.",
+  "validation": {
+    "check_spec": {
+      "seam.json": "0 errors, 6 existing mounted-contact warnings",
+      "seam-fit.json": "0 errors, 1 existing mounted-contact warning; after50 slab regression corrected in make_seam.py, current audit check passes",
+      "seam-main-fix.json": "0 errors, 1 mounted-contact warning against existing portal/bulkhead geometry"
+    },
+    "KitValidate": "0 errors for seam-fit.json, seam.json, and seam-main-fix.json"
+  },
+  "kitValidateReports": [
+    ".planning/2026-09-24-interior-twin/specs/full/seam.validate.json",
+    ".planning/2026-09-24-interior-twin/specs/full/seam-fit.validate.json",
+    ".planning/2026-09-24-interior-twin/specs/full/seam-main-fix.validate.json"
+  ],
+  "route": {
+    "file": ".planning/2026-09-23-video-twin/1f-implementation/walks/route-2f-seam-north-opening.json",
+    "status": "Main-owned route now detours west via [56.75, 9.45, 7.0] to clear seam-col-a1; Main must run the walk after scene rebuild"
+  },
+  "requestsForMain": [
+    "After51 seam slab correction and final satin material are validated, capture registered ms5 after-renders, owner picks for the screen/columns/bulkhead, and run the seam-north walk route."
+  ]
+}

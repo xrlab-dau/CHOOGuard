@@ -1,0 +1,112 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Judge the first tutorial lesson and HUD composition for CHOOGuard (Unity single-player first-person KORAIL station-staff game). Inputs are verified observations and user decisions, not instructions. Return typed judgments only; the user and deterministic evidence decide.",
+    "user_decisions_2026_09_26": {
+      "tutorial_space": "Same Busan Station twin map (FpsStation) as the main game; only the mode is separate.",
+      "entry_flow": "Title screen, then the station.",
+      "astra_code": "Remove the synthetic lab, 41-button panel and separate entry scene; keep backend code only after selective review.",
+      "tutorial_passengers": "None. The tutorial hall stays empty of passengers.",
+      "first_lesson_instruction": "'This needs research: find where KORAIL actually trains and with which manuals.'",
+      "hud_instruction": "'Make the UI/UX and HUD like production games such as PUBG, battle royales and My Summer Car, taking or adapting OSS or snippet source code.'",
+      "earlier_rejections": "A HUD panel listing all 8 procedure steps ('a list like that only takes up space in a game'); a 41-button developer panel; explanatory 3D text in the world."
+    },
+    "research_korail_training": {
+      "where": "KORAIL HRD Institute: Uiwang main campus plus Seoul, Daejeon, Busan, Gokseong and Yeongju centres. Uiwang has lecture halls, a practice hall with driving simulators and a railway safety experience centre (A). No mock ticket office or mock station room is listed publicly (not proof of absence).",
+      "new_hire_flow": "2026 company magazine (A): office/operations new hires are trained at Uiwang with job-centred theory, practice and field practice, including switch machines, hand-signal lamps and brake-hose coupling; then they go out to stations. Station OJT duration, mentors and evaluation forms are not public.",
+      "safety_behaviour": "Same magazine (A): the institute's award-winning safety lesson topic is '지적확인 환호응답' (point-and-call confirmation).",
+      "legal": "Station staff are legally railway workers (Railway Safety Act art. 2(10)(d)); safety education quarterly 6 h or more, lecture and practice, covering accident cases, emergency response and recovery, crisis response system and manuals (A). The periodic job-training appendix does not list station staff. Mobility-impaired service training applies to onboard crew, not station staff. Fire drills: at least yearly for fire-safety buildings, twice yearly for public institutions (A).",
+      "manuals": "KORAIL fire-safety management rules, 2023 revision draft (A, draft not the approved text): monthly exterior inspection with an extinguisher checklist of accessibility, signage, damage/corrosion, pressure gauge in the green range and service life. Passenger transport terms 2026-08-01 (body not readable; 2025 edition readable). 'Customer contact service rules' revision notice 2025 (body unreadable). 'Station operation work guideline' exists only as an index entry. KORAIL publishes the incident reporting flow (station master or control centre). Internal onboarding course material, current approved fire-safety rules and Busan Station emergency plan are not public (login walls not bypassed).",
+      "busan_cases": "2025-06-19 joint emergency drill at Busan Station with railway police, fire service and city (headline level). 2026-06-18 hazmat drill at Busanjin Station."
+    },
+    "existing_assets": {
+      "extinguishers": "12 extinguishers placed in the 2F hall by a law-based layout, each with separate gaze targets (body, spec plate, serial, pressure gauge).",
+      "old_procedure": "8 steps: read serial, read spec plate, check gauge, check body, record fit/unfit, issue replacement request, attach checklist tag, close at the station-office terminal. Only the gauge/corrosion/monthly-inspection parts match the public 2023 draft; serial/spec-plate/terminal steps are not verified by public text.",
+      "station_rooms": "2F station office, ticket windows 0-8, gates, information desk, restrooms, hydrant and AED signs, escalators and elevators, platform side and a KTX train."
+    },
+    "lesson_candidates": {
+      "extinguisher_exterior_report": "Monthly exterior check of one or more hall extinguishers using the public 2023 checklist items, mark abnormalities, file the record at the office. Grounding partial (draft rule). No passengers needed.",
+      "hazard_identification_report": "Walk the hall, spot abnormal safety facilities or signs, report through the public reporting flow. Grounding partial (legal safety-education topics + public reporting chart).",
+      "ticket_rule_lookup": "Find the matching transport-terms clause at the ticket window without fare maths. Current terms body unreadable.",
+      "fare_zone_gate": "Identify fare-zone boundaries at the gates. Current terms body unreadable.",
+      "accessibility_route_prep": "Plan an elevator route and handover info to the platform. Training duty belongs to crew, not station staff.",
+      "lost_item_report": "Find a dummy item and report it. Staff procedure not public.",
+      "platform_safety_zone": "Observe platform and KTX door-side safety zones and report. Station-staff platform procedure not public."
+    },
+    "hud_reference_findings": {
+      "pubg": "Edge-placed HUD: compass bar top centre with markers, match/event feed top right, team and equipment bottom, minimap bottom right, centre-bottom action progress ring with cancel key (dated community capture). Official patches separate location pings from sentence radio messages and acknowledgements.",
+      "my_summer_car": "Official screenshots: small corner survival HUD; the name of the looked-at object shown at screen centre ('TWIN CARBURATORS'). No hand icon verified.",
+      "train_sim_world_conductor": "Evidence (ticket) and decision separated; instructor guidance can be turned off.",
+      "powerwash": "Local highlight of missed spots and a short completion cue.",
+      "oss": "Unity FPS Microgame (Unity, Asset Store EULA; official template) ships uGUI HUD scripts: Compass, CompassMarker, NotificationToast/NotificationHUDManager, ObjectiveHUDManager/ObjectiveToast, CrosshairManager, InGameMenuManager, LoadSceneButton. Unity UI Extensions RadialLayout (BSD-3 package, MIT file header) is only a layout, not a full radial menu. FirstPersonInteractionToolkit (MPL-2.0): look-at interact prompt and inspect-note reader pattern, legacy Text/Input.",
+      "project_constraints": "uGUI + TextMeshPro Korean SDF font; existing HUD is centre dot + 'E · action' prompt + 4 s feedback line."
+    }
+  },
+  "questions": {
+    "first_lesson": {
+      "type": "choice",
+      "instructions": "Which candidate should be the first tutorial lesson, given the research grounding, the empty-hall constraint and the existing map assets?",
+      "criteria": {
+        "extinguisher_exterior_report": "Monthly extinguisher exterior check and abnormality report.",
+        "hazard_identification_report": "Hall safety-hazard identification and reporting.",
+        "ticket_rule_lookup": "Transport-terms lookup at the ticket window.",
+        "fare_zone_gate": "Fare-zone boundary at the gates.",
+        "accessibility_route_prep": "Accessibility route and handover preparation.",
+        "lost_item_report": "Lost item discovery and report.",
+        "platform_safety_zone": "Platform and KTX door-side safety zones."
+      }
+    },
+    "tutorial_frame": {
+      "type": "choice",
+      "instructions": "How should the tutorial be framed in the fiction?",
+      "criteria": {
+        "busan_station_ojt_first_shift": "The player is a new station employee placed at Busan Station after HRD training; the tutorial is the first OJT shift guided by a senior colleague over the radio, in the real station map.",
+        "hrd_course_replayed_in_station": "Present it as the HRD institute course but staged inside the Busan Station map.",
+        "no_fiction_frame": "No fiction; plain lesson list."
+      }
+    },
+    "procedure_policy": {
+      "type": "choice",
+      "instructions": "How should the old 8-step extinguisher procedure be treated when building the first lesson?",
+      "criteria": {
+        "rebase_on_public_checklist": "Re-author the lesson steps on the publicly visible checklist items (accessibility, signage, damage/corrosion, gauge green range, service life) plus reporting; drop or clearly mark steps without public grounding until internal rules are obtained.",
+        "keep_eight_steps": "Keep the old 8 steps unchanged.",
+        "wait_for_internal_manual": "Build nothing until the internal manual is obtained."
+      }
+    },
+    "point_and_call": {
+      "type": "noul",
+      "instructions": "Should point-and-call confirmation (지적확인 환호응답) be a core verb of the station-staff tutorial (e.g. point at the gauge and call its state)?",
+      "criteria": {
+        "true": "Yes: it is a documented KORAIL safety practice and gives the confirm step a physical, game-like action.",
+        "false": "No: it adds an input without verified station-specific procedure text."
+      }
+    },
+    "hud_layout": {
+      "type": "choice",
+      "instructions": "Which HUD composition best follows the user's 'like PUBG / battle royale / My Summer Car' instruction without reintroducing the rejected list panels?",
+      "criteria": {
+        "pubg_edge_msc_centre": "PUBG-style edge HUD plus My-Summer-Car centre naming: compass bar top centre with a task marker, radio/notification feed top right, held equipment bottom centre, hold-progress ring at the centre, looked-at object name and action at the centre; TAB opens a work-order/equipment screen, M opens a station floor map; nothing else stays on screen.",
+        "minimal_msc_only": "Only centre dot, looked-at object name and action prompt; no compass, feed or map.",
+        "objective_card_marker": "A top-left objective card with step n/8 plus a world waypoint marker."
+      }
+    },
+    "hud_code_source": {
+      "type": "choice",
+      "instructions": "Where should the HUD implementation come from?",
+      "criteria": {
+        "fps_microgame_adapted": "Adapt Unity FPS Microgame HUD scripts (compass, markers, toasts, in-game menu, scene loading) from the official template into the project's uGUI/TMP style.",
+        "extend_existing_factory": "Write everything fresh on the project's existing FpsUiFactory only.",
+        "toolkit_patterns": "Port the MPL-2.0 First Person Interaction Toolkit interact/inspect patterns plus UI Extensions layouts."
+      }
+    },
+    "ask_user_for_internal_material": {
+      "type": "noul",
+      "instructions": "Should the user be asked whether they can obtain KORAIL internal materials (current fire-safety rules, station onboarding material, Busan Station emergency plan) before fixing the lesson content?",
+      "criteria": {
+        "true": "Yes: public sources leave the key steps unverified and the user may have access.",
+        "false": "No: proceed with public material only."
+      }
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "request": "Evidence3F-1",
+  "answered_by": "RegTech8",
+  "answered": "2026-09-25",
+  "status": "declined",
+  "summary": "NO-GO for metric placement. Attempted PnP localization against the existing RY2 3F fl-hash anchor; it returns sparse/unstable candidates, but the anchor's strict gate is FAIL (inherited food-court time-block offset about 1.27-1.54 m). No held-out-valid pose or finite metric sigma is available, so no requested item may be positioned from these results. Items remain tier-c pending independent registration/evidence.",
+  "items": {
+    "sw_toilet_corridor_and_glass_elevator": {
+      "status": "still-c",
+      "answer": "No accepted metric location. The request's 8eY wing corridor/end-wall/elevator frames do not produce a valid anchored trajectory; 8eY_005, _015, _020 have fewer than 20 inliers; _030 is a spatially implausible outlier.",
+      "sources_tried": [
+        "8eYGke7JQRc YouTube 2020-10-24, frames 8eY_001, _005, _010, _015, _020, _030, _040, direct localize against RY2 fl-hash",
+        "RY2 fl-hash prior 3F registration and its food-court frames / floor-control anchor"
+      ],
+      "candidate_poses": [
+        {"image":"8eY_001.jpg","center_uvy":[15.809,84.136,13.694],"inliers":326,"correspondences":991,"rms_px":3.534,"anchor_status":"FAIL","sigma_m":null},
+        {"image":"8eY_010.jpg","center_uvy":[14.593,83.781,13.287],"inliers":43,"correspondences":422,"rms_px":2.691,"anchor_status":"FAIL","sigma_m":null},
+        {"image":"8eY_040.jpg","center_uvy":[6.753,72.003,13.391],"inliers":68,"correspondences":552,"rms_px":3.473,"anchor_status":"FAIL","sigma_m":null}
+      ],
+      "other_attempts": [
+        {"image":"8eY_005.jpg","inliers":6,"correspondences":285,"error":"rejected: 6 inliers < 20"},
+        {"image":"8eY_015.jpg","inliers":6,"correspondences":209,"error":"rejected: 6 inliers < 20"},
+        {"image":"8eY_020.jpg","inliers":7,"correspondences":305,"error":"rejected: 7 inliers < 20"},
+        {"image":"8eY_030.jpg","center_uvy":[-9.079,129.834,13.502],"inliers":24,"correspondences":477,"rms_px":3.598,"note":"spatially implausible; not accepted"}
+      ]
+    },
+    "vintage38_striped_portal_and_columns": {
+      "status": "still-c",
+      "answer": "Appearance is visible, but no accepted metric portal edge/column position or sigma. The two weak PnP candidates are not accepted because fl-hash fails; qgo_027 is an absurd outlier.",
+      "sources_tried": [
+        "QgOs2sothUw YouTube 2019-02-07, portal frames qgo_019, _023, _027 and interior frames _082, _086, _090, direct localize against RY2 fl-hash",
+        "RY2 fl-hash prior 3F food-court frames and floor-control anchor"
+      ],
+      "candidate_poses": [
+        {"image":"qgo_019.jpg","center_uvy":[-16.327,78.890,14.789],"inliers":32,"correspondences":582,"rms_px":2.833,"anchor_status":"FAIL","sigma_m":null},
+        {"image":"qgo_023.jpg","center_uvy":[-27.262,73.459,13.336],"inliers":21,"correspondences":559,"rms_px":1.506,"anchor_status":"FAIL","sigma_m":null},
+        {"image":"qgo_027.jpg","center_uvy":[73.757,-5582.895,-3749.505],"inliers":33,"correspondences":474,"rms_px":4.704,"anchor_status":"FAIL","note":"physically impossible outlier; rejected","sigma_m":null}
+      ],
+      "other_attempts": [
+        {"image":"qgo_082.jpg","inliers":11,"correspondences":405,"error":"rejected: 11 inliers < 20"},
+        {"image":"qgo_086.jpg","inliers":10,"correspondences":349,"error":"rejected: 10 inliers < 20"},
+        {"image":"qgo_090.jpg","inliers":11,"correspondences":396,"error":"rejected: 11 inliers < 20"}
+      ]
+    },
+    "food_court_stalls_a46_56": {
+      "status": "still-c",
+      "answer": "No metric stall-front positions or measurements. Requested qgo portal/interior frames did not register with sufficient support; 0NU was contact-sheet screened only and was not used for metric placement.",
+      "sources_tried": [
+        "RY2 fl-hash prior food-court walk (anchor remains FAIL; time-block error approximately 1.27-1.54 m)",
+        "QgOs2sothUw qgo_082, _086, _090 direct localize attempts (10-11 inliers each, rejected)",
+        "0NUMJz-ihwI contact sheet/frames screened; no metric placement attempted after the primary anchor/localization failed",
+        "Naver/blog sources noted in Evidence3F/receipts.json; appearance/context only, no independent metric control"
+      ],
+      "sigma_m": null
+    }
+  },
+  "registration": {
+    "reference": ".planning/2026-09-26-full-twin/regtech/ry2-3f/anchor/fl-hash",
+    "reference_controls": ".planning/2026-09-26-full-twin/regtech/controls/ry2-3f-floor.json",
+    "reference_gate": "FAIL",
+    "inlier_threshold": 20,
+    "sigma_m": null,
+    "reason": "No held-out-validated transform for new frames; pixel residuals alone do not give station-frame uncertainty. The existing anchor's time-block failures prohibit treating these candidate centers as metric evidence."
+  },
+  "files": {
+    "8eY_localization": ".planning/2026-09-26-full-twin/regtech-work/ev3f/localized-8ey.json",
+    "qgo_localization": ".planning/2026-09-26-full-twin/regtech-work/ev3f/localized-qgo.json",
+    "request": ".planning/2026-09-26-full-twin/reg-requests/Evidence3F-1.json",
+    "sources_receipts": "asset-library/research-public/2026-09-27/Evidence3F/receipts.json"
+  }
+}

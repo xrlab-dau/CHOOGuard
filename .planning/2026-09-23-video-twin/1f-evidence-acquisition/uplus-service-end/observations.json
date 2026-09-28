@@ -1,0 +1,812 @@
+{
+ "schema": "chooguard.1f-registered-observation.v1",
+ "lane": "uplus-service-end",
+ "registration": "registration.json (status rejected; P2 provisional)",
+ "classRules": "class a requires accepted registration + >=3 views, >=2 deg, reproj RMS <=2 px, held-out median <=3 px, planes inlier RMS <=0.03 u & >=85% held-out within 0.05 u. Model-internal (SfM) numbers are reported in fit/heldOut; all UVY positions are provisional (P2) with envelopeU.",
+ "components": [
+  {
+   "componentId": "svc-zimcarry",
+   "feature": "짐캐리 (Zimcarry 부산역점) glazed shopfront, front face (Delivery / Storage 寄存 ほうかん posters, 짐캐리 fascia)",
+   "geometryUVY": {
+    "type": "plane",
+    "normalUVY": [
+     0.99353,
+     0.11357,
+     0.0
+    ],
+    "offset": -47.9799,
+    "equation": "dot(normalUVY,[U,V,Y])+offset=0",
+    "headingDeg": 96.52,
+    "floorLineUVY": [
+     [
+      52.673,
+      -38.325,
+      0.0
+     ],
+     [
+      51.979,
+      -32.256,
+      0.0
+     ]
+    ],
+    "heightRangeY": [
+     0.463,
+     2.849
+    ],
+    "lengthU": 6.108,
+    "provisional": "P2 (rejected)",
+    "envelopeU": 1.4
+   },
+   "fit": {
+    "views": 59,
+    "points": 1040,
+    "inlierRMS": 0.0536,
+    "triangulationAngleDeg": 16.21,
+    "reprojPx": 0.845
+   },
+   "heldOut": {
+    "method": "model-internal: each point re-triangulated from alternate (even) track observations, reprojected into the held-out (odd) views; px at 1920x1080. UVY-level held-out not available (registration rejected)",
+    "n": 4153,
+    "median": 0.637,
+    "p95": 2.177,
+    "withinTolerance": true,
+    "uvyWithinTolerance": false
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "eluhiZ_eirE B_032.jpg t=32.12s",
+    "eluhiZ_eirE B_041.jpg t=32.72s",
+    "eluhiZ_eirE C_004.jpg t=35.40s",
+    "eluhiZ_eirE C_012.jpg t=36.20s",
+    "eluhiZ_eirE D_007.jpg t=45.88s",
+    "eluhiZ_eirE D_016.jpg t=46.48s",
+    "eluhiZ_eirE G_002.jpg t=48.97s",
+    "eluhiZ_eirE G_011.jpg t=49.87s"
+   ],
+   "notes": "Front faces -U (toward the elevator door and the corridor). Its V- end meets the plaza-side 1F curtain wall (points on the Delivery poster side are coplanar with the glazing). Width ~6.1 u under P2 (4.8 model units). Box roof at ~Y2.8-3.1 (P2) with the U+ facade high glazing visible above/behind it. Class a-failed only because the UVY registration is rejected; model-internal numbers pass. Identity also in MT_QRO_Ks4k 383-398 s (StoryWay price sheet, 360p, not used for geometry). Lies inside the board/Naver unit-01 (#1 모집중) polygon area - supports X06 (Zimcarry/KTX特送 occupy the #1 corner)."
+  },
+  {
+   "componentId": "svc-ktx-express",
+   "feature": "KTX특송 frontage: 1544-7781 glazed window panel (airport-luggage posters) + KTX특송 shop door/counter front",
+   "geometryUVY": {
+    "type": "polyline",
+    "pointsUVY": [
+     [
+      51.77,
+      -30.731,
+      0.0
+     ],
+     [
+      51.448,
+      -27.454,
+      0.0
+     ],
+     [
+      50.706,
+      -21.642,
+      0.0
+     ]
+    ],
+    "segments": {
+     "window1544": {
+      "type": "plane",
+      "normalUVY": [
+       -0.99522,
+       -0.09768,
+       0.0
+      ],
+      "offset": 48.5202,
+      "equation": "dot(normalUVY,[U,V,Y])+offset=0",
+      "headingDeg": 95.61,
+      "floorLineUVY": [
+       [
+        51.448,
+        -27.454,
+        0.0
+       ],
+       [
+        51.77,
+        -30.731,
+        0.0
+       ]
+      ],
+      "heightRangeY": [
+       0.189,
+       2.764
+      ],
+      "lengthU": 3.293,
+      "provisional": "P2 (rejected)",
+      "envelopeU": 1.69
+     },
+     "shop": {
+      "type": "plane",
+      "normalUVY": [
+       0.99262,
+       0.12125,
+       0.0
+      ],
+      "offset": -47.7081,
+      "equation": "dot(normalUVY,[U,V,Y])+offset=0",
+      "headingDeg": 96.96,
+      "floorLineUVY": [
+       [
+        51.414,
+        -27.433,
+        0.0
+       ],
+       [
+        50.706,
+        -21.642,
+        0.0
+       ]
+      ],
+      "heightRangeY": [
+       0.553,
+       3.066
+      ],
+      "lengthU": 5.834,
+      "provisional": "P2 (rejected)",
+      "envelopeU": 2.19
+     }
+    },
+    "provisional": "P2 (rejected)",
+    "envelopeU": 2.19
+   },
+   "fit": {
+    "views": 61,
+    "points": 742,
+    "inlierRMS": 0.0571,
+    "triangulationAngleDeg": 8.6,
+    "reprojPx": 0.96
+   },
+   "heldOut": {
+    "method": "model-internal: each point re-triangulated from alternate (even) track observations, reprojected into the held-out (odd) views; px at 1920x1080. UVY-level held-out not available (registration rejected)",
+    "n": 2503,
+    "median": 0.771,
+    "p95": 2.429,
+    "withinTolerance": true,
+    "uvyWithinTolerance": false
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "eluhiZ_eirE B_026.jpg t=31.71s",
+    "eluhiZ_eirE B_044.jpg t=32.92s",
+    "eluhiZ_eirE D_000.jpg t=45.41s",
+    "eluhiZ_eirE D_016.jpg t=46.48s",
+    "eluhiZ_eirE G_009.jpg t=49.67s",
+    "eluhiZ_eirE B_016.jpg t=31.05s",
+    "eluhiZ_eirE B_035.jpg t=32.32s",
+    "eluhiZ_eirE D_006.jpg t=45.81s",
+    "eluhiZ_eirE G_005.jpg t=49.27s"
+   ],
+   "notes": "Continuous with the Zimcarry front (same line, heading ~96 deg), immediately +V of Zimcarry: window panel ~3.3 u, shop ~5.8 u (P2). A 2F slab edge crosses above the frontage near V≈-27.5 (window/shop junction): Zimcarry+window sit under the double-height void, the KTX特送 shop under the 2F soffit. Shop plane has fewer points (82) because the shop is seen obliquely/partly occluded."
+  },
+  {
+   "componentId": "fx-aed-ktx-express",
+   "feature": "green AED cabinet (AED 12-0017727, registry: 1층 5번출구 KTX특송 사무실 옆) right of the e-scooter/bicycle prohibition stand",
+   "geometryUVY": {
+    "type": "points",
+    "centroidUVY": [
+     50.332,
+     -19.733,
+     0.908
+    ],
+    "bboxUVY": [
+     [
+      49.765,
+      -21.58,
+      -0.09
+     ],
+     [
+      51.205,
+      -19.211,
+      1.847
+     ]
+    ],
+    "provisional": "P2 (rejected)",
+    "envelopeU": 2.42
+   },
+   "fit": {
+    "views": 34,
+    "points": 72,
+    "inlierRMS": null,
+    "triangulationAngleDeg": 6.47,
+    "reprojPx": 0.719
+   },
+   "heldOut": {
+    "method": "model-internal: each point re-triangulated from alternate (even) track observations, reprojected into the held-out (odd) views; px at 1920x1080. UVY-level held-out not available (registration rejected)",
+    "n": 290,
+    "median": 0.432,
+    "p95": 1.885,
+    "withinTolerance": true,
+    "uvyWithinTolerance": false
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "eluhiZ_eirE B_022.jpg t=31.45s",
+    "eluhiZ_eirE B_028.jpg t=31.85s",
+    "eluhiZ_eirE B_035.jpg t=32.32s",
+    "eluhiZ_eirE B_041.jpg t=32.72s",
+    "eluhiZ_eirE D_008.jpg t=45.95s",
+    "eluhiZ_eirE F_000.jpg t=34.00s",
+    "MT_QRO_Ks4k 413-418 s (360p, identity only)"
+   ],
+   "notes": "On the frontage line ~1.9 u +V beyond the KTX特送 shop end (bbox includes the stand/cabinet base). Pixel box C_000 x1375-1440 y500-660."
+  },
+  {
+   "componentId": "new-tmo-lounge-direction-sign",
+   "feature": "'국군장병라운지 →' (TMO) direction sign on the column/wall right of KTX특송",
+   "geometryUVY": {
+    "type": "points",
+    "centroidUVY": [
+     42.267,
+     -20.588,
+     1.997
+    ],
+    "bboxUVY": [
+     [
+      42.218,
+      -20.953,
+      1.929
+     ],
+     [
+      42.33,
+      -20.118,
+      2.08
+     ]
+    ],
+    "provisional": "P2 (rejected)",
+    "envelopeU": 3.03
+   },
+   "fit": {
+    "views": 30,
+    "points": 63,
+    "inlierRMS": null,
+    "triangulationAngleDeg": 14.8,
+    "reprojPx": 0.678
+   },
+   "heldOut": {
+    "method": "model-internal: each point re-triangulated from alternate (even) track observations, reprojected into the held-out (odd) views; px at 1920x1080. UVY-level held-out not available (registration rejected)",
+    "n": 313,
+    "median": 0.437,
+    "p95": 1.451,
+    "withinTolerance": true,
+    "uvyWithinTolerance": false
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "eluhiZ_eirE B_018.jpg t=31.18s",
+    "eluhiZ_eirE B_025.jpg t=31.65s",
+    "eluhiZ_eirE B_032.jpg t=32.12s",
+    "eluhiZ_eirE B_039.jpg t=32.58s",
+    "eluhiZ_eirE F_000.jpg t=34.00s"
+   ],
+   "notes": "Sign only; the TMO/국군장병라운지 itself is not observed (arrow points further +V/right). svc-tmo remains unobserved."
+  },
+  {
+   "componentId": "st-rectangular-columns-topology",
+   "feature": "stainless panel-clad rectangular column standing in the atrium between the corridor end and the Zimcarry/KTX frontage (appears between Zimcarry and KTX in C_000)",
+   "geometryUVY": {
+    "type": "points",
+    "centroidUVY": [
+     43.097,
+     -27.694,
+     1.67
+    ],
+    "bboxUVY": [
+     [
+      43.031,
+      -27.817,
+      1.169
+     ],
+     [
+      44.614,
+      -27.017,
+      4.821
+     ]
+    ],
+    "provisional": "P2 (rejected)",
+    "envelopeU": 2.55
+   },
+   "fit": {
+    "views": 42,
+    "points": 37,
+    "inlierRMS": null,
+    "triangulationAngleDeg": 10.23,
+    "reprojPx": 1.008
+   },
+   "heldOut": {
+    "method": "model-internal: each point re-triangulated from alternate (even) track observations, reprojected into the held-out (odd) views; px at 1920x1080. UVY-level held-out not available (registration rejected)",
+    "n": 215,
+    "median": 0.814,
+    "p95": 2.176,
+    "withinTolerance": true,
+    "uvyWithinTolerance": false
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "eluhiZ_eirE B_021.jpg t=31.38s",
+    "eluhiZ_eirE B_032.jpg t=32.12s",
+    "eluhiZ_eirE B_042.jpg t=32.78s",
+    "eluhiZ_eirE C_007.jpg t=35.70s",
+    "eluhiZ_eirE F_000.jpg t=34.00s"
+   ],
+   "notes": "37 points on the camera-facing face only; column is ~8 u in front (-U) of the frontage, not on it. Cross-section/other columns (corridor piers, the round grey column beside the elevator exit in D_006-D_009) not triangulated: the round column had only 18 unstable points (b-pixel, D_007 x460-580)."
+  },
+  {
+   "componentId": "new-uplus-plaza-curtain-wall-1f",
+   "feature": "plaza-side (V-) 1F curtain wall of the U+ atrium with automatic doors under a yellow 5 sign (5번 출구 / GATE5 side), canopy band at its head",
+   "geometryUVY": {
+    "type": "plane",
+    "normalUVY": [
+     -0.2169,
+     0.97619,
+     0.0
+    ],
+    "offset": 48.2342,
+    "equation": "dot(normalUVY,[U,V,Y])+offset=0",
+    "headingDeg": 12.53,
+    "floorLineUVY": [
+     [
+      60.796,
+      -35.902,
+      0.0
+     ],
+     [
+      46.001,
+      -39.189,
+      0.0
+     ]
+    ],
+    "heightRangeY": [
+     -0.128,
+     5.884
+    ],
+    "lengthU": 15.155,
+    "provisional": "P2 (rejected)",
+    "envelopeU": 2.16
+   },
+   "fit": {
+    "views": 55,
+    "points": 386,
+    "inlierRMS": 0.0829,
+    "triangulationAngleDeg": 8.75,
+    "reprojPx": 0.883
+   },
+   "heldOut": {
+    "method": "model-internal: each point re-triangulated from alternate (even) track observations, reprojected into the held-out (odd) views; px at 1920x1080. UVY-level held-out not available (registration rejected)",
+    "n": 1211,
+    "median": 0.699,
+    "p95": 2.291,
+    "withinTolerance": true,
+    "uvyWithinTolerance": false
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "eluhiZ_eirE B_033.jpg t=32.18s",
+    "eluhiZ_eirE B_044.jpg t=32.92s",
+    "eluhiZ_eirE C_007.jpg t=35.70s",
+    "eluhiZ_eirE D_001.jpg t=45.48s",
+    "eluhiZ_eirE D_008.jpg t=45.95s",
+    "eluhiZ_eirE D_017.jpg t=46.55s",
+    "eluhiZ_eirE G_003.jpg t=49.07s",
+    "eluhiZ_eirE G_011.jpg t=49.87s"
+   ],
+   "notes": "This is the MainShell plaza 1F glazing (source element) and was used as the P2 yaw/scale control, so it is not independent evidence of its own position. Observed horizontal members at model heights 0.0/0.3-0.5/1.4/2.35/3.4/4.55/5.25 (pre-scale). Inlier RMS 0.083 u exceeds the 0.03 u plane gate (mullions + door frames + Zimcarry side mixed)."
+  },
+  {
+   "componentId": "new-uplus-corner-facade-high-glazing",
+   "feature": "U+ facade high glazing (mullion/transom grid with inclined steel) seen above and behind the Zimcarry box from 1F",
+   "geometryUVY": {
+    "type": "plane",
+    "normalUVY": [
+     -0.9454,
+     -0.32592,
+     0.0
+    ],
+    "offset": 48.3871,
+    "equation": "dot(normalUVY,[U,V,Y])+offset=0",
+    "headingDeg": 109.02,
+    "floorLineUVY": [
+     [
+      60.381,
+      -26.684,
+      0.0
+     ],
+     [
+      65.783,
+      -42.352,
+      0.0
+     ]
+    ],
+    "heightRangeY": [
+     4.707,
+     14.507
+    ],
+    "lengthU": 16.572,
+    "provisional": "P2 (rejected)",
+    "envelopeU": 1.9
+   },
+   "fit": {
+    "views": 45,
+    "points": 122,
+    "inlierRMS": 0.1131,
+    "triangulationAngleDeg": 4.62,
+    "reprojPx": 0.884
+   },
+   "heldOut": {
+    "method": "model-internal: each point re-triangulated from alternate (even) track observations, reprojected into the held-out (odd) views; px at 1920x1080. UVY-level held-out not available (registration rejected)",
+    "n": 414,
+    "median": 0.604,
+    "p95": 2.326,
+    "withinTolerance": true,
+    "uvyWithinTolerance": false
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "eluhiZ_eirE B_037.jpg t=32.45s",
+    "eluhiZ_eirE B_043.jpg t=32.85s",
+    "eluhiZ_eirE C_004.jpg t=35.40s",
+    "eluhiZ_eirE C_010.jpg t=36.00s",
+    "eluhiZ_eirE D_007.jpg t=45.88s",
+    "eluhiZ_eirE D_013.jpg t=46.28s",
+    "eluhiZ_eirE D_019.jpg t=46.68s",
+    "eluhiZ_eirE G_004.jpg t=49.17s"
+   ],
+   "notes": "Compared (held-out) with MainShell corner segment (63.3,-35.3)-(59.5,-23.5): median 0.10 u, p95 0.34 u, 28% within 0.05 u, direction 1.15 deg -> fail. Observed from floor level up to Y≈14.5 (P2) - direct evidence of a multi-storey void in front of it."
+  },
+  {
+   "componentId": "new-uplus-atrium-2f-slab-edge",
+   "feature": "2F slab edge with glass balustrade bounding the U+ double-height void on its V+ side (top-right from the elevator door)",
+   "geometryUVY": {
+    "type": "polyline",
+    "pointsUVY": [
+     [
+      61.028,
+      -26.974,
+      6.3
+     ],
+     [
+      46.387,
+      -28.625,
+      6.3
+     ]
+    ],
+    "headingDeg": 6.51,
+    "heightClustersY": [
+     5.14,
+     5.36,
+     6.26,
+     6.49,
+     6.71
+    ],
+    "planRMS_u": 0.0918,
+    "provisional": "P2 (rejected)",
+    "envelopeU": 2.19
+   },
+   "fit": {
+    "views": 22,
+    "points": 132,
+    "inlierRMS": 0.0918,
+    "triangulationAngleDeg": 4.6,
+    "reprojPx": 1.009
+   },
+   "heldOut": {
+    "method": "model-internal: each point re-triangulated from alternate (even) track observations, reprojected into the held-out (odd) views; px at 1920x1080. UVY-level held-out not available (registration rejected)",
+    "n": 321,
+    "median": 0.786,
+    "p95": 3.125,
+    "withinTolerance": true,
+    "uvyWithinTolerance": false
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "eluhiZ_eirE C_004.jpg t=35.40s",
+    "eluhiZ_eirE D_007.jpg t=45.88s",
+    "eluhiZ_eirE D_011.jpg t=46.15s",
+    "eluhiZ_eirE D_015.jpg t=46.41s",
+    "eluhiZ_eirE D_019.jpg t=46.68s",
+    "eluhiZ_eirE G_003.jpg t=49.07s"
+   ],
+   "notes": "Plan line heading ~6.5 deg, 9.6 u (8.9-9.9) +V of the plaza curtain wall. Height clusters Y≈5.1-5.4 (soffit/fascia) and 6.3-6.7 (balustrade base ≈ 2F level) under P2; the station 2F floor elsewhere is ≈6.9-7.0, consistent within the P2 scale uncertainty. Glass-balustrade points are reflection-prone."
+  },
+  {
+   "componentId": "vc-elevator-arrival-zimcarry",
+   "feature": "1F elevator door (car interior: floor indicator 1, AED sticker, directory 2F KTX / 1F 버스·택시·부산유라시아플랫폼) opening toward the Zimcarry/KTX특송 frontage",
+   "geometryUVY": {
+    "type": "points",
+    "doorThresholdUVY": [
+     29.936,
+     -30.521,
+     1.364
+    ],
+    "insideCarCameraUVY": [
+     29.268,
+     -30.744,
+     1.408
+    ],
+    "exitHeadingDeg": 6.3,
+    "provisional": "P2 (rejected)",
+    "envelopeU": 3.95
+   },
+   "fit": {
+    "views": 3,
+    "points": 0,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null,
+    "method": "camera-centre positions of D_000-D_002 (door threshold crossed between D_001 and D_002)"
+   },
+   "heldOut": {
+    "method": "none (camera path only)",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": false
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "eluhiZ_eirE D_000 t=45.41s",
+    "D_001",
+    "D_002 t=45.55s"
+   ],
+   "notes": "Door faces +U (heading ~6 deg) straight at the frontage ~21 u away. Its P2 position (U≈30, V≈-30.5) sits at the U+ face of the inferred core A gap (U 22.1-28.5, between #3 B&C and #2 CVS) within the envelope; the corridor-side wall with the double door and the vending bank (V≈-27.5) is consistent with core A lying between the corridor and the plaza units. Core B (U -8..-2) is excluded. Class limited by the rejected registration and 4 u envelope."
+  },
+  {
+   "componentId": "new-uplus-corridor-vending-bank",
+   "feature": "drink/coffee vending-machine bank on the V- wall of the corridor from the escalator foot toward the U+ end",
+   "geometryUVY": {
+    "type": "plane",
+    "normalUVY": [
+     0.10481,
+     -0.99449,
+     0.0
+    ],
+    "offset": -30.2274,
+    "equation": "dot(normalUVY,[U,V,Y])+offset=0",
+    "headingDeg": 6.02,
+    "floorLineUVY": [
+     [
+      24.338,
+      -27.83,
+      0.0
+     ],
+     [
+      29.898,
+      -27.244,
+      0.0
+     ]
+    ],
+    "heightRangeY": [
+     0.005,
+     1.912
+    ],
+    "lengthU": 5.591,
+    "provisional": "P2 (rejected)",
+    "envelopeU": 4.62
+   },
+   "fit": {
+    "views": 27,
+    "points": 591,
+    "inlierRMS": 0.0399,
+    "triangulationAngleDeg": 6.02,
+    "reprojPx": 0.821
+   },
+   "heldOut": {
+    "method": "model-internal: each point re-triangulated from alternate (even) track observations, reprojected into the held-out (odd) views; px at 1920x1080. UVY-level held-out not available (registration rejected)",
+    "n": 1364,
+    "median": 0.748,
+    "p95": 2.551,
+    "withinTolerance": true,
+    "uvyWithinTolerance": false
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "eluhiZ_eirE B_010.jpg t=30.65s",
+    "eluhiZ_eirE B_012a.jpg t=30.80s",
+    "eluhiZ_eirE B_016.jpg t=31.05s",
+    "eluhiZ_eirE B_021.jpg t=31.38s",
+    "eluhiZ_eirE B_026.jpg t=31.71s",
+    "eluhiZ_eirE B_032.jpg t=32.12s"
+   ],
+   "notes": "Front-face plane heading ~6 deg; height to Y≈1.9 (P2; 1.83 m typical machine). Envelope 4.6 u because it is far from the P2 anchor at the U+ corner."
+  },
+  {
+   "componentId": "new-uplus-corridor-ceiling",
+   "feature": "corridor ceiling between the escalator foot and the atrium (above hanging \"← 나가는 곳 | 타는 곳 →\" signs)",
+   "geometryUVY": {
+    "type": "plane",
+    "normalUVY": [
+     0,
+     0,
+     1.0
+    ],
+    "offset": -5.1231,
+    "ceilingY": 5.123,
+    "boundsUV": [
+     [
+      23.95,
+      -29.31
+     ],
+     [
+      35.98,
+      -22.67
+     ]
+    ],
+    "provisional": "P2 (rejected)",
+    "envelopeU": 4.77
+   },
+   "fit": {
+    "views": 24,
+    "points": 39,
+    "inlierRMS": 0.0485,
+    "triangulationAngleDeg": 5.24,
+    "reprojPx": 0.95
+   },
+   "heldOut": {
+    "method": "model-internal: each point re-triangulated from alternate (even) track observations, reprojected into the held-out (odd) views; px at 1920x1080. UVY-level held-out not available (registration rejected)",
+    "n": 70,
+    "median": 0.699,
+    "p95": 2.68,
+    "withinTolerance": true,
+    "uvyWithinTolerance": false
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "eluhiZ_eirE B_012.jpg t=30.78s",
+    "eluhiZ_eirE B_014.jpg t=30.91s",
+    "eluhiZ_eirE B_019.jpg t=31.25s",
+    "eluhiZ_eirE B_023.jpg t=31.52s",
+    "eluhiZ_eirE B_030.jpg t=31.98s",
+    "eluhiZ_eirE B_035.jpg t=32.32s"
+   ],
+   "notes": "Sparse (39 points); a second cluster at Y≈2.78 (168 points) is hanging sign/fixture level, not the ceiling. Clearly higher than the class-a low ceiling at the escalator foot (2.23-2.26) — distinct ceiling zone. Height scales with the unresolved P2 scale (±8%)."
+  },
+  {
+   "componentId": "new-uplus-double-height-atrium",
+   "feature": "double-height void (no 2F slab) at the U+ end in front of the U+ corner-segment facade and along the plaza curtain wall",
+   "geometryUVY": {
+    "type": "corners",
+    "footprintUVY": [
+     [
+      46.0,
+      -39.19,
+      0.0
+     ],
+     [
+      60.8,
+      -35.9,
+      0.0
+     ],
+     [
+      61.03,
+      -26.97,
+      0.0
+     ],
+     [
+      46.39,
+      -28.63,
+      0.0
+     ]
+    ],
+    "boundaries": {
+     "V-": "plaza 1F curtain wall (new-uplus-plaza-curtain-wall-1f)",
+     "U+": "U+ corner-segment facade high glazing (new-uplus-corner-facade-high-glazing)",
+     "V+": "2F slab edge with glass balustrade (new-uplus-atrium-2f-slab-edge)",
+     "U-": "not observed beyond U≈46-50"
+    },
+    "widthV_u": {
+     "median": 9.62,
+     "p10": 8.93,
+     "p90": 9.94
+    },
+    "observedLengthU_u": ">= 14.6 (46.4 -> 61.0 along the slab edge)",
+    "minClearHeightObservedY": 14.5,
+    "provisional": "P2 (rejected)",
+    "envelopeU": 2.2
+   },
+   "fit": {
+    "views": 45,
+    "points": 254,
+    "inlierRMS": null,
+    "triangulationAngleDeg": 4.6,
+    "reprojPx": 1.009
+   },
+   "heldOut": {
+    "method": "see component planes; void presence is a line-of-sight fact from 1F cameras",
+    "n": 727,
+    "median": null,
+    "p95": null,
+    "withinTolerance": false
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "eluhiZ_eirE D_012-D_019 (46.21-46.68 s)",
+    "E_000 47.52 s",
+    "G_000-G_004 48.77-49.18 s",
+    "C_000-C_014 35.0-36.45 s"
+   ],
+   "notes": "VERDICT: a double-height void IS present at the U+ end. 727 triangulated points on the plaza-side upper glazing (Y>6, V<-35) and 122 on the U+ facade grid up to Y≈14.5 are seen directly from 1F cameras; the 2F slab edge/balustrade is seen from below at Y≈5.1-6.7. Provisional P2 extent: ~9.6 u wide (plaza curtain wall to slab edge) and ≥14.6 u long from the U+ facade toward -U; -U end not observed. This contradicts the live generated 2F slab (underside Y6.7) which covers this strip; the live no-overhead pocket (U≈67-77, V≈-7..13) is elsewhere (diagonal tip). Metric extent is NOT class-a (registration rejected; ±2.2 u envelope, scale ±8%)."
+  },
+  {
+   "componentId": "en-gates-1-2-5-6",
+   "feature": "GATE5/5번 출구 automatic doors (yellow '5' sign) on the plaza 1F curtain wall left of the elevator exit; GATE6 yellow '6' sign/door far +V beyond KTX특송",
+   "geometryUVY": {
+    "type": "points",
+    "pixelObservations": [
+     {
+      "frame": "eluhiZ_eirE D_007 t=45.88s",
+      "sign5BoxPx": [
+       337,
+       515,
+       240,
+       308
+      ]
+     },
+     {
+      "frame": "eluhiZ_eirE D_005 t=45.75s",
+      "sign5BoxPx": [
+       485,
+       590,
+       249,
+       300
+      ]
+     },
+     {
+      "frame": "eluhiZ_eirE C_000 t=35.00s",
+      "sign6BoxPx": [
+       1828,
+       1868,
+       462,
+       484
+      ]
+     }
+    ],
+    "provisional": "pixel only"
+   },
+   "fit": {
+    "views": 3,
+    "points": 0,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": false
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "E2026-09 (eluhiZ_eirE upload 2026-09-08)",
+   "frames": [
+    "D_005",
+    "D_007",
+    "C_000"
+   ],
+   "notes": "Identity/topology: exit 5 is on the plaza curtain wall between the elevator and the Zimcarry corner (matches registry text \"5번출구 KTX특송 사무실 옆\"); GATE6 is further along the frontage direction (+V), consistent with the board (GATE6 at the diagonal-wall end)."
+  }
+ ],
+ "unobserved": [
+  "U+ toilets (svc-toilets U+ recess)",
+  "TMO/국군장병라운지 room itself (only its direction sign)",
+  "depth/back walls of the Zimcarry and KTX특송 rooms behind the frontage",
+  "the diagonal tip facade zone U≈60-77, V≈-23..13 (live no-overhead pocket) and GATE6 geometry",
+  "the -U end of the double-height void (beyond U≈46-50) and the 1F ceiling height under the 2F soffit over KTX특송",
+  "corridor stainless piers and the round column beside the elevator exit (not triangulated)",
+  "any link between clip A (upper escalator descent) and the 1F model"
+ ]
+}

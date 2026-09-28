@@ -1,0 +1,302 @@
+{
+ "zone": "south gate",
+ "root": "실내 트윈 마감/남측 게이트",
+ "basis": {
+  "method": "make_south_gate.py (opening-derived Portal/Ramp, fall-edge Balustrades, south-strip lighting)",
+  "audit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after40",
+  "frame": "station UVY, metres",
+  "opening": ".planning/2026-09-27-openings-extension/openings/SouthGate.json"
+ },
+ "elements": [
+  {
+   "type": "Portal",
+   "id": "south-gate-reveal",
+   "zone": "south gate",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/platform-side-report.json",
+    ".planning/2026-09-26-full-twin/progress/PlatformSide3.md",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/plans/2026-05-20_kgnwrite-224291656711_004.jpg",
+    "[INFERENCE] opening jamb span remains provisional until registered footage provides exact edges.",
+    "KitExtend7 Portal contract: reveal edge is identical to SourceOverrides opening span."
+   ],
+   "geometry": {
+    "edge": [
+     [
+      -17.384,
+      52.0
+     ],
+     [
+      -17.962,
+      60.0
+     ]
+    ],
+    "y": 7.21
+   },
+   "params": {
+    "height": 2.19,
+    "depth": 0.48,
+    "lining": 0.06,
+    "align": "centre",
+    "finish": "plaster",
+    "jambs": true,
+    "head": true,
+    "sill": false,
+    "collider": true
+   }
+  },
+  {
+   "type": "Ramp",
+   "id": "south-gate-step-ramp",
+   "zone": "south gate",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/platform-side-report.json",
+    ".planning/2026-09-27-openings-extension/plan.md",
+    ".planning/2026-09-27-openings-extension/voidscan-after38/voidscan2.json",
+    "[INFERENCE] v3 expands the box-side landing by 0.25 m and the run to 0.9 m (slope 0.22) to bridge after40 cell (-17.875,58.875) beside the south jamb."
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      -16.884,
+      52.0
+     ],
+     [
+      -17.462,
+      60.0
+     ],
+     [
+      -18.362,
+      60.0
+     ],
+     [
+      -17.784,
+      52.0
+     ]
+    ],
+    "y0": 7.0,
+    "y1": 7.2
+   },
+   "params": {
+    "heading": [
+     -1,
+     0
+    ],
+    "base": 6.7,
+    "finish": "floorGranite",
+    "sideFinish": "plaster",
+    "collider": true,
+    "soffit": false,
+    "strips": "none"
+   }
+  },
+  {
+   "type": "Balustrade",
+   "id": "south-well-v51-west-guard",
+   "zone": "south gate",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-27-openings-extension/voidscan-after38/voidscan2.json",
+    ".planning/2026-09-27-openings-extension/southgate-work/renders/fall-v51-after37.png",
+    ".planning/2026-09-27-openings-extension/southgate-work/renders/fall-v91-after37.png",
+    "[INFERENCE] short guard segments follow the reachable side of adjacent 2F stair/escalator drop cells; floor level and endpoints sampled from the after38 collider grid."
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      -27.0,
+      51.61
+     ],
+     [
+      -25.7,
+      51.72
+     ]
+    ],
+    "y": 6.7
+   },
+   "params": {
+    "height": 1.1,
+    "panel": "glass",
+    "glass": "clear",
+    "rail": "round",
+    "railFinish": "stainless",
+    "postPitch": 1.2,
+    "shoe": true,
+    "collider": true,
+    "faceToward": [
+     -30.0,
+     53.0
+    ]
+   }
+  },
+  {
+   "type": "Balustrade",
+   "id": "south-well-v51-mid-guard",
+   "zone": "south gate",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-27-openings-extension/voidscan-after38/voidscan2.json",
+    ".planning/2026-09-27-openings-extension/southgate-work/renders/fall-v51-after37.png",
+    ".planning/2026-09-27-openings-extension/southgate-work/renders/fall-v91-after37.png",
+    "[INFERENCE] short guard segments follow the reachable side of adjacent 2F stair/escalator drop cells; floor level and endpoints sampled from the after38 collider grid."
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      -23.75,
+      51.86
+     ],
+     [
+      -22.75,
+      51.95
+     ]
+    ],
+    "y": 6.7
+   },
+   "params": {
+    "height": 1.1,
+    "panel": "glass",
+    "glass": "clear",
+    "rail": "round",
+    "railFinish": "stainless",
+    "postPitch": 1.2,
+    "shoe": true,
+    "collider": true,
+    "faceToward": [
+     -30.0,
+     53.0
+    ]
+   }
+  },
+  {
+   "type": "Balustrade",
+   "id": "south-well-v51-east-guard",
+   "zone": "south gate",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-27-openings-extension/voidscan-after38/voidscan2.json",
+    ".planning/2026-09-27-openings-extension/southgate-work/renders/fall-v51-after37.png",
+    ".planning/2026-09-27-openings-extension/southgate-work/renders/fall-v91-after37.png",
+    "[INFERENCE] short guard segments follow the reachable side of adjacent 2F stair/escalator drop cells; floor level and endpoints sampled from the after38 collider grid."
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      -20.0,
+      52.09
+     ],
+     [
+      -18.9,
+      52.18
+     ]
+    ],
+    "y": 6.7
+   },
+   "params": {
+    "height": 1.1,
+    "panel": "glass",
+    "glass": "clear",
+    "rail": "round",
+    "railFinish": "stainless",
+    "postPitch": 1.2,
+    "shoe": true,
+    "collider": true,
+    "faceToward": [
+     -30.0,
+     53.0
+    ]
+   }
+  },
+  {
+   "type": "Balustrade",
+   "id": "south-well-v91-guard",
+   "zone": "south gate",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-27-openings-extension/voidscan-after38/voidscan2.json",
+    ".planning/2026-09-27-openings-extension/southgate-work/renders/fall-v51-after37.png",
+    ".planning/2026-09-27-openings-extension/southgate-work/renders/fall-v91-after37.png",
+    "[INFERENCE] short guard segments follow the reachable side of adjacent 2F stair/escalator drop cells; floor level and endpoints sampled from the after38 collider grid."
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      -20.5,
+      90.65
+     ],
+     [
+      -20.5,
+      91.85
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "height": 1.1,
+    "panel": "glass",
+    "glass": "clear",
+    "rail": "round",
+    "railFinish": "stainless",
+    "postPitch": 1.2,
+    "shoe": true,
+    "collider": true,
+    "faceToward": [
+     -30.0,
+     92.0
+    ]
+   }
+  },
+  {
+   "type": "Lighting",
+   "id": "south-strip-public-lighting",
+   "zone": "south gate",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-27-openings-extension/southgate-work/renders/gate-strip-side-after.png",
+    ".planning/2026-09-26-full-twin/progress/PlatformSide3.md",
+    "[INFERENCE] sparse point-light grid covers the source south concourse footprint; exact historic fixture positions were not visible in the source model."
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      -48.0,
+      12.0
+     ],
+     [
+      -18.0,
+      12.0
+     ],
+     [
+      -18.0,
+      92.0
+     ],
+     [
+      -48.0,
+      92.0
+     ]
+    ],
+    "y": 10.1
+   },
+   "params": {
+    "kind": "point",
+    "pitch": [
+     10.0,
+     12.0
+    ],
+    "range": 13.0,
+    "intensity": 1.2,
+    "kelvin": 4000,
+    "shadows": "none",
+    "mode": "mixed"
+   }
+  }
+ ]
+}

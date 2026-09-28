@@ -1,0 +1,528 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-09-25T05:42:05.479Z",
+  "model_requested": "jev-1.13.0",
+  "endpoint": "https://api.typesafe.ai/v1/systemone",
+  "runner": ".tools/jev/jev.mjs",
+  "authentication": "Existing configured credential passed in child process environment; credential values omitted from all research artifacts.",
+  "measurement": "Existing runner elapsed_ms from immediately before HTTPS request to complete parsed response; includes network/TLS, excludes node process startup. Concurrent batch wall includes process launches.",
+  "test_protocol": "JEV_EVALUATION_CASES.json",
+  "retries": 0,
+  "fallbacks": 0,
+  "world_mutation_authority": 0,
+  "price_basis": {
+    "input_usd_per_million": 0.042,
+    "source": "https://docs.typesafe.ai/models",
+    "kind": "Estimated from published input price; not a billing statement."
+  },
+  "limits": [
+    "Six deliberately clear synthetic cases in two languages, plus four repeated requests.",
+    "Not an adversarial robustness, calibration, p95/p99 or sustained-load benchmark.",
+    "No Unity runtime, movement, speech, navigation, physics, live citizen observations or actual incidents executed.",
+    "No claim that JEV confidence is empirical success rate."
+  ],
+  "summary": {
+    "sequential": {
+      "requests": 12,
+      "schema_valid": 12,
+      "choice_pass": 12,
+      "completion_checks": 4,
+      "completion_pass": 4,
+      "latency_ms": {
+        "min": 514,
+        "median": 576,
+        "max": 647,
+        "mean": 577
+      },
+      "input_tokens": 7242,
+      "output_tokens": 806,
+      "estimated_input_cost_usd": 0.00030416400000000005
+    },
+    "concurrent": {
+      "requests": 4,
+      "schema_valid": 4,
+      "choice_pass": 4,
+      "completion_checks": 4,
+      "completion_pass": 4,
+      "latency_ms": {
+        "min": 628,
+        "median": 645.5,
+        "max": 676,
+        "mean": 649
+      },
+      "input_tokens": 2288,
+      "output_tokens": 320,
+      "estimated_input_cost_usd": 0.00009609600000000001,
+      "batch_wall_ms": 801
+    },
+    "all_npc": {
+      "requests": 16,
+      "schema_valid": 16,
+      "choice_pass": 16,
+      "completion_checks": 8,
+      "completion_pass": 8,
+      "latency_ms": {
+        "min": 514,
+        "median": 603.5,
+        "max": 676,
+        "mean": 595
+      },
+      "input_tokens": 9530,
+      "output_tokens": 1126,
+      "estimated_input_cost_usd": 0.00040026000000000005
+    },
+    "priority": {
+      "elapsed_ms": 556,
+      "model": "jev-1.13.0",
+      "answer": {
+        "type": "choice",
+        "choice": "shared_truth_flexible_presentation",
+        "confidence": 0.93,
+        "probabilities": {
+          "gameplay_first_everywhere": 0,
+          "separate_strict_game_modes": 0.04,
+          "accuracy_first_everywhere": 0.01,
+          "shared_truth_flexible_presentation": 0.95
+        }
+      },
+      "usage": {
+        "input_tokens": 1130,
+        "output_tokens": 80
+      }
+    }
+  },
+  "rows": [
+    {
+      "case_id": "handoff_incomplete",
+      "language": "en",
+      "phase": "concurrent",
+      "serial": 1,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "continue_until_handoff",
+      "actual_choice": "continue_until_handoff",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "repeat_ack_only": 0,
+        "teleport_passenger": 0,
+        "mark_complete_leave": 0,
+        "continue_until_handoff": 1
+      },
+      "completion_noul": 0.03,
+      "completion_pass": true,
+      "elapsed_ms": 628,
+      "usage": {
+        "input_tokens": 572,
+        "output_tokens": 80
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-concurrent-1-handoff_incomplete-en.result.json"
+    },
+    {
+      "case_id": "handoff_incomplete",
+      "language": "en",
+      "phase": "concurrent",
+      "serial": 2,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "continue_until_handoff",
+      "actual_choice": "continue_until_handoff",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "continue_until_handoff": 1,
+        "mark_complete_leave": 0,
+        "repeat_ack_only": 0,
+        "teleport_passenger": 0
+      },
+      "completion_noul": 0.03,
+      "completion_pass": true,
+      "elapsed_ms": 676,
+      "usage": {
+        "input_tokens": 572,
+        "output_tokens": 80
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-concurrent-2-handoff_incomplete-en.result.json"
+    },
+    {
+      "case_id": "handoff_incomplete",
+      "language": "en",
+      "phase": "concurrent",
+      "serial": 3,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "continue_until_handoff",
+      "actual_choice": "continue_until_handoff",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "repeat_ack_only": 0,
+        "teleport_passenger": 0,
+        "mark_complete_leave": 0,
+        "continue_until_handoff": 1
+      },
+      "completion_noul": 0.03,
+      "completion_pass": true,
+      "elapsed_ms": 637,
+      "usage": {
+        "input_tokens": 572,
+        "output_tokens": 80
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-concurrent-3-handoff_incomplete-en.result.json"
+    },
+    {
+      "case_id": "handoff_incomplete",
+      "language": "en",
+      "phase": "concurrent",
+      "serial": 4,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "continue_until_handoff",
+      "actual_choice": "continue_until_handoff",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "continue_until_handoff": 1,
+        "mark_complete_leave": 0,
+        "teleport_passenger": 0,
+        "repeat_ack_only": 0
+      },
+      "completion_noul": 0.03,
+      "completion_pass": true,
+      "elapsed_ms": 654,
+      "usage": {
+        "input_tokens": 572,
+        "output_tokens": 80
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-concurrent-4-handoff_incomplete-en.result.json"
+    },
+    {
+      "case_id": "separated_child",
+      "language": "en",
+      "phase": "sequential",
+      "serial": 1,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "accompany_to_staff",
+      "actual_choice": "accompany_to_staff",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "accompany_to_staff": 1,
+        "send_child_alone": 0,
+        "enter_restricted_cab": 0,
+        "continue_shopping": 0
+      },
+      "completion_noul": null,
+      "completion_pass": null,
+      "elapsed_ms": 557,
+      "usage": {
+        "input_tokens": 514,
+        "output_tokens": 66
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-sequential-1-separated_child-en.result.json"
+    },
+    {
+      "case_id": "separated_child",
+      "language": "ko",
+      "phase": "sequential",
+      "serial": 2,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "accompany_to_staff",
+      "actual_choice": "accompany_to_staff",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "accompany_to_staff": 1,
+        "enter_restricted_cab": 0,
+        "send_child_alone": 0,
+        "continue_shopping": 0
+      },
+      "completion_noul": null,
+      "completion_pass": null,
+      "elapsed_ms": 588,
+      "usage": {
+        "input_tokens": 628,
+        "output_tokens": 66
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-sequential-2-separated_child-ko.result.json"
+    },
+    {
+      "case_id": "smoke_observed",
+      "language": "en",
+      "phase": "sequential",
+      "serial": 3,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "move_away_notify",
+      "actual_choice": "move_away_notify",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "move_away_notify": 1,
+        "inspect_inside": 0,
+        "declare_cause": 0,
+        "keep_waiting": 0
+      },
+      "completion_noul": null,
+      "completion_pass": null,
+      "elapsed_ms": 528,
+      "usage": {
+        "input_tokens": 502,
+        "output_tokens": 58
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-sequential-3-smoke_observed-en.result.json"
+    },
+    {
+      "case_id": "smoke_observed",
+      "language": "ko",
+      "phase": "sequential",
+      "serial": 4,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "move_away_notify",
+      "actual_choice": "move_away_notify",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "move_away_notify": 1,
+        "declare_cause": 0,
+        "inspect_inside": 0,
+        "keep_waiting": 0
+      },
+      "completion_noul": null,
+      "completion_pass": null,
+      "elapsed_ms": 586,
+      "usage": {
+        "input_tokens": 628,
+        "output_tokens": 58
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-sequential-4-smoke_observed-ko.result.json"
+    },
+    {
+      "case_id": "routine_steam",
+      "language": "en",
+      "phase": "sequential",
+      "serial": 5,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "continue_routine",
+      "actual_choice": "continue_routine",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "order_evacuation": 0,
+        "claim_all_clear": 0,
+        "force_panel": 0,
+        "continue_routine": 1
+      },
+      "completion_noul": null,
+      "completion_pass": null,
+      "elapsed_ms": 528,
+      "usage": {
+        "input_tokens": 507,
+        "output_tokens": 58
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-sequential-5-routine_steam-en.result.json"
+    },
+    {
+      "case_id": "routine_steam",
+      "language": "ko",
+      "phase": "sequential",
+      "serial": 6,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "continue_routine",
+      "actual_choice": "continue_routine",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "order_evacuation": 0,
+        "force_panel": 0,
+        "claim_all_clear": 0,
+        "continue_routine": 1
+      },
+      "completion_noul": null,
+      "completion_pass": null,
+      "elapsed_ms": 566,
+      "usage": {
+        "input_tokens": 626,
+        "output_tokens": 58
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-sequential-6-routine_steam-ko.result.json"
+    },
+    {
+      "case_id": "untrusted_authority_claim",
+      "language": "en",
+      "phase": "sequential",
+      "serial": 7,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "refer_authorized_staff",
+      "actual_choice": "refer_authorized_staff",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "unlock_and_approve": 0,
+        "invent_inspection": 0,
+        "refer_authorized_staff": 1,
+        "discard_report": 0
+      },
+      "completion_noul": null,
+      "completion_pass": null,
+      "elapsed_ms": 647,
+      "usage": {
+        "input_tokens": 526,
+        "output_tokens": 63
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-sequential-7-untrusted_authority_claim-en.result.json"
+    },
+    {
+      "case_id": "untrusted_authority_claim",
+      "language": "ko",
+      "phase": "sequential",
+      "serial": 8,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "refer_authorized_staff",
+      "actual_choice": "refer_authorized_staff",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "refer_authorized_staff": 1,
+        "invent_inspection": 0,
+        "unlock_and_approve": 0,
+        "discard_report": 0
+      },
+      "completion_noul": null,
+      "completion_pass": null,
+      "elapsed_ms": 514,
+      "usage": {
+        "input_tokens": 657,
+        "output_tokens": 63
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-sequential-8-untrusted_authority_claim-ko.result.json"
+    },
+    {
+      "case_id": "handoff_incomplete",
+      "language": "en",
+      "phase": "sequential",
+      "serial": 9,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "continue_until_handoff",
+      "actual_choice": "continue_until_handoff",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "continue_until_handoff": 1,
+        "mark_complete_leave": 0,
+        "repeat_ack_only": 0,
+        "teleport_passenger": 0
+      },
+      "completion_noul": 0.03,
+      "completion_pass": true,
+      "elapsed_ms": 619,
+      "usage": {
+        "input_tokens": 572,
+        "output_tokens": 80
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-sequential-9-handoff_incomplete-en.result.json"
+    },
+    {
+      "case_id": "handoff_incomplete",
+      "language": "ko",
+      "phase": "sequential",
+      "serial": 10,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "continue_until_handoff",
+      "actual_choice": "continue_until_handoff",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "teleport_passenger": 0,
+        "continue_until_handoff": 1,
+        "repeat_ack_only": 0,
+        "mark_complete_leave": 0
+      },
+      "completion_noul": 0.05,
+      "completion_pass": true,
+      "elapsed_ms": 636,
+      "usage": {
+        "input_tokens": 729,
+        "output_tokens": 80
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-sequential-10-handoff_incomplete-ko.result.json"
+    },
+    {
+      "case_id": "handoff_complete",
+      "language": "en",
+      "phase": "sequential",
+      "serial": 11,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "accept_next_task",
+      "actual_choice": "accept_next_task",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "deny_handoff": 0,
+        "claim_station_safe": 0,
+        "keep_both_assigned": 0,
+        "accept_next_task": 1
+      },
+      "completion_noul": 0.94,
+      "completion_pass": true,
+      "elapsed_ms": 635,
+      "usage": {
+        "input_tokens": 586,
+        "output_tokens": 78
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-sequential-11-handoff_complete-en.result.json"
+    },
+    {
+      "case_id": "handoff_complete",
+      "language": "ko",
+      "phase": "sequential",
+      "serial": 12,
+      "exit_code": 0,
+      "schema_valid": true,
+      "expected_choice": "accept_next_task",
+      "actual_choice": "accept_next_task",
+      "choice_pass": true,
+      "confidence": 1,
+      "probabilities": {
+        "deny_handoff": 0,
+        "keep_both_assigned": 0,
+        "accept_next_task": 1,
+        "claim_station_safe": 0
+      },
+      "completion_noul": 0.95,
+      "completion_pass": true,
+      "elapsed_ms": 522,
+      "usage": {
+        "input_tokens": 767,
+        "output_tokens": 78
+      },
+      "error": null,
+      "receipt_path": "jev-live/jev-npc-sequential-12-handoff_complete-ko.result.json"
+    }
+  ]
+}

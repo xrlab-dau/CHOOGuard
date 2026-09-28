@@ -1,0 +1,40 @@
+{
+  "schema": "chooguard.kitextend8.displayboard-base.v1",
+  "status": "built",
+  "scope": "DisplayBoard kit capability and isolated verification only; no station scene, plan, or source objects changed.",
+  "item": {
+    "id": "seam-led-screen",
+    "result": "Adds floor stand=base as one closed housing-material box from floor to board bottom, with colliders on the base and board housing footprint. Floor stand=legs remains the default and keeps its existing geometry.",
+    "evidence": [".planning/2026-09-28-natural-fix/main-work/9yw-screen.jpg"],
+    "sourceReceipt": "Main-provided visual reference; no external imagery or textures were added.",
+    "stillC": []
+  },
+  "integrationParams": {
+    "keep": {"point": [63.85, 8.475], "heading": [-0.801, 0.598], "width": 4.18, "height": 2.76, "depth": 0.15, "housing": "dark", "material": "Kit_Screen"},
+    "geometry": {"y": 7.0},
+    "params": {"mount": "floor", "stand": "base", "standHeight": 0.24, "baseWidth": 4.24, "baseDepth": 0.3},
+    "resultingBoardBottomY": 7.24,
+    "baseDimensions": "4.24 m wide × 0.30 m deep × 0.24 m high; baseWidth/baseDepth equal their defaults width + .06 and max(depth, .3)."
+  },
+  "validation": {
+    "spec": ".planning/2026-09-28-natural-fix/kitextend-work/displayboard-base-test.json",
+    "report": ".planning/2026-09-28-natural-fix/kitextend-work/displayboard-base-test.validate.json",
+    "errors": 0,
+    "elements": [{"id": "display-base-screen", "triangles": 50}, {"id": "display-legs-default", "triangles": 60}],
+    "compileDiagnostics": []
+  },
+  "baselineComparison": {
+    "beforeReports": 19,
+    "afterReports": 19,
+    "changedReports": [],
+    "totalElementsBeforeAndAfter": 265,
+    "totalTrianglesBeforeAndAfter": 367776,
+    "errorsBeforeAndAfter": 0
+  },
+  "renders": {
+    "sourceReference": ".planning/2026-09-28-natural-fix/main-work/9yw-screen.jpg",
+    "kitPreview": ".planning/2026-09-28-natural-fix/kitextend-work/displayboard-base-floor-stand-comparison.png",
+    "note": "The preview shows the new base next to the unchanged default legs. It is a KitPreview, not an after-render of the station scene."
+  },
+  "receipts": []
+}

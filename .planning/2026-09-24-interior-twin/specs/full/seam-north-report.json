@@ -1,0 +1,134 @@
+{
+  "lane": "SeamNorth",
+  "audit": {
+    "sourceCutApplied": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after37",
+    "specValidation": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after38",
+    "sceneAfterBuild": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after39"
+  },
+  "opening": {
+    "spec": ".planning/2026-09-27-openings-extension/openings/SeamNorth.json",
+    "source": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_5",
+    "boxes": [
+      {"id": "seam-north-5a", "from": [50.0, 11.479], "to": [58.496, 12.093], "half": 0.1, "y": [7.0, 10.47]},
+      {"id": "seam-north-5b", "from": [58.496, 12.093], "to": [58.525, 11.694], "half": 0.1, "y": [7.0, 10.47]},
+      {"id": "seam-north-5c", "from": [58.525, 11.694], "to": [64.93, 12.157], "half": 0.08, "y": [7.0, 10.47]}
+    ],
+    "status": "applied by Main",
+    "tier": "b",
+    "evidence": [
+      ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json (RegTech6: 9yw seam-9yw registration; open floor across the north facade at the LED wall / A1 column / toilet-pictogram end)",
+      "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_199s.jpg, 9yw_203s.jpg, 9yw_209s.jpg, 9yw_215s.jpg",
+      ".planning/2026-09-27-openings-extension/seamnorth-work/fac_t00203444.jpg, fac_t00209556.jpg, tick_t00199333.jpg, tick_t00195333.jpg"
+    ],
+    "preview": {
+      "report": ".planning/2026-09-27-openings-extension/openings/SeamNorth.preview.json",
+      "pass": true,
+      "trianglesRemoved": 9,
+      "farTrianglesPreserved": 94761,
+      "areaBalanceError": 0.0,
+      "warnings": [],
+      "renders": [
+        ".planning/2026-09-27-openings-extension/seamnorth-work/render/after_north_from_main.png",
+        ".planning/2026-09-27-openings-extension/seamnorth-work/render/after_main_from_seam.png"
+      ]
+    },
+    "sourcePreservation": "Layer0PlatformsDetails/OfficialStation_Layer0_4 and _5 are not opening targets; their exit-8 door bank, header, and sills remain intact."
+  },
+  "spec": {
+    "path": ".planning/2026-09-24-interior-twin/specs/full/seam-north.json",
+    "generator": ".planning/2026-09-24-interior-twin/specs/full/make_seam_north.py",
+    "root": "실내 트윈 마감/연결 통로 북측",
+    "elements": [
+      "seam-north-5a-reveal",
+      "seam-north-5b-reveal",
+      "seam-north-5c-reveal",
+      "seam-north-floor-band-continuity",
+      "seam-north-tactile-continuity"
+    ],
+    "status": "built by Main in geometry-after39",
+    "validation": {
+      "check_spec": {"audit": "geometry-after38", "errors": 0, "warnings": [
+        "Portal jamb boundary touches MainShell_5 at opening endpoints",
+        "Portal 5c passage AABB touches exit-8 sign case and yellow sign"
+      ]},
+      "KitValidate": {"errors": 0, "builtElements": 5, "triangles": 123}
+    },
+    "visualReview": {
+      "renders": [
+        ".planning/2026-09-27-openings-extension/main-work/renders/seamnorth-from-seam.png",
+        ".planning/2026-09-27-openings-extension/main-work/renders/seamnorth-from-main.png",
+        ".planning/2026-09-27-openings-extension/main-work/renders/seamnorth-exit8-sign.png"
+      ],
+      "result": "Both sides show the open passage with the reveal; the exit-8 sign is legible with no visible clash in the sign-focused render."
+    }
+  },
+  "continuity": {
+    "floor": {
+      "status": "existing slab retained; measured finish cutbacks restored",
+      "evidence": ".planning/2026-09-24-interior-twin/specs/full/seam.json seam-slab; seam-north FloorFinish patches",
+      "note": "seam-slab top Y 6.995 overlaps the main 2F Y 7.0 floor by 0.005 m; check_spec seam.json on the cut audit reports 0 errors. No duplicate slab was added. The new patches restore only the old 0.35 m facade-band cutback in the registered dark-grey band and tactile line."
+    },
+    "ceiling": {
+      "status": "continuous enclosure verified; no new ceiling required",
+      "evidence": ".planning/2026-09-24-interior-twin/specs/full/seam.json seam-ceiling-east / seam-east-ceiling; seam-north Portal heads; geometry-after38",
+      "note": "The main 2F ceiling underside is Y 10.47 and the seam ceiling is Y 12.05. The Portal head meets Y 10.47; the source facade remains above it as a bulkhead to the seam roof/ceiling, so no open ceiling void is introduced. Main's two-side renders show the ceiling surfaces intact."
+    },
+    "existingSeamFitRecheck": {
+      "spec": ".planning/2026-09-24-interior-twin/specs/full/seam-fit.json",
+      "audit": "geometry-after38",
+      "check_specErrors": 0,
+      "warnings": ["Existing seam-exit8-sign touches Layer0_4/Layer0_5 source geometry; Main's exit8 render shows it clear/legible."]
+    }
+  },
+  "items": [
+    {
+      "item": "NE 1F-2F stair core U 70.7-75.4, V 8.7-11.8",
+      "status": "fall opening guarded; actual stair remains still-c",
+      "tier": "c",
+      "builtElements": ["seam-core-guard in seam-fit.json"],
+      "sourcesTried": [
+        ".planning/2026-09-26-full-twin/seam-work/nv-east-stair.png and asset-library/research-public/2026-09-26/Services23F/naver-indoor-harvest/overlays/uv2f.png (Naver 1F/2F schematic stair hatch; same symbol on both levels; east ICP median 0.37 m)",
+        "asset-library/research-public/2026-09-26/Services23F/naver-indoor-harvest/overlays/uv3f.png and .planning/2026-09-26-full-twin/seam-work/nv-east-123f.png (no corresponding 3F stair symbol)",
+        "9ywctBEN_vs registered frames 186-230.7 s (walk reaches the exit-8 seam but does not pass the NE stair core)",
+        "81qeEdSINJM frames 01-06 (independent main-concourse/platform-direction walk; no identifiable view of this core and no UV registration)",
+        "https://blog.naver.com/spacehead/223805619436 (static post unavailable beyond metadata; search snippet refers to a 2F-to-1F stair near parking, not this 1F-2F core)",
+        "geometry-after39 (2F cell floor still covers U 70.7-72.5 of the Naver core; the source facade is about 1 m west of the Naver outline)"
+      ],
+      "note": "The Naver hatch is schematic: its two nominal 4.7 m flights do not fit the 7 m rise, and no tread/run/landing geometry is visible in the walks. Do not remove the guard or invent stair geometry. No majibang-plan slabOpenings request was made because the stair layout is not resolved; Main's previous stair request remains conditional on real flight/layout evidence."
+    },
+    {
+      "item": "glass elevator box front (45.53,15.0)->(48.32,16.59), sigma 0.6 m",
+      "status": "still-c",
+      "tier": "c",
+      "sourcesTried": [
+        ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.glass_elevator_box (single view at 193 s, sigma 0.6 m)",
+        "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_190s.jpg (second visual trial; the front's registered coordinates come only from the 193 s single-view result, so no second triangulation or shaft depth)",
+        "81qeEdSINJM frames 01-06 (glazed main-concourse partitions visible, but not identifiable/registered as the target elevator box)",
+        "Naver 1F/2F/3F rasters and overlays (the separate NE lift symbol is near U 72.5, V 6.5; no measured shaft/front for this 45-48 U location)",
+        "geometry-after39 / seam-fit.json (no live box at target; the reported east endpoint lies about 0.37 m from seam-col-r2 centre, inside its 0.545 m radius)"
+      ],
+      "note": "A second view, box depth, shaft extent, and connection through the 1F roof at Y 4.4 remain unverified; adding a box would conflict with the existing round column."
+    },
+    {
+      "item": "women's pictogram at (60.35,0.44)-(60.87,1.36) versus WC-2F-N-F",
+      "status": "still-c; no second toilet or sign built",
+      "tier": "c",
+      "sourcesTried": [
+        ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.toilet_entrance (single 207.2 s view, sigma 1.0 m)",
+        ".planning/2026-09-24-interior-twin/specs/full/services-2f.json WC-2F-N-F (Naver-based entry near U 59.7, V -6.7, 7.6 m south of the pictured sign)",
+        "Naver 1F/2F/3F indoor rasters and picker data already in Services23F's harvest (no independently registered second entrance at the pictogram position)",
+        "81qeEdSINJM frames 01-06 (no identifiable second view of the W pictogram)",
+        "https://www.gukjenews.com/news/articleView.html?idxno=292251 and https://www.nspna.com/news/?mode=view&newsid=131818 (2015 Korail report confirms a 2F south-side women's WC/powder room, but gives no coordinate/floor plan)",
+        "https://www.korail.com/ticket/train/stationGuide/station and /amenities (static pages returned only the service/browser notice, no usable plan)",
+        "geometry-after39 (no wall at the sign coordinate; nearest mapped room wall is the west wall of RM-2F-N-r56 around U 63.3)"
+      ],
+      "note": "The 2015 south-side WC evidence does not tie the 207.2 s sign to a door or to WC-2F-N-F. It could be a sign for a missing wall/entrance or a registration/plan mismatch; location remains unresolved."
+    }
+  ],
+  "receipts": "asset-library/research-public/2026-09-27/SeamNorth/receipts.json",
+  "nextEvidenceNeeded": [
+    "A second UV-registerable walk/photo showing the NE stair treads and landing, with enough geometry to determine whether the existing 2F cell slab needs a polygon opening.",
+    "A second view of the glass box plus its footprint/depth and floor connections, separated from seam-col-r2.",
+    "A second view/plan tying the 207.2 s women's pictogram to an actual toilet entrance and resolving WC-2F-N-F's location."
+  ]
+}

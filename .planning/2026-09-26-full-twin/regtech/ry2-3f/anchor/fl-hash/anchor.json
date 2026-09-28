@@ -1,0 +1,578 @@
+{
+ "schema": "chooguard.regtech.anchor.v1",
+ "work": ".planning/2026-09-26-full-twin/regtech/ry2-3f",
+ "controls": ".planning/2026-09-26-full-twin/regtech/controls/ry2-3f-floor.json",
+ "frame": "unity",
+ "gate_thresholds": {
+  "heldout_rms_m": 0.3,
+  "heldout_rms_px": 8.0,
+  "min_heldout": 3,
+  "loo_max_m": 0.6,
+  "heldout_forward_rms_deg": 6.0
+ },
+ "components": {
+  "0": {
+   "component": 0,
+   "registered_images": 553,
+   "status": "FAIL",
+   "gate": {
+    "pass": false,
+    "reasons": [
+     "held-out 3D RMS 0.483 > 0.3",
+     "held-out camera heading RMS 6.2 deg > 6.0",
+     "LOO max 3D 2.062 > 0.6"
+    ]
+   },
+   "fit": {
+    "controls": 17,
+    "obs": 0,
+    "rms_px": null,
+    "max_px": null,
+    "points_3d": 17,
+    "rms_m": 0.5680538087202104,
+    "max_m": 1.8407638656982006,
+    "forward_rms_deg": 5.157321464999052,
+    "forward_max_deg": 6.302691187998088
+   },
+   "heldout": {
+    "controls": 8,
+    "obs": 0,
+    "rms_px": null,
+    "max_px": null,
+    "points_3d": 8,
+    "rms_m": 0.4833287667624952,
+    "max_m": 1.0882225784193855,
+    "forward_rms_deg": 6.215960482718279,
+    "forward_max_deg": 7.751615298479274
+   },
+   "heldout_images": {
+    "images": [],
+    "obs": 0,
+    "rms_px": null
+   },
+   "loo": {
+    "count": 17,
+    "rms_m": 0.7318540968003895,
+    "max_m": 2.0624210808501697,
+    "rms_px": null,
+    "max_px": null,
+    "items": {
+     "floor3f-0": {
+      "err_m": 0.04128795809038088,
+      "rms_px": null
+     },
+     "floor3f-3": {
+      "err_m": 0.18323484560973569,
+      "rms_px": null
+     },
+     "floor3f-4": {
+      "err_m": 0.015589607366411684,
+      "rms_px": null
+     },
+     "floor3f-5": {
+      "err_m": 0.015097232670417071,
+      "rms_px": null
+     },
+     "floor3f-7": {
+      "err_m": 0.062303305776081785,
+      "rms_px": null
+     },
+     "floor3f-9": {
+      "err_m": 0.021683377519197577,
+      "rms_px": null
+     },
+     "floor3f-10": {
+      "err_m": 0.11183846382006735,
+      "rms_px": null
+     },
+     "floor3f-12": {
+      "err_m": 0.01364920352085619,
+      "rms_px": null
+     },
+     "floor3f-13": {
+      "err_m": 0.010303047977865631,
+      "rms_px": null
+     },
+     "floor3f-14": {
+      "err_m": 0.0641083588604836,
+      "rms_px": null
+     },
+     "floor3f-15": {
+      "err_m": 0.05457882066672859,
+      "rms_px": null
+     },
+     "cam:ry2/t00178000.jpg": {
+      "err_m": 2.0624210808501697,
+      "rms_px": null
+     },
+     "cam:ry2/t00207000.jpg": {
+      "err_m": 1.5711561441269455,
+      "rms_px": null
+     },
+     "cam:ry2/t00312000.jpg": {
+      "err_m": 0.8918555955982551,
+      "rms_px": null
+     },
+     "cam:ry2/t00316000.jpg": {
+      "err_m": 0.8673798114963122,
+      "rms_px": null
+     },
+     "cam:ry2/t00322000.jpg": {
+      "err_m": 0.5484490126374665,
+      "rms_px": null
+     },
+     "cam:ry2/t00329500.jpg": {
+      "err_m": 0.6890012748645017,
+      "rms_px": null
+     }
+    }
+   },
+   "sim3_sfm_to_enu": {
+    "scale": 3.5559277706294545,
+    "rotation": [
+     [
+      0.8304948090070864,
+      -0.001071304248042193,
+      -0.5570253356172331
+     ],
+     [
+      0.5569620659176993,
+      -0.013596818386799159,
+      0.8304266274984472
+     ],
+     [
+      -0.008463411898959827,
+      -0.9999069850925958,
+      -0.010695411262032772
+     ]
+    ],
+    "translation": [
+     81.75599158326715,
+     -7.233050732263501,
+     12.986460935772367
+    ],
+    "formula": "ENU = scale*R*X_sfm + t; Unity=(E,Up,N); UVY via README"
+   },
+   "solver": {
+    "init_inliers": 6,
+    "cost": 22.355858254092585,
+    "nfev": 11,
+    "status": 2
+   },
+   "controls": {
+    "floor3f-0": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      86.2638650393959,
+      12.165021668714251,
+      -10.681659788325064
+     ],
+     "err_m": 0.0349783312857479,
+     "err_components": [
+      -0.0349783312857479
+     ],
+     "tri_angle_deg": 4.912131515054877,
+     "tri_views": 8,
+     "tri_rms_px": 1.0247979753433403
+    },
+    "floor3f-1": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      62.92810854119819,
+      12.213024682677156,
+      -15.490670685245814
+     ],
+     "err_m": 0.013024682677157173,
+     "err_components": [
+      0.013024682677157173
+     ],
+     "tri_angle_deg": 10.54072421485611,
+     "tri_views": 7,
+     "tri_rms_px": 0.7088277248586369
+    },
+    "floor3f-2": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      78.66786290501497,
+      12.159701051042056,
+      -24.44123449944938
+     ],
+     "err_m": 0.04029894895794328,
+     "err_components": [
+      -0.04029894895794328
+     ],
+     "tri_angle_deg": 28.069711572336363,
+     "tri_views": 8,
+     "tri_rms_px": 1.0889066906863332
+    },
+    "floor3f-3": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      85.12770186830181,
+      12.296381611699758,
+      4.661711245748115
+     ],
+     "err_m": 0.09638161169975845,
+     "err_components": [
+      0.09638161169975845
+     ],
+     "tri_angle_deg": 6.378862840437218,
+     "tri_views": 5,
+     "tri_rms_px": 1.1016104752019187
+    },
+    "floor3f-4": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      90.86296249453696,
+      12.211419835355485,
+      -2.6951535895399816
+     ],
+     "err_m": 0.011419835355486185,
+     "err_components": [
+      0.011419835355486185
+     ],
+     "tri_angle_deg": 2.049977260671007,
+     "tri_views": 6,
+     "tri_rms_px": 0.6922661736693763
+    },
+    "floor3f-5": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      71.25605854593935,
+      12.21185482813556,
+      -19.236638757117007
+     ],
+     "err_m": 0.01185482813556149,
+     "err_components": [
+      0.01185482813556149
+     ],
+     "tri_angle_deg": 3.7810669558675745,
+     "tri_views": 8,
+     "tri_rms_px": 0.985895387456637
+    },
+    "floor3f-6": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      78.00073213835057,
+      12.158101791647333,
+      -13.76401606223407
+     ],
+     "err_m": 0.041898208352666444,
+     "err_components": [
+      -0.041898208352666444
+     ],
+     "tri_angle_deg": 14.198676030003188,
+     "tri_views": 8,
+     "tri_rms_px": 0.5808093786893304
+    },
+    "floor3f-7": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      82.21679882512359,
+      12.250981604748297,
+      -3.903043811122033
+     ],
+     "err_m": 0.050981604748297826,
+     "err_components": [
+      0.050981604748297826
+     ],
+     "tri_angle_deg": 5.38078976333802,
+     "tri_views": 8,
+     "tri_rms_px": 0.6850673793732172
+    },
+    "floor3f-8": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      67.01496261582156,
+      12.230841847860738,
+      -9.237058381225562
+     ],
+     "err_m": 0.030841847860738625,
+     "err_components": [
+      0.030841847860738625
+     ],
+     "tri_angle_deg": 4.426373103586005,
+     "tri_views": 5,
+     "tri_rms_px": 0.7304409741315326
+    },
+    "floor3f-9": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      83.7575787570002,
+      12.184872728279824,
+      -19.814381760561332
+     ],
+     "err_m": 0.015127271720174917,
+     "err_components": [
+      -0.015127271720174917
+     ],
+     "tri_angle_deg": 2.924983422296165,
+     "tri_views": 6,
+     "tri_rms_px": 0.26709738883352097
+    },
+    "floor3f-10": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      67.25310489404893,
+      12.273474643303466,
+      -17.158101193881556
+     ],
+     "err_m": 0.07347464330346654,
+     "err_components": [
+      0.07347464330346654
+     ],
+     "tri_angle_deg": 5.07100422729928,
+     "tri_views": 8,
+     "tri_rms_px": 1.1604095934574092
+    },
+    "floor3f-11": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      83.12578342838177,
+      12.283630971946016,
+      -0.11180509121155602
+     ],
+     "err_m": 0.08363097194601643,
+     "err_components": [
+      0.08363097194601643
+     ],
+     "tri_angle_deg": 3.830460219780471,
+     "tri_views": 6,
+     "tri_rms_px": 0.34643719143266005
+    },
+    "floor3f-12": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      80.79552284907093,
+      12.209644958355064,
+      -21.76973966521303
+     ],
+     "err_m": 0.009644958355064404,
+     "err_components": [
+      0.009644958355064404
+     ],
+     "tri_angle_deg": 12.297593522900208,
+     "tri_views": 8,
+     "tri_rms_px": 0.9721167693267941
+    },
+    "floor3f-13": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      81.48252149040496,
+      12.190955012278247,
+      -7.066249241126364
+     ],
+     "err_m": 0.009044987721752662,
+     "err_components": [
+      -0.009044987721752662
+     ],
+     "tri_angle_deg": 11.562760576205159,
+     "tri_views": 8,
+     "tri_rms_px": 0.6293519461175978
+    },
+    "floor3f-14": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      67.12116325884936,
+      12.242420002051803,
+      -19.951056472920865
+     ],
+     "err_m": 0.04242000205180396,
+     "err_components": [
+      0.04242000205180396
+     ],
+     "tri_angle_deg": 1.9003405070555088,
+     "tri_views": 5,
+     "tri_rms_px": 0.8270121222413763
+    },
+    "floor3f-15": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point in the food-court region, 3F floor Y 12.2 [INFERENCE: dominant horizontal layer 1.0-1.25 u below the cameras]",
+     "obs": [],
+     "triangulated": [
+      88.06967542408776,
+      12.24159088608525,
+      -12.793883670796369
+     ],
+     "err_m": 0.041590886085250744,
+     "err_components": [
+      0.041590886085250744
+     ],
+     "tri_angle_deg": 8.773351141787186,
+     "tri_views": 6,
+     "tri_rms_px": 1.28715030968482
+    },
+    "cam:ry2/t00178000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 1.8407638656982006,
+     "center_uvy": [
+      18.400130449497652,
+      76.05854926458045,
+      9.428298838948924
+     ],
+     "note": "sfmcmp-ry2-0-000027.png.json: Unity render pose of the old 2 fps model ry2-0 (4-5 anchor fit)",
+     "forward_err_deg": 5.91063327998601
+    },
+    "cam:ry2/t00187000.jpg": {
+     "kind": "camera",
+     "role": "heldout",
+     "err_m": 1.0882225784193855,
+     "center_uvy": [
+      15.203169171910169,
+      75.50069500055953,
+      11.311603816809516
+     ],
+     "note": "sfmcmp-ry2-0-000045.png.json: Unity render pose of the old 2 fps model ry2-0 (4-5 anchor fit)",
+     "forward_err_deg": 7.751615298479274
+    },
+    "cam:ry2/t00207000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.43673007376597883,
+     "center_uvy": [
+      7.390171809260535,
+      68.01498553753943,
+      13.28162691364708
+     ],
+     "note": "sfmcmp-ry2-0-000085.png.json: Unity render pose of the old 2 fps model ry2-0 (4-5 anchor fit)",
+     "forward_err_deg": 6.302691187998088
+    },
+    "cam:ry2/t00212000.jpg": {
+     "kind": "camera",
+     "role": "heldout",
+     "err_m": 0.3068096622256153,
+     "center_uvy": [
+      5.707611214202434,
+      67.38821339447179,
+      13.31010970253554
+     ],
+     "note": "sfmcmp-ry2-0-000095.png.json: Unity render pose of the old 2 fps model ry2-0 (4-5 anchor fit)",
+     "forward_err_deg": 5.619067453571862
+    },
+    "cam:ry2/t00312000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.802217024812985,
+     "center_uvy": [
+      9.852922106468313,
+      77.66376203115144,
+      13.218844366827422
+     ],
+     "note": "sfmcmp-ry2-2-000295.png.json: Unity render pose of the old 2 fps model ry2-2 (4-5 anchor fit)",
+     "forward_err_deg": 4.331332238832846
+    },
+    "cam:ry2/t00316000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.8468138889360106,
+     "center_uvy": [
+      12.305466631457062,
+      77.55691308090042,
+      12.78278759195896
+     ],
+     "note": "sfmcmp-ry2-2-000303.png.json: Unity render pose of the old 2 fps model ry2-2 (4-5 anchor fit)",
+     "forward_err_deg": 4.192082403129512
+    },
+    "cam:ry2/t00319000.jpg": {
+     "kind": "camera",
+     "role": "heldout",
+     "err_m": 0.7609195480911795,
+     "center_uvy": [
+      13.440396145912327,
+      77.55890888259795,
+      12.213635909231842
+     ],
+     "note": "sfmcmp-ry2-2-000309.png.json: Unity render pose of the old 2 fps model ry2-2 (4-5 anchor fit)",
+     "forward_err_deg": 4.9247370878796435
+    },
+    "cam:ry2/t00322000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.5361930344454605,
+     "center_uvy": [
+      14.352030584117006,
+      77.66869179420675,
+      11.650534294615994
+     ],
+     "note": "sfmcmp-ry2-2-000315.png.json: Unity render pose of the old 2 fps model ry2-2 (4-5 anchor fit)",
+     "forward_err_deg": 5.114555226677111
+    },
+    "cam:ry2/t00329500.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.4854267439518958,
+     "center_uvy": [
+      17.022476048816834,
+      78.06235902379899,
+      10.096321375158299
+     ],
+     "note": "sfmcmp-ry2-2-000330.png.json: Unity render pose of the old 2 fps model ry2-2 (4-5 anchor fit)",
+     "forward_err_deg": 4.736625082670347
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "schema": "chooguard.rrw-heldout-thresholds.v2",
+ "supersedes": "heldout-thresholds.json (v1)",
+ "whyChanged": "v1 design (GATE1-only fit) is NOT IDENTIFIABLE: 27 gravity-constrained multi-start point-to-mesh fits to MainShell at GATE1 converge to scales 5.0-7.9 with equal support (480-743 pairs, median 0.015-0.047 u) and equal 2D edge scores (chamfer 4.05-4.56 px), while the implied start-camera position spans >30 u (sfm/registration-fit.json, sfm/registration-fit-scores.json). The central end alone is also not identifiable (no class-a vertical plane with lane support: right-approach-wall 0 pts, pier V- face not visible; cross-video tie to the March model has no consensus: sfm/cross-video-march*.json). No v1 held-out metric was computed.",
+ "writtenBefore": "any held-out evaluation of the v2 fit",
+ "fitDesign": "gravity from plumb (even-index VP frames, sfm/plumb.json) + 5-DOF (yaw, scale, t) fit to (a) the class-a st-artbox-terminal-pier U+ vertical edge (UV 5.53,-22.64), observed as LSD image lines in lane frames 000052/55/58/61 and triangulated as one vertical line in the lane model, and (b) preserved MainShell triangles at GATE1 (point-to-mesh, lane points seen in frames >= 000200).",
+ "heldOut": {
+  "central-low-ceiling": {"type": "class-a-plane", "what": "cl-low-suspended-ceiling (officeFit Y~2.231) signed distance of lane points in its bounds (+0.3 u)", "pass": "n>=10, |median| <= 0.10 u, p95 |d| <= 0.25 u"},
+  "plumb-odd-frames": {"type": "plumb", "what": "odd-index VP frames vs registered vertical", "pass": "median <= 1.0 deg, p95 <= 2.0 deg"},
+  "floor-diagnostic": {"type": "floor-diagnostic", "what": "floor-layer Y of lane points per 40-frame segment along the walk (Ground_Floor Y=0 generated fill; tests vertical drift only)", "pass": "every segment |median Y| <= 0.10 u"},
+  "gate1-split": {"type": "source-control", "what": "refit with GATE1 points from frames 230-258 (+pier), residual of GATE1 points first seen in frames 200-229 to MainShell", "pass": "median <= 0.06 u, p95 <= 0.20 u"},
+  "cross-video-mJrJ8": {"type": "cross-video", "what": "mJrJ8ugxlqA (2020-12) frames localized in the lane model: registered camera heights", "pass": "report only (localization is weak: few frames, unstable focal)"}
+ },
+ "acceptance": "status 'accepted' only if central-low-ceiling, plumb-odd-frames, floor-diagnostic and gate1-split all pass. Standing limit: horizontal drift between the two fitted ends is NOT independently checked by any held-out (no source control is visible mid-walk)."
+}

@@ -1,0 +1,692 @@
+{
+ "schema": "chooguard.interior-enhance-report.v1",
+ "lane": "EnhanceBox2F",
+ "plan": ".planning/2026-09-23-video-twin/majibang-plan.json",
+ "liveGeometry": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json",
+ "generator": ".planning/2026-09-24-interior-twin/specs/enhance/make_2f_box_enhance.py",
+ "specs": {
+  "2f-box-enhance.json": {
+   "root": "실내 트윈 마감/2F 박스 보강",
+   "elements": 22,
+   "types": {
+    "FloorFinish": 1,
+    "DoorSet": 6,
+    "WallCladding": 3,
+    "WallSign": 3,
+    "Fixture": 8,
+    "DisplayBoard": 1
+   },
+   "trianglesEstimate": 11826,
+   "lights": 0
+  },
+  "2f-bridge-enhance.json": {
+   "root": "실내 트윈 마감/2F 연결 보강",
+   "elements": 1,
+   "types": {
+    "FloorFinish": 1
+   },
+   "trianglesEstimate": 24,
+   "lights": 0
+  }
+ },
+ "trianglesPerElement": {
+  "2f-box-enhance.json": {
+   "B-ENH-FLOOR-hall-0": 348,
+   "B-ENH-GATE-doors-inner-1": 320,
+   "B-ENH-GATE-doors-inner-2": 320,
+   "B-ENH-GATE-doors-inner-3": 320,
+   "B-ENH-GATE-doors-outer-1": 320,
+   "B-ENH-GATE-doors-outer-2": 320,
+   "B-ENH-GATE-doors-outer-3": 320,
+   "B-ENH-GATE-upper-wall": 1172,
+   "B-ENH-GATE-exit-pictogram-1": 60,
+   "B-ENH-GATE-exit-pictogram-2": 60,
+   "B-ENH-GATE-exit-pictogram-3": 60,
+   "B-ENH-GATE-speaker-1": 14,
+   "B-ENH-GATE-speaker-2": 14,
+   "B-ENH-GATE-locker-standee": 90,
+   "B-ENH-TREE-D-cctv-1": 210,
+   "B-ENH-TREE-D-cctv-2": 210,
+   "B-ENH-TREE-B-cctv-1": 210,
+   "B-ENH-BAND-ribs": 3220,
+   "B-ENH-WING-ribs": 4004,
+   "B-ENH-WING-departure-board": 130,
+   "B-ENH-ESC-safety-stand": 90,
+   "B-ENH-ESC-speaker-storyway": 14
+  },
+  "2f-bridge-enhance.json": {
+   "BR-ENH-FLOOR-0": 24
+  }
+ },
+ "fixedExisting": {
+  "file": ".planning/2026-09-24-interior-twin/specs/box-3f/make_box_3f.py -> box-hall.json",
+  "changes": [
+   "B-AED-ESC: WallSign (green board) -> Fixture kind aed, mount wall, same point (29.0, 44.6) and centre y 8.15 (G-B23)",
+   "WGEO geometry-after4 (meshes deleted) -> geometry-after11 minus every 실내 트윈 마감/ kit root; regenerated 3f.json, 3f-storefronts.json, box-storefronts.json byte-identical, bridge.json/box-hall.json differ only in that evidence path (+ the AED)",
+   "boxgeo.py: Scene(exclude=...) option and a wall/column Fixture volume model",
+   "SF-3F-부산옥 (3f-storefronts.json), requested by Enhance3F: fascia board #8E9398 (grey ribbed band, RY2 211-212 s), ink white, signAt 7.5 / signWidth 2.2 (logo triangulated at b 34.0; specs/enhance/3f-work/measurements.json)"
+  ],
+  "rebuild": "box-hall.json (root 실내 트윈 마감/2F 박스, AED; rebuilt by Main) and 3f-storefronts.json (root 실내 트윈 마감/3F 점포, 부산옥 fascia); bridge.json optional (evidence string only)"
+ },
+ "builderRequests": [
+  {
+   "target": "AgentScripts/MajibangBuilder.cs Lantern() (builder hall structure; Main)",
+   "gap": "G-B07 / BL-09",
+   "change": "frame material dark bronze (#2B2F33) instead of Tube_White; tapered base cone under the panes (radius 1.15 -> .5 over .6); panes warm translucent (emissive ~#FFE2B0) instead of the white led material",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/compare/photos-hall.jpg bodamew_004 / best_pb_han_023",
+    ".planning/2026-09-23-video-twin/compare/photos-frontage.jpg workerjj_010 / werejg333_007"
+   ]
+  },
+  {
+   "target": "AgentScripts/MajibangBuilder.cs SecondFloorExtras() info desk (Main)",
+   "gap": "G-B09 / G-B10 / BL-12",
+   "change": "single-sided \"KORAIL 부산역\" ring lettering and one 철도이용안내 lightbox on the customer side only (the ±u Sign pairs render mirrored text on the inner faces and an edge-on back board = the \"fin\"); KORAIL logo + blue \"K\" plaque on the body; counter monitors / acrylic screens. Alternative: plan flag secondFloorExtras.info.kit=true to skip the builder desk so this lane can emit a kit Counter + ring canopy",
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-07-03_tom2410_-224335650269_008.jpg"
+   ]
+  },
+  {
+   "target": "AgentScripts/MajibangBuilder.cs KorailBench() (Main)",
+   "gap": "G-B11 / BL-27",
+   "change": "stainless U grab bar lying on each seat (tube r .015, .5 x .12), KORAIL decal on the legs, one consistent wood material/UV (black at eye level vs brown from above)",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/compare/photos-seating-desk.jpg unna.kr-58_005"
+   ]
+  },
+  {
+   "target": "AgentScripts/MajibangBuilder.cs wallPanels TexQuad (Main)",
+   "gap": "G-B17 / BL-26",
+   "change": "single-sided (Cull Back) panel material or a dark backer between the back-to-back escalator-foot signs sign_Tickets_1F / sign_FoodCourt_Tickets (and the 3F band tenant boards)",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/sfmcmp-ry2-2-000330.png"
+   ]
+  }
+ ],
+ "planRequests": [],
+ "findings": [
+  {
+   "what": "unguarded floor edge along the hall west side",
+   "detail": "the box floor cells stop at b -17.3 for a 18-55 and the source box west wall starts at y 12.2, so at 2F the hall opens onto a floorless 6.5 u trench (box b -23.8..-17.3) under the seam roof (y 12.1) with the main-building north wall behind it; the bridge floor also ends open at station u 16.5 (v 12.5-16.6). No footage shows what closes it (wall, glazing or floor), so nothing is built; decision for Main/user: extend plan cells over the trench (region limit only, the cell rule holds there) or guard the edge [INFERENCE].",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json sections y 8.0 and a 35 (box frame)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json basis (region limit)"
+   ]
+  },
+  {
+   "what": "walk route crosses a unit",
+   "detail": "route-2f-main-to-box-hall segment (2,16)->(10,30) runs 8.1 u through the 올리브영 unit (station u 4-11, v 18-26.5): Shop_올리브영_Walls and a GONDOLA1 fixture lie inside its .3 buffer at y 7.3-9.0. Nothing of this lane is near it (nearest new obstacle 34.6 u away); the route needs a waypoint around the unit: (2,16)->(2,27)->(10,30)->(20,40) has no live triangles inside a .6 corridor at y 7.3-9.0 (checked on geometry-after11).",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-implementation/walks/route-2f-main-to-box-hall.json",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json"
+   ]
+  },
+  {
+   "what": "gate sill groove",
+   "detail": "the 1 m cell staircase leaves a .3-.45 wide groove at y 6.8 in front of gate doors 1/2 (a 69.5-69.95); B-ENH-FLOOR closes it visually only (colliders unchanged)"
+  },
+  {
+   "what": "emptiness blobs (audit/metrics-before.json, corrected)",
+   "detail": "432 u2 centred station (27.8,28.7) = box (30.4,-6.8): west aisle between the raised-hall edge (b 0) and the trench, under the flat source roof at y 17.2. Footage (RY2 42-59 s) suggests a shop row under the west LED band but the board-registered plan has no units there and RY2 36-59 s is outside the registered SfM models -> not built (c). 374 u2 (5.6,74.7) = box (11.6,40.7) and 89 u2 (-7.4,47.0) = box (-3.4,14.0): circulation under the 3F wing/corner, open in the footage available; 34 u2 (7.4,34.6) = box (10.4,.6): aisle in front of 부산별빛샌드. The seating block (formerly 1,696 u2) is furnished (benches were below the old section heights)."
+  }
+ ],
+ "corridorClearance": [
+  {
+   "id": "B-ENH-GATE-locker-standee",
+   "nearestRoute": "route-2f-main-to-box-hall",
+   "distance": 52.59,
+   "clear": true
+  },
+  {
+   "id": "B-ENH-ESC-safety-stand",
+   "nearestRoute": "route-2f-main-to-box-hall",
+   "distance": 34.55,
+   "clear": true
+  }
+ ],
+ "backlog": [
+  {
+   "id": "G-BR01",
+   "element": "soffit edge where the low ceiling meets the hall",
+   "statusInEvidence2f": "absent",
+   "status": "unchanged-already-built",
+   "what": "bridge soffit: BR-SEAM-ceiling-0 (600 grid at 12.05), BR-SEAM-soffit-edge (dark slats 10.47-12.05), BR-WING-edge-closure (bridge.json, built 2026-09-25 08:03); new: BR-ENH-FLOOR polished floor",
+   "elements": [
+    "BR-ENH-FLOOR-0"
+   ],
+   "positionBasis": "source roof top y 12.10 (single-sided) and the 2f-main tier-a low ceiling edge v 12.5",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/box-3f/bridge.json",
+    ".planning/2026-09-24-interior-twin/specs/box-3f/bridge.receipt.json"
+   ],
+   "reason": "hazard stripe / blue 타는 곳 sign / panel-clad columns stay c: the stripe frame (RY2 ~540 s) precedes the bakery and the box entry (~582 s), so it belongs to a main-building void edge; no column in the source y-9 slice"
+  },
+  {
+   "id": "G-B01",
+   "element": "Under-band low ceiling over shop strip 7-11",
+   "statusInEvidence2f": "simplified",
+   "status": "unchanged-already-built",
+   "what": "under-band ceiling: B-UNDERBAND-ceiling-corridor-0 (gypsum, 600 grid LED panels, 3800 K spots), coffer tray +.3 with step faces, hall-edge bulkhead 9.9-11.25 (box-hall.json)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/box-3f/box-hall.json",
+    ".planning/2026-09-24-interior-twin/specs/box-3f/box-hall.receipt.json"
+   ],
+   "reason": "round speaker/diffuser discs and the dome CCTV in the ceiling: counts/positions unmeasured (e5v 0:06-0:15 is not registered) -> c"
+  },
+  {
+   "id": "G-B02",
+   "element": "Round white strip-edge columns",
+   "statusInEvidence2f": "simplified",
+   "status": "still-c",
+   "what": "round white strip-edge columns",
+   "reason": "outside the registered SfM models (BL-34); only column C (48.2, 44.4) is measured and built"
+  },
+  {
+   "id": "G-B03",
+   "element": "Lattice roof deck underside + skylight strips (roof, closest type)",
+   "statusInEvidence2f": "wrong",
+   "status": "unchanged-already-built",
+   "what": "white deck liner + skylight strips (builder hallAppearance \"white\": Hall_DeckLiner, Hall_Skylights)",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json hallAppearance",
+    "AgentScripts/MajibangBuilder.cs HallDeck()"
+   ]
+  },
+  {
+   "id": "G-B04",
+   "element": "Lattice truss members / clerestory bowstring (roof structure, closest type)",
+   "statusInEvidence2f": "simplified",
+   "status": "unchanged-already-built",
+   "what": "white round-section trusses on every hallStructure line (hallAppearance white)",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json hallAppearance",
+    "AgentScripts/MajibangBuilder.cs Truss()"
+   ],
+   "reason": "clerestory bowstring arch: plan hallStructure.clerestories is empty (no measured arch line) -> c"
+  },
+  {
+   "id": "G-B05",
+   "element": "Tree-column trunk cladding and fixtures",
+   "statusInEvidence2f": "simplified",
+   "status": "built-new",
+   "what": "trunks are already white (builder Tube_White); new: CCTV cameras on stainless ring clamps on trunk D (pair) and trunk B (one)",
+   "elements": [
+    "B-ENH-TREE-D-cctv-1",
+    "B-ENH-TREE-D-cctv-2",
+    "B-ENH-TREE-B-cctv-1"
+   ],
+   "positionBasis": "hallStructure.treeColumns D/B (SfM, tier b) + photo-relative heights [INFERENCE]",
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2025-09-27_best_pb_han-224023902293_017.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-07-03_tom2410_-224335650269_008.jpg"
+   ],
+   "reason": "speakers and sign brackets on trunks: not seen in the reviewed photos -> not built; columns A/E: no photo of devices"
+  },
+  {
+   "id": "G-B06",
+   "element": "Column-foot drum/plinth with monitor",
+   "statusInEvidence2f": "absent",
+   "status": "still-c",
+   "what": "column-foot drum with monitor (column A per wereig333_006, 2025-01)",
+   "reason": "drum diameter/height unmeasured and 2025-01 only (not in 2026 photos); a kit Column sleeve around the builder trunk would be a free-standing volume enclosing the trunk (checker error). Needs a sleeve option or a builder change"
+  },
+  {
+   "id": "G-B07",
+   "element": "Tree-column lanterns",
+   "statusInEvidence2f": "simplified",
+   "status": "unchanged-already-built",
+   "what": "lanterns: builder Lantern() already draws octagonal glass panes with a frame and a warm point light (Hall_Lantern_Glass / _Frame / _Light)",
+   "evidence": [
+    "AgentScripts/MajibangBuilder.cs Lantern()"
+   ],
+   "reason": "dark metal frame + tapered base + warm translucent body are builder changes (requested)",
+   "requests": [
+    "builder Lantern(): frame material dark bronze (#2B2F33) instead of Tube_White; add a tapered base cone (radius 1.15 -> .5 over .6 m) under the panes; panes warm translucent (emissive ~#FFE2B0) instead of the white led material"
+   ]
+  },
+  {
+   "id": "G-B08",
+   "element": "Cylindrical LED screen on a column (screen, closest type)",
+   "statusInEvidence2f": "absent",
+   "status": "still-c",
+   "what": "cylindrical LED screen on a column",
+   "reason": "which column is unresolved (BL-34)"
+  },
+  {
+   "id": "G-B09",
+   "element": "KORAIL info desk body (info desk, closest type)",
+   "statusInEvidence2f": "simplified",
+   "status": "still-c",
+   "what": "info desk counter equipment/logo",
+   "reason": "builder desk (SecondFloorExtras.info); a kit Counter would duplicate the builder body -> builder change requested",
+   "requests": [
+    "builder SecondFloorExtras.info: KORAIL logo + blue accessibility \"K\" plaque on the body front; monitors/acrylic screens on the counter (or a plan flag info.kit=true so the lane can emit a kit Counter + canopy instead)"
+   ]
+  },
+  {
+   "id": "G-B10",
+   "element": "Info-desk canopy ring",
+   "statusInEvidence2f": "wrong",
+   "status": "still-c",
+   "what": "info desk canopy lettering",
+   "reason": "builder Sign() pairs (±u) are double-sided TextMesh -> mirrored text on the inner faces; builder change requested",
+   "requests": [
+    "builder SecondFloorExtras.info: emit the \"KORAIL 부산역\" ring lettering and the 철도이용안내 lightbox only on the customer side (single-sided text, no back text); the \"fin\" is the edge-on back board of the second Sign pair"
+   ]
+  },
+  {
+   "id": "G-B11",
+   "element": "Waiting-hall bench block",
+   "statusInEvidence2f": "simplified",
+   "status": "still-c",
+   "what": "bench dividers/logo/material",
+   "reason": "builder seating block; kit Bench (shell seats) does not match the KORAIL wood-slab bench; builder change requested",
+   "requests": [
+    "builder KorailBench(): one stainless U grab bar (tube r .015, 0.5 x .12 m) lying on the seat centre, KORAIL decal on each leg, and one consistent wood material/UV (eye-level black vs top-down brown fault)"
+   ]
+  },
+  {
+   "id": "G-B12",
+   "element": "Hall floor and guidance markings",
+   "statusInEvidence2f": "simplified",
+   "status": "built-new",
+   "what": "polished speckled granite overlay over the whole box floor, yellow dot pads at the 2F-3F escalator foot, tactile line along the north gate glazing",
+   "elements": [
+    "B-ENH-FLOOR-hall-0"
+   ],
+   "positionBasis": "plan cells (builder floor extent) / escalator source footprint / gate inner door line (source mesh)",
+   "reason": "orange directional lines and the locker floor decal: routes unmeasured -> c"
+  },
+  {
+   "id": "G-B13",
+   "element": "North gate-wall upper finish",
+   "statusInEvidence2f": "wrong",
+   "status": "fixed",
+   "what": "gate upper wall: light grey horizontal panels over the source header and up to 12.9 behind the floating DEPARTURES boards, two round speakers",
+   "elements": [
+    "B-ENH-GATE-upper-wall",
+    "B-ENH-GATE-speaker-1",
+    "B-ENH-GATE-speaker-2"
+   ],
+   "positionBasis": "source inner door line a 69.94 (tier b); top [INFERENCE] 12.64-13.22",
+   "reason": "the 2023 continuous black band is superseded by the 2026-09 photo (grey panels, black board cases only)"
+  },
+  {
+   "id": "G-B14",
+   "element": "West/NW LED screen band",
+   "statusInEvidence2f": "simplified",
+   "status": "still-c",
+   "what": "west/NW LED band screens 6-8",
+   "reason": "the band (edgeBands \"West bulkhead band\" b 0.05, a 30-60) and 5 SfM-measured screens exist; the extra 2-3 screens have no registered position (RY2 48-59 s is outside SfM models 0/2)"
+  },
+  {
+   "id": "G-B15",
+   "element": "Green departure boards beside the escalators",
+   "statusInEvidence2f": "simplified",
+   "status": "built-new",
+   "what": "second green departure board on the wing slab-edge band next to board_Arrival",
+   "elements": [
+    "B-ENH-WING-departure-board"
+   ],
+   "positionBasis": "plan edgeBands wing band (SfM face) + photo-relative adjacency [INFERENCE ±.5]"
+  },
+  {
+   "id": "G-B16",
+   "element": "Small wayfinding signs (toilet, lockers, 타는 곳 arrows)",
+   "statusInEvidence2f": "simplified",
+   "status": "unchanged-already-built",
+   "what": "toilet sign under the wing band (box-hall.json B-WAY-toilet-under-wing-band) and the 타는 곳 pairs on columns A/E (wallPanels)",
+   "reason": "\"↑ 타는 곳/화장실\" by 부산별빛샌드 (depth ambiguous: band plane a 16 vs shop front a 13.6), \"물품보관함 →\" and the many 타는 곳/Tickets signs have no positions -> c"
+  },
+  {
+   "id": "G-B17",
+   "element": "Escalator-foot sign seen from the down escalator",
+   "statusInEvidence2f": "wrong",
+   "status": "still-c",
+   "what": "mirrored escalator-foot sign",
+   "reason": "builder wallPanels sign_Tickets_1F / sign_FoodCourt_Tickets (back-to-back, .1 apart); the mirror is the back face of a double-sided panel material",
+   "requests": [
+    "builder WallPanel TexQuad: single-sided (Cull Back) panel material or an opaque dark backer between the two back-to-back escalator-foot signs; same for the 3F band tenant boards"
+   ]
+  },
+  {
+   "id": "G-B18",
+   "element": "Shop strip 7-10 fronts/fascias",
+   "statusInEvidence2f": "simplified",
+   "status": "unchanged-already-built",
+   "what": "kit storefronts with fascia textures for strip 7-10 (box-storefronts.json)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/box-3f/box-storefronts.json"
+   ],
+   "reason": "posters/standees and display lighting: positions unmeasured; tenant epoch decision CX-04 pending"
+  },
+  {
+   "id": "G-B19",
+   "element": "Shop interiors and back walls",
+   "statusInEvidence2f": "wrong",
+   "status": "still-c",
+   "what": "fitted shop interiors",
+   "reason": "builder ShopFixtures fill the units; brand-specific fit-out needs the tenant epoch decision (CX-04) and interior footage registration"
+  },
+  {
+   "id": "G-B20",
+   "element": "StoryWay flank facing the escalators",
+   "statusInEvidence2f": "simplified",
+   "status": "unchanged-already-built",
+   "what": "StoryWay flank sign panel (wallPanels sign_StoryWay_CVS_3F) and kit StoryWay front",
+   "reason": "black horizontal-ribbed flank cladding: the flank is the builder unit wall (Shop_편의점_StoryWay_Walls); a kit WallCladding would cover the sign panel and the AED -> not built (low value vs risk); StoryWay logo lightbox: no texture"
+  },
+  {
+   "id": "G-B21",
+   "element": "Wing and north-side shops (부산별빛샌드, 부산기장특산물, 아메리칸트레일러)",
+   "statusInEvidence2f": "simplified",
+   "status": "unchanged-already-built",
+   "what": "kit storefronts with fascia textures (부산별빛샌드, 부산기장특산물, 아메리칸트레일러)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/box-3f/box-storefronts.json"
+   ]
+  },
+  {
+   "id": "G-B22",
+   "element": "2F→3F escalator pair balustrade and foot",
+   "statusInEvidence2f": "simplified",
+   "status": "built-new",
+   "what": "escalator-safety notice stand at the foot + yellow dot pads (floor element)",
+   "elements": [
+    "B-ENH-ESC-safety-stand",
+    "B-ENH-FLOOR-hall-0"
+   ],
+   "reason": "balustrade/skirt stickers/bollards: FPSWorld escalator is protected (swap to a kit Escalator = Main decision) -> c"
+  },
+  {
+   "id": "G-B23",
+   "element": "AED cabinet (AED wall cabinet, closest type)",
+   "statusInEvidence2f": "absent",
+   "status": "fixed",
+   "what": "AED: box-hall.json B-AED-ESC changed from a green WallSign board to a kit Fixture aed cabinet (same position); wall speaker above it added",
+   "elements": [
+    "B-AED-ESC (box-hall.json)",
+    "B-ENH-ESC-speaker-storyway"
+   ]
+  },
+  {
+   "id": "G-B24",
+   "element": "Safety/surveillance devices (CCTV, speakers, exit pictograms, extinguishers; closest type)",
+   "statusInEvidence2f": "absent",
+   "status": "built-new",
+   "what": "CCTV on trunks D/B, gate-wall speakers, StoryWay speaker, green exit pictograms over the gate doors",
+   "elements": [
+    "B-ENH-TREE-D-cctv-1",
+    "B-ENH-TREE-D-cctv-2",
+    "B-ENH-TREE-B-cctv-1",
+    "B-ENH-GATE-speaker-1",
+    "B-ENH-GATE-speaker-2",
+    "B-ENH-ESC-speaker-storyway",
+    "B-ENH-GATE-exit-pictogram-1",
+    "B-ENH-GATE-exit-pictogram-2",
+    "B-ENH-GATE-exit-pictogram-3"
+   ],
+   "reason": "extinguishers: gameplay 소화기 FE-001..012 are not moved (BL-35 blocker) and the ticket-machine bay may be 2F main -> c"
+  },
+  {
+   "id": "G-B25",
+   "element": "Freestanding hall equipment (AC cabinets, pop-up islands, standees; closest type)",
+   "statusInEvidence2f": "absent",
+   "status": "still-c",
+   "what": "AC cabinets, island counters, standees, pop-up tents",
+   "reason": "free-standing, positions unmeasured; tents are 2023-only (epoch)"
+  },
+  {
+   "id": "G-X07",
+   "element": "Gate-line glazing and door leaves ('타는 곳')",
+   "statusInEvidence2f": "simplified",
+   "status": "built-new",
+   "what": "automatic glass door sets (stainless frames) in all 3 source openings on both vestibule lines",
+   "elements": [
+    "B-ENH-GATE-doors-inner-1",
+    "B-ENH-GATE-doors-inner-2",
+    "B-ENH-GATE-doors-inner-3",
+    "B-ENH-GATE-doors-outer-1",
+    "B-ENH-GATE-doors-outer-2",
+    "B-ENH-GATE-doors-outer-3"
+   ],
+   "positionBasis": "source door-leaf openings (tier b)",
+   "reason": "hazard striping on posts: which posts unresolved -> c; 타는 곳/나오는 곳 strips already exist (wallPanels sign_Gate_0/1)"
+  },
+  {
+   "id": "G-X08",
+   "element": "Gate-line fixtures",
+   "statusInEvidence2f": "absent",
+   "status": "built-new",
+   "what": "coin-locker standee against the glass left of door 3",
+   "elements": [
+    "B-ENH-GATE-locker-standee"
+   ],
+   "reason": "red running-text LED boards and blue belt barriers: 2023 only, absent in the 2026-09 photo (epoch-superseded); brochure kiosk and snack-stall menu: photo positions ambiguous against door 2 -> c"
+  },
+  {
+   "id": "G-X09",
+   "element": "Stair heads down to platforms (paid concourse)",
+   "statusInEvidence2f": "simplified",
+   "status": "unchanged-already-built",
+   "what": "platform stair heads beyond the gate line",
+   "reason": "the source stair wells (original-platform-stairs.json) already carry source rails (Layer0_4/5 posted lines at the NE well u 72-80, v 93-97.5); kit teal balustrades would double the protected source rails; navy platform signs exist (wallPanels plat_*); clock/kiosk positions unmeasured -> c. Area is outside the 2F box zone (paid concourse)"
+  },
+  {
+   "id": "G-X10",
+   "element": "Glass elevator shafts in the paid concourse",
+   "statusInEvidence2f": "absent",
+   "status": "still-c",
+   "what": "glass elevator shafts in the paid concourse",
+   "reason": "BL-34 (no positions)"
+  },
+  {
+   "id": "G-X11",
+   "element": "Exit 9 / exit 10 door vestibules (exit doors, closest type)",
+   "statusInEvidence2f": "absent",
+   "status": "still-c",
+   "what": "exit 9/10 vestibules",
+   "reason": "source east wall solid at 2F (no leaf/frame geometry); leaf spans need the Unity east-wall door-leaf ray scan (Main)"
+  },
+  {
+   "id": "G-X12",
+   "element": "Port deck: moving walkway + wood-slat canopy (moving walkway, closest type)",
+   "statusInEvidence2f": "absent",
+   "status": "still-c",
+   "what": "port deck moving walkway",
+   "reason": "outside the building, no positions"
+  },
+  {
+   "id": "G-X13",
+   "element": "Platform level ceiling/floor (below 2F; the stairs end here)",
+   "statusInEvidence2f": "simplified",
+   "status": "still-c",
+   "what": "platform level fit-out",
+   "reason": "below the 2F scope (BL-36)"
+  },
+  {
+   "id": "BL-04",
+   "element": "Exits 9 and 10: door-leaf openings + recessed double glass airlock vestibules, yellow \"9/10 … 나가는 곳\" signs, exit pictograms, mats, on the box east wall",
+   "statusInEvidence2f": "b",
+   "status": "still-c",
+   "what": "exits 9/10",
+   "reason": "see G-X11; blocker: east-wall door-leaf scan (Main, Unity)"
+  },
+  {
+   "id": "BL-07",
+   "element": "North gate line: automatic glass door sets in stainless frames in the 3 source openings, red running-text LED boards, 타는 곳/나오는 곳 sign strips, belt barriers, exit pictograms; light-grey horizontal metal panel upper wall with black board band",
+   "statusInEvidence2f": "b",
+   "status": "built-new",
+   "what": "north gate line: 6 DoorSets, upper wall panels, exit pictograms, speakers, locker standee, tactile line",
+   "elements": [
+    "B-ENH-GATE-doors-inner-1",
+    "B-ENH-GATE-doors-inner-2",
+    "B-ENH-GATE-doors-inner-3",
+    "B-ENH-GATE-doors-outer-1",
+    "B-ENH-GATE-doors-outer-2",
+    "B-ENH-GATE-doors-outer-3",
+    "B-ENH-GATE-upper-wall",
+    "B-ENH-GATE-exit-pictogram-1",
+    "B-ENH-GATE-exit-pictogram-2",
+    "B-ENH-GATE-exit-pictogram-3",
+    "B-ENH-GATE-speaker-1",
+    "B-ENH-GATE-speaker-2",
+    "B-ENH-GATE-locker-standee",
+    "B-ENH-FLOOR-hall-0 (strip)"
+   ]
+  },
+  {
+   "id": "BL-09",
+   "element": "Tree columns: framed glass emissive lanterns (tapered base), trunk ring clamps with CCTV/speakers/sign brackets",
+   "statusInEvidence2f": "b",
+   "status": "built-new",
+   "what": "tree-column CCTV clamps (lantern restyle = builder request, see G-B07)",
+   "elements": [
+    "B-ENH-TREE-D-cctv-1",
+    "B-ENH-TREE-D-cctv-2",
+    "B-ENH-TREE-B-cctv-1"
+   ]
+  },
+  {
+   "id": "BL-12",
+   "element": "KORAIL info desk: remove the canopy fin, single-sided correct lettering, counter equipment/logo",
+   "statusInEvidence2f": "b",
+   "status": "still-c",
+   "what": "info desk fixes",
+   "reason": "builder-owned desk; requests under G-B09/G-B10"
+  },
+  {
+   "id": "BL-16",
+   "element": "Polished speckled granite with dark shopfront bands, yellow tactile paths, orange directional lines to the gates; 3F dark polished granite with black inlay",
+   "statusInEvidence2f": "b",
+   "status": "built-new",
+   "what": "box + bridge polished floor, tactile pads/line",
+   "elements": [
+    "B-ENH-FLOOR-hall-0",
+    "BR-ENH-FLOOR-0"
+   ],
+   "reason": "3F floor is 3F-FLOOR-* (3f.json, unchanged); 2F main floor = EnhanceMain2F"
+  },
+  {
+   "id": "BL-17",
+   "element": "Stair heads to platforms beyond the gate line: stainless tubular handrails, teal glass balustrades, tactile strips, navy direction/platform signs, clocks",
+   "statusInEvidence2f": "b",
+   "status": "unchanged-already-built",
+   "what": "stair heads beyond the gate line",
+   "reason": "see G-X09"
+  },
+  {
+   "id": "BL-23",
+   "element": "Balustrade detail (frameless glass, round stainless rails) and ribbed slab-edge cladding with underside downlights",
+   "statusInEvidence2f": "b",
+   "status": "built-new",
+   "what": "3F slab-edge faces seen from 2F: dark vertical-ribbed cladding on the band and wing edge bands",
+   "elements": [
+    "B-ENH-BAND-ribs",
+    "B-ENH-WING-ribs"
+   ],
+   "reason": "3F-level glass balustrade (thirdFloor.rails) = Enhance3F lane (agreed split); band-underside downlights: the band soffit is a 9 cm gap between the builder band quad and the kit bulkhead (no measured soffit width) -> c"
+  },
+  {
+   "id": "BL-24",
+   "element": "Two-tier band signs and large lit letters behind glass; wing signs from the hall; navy 타는 곳 banners at the wing end",
+   "statusInEvidence2f": "b",
+   "status": "unchanged-already-built",
+   "what": "navy 타는 곳 banners at the wing end = wallPanels sign_Tanungot_EL/ER on tree column E",
+   "reason": "two-tier band signs / wing signs from the hall (G-3F24/25) belong to the Enhance3F lane"
+  },
+  {
+   "id": "BL-26",
+   "element": "Hall wayfinding set, departure boards beside the escalators, west LED band (7-8 screens), fix mirrored escalator-foot sign",
+   "statusInEvidence2f": "b",
+   "status": "built-new",
+   "what": "second departure board beside the escalator top (wing band)",
+   "elements": [
+    "B-ENH-WING-departure-board"
+   ],
+   "reason": "west LED band extra screens (G-B14) and small wayfinding (G-B16) -> c; mirrored sign (G-B17) -> builder request"
+  },
+  {
+   "id": "BL-27",
+   "element": "Bench dividers/logo and consistent material",
+   "statusInEvidence2f": "b",
+   "status": "still-c",
+   "what": "bench dividers/logo",
+   "reason": "builder request under G-B11"
+  },
+  {
+   "id": "BL-35",
+   "element": "Safety/surveillance devices: CCTV and speakers on tree columns and gate wall, exit pictograms over gate/exit doors, extinguisher cabinets/stands [nearest type]",
+   "statusInEvidence2f": "b",
+   "status": "built-new",
+   "what": "CCTV/speakers on evidenced hosts, exit pictograms over the gate doors",
+   "elements": [
+    "B-ENH-TREE-D-cctv-1",
+    "B-ENH-TREE-D-cctv-2",
+    "B-ENH-TREE-B-cctv-1",
+    "B-ENH-GATE-speaker-1",
+    "B-ENH-GATE-speaker-2",
+    "B-ENH-ESC-speaker-storyway",
+    "B-ENH-GATE-exit-pictogram-1",
+    "B-ENH-GATE-exit-pictogram-2",
+    "B-ENH-GATE-exit-pictogram-3"
+   ]
+  }
+ ],
+ "checks": {
+  ".planning/2026-09-24-interior-twin/specs/enhance/2f-box-enhance.json": {
+   "exit": 0,
+   "errors": 0,
+   "warnings": 5,
+   "issues": [
+    {
+     "id": "B-ENH-FLOOR-hall-0",
+     "type": "FloorFinish",
+     "severity": "warning",
+     "check": "floor",
+     "detail": "1/48 base points off floor y7.00: (22.5,77.5)=7.06"
+    },
+    {
+     "id": "B-ENH-GATE-doors-outer-3",
+     "type": "DoorSet",
+     "severity": "warning",
+     "check": "collision",
+     "detail": "door frame y7.05-9.18 touches OfficialStation_-부산역_선로상층부_0 x32"
+    },
+    {
+     "id": "B-ENH-GATE-exit-pictogram-1",
+     "type": "WallSign",
+     "severity": "warning",
+     "check": "collision",
+     "detail": "sign y9.21-9.46 touches OfficialStation_-부산역_선로상층부_0 x4"
+    },
+    {
+     "id": "B-ENH-GATE-exit-pictogram-2",
+     "type": "WallSign",
+     "severity": "warning",
+     "check": "collision",
+     "detail": "sign y9.21-9.46 touches OfficialStation_-부산역_선로상층부_0 x2"
+    },
+    {
+     "id": "B-ENH-GATE-exit-pictogram-3",
+     "type": "WallSign",
+     "severity": "warning",
+     "check": "collision",
+     "detail": "sign y9.21-9.46 touches OfficialStation_-부산역_선로상층부_0 x2"
+    }
+   ]
+  },
+  ".planning/2026-09-24-interior-twin/specs/enhance/2f-bridge-enhance.json": {
+   "exit": 0,
+   "errors": 0,
+   "warnings": 0,
+   "issues": []
+  },
+  ".planning/2026-09-24-interior-twin/specs/box-3f/box-hall.json": {
+   "exit": 0,
+   "errors": 0,
+   "warnings": 0,
+   "issues": []
+  }
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "schema": "chooguard.vertical-circulation.v1",
+ "authoredAt": "2026-09-23",
+ "method": "Project standard VerticalCirculationGenerator escalator pair (30deg, 1.2m landings) + WireEscalatorMotion, 2F 7.0 -> 3F 12.2.",
+ "evidence": {
+  "board": "2F board: escalator icon below 11 편의점, in front of 10 파스쿠찌; 3F board: escalator arrives in the 전문식당가 corridor near the corner (board-scaled u about 14).",
+  "video": "RY2qvE0Tugk 2:47-3:17 (2023-05): boarding beside CAFFE PASCUCCI, rising with the hall on the right, arriving on the corridor with the wing ahead.",
+  "jev": "jev-box-escalator-011 (along the band edge, rising south), jev-3f-dims-013/014 (band slab edge v70)."
+ },
+ "inferred": "SfM-anchored: incline tops at box a 19.2, lanes b 40.8 (up) / 42.9 (down), box-axis heading (yaw -159.67); SfM re-anchor (jev-sfm-reanchor-016 apply 0.96): COLMAP RY2qvE0Tugk models 0 (ascent 177-215 s) and 2 (descent 310-330 s); scale from the 2F plane and 3F eye height, heading = box axis 4.13 deg, translation fitted to the original raised-roof west edge and north wall (hall-measurement.json)",
+ "units": [
+  {
+   "name": "에스컬레이터 맞이방 2F-3F 상행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.2,
+   "pos": [
+    79.5655,
+    7.0,
+    1.2412
+   ],
+   "yaw": -159.67,
+   "clearWidth": 1.15,
+   "stationUV": [
+    23.39,
+    76.06
+   ],
+   "boxAB": [
+    29.41,
+    40.8
+   ]
+  },
+  {
+   "name": "에스컬레이터 맞이방 2F-3F 하행",
+   "kind": "escalator",
+   "bottomY": 7.0,
+   "topY": 12.2,
+   "pos": [
+    81.5403,
+    7.0,
+    0.5113
+   ],
+   "yaw": -159.67,
+   "clearWidth": 1.15,
+   "stationUV": [
+    23.24,
+    78.16
+   ],
+   "boxAB": [
+    29.41,
+    42.9
+   ]
+  }
+ ]
+}

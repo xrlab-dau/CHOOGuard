@@ -1,0 +1,400 @@
+{
+  "schema": "chooguard.upper-source-gauge-recovery.v1",
+  "status": "completed_independent_gate_fit_rejected",
+  "coordinateSystem": {
+    "source": "Original-model UVY, station angle16.2",
+    "intermediate": "SfM arbitrary scale; ENU=(UnityX,UnityZ,UnityY)",
+    "surveyCertification": false
+  },
+  "supportedResults": {
+    "isolatedShopComponent": {
+      "frames": [
+        121,
+        247
+      ],
+      "cameraCount": 127,
+      "pointCount": 14730,
+      "removedBadOrShortTracks": 1673,
+      "maxConsecutiveStepOverMedian": 1.1340091125231782,
+      "originalModelUnchanged": true,
+      "bundleTermination": "NO_CONVERGENCE at max100 iterations (101 reported), mean reprojection0.716604\u21920.684384px; remains provisional despite coherent relative trajectory"
+    },
+    "independentlyResectedGateViews": {
+      "000099.jpg": {
+        "candidateCount": 170,
+        "inliers": 35,
+        "inlierSpanPixels": [
+          163.48880004882812,
+          158.6494903564453
+        ],
+        "inlierRmsPixels": 0.7451459288575422
+      },
+      "000101.jpg": {
+        "candidateCount": 203,
+        "inliers": 61,
+        "inlierSpanPixels": [
+          244.14859008789062,
+          139.41839599609375
+        ],
+        "inlierRmsPixels": 0.4118889894228751
+      },
+      "000103.jpg": {
+        "candidateCount": 219,
+        "inliers": 55,
+        "inlierSpanPixels": [
+          439.6854248046875,
+          148.9254150390625
+        ],
+        "inlierRmsPixels": 0.860992455640478
+      },
+      "000105.jpg": {
+        "candidateCount": 229,
+        "inliers": 65,
+        "inlierSpanPixels": [
+          457.81573486328125,
+          160.7697296142578
+        ],
+        "inlierRmsPixels": 1.043143544490496
+      }
+    },
+    "fixedBankCorrespondences": {
+      "method": "Complete stationary front bank boundary includes transom and fixed sidelight. Not rear auto-sliding aperture or swinging leaves. Original source vertex indices retained. Training-only PnP initialization.",
+      "sourceVertices": {
+        "rTL": {
+          "vertex": 15518,
+          "UVY": [
+            9.997206,
+            -30.7726231,
+            9.699993
+          ]
+        },
+        "rTR": {
+          "vertex": 15445,
+          "UVY": [
+            13.0768251,
+            -30.55305,
+            9.699993
+          ]
+        },
+        "rBL": {
+          "vertex": 60813,
+          "UVY": [
+            9.99721,
+            -30.7726231,
+            6.999996
+          ]
+        },
+        "rBR": {
+          "vertex": 60575,
+          "UVY": [
+            13.0768251,
+            -30.55305,
+            6.999996
+          ]
+        },
+        "lTL": {
+          "vertex": 16102,
+          "UVY": [
+            6.23928,
+            -31.0405235,
+            9.699993
+          ]
+        },
+        "lTR": {
+          "vertex": 16166,
+          "UVY": [
+            9.318914,
+            -30.8209686,
+            9.699993
+          ]
+        },
+        "lBL": {
+          "vertex": 71306,
+          "UVY": [
+            6.239284,
+            -31.0405254,
+            6.999996
+          ]
+        },
+        "lBR": {
+          "vertex": 71542,
+          "UVY": [
+            9.318914,
+            -30.8209686,
+            6.999996
+          ]
+        }
+      },
+      "training": {
+        "count": 6,
+        "rms": 6.138245847839935,
+        "median": 3.988221585592403,
+        "max": 10.362012057270533
+      },
+      "independentHeldout": {
+        "count": 7,
+        "rms": 24.70422168454624,
+        "median": 20.42249337622725,
+        "max": 36.8252666996779
+      },
+      "independentFloorSourceY": 6.860712944506163,
+      "independentPlumbDegrees": 0.3583171762171926,
+      "scale": 11.746200394168422,
+      "accepted": false,
+      "reasons": [
+        "Independent other-bank/other-view correspondences exceed6px RMS"
+      ]
+    }
+  },
+  "rejectedEarlierCorrespondences": {
+    "rearBankCandidate": "Source bank hypotheses on frames124/126 with125 withheld failed first static multi-view check, then independent source/plumb/floor checks. Do not reuse these candidate rear edges as fixed bank controls.",
+    "results": {
+      "inner_bank": {
+        "fitPixels": {
+          "count": 6,
+          "rms": 67.19616422496371,
+          "median": 20.931138094542995,
+          "max": 147.57384104622398
+        },
+        "heldOutSourceCorrespondences": {
+          "count": 3,
+          "rms": 41.573759726780224,
+          "median": 44.106809794680586,
+          "max": 53.44844040472934
+        },
+        "independentPlumbDegrees": 63.519798369783736,
+        "rejectedReasons": [
+          "held-out source image residual exceeds6px",
+          "independently reconstructed public floor differs from original Y7 by more than0.15source units",
+          "independent architecture plumb differs from source vertical by more than1degree"
+        ]
+      },
+      "outer_frame": {
+        "fitPixels": {
+          "count": 6,
+          "rms": 30.696833817647644,
+          "median": 12.450206644679177,
+          "max": 62.56311994809481
+        },
+        "heldOutSourceCorrespondences": {
+          "count": 3,
+          "rms": 35.95029026153818,
+          "median": 31.711668258236816,
+          "max": 53.21492190072272
+        },
+        "independentPlumbDegrees": 39.62227345084416,
+        "rejectedReasons": [
+          "held-out source image residual exceeds6px",
+          "independently reconstructed public floor differs from original Y7 by more than0.15source units",
+          "independent architecture plumb differs from source vertical by more than1degree"
+        ]
+      }
+    },
+    "farViewResectionFailures": {
+      "000093.jpg": {
+        "candidateCount": 131,
+        "status": "rejected",
+        "accepted": false
+      },
+      "000095.jpg": {
+        "candidateCount": 134,
+        "status": "rejected_insufficient_spatial_support",
+        "accepted": false,
+        "inliers": 5,
+        "inlierSpanPixels": [
+          55.079254150390625,
+          5.7573089599609375
+        ],
+        "inlierRmsPixels": 0.22202036193148791
+      },
+      "000097.jpg": {
+        "candidateCount": 147,
+        "status": "rejected_insufficient_spatial_support",
+        "accepted": false,
+        "inliers": 5,
+        "inlierSpanPixels": [
+          51.64044189453125,
+          26.453857421875
+        ],
+        "inlierRmsPixels": 4.270679095272283
+      },
+      "000120.jpg": {
+        "candidateCount": 95,
+        "status": "rejected",
+        "accepted": false
+      }
+    }
+  },
+  "neighboringConnectors": {
+    "evidence": "gauge-recovery/neighboring-connector-investigation.json",
+    "result": "Provenance correction: named FPSWorld escalators at V74.23..79.17 are circulation_generated according to the existing world-audit classifier, not original station meshes. They were rejected and never used for registration. Landing B&C/restroom/elevator geometry was not identified in reviewed HC contact sheets. This does not establish absence of original stairs inside monolithic meshes."
+  },
+  "nativeFrameEvidence": {
+    "sourceVideo": "asset-library/research-public/2026-09-23/busan-sinmajibang/videos/hCyroXn0Jhg.f617.mp4",
+    "nativeDimensions": [
+      1920,
+      1080
+    ],
+    "nativeFixedFrameMapping": {
+      "native-fixed-bank-001.jpg": "HC000099.jpg",
+      "native-fixed-bank-003.jpg": "HC000101.jpg",
+      "native-fixed-bank-005.jpg": "HC000103.jpg"
+    },
+    "controlsNative1920": {
+      "000099.jpg": {
+        "rTL": [
+          984,
+          354
+        ],
+        "rTR": [
+          1606,
+          372
+        ],
+        "rBL": [
+          972,
+          962
+        ],
+        "rBR": [
+          1616,
+          964
+        ],
+        "lTL": [
+          94,
+          332
+        ],
+        "lTR": [
+          774,
+          346
+        ],
+        "lBL": [
+          68,
+          956
+        ],
+        "lBR": [
+          756,
+          962
+        ]
+      },
+      "000101.jpg": {
+        "rTL": [
+          1042,
+          344
+        ],
+        "rTR": [
+          1868,
+          362
+        ],
+        "lTR": [
+          794,
+          328
+        ]
+      },
+      "000103.jpg": {
+        "rTL": [
+          1094,
+          346
+        ],
+        "lTR": [
+          806,
+          320
+        ]
+      }
+    },
+    "visualReview": "Native complete front bank and red/cyan source correspondence overlays inspected."
+  },
+  "actualRuns": [
+    {
+      "command": ".tools/video-reconstruction/bin/python .planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/isolate_cluster.py",
+      "exitCode": 0,
+      "output": "127 cameras,14730 points,95632 observations; max/median camera step1.134009; original input unchanged; BA stopped at iteration limit."
+    },
+    {
+      "command": "/opt/homebrew/bin/python3 .planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/fit_source_gate.py",
+      "exitCode": 0,
+      "output": "Both rear-bank/outer-frame hypotheses rejected; heldout RMS41.5738/35.9503px; independent plumb63.5198/39.6223deg."
+    },
+    {
+      "command": ".tools/video-reconstruction/bin/python .planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/relocalize_gate.py",
+      "exitCode": 0,
+      "output": "HC99/101/103/105 resected directly against isolated tracks:35/61/55/65 inliers and0.7451/0.4119/0.8610/1.0431px inlier RMS. HC93/95/97/120 rejected."
+    },
+    {
+      "command": "/opt/homebrew/bin/python3 .planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/fit_fixed_bank.py",
+      "exitCode": 0,
+      "output": {
+        "scale": 11.746200394168422,
+        "fitPixels": {
+          "count": 6,
+          "rms": 6.138245847839935,
+          "median": 3.988221585592403,
+          "max": 10.362012057270533
+        },
+        "independentHeldOutPixels": {
+          "count": 7,
+          "rms": 24.70422168454624,
+          "median": 20.42249337622725,
+          "max": 36.8252666996779
+        },
+        "independentFloorSourceY": 6.860712944506163,
+        "independentPlumbDegrees": 0.3583171762171926,
+        "maxStepOverMedian": 1.1340091125231986,
+        "accepted": false,
+        "rejectedReasons": [
+          "Independent other-bank/other-view correspondences exceed6px RMS"
+        ]
+      }
+    },
+    {
+      "command": "ffmpeg -hide_banner -loglevel error -threads 2 -ss 499 -i asset-library/research-public/2026-09-23/busan-sinmajibang/videos/hCyroXn0Jhg.f617.mp4 -t 2.6 -vf fps=2 -q:v 2 -threads 2 .planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/native-fixed-bank-%03d.jpg",
+      "exitCode": 0,
+      "output": "5 native1920x1080 frames extracted; frame001 visually reviewed."
+    }
+  ],
+  "sourcePathsHashes": {
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/isolate_cluster.py": "0d1e27ceae52f2399a1cc8220259ce013089ccc50c4429330cf862a2e51031f0",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/cluster-isolation.json": "cd9fcca6063c3f0068e6b36771a6526fd7f1281b7b7279c08301d557447f65ff",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/isolated-observations.json": "8ed37b5165b89ee7e11f8550c4246ab3a54e523b8930412cf440895d2c0deaf1",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/gate-controls.json": "32d8fbf2c696f553d123d2109c13032ece1c914430d2d055cadbf6049d9c5478",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/source-gauge-candidates.json": "a745a3f0c386b4ce2ee988e003727b4022731ff301395121a34f1c439d9581de",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/gate-control-self-consistency.json": "2160f9b6fd5af78218c58dc44c13e06e70f6b78802af950ff46b8b372f46889f",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/relocalize_gate.py": "e4f12866c047ab6433d4dd2e094c5efcc62e7f7aacb3e840727899cb645fe0b1",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/gate-relocalization.json": "7dfb0368aced545e66163e09fb3c04b77434acad2d380e37abe3f6c578875627",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/fixed-bank-controls.json": "606e2a992e470d62ffe2c75d00ba53a0fd8fa8155742306191c4d03cebfd40fc",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/fixed-bank-self-consistency.json": "98e9294c539076cd0ce6e9b815c7033663c592d6df383bdd98c27bb8cdbd01c8",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/fit_fixed_bank.py": "02e2f370c1ee134a8311e4a7af54f7711672efe0bab04afedd689fdf12ccab8b",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/fixed-bank-source-fit.json": "928b8e29a65e1a85f9fa3dad4e6875018149153efda1eb9ab5aad4c207efe6f3",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/neighboring-connector-investigation.json": "b7f003a32c146cd70066de9e53558adce480d3ed14c201b1b71b170c270068a1",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/native-fixed-bank-001.jpg": "410039e03f4be3353ba45298f0d1998939006cd070348158d20c53fb4a5158ab",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/native-fixed-bank-003.jpg": "2edf26c84649fceaf143c9271e410b19de1b5f72f57d62a4c9f6c7445968a86e",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/native-fixed-bank-005.jpg": "9e4711dc4705ee1458a19e92d05e77545ff2712ad6a5d963923e7f7936d44eda",
+    ".tools/refine_upper_frontages.py": "19e05007f48840ca642bcb6e39619dcb24c39a0e21cdb4d9c4791c1bdfdd1571",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/evidence-summary.json": "1aa2aabc3b7d270c2560e5696d714e18fab97130986bd1e9619d32459ef2d136",
+    ".planning/2026-09-23-video-twin/main-metric-registration/source-mesh.json": "a3e69f21bda23c5919ebb8542e6294218d7457a153dadda2e36188c0b4fece6c"
+  },
+  "originalColmapHashes": {
+    "poses.json": "40c70dbe9738e0d0fb446ae7e0519bcc4cf6009c76e3ab2c06f2a162b8abd0ba",
+    "rigs.bin": "73e4d5f0da0a84a5711b46ae716a149f1532832f95bb09b4b01e73cf2c5afbe9",
+    "cameras.bin": "ba5f424730095d0388f645322b26331cf045ee752584e0f1e350ca2f0833eb3e",
+    "images.bin": "7e364c7bb5d29cf1f1c291e7f67270ded97607ffb9764eae5dae116f194773ff",
+    "points.ply": "9dc758d0a3acd258c934534f84a8ad48abac02c9526e76edae0836bad6a4e543",
+    "frames.bin": "9229803faf22bb93dcb801378ea922ba439e035325c656b0b7b22dcb0039104d",
+    "points3D.bin": "bc74e43ef8aac9aa2c90d319f90d20d8493f49bc74880368a84277f201bb48b2"
+  },
+  "explicitUnresolvedParts": [
+    "Full-bank source fit is vertically coherent, but independent left-bank/other-frame corners miss24.7042px RMS; no accepted absolute UVY shop placement.",
+    "Static source/video gate dimensions or edge identity differ; current evidence cannot distinguish model mismatch from remaining camera/localization error.",
+    "No measured shop rear walls or connector ties were created. Existing recess observations remain visible-face depth only.",
+    "Isolated bundle hit its iteration cap; coherent camera speed is not proof of globally converged geometry."
+  ],
+  "integrationDisposition": {
+    "safe": "Consume isolated component, direct gate-view localization, exact source control IDs, all residuals and explicit rejection receipts as evidence.",
+    "notSafe": "Do not replace live shop shells or original source walls with this rejected gauge. Prior conditional report remains preserved, not silently upgraded.",
+    "liveSceneWrites": false,
+    "originalGeometryWrites": false,
+    "sharedRegistrationWrites": false,
+    "cameraOrPlayChanges": false,
+    "projectValidationRun": false,
+    "threadLimit": 2,
+    "additionalInstallation": false
+  }
+}

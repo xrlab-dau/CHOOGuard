@@ -1,0 +1,80 @@
+{
+  "lane": "SkyPlaza",
+  "requestedBy": "SkyPlaza",
+  "features": [
+    {
+      "type": "Column",
+      "params": {
+        "top": "[u,v] absolute station UV at y1" ,
+        "lean": "[du,dv] displacement from base at y0 to top at y1",
+        "cladding": ["concrete", "steelWhite"]
+      },
+      "semantics": "Build a closed support from the base point at y0 to an inclined top point/offset at y1. Preserve existing vertical-column behavior when neither top nor lean is supplied. Concrete finish is for support piers; steelWhite is for the slanted white canopy columns.",
+      "testCase": {
+        "type": "Column",
+        "id": "sky-plaza-kit-column-lean-test",
+        "zone": "sky-plaza-kit-test",
+        "tier": "b",
+        "frame": "root",
+        "evidence": ["kit feature contract test"],
+        "geometry": {"point": [0, 0], "y0": 0, "y1": 7},
+        "params": {"lean": [1, 0], "cladding": "steelWhite"}
+      }
+    },
+    {
+      "type": "Canopy",
+      "params": {
+        "finish": "glassRoof",
+        "glass": "clear|frosted",
+        "sideGlass": "height in metres (0 disables side glazing)",
+        "colour": "paint/material keyword for metalSlat colour"
+      },
+      "semantics": "Provide glazed roof panels in a visible white steel frame, optional side glazing, and configurable colour for existing slat canopies. Canopy footprint remains the roof plan; add no unsupported walls or supports—supports are separate Column elements. Keep collider false for non-walkable overhead covers.",
+      "testCase": {
+        "type": "Canopy",
+        "id": "sky-plaza-kit-glass-roof-test",
+        "zone": "sky-plaza-kit-test",
+        "tier": "b",
+        "frame": "root",
+        "evidence": ["kit feature contract test"],
+        "geometry": {"polygon": [[0, 0], [4, 0], [4, 8], [0, 8]], "y": 3.2},
+        "params": {"finish": "glassRoof", "glass": "clear", "sideGlass": 1.1, "colour": "#D9DDE0", "thickness": 0.18, "collider": false}
+      }
+    },
+    {
+      "type": "Balustrade",
+      "params": {"panel": ["bars", "solid"], "railFinish": "dark", "height": 1.15, "collider": true},
+      "semantics": "Reuse the existing Balustrade type for the plaza perimeter (panel:\"bars\" or \"glass\") and the far-edge closed barrier (panel:\"solid\", height:2.0, collider:true). No new Fence type is needed.",
+      "testCase": {
+        "type": "Balustrade",
+        "id": "sky-plaza-kit-perimeter-guard-test",
+        "zone": "sky-plaza-kit-test",
+        "tier": "b",
+        "frame": "root",
+        "evidence": ["kit feature contract test"],
+        "geometry": {"polyline": [[0, 0], [4, 0]], "y": 7},
+        "params": {"height": 2.0, "panel": "solid", "rail": "flat", "railFinish": "#454B4E", "postPitch": 1.2, "collider": true}
+      }
+    },
+    {
+      "type": "Slab/FloorFinish",
+      "params": {"finish": ["lawn", "sand", "paving", "asphalt"]},
+      "semantics": "Provide deterministic, simple PBR/kit surface keywords for the evidence-based planting/sand/paving/road areas, without external or non-licensed imagery. Slab top and FloorFinish overlays must use consistent UV/material behavior.",
+      "testCase": {
+        "type": "Slab",
+        "id": "sky-plaza-kit-finish-test",
+        "zone": "sky-plaza-kit-test",
+        "tier": "b",
+        "frame": "root",
+        "evidence": ["kit feature contract test"],
+        "geometry": {"polygon": [[0, 0], [6, 0], [6, 4], [0, 4]], "y": 7},
+        "params": {"depth": 0.3, "finish": "paving", "edgeFinish": "concrete", "soffit": "concrete", "collider": true}
+      }
+    }
+  ],
+  "constraints": [
+    "No Unity scene or asset changes by SkyPlaza; KitExtend8 owns MajibangBuilder.cs and kit-spec.md.",
+    "The test spec must pass check_spec and KitValidate with zero errors.",
+    "Every roof/frame/pier element is separate so the generator can place physically grounded supports."
+  ]
+}

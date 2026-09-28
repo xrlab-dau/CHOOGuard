@@ -1,0 +1,23 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Resolve the running direction of single platform escalators in the Busan Station twin with facts found after judgment 007. Typed judgment only; advisory.",
+    "new_facts": {
+      "south_wells": "Five wells at the south edge of the 2F concourse, behind a portal and glass balustrades named '남측 게이트' (south gate), each with one escalator beside stairs descending to platforms 1, 3·4, 5·6, 8·9 and 10·11.",
+      "north_wells": "Five wells on the north deck over the tracks, signed '↓ 1', '3·4', '↓ 5·6', '↓ 8·9', '↓ 10·11 타는 곳', each with one escalator beside stairs; the north end of the concourse carries a 'Gate ExitBoard' panel; one mid-deck well to platform 10·11 carries a '나가는 곳' (way out) sign.",
+      "train": "The KTX set stands at platform 5·6 between both wells; departing passengers come from the concourse, arriving passengers leave toward exits and the plaza.",
+      "judgment_007": "all_up_way_out 0.72 when the gate/deck distinction was unknown."
+    }
+  },
+  "questions": {
+    "escalator_directions": {
+      "type": "choice",
+      "instructions": "Which running directions should the single escalators take?",
+      "criteria": {
+        "south_down_north_up": "South-gate wells run down to the platforms (boarding side); north-deck wells and the mid-deck way-out well run up (arrival side). Both have stairs for the other direction.",
+        "all_up_way_out": "Every platform escalator runs up; everyone going down uses stairs.",
+        "south_up_north_down": "South wells up, north wells down."
+      }
+    }
+  }
+}

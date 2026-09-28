@@ -1,0 +1,274 @@
+{
+  "schema": "chooguard.1f-interior-verification.v1",
+  "beforeAudit": "2026-09-24T14:29:04.7069180Z",
+  "afterAudit": "2026-09-24T14:30:02.7790970Z",
+  "ownershipDiff": {
+    "renderers": {
+      "added": 52,
+      "removed": 55,
+      "changed": 0,
+      "addedUnderInterior": 52,
+      "removedLegacy": 55,
+      "changesOutsideInteriorAndLegacy": []
+    },
+    "colliders": {
+      "added": 17,
+      "removed": 17,
+      "changed": 0,
+      "addedUnderInterior": 17,
+      "removedLegacy": 17,
+      "changesOutsideInteriorAndLegacy": []
+    }
+  },
+  "protectedGeometry": "All renderers/colliders outside 1층 · 원본 정합/1층 실내 · 근거 표기 and the removed inactive reference layout are unchanged (path, activity, matrix, mesh sha256).",
+  "preBuildChecks": {
+    "file": "checks.json",
+    "blocking": [],
+    "cameraPaths": {
+      "2026-03 3TLdCQCjeXE (registered, accepted)": 137
+    }
+  },
+  "clearance": {
+    "before": {
+      "clear": 11020,
+      "supported": 11783
+    },
+    "after": {
+      "clear": 10740,
+      "supported": 11783
+    },
+    "lostReachableCellsOutsideUnits": 118,
+    "note": "1 m capsule samples adjacent to new walls; all route targets remain reachable",
+    "routeTargets": {
+      "GATE3/4 inner": {
+        "uv": [
+          10,
+          -40
+        ],
+        "reachable": true
+      },
+      "lower landing": {
+        "uv": [
+          16,
+          -17
+        ],
+        "reachable": true
+      },
+      "rear corridor U-": {
+        "uv": [
+          -40,
+          -24
+        ],
+        "reachable": true
+      },
+      "rear corridor mid": {
+        "uv": [
+          -15,
+          -24
+        ],
+        "reachable": true
+      },
+      "ARTBOX-#16 gap": {
+        "uv": [
+          1,
+          -21
+        ],
+        "reachable": true
+      },
+      "U- lobby": {
+        "uv": [
+          -70,
+          -30
+        ],
+        "reachable": true
+      },
+      "U+ end": {
+        "uv": [
+          45,
+          -24
+        ],
+        "reachable": true
+      },
+      "track-side strip": {
+        "uv": [
+          0,
+          5
+        ],
+        "reachable": true
+      },
+      "#9 end": {
+        "uv": [
+          -52,
+          -12
+        ],
+        "reachable": true
+      }
+    }
+  },
+  "renders": {
+    "matchedViews": "captures/matched-views.jpg (2026-03 frames vs same registered poses)",
+    "overviews": "captures/overviews.jpg",
+    "userSceneView": "captures/user-sceneview-after.png"
+  },
+  "observedGapsInMatchedViews": [
+    "central corridor walls (office frontage with red doors, stainless piers) not built: evidence a-failed",
+    "1F->2F escalator bank not built: no registered flight/upper landing, 2F slab opening unmeasured",
+    "1F suspended ceiling outside two measured patches not built: heights unmeasured"
+  ],
+  "sceneSaved": false,
+  "playModeWalks": {
+    "route-central-to-uminus": {
+      "file": "walks/route-central-to-uminus.json",
+      "status": "COMPLETE",
+      "legs": "7/7",
+      "travelled": 90.34,
+      "finalTargetDistance": 0.13
+    },
+    "route-central-to-uplus": {
+      "file": "walks/route-central-to-uplus.json",
+      "status": "COMPLETE",
+      "legs": "5/5",
+      "travelled": 50.17,
+      "finalTargetDistance": 0.139
+    },
+    "controller": "FirstPersonResponder.StepInput via AgentScripts/RouteWalk.cs (actual CharacterController collision)",
+    "note": "Routes follow the currently built (class b) layout; they do not validate unit positions against reality."
+  },
+  "revisions": [
+    {
+      "revision": "rear-corridor provisional placement (units #6,#7,#9-#16)",
+      "ownership": {
+        "renderers": {
+          "added": 52,
+          "removed": 52,
+          "changed": 0,
+          "outsideAllowed": []
+        },
+        "colliders": {
+          "added": 17,
+          "removed": 17,
+          "changed": 0,
+          "outsideAllowed": []
+        }
+      },
+      "routes": {
+        "GATE3/4 inner": {
+          "uv": [
+            10,
+            -40
+          ],
+          "clear": true,
+          "reachable": true,
+          "insideUnit": []
+        },
+        "lower landing": {
+          "uv": [
+            16,
+            -17
+          ],
+          "clear": true,
+          "reachable": true,
+          "insideUnit": []
+        },
+        "rear corridor U-": {
+          "uv": [
+            -40,
+            -30
+          ],
+          "clear": true,
+          "reachable": true,
+          "insideUnit": []
+        },
+        "rear corridor mid": {
+          "uv": [
+            -15,
+            -28
+          ],
+          "clear": true,
+          "reachable": true,
+          "insideUnit": []
+        },
+        "ARTBOX-#16 gap": {
+          "uv": [
+            1,
+            -21
+          ],
+          "clear": true,
+          "reachable": true,
+          "insideUnit": []
+        },
+        "corridor turn": {
+          "uv": [
+            -4,
+            -24
+          ],
+          "clear": true,
+          "reachable": true,
+          "insideUnit": []
+        },
+        "U- lobby": {
+          "uv": [
+            -65,
+            -30
+          ],
+          "clear": true,
+          "reachable": true,
+          "insideUnit": []
+        },
+        "U+ end": {
+          "uv": [
+            45,
+            -24
+          ],
+          "clear": true,
+          "reachable": true,
+          "insideUnit": []
+        },
+        "track-side strip": {
+          "uv": [
+            0,
+            5
+          ],
+          "clear": true,
+          "reachable": true,
+          "insideUnit": []
+        },
+        "#9 end": {
+          "uv": [
+            -52,
+            -24
+          ],
+          "clear": true,
+          "reachable": true,
+          "insideUnit": []
+        }
+      },
+      "playModeWalk": {
+        "file": "walks/route-central-to-uminus-v2.json",
+        "status": "COMPLETE",
+        "legs": "9/9",
+        "travelled": 94.36,
+        "finalTargetDistance": 0.153
+      },
+      "render": "captures/1f-rear-corridor-v2.png"
+    },
+    {
+      "revision": "kit layer: rear-corridor suspended ceiling (Y2.58, tier b) + 24 kit storefronts (mullions/transoms/sliding doors/photo fascias); unit shells in storefronts=kit mode; unit heights 2.58 along the rear corridor",
+      "roots": [
+        "1층 · 원본 정합/1층 실내 · 근거 표기",
+        "실내 트윈 마감/1F"
+      ],
+      "ownership": "only these roots changed (renderers +45/-56, colliders 17/17 replaced)",
+      "routes": "all 10 reachability targets reachable",
+      "playModeWalks": {
+        "route-central-to-uminus-v2": "COMPLETE 9/9",
+        "route-into-unit10 (through kit door)": "COMPLETE 3/3"
+      },
+      "renders": [
+        "captures/1f-rear-corridor-v2-kit.png",
+        "captures/overview-central-from-gate-kit.png",
+        "captures/overview-rear-row-from-Uplus-kit.png"
+      ]
+    }
+  ]
+}

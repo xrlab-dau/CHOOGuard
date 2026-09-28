@@ -1,0 +1,182 @@
+{
+  "schema": "chooguard.implementation-boundary-contract.v1",
+  "status": "Live implementation inventory established; inactive references are not approved construction regions.",
+  "scene": "Assets/ChooGuard/Scenes/FpsStation.unity",
+  "sceneWasDirty": true,
+  "snapshot": "geometry/world-geometry.json",
+  "snapshotSha256": "e14ef8964c333f80d09842309d2125672a1d909bf44efcdc483c4dedc5c3ccc1",
+  "coordinates": {
+    "frame": "station UVY, angle16.2 degrees",
+    "units": "source-model units, not certified survey measurements"
+  },
+  "protectedExistingOwners": [
+    "FPSWorld/공식 자료 부산역 역사",
+    "FPSWorld/공식 자료 부산역 주변 공간",
+    "FPSWorld/Metro113Source",
+    "FPSWorld/Metro113RecoveredRoofCentre",
+    "FPSWorld/KTXSource",
+    "맞이방 · 원본 정합",
+    "FPSWorld/맞이방 · 에스컬레이터",
+    "1층 · 원본 정합/Ground_Floor"
+  ],
+  "regions": [
+    {
+      "id": "existing-entry-floor",
+      "status": "already present",
+      "owner": "FPSWorld/공식 자료 부산역 주변 공간/ContextPlaza/OfficialStation_-유라시아 도로_0",
+      "floorGeometry": "floor-surfaces.geojson:1F/site_existing",
+      "confirmedSamplesUV": [
+        [
+          9,
+          -43
+        ],
+        [
+          9,
+          -39
+        ],
+        [
+          9,
+          -35
+        ],
+        [
+          -60,
+          -36
+        ]
+      ],
+      "action": "Reuse. Do not add a second floor merely because the station-root mesh lacks this surface."
+    },
+    {
+      "id": "added-ground-floor",
+      "status": "active floor, not completed interior",
+      "owner": "1층 · 원본 정합/Ground_Floor",
+      "exactFootprint": "floor-surfaces.geojson:1F/ground_added",
+      "boundsUV": [
+        -89.99199868272589,
+        -35.57510196402451,
+        77.32660048190023,
+        12.990001740503505
+      ],
+      "areaModelUnitsSquared": 5734.260549650807,
+      "overlapWithExistingSourceFloor": 0.0034943133710765672,
+      "verticalBand": [
+        -0.18,
+        0.0
+      ],
+      "action": "Preserve the existing footprint and collision. Empty area is not automatic construction authorization."
+    },
+    {
+      "id": "ground-reference-fitout",
+      "status": "not active; layout registration unapproved",
+      "owner": "1층 · 원본 정합/상가 참고 배치 · 정합 미승인",
+      "renderers": 55,
+      "colliders": 17,
+      "constructionBoundaryEstablished": false,
+      "action": "Do not activate or use the dashed reference layout as a definitive room boundary."
+    },
+    {
+      "id": "existing-ground-structure",
+      "status": "present source structure",
+      "exactSection": "structural-sections.json:1F",
+      "cutY": 1.5,
+      "action": "Keep existing walls, pillars, openings and source-owned floor transitions. Read the actual mesh and collider owner at each proposed junction."
+    },
+    {
+      "id": "existing-overhead-slab",
+      "status": "already present, not proof of a finished first-floor ceiling",
+      "owner": "맞이방 · 원본 정합/Majibang_2F_Floor",
+      "undersideY": 6.7,
+      "confirmedSamplesUV": [
+        [
+          9,
+          -26
+        ],
+        [
+          9,
+          3
+        ],
+        [
+          18,
+          -16
+        ],
+        [
+          30,
+          -16
+        ]
+      ],
+      "action": "Do not add a duplicate upper floor. Any connector opening requires its own verified footprint and upper/lower landing collision check."
+    },
+    {
+      "id": "existing-upper-escalators",
+      "status": "already present above first-floor datum",
+      "owner": "FPSWorld/맞이방 · 에스컬레이터",
+      "boundsUVY": [
+        [
+          11.802691611334236,
+          74.23286917140666,
+          5.9460768699646
+        ],
+        [
+          23.450263820046647,
+          79.16557744000455,
+          13.250310897827148
+        ]
+      ],
+      "action": "Do not count these as a verified Y=0 first-floor connector or recreate them."
+    },
+    {
+      "id": "video-reconstruction",
+      "status": "isolated inactive experiment, not implementation",
+      "owner": "FPSWorld/1층 · 2026 영상 정합 표면",
+      "active": false,
+      "sourceCameraPathBoundsUVY": [
+        [
+          4.92090067328119,
+          -57.30769410192592,
+          1.1805991849550819
+        ],
+        [
+          19.497702432512526,
+          -15.54795029375132,
+          1.6442740607541027
+        ]
+      ],
+      "action": "Use only as localized evidence after quality checks. No expansion from a filmed central route to the entire first floor."
+    }
+  ],
+  "requiredBeforeGeometryAddition": [
+    "Name the missing component and distinguish confirmed absence from unobserved or naturally open space.",
+    "Define a component-specific polygon/volume and vertical datum; a root AABB or inactive reference layout is not sufficient.",
+    "Identify every existing mesh/collider touched at its perimeter and retain the protected existing geometry.",
+    "Validate observed real-world position and temporal state separately from scene occupancy.",
+    "For floors and circulation, prove floor support, headroom and connection without replacing unrelated surfaces.",
+    "Apply only the verified delta; compare before/after ownership and render the actual scene."
+  ],
+  "verification": {
+    "meshExportErrors": 0,
+    "uniqueMeshes": 2201,
+    "rendererRecords": 2833,
+    "colliderRecords": 2419,
+    "activeRenderers": 2772,
+    "activeColliders": 2399,
+    "clearanceSamples": 11946,
+    "samplesInsideAddedFloor": 5731,
+    "supportedInsideAddedFloor": 5731,
+    "clearCapsuleInsideAddedFloor": 5721,
+    "saturatedQueries": 0,
+    "clearanceGridStep": 1,
+    "clearanceIsNotMovementProof": true
+  },
+  "limits": [
+    "Current scene geometry boundaries are measured, not certified as-built station boundaries.",
+    "Root and renderer existence does not imply completeness or correct registration.",
+    "Current public frontage photos establish topology but not all tenancy depths or current partition coordinates.",
+    "Previous ProbeOfficialInterior skipped floorY<1 and cannot establish first-floor absence.",
+    "Full-room construction regions remain unapproved until their own evidence/overlap check passes."
+  ],
+  "figures": [
+    "world-implementation-context.png",
+    "first-floor-boundary.png",
+    "second-floor-boundary.png",
+    "current-sceneview.png"
+  ]
+}

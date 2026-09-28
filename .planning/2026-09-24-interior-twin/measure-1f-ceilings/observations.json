@@ -1,0 +1,1169 @@
+{
+  "schema": "chooguard.measure-1f-ceilings.v1",
+  "lane": "measure-1f-ceilings",
+  "createdUtc": "2026-09-24T23:21:50Z",
+  "frame": "heights in u above the LOCAL floor plane of each reconstruction (plumb-constrained floor fit); u = source-model units (metre-like, same unit as the March registration)",
+  "thresholds": "thresholds.json (fixed before results) + dated addendum (headline-gauge order; no threshold or tier rule changed)",
+  "keyFinding": "The 1.55-1.65 camera-height prior is wrong for this footage: March absolute registration puts the March walker at 1.40 u; the known-ceiling gauge (March class-a approach ceiling seen in the same video) gives 1.35-1.48 u for SY0/S20/S23 and 1.10 u for kmCz. Pedestrians read 3-7% high but track it. Only S23 passes the pre-registered 8% gate.",
+  "knownCeilingCalibration": {
+    "hKnownU": 2.306,
+    "rhoApproach": {
+      "mar_2": 1.6858,
+      "s20_0": 1.6001,
+      "s23_1": 1.559,
+      "sy0_K02": 1.7055,
+      "rr_2": 2.0945
+    },
+    "camHU": {
+      "s20_0": 1.441,
+      "s23_1": 1.479,
+      "sy0_K02": 1.352,
+      "rr_2": 1.101
+    },
+    "marchAbsoluteCamHU": 1.402,
+    "pedestrianCamHU": {
+      "mar_2": 1.462,
+      "rr_2": 1.236,
+      "s20_0": 1.768,
+      "s22_1": 1.404,
+      "s23_1": 1.556,
+      "up_0": 1.359,
+      "sy0_K02": 1.446
+    }
+  },
+  "zones": [
+    {
+      "zone": "central approach (low suspended ceiling, GATE3/4 inner doors -> central escalator foot)",
+      "ceilingHeightAboveFloor": {
+        "value": 2.31,
+        "p10": 2.25,
+        "p90": 2.52,
+        "n": 900,
+        "note": "value = March class-a plane (Y 2.25) + local floor offset 0.056 (March floor Y -0.056 here); this lane's sparse re-fit of the same model gives 2.36 (plane tilted 1.6 deg by a LED sign band)"
+      },
+      "ceilingType": "flat grid (pale-grey panels, square luminous panels, round downlights)",
+      "extentDescription": "from the stainless header just inside GATE3/4 (lobby edge V~-22.5) along the approach with the red-brown doors to the central escalator foot and the #3 B&C / rear-corridor mouth; March UVY U 5-21, V -22.5..-14 (class-a bounds); the same low ceiling covers the escalator lower landing seen in 2020 (S20, kmCz), 2023 (S23), 2024 (SY0 K02)",
+      "sources": [
+        {
+          "video": "3TLdCQCjeXE",
+          "epoch": "2026-03",
+          "model": "1f-2026-sfm/sparse/2",
+          "seconds": [
+            104.33,
+            104.0,
+            104.67,
+            103.33
+          ],
+          "frames": [
+            "000074.jpg",
+            "000073.jpg",
+            "000075.jpg",
+            "000071.jpg"
+          ],
+          "rho": 1.6858,
+          "heightU": 2.364,
+          "p10": 2.245,
+          "p90": 2.518,
+          "n": 900,
+          "planeTiltDeg": 1.62,
+          "headlineGauge": "absoluteRegistration",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 2.697
+            },
+            "pedestrian": {
+              "n": 61,
+              "camHU": 1.462,
+              "camHU_p05_p95": [
+                1.4468543766172173,
+                1.4767976034713548
+              ],
+              "height": 2.464,
+              "usable": true
+            },
+            "absoluteRegistration": {
+              "camHU": 1.402,
+              "height": 2.364
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.086,
+            "pass_": false
+          },
+          "randomHoldout": {
+            "n": 469,
+            "medianAbsU": 0.0793,
+            "pass_": false
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0034,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 1342,
+            "tiltVsPlumbDeg": 0.72,
+            "oddPlumbTiltDeg": 0.71,
+            "camHmodelUnits": 0.3399,
+            "camHp10p90": [
+              0.3241,
+              0.3466
+            ]
+          }
+        },
+        {
+          "video": "3xCw2mYi2AQ",
+          "epoch": "2020-11",
+          "model": "central-crossval/sfm/S20/0",
+          "seconds": [
+            110.0,
+            110.33,
+            109.67,
+            109.0
+          ],
+          "frames": [
+            "000082.jpg",
+            "000083.jpg",
+            "000081.jpg",
+            "000079.jpg"
+          ],
+          "rho": 1.6001,
+          "heightU": 2.56,
+          "p10": 2.508,
+          "p90": 2.606,
+          "n": 407,
+          "planeTiltDeg": 0.27,
+          "headlineGauge": "cameraPrior",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 2.56
+            },
+            "pedestrian": {
+              "n": 1,
+              "camHU": 1.768,
+              "camHU_p05_p95": [
+                1.7680961262524078,
+                1.7680961262524078
+              ],
+              "height": 2.829,
+              "usable": false
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.105,
+            "pass_": false
+          },
+          "randomHoldout": {
+            "n": 173,
+            "medianAbsU": 0.0489,
+            "pass_": true
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0002,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 739,
+            "tiltVsPlumbDeg": 0.86,
+            "oddPlumbTiltDeg": 0.85,
+            "camHmodelUnits": 0.4423,
+            "camHp10p90": [
+              0.4098,
+              0.4639
+            ]
+          }
+        },
+        {
+          "video": "3xn-ieDXlMc",
+          "epoch": "2023-10",
+          "model": "central-crossval/sfm/S23/1",
+          "seconds": [
+            160.33,
+            160.67,
+            160.0,
+            161.0
+          ],
+          "frames": [
+            "000020.jpg",
+            "000021.jpg",
+            "000019.jpg",
+            "000022.jpg"
+          ],
+          "rho": 1.559,
+          "heightU": 2.426,
+          "p10": 2.376,
+          "p90": 2.478,
+          "n": 131,
+          "planeTiltDeg": 0.26,
+          "headlineGauge": "pedestrian",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 2.494
+            },
+            "pedestrian": {
+              "n": 34,
+              "camHU": 1.556,
+              "camHU_p05_p95": [
+                1.475838405577518,
+                1.6397668527146663
+              ],
+              "height": 2.426,
+              "usable": true
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.027,
+            "pass_": true
+          },
+          "randomHoldout": {
+            "n": 53,
+            "medianAbsU": 0.0685,
+            "pass_": false
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0029,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 279,
+            "tiltVsPlumbDeg": 0.83,
+            "oddPlumbTiltDeg": 0.7,
+            "camHmodelUnits": 0.6623,
+            "camHp10p90": [
+              0.6127,
+              0.674
+            ]
+          }
+        },
+        {
+          "video": "SY0_SMsT3xU",
+          "epoch": "2024-summer",
+          "model": "sy0-walk/sfm/sparse/0 (clip K02)",
+          "seconds": [
+            49.57,
+            49.9,
+            49.23,
+            50.23
+          ],
+          "frames": [
+            "K02/K02_0049567.jpg",
+            "K02/K02_0049900.jpg",
+            "K02/K02_0049233.jpg",
+            "K02/K02_0050233.jpg"
+          ],
+          "rho": 1.7055,
+          "heightU": 2.466,
+          "p10": 2.303,
+          "p90": 2.659,
+          "n": 457,
+          "planeTiltDeg": 1.8,
+          "headlineGauge": "pedestrian",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 2.729
+            },
+            "pedestrian": {
+              "n": 13,
+              "camHU": 1.446,
+              "camHU_p05_p95": [
+                1.3431545129937346,
+                1.9730628869084808
+              ],
+              "height": 2.466,
+              "usable": true
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.096,
+            "pass_": false
+          },
+          "randomHoldout": {
+            "n": 188,
+            "medianAbsU": 0.0643,
+            "pass_": false
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0003,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 184,
+            "tiltVsPlumbDeg": 0.7,
+            "oddPlumbTiltDeg": null,
+            "camHmodelUnits": 0.7804,
+            "camHp10p90": [
+              0.7488,
+              0.8058
+            ]
+          }
+        },
+        {
+          "video": "kmCzb3KOQ3M",
+          "epoch": "2020-12/2021-01",
+          "model": "rear-row-walk/sfm/sparse/2",
+          "seconds": [
+            1249.33,
+            1246.67,
+            1249.67,
+            1246.0
+          ],
+          "frames": [
+            "000035.jpg",
+            "000027.jpg",
+            "000036.jpg",
+            "000025.jpg"
+          ],
+          "rho": 2.0945,
+          "heightU": 3.351,
+          "p10": 3.199,
+          "p90": 3.457,
+          "n": 255,
+          "planeTiltDeg": 1.63,
+          "headlineGauge": "cameraPrior",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 3.351
+            },
+            "pedestrian": {
+              "n": 6,
+              "camHU": 1.236,
+              "camHU_p05_p95": [
+                1.1515678111010306,
+                1.2769690864476837
+              ],
+              "height": 2.59,
+              "usable": false
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.227,
+            "pass_": false
+          },
+          "randomHoldout": {
+            "n": 118,
+            "medianAbsU": 0.0651,
+            "pass_": false
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0022,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 540,
+            "tiltVsPlumbDeg": 0.3,
+            "oddPlumbTiltDeg": 0.28,
+            "camHmodelUnits": 0.1589,
+            "camHp10p90": [
+              0.147,
+              0.1686
+            ]
+          }
+        }
+      ],
+      "gauge": "March: absolute registration. Other sources: this zone IS the known-ceiling reference, so their own heights here use pedestrian (S23 n=34, SY0 n=13) or the 1.60 prior (S20 n=1, kmCz n=6)",
+      "crossCheck": {
+        "marchAbsolute": 2.31,
+        "S23_pedestrian": 2.43,
+        "SY0_pedestrian": 2.47,
+        "S20_prior": 2.56,
+        "kmCz_prior": 3.35,
+        "verdict": "S23 (2.43, +0.12) and SY0 (2.47, +0.16) sit within/at the 0.15 tolerance of 2.31 under the pedestrian gauge; the 1.60 prior overshoots (S20 2.56, kmCz 3.35 - the kmCz camera is held ~1.1 u high). S22 (2022 night) plane landed on a sign -> rejected."
+      },
+      "tier": "c",
+      "tierReason": "March value is class a from its own lane; the relative measurements here fail the random-point held-out (median 0.065-0.085 u vs 0.05, sign-band clutter) or the camera-vs-pedestrian gate; S20 passes both held-outs but has no pedestrian gauge (n=1)"
+    },
+    {
+      "zone": "central lobby (inside GATE3/4, high ceiling)",
+      "ceilingHeightAboveFloor": {
+        "value": 4.98,
+        "p10": 4.68,
+        "p90": 5.66,
+        "n": 1299,
+        "note": "value = median over 5 sources; March absolute 4.98 (class-a record 4.97 Y = 5.02 above local floor); S20 4.98, SY0 4.80, S23 5.12 via the known-ceiling gauge; S22 5.52 via pedestrians (no approach plane)"
+      },
+      "ceilingType": "flat grid with downlights (high); no suspended low ceiling",
+      "extentDescription": "between the GATE3/4 plaza doors and the stainless header over the approach (March UVY U 5.5-12.2, V -29.7..-23.5), flanked by #3 B&C and #4 (ARTBOX / DESIGN SKIN) frontages",
+      "sources": [
+        {
+          "video": "3TLdCQCjeXE",
+          "epoch": "2026-03",
+          "model": "1f-2026-sfm/sparse/2",
+          "seconds": [
+            99.0,
+            99.33,
+            98.0,
+            99.67
+          ],
+          "frames": [
+            "000058.jpg",
+            "000059.jpg",
+            "000055.jpg",
+            "000060.jpg"
+          ],
+          "rho": 3.5493,
+          "heightU": 4.978,
+          "p10": 4.926,
+          "p90": 5.035,
+          "n": 280,
+          "planeTiltDeg": 0.58,
+          "headlineGauge": "absoluteRegistration",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 5.679
+            },
+            "pedestrian": {
+              "n": 61,
+              "camHU": 1.462,
+              "camHU_p05_p95": [
+                1.4468543766172173,
+                1.4767976034713548
+              ],
+              "height": 5.188,
+              "usable": true
+            },
+            "absoluteRegistration": {
+              "camHU": 1.402,
+              "height": 4.978
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.086,
+            "pass_": false
+          },
+          "randomHoldout": {
+            "n": 87,
+            "medianAbsU": 0.0395,
+            "pass_": true
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0058,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 1342,
+            "tiltVsPlumbDeg": 0.72,
+            "oddPlumbTiltDeg": 0.71,
+            "camHmodelUnits": 0.3399,
+            "camHp10p90": [
+              0.3241,
+              0.3466
+            ]
+          }
+        },
+        {
+          "video": "3xCw2mYi2AQ",
+          "epoch": "2020-11",
+          "model": "central-crossval/sfm/S20/0",
+          "seconds": [
+            97.0,
+            97.33,
+            97.67,
+            98.0
+          ],
+          "frames": [
+            "000043.jpg",
+            "000044.jpg",
+            "000045.jpg",
+            "000046.jpg"
+          ],
+          "rho": 3.4541,
+          "heightU": 4.978,
+          "p10": 4.912,
+          "p90": 5.053,
+          "n": 268,
+          "planeTiltDeg": 0.35,
+          "headlineGauge": "knownCeiling",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 5.527
+            },
+            "pedestrian": {
+              "n": 1,
+              "camHU": 1.768,
+              "camHU_p05_p95": [
+                1.7680961262524078,
+                1.7680961262524078
+              ],
+              "height": 6.107,
+              "usable": false
+            },
+            "knownCeiling": {
+              "camHU": 1.441,
+              "rhoKnown": 1.6,
+              "hKnownU": 2.306,
+              "height": 4.978,
+              "postHoc": true
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.105,
+            "pass_": false
+          },
+          "randomHoldout": {
+            "n": 97,
+            "medianAbsU": 0.0632,
+            "pass_": false
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0119,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 739,
+            "tiltVsPlumbDeg": 0.86,
+            "oddPlumbTiltDeg": 0.85,
+            "camHmodelUnits": 0.4423,
+            "camHp10p90": [
+              0.4098,
+              0.4639
+            ]
+          }
+        },
+        {
+          "video": "tInHpWVey8c",
+          "epoch": "2022-12",
+          "model": "central-crossval/sfm/S22/1",
+          "seconds": [
+            220.67,
+            221.67,
+            222.33,
+            221.0
+          ],
+          "frames": [
+            "000015.jpg",
+            "000018.jpg",
+            "000020.jpg",
+            "000016.jpg"
+          ],
+          "rho": 3.9311,
+          "heightU": 5.519,
+          "p10": 5.42,
+          "p90": 5.662,
+          "n": 276,
+          "planeTiltDeg": 0.7,
+          "headlineGauge": "pedestrian",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 6.29
+            },
+            "pedestrian": {
+              "n": 13,
+              "camHU": 1.404,
+              "camHU_p05_p95": [
+                1.2543520300104378,
+                1.5627797689367815
+              ],
+              "height": 5.519,
+              "usable": true
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.122,
+            "pass_": false
+          },
+          "randomHoldout": {
+            "n": 108,
+            "medianAbsU": 0.0512,
+            "pass_": false
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0087,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 117,
+            "tiltVsPlumbDeg": 0.59,
+            "oddPlumbTiltDeg": 0.65,
+            "camHmodelUnits": 0.4775,
+            "camHp10p90": [
+              0.4644,
+              0.5076
+            ]
+          }
+        },
+        {
+          "video": "3xn-ieDXlMc",
+          "epoch": "2023-10",
+          "model": "central-crossval/sfm/S23/1",
+          "seconds": [
+            175.0,
+            174.67,
+            175.33,
+            174.33
+          ],
+          "frames": [
+            "000064.jpg",
+            "000063.jpg",
+            "000065.jpg",
+            "000062.jpg"
+          ],
+          "rho": 3.4601,
+          "heightU": 5.118,
+          "p10": 5.024,
+          "p90": 5.281,
+          "n": 384,
+          "planeTiltDeg": 0.99,
+          "headlineGauge": "knownCeiling",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 5.536
+            },
+            "pedestrian": {
+              "n": 34,
+              "camHU": 1.556,
+              "camHU_p05_p95": [
+                1.475838405577518,
+                1.6397668527146663
+              ],
+              "height": 5.385,
+              "usable": true
+            },
+            "knownCeiling": {
+              "camHU": 1.479,
+              "rhoKnown": 1.559,
+              "hKnownU": 2.306,
+              "height": 5.118,
+              "postHoc": true
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.027,
+            "pass_": true
+          },
+          "randomHoldout": {
+            "n": 151,
+            "medianAbsU": 0.0518,
+            "pass_": false
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0006,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 279,
+            "tiltVsPlumbDeg": 0.83,
+            "oddPlumbTiltDeg": 0.7,
+            "camHmodelUnits": 0.6623,
+            "camHp10p90": [
+              0.6127,
+              0.674
+            ]
+          }
+        },
+        {
+          "video": "SY0_SMsT3xU",
+          "epoch": "2024-summer",
+          "model": "sy0-walk/sfm/sparse/0 (clip K02)",
+          "seconds": [
+            49.23,
+            48.9,
+            48.57,
+            47.9
+          ],
+          "frames": [
+            "K02/K02_0049233.jpg",
+            "K02/K02_0048900.jpg",
+            "K02/K02_0048567.jpg",
+            "K02/K02_0047900.jpg"
+          ],
+          "rho": 3.5525,
+          "heightU": 4.803,
+          "p10": 4.684,
+          "p90": 4.866,
+          "n": 91,
+          "planeTiltDeg": 0.9,
+          "headlineGauge": "knownCeiling",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 5.684
+            },
+            "pedestrian": {
+              "n": 13,
+              "camHU": 1.446,
+              "camHU_p05_p95": [
+                1.3431545129937346,
+                1.9730628869084808
+              ],
+              "height": 5.137,
+              "usable": true
+            },
+            "knownCeiling": {
+              "camHU": 1.352,
+              "rhoKnown": 1.706,
+              "hKnownU": 2.306,
+              "height": 4.803,
+              "postHoc": true
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.096,
+            "pass_": false
+          },
+          "randomHoldout": {
+            "n": 25,
+            "medianAbsU": 0.0373,
+            "pass_": true
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0169,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 184,
+            "tiltVsPlumbDeg": 0.7,
+            "oddPlumbTiltDeg": null,
+            "camHmodelUnits": 0.7804,
+            "camHp10p90": [
+              0.7488,
+              0.8058
+            ]
+          }
+        }
+      ],
+      "gauge": "March absolute; S20/S23/SY0 known-ceiling (approach plane in the same video, h=2.306); S22 pedestrian n=13",
+      "crossCheck": {
+        "marchAbsolute": 4.98,
+        "tolU": 0.2,
+        "deltas": {
+          "s20_0": -0.0,
+          "s22_1": 0.54,
+          "s23_1": 0.14,
+          "sy0_K02": -0.18
+        },
+        "verdict": "S20 0.00, S23 +0.14, SY0 -0.18 (all within the 0.20 tolerance), S22 +0.54 (fails)"
+      },
+      "tier": "c",
+      "tierReason": "only S23 passes the pre-registered camera-vs-pedestrian gate and its random held-out is 0.052 (>0.05); SY0 and March pass the random held-out but fail the gauge gate"
+    },
+    {
+      "zone": "rear corridor #9–#16",
+      "ceilingHeightAboveFloor": {
+        "value": 4.78,
+        "p10": 4.74,
+        "p90": 4.82,
+        "n": 1602,
+        "envelopeByGauge": {
+          "knownCeiling": 4.78,
+          "pedestrian_n6": 5.37,
+          "prior160": 6.95
+        }
+      },
+      "ceilingType": "flat suspended ceiling with round downlights (high, above the shop fascias; fascias/hanging signs form separate layers at rho 2.3-2.6 = 2.5-2.9 u)",
+      "extentDescription": "the corridor from the #4 (2020 DESIGN SKIN) corner at the central escalator foot running U- along the rear row (#16 ... #9 frontages on the walker's left, stainless backs of the front row on the right) to the U- end hall with the departure board; kmCz frames 100-195 (1271-1303 s)",
+      "sources": [
+        {
+          "video": "kmCzb3KOQ3M",
+          "epoch": "2020-12/2021-01",
+          "model": "rear-row-walk/sfm/sparse/2",
+          "seconds": [
+            1299.67,
+            1299.33,
+            1300.0,
+            1299.0
+          ],
+          "frames": [
+            "000186.jpg",
+            "000185.jpg",
+            "000187.jpg",
+            "000184.jpg"
+          ],
+          "rho": 4.343,
+          "heightU": 4.782,
+          "p10": 4.735,
+          "p90": 4.825,
+          "n": 1602,
+          "planeTiltDeg": 0.25,
+          "headlineGauge": "knownCeiling",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 6.949
+            },
+            "pedestrian": {
+              "n": 6,
+              "camHU": 1.236,
+              "camHU_p05_p95": [
+                1.1515678111010306,
+                1.2769690864476837
+              ],
+              "height": 5.37,
+              "usable": false
+            },
+            "knownCeiling": {
+              "camHU": 1.101,
+              "rhoKnown": 2.094,
+              "hKnownU": 2.306,
+              "height": 4.782,
+              "postHoc": true
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.227,
+            "pass_": false
+          },
+          "randomHoldout": {
+            "n": 904,
+            "medianAbsU": 0.0808,
+            "pass_": false
+          },
+          "frameDisjoint": {
+            "offsetU": 0.005,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 540,
+            "tiltVsPlumbDeg": 0.3,
+            "oddPlumbTiltDeg": 0.28,
+            "camHmodelUnits": 0.1589,
+            "camHp10p90": [
+              0.147,
+              0.1686
+            ]
+          }
+        }
+      ],
+      "gauge": "known-ceiling (kmCz sees the central approach low ceiling at the escalator foot, rho 2.094 -> camera 1.10 u); pedestrians n=6 give 1.24 u (below the 12 minimum); 1.60 prior gives 6.95 (above the 2F slab underside 6.7, not credible)",
+      "crossCheck": {
+        "result": "none available: the SY0 2024 rear-row clips (K13-K20) have no reconstructed floor (polished floor, close-up vlog framing) so no floor-relative height can be taken; S23 sees only the corridor mouth"
+      },
+      "tier": "c",
+      "tierReason": "single source, gauge gate fails, random held-out 0.081 u; replaces the provisional 2.58 (that value came from a placement that put the camera 1.01 u above the floor and measured fascia-level points)"
+    },
+    {
+      "zone": "U− lobby / GATE1 hall (incl. U− front corridor end #7)",
+      "ceilingHeightAboveFloor": {
+        "value": 4.81,
+        "p10": 4.65,
+        "p90": 4.95,
+        "n": 154,
+        "envelopeByGauge": {
+          "knownCeiling": 4.81,
+          "pedestrian_n6": 5.41,
+          "prior160": 7.0
+        }
+      },
+      "ceilingType": "flat ceiling with downlights over a hall with a clerestory-glazed plaza wall; the departure board and the yellow exit sign (rho 2.66 / 2.28) hang below it",
+      "extentDescription": "the U- end hall reached at the end of the rear corridor: departure board, #7 (2021 StoryWay) glazed frontage on the right, GATE1 / 1번 출구 automatic doors to the plaza; kmCz frames 222-252 (1311-1321 s). Same ceiling height as the rear corridor (rho 4.37 vs 4.34), i.e. continuous.",
+      "sources": [
+        {
+          "video": "kmCzb3KOQ3M",
+          "epoch": "2020-12/2021-01",
+          "model": "rear-row-walk/sfm/sparse/2",
+          "seconds": [
+            1312.67,
+            1312.33,
+            1312.0,
+            1313.33
+          ],
+          "frames": [
+            "000225.jpg",
+            "000224.jpg",
+            "000223.jpg",
+            "000227.jpg"
+          ],
+          "rho": 4.3728,
+          "heightU": 4.814,
+          "p10": 4.653,
+          "p90": 4.954,
+          "n": 154,
+          "planeTiltDeg": 2.13,
+          "headlineGauge": "knownCeiling",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 6.996
+            },
+            "pedestrian": {
+              "n": 6,
+              "camHU": 1.236,
+              "camHU_p05_p95": [
+                1.1515678111010306,
+                1.2769690864476837
+              ],
+              "height": 5.407,
+              "usable": false
+            },
+            "knownCeiling": {
+              "camHU": 1.101,
+              "rhoKnown": 2.094,
+              "hKnownU": 2.306,
+              "height": 4.814,
+              "postHoc": true
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.227,
+            "pass_": false
+          },
+          "randomHoldout": {
+            "n": 95,
+            "medianAbsU": 0.0906,
+            "pass_": false
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0205,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 540,
+            "tiltVsPlumbDeg": 0.3,
+            "oddPlumbTiltDeg": 0.28,
+            "camHmodelUnits": 0.1589,
+            "camHp10p90": [
+              0.147,
+              0.1686
+            ]
+          }
+        }
+      ],
+      "gauge": "as rear corridor (same video)",
+      "crossCheck": {
+        "result": "SY0 K20 / GATE1-hall model (2024) not floor-measurable; the 2024 ceiling there looks re-finished (round perforated pattern) -> not comparable to 2020 anyway"
+      },
+      "tier": "c",
+      "tierReason": "single source, gauge gate fails, random held-out 0.091 u"
+    },
+    {
+      "zone": "locker/escalator area (corridor from the central escalator foot toward the U+ end: vending bank, coin lockers)",
+      "ceilingHeightAboveFloor": {
+        "value": 4.51,
+        "p10": 4.45,
+        "p90": 4.57,
+        "n": 190,
+        "envelopeByGauge": {
+          "pedestrian": 4.51,
+          "prior160": 5.31,
+          "pedestrianBiasCorrected": 4.31
+        }
+      },
+      "ceilingType": "flat ceiling with downlights and hanging \"나가는 곳\" signs",
+      "extentDescription": "eluhiZ B_016-B_032 (31.1-32.3 s): after the escalator foot turn, past B&C, the vending bank and the coin-locker bank (\"짐 보관함\") toward the U+ end hall",
+      "sources": [
+        {
+          "video": "eluhiZ_eirE",
+          "epoch": "2026-09",
+          "model": "uplus-service-end/sfm/sparse/0",
+          "seconds": [
+            32.115,
+            32.249,
+            32.182,
+            32.049
+          ],
+          "frames": [
+            "B_032.jpg",
+            "B_034.jpg",
+            "B_033.jpg",
+            "B_031.jpg"
+          ],
+          "rho": 3.3175,
+          "heightU": 4.509,
+          "p10": 4.449,
+          "p90": 4.573,
+          "n": 190,
+          "planeTiltDeg": 0.07,
+          "headlineGauge": "pedestrian",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 5.308
+            },
+            "pedestrian": {
+              "n": 28,
+              "camHU": 1.359,
+              "camHU_p05_p95": [
+                1.3405963551830395,
+                1.3826473484322823
+              ],
+              "height": 4.509,
+              "usable": true
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.151,
+            "pass_": false
+          },
+          "randomHoldout": {
+            "n": 86,
+            "medianAbsU": 0.0787,
+            "pass_": false
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0073,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 229,
+            "tiltVsPlumbDeg": 0.39,
+            "oddPlumbTiltDeg": 0.39,
+            "camHmodelUnits": 0.4897,
+            "camHp10p90": [
+              0.4621,
+              0.5325
+            ]
+          }
+        }
+      ],
+      "gauge": "pedestrian n=28 (camera 1.36 u); no known-ceiling (the low ceiling at the escalator foot is not reconstructed in this model); across the four videos where both exist the pedestrian gauge reads +4..7% high vs known-ceiling/absolute",
+      "crossCheck": {
+        "result": "SY0 K03/K08 (2024 lockers) have no reconstructed floor -> no second source"
+      },
+      "tier": "c",
+      "tierReason": "single source, gauge gate fails (-15%), random held-out 0.079 u"
+    },
+    {
+      "zone": "U+ end hall (elevator/KTX특송/짐캐리 hall, under the 2F slab)",
+      "ceilingHeightAboveFloor": {
+        "value": 4.41,
+        "p10": 4.26,
+        "p90": 4.53,
+        "n": 298,
+        "envelopeByGauge": {
+          "pedestrian": 4.41,
+          "prior160": 5.19,
+          "pedestrianBiasCorrected": 4.22
+        }
+      },
+      "ceilingType": "flat ceiling with downlights (same level as the locker corridor, rho 3.24 vs 3.32)",
+      "extentDescription": "eluhiZ B_034-C_014 (32.5-36.5 s): tall columns, zimcarry and KTX특송 glass boxes, elevator doors; ends U+ at the double-height glazed strip",
+      "sources": [
+        {
+          "video": "eluhiZ_eirE",
+          "epoch": "2026-09",
+          "model": "uplus-service-end/sfm/sparse/0",
+          "seconds": [
+            32.249,
+            32.316,
+            32.382,
+            32.182
+          ],
+          "frames": [
+            "B_034.jpg",
+            "B_035.jpg",
+            "B_036.jpg",
+            "B_033.jpg"
+          ],
+          "rho": 3.2419,
+          "heightU": 4.406,
+          "p10": 4.263,
+          "p90": 4.53,
+          "n": 298,
+          "planeTiltDeg": 0.62,
+          "headlineGauge": "pedestrian",
+          "gauges": {
+            "cameraPrior": {
+              "camHU": 1.6,
+              "height": 5.187
+            },
+            "pedestrian": {
+              "n": 28,
+              "camHU": 1.359,
+              "camHU_p05_p95": [
+                1.3405963551830395,
+                1.3826473484322823
+              ],
+              "height": 4.406,
+              "usable": true
+            }
+          },
+          "preRegisteredGate": {
+            "cameraVsPedestrianDisagreement": 0.151,
+            "pass_": false
+          },
+          "randomHoldout": {
+            "n": 192,
+            "medianAbsU": 0.1065,
+            "pass_": false
+          },
+          "frameDisjoint": {
+            "offsetU": 0.0,
+            "pass_": true
+          },
+          "floor": {
+            "inliers": 229,
+            "tiltVsPlumbDeg": 0.39,
+            "oddPlumbTiltDeg": 0.39,
+            "camHmodelUnits": 0.4897,
+            "camHp10p90": [
+              0.4621,
+              0.5325
+            ]
+          }
+        }
+      ],
+      "gauge": "pedestrian n=28",
+      "crossCheck": {
+        "result": "SY0 K05/K06 (2024) not floor-measurable; uplus lane P2 value 5.12 used a rejected scale (its escalator-landing check read 2.90 vs 2.25)"
+      },
+      "tier": "c",
+      "tierReason": "single source, gauge gate fails, random held-out 0.107 u"
+    },
+    {
+      "zone": "U+ glazed double-height strip",
+      "ceilingHeightAboveFloor": {
+        "value": null,
+        "p10": null,
+        "p90": null,
+        "n": null,
+        "layersAboveFloorU": {
+          "glassBoxTops_rho2p9_3p35": "3.9-4.6",
+          "slabEdgeBand_rho3p65_4p15": "5.0-5.6",
+          "roofGlazing_rho7p1_7p9": "9.7-10.7",
+          "highestPoints_rho_p99_max": "12.3-15.8"
+        },
+        "gauge": "pedestrian camera 1.36 u"
+      },
+      "ceilingType": "double-height (no suspended ceiling, no 2F slab over the strip)",
+      "extentDescription": "plaza-side strip at the U+ end in front of the curtain wall, from the U+ corner facade toward U- past zimcarry/KTX특송 (eluhiZ D_000-G_011, 45.5-49.5 s); the 2F slab edge band is seen from below at 5.0-5.6 u; roof glazing at ~10 u and structure up to ~15 u",
+      "sources": [
+        {
+          "video": "eluhiZ_eirE",
+          "epoch": "2026-09",
+          "model": "uplus-service-end/sfm/sparse/0",
+          "frames": [
+            "D_012.jpg",
+            "D_016.jpg",
+            "E_000.jpg",
+            "G_002.jpg"
+          ],
+          "seconds": [
+            46.21,
+            46.68,
+            47.52,
+            48.9
+          ]
+        }
+      ],
+      "gauge": "pedestrian n=28",
+      "crossCheck": {
+        "result": "confirms the uplus lane verdict (void present); heights single-source"
+      },
+      "tier": "c",
+      "tierReason": "line-of-sight layers only, single source"
+    },
+    {
+      "zone": "U− front corridor #5–#8 / plaza-side front row",
+      "ceilingHeightAboveFloor": {
+        "value": null,
+        "p10": null,
+        "p90": null,
+        "n": null
+      },
+      "ceilingType": "unmeasured",
+      "extentDescription": "no walk in the local set passes along the #5-#8 plaza-side fronts with a reconstructed floor; the #7 frontage end is covered by the GATE1-hall zone",
+      "sources": [],
+      "gauge": null,
+      "crossCheck": null,
+      "tier": "c",
+      "tierReason": "unmeasured"
+    }
+  ]
+}

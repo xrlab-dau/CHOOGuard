@@ -1,0 +1,105 @@
+{
+  "zone": "sky_plaza",
+  "root": "실내 트윈 마감/하늘광장",
+  "basis": {
+    "frame": "root",
+    "coordinateSystem": "station UV, Y model units",
+    "deckY": 7.03,
+    "groundY": 0.0,
+    "validation_bounds": [
+      -30.0,
+      90.0,
+      80.0,
+      225.0
+    ],
+    "scope": "two support Slabs only; build before sky-plaza-fit.json"
+  },
+  "elements": [
+    {
+      "type": "Slab",
+      "id": "sky-plaza-deck-2f",
+      "zone": "sky_plaza",
+      "tier": "b",
+      "frame": "root",
+      "evidence": [
+        "https://www.busanpa.com/board/view.do?boardId=BBS_0000031&dataSid=20383&menuCd=DOM_000000105002001000&paging=ok&startPage=265 (2017-12-27, BPA: elevated 570 m station-terminal connection; stage-1 plaza planned at about 100 x 60 m).",
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "[INFERENCE] footprint is conservatively registered as U=-5..56, V=source facade..187.5 from the 60 x 100 m public-plaza description, satellite and station door frame; exact boundary and paving divisions are not surveyed."
+      ],
+      "geometry": {
+        "polygon": [
+          [
+            -5.0,
+            93.283
+          ],
+          [
+            56.0,
+            97.687
+          ],
+          [
+            56.0,
+            195.0
+          ],
+          [
+            -5.0,
+            188.0
+          ]
+        ],
+        "y": 7.03
+      },
+      "params": {
+        "depth": 0.45,
+        "finish": "paving",
+        "edgeFinish": "concrete",
+        "soffit": "concrete",
+        "collider": true
+      }
+    },
+    {
+      "type": "Slab",
+      "id": "sky-plaza-ground-apron-1f",
+      "zone": "sky_plaza",
+      "tier": "b",
+      "frame": "root",
+      "evidence": [
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://m.blog.naver.com/ssh19938/223027519848 (2023-02-25 visitor photos: open covered walkway with guardrails and visible piers; public parking / waterside route context).",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE].",
+        "[INFERENCE] support grid and ground-apron elevation Y=0.0 use the station 1F model datum; exact pier coordinates and road/parking use below the plaza are not registered.",
+        "[INFERENCE] asphalt apron begins north of mapped source ground at V=118 and extends 20 m beyond west/north/east deck edges; land use beyond is only coarsely visible in satellite imagery."
+      ],
+      "geometry": {
+        "polygon": [
+          [
+            -25.0,
+            118.0
+          ],
+          [
+            76.0,
+            118.0
+          ],
+          [
+            76.0,
+            215.0
+          ],
+          [
+            -25.0,
+            215.0
+          ]
+        ],
+        "y": 0.0
+      },
+      "params": {
+        "depth": 0.2,
+        "finish": "asphalt",
+        "edgeFinish": "concrete",
+        "soffit": "none",
+        "collider": true
+      }
+    }
+  ]
+}

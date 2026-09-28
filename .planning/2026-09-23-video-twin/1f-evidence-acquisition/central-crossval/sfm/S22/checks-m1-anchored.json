@@ -1,0 +1,408 @@
+{
+  "segment": "S22",
+  "model": 1,
+  "tag": "anchored",
+  "pointsQuality": {
+    "all": 8330,
+    "views>=3,err<=2px,tri>=2deg": 7334
+  },
+  "checks": [
+    {
+      "name": "GATE3/4 portal corners (MainShell source mesh)",
+      "type": "source-control",
+      "n": 5,
+      "median": 52.40336358419063,
+      "p95": 92.05649217695657,
+      "max": 100.38105400593581,
+      "threshold": "median<=6.0 px, max<=12.0 px @1280",
+      "pass": false,
+      "rows": [
+        {
+          "frame": "000001.jpg",
+          "corner": "g4_bl",
+          "marked": [
+            16.0,
+            638.0
+          ],
+          "projected": [
+            115.91762021717682,
+            628.3654178358051
+          ],
+          "errorPx": 100.38105400593581,
+          "depthU": 4.96620668366442
+        },
+        {
+          "frame": "000001.jpg",
+          "corner": "g4_br",
+          "marked": [
+            458.0,
+            653.0
+          ],
+          "projected": [
+            507.8584069248094,
+            636.8676792166473
+          ],
+          "errorPx": 52.40336358419063,
+          "depthU": 4.66367177592831
+        },
+        {
+          "frame": "000001.jpg",
+          "corner": "g3_tl",
+          "marked": [
+            566.0,
+            138.0
+          ],
+          "projected": [
+            611.4973820200389,
+            163.8614074440332
+          ],
+          "errorPx": 52.33377652781859,
+          "depthU": 4.870839085343022
+        },
+        {
+          "frame": "000001.jpg",
+          "corner": "g3_bl",
+          "marked": [
+            569.0,
+            657.0
+          ],
+          "projected": [
+            624.8360174801472,
+            638.7005330376378
+          ],
+          "errorPx": 58.75824486103966,
+          "depthU": 4.581513802377145
+        },
+        {
+          "frame": "000001.jpg",
+          "corner": "g3_br",
+          "marked": [
+            1119.0,
+            665.0
+          ],
+          "projected": [
+            1090.4122352926258,
+            642.8312986594399
+          ],
+          "errorPx": 36.176119334322465,
+          "depthU": 4.278978894641035
+        }
+      ]
+    },
+    {
+      "name": "cl-low-suspended-ceiling/officeFit",
+      "type": "class-a-plane",
+      "selection": "v2 nearest-surface assignment",
+      "n": 221,
+      "median": 0.045007421861194885,
+      "p95": 0.4568513201868307,
+      "medianSigned": -0.0023563658040641755,
+      "withinTol005": 0.5113122171945701,
+      "v1FootSlabSelection": {
+        "n": 350,
+        "medianAbs": 0.16334293811992873,
+        "p95Abs": 0.4868132887970222,
+        "medianSigned": 0.10663442042831472,
+        "withinTol": 0.32857142857142857,
+        "tol": 0.05
+      },
+      "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+      "pass": false
+    },
+    {
+      "name": "cl-low-suspended-ceiling/coreFit",
+      "type": "class-a-plane",
+      "selection": "v2 nearest-surface assignment",
+      "n": 65,
+      "median": 0.02408628250551148,
+      "p95": 0.16057491654172337,
+      "medianSigned": -0.02178063853071821,
+      "withinTol005": 0.8,
+      "v1FootSlabSelection": {
+        "n": 127,
+        "medianAbs": 0.08701307855147,
+        "p95Abs": 0.49055693540266754,
+        "medianSigned": 0.052018177159913304,
+        "withinTol": 0.41732283464566927,
+        "tol": 0.05
+      },
+      "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+      "pass": false
+    },
+    {
+      "name": "cl-higher-lobby-ceiling",
+      "type": "class-a-plane",
+      "selection": "v2 nearest-surface assignment",
+      "n": 129,
+      "median": 0.06308245192645678,
+      "p95": 0.22903450955585966,
+      "medianSigned": -0.04999114222606327,
+      "withinTol005": 0.4186046511627907,
+      "v1FootSlabSelection": {
+        "n": 129,
+        "medianAbs": 0.06308245192645678,
+        "p95Abs": 0.22903450955585966,
+        "medianSigned": -0.04999114222606327,
+        "withinTol": 0.4186046511627907,
+        "tol": 0.05
+      },
+      "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+      "pass": false
+    },
+    {
+      "name": "wl-right-approach-wall/officeFit",
+      "type": "class-a-plane",
+      "selection": "v2 nearest-surface assignment",
+      "n": 510,
+      "median": 0.06002031687663756,
+      "p95": 0.2610433180427515,
+      "medianSigned": 0.00733468330693654,
+      "withinTol005": 0.42745098039215684,
+      "v1FootSlabSelection": {
+        "n": 531,
+        "medianAbs": 0.06220754169079612,
+        "p95Abs": 0.2664586488370597,
+        "medianSigned": 0.013875299891159543,
+        "withinTol": 0.4124293785310734,
+        "tol": 0.05
+      },
+      "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+      "pass": false
+    },
+    {
+      "name": "wl-right-approach-wall/coreFit",
+      "type": "class-a-plane",
+      "selection": "v2 nearest-surface assignment",
+      "n": 377,
+      "median": 0.08063399604597521,
+      "p95": 0.26741083829521406,
+      "medianSigned": 0.021642107448615278,
+      "withinTol005": 0.33421750663129973,
+      "v1FootSlabSelection": {
+        "n": 391,
+        "medianAbs": 0.08493471376694828,
+        "p95Abs": 0.27569373007448394,
+        "medianSigned": 0.03135551728138708,
+        "withinTol": 0.32225063938618925,
+        "tol": 0.05
+      },
+      "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+      "pass": false
+    },
+    {
+      "name": "vc-lower-landing-floor",
+      "type": "class-a-plane",
+      "selection": "v2 nearest-surface assignment",
+      "n": 0,
+      "v1FootSlabSelection": {
+        "n": 1,
+        "medianAbs": 0.07426437725380423,
+        "p95Abs": 0.07426437725380423,
+        "medianSigned": -0.07426437725380423,
+        "withinTol": 0.0,
+        "tol": 0.05
+      },
+      "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+      "pass": null,
+      "reason": "too few independent points in the supported box"
+    },
+    {
+      "name": "vertical vanishing direction vs registered up",
+      "type": "plumb",
+      "n": 33,
+      "median": 0.6823474418650304,
+      "p95": 1.7803335693582205,
+      "threshold": "median<=0.5 deg, p95<=1.0 deg",
+      "pass": false,
+      "rows": [
+        {
+          "frame": "000001.jpg",
+          "segments": 94,
+          "angleDeg": 0.6823474418650304
+        },
+        {
+          "frame": "000004.jpg",
+          "segments": 82,
+          "angleDeg": 0.604517633750604
+        },
+        {
+          "frame": "000007.jpg",
+          "segments": 85,
+          "angleDeg": 0.9677739483242573
+        },
+        {
+          "frame": "000010.jpg",
+          "segments": 78,
+          "angleDeg": 0.3614804626424433
+        },
+        {
+          "frame": "000013.jpg",
+          "segments": 75,
+          "angleDeg": 0.2807182935789407
+        },
+        {
+          "frame": "000016.jpg",
+          "segments": 56,
+          "angleDeg": 0.3690446880595632
+        },
+        {
+          "frame": "000019.jpg",
+          "segments": 52,
+          "angleDeg": 0.3553523347487502
+        },
+        {
+          "frame": "000022.jpg",
+          "segments": 15,
+          "angleDeg": 0.20557424879267097
+        },
+        {
+          "frame": "000025.jpg",
+          "segments": 30,
+          "angleDeg": 0.39223299317836174
+        },
+        {
+          "frame": "000028.jpg",
+          "segments": 32,
+          "angleDeg": 0.7732583353262756
+        },
+        {
+          "frame": "000031.jpg",
+          "segments": 35,
+          "angleDeg": 0.6201219665430752
+        },
+        {
+          "frame": "000034.jpg",
+          "segments": 32,
+          "angleDeg": 1.1053845141621532
+        },
+        {
+          "frame": "000037.jpg",
+          "segments": 36,
+          "angleDeg": 0.4470198375977401
+        },
+        {
+          "frame": "000040.jpg",
+          "segments": 19,
+          "angleDeg": 0.2802901014145011
+        },
+        {
+          "frame": "000043.jpg",
+          "segments": 15,
+          "angleDeg": 0.7803256268993536
+        },
+        {
+          "frame": "000046.jpg",
+          "segments": 30,
+          "angleDeg": 0.7567589956062704
+        },
+        {
+          "frame": "000049.jpg",
+          "segments": 44,
+          "angleDeg": 0.622669850608036
+        },
+        {
+          "frame": "000052.jpg",
+          "segments": 19,
+          "angleDeg": 1.21021041647901
+        },
+        {
+          "frame": "000055.jpg",
+          "segments": 59,
+          "angleDeg": 0.3312871297679607
+        },
+        {
+          "frame": "000062.jpg",
+          "segments": 9,
+          "angleDeg": 0.9001634931137263
+        },
+        {
+          "frame": "000065.jpg",
+          "segments": 8,
+          "angleDeg": 2.6233182452348207
+        },
+        {
+          "frame": "000068.jpg",
+          "segments": 12,
+          "angleDeg": 1.4207948416589826
+        },
+        {
+          "frame": "000071.jpg",
+          "segments": 22,
+          "angleDeg": 0.42580827351878087
+        },
+        {
+          "frame": "000074.jpg",
+          "segments": 13,
+          "angleDeg": 0.4929125184385159
+        },
+        {
+          "frame": "000077.jpg",
+          "segments": 21,
+          "angleDeg": 0.783563976921885
+        },
+        {
+          "frame": "000080.jpg",
+          "segments": 24,
+          "angleDeg": 1.3069036388974886
+        },
+        {
+          "frame": "000083.jpg",
+          "segments": 11,
+          "angleDeg": 0.5733224559913044
+        },
+        {
+          "frame": "000086.jpg",
+          "segments": 16,
+          "angleDeg": 0.5726193705448039
+        },
+        {
+          "frame": "000089.jpg",
+          "segments": 10,
+          "angleDeg": 0.7660878765532734
+        },
+        {
+          "frame": "000092.jpg",
+          "segments": 8,
+          "angleDeg": 0.7817760631571483
+        },
+        {
+          "frame": "000095.jpg",
+          "segments": 10,
+          "angleDeg": 0.7459492188722052
+        },
+        {
+          "frame": "000098.jpg",
+          "segments": 8,
+          "angleDeg": 1.582743689708451
+        },
+        {
+          "frame": "000101.jpg",
+          "segments": 8,
+          "angleDeg": 2.0767183888328766
+        }
+      ]
+    },
+    {
+      "name": "corridor floor vs generated Ground_Floor Y=0 (diagnostic only)",
+      "type": "floor-diagnostic",
+      "n": 463,
+      "threshold": "|median Y|<=0.1, tilt<=0.5 deg (non-gating)",
+      "median": 0.041061902200830724,
+      "p95": 0.2600997841445953,
+      "fitInliers": 128,
+      "fitInlierRMS": 0.014879013726380681,
+      "tiltDeg": 0.6355531763309046,
+      "pass": false
+    },
+    {
+      "name": "camera travel continuity",
+      "type": "continuity",
+      "n": 101,
+      "median": 0.39203151987525414,
+      "p95": 0.46825379811760737,
+      "max": 0.5356553891693284,
+      "threshold": "max step<=1.0 u and <= 3.0x median per 1/3 s",
+      "pass": true
+    }
+  ]
+}

@@ -1,0 +1,807 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00e181e883e914adabda3c316597c8f8, type: 3}
+  m_Name: EmergencyArt
+  m_EditorClassIdentifier: ChooGuard.App::ChooGuard.App.Fps.Emergency.EmergencyArt
+  WorldNavMesh: {fileID: 23800000, guid: 8edfc0aadfe8f4fc7a7fceebcb88c746, type: 2}
+  StationData: {fileID: 4900000, guid: 0515bb9eb9b1642c997afe79b6e5c592, type: 3}
+  Crowd: {fileID: 11400000, guid: a1f69d26efc8c40cb99d3e570d4ee812, type: 2}
+  TrainDoors:
+  - Car: Car02_T2 2car
+    Source: Car02_T2 2car_08_T2-1_in_001
+    Fixed: {fileID: 4300000, guid: af8990e56ee124a62bce63440f64d3f8, type: 2}
+    Leaf: {fileID: 4300000, guid: 37b7011442bc842f4b3c83d47c8e488a, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car02_T2 2car
+    Source: Car02_T2 2car_08_T2-1_in_002
+    Fixed: {fileID: 4300000, guid: c9cbec102585646df9696a2e41b01748, type: 2}
+    Leaf: {fileID: 4300000, guid: 3050b3231b704472d8ad40289004536c, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car02_T2 2car
+    Source: Car02_T2 2car_08_T2-1_in_004
+    Fixed: {fileID: 4300000, guid: 86414d086465b4b4a89bddda27c413e7, type: 2}
+    Leaf: {fileID: 4300000, guid: 3a3135cbe6d7a4695b4ef33c42eec6ed, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car02_T2 2car
+    Source: Car02_T2 2car_08_T2-1_in_005
+    Fixed: {fileID: 4300000, guid: ec87b4f2aa49e4d71a8d749b584480cf, type: 2}
+    Leaf: {fileID: 4300000, guid: 9ad07d2a61c2144209764fc8593d6042, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car02_T2 2car
+    Source: Car02_T2 2car_08_T2-1_in_006
+    Fixed: {fileID: 4300000, guid: 3fc710fb8833b4fb7ba0d0ab098f9ad9, type: 2}
+    Leaf: {fileID: 4300000, guid: c0fc6a2d5d59e41a7bb481a77bccf9aa, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car03_S 3car
+    Source: Car03_S 3car_08_S_in_001
+    Fixed: {fileID: 4300000, guid: e618e2280fd724e87b0cfdf0c6c704c7, type: 2}
+    Leaf: {fileID: 4300000, guid: 27f42d78bab0341c796e1465a048ce9e, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car03_S 3car
+    Source: Car03_S 3car_08_S_in_004
+    Fixed: {fileID: 4300000, guid: 438fb80e1b2124f089df6618b106a1a1, type: 2}
+    Leaf: {fileID: 4300000, guid: 099d9dc5330384200aca3fbc0e694fbd, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car04_T4 4car
+    Source: Car04_T4 4car_05_R_in_000
+    Fixed: {fileID: 4300000, guid: 5d4dc7f4b29e04fa0befd246fef95358, type: 2}
+    Leaf: {fileID: 4300000, guid: 4d08f05c9fc7f4d47b3dbf8d661ce72f, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car04_T4 4car
+    Source: Car04_T4 4car_05_R_in_001
+    Fixed: {fileID: 4300000, guid: 3ce40763f78d94f318325c2dc3fff261, type: 2}
+    Leaf: {fileID: 4300000, guid: dbe3b098a03124275b372046c5648a49, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car04_T4 4car
+    Source: Car04_T4 4car_05_R_in_003
+    Fixed: {fileID: 4300000, guid: dc30c08af01f24934930711bb93d488c, type: 2}
+    Leaf: {fileID: 4300000, guid: 39676bc362640401cb4b7f8866576db8, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car04_T4 4car
+    Source: Car04_T4 4car_05_R_in_006
+    Fixed: {fileID: 4300000, guid: 53f6d60a4200f4222954ded48d1c56c2, type: 2}
+    Leaf: {fileID: 4300000, guid: 32caffa9fb7014a8f9d0d0523bb559ef, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car04_T4 4car
+    Source: Car04_T4 4car_05_R_in_008
+    Fixed: {fileID: 4300000, guid: f432668e68a4847d4a05aca065c274c5, type: 2}
+    Leaf: {fileID: 4300000, guid: f35a6c07659a14ef9824ad9d97103b73, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car05_T1 5car
+    Source: Car05_T1 5car_08_T1-2_in_000
+    Fixed: {fileID: 4300000, guid: 72802e51963104037a74c0e4cde9c6d6, type: 2}
+    Leaf: {fileID: 4300000, guid: ccc4a7164fe5947529c52cc8c77e9db9, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car05_T1 5car
+    Source: Car05_T1 5car_08_T1-2_in_001
+    Fixed: {fileID: 4300000, guid: e5a75b63bf6a247949e994ac6a140729, type: 2}
+    Leaf: {fileID: 4300000, guid: 4d01d3edd83544f00a4a2f794ca75720, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car05_T1 5car
+    Source: Car05_T1 5car_08_T1-2_in_002
+    Fixed: {fileID: 4300000, guid: 28730fadadbd84bc8a76f0777f7a0499, type: 2}
+    Leaf: {fileID: 4300000, guid: 4987e74203df3464e84352bd190dcd7d, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car05_T1 5car
+    Source: Car05_T1 5car_08_T1-2_in_004
+    Fixed: {fileID: 4300000, guid: 5cc3748b4ecf64f64a9ce412f1c2a636, type: 2}
+    Leaf: {fileID: 4300000, guid: 97e7dd9816cc5470289b711309b1b0c0, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car05_T1 5car
+    Source: Car05_T1 5car_08_T1-2_in_007
+    Fixed: {fileID: 4300000, guid: 11b97730b28b54f21b36637f5f71aa37, type: 2}
+    Leaf: {fileID: 4300000, guid: ecc30d106ae424151b845c8f5ae0e839, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car06_T1 6car
+    Source: Car06_T1 6car_08_T1-1_in_001
+    Fixed: {fileID: 4300000, guid: 5d0b537ebe4cc4fbf868e2b8ec54dd8b, type: 2}
+    Leaf: {fileID: 4300000, guid: 29bb41b092fe04a289ce98f5311c341d, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car06_T1 6car
+    Source: Car06_T1 6car_08_T1-1_in_002
+    Fixed: {fileID: 4300000, guid: 7c42b61902710440e917522c567fe486, type: 2}
+    Leaf: {fileID: 4300000, guid: cce03f66fcf444834b05423315ce256d, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car06_T1 6car
+    Source: Car06_T1 6car_08_T1-1_in_003
+    Fixed: {fileID: 4300000, guid: 0d920b3c80d3046ddaa0bf75a5202ac1, type: 2}
+    Leaf: {fileID: 4300000, guid: 8d3e14797fa8a44629f79b8c56edc805, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car06_T1 6car
+    Source: Car06_T1 6car_08_T1-1_in_004
+    Fixed: {fileID: 4300000, guid: d97c2f082cea844aba79b86a09540a1a, type: 2}
+    Leaf: {fileID: 4300000, guid: fd4e2d3c3b1a1488197d46a2aad4daac, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car06_T1 6car
+    Source: Car06_T1 6car_08_T1-1_in_005
+    Fixed: {fileID: 4300000, guid: ee387dcfeca4d4dc1b821f6e857606b0, type: 2}
+    Leaf: {fileID: 4300000, guid: 74e6b1890a04b4e8483728f44165510c, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car07_T2 7car
+    Source: Car07_T2 7car_08_T2-2_in_000
+    Fixed: {fileID: 4300000, guid: 288f4454bc9584f51a7594b84d90e336, type: 2}
+    Leaf: {fileID: 4300000, guid: dd08aaa54930543d581102274f4430e9, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car07_T2 7car
+    Source: Car07_T2 7car_08_T2-2_in_001
+    Fixed: {fileID: 4300000, guid: 64418034b3ea14d1999615328b1e35bd, type: 2}
+    Leaf: {fileID: 4300000, guid: ef43dc2c73a6f4a228acb38b956ca6b3, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car07_T2 7car
+    Source: Car07_T2 7car_08_T2-2_in_002
+    Fixed: {fileID: 4300000, guid: a0be19e69218442e6b9486b94a63fcb6, type: 2}
+    Leaf: {fileID: 4300000, guid: 82c6cb96dc4a84e8ab51403fa8c6319f, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car07_T2 7car
+    Source: Car07_T2 7car_08_T2-2_in_004
+    Fixed: {fileID: 4300000, guid: b7a7090ae64234c808815b77b8a5654c, type: 2}
+    Leaf: {fileID: 4300000, guid: 767c2d6d35bd641e8b323d7f5d620bd1, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car07_T2 7car
+    Source: Car07_T2 7car_08_T2-2_in_005
+    Fixed: {fileID: 4300000, guid: b0dca0510c11d46c7a13121fb5de8203, type: 2}
+    Leaf: {fileID: 4300000, guid: 4eff5076d3b084558bda004cb79dfe05, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  - Car: Car08_ET2 8car
+    Source: Car08_ET2 8car_11_ET2_in_003
+    Fixed: {fileID: 4300000, guid: 69981230eb09f45d295dd9b1b74e93d3, type: 2}
+    Leaf: {fileID: 4300000, guid: 7569616194868447ea2a257a854abc9f, type: 2}
+    Slide: {x: -0.0088, y: 0, z: 0}
+  Flame: {fileID: 2100000, guid: 96423f8392abb46e1832fc4db5c473a0, type: 2}
+  Smoke: {fileID: 2100000, guid: f7005b7a21264462580c69effdce441d, type: 2}
+  Stanchion: {fileID: 4300000, guid: d3a7b9247d43a41e68ffef0d8f1e4c50, type: 2}
+  CordonPost: {fileID: 2100000, guid: 59459edc4627e4c4ca095781646c7b3d, type: 2}
+  CordonHead: {fileID: 2100000, guid: fd27e5ce7f2214c1d8b278ad658ad09a, type: 2}
+  CordonTape: {fileID: 2100000, guid: bfa7eae6a4e834e04907cdef9d1b274f, type: 2}
+  CoatFlap: {fileID: 4300000, guid: 2ba5a9727f64a4eb88554d94ad6ace9a, type: 2}
+  Coat: {fileID: 2100000, guid: 9655da8775cda4f25b20ccc2cbc4d90d, type: 2}
+  Leather: {fileID: 2100000, guid: 24153da8cb45a4844be5a86f96691195, type: 2}
+  SuitcaseModel: {fileID: 919132149155446097, guid: bc6042f83c2964c27abc59b86c9ecf75, type: 3}
+  HandbagModel: {fileID: 919132149155446097, guid: d1b6fe559d575451a9961f4ec99bed3f, type: 3}
+  MedicalBagModel: {fileID: 919132149155446097, guid: d33934f3400094f08ad43c17f11ac905, type: 3}
+  Hanging:
+  - Label: "\uAD11\uACE0\uD310"
+    Centre: {x: 83.82144, y: 11.225, z: 2.9653606}
+    Size: {x: 2.0845604, y: 2.1500006, z: 5.626243}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Box_Majibang_AdPanel_ad_Singisul"
+      Mesh: {fileID: 4300000, guid: 11c4860ea47164221b8f8b0b627c218d, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 57b224fe397ad4310ae1c87025a3319c, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+  - Label: "\uAD11\uACE0\uD310"
+    Centre: {x: 86.53137, y: 11.225, z: 10.279481}
+    Size: {x: 2.0845604, y: 2.1500006, z: 5.626243}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Box_Majibang_AdPanel_ad_HWASEUNG"
+      Mesh: {fileID: 4300000, guid: 0a8c614c540ad458d8ee4ddf537702a2, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 603761181bd904a3b9048eb732dfbad5, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+  - Label: "\uAD11\uACE0\uD310"
+    Centre: {x: 89.241295, y: 11.225, z: 17.59359}
+    Size: {x: 2.0845604, y: 2.1500006, z: 5.626243}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Box_Majibang_AdPanel_ad_TKG"
+      Mesh: {fileID: 4300000, guid: ad69eb6a2d9904979912d0093e44bb27, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: ee2c5b48be20e4ac8abb39e366c51e00, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+  - Label: "\uAD11\uACE0\uD310"
+    Centre: {x: 91.951225, y: 11.225, z: 24.907707}
+    Size: {x: 2.0845604, y: 2.1500006, z: 5.626243}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Box_Majibang_AdPanel_ad_PanStar"
+      Mesh: {fileID: 4300000, guid: 775c14ec2c53b4442b09bb210a870dbd, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: cfa578db7f2cc417791321d811e20265, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+  - Label: "\uAD11\uACE0\uD310"
+    Centre: {x: 50.00528, y: 11.225, z: -1.984334}
+    Size: {x: 5.4387026, y: 2.1500006, z: 2.0150754}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Box_Majibang_AdPanel_ad_WFMT"
+      Mesh: {fileID: 4300000, guid: f0618ce01f371401b93cc826514cb042, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: ba99581d781bc4487825b12c76f14a68, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+  - Label: "\uAD11\uACE0\uD310"
+    Centre: {x: 43.066246, y: 11.225, z: 0.5866232}
+    Size: {x: 5.438701, y: 2.1500006, z: 2.0150747}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Box_Majibang_AdPanel_ad_Cushion"
+      Mesh: {fileID: 4300000, guid: a8205055f586540419715b43455c69fd, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 52a9185f091964e43a16cb36440b9a6a, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: -8.805681, y: 10.15, z: 20.78188}
+    Size: {x: 1.6404679, y: 0.47999954, z: 5.6465273}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Kit_Fascia_Kit_Paint_8C1A14"
+      Mesh: {fileID: 4300000, guid: 908f612e850804e78abaebea9d09ecf7, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 94cb004dc17054223a751022a469f624, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Kit_Lightbox_Kit_Tex_hwangong-fishcake"
+      Mesh: {fileID: 4300000, guid: 528ebc1ad607842e8b5de9b580d53beb, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: a9af31ef30afa4e45914f0f055439cf9, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: -6.031945, y: 10.15, z: 26.744797}
+    Size: {x: 1.6404676, y: 0.47999954, z: 5.6465263}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Kit_Lightbox_Kit_Tex_bnc-island"
+      Mesh: {fileID: 4300000, guid: f579f3c575ff049da97fbcbb3a1089dd, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: ba97a88bbee0e48c6ae196be4bf988bb, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: -26.03445, y: 10.15, z: 9.58913}
+    Size: {x: 1.5372412, y: 0.47999954, z: 5.2912188}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Kit_Fascia_Kit_Paint_8C5926"
+      Mesh: {fileID: 4300000, guid: 2f4906a3758894b31b369f60387d1ca6, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: da05af182948b47729b84821e0805c31, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Kit_Lightbox_Kit_Tex_boksoondoga_fascia"
+      Mesh: {fileID: 4300000, guid: b96a7a8c7097c4e53a71899645577567, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: f6b60481c67f645b18cf98fd25a78743, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: -22.984383, y: 10.15, z: -11.906318}
+    Size: {x: 5.262409, y: 0.47999954, z: 1.5288713}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Kit_Fascia_Kit_Paint_4C331F"
+      Mesh: {fileID: 4300000, guid: b3256857fad984b37b8b4c350d941fd0, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 5805ece047cef43f199b2c2439000838, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Kit_Lightbox_Kit_Tex_palgongtea_fascia"
+      Mesh: {fileID: 4300000, guid: daf3b82c1020c452c8d58dde16fde502, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 2fcf8c3db07374ee6af7d0eb2ce8f570, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: -41.55044, y: 10.15, z: -41.630802}
+    Size: {x: 1.4953927, y: 0.47999954, z: 5.147175}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Kit_Fascia_Kit_Paint_33261A"
+      Mesh: {fileID: 4300000, guid: ba9b6e773aad7485eb38ade4bba34b1c, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 70ae7e805471a4759b561f33cf73c0b1, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Kit_Lightbox_Kit_Tex_soban_fascia"
+      Mesh: {fileID: 4300000, guid: f175546d889c24009a35c9a09e8baed0, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 6fdc8ecbc7d004dae9abd09f849a6079, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uC5F4\uCC28 \uC548\uB0B4 \uC804\uAD11\uD310"
+    Centre: {x: 71.17003, y: 11.15, z: -9.766294}
+    Size: {x: 4.130095, y: 1.5600004, z: 1.6273063}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uBCF4\uAC15/Box
+        frame/Sign \xB7 \uC5F4\uCC28\uCD9C\uBC1C\uC548\uB0B4  Departures"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: 71.19747, y: 11.690741, z: -9.692217}
+      Rotation: {x: -0, y: 0.98430365, z: -0, w: -0.17648351}
+      Scale: {x: 0.21462178, y: 0.21462175, z: 0.21462178}
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uBCF4\uAC15/Box
+        frame/Box_Kit_Board_Canopy_Dark"
+      Mesh: {fileID: 4300000, guid: a43a75f8a893c46ff93f57751f313afb, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 2aa8999bf1f9a4ff3a665416f945ffed, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uBCF4\uAC15/Box
+        frame/Box_Kit_Screen_Kit_Screen"
+      Mesh: {fileID: 4300000, guid: 57acb205fde684344ad5fe372dfadbb3, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 9efac498566af4a54babab58885bfe08, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uBCF4\uAC15/Box
+        frame/Box_Kit_Glyph_Kit_Paint_2B2B2B"
+      Mesh: {fileID: 4300000, guid: d4cdf19c258c540aa90b290a20224f5b, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: a9d24701f65b344c18ece4867a87b1eb, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: 85.59613, y: 10.15, z: -0.620595}
+    Size: {x: 4.1896744, y: 0.47999954, z: 1.552302}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uC810\uD3EC/Box
+        frame/Box_Kit_Fascia_Kit_Paint_1A5933"
+      Mesh: {fileID: 4300000, guid: 519f5b562be0b460492e045f0d840b80, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 15cb2bf8d242e495ea4a21ae8e4e90df, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uC810\uD3EC/Box
+        frame/Box_Kit_Lightbox_Kit_Tex_fascia_StoryWay"
+      Mesh: {fileID: 4300000, guid: 2b0bb8bacadb645cfaf5d25e959ff03b, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 36487d27c086c4cd88438f0e8a457cd4, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+  - Label: "\uBCBD\uBA74 \uC548\uB0B4\uD310"
+    Centre: {x: 50.544807, y: 10.440001, z: 39.854477}
+    Size: {x: 1.5078306, y: 1.9000006, z: 4.069646}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Box_Majibang_WallPanel_board_West_green"
+      Mesh: {fileID: 4300000, guid: 58605107f63f54cf9ba9fef6d0f616b3, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: e752abd6b684c428294288d7295b6fdc, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+  - Label: "\uC5F4\uCC28 \uC548\uB0B4 \uC804\uAD11\uD310"
+    Centre: {x: 66.180725, y: 11.15, z: -7.9774446}
+    Size: {x: 4.0321436, y: 1.5, z: 1.493936}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Box_Majibang_AdPanel_board_Arrival"
+      Mesh: {fileID: 4300000, guid: 0abeddd66b311460c94b4b5a2e1a683d, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: c1dcd155036d94d6cbc3d5ce09d2d04a, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: 45.79846, y: 9.75, z: 29.207058}
+    Size: {x: 2.14776, y: 0.8000002, z: 2.5266004}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Sign \xB7
+        \uCCA0\uB3C4\uC774\uC6A9\uC548\uB0B4 Busan Station Information"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: 45.71004, y: 9.75, z: 29.185543}
+      Rotation: {x: -0, y: 0.6178768, z: -0, w: 0.786275}
+      Scale: {x: 0.20099583, y: 0.20099577, z: 0.20099583}
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Box_Majibang_Info_LightboxHousing"
+      Mesh: {fileID: 4300000, guid: c5ed3b064c3ed4f5596230ab4bbdd1a7, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 2aa8999bf1f9a4ff3a665416f945ffed, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+  - Label: "\uBCBD\uBA74 \uC548\uB0B4\uD310"
+    Centre: {x: 64.12339, y: 10.4, z: 71.42622}
+    Size: {x: 3.9372027, y: 0.5999994, z: 1.1438632}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Majibang_WallPanel_sign_Platform_34"
+      Mesh: {fileID: 4300000, guid: 58ac99da6976e448baf21a1e2023dcb6, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 24f2c9dab121f409ea999d2af29ed78d, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uBCBD\uBA74 \uC548\uB0B4\uD310"
+    Centre: {x: 82.938446, y: 9.764999, z: 4.8708315}
+    Size: {x: 3.3757443, y: 0.52999973, z: 1.2507356}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Box_Majibang_WallPanel_sign_Tickets_1F"
+      Mesh: {fileID: 4300000, guid: c0326a5ace4614d4190b77a7344b7a4a, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 98c6fa26053ae424ea1a66bb253d8dbf, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Box_Majibang_WallPanel_sign_FoodCourt_Tickets"
+      Mesh: {fileID: 4300000, guid: 10422d89073c8419fb13488439e16a5f, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: ade7a56afb390473691776e239c5899d, type: 2}
+      Position: {x: 31.092793, y: 0, z: -12.157336}
+      Rotation: {x: -0, y: 0.17648351, z: -0, w: 0.98430365}
+      Scale: {x: 1, y: 1, z: 1}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: 108.084854, y: 10.4, z: 79.18962}
+    Size: {x: 3.6491191, y: 0.5999985, z: 1.0601672}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Sign \xB7 \u2193
+        8\xB79  \uD0C0\uB294 \uACF3  Platform"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: 108.080666, y: 10.4, z: 79.1752}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 0.3736562, y: 0.37365618, z: 0.3736562}
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/SignBoards_Sign_plat_89"
+      Mesh: {fileID: 4300000, guid: f33493b06562f44e49ea0530b0ef9829, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: c15b41cafb02b4b0aa750adb6bc6bd1e, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: 127.35745, y: 10.4, z: 82.441864}
+    Size: {x: 3.6491191, y: 0.5999985, z: 1.0601672}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Sign \xB7 \u2193
+        10\xB711  \uD0C0\uB294 \uACF3  Platform"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: 127.35326, y: 10.4, z: 82.42746}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 0.3393687, y: 0.33936867, z: 0.3393687}
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/SignBoards_Sign_plat_1011"
+      Mesh: {fileID: 4300000, guid: d001d0ad323174966b8a9a4f972afe47, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 2293ee6fbf1be46a68ea3f94f1238d35, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: 113.78667, y: 10.4, z: 47.02159}
+    Size: {x: 3.6491191, y: 0.5999985, z: 1.0601672}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Sign \xB7 \u2193
+        10\xB711  \uD0C0\uB294 \uACF3  Platform"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: 113.79084, y: 10.4, z: 47.03599}
+      Rotation: {x: -0, y: 0.9900237, z: -0, w: -0.14090124}
+      Scale: {x: 0.3393687, y: 0.33936867, z: 0.3393687}
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/SignBoards_Sign_plat_1011b"
+      Mesh: {fileID: 4300000, guid: cfc3ef5dd9d5c4479a21d7b20e27dfe9, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 6272fe909fe6547b8b71b3e3eaaf3d07, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: 40.272938, y: 10.4, z: 67.65035}
+    Size: {x: 3.6491153, y: 0.5999985, z: 1.0601661}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Sign \xB7 \u2193
+        1  \uD0C0\uB294 \uACF3  Platform"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: 40.268753, y: 10.4, z: 67.63595}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 0.37669468, y: 0.37669468, z: 0.37669468}
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/SignBoards_Sign_plat_1"
+      Mesh: {fileID: 4300000, guid: d5d93e8c91b5642fc8cac0c8a58c3715, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 19ef69c61842a49df8d3ccbfa68219dd, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: 82.99733, y: 10.4, z: 74.91925}
+    Size: {x: 3.6491153, y: 0.5999985, z: 1.0601661}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Sign \xB7 \u2193
+        5\xB76  \uD0C0\uB294 \uACF3  Platform"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: 82.99314, y: 10.4, z: 74.90485}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 0.3736562, y: 0.37365618, z: 0.3736562}
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/SignBoards_Sign_plat_56"
+      Mesh: {fileID: 4300000, guid: 48ff7d5db8abe41688b02fef50d96510, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: cc6fd024f37c843c7bf9ca1c3133fa3d, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: 59.97077, y: 10.15, z: 40.107193}
+    Size: {x: 3.2035384, y: 0.47999954, z: 0.930714}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uC810\uD3EC/Kit_Lightbox_Kit_Tex_american-trailer"
+      Mesh: {fileID: 4300000, guid: d0812484e89a543139d3ad88fc6c5ab6, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 217f518f3307a4d2d97d103ff2a4d989, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: -36.73955, y: 10.15, z: -25.91394}
+    Size: {x: 0.90107566, y: 0.40800002, z: 3.1015236}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Sign \xB7 KORAIL
+        LOUNGE  BUSAN"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: -36.73955, y: 10.15, z: -25.91394}
+      Rotation: {x: -0, y: -0.6004203, z: -0, w: 0.7996847}
+      Scale: {x: 0.32019094, y: 0.32019088, z: 0.32019094}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: 101.97908, y: 10.15, z: 28.42333}
+    Size: {x: 2.950021, y: 0.47999954, z: 0.8570604}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uC810\uD3EC/Kit_Lightbox_Kit_Tex_fascia_HawaiianParadise"
+      Mesh: {fileID: 4300000, guid: 4b53dad6e0c32473293be1b535bcff25, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 77143c38365da4da3881daa51bc1f954, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: 97.1776, y: 10.15, z: 29.818285}
+    Size: {x: 2.8146207, y: 0.47999954, z: 0.8177229}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uC810\uD3EC/Kit_Lightbox_Kit_Tex_gukje-market-red-bean-bread"
+      Mesh: {fileID: 4300000, guid: 6d1f58cc314b3417094b13af8f1da4db, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 0443e6f4212f449f59b6331d0434d49d, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: 38.445435, y: 10.15, z: 40.3773}
+    Size: {x: 0.77699023, y: 0.47999954, z: 2.6744177}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uC810\uD3EC/Kit_Lightbox_Kit_Tex_gukje-market-donas"
+      Mesh: {fileID: 4300000, guid: 8ff7ab4b1d04041cb89864e31510c9f1, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: a4c4fedf257bc4061a4076d73a5f1e21, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: 88.102036, y: 10.15, z: -1.0472679}
+    Size: {x: 0.7619245, y: 0.47999954, z: 2.6225612}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uC810\uD3EC/Kit_Lightbox_Kit_Tex_fascia_CAFFE_PASCUCCI"
+      Mesh: {fileID: 4300000, guid: e097ce0b35f36475baf99741ecab6176, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 9c9e4e9e1fc2d430488ef2771a20003d, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: -21.525204, y: 10.2, z: -27.798435}
+    Size: {x: 0.7167457, y: 0.48000005, z: 2.4670537}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Sign \xB7 \u2191
+        \uD0C0\uB294 \uACF3  Tracks"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: -21.525204, y: 10.2, z: -27.798433}
+      Rotation: {x: -0, y: 0.7996847, z: -0, w: 0.6004203}
+      Scale: {x: 0.3766953, y: 0.37669516, z: 0.3766953}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: 56.380505, y: 10.4, z: -11.678366}
+    Size: {x: 2.4670532, y: 0.48000005, z: 0.71674526}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Sign \xB7 \u2190
+        \uD0C0\uB294 \uACF3  Tracks"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: 56.3805, y: 10.4, z: -11.678366}
+      Rotation: {x: -0, y: 0.9900237, z: -0, w: -0.14090124}
+      Scale: {x: 0.37669522, y: 0.37669516, z: 0.37669522}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: 55.36591, y: 10.15, z: 40.92436}
+    Size: {x: 2.3997746, y: 0.47999954, z: 0.697199}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uC810\uD3EC/Kit_Lightbox_Kit_Tex_busan-gijang-specialties"
+      Mesh: {fileID: 4300000, guid: d23c0026e45d849ef951c954ea1327bf, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: ea5b6394bdce848ce9d60d6abebd5ce5, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: -7.6445026, y: 10, z: -14.75304}
+    Size: {x: 0.69131273, y: 0.48000005, z: 2.379513}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Sign \xB7 \uB9E4\uD45C\uCC3D\uAD6C 
+        Tickets"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: -7.6445026, y: 10, z: -14.75304}
+      Rotation: {x: -0, y: 0.7996847, z: -0, w: 0.6004203}
+      Scale: {x: 0.3766953, y: 0.37669516, z: 0.3766953}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: 91.564224, y: 10.15, z: 11.407337}
+    Size: {x: 0.68576026, y: 0.47999954, z: 2.360402}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uC810\uD3EC/Kit_Lightbox_Kit_Tex_fascia_KAKAO_FRIENDS"
+      Mesh: {fileID: 4300000, guid: c5759bd92a92e4f6c93f68f93ca255d8, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 1bc39ed2916fe40ab9f6f1b0776d8bc0, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: -50.75995, y: 10.15, z: 31.02444}
+    Size: {x: 2.1849337, y: 0.40800002, z: 0.6347819}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Sign \xB7 \uD638\uB450\uB098\uB2C8&\uBD80\uC0B0\uC624\uB385"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: -50.75995, y: 10.15, z: 31.024443}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 0.3201909, y: 0.32019088, z: 0.3201909}
+  - Label: "\uC810\uD3EC \uAC04\uD310"
+    Centre: {x: 72.78615, y: 10.15, z: 36.904663}
+    Size: {x: 2.1529791, y: 0.47999954, z: 0.6254983}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uC810\uD3EC/Kit_Lightbox_Kit_Tex_saebusan-pharmacy"
+      Mesh: {fileID: 4300000, guid: c6324ce8ebb1f42ff9dee7dcc3f1ddf8, type: 2}
+      Materials:
+      - {fileID: 2100000, guid: 55bbed152af184f16983cba016e456e0, type: 2}
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: -0, y: 0.14090124, z: -0, w: 0.9900237}
+      Scale: {x: 1.0000001, y: 1, z: 1.0000001}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: -39.16461, y: 10.15, z: -33.47249}
+    Size: {x: 0.58565, y: 0.40800002, z: 2.0158212}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Sign \xB7 StoryWay
+        \uD3B8\uC758\uC810"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: -39.16461, y: 10.15, z: -33.47249}
+      Rotation: {x: -0, y: -0.6004203, z: -0, w: 0.7996847}
+      Scale: {x: 0.32019094, y: 0.32019088, z: 0.32019094}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: 93.50276, y: 10.15, z: 18.13358}
+    Size: {x: 0.58172, y: 0.40800002, z: 2.0022924}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uC810\uD3EC/Sign
+        \xB7 \uD06C\uB9AC\uC2A4\uD53C\uD06C\uB9BC\uB3C4\uB11B"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: 93.50276, y: 10.15, z: 18.133577}
+      Rotation: {x: -0, y: 0.7996847, z: -0, w: 0.6004203}
+      Scale: {x: 0.32019097, y: 0.32019088, z: 0.32019097}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: 44.787952, y: 10.65, z: 28.961147}
+    Size: {x: 0.44850993, y: 0.42499998, z: 1.843008}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Sign \xB7
+        KORAIL \uBD80\uC0B0\uC5ED"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: 44.787952, y: 10.65, z: 28.961145}
+      Rotation: {x: -0, y: 0.6178768, z: -0, w: 0.786275}
+      Scale: {x: 0.3335322, y: 0.33353212, z: 0.3335322}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: 51.33682, y: 10.65, z: 30.554863}
+    Size: {x: 0.44850984, y: 0.42499998, z: 1.843008}
+    Parts:
+    - Path: "/\uB9DE\uC774\uBC29 \xB7 \uC6D0\uBCF8 \uC815\uD569/Box frame/Sign \xB7
+        KORAIL \uBD80\uC0B0\uC5ED"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: 51.33682, y: 10.65, z: 30.554861}
+      Rotation: {x: -0, y: 0.78627497, z: -0, w: -0.6178769}
+      Scale: {x: 0.33353224, y: 0.33353212, z: 0.33353224}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: 47.820137, y: 10.15, z: -3.5645943}
+    Size: {x: 1.4663978, y: 0.40800002, z: 0.5433101}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBC15\uC2A4 \uC810\uD3EC/Box
+        frame/Sign \xB7 \uBD80\uC0B0\uBCC4\uBE5B\uC0CC\uB4DC"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: 47.820133, y: 10.15, z: -3.564594}
+      Rotation: {x: -0, y: 0.98430365, z: -0, w: -0.17648351}
+      Scale: {x: 0.32019094, y: 0.32019088, z: 0.32019094}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: -48.5146, y: 10.15, z: 20.831276}
+    Size: {x: 1.501719, y: 0.40800002, z: 0.43628973}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Sign \xB7 \uCCAD\uB3C4\uD560\uB9E4\uAE40\uBC25"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: -48.514595, y: 10.15, z: 20.831274}
+      Rotation: {x: -0, y: 0.9900237, z: -0, w: -0.14090124}
+      Scale: {x: 0.32019094, y: 0.32019088, z: 0.32019094}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: -53.316067, y: 10.15, z: 22.22623}
+    Size: {x: 1.501719, y: 0.40800002, z: 0.43628973}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uBCF8\uAD00/Sign \xB7 \uBC18\uC6D4\uB2F9\uB2ED\uAC15\uC815"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: -53.316063, y: 10.15, z: 22.22623}
+      Rotation: {x: -0, y: 0.9900237, z: -0, w: -0.14090124}
+      Scale: {x: 0.32019094, y: 0.32019088, z: 0.32019094}
+  - Label: "\uCC9C\uC7A5 \uC548\uB0B4\uD310"
+    Centre: {x: -7.063657, y: 9.95, z: 51.845303}
+    Size: {x: 1.4587591, y: 0.49299997, z: 0.40929082}
+    Parts:
+    - Path: "/\uC2E4\uB0B4 \uD2B8\uC708 \uB9C8\uAC10/2F \uC2A4\uD1A0\uB9AC\uC6E8\uC774/Sign
+        \xB7 StoryWay"
+      Mesh: {fileID: 0}
+      Materials:
+      - {fileID: 2100000, guid: 7bb1cb9da79a245daaae48632d66a65b, type: 2}
+      Position: {x: -7.063657, y: 9.95, z: 51.845303}
+      Rotation: {x: -0, y: 0.13634473, z: -0, w: 0.9906615}
+      Scale: {x: 0.3868973, y: 0.38689727, z: 0.3868973}
+  ConcourseBed: {fileID: 8300000, guid: 94ba77f79f7204267a78dce12c47c2eb, type: 3}
+  PlatformBed: {fileID: 8300000, guid: fe74ba8efa5c8430099d6fd245ac0777, type: 3}
+  OutdoorBed: {fileID: 8300000, guid: 82c882edd7b8b433f9248f842c35c591, type: 3}
+  TrainArrive: {fileID: 8300000, guid: 7f8786b3923e044289817361906da0da, type: 3}
+  TrainDepart: {fileID: 8300000, guid: 6f9bc85fc17034c1c932d24ea703873f, type: 3}
+  DoorOpen: {fileID: 8300000, guid: 41af5e475f7d64130ab4d5aa9852a414, type: 3}
+  DoorClose: {fileID: 8300000, guid: fa7ebaa0c32374ad3a492258693397ea, type: 3}
+  Escalator: {fileID: 8300000, guid: d2f47b731c0df4bd2be692212caa479b, type: 3}
+  Fire: {fileID: 8300000, guid: 1cca7fd72ac284b969d5b2c6b6a265f3, type: 3}
+  Footsteps:
+  - {fileID: 8300000, guid: 6523d1a1f24a549aba32620b420ba0c2, type: 3}
+  - {fileID: 8300000, guid: 73d64afbc603845f3a42e1bbde9f386f, type: 3}
+  - {fileID: 8300000, guid: b363dfa76151c4ab59ebea1221703d09, type: 3}
+  - {fileID: 8300000, guid: 7d3ea257a1e9a4a87bbdd4f7d7fbb80e, type: 3}
+  - {fileID: 8300000, guid: 79d0626137d9c43c8a1aff4b22e29d8d, type: 3}
+  Announcements:
+  - {fileID: 8300000, guid: 76bcb8db9188444c28a91577b468bdbf, type: 3}
+  - {fileID: 8300000, guid: ad0d461cc1bfc4a4b8d7ae0967f42885, type: 3}
+  - {fileID: 8300000, guid: ee70b5c7868e04ccf9b9bdfdb6abde7a, type: 3}
+  - {fileID: 8300000, guid: 8fbdfd57264b04db5a309191f6a00e9d, type: 3}
+  - {fileID: 8300000, guid: bc23fd98359404c589c1cead7cda609b, type: 3}
+  - {fileID: 8300000, guid: e4f740ae3abb0413ca660734aa2b6b01, type: 3}
+  - {fileID: 8300000, guid: 4f1bd260a7e8b4d01a943cc8835be75a, type: 3}
+  - {fileID: 8300000, guid: 93783b98ef4dd40d8baa217e04c8ff9e, type: 3}
+  - {fileID: 8300000, guid: 89e8bfd1d50aa4bca82875918cba5f04, type: 3}

@@ -1,0 +1,43 @@
+{
+  "lane": "HallJunction",
+  "id": "HallJunction-1",
+  "request": "Extend Canopy with optional per-vertex underside elevations so a collider-free plaster finish can follow the measured sloped source soffit instead of floating as a horizontal sheet.",
+  "params": {
+    "type": "Canopy",
+    "field": "geometry.vertexY",
+    "value": [17.043741, 17.043739, 17.358529, 17.358532],
+    "source": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after56/world-geometry.json renderer hit references 923817/923816; mesh-0011.bin vertices 33893/33894/33906/33896"
+  },
+  "semantics": "geometry.vertexY is an optional array of absolute underside heights aligned one-to-one with geometry.polygon vertices. It must define a planar surface (reject mismatched counts or non-planar values rather than silently flattening); the canopy underside follows those heights, thickness extrudes upward to the existing source face, and collider:false emits no colliders. With vertexY omitted, current horizontal Canopy behavior is unchanged. Canopy face triangulation must preserve shared polygon edges and the supplied vertex heights.",
+  "testCase": {
+    "zone": "hall-junction-slope-test",
+    "root": "실내 트윈 마감/홀 접합부 기울기 테스트",
+    "element": {
+      "type": "Canopy",
+      "id": "hj-slope-overlay-test",
+      "zone": "hall-junction-slope-test",
+      "tier": "b",
+      "evidence": ["HallJunction-1 kit request: measured downward-facing source soffit plane"],
+      "frame": "root",
+      "geometry": {
+        "polygon": [[-5.162643, 14.225865], [54.394602, 18.531206], [63.551411, 37.438863], [-6.47476, 32.376711]],
+        "y": 17.043741,
+        "vertexY": [17.043741, 17.043739, 17.358529, 17.358532]
+      },
+      "params": {
+        "finish": "plaster",
+        "colour": "gypsumLit",
+        "topFinish": "gypsumLit",
+        "thickness": 0.05,
+        "fascia": 0,
+        "collider": false
+      }
+    },
+    "checks": [
+      "KitValidate accepts the pitched canopy with 0 errors and emits no collider geometry for collider:false",
+      "KitPreview shows a continuous light-grey plaster underside 5 cm below the supplied plane, with no horizontal floating step or black source face visible from below",
+      "Existing horizontal Canopy specs remain unchanged"
+    ]
+  },
+  "consumer": ".planning/2026-09-24-interior-twin/specs/full/make_hall_junction.py: add the measured two-triangle source soffit finish"
+}

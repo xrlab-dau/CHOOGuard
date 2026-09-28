@@ -1,0 +1,84 @@
+{
+ "schema": "chooguard.interior-enhance-verification.v1",
+ "request": "전체 내부 모델링(1층, 2층 본관 맞이방, 연결부, 2층 박스 맞이방, 3층) 확인 → 비어있거나 부족한 부분 고도화",
+ "rule": "Only evidenced elements are built (tier a / a-failed / b); tier c is reported, never built. Positions from registered or topological evidence; appearance from the kit library.",
+ "scene": "Assets/ChooGuard/Scenes/FpsStation.unity (unsaved in the Editor). Snapshots (EditorSceneManager save-as-copy): .planning/2026-09-24-interior-twin/backups/FpsStation.before-enhance-majibang.unity (before the builder rebuild), FpsStation.after-enhance.unity (final)",
+ "baselineAudit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11",
+ "finalAudit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after14",
+ "newKitTypes": "Balustrade, DisplayBoard, Counter, DoorSet, Fixture (+ KitValidate dry build); kit-spec.md",
+ "builds": {
+  "실내 트윈 마감/1F 보강": "specs/enhance/1f-enhance.json: 31 elements, 2,081 tris (office frontage + 2 service doors, header column/cabinet, 8 signs, floor guide bands, CCTV/standee/extinguisher)",
+  "실내 트윈 마감/1F": "specs/1f-detail.json: + central approach ceiling 2.31 (111 u², tier a), lobby patch closed at 4.98, #8/#16 fronts; 33,705 tris, 44 lights",
+  "1층 · 원본 정합/1층 실내 · 근거 표기": "interior.py corrections UNIT16_EAST (east edge onto the observed glazing, specs/enhance/1f-measurements.json) and UNIT8_FRONTS (hall-facing fronts, sy0-walk/overlays/unit-08.jpg)",
+  "실내 트윈 마감/수직 동선": "escalator-core.json: 3 core wall heights 2.25 -> 2.31",
+  "실내 트윈 마감/2F 본관 보강": "specs/enhance/2f-main-enhance.json: 35 built of 49 (6 measured columns, hanging clock, ticket-window wall + 4 LED boards, enamel wall with service door/hydrant/paintings, Gate 7 door banks + vestibule, KORAIL LOUNGE interior, LockerBank, corridor props, floor finish + guide lines); 19,842 tris, 1 light",
+  "실내 트윈 마감/2F 본관": "specs/2f-main.json: storefront fixes (팔공티 start, KORAIL LOUNGE fascia, StoryWay text, 남천할매떡볶이 front)",
+  "실내 트윈 마감/2F 박스 보강": "specs/enhance/2f-box-enhance.json: 22 elements (box floor finish + tactile, 6 north-gate DoorSets, upper gate wall, exit pictograms, speakers, CCTV on tree columns, ribbed 3F slab-edge cladding, wing departure board, escalator safety stand); 16,051 tris",
+  "실내 트윈 마감/2F 연결 보강": "specs/enhance/2f-bridge-enhance.json: bridge floor finish",
+  "실내 트윈 마감/2F 박스": "box-hall.json: escalator-foot AED as a kit Fixture",
+  "실내 트윈 마감/3F 보강": "specs/enhance/3f-enhance.json: 16 elements (glass balustrades with handrail on the void edges, 3F column C, two-tier band signs, ribbed shop-box tops, elevator blade sign); 7,910 tris",
+  "실내 트윈 마감/3F 점포": "3f-storefronts.json: 부산옥 grey fascia with the measured logo position",
+  "맞이방 · 원본 정합": "majibang-plan.json planEdits 2026-09-25 (E1 lounge fixtures off, E2 wrong locker props removed, E3 남천 front, E4 atrium guard edge, 3F rail guard off (fascia kept), 3F fc_* signs -> kit, 3F 계단 unit removed (tier c), info desk customer side, bench decal text off) + builder fixes (bronze lanterns, single-sided info desk with plaque/screens, bench grab bars/decals/one wood material, closed sign housings)"
+ },
+ "ownershipDiffs": [
+  {
+   "step": "box/bridge",
+   "audits": "after11 -> after12",
+   "outsideAllowed": 0
+  },
+  {
+   "step": "1F units + 1F kit layers",
+   "audits": "after12 -> after13a",
+   "outsideAllowed": 0
+  },
+  {
+   "step": "majibang builder rebuild",
+   "audits": "after13a -> after13b",
+   "result": "only the intended removals/changes under 맞이방 · 원본 정합 (rails glass/metal, fc_* signs, 계단 sign, 물품보관함 props, lounge gondolas removed; desk, lanterns, benches, housings, 남천, atrium guard changed); EdgeFascia unchanged after the railGuard fix"
+  },
+  {
+   "step": "2F main + 3F kit layers",
+   "audits": "after13b -> after13",
+   "outsideAllowed": "3 renderers of 실내 트윈 마감/3F -> traced to a mesh-folder collision (below)"
+  },
+  {
+   "step": "base + enhancement kit rebuild with distinct zones",
+   "audits": "-> after14",
+   "result": "no kit mesh used by two roots; every root uses only its registered folder"
+  }
+ ],
+ "incident": {
+  "what": "KitBuild writes batch meshes to Kit/<zone> named by material; the 보강 specs reused their base zones, so each enhancement build overwrote shared batch meshes of 1F / 2F main / 2F box / 3F (including Kit_Colliders).",
+  "fix": "enhancement zones renamed '<zone> 보강'; base roots rebuilt, then enhancement roots; 71 orphan assets deleted (unreferenced, verified on after14); KitBuild/KitValidate now enforce .planning/2026-09-24-interior-twin/kit-folders.json (folder -> owning root)."
+ },
+ "walks": "Play mode, real FirstPersonResponder/CharacterController (walks.py): central-to-uminus-v2 9/9 (94.4), into-unit10 3/3, 1f-up-escalator-to-2f 6/6 (start moved to the observed walker path), 2f-corridor-west 4/4, 2f-main-to-box-hall 5/5 (rerouted around the 올리브영 unit), central-to-uplus 5/5 — all COMPLETE",
+ "metrics": {
+  "file": "audit/metrics-before.json -> audit/metrics-after.json (floor share > 6 u from any wall, front, furniture, bench, machine)",
+  "1F interior": "26.6 % -> 26.5 % (remaining blob 1,929 u² = track-side strip V > -5, no inside view; back-of-house per the KORAIL tender underlay)",
+  "2F main": "26.5 % -> 23.0 % (> 10 u: 8.4 % -> 5.8 %); remaining blob 1,841 u² is open concourse in the footage (HC 514-517 s, 602-619 s)",
+  "2F box": "15.7 % -> 15.7 % (additions are wall/gate/column items; open floor is circulation in the footage)",
+  "3F": "1.7 % -> 1.7 %"
+ },
+ "renders": "audit/compare-1f.jpg, audit/compare-2f-main.jpg, audit/compare-2f-box-3f.jpg (before | after at the same registered/survey poses); audit/after-box/sheet.jpg",
+ "stillC": {
+  "1F": "track-side strip ceiling/rooms, toilets, Zimcarry, KTX특송, TMO, lockers, vending bank, U+ elevator doors, cylindrical column and piers (no anchor within ~1 u)",
+  "2F main": "double-height hall ceiling (height only bracketed 9.0-10.7), 3 void-side columns, hanging wayfinding/numbered exits, 철도경찰대 front order conflict, timetable totem, murals, tactile map, capsule machines, ceiling CCTV, Cafe de Craft, deck kiosks",
+  "2F box": "exits 9/10 (source east wall solid), strip-edge columns, column LED, column-foot drum, extra west-band screens, small wayfinding signs, gate LED boards/belts (2023 only), kiosks, ceiling devices, orange guide lines, AC cabinets/pop-ups, glass elevator shafts, port deck, platform level, stair-head rails (source rails exist), shop interiors",
+  "3F": "food-court interior (SfM breaks fail the gate), eggbox arch orientation conflict, eggbox letters, corridor slat run, toilet entrances, other blue signs, 부산옥 oval signs, CCTV/standees"
+ },
+ "openDecisions": [
+  "2F box west edge (box b -17.3, a 18-55) and the bridge east end open onto an unguarded ~6.5 u trench under the seam roof; no footage shows its closure (audit/findings/trench.jpg).",
+  "1F track-side strip V > -5 (1,929 u², shown as open floor under the bare 2F slab): KORAIL tender underlay (asset-library/research-public/2026-09-24/metric-controls/korail-1f-underlay-readable.png, 2025 or earlier), boards and the 2025 Zimcarry map all mark it back-of-house, but no registered view places the public/back-of-house boundary within ~1 u and the underlay partitions are out of date (fit specs/enhance/fit_1f_underlay.py -> 1f-underlay-fit.json: controls rms 0.62 u; held-out escalator off by 3.4 u). Closing walls cannot be placed; needs a registered view of the U- hall back wall / U+ hall (kmCz, eluhiZ frames)."
+ ],
+ "routeEdits": [
+  "route-1f-up-escalator-to-2f start (12.0,-22.0) -> (10.2,-21.0): observed March walker path; registered header column at U 12.05-13.50",
+  "route-2f-main-to-box-hall via (2,27): old segment crossed the 올리브영 unit"
+ ],
+ "finalChecks": {
+  "audit": "geometry-after14",
+  "tool": "specs/enhance/check_spec.py (own root excluded; floor grids keyed by exclusions; columns checked in the walkable band)",
+  "results": "1f-enhance 0 errors, 2f-main-enhance 0, 2f-box-enhance 0, 3f-enhance 0, 1f-detail 0, 2f-main 0, 3f 0 (warnings = mounted contacts)",
+  "kitValidate": "all 7 changed specs 0 errors before building",
+  "console": "no exceptions in Editor.log after the builds"
+ }
+}

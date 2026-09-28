@@ -1,0 +1,14 @@
+{
+ "schema": "chooguard.rrw-heldout-thresholds.v1",
+ "writtenBefore": "any held-out evaluation of the GATE1-fitted registration (2026-09-24, after fit-method trials only)",
+ "fitDesign": "gravity from plumb (even-index VP frames) + 5-DOF (yaw, scale, U, V, Y) point-to-mesh fit of lane SfM points (frames >= 000200) to preserved MainShell triangles at GATE1 (U -85..-50, V -50..-28). Nothing from the central end is used.",
+ "heldOut": {
+  "central-class-a-planes": {"what": "lane SfM points inside class-a plane bounds (+0.3 u horizontal margin, +-0.3 u along normal) for cl-low-suspended-ceiling (officeFit), vc-lower-landing-floor, wl-right-approach-wall, cl-higher-lobby-ceiling", "pass": "n>=20 and |median signed distance| <= 0.10 u and p95 |distance| <= 0.25 u"},
+  "central-pier-edge": {"what": "st-artbox-terminal-pier outline U+ vertical edge (class a) projected into lane frames 000052-000064 vs nearest long near-vertical LSD segment", "pass": "median horizontal pixel offset <= 8 px (1920 px frames) AND implied metric offset <= 0.25 u"},
+  "plumb-odd-frames": {"what": "per-frame vertical vanishing directions from odd-index frames vs registered UVY vertical", "pass": "median <= 1.0 deg and p95 <= 2.0 deg"},
+  "floor-diagnostic": {"what": "robust floor-layer height of lane SfM points (camera-relative layer, every 40 frames) in UVY; Ground_Floor Y=0 is a GENERATED fill, diagnostic only", "pass": "|median Y| <= 0.10 u per segment (diagnostic; failure reported, not used to tune)"},
+  "cross-video-mJrJ8": {"what": "mJrJ8ugxlqA 2020-12 frames localized in the lane model; their registered camera heights and positions inside the GATE1 lobby; MainShell GATE1 edges projected into them", "pass": "localized frames >= 5 with reprojection median <= 2 px, camera Y within 0.6..1.9 u, and MainShell edge chamfer median <= 6 px"},
+  "gate1-source-control-split": {"what": "MainShell point-to-mesh residuals of lane points from frames 200-229 when the fit uses only frames 230-258 (and vice versa)", "pass": "median <= 0.06 u and p95 <= 0.20 u"}
+ },
+ "acceptance": "registration status 'accepted' only if central-class-a-planes, central-pier-edge and plumb-odd-frames all pass; otherwise 'rejected' (no re-tuning after seeing results)."
+}

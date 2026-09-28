@@ -1,0 +1,115 @@
+{
+ "schema": "chooguard.browser-acquisition.v1",
+ "runAt": "2026-09-22",
+ "tool": "aside CLI (실제 Chromium 세션)",
+ "tasks": [
+  {
+   "target": "카카오맵 실내지도 (zoneid 181917 / confirmid 8329752)",
+   "method": "map.kakao.com?itemId= 및 place.map.kakao.com/8329752 실제 로딩 후 performance.getEntriesByType('resource') 전수 조사 + 장소 패널 DOM 키워드 탐색",
+   "result": "NEGATIVE — 리소스 163건 중 실내 관련 0건. 호스트는 mts.kakaocdn.net(래스터 90) / t1.kakaocdn.net(51) / map.kakao.com(8)뿐. 장소 상세 페이지에 '실내·내부·층별' UI 요소 0개.",
+   "verdict": "카카오 기차역 실내지도는 앱 전용이 맞다. 실제 브라우저로 3차 확정."
+  },
+  {
+   "target": "공공데이터포털 부산역 준공도면",
+   "method": "data.go.kr 데이터셋 검색 '실내공간정보'",
+   "result": "NEGATIVE — 국가철도공단 준공도면은 수원시청·망포·상봉·매교·매탄권선 5개역뿐. 부산역 없음."
+  },
+  {
+   "target": "한국철도공사_역사내외부 시설현황 부산역 행",
+   "method": "data.go.kr /data/15090379 미리보기 탭 직접 판독",
+   "result": "POSITIVE — '부산 13 24 0 0 1 1 0 0 688' 확인. 승강기 13 / 에스컬레이터 24 / 장애인화장실 1 / 일반화장실 1 / 주차 688. 씬에 이미 반영된 값과 일치."
+  },
+  {
+   "target": "한국철도공사_임대매장정보·편의시설정보 OpenAPI",
+   "method": "/data/15125773, /data/15125774 페이지 로딩",
+   "result": "BLOCKED — 로그인 미상태. 활용신청은 data.go.kr 계정 생성·본인확인이 필요해 사용자 신원으로 실행하지 않았다.",
+   "nextAction": "사용자 승인 시 계정 로그인 후 활용신청 → 역별 입점매장 층·면적 원자료 확보 가능"
+  },
+  {
+   "target": "네이버 지도 실내 데이터",
+   "method": "map.naver.com 로딩 중 리소스에서 실내 엔드포인트 탐지 → 타일 메타데이터 직접 조회",
+   "result": "BREAKTHROUGH — 네이버 실내 벡터타일(PBF)이 인증 없이 공개. 엔드포인트 https://map.pstatic.net/nvbpc/indoor/indoor/656260fa-d2fd-4959-980d-9376762761ca/getTile/{x}/{y}/{z}/pbf, dataset R_20260918_1803, zoom 15~20, 레이어 9종(indoor_bg_gnd_a 바닥 / indoor_bg_shop_a 점포 / indoor_bg_sisul_l 시설선 / indoor_poi_db_p POI)."
+  }
+ ],
+ "naverIndoorAcquisition": {
+  "tilesDownloaded": 58,
+  "decoder": ".tools/mvt/decode_mvt.py — 외부 의존 없는 MVT 2.1 와이어포맷 직접 디코더",
+  "featuresDecoded": 5590,
+  "withinStationRadius200m": 589,
+  "zones": {
+   "4100261700030010100": {
+    "floor": "B1",
+    "features": 210,
+    "groundAreaSqm": 18382,
+    "shopUnits": 121,
+    "shopMedianSqm": 28.0,
+    "wallLineLengthM": 434,
+    "extentM": "166 x 283",
+    "identify": "부산역 지하도상가 — 중앙대로 축을 따라 북동-남서로 뻗는 선형 아케이드"
+   },
+   "4100261700010010100": {
+    "floor": "1",
+    "features": 379,
+    "groundAreaSqm": 19801,
+    "shopUnits": 68,
+    "shopMedianSqm": 44.5,
+    "wallLineLengthM": 2210,
+    "extentM": "136 x 262",
+    "identify": "역 동측 113~248m 지상 구역 — 역사 본관이 아니다"
+   }
+  },
+  "criticalFinding": "네이버 실내 데이터는 부산역 지하도상가(B1)와 동측 지상 구역만 덮는다. 역사 본관(2층 대합실) 실내는 포함되지 않는다. 역 중심 반경 200m 안의 실내 구역은 이 둘뿐이다.",
+  "usableFor": "프로젝트 범위에 포함된 지하연결통로·도시철도 환승 구간(B1/B2) 구축의 실측 기하. 현재 미구축 상태이므로 그대로 투입 가능.",
+  "geojson": "asset-library/research-public/2026-09-22/busan-station-interior/naver-indoor/busan_station_indoor.geojson"
+ },
+ "loggedInOutcomes": {
+  "dataGoKr": {
+   "account": "로그인 완료(개인회원)",
+   "applications": [
+    {
+     "dataset": "한국철도공사_임대매장정보 (15125773)",
+     "status": "승인(자동승인)",
+     "period": "2026-09-22 ~ 2028-09-22",
+     "dailyQuota": 10000
+    },
+    {
+     "dataset": "한국철도공사_편의시설정보 (15125774)",
+     "status": "신청 제출"
+    }
+   ],
+   "endpoint": "https://apis.data.go.kr/B551457/lease/stores",
+   "keyStorage": "~/.config/datagokr/key (600). 저장소·영수증에 기록하지 않음",
+   "harvest": {
+    "totalRows": 4548,
+    "busanStationRows": 188,
+    "byFloor": {
+     "2층": 121,
+     "1층": 48,
+     "3층": 16,
+     "기타(미지정)": 2,
+     "지하1층": 1
+    },
+    "byPosition": {
+     "맞이방": 136,
+     "상행선타는곳": 24,
+     "고속맞이방": 8,
+     "고속상행선": 1,
+     "광장매장": 2,
+     "선상통로": 7,
+     "기타": 8,
+     "미정": 2
+    },
+    "approvedAreaTotalSqm": 6081.3,
+    "fields": "stor_nm 매장명 / stb_nofl 층 / stor_pstn 매장위치 / aprv_area 승인면적㎡ / biz_se_nm 업종"
+   },
+   "appliedToScene": "면적 3㎡ 이상 점포를 승인면적에서 폭·깊이를 역산해 1F 27 / 2F 23 / 3F 5 = 55개 실배치(합계 5,432㎡). 기존 추정 6×8.4m 균일 점포는 전부 폐기"
+  },
+  "sketchfab": {
+   "account": "Google SSO 로그인 완료 (GlobalPlate4781, basic)",
+   "tokenStorage": "~/.config/sketchfab/token (600)",
+   "walledUids": 257,
+   "downloader": ".tools/sketchfab/fetch_walled.py",
+   "status": "백그라운드 진행 중 — v3 download API 로 gltf zip 수집, sha256 영수증"
+  }
+ }
+}

@@ -1,0 +1,319 @@
+{
+ "schema": "chooguard.1f-lane-registration.v1",
+ "lane": "uplus-service-end",
+ "generated": "2026-09-24",
+ "sources": [
+  {
+   "video": "eluhiZ_eirE",
+   "epoch": "E2026-09 (YouTube upload 2026-09-08; recording date not independently established)",
+   "secondsRange": [
+    [
+     29.97,
+     32.95
+    ],
+    [
+     34.0,
+     34.0
+    ],
+    [
+     35.0,
+     36.45
+    ],
+    [
+     45.41,
+     46.75
+    ],
+    [
+     47.5,
+     47.5
+    ],
+    [
+     48.76,
+     49.9
+    ]
+   ],
+   "resolution": "1920x1080 (vp9 59.94 fps; frames every 4th-6th source frame, plus every 2nd for 29.97-30.9 s)",
+   "images": 108,
+   "notes": "edited clip: freezes 28.0-29.95 / 33.1-34.95 / 46.8-48.75 s (one frame each at 34.0, 47.5 used), reverse-montage 37.1-38.4 s and zoom 36.5-37.1 / 49.9+ s excluded; yellow border, captions, logo and yellow highlight boxes masked (colour mask dilated 31 px)"
+  },
+  {
+   "video": "eluhiZ_eirE",
+   "epoch": "E2026-09",
+   "secondsRange": [
+    [
+     26.0,
+     27.75
+    ]
+   ],
+   "resolution": "1920x1080",
+   "images": 18,
+   "notes": "upper escalator descent clip A reconstructed separately (18 images, 1882 points); no verified shared structure with the landing clip (max 17 two-view inliers) - not joined, not registered"
+  },
+  {
+   "video": "MT_QRO_Ks4k",
+   "epoch": "E2026-09 (upload 2026-09-11)",
+   "secondsRange": [
+    [
+     413,
+     418
+    ]
+   ],
+   "resolution": "640x360 local scan copy",
+   "notes": "identity/topology only (AED cabinet right of KTX특송 door beyond the e-scooter sign stand); not used for geometry"
+  },
+  {
+   "video": "jQBlgIgGhu8",
+   "epoch": "E2026-09 (upload 2026-09-08)",
+   "secondsRange": [],
+   "resolution": "640x360",
+   "notes": "not used: redundant with eluhiZ 45-51 s (same Zimcarry series), heavily overlaid"
+  }
+ ],
+ "sfm": {
+  "registeredImages": 108,
+  "points3D": 14135,
+  "meanReprojPx": 0.7785,
+  "camera": "SIMPLE_RADIAL f=969.2 cx=960 cy=540 k=0.00262 (single camera, 1920x1080)",
+  "model": "uplus-service-end/sfm/sparse/0 (pycolmap 4.2.0; sequential + cross-clip pair matching; mapper with relaxed abs-pose gates 15 inliers/0.15 ratio to admit blurred landing-turn frames)",
+  "continuity": "within-clip camera steps <= 3x median everywhere; clip joins B->F/C (517 two-view inliers), C<->D/E/G (263-3387)",
+  "plumb": {
+   "lines": 1426,
+   "segments": 2398,
+   "upSfM": [
+    0.015486,
+    -0.999874,
+    -0.003626
+   ],
+   "perClipAngleToGlobalDeg": {
+    "B": 0.041,
+    "C": 0.174,
+    "D": 0.115,
+    "G": 0.064
+   }
+  },
+  "landingTurnStability": "B_003a-B_008 camera centres differ by up to 8.98 median steps between the default-gate reconstruction (B_003a-B_020) and the relaxed-gate joint model after aligning on B_010-B_020; B_014 onward agree to <=0.05 steps between independent runs"
+ },
+ "transformToUVY": {
+  "method": "PROVISIONAL MainShell-local gravity-constrained similarity P2 (REJECTED): gravity from 1426 plumb lines; yaw from the observed plaza-side 1F curtain-wall direction vs MainShell plaza 1F glazing (heading 13.85 deg, U45-63); position from the observed facade corner (plaza 1F glazing plane ∩ U+ high-glazing plane) -> MainShell corner (63.3,-35.3); scale from plaza 1F glazing mullion pitch (observed 2.04 model units vs MainShell 2.60); vertical datum from observed glazing base -> Y=0",
+  "scale": 3.17624,
+  "rotation": [
+   [
+    0.98219404,
+    0.01453263,
+    0.18730633
+   ],
+   [
+    -0.18722995,
+    -0.006462,
+    0.98229486
+   ],
+   [
+    0.0154857,
+    -0.99987351,
+    -0.003626
+   ]
+  ],
+  "translation": [
+   -17.828305,
+   34.509419,
+   1.554974
+  ],
+  "formula": "ENU = scale * rotation * X_sfm + translation (X_sfm = sparse/0 world coords); Unity = (ENU.x, ENU.z, ENU.y); UVY: U = x*sin16.2 + z*cos16.2, V = x*cos16.2 - z*sin16.2, Y = y. Equivalently UVY = M*X_sfm + m with M,m below (det M < 0 because UVY is a reflected frame).",
+  "uvyLinear": {
+   "M": [
+    [
+     0.29928965,
+     -0.00683193,
+     3.16210012
+    ],
+    [
+     3.16172493,
+     0.05005255,
+     -0.29914599
+    ],
+    [
+     0.04918629,
+     -3.17583787,
+     -0.01151704
+    ]
+   ],
+   "m": [
+    28.165239,
+    -26.74823,
+    1.554974
+   ]
+  },
+  "hypothesisEnvelope": "alternative scale 1.13-1.37x and yaw +-1.5 deg about the corner (spread of local scale indicators) moves Z3 points by up to 1.4-2.5 u and corridor/elevator points by up to 4-5 u (per-component envelopeU in observations.json)",
+  "alternativeP0": {
+   "method": "poster-only multi-camera PnP (B_000/B_001 vs March 3D points on the blue 타는 곳 sign, 205 observations, 1.73 px median) with gravity fixed - REJECTED",
+   "residual": "MainShell U+ facade corner misses by ~12 u; facade directions off 4.9-5.5 deg; scale conflicts with MainShell pitch by 1.13-1.37x"
+  }
+ },
+ "controls": [
+  {
+   "type": "gravity (plumb lines)",
+   "id": "eluhiZ vertical edges",
+   "count": 1426,
+   "residuals": {
+    "rmsDeg": null,
+    "perClipAngleToGlobalDeg": [
+     0.041,
+     0.174,
+     0.115,
+     0.064
+    ]
+   }
+  },
+  {
+   "type": "source-control direction",
+   "id": "MainShell plaza 1F glazing (U45-63, heading 13.85 deg)",
+   "count": 667,
+   "residuals": {
+    "observedHeadingAfterFitDeg": 12.53,
+    "planeInlierRMS_u": 0.0829,
+    "distanceToMainShellPlane_u": {
+     "median": 0.12,
+     "p95": 0.293
+    }
+   }
+  },
+  {
+   "type": "source-control point",
+   "id": "MainShell facade corner (63.3,-35.3) = plaza 1F glazing ∩ U+ corner-segment facade",
+   "count": 1,
+   "residuals": {
+    "byConstruction": 0.0
+   }
+  },
+  {
+   "type": "source-control pitch",
+   "id": "MainShell plaza 1F glazing mullion pitch 2.60 u",
+   "count": 9,
+   "residuals": {
+    "observedPitchModelUnits": 2.04,
+    "alternativeIndicators": {
+     "plazaTransomHeights": 1.37,
+     "cornerLatticeTransomPitch": 1.253,
+     "cornerLatticeMullionPitch": 1.13,
+     "vendingMachineHeight1.83m": 1.26,
+     "2FBalustrade(glass, unreliable)": 1.65
+    }
+   }
+  },
+  {
+   "type": "datum",
+   "id": "MainShell glazing base Y=0 (observed glazing base line)",
+   "count": 1,
+   "residuals": {
+    "corridorVendingBaseY": -0.012
+   }
+  }
+ ],
+ "heldOut": [
+  {
+   "name": "March-registered 타는 곳 sign points (wl-right-approach-wall) reached through the eluhiZ chain",
+   "type": "cross-video",
+   "n": 41,
+   "median": 3.616,
+   "p95": 3.749,
+   "threshold": 0.05,
+   "pass": false
+  },
+  {
+   "name": "wl-right-approach-wall plane distance of the same chained points",
+   "type": "class-a-plane",
+   "n": 41,
+   "median": 2.229,
+   "p95": 2.337,
+   "threshold": ">=85% within 0.05 u",
+   "pass": false
+  },
+  {
+   "name": "cl-low-suspended-ceiling height at the escalator foot (B_003 ceiling points)",
+   "type": "class-a-plane",
+   "n": 18,
+   "median": 0.657,
+   "p95": null,
+   "threshold": 0.05,
+   "pass": false,
+   "note": "P2 puts the landing ceiling at Y 2.90 vs class-a 2.23-2.26"
+  },
+  {
+   "name": "MainShell U+ corner-segment facade plane (63.3,-35.3)-(59.5,-23.5)",
+   "type": "source-control",
+   "n": 122,
+   "median": 0.102,
+   "p95": 0.337,
+   "threshold": ">=85% within 0.05 u",
+   "pass": false,
+   "within0.05": 0.279
+  },
+  {
+   "name": "MainShell U+ corner-segment facade direction",
+   "type": "source-control",
+   "n": 122,
+   "median": 1.146,
+   "p95": null,
+   "threshold": 1.0,
+   "pass": false,
+   "units": "deg"
+  },
+  {
+   "name": "MainShell corner-segment lattice transom pitch (1.41 u)",
+   "type": "source-control",
+   "n": 906,
+   "median": 1.434,
+   "p95": null,
+   "threshold": "within 3% of 1.41",
+   "pass": true
+  },
+  {
+   "name": "MainShell corner-segment lattice mullion pitch (2.60 u)",
+   "type": "source-control",
+   "n": 520,
+   "median": 2.932,
+   "p95": null,
+   "threshold": "within 3% of 2.60",
+   "pass": false
+  },
+  {
+   "name": "per-clip plumb agreement (B,C,D,G vs global)",
+   "type": "plumb",
+   "n": 4,
+   "median": 0.09,
+   "p95": 0.17,
+   "threshold": 1.0,
+   "pass": true,
+   "units": "deg"
+  },
+  {
+   "name": "corridor floor at vending-bank base vs 1F datum",
+   "type": "floor-diagnostic",
+   "n": 691,
+   "median": -0.012,
+   "p95": null,
+   "threshold": 0.05,
+   "pass": true,
+   "note": "diagnostic only (2nd percentile of vending points)"
+  }
+ ],
+ "status": "rejected",
+ "reason": "No metric registration of the U+ end reaches class-a. (1) The only overlap with the March-registered corridor is one planar sign (타는 곳 ← / 표 사는 곳) on the right approach wall seen from two frames on the escalator (B_000/B_001); it fixes position but not yaw/scale, and the blurred landing turn that links it to the corridor is unstable between reconstructions (up to 9 median camera steps). (2) The MainShell-local provisional fit (P2) leaves the held-out March controls 3.6 u away, the landing low ceiling at 2.90 vs 2.25, and the U+ corner-segment facade outside tolerance (median 0.10 u, 28% within 0.05 u, direction 1.15 deg, mullion pitch +13%). The local scale indicators disagree over a 1.13-1.37x range, so the scale is not established.",
+ "limits": [
+  "Positions in observations.json use the rejected provisional P2 transform and are topology/placement estimates with the stated per-component envelope; they are not construction dimensions.",
+  "MainShell 1F glazing grid is a source-model schematic (no door gaps modelled at U45-63, while imagery shows automatic doors under a yellow 5 sign); pitch-based scale may not be as-built.",
+  "Model-internal geometry (planarity, reprojection, held-out views) is good: all component track reprojection RMS <=1.01 px, held-out median <=0.81 px (1920x1080).",
+  "No survey scale; source-model units only.",
+  "Clip A (26-27.75 s, upper escalator descent) is not joined; the 2F elevator lobby (41.4-44.6 s) was not used."
+ ],
+ "provenance": {
+  "scripts": [
+   "scripts/common.py",
+   "scripts/sfm_extract_match.py",
+   "scripts/sfm_add_images.py",
+   "scripts/sfm_map.py"
+  ],
+  "analysis": "plumb, March cross-matching (descriptors from 1f-2026-sfm/features.db), P0/P2 fits, held-out checks and component extraction were run interactively on sfm/sparse/0 with frame times in sfm/frame_times.json; numbers above are the recorded outputs",
+  "deleted": "extracted frames, masks, features.db and /tmp work dir (per disk policy)"
+ }
+}

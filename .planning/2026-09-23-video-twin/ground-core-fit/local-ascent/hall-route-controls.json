@@ -1,0 +1,13 @@
+{
+  "schema": "chooguard.independent-hall-plane-controls.v1",
+  "pixelFrame": "1280x720, original distorted video frames",
+  "purpose": "Test whether independently observed walking-floor planes can register the panning overlap without a human-height prior, generated slab height or repeated-sign match. Not approved source coordinates.",
+  "floorMasks": [
+    {"frame": 430, "component": "head", "role": "fit", "polygon": [[350,600],[940,560],[1040,705],[350,705]]},
+    {"frame": 450, "component": "head", "role": "held-out", "polygon": [[260,580],[1190,580],[1190,710],[260,710]]},
+    {"frame": 590, "component": "tail", "role": "fit", "polygon": [[415,566],[781,484],[1060,681],[447,710]]},
+    {"frame": 550, "component": "tail", "role": "held-out", "polygon": [[160,630],[1260,630],[1260,710],[160,710]]},
+    {"frame": 605, "component": "tail", "role": "held-out", "polygon": [[500,660],[1270,660],[1270,715],[500,715]]}
+  ],
+  "exclusions": ["People, moving door leaves and reflections are not source controls.", "Floor-plane continuity must pass held-out support; do not force it."]
+}

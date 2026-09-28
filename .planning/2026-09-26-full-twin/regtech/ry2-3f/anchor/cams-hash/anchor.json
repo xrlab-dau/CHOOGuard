@@ -1,0 +1,230 @@
+{
+ "schema": "chooguard.regtech.anchor.v1",
+ "work": ".planning/2026-09-26-full-twin/regtech/ry2-3f",
+ "controls": ".planning/2026-09-26-full-twin/regtech/controls/ry2-3f.json",
+ "frame": "unity",
+ "gate_thresholds": {
+  "heldout_rms_m": 0.3,
+  "heldout_rms_px": 8.0,
+  "min_heldout": 3,
+  "loo_max_m": 0.6,
+  "heldout_forward_rms_deg": 6.0
+ },
+ "components": {
+  "0": {
+   "component": 0,
+   "registered_images": 553,
+   "status": "FAIL",
+   "gate": {
+    "pass": false,
+    "reasons": [
+     "held-out 3D RMS 0.511 > 0.3",
+     "held-out camera heading RMS 6.2 deg > 6.0",
+     "LOO max 3D 5.456 > 0.6"
+    ]
+   },
+   "fit": {
+    "controls": 6,
+    "obs": 0,
+    "rms_px": null,
+    "max_px": null,
+    "points_3d": 6,
+    "rms_m": 0.7497010400307839,
+    "max_m": 1.6627582290395904,
+    "forward_rms_deg": 4.7888021857640775,
+    "forward_max_deg": 5.32939107478715
+   },
+   "heldout": {
+    "controls": 3,
+    "obs": 0,
+    "rms_px": null,
+    "max_px": null,
+    "points_3d": 3,
+    "rms_m": 0.5114889929498341,
+    "max_m": 0.7541762079859109,
+    "forward_rms_deg": 6.164501707639498,
+    "forward_max_deg": 7.55283614926844
+   },
+   "heldout_images": {
+    "images": [],
+    "obs": 0,
+    "rms_px": null
+   },
+   "loo": {
+    "count": 6,
+    "rms_m": 2.410467038681911,
+    "max_m": 5.456487886902499,
+    "rms_px": null,
+    "max_px": null,
+    "items": {
+     "cam:ry2/t00178000.jpg": {
+      "err_m": 2.0278844738765622,
+      "rms_px": null
+     },
+     "cam:ry2/t00207000.jpg": {
+      "err_m": 5.456487886902499,
+      "rms_px": null
+     },
+     "cam:ry2/t00312000.jpg": {
+      "err_m": 0.5324304796112386,
+      "rms_px": null
+     },
+     "cam:ry2/t00316000.jpg": {
+      "err_m": 0.3998541414262227,
+      "rms_px": null
+     },
+     "cam:ry2/t00322000.jpg": {
+      "err_m": 0.1584319784809854,
+      "rms_px": null
+     },
+     "cam:ry2/t00329500.jpg": {
+      "err_m": 0.7127877147427362,
+      "rms_px": null
+     }
+    }
+   },
+   "sim3_sfm_to_enu": {
+    "scale": 3.6082092365954117,
+    "rotation": [
+     [
+      0.8286737088713657,
+      0.02356076020440373,
+      -0.559235884760595
+     ],
+     [
+      0.5596210646944151,
+      -0.014985760144700766,
+      0.8286131129442585
+     ],
+     [
+      0.011142180022972348,
+      -0.999610082768014,
+      -0.02560340314996412
+     ]
+    ],
+    "translation": [
+     81.80956494998202,
+     -7.181240053755519,
+     13.67494534435003
+    ],
+    "formula": "ENU = scale*R*X_sfm + t; Unity=(E,Up,N); UVY via README"
+   },
+   "solver": {
+    "init_inliers": 6,
+    "cost": 12.111562655648124,
+    "nfev": 6,
+    "status": 2
+   },
+   "controls": {
+    "cam:ry2/t00178000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 1.6627582290395904,
+     "center_uvy": [
+      18.50781784762223,
+      76.10940443559903,
+      9.970679731746417
+     ],
+     "note": "sfmcmp-ry2-0-000027.png.json: Unity render pose of the old 2 fps model ry2-0 (4-5 anchor fit)",
+     "forward_err_deg": 4.857226231435461
+    },
+    "cam:ry2/t00187000.jpg": {
+     "kind": "camera",
+     "role": "heldout",
+     "err_m": 0.7541762079859109,
+     "center_uvy": [
+      15.25157535717016,
+      75.50825116460307,
+      11.849809333961554
+     ],
+     "note": "sfmcmp-ry2-0-000045.png.json: Unity render pose of the old 2 fps model ry2-0 (4-5 anchor fit)",
+     "forward_err_deg": 7.55283614926844
+    },
+    "cam:ry2/t00207000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.39649508301917996,
+     "center_uvy": [
+      7.288988388996168,
+      67.89264436828459,
+      13.6225208333225
+     ],
+     "note": "sfmcmp-ry2-0-000085.png.json: Unity render pose of the old 2 fps model ry2-0 (4-5 anchor fit)",
+     "forward_err_deg": 5.32939107478715
+    },
+    "cam:ry2/t00212000.jpg": {
+     "kind": "camera",
+     "role": "heldout",
+     "err_m": 0.3867720591848749,
+     "center_uvy": [
+      5.5795696520314255,
+      67.2617300317446,
+      13.626828253579887
+     ],
+     "note": "sfmcmp-ry2-0-000095.png.json: Unity render pose of the old 2 fps model ry2-0 (4-5 anchor fit)",
+     "forward_err_deg": 5.500773796520943
+    },
+    "cam:ry2/t00312000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.38529890242661474,
+     "center_uvy": [
+      9.818957590970323,
+      77.67377205527738,
+      13.807617835041885
+     ],
+     "note": "sfmcmp-ry2-2-000295.png.json: Unity render pose of the old 2 fps model ry2-2 (4-5 anchor fit)",
+     "forward_err_deg": 4.134207418400146
+    },
+    "cam:ry2/t00316000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.307843368509598,
+     "center_uvy": [
+      12.309617411159033,
+      77.56786994431656,
+      13.376250396023318
+     ],
+     "note": "sfmcmp-ry2-2-000303.png.json: Unity render pose of the old 2 fps model ry2-2 (4-5 anchor fit)",
+     "forward_err_deg": 4.5975483666641965
+    },
+    "cam:ry2/t00319000.jpg": {
+     "kind": "camera",
+     "role": "heldout",
+     "err_m": 0.2578538176339262,
+     "center_uvy": [
+      13.464410076415712,
+      77.57999160131811,
+      12.805234296570886
+     ],
+     "note": "sfmcmp-ry2-2-000309.png.json: Unity render pose of the old 2 fps model ry2-2 (4-5 anchor fit)",
+     "forward_err_deg": 5.167145987127062
+    },
+    "cam:ry2/t00322000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.11792949569409057,
+     "center_uvy": [
+      14.39293831638646,
+      77.70204622730485,
+      12.241746770796965
+     ],
+     "note": "sfmcmp-ry2-2-000315.png.json: Unity render pose of the old 2 fps model ry2-2 (4-5 anchor fit)",
+     "forward_err_deg": 5.052823147279402
+    },
+    "cam:ry2/t00329500.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.43955257676530574,
+     "center_uvy": [
+      17.112565479485575,
+      78.13037887054196,
+      10.68953162968998
+     ],
+     "note": "sfmcmp-ry2-2-000330.png.json: Unity render pose of the old 2 fps model ry2-2 (4-5 anchor fit)",
+     "forward_err_deg": 4.673388346270103
+    }
+   }
+  }
+ }
+}

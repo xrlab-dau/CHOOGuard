@@ -1,0 +1,73 @@
+{
+  "request": "Signage-1",
+  "answered_by": "RegTech8",
+  "status": "declined",
+  "summary": "NO-GO for metric registration. The existing 2F seam anchor is strict-gate FAIL, so `daytour_011.jpg` and the blog photos were not localized against it. The Kakao screenshot cannot be defensibly tied to station UV from the single Hwangong point: applying the documented Naver-to-UV formula maps that POI about 40.2 m away from the same-named Naver indoor 1F shop polygon. The Naver vector-to-plan fit is internally tight, but this cross-source conflict invalidates Hwangong as a verified control. No screenshot scale/rotation/translation fit or held-out residual is claimed; exit marker #2 remains unregistered.",
+  "daytour_photo": {
+    "image": "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2024-06-21_daytour_88-223486414067_011.jpg",
+    "visual": "Shows yellow badge `2` and `나가는 곳 / Exit` above a glass door bank; the 환공어묵 kiosk is visible adjacent to the right.",
+    "camera_pose": null,
+    "inlier_residual_px": null,
+    "station_uvy": null,
+    "sigma_m": null,
+    "result": "not localized: required `seam-9yw/src-hash` strict gate fails, so no camera pose was attempted or accepted"
+  },
+  "kakao_map": {
+    "image": "asset-library/research-public/2026-09-23/busan-sinmajibang/plans/kakaomap_busanstation_poi_level1_x965500_y454520.png",
+    "source_url": "https://map.kakao.com/?urlX=965500&urlY=454520&urlLevel=1",
+    "source_observation": "North-up map with 20 m scale bar; prior Signage evidence extraction places exit marker 2 at original-image pixel [512,859], next to Hwangong.",
+    "exit2_marker_pixel_original": [512,859],
+    "candidate_hwangong_poi": {
+      "source": "asset-library/research-public/2026-09-23/naver-poi/smart-around-places.json#1170775920",
+      "lon_lat": [129.041697,35.1153107],
+      "candidate_uv_from_naver_transform": [24.867,-11.247],
+      "warning": "This is the transformed Naver POI only, not a registered Kakao screenshot point and not the exit-2 marker UV."
+    },
+    "cross_check": {
+      "naver_indoor_feature": "naver-1f-uv.json feature mid=3336 (환공어묵), layer indoor_bg_shop_a, floor 1",
+      "feature_uv_bbox": {"u":[-12.309,-7.989],"v":[-42.391,-34.413]},
+      "candidate_poi_to_bbox_distance_lower_bound_m": 40.202,
+      "interpretation": "The global POI-to-UV point is far outside the transformed same-name indoor shop vector; this may be a POI identity/coordinate or cross-dataset offset, but it is far beyond the vector-fit residual and cannot serve as a verified single anchor."
+    },
+    "available_transform_context": {
+      "file": ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+      "use": "Naver indoor 1F vectors -> station UV only; not a Kakao image transform",
+      "scale": 1.0,
+      "rotation_degrees": -0.615819,
+      "translation_uv": [66.161,52.633],
+      "fit_pairs": 289,
+      "median_residual_m": 0.169,
+      "p80_residual_m": 0.354,
+      "p95_residual_m": 0.640,
+      "max_residual_m": 1.921,
+      "hwangong_unit_loo_max_m": 0.139
+    },
+    "map_fit": null,
+    "map_fit_sigma_m": null,
+    "reason": "No second independent, verified screenshot-pixel-to-station-UV control was established; scale-bar and north-up metadata provide orientation/nominal scale but not a validated translation. No fitted transform or held-out residual is reported."
+  },
+  "blog_images": [
+    {"image":"asset-library/research-public/2026-09-23/busan-1f-east/photos/2025-05-22_shoobong_good-223874440893_001.jpg","visible_badge":null,"result":"shop interior/fascia; no numbered exit badge identified"},
+    {"image":"asset-library/research-public/2026-09-23/busan-1f-east/photos/2025-05-22_shoobong_good-223874440893_002.jpg","visible_badge":null,"result":"shop interior/fascia; no numbered exit badge identified"},
+    {"image":"asset-library/research-public/2026-09-23/busan-1f-east/photos/2025-05-22_shoobong_good-223874440893_003.jpg","visible_badge":null,"result":"shop interior/fascia; no numbered exit badge identified"},
+    {"image":"asset-library/research-public/2026-09-23/busan-1f-east/photos/2025-05-22_shoobong_good-223874440893_008.jpg","visible_badge":null,"result":"shop interior/fascia; no numbered exit badge identified"}
+  ],
+  "anchor_gate": {
+    "file": ".planning/2026-09-26-full-twin/regtech/seam-9yw/anchor/src-hash/anchor.json",
+    "status": "FAIL",
+    "gate_pass": false,
+    "reasons": ["LOO max 3D 1.041 m > 0.6 m","LOO reprojection RMS 184.94 px > 8 px"],
+    "fit_rms_m": 0.321,
+    "heldout_controls": 6,
+    "heldout_observations": 0,
+    "heldout_rms_m": 0.018,
+    "loo_max_m": 1.041,
+    "loo_rms_px": 184.942
+  },
+  "files": {
+    "request": ".planning/2026-09-26-full-twin/reg-requests/Signage-1.json",
+    "previous_item_report": ".planning/2026-09-24-interior-twin/specs/full/signage-report.json",
+    "naver_transform": ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    "poi_source": "asset-library/research-public/2026-09-23/naver-poi/smart-around-places.json"
+  }
+}

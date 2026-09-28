@@ -1,0 +1,283 @@
+{
+ "case": "ry2-3f (RY2 3F 172-334 s, 553 frames in one component, 1.22 px; the 231 s and 309 s breaks are bridged: raw models 474+99 merged with 230 inliers, no weak links)",
+ "by": "RegTech6 2026-09-25 21:05",
+ "controls": "regtech/controls/ry2-3f-floor.json: 9 old registered camera centres (sigma 0.3, forward check) + 16 SfM floor points Y 12.2 (food-court region)",
+ "anchors": {
+  "fl-hash (hash 1/3 held out)": {
+   "status": "FAIL",
+   "reasons": [
+    "held-out 3D RMS 0.483 > 0.3",
+    "held-out camera heading RMS 6.2 deg > 6.0",
+    "LOO max 3D 2.062 > 0.6"
+   ],
+   "fit_rms_m": 0.5680538087202104,
+   "heldout_rms_m": 0.4833287667624952,
+   "heldout_heading_rms_deg": 6.215960482718279,
+   "scale": 3.5559277706294545
+  },
+  "fl-tb-start (fit 170-300, predict the 312-330 cameras across both breaks)": {
+   "status": "FAIL",
+   "reasons": [
+    "held-out 3D RMS 1.541 > 0.3",
+    "LOO max 3D 1.096 > 0.6"
+   ],
+   "fit_rms_m": 0.330602622238085,
+   "heldout_rms_m": 1.5408793685366498,
+   "heldout_heading_rms_deg": 2.4432495457688086,
+   "scale": 3.8189992093314853
+  },
+  "fl-tb-end (fit 300-335, predict 178-212)": {
+   "status": "FAIL",
+   "reasons": [
+    "held-out 3D RMS 1.268 > 0.3",
+    "held-out camera heading RMS 6.2 deg > 6.0",
+    "LOO max 3D 0.853 > 0.6"
+   ],
+   "fit_rms_m": 0.35278669752058867,
+   "heldout_rms_m": 1.268299753955218,
+   "heldout_heading_rms_deg": 6.215949256216347,
+   "scale": 3.666331120313936
+  },
+  "cams-hash (cameras only, earlier)": {
+   "status": "FAIL",
+   "reasons": [
+    "held-out 3D RMS 0.511 > 0.3",
+    "held-out camera heading RMS 6.2 deg > 6.0",
+    "LOO max 3D 5.456 > 0.6"
+   ],
+   "fit_rms_m": 0.7497010400307839,
+   "heldout_rms_m": 0.5114889929498341,
+   "heldout_heading_rms_deg": 6.164501707639498,
+   "scale": 3.6082092365954117
+  }
+ },
+ "checks_fl-hash": {
+  "balustrade_walk_283_306_min_b": 46.36,
+  "band_edge_b": 44.3,
+  "verdict": "283-306 s walk stays >= 1.85 m inside the band edge in all three anchors (the old ry2-0 failure, walk inside the void, is gone)",
+  "break_231": {
+   "heading_change_deg": -12.9,
+   "step_u": 0.5
+  },
+  "break_309": {
+   "heading_change_deg": 20.8,
+   "step_u": 0.55
+  },
+  "floor_layer_y": 12.262,
+  "eye_above_floor_median": 1.06
+ },
+ "verdict": "FAIL at the strict gate. Time-block predictions across the food-court block miss by 1.27-1.54 m (both directions) and heading by 2.4-6.2 deg. The controls themselves are old registrations good to only 0.3-0.5 m and carry a systematic ~5 deg forward offset. Use these food-court poses with sigma of about 1.5 m / 5 deg.",
+ "render_check": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/cmp_00251000.jpg and cmp_00271000.jpg (left frame, right live render). The poses land among the live food-court tables. At 271 s the video faces the menu-board stall front at 1-2 m, while the live model has its wall several metres further away, so the stall front sits closer to the camera path than built [INFERENCE from one render].",
+ "poses_231_306_every_5s": [
+  {
+   "image": "ry2/t00231000.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00231000.pose.json",
+   "center_uvy": [
+    5.23,
+    83.09,
+    13.29
+   ],
+   "heading_uv": [
+    -0.162,
+    0.986
+   ]
+  },
+  {
+   "image": "ry2/t00236000.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00236000.pose.json",
+   "center_uvy": [
+    9.5,
+    85.3,
+    13.26
+   ],
+   "heading_uv": [
+    0.757,
+    0.65
+   ]
+  },
+  {
+   "image": "ry2/t00241222.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00241222.pose.json",
+   "center_uvy": [
+    13.65,
+    87.66,
+    13.29
+   ],
+   "heading_uv": [
+    0.972,
+    0.231
+   ]
+  },
+  {
+   "image": "ry2/t00246000.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00246000.pose.json",
+   "center_uvy": [
+    17.22,
+    88.51,
+    13.34
+   ],
+   "heading_uv": [
+    0.643,
+    0.764
+   ]
+  },
+  {
+   "image": "ry2/t00251000.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00251000.pose.json",
+   "center_uvy": [
+    21.43,
+    89.55,
+    13.36
+   ],
+   "heading_uv": [
+    0.776,
+    0.627
+   ]
+  },
+  {
+   "image": "ry2/t00256222.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00256222.pose.json",
+   "center_uvy": [
+    26.46,
+    90.82,
+    13.4
+   ],
+   "heading_uv": [
+    0.889,
+    0.443
+   ]
+  },
+  {
+   "image": "ry2/t00261000.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00261000.pose.json",
+   "center_uvy": [
+    30.22,
+    91.68,
+    13.46
+   ],
+   "heading_uv": [
+    0.937,
+    0.334
+   ]
+  },
+  {
+   "image": "ry2/t00265889.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00265889.pose.json",
+   "center_uvy": [
+    32.86,
+    91.58,
+    13.48
+   ],
+   "heading_uv": [
+    0.417,
+    0.904
+   ]
+  },
+  {
+   "image": "ry2/t00271000.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00271000.pose.json",
+   "center_uvy": [
+    33.66,
+    91.68,
+    13.45
+   ],
+   "heading_uv": [
+    0.108,
+    0.994
+   ]
+  },
+  {
+   "image": "ry2/t00275889.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00275889.pose.json",
+   "center_uvy": [
+    35.09,
+    91.23,
+    13.5
+   ],
+   "heading_uv": [
+    0.98,
+    0.195
+   ]
+  },
+  {
+   "image": "ry2/t00280889.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00280889.pose.json",
+   "center_uvy": [
+    36.01,
+    89.26,
+    13.2
+   ],
+   "heading_uv": [
+    0.091,
+    -0.995
+   ]
+  },
+  {
+   "image": "ry2/t00286111.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00286111.pose.json",
+   "center_uvy": [
+    35.14,
+    83.92,
+    13.29
+   ],
+   "heading_uv": [
+    0.002,
+    -0.999
+   ]
+  },
+  {
+   "image": "ry2/t00291111.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00291111.pose.json",
+   "center_uvy": [
+    29.72,
+    82.24,
+    13.32
+   ],
+   "heading_uv": [
+    -0.922,
+    -0.385
+   ]
+  },
+  {
+   "image": "ry2/t00295889.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00295889.pose.json",
+   "center_uvy": [
+    23.78,
+    82.18,
+    13.26
+   ],
+   "heading_uv": [
+    -0.985,
+    -0.171
+   ]
+  },
+  {
+   "image": "ry2/t00301111.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00301111.pose.json",
+   "center_uvy": [
+    17.02,
+    81.78,
+    13.24
+   ],
+   "heading_uv": [
+    -0.987,
+    -0.161
+   ]
+  },
+  {
+   "image": "ry2/t00306111.jpg",
+   "pose": "regtech/ry2-3f/anchor/fl-hash/poses-foodcourt/ry2__t00306111.pose.json",
+   "center_uvy": [
+    10.25,
+    80.82,
+    13.21
+   ],
+   "heading_uv": [
+    -0.977,
+    -0.205
+   ]
+  }
+ ],
+ "all_cameras": "regtech/ry2-3f/anchor/fl-hash/c0/cameras.json (unity_pose per frame, 553 frames)",
+ "not_done": "3F men's toilet: not identified in this clip."
+}

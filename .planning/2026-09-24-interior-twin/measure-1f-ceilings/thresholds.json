@@ -1,0 +1,77 @@
+{
+  "schema": "chooguard.measure-thresholds.v1",
+  "lane": "measure-1f-ceilings",
+  "fixedUtc": "2026-09-25T00:00:00Z",
+  "note": "Written before any 1F floor/ceiling/gauge result was computed. Never relaxed afterwards. Units: u = source-model units after applying the stated gauge (metre-like). Method follows measure-2f-main (thresholds.json there) with the lane-specific values below.",
+  "planeFit": {
+    "floorInlierU": 0.05,
+    "floorWindowCameraSpanU": 12.0,
+    "floorNormalSearchMaxDegFromCameraUpPrior": 20.0,
+    "ceilingInlierU": 0.08,
+    "minInliers": 25,
+    "ceilingNormalMaxDegFromUp": 5.0,
+    "ceilingMinHeightAboveFloorU": 2.0,
+    "ceilingPointMaxDistanceFromWindowCamerasU": 15.0,
+    "sequentialPlanesPerWindowMax": 4
+  },
+  "gravity": {
+    "upDefinition": "local floor-plane normal",
+    "independentUp": "plumb vanishing direction from near-vertical image line segments (where frames are available) and/or the dominant ceiling-plane normal",
+    "floorVsIndependentUpMaxDeg": 3.0
+  },
+  "heldOut": {
+    "randomPointHoldoutFraction": 0.3,
+    "randomPointHoldoutBandU": 0.3,
+    "randomPointHoldoutMedianAbsResidualMaxU": 0.05,
+    "frameDisjointMethod": "every plane point re-triangulated from its even-image observations only and from its odd-image observations only (fixed poses); a plane is fitted to each set",
+    "frameDisjointEvenOddPlaneOffsetMaxU": 0.10,
+    "frameDisjointMinPointsPerSplit": 12
+  },
+  "gauge": {
+    "cameraHeightPriorU": {
+      "handheldOrGimbalWalk": 1.60,
+      "handheldOrGimbalWalkRange": [1.55, 1.65],
+      "note": "carrying mode decided per video from the footage (framing, bob, lens) before any height result; a non-eye-level mount would get its own stated prior"
+    },
+    "pedestrian": {
+      "meanAdultHeightU": 1.67,
+      "boxSource": "Vision human rectangle tightened by the accurate person-segmentation mask (measure-2f-main/person_boxes.swift)",
+      "minConfidence": 0.5,
+      "minBoxHeightFractionOfImageHeight": 0.08,
+      "minAspectHeightOverWidth": 1.8,
+      "borderMarginFractionOfImage": 0.01,
+      "footDistanceRangeCameraHeights": [1.0, 12.0],
+      "minPersons": 12,
+      "statistic": "median person height (model units) -> scale = 1.67 / median"
+    },
+    "independentGaugeAgreementMaxFraction": 0.08,
+    "reportedScale": "geometric mean of the camera-height gauge and the pedestrian gauge when they agree within 8%; a model whose gauges disagree by more than 8% is rejected (no heights published from it except as tier c with the camera-height gauge stated)",
+    "modelWithoutPedestrianGauge": "camera-height gauge only -> tier c"
+  },
+  "crossCheck": {
+    "crossSourceHeightAgreementMaxU": "max(0.15, 0.04 * height)",
+    "marchAbsoluteAgreementMaxU": "max(0.15, 0.04 * height)",
+    "marchAbsoluteValues": {
+      "centralApproachLowCeilingY": 2.25,
+      "centralLobbyCeilingY": 4.97,
+      "source": "1f-boundary-refresh/evidence-inventory.json cl-low-suspended-ceiling / cl-higher-lobby-ceiling (class a, E2026-03)"
+    }
+  },
+  "tierRules": {
+    "b": "relative-to-local-floor height with: both gauges within 8%, random-point AND frame-disjoint held-out pass, AND agreement with a second source/epoch (or the March absolute value) within the cross-check tolerance",
+    "c": "anything short of b (single source, single gauge, held-out failure, or cross-check disagreement)"
+  },
+  "addendum-2026-09-25T09:00Z": {
+    "status": "added after the first gauge results; NO threshold above was changed and NO tier rule was changed",
+    "trigger": "The March model's own absolute registration (metric-registration/registration.json, independent of this lane) puts the March handheld walker's camera 1.40 u above the local floor, i.e. the pre-registered 1.60 prior is +14% for that walk, while the pedestrian gauge on the same model is +3.4%. Four of the six gauged models then failed the 8% camera-vs-pedestrian gate.",
+    "headlineValueOrder": [
+      "absolute registration (March model only)",
+      "known-ceiling gauge: the March class-a central approach low ceiling (height above the local floor measured in the March model, absolute scale) seen in the same video -> camH_u = h_known / rho_known; post-hoc, listed separately, never used to raise a tier",
+      "pedestrian gauge when n >= 12",
+      "camera-height prior 1.60"
+    ],
+    "floorModel": "one plumb-constrained floor plane per rigid model / clip group (per-window floors were unstable where the floor is sparsely reconstructed); rho = height above that plane / median camera height over walking frames (camera within +-15% of the median); the p10-p90 camera-height spread is reported with each source",
+    "maskQuality": "Vision person segmentation at .balanced instead of .accurate: identical boxes to within 3 px on a 10-frame comparison (rear-row 000030-000039), .accurate costs ~19 s/frame on this machine",
+    "tiers": "unchanged: 'b' only when the pre-registered camera-vs-pedestrian gate, both held-out tests and a cross-source check all pass; everything else 'c'"
+  }
+}

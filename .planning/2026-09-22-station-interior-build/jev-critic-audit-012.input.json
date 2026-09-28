@@ -1,0 +1,54 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "role": "Really Harsh Critic Supervisor (진짜 가혹한 디지털 트윈 감수관)",
+    "target": "부산역 역사 2F 중앙 대합실 및 1~3층 실내 렌더링",
+    "observation_render_vs_real": {
+      "columns": "실사는 대형 광고 사이니지(LED 스크린 4~6개)가 기둥 상단에 붙어있으나 렌더는 밋밋한 검은 단색 기둥",
+      "ceiling_truss": "실사는 거대한 아치형 톱라이트와 흰색 스페이스프레임 트러스로 주광이 쏟아지나 렌더는 단순 큐브 프레임과 어두운 데크",
+      "floor_reflection": "실사는 경면 석재에 대형 전광판, 매장 조명, 기둥이 선명한 거울 반사(Mirror Reflection)를 이루나 렌더는 광택이 탁함",
+      "storefront_interior": "실사는 매장 유리창 안쪽 조명·상품 진열대·내부 인테리어가 비치나 렌더는 텅 빈 상자",
+      "signage_illumination": "실사는 전광판과 파사드 간판이 자체 발광(Bloom/Emission)하여 공간을 밝히나 렌더는 플랫한 텍스처",
+      "life_and_scale": "실사는 여행객, 캐리어, 안내데스크 직원이 있어 스케일감이 즉시 인식되나 렌더는 유령 공간"
+    },
+    "current_dtf_score": 80.88,
+    "user_feedback": "딱봐도 사진이나 영상이랑 내부 모델링이 다르다. 어떤 평가산식과 기준을 세워서 작업하는가? 제대로 평가해서 디지털 트윈 수준으로 만들어라."
+  },
+  "questions": {
+    "visual_twin_verdict": {
+      "type": "noul",
+      "criteria": {
+        "true": "현재 렌더링이 일반인의 육안으로 실제 부산역과 동일/유사한 디지털 트윈으로 인정된다",
+        "false": "현재 렌더링은 여전히 '게임 그래픽 블록' 티가 나며 디지털 트윈 수준에 미달한다"
+      },
+      "instructions": "실사 사진(ref_hall2f_concourse_a.jpg)과 현재 렌더링(cmp-fin.png)을 비교했을 때 디지털 트윈 합격 여부를 판정하라."
+    },
+    "primary_critic_deficit": {
+      "type": "choice",
+      "criteria": {
+        "column_advertising_signage": "기둥 상단 대형 디지털 광고판 부재가 상징적 랜드마크 비주얼을 해침",
+        "storefront_depth_and_light": "점포 전면 유리 안쪽 깊이감 및 내부 조명 부재로 가짜 세트장 느낌",
+        "ceiling_skylight_luminance": "지붕 톱라이트와 트러스 주광이 실사 대비 너무 어둡고 평면적",
+        "floor_specular_mirroring": "바닥의 선명한 거울형 정반사(Screen Space Reflection/Probe) 부족"
+      },
+      "instructions": "육안으로 '가짜' 느낌을 주는 가장 큰 단일 결함을 골라라."
+    },
+    "subagent_routing_strategy": {
+      "type": "choice",
+      "criteria": {
+        "scout_first_then_maker": "scout 모델로 광고판/실제 점포 내부 텍스처를 초고속 수집 후 task 모델이 씬에 배치",
+        "direct_parallel_task": "task 모델 3개가 에셋 제작·머티리얼 보정·조명 튜닝을 동시 수행",
+        "sonic_for_mechanical": "단순 파일/텍스처 변환은 sonic 저비용 모델, 복합 구조는 task 모델로 라우팅"
+      },
+      "instructions": "서브에이전트 모델 동적 라우팅 전략을 결정하라."
+    },
+    "human_scale_necessity": {
+      "type": "noul",
+      "criteria": {
+        "true": "소방 대피 및 공간감 체감을 위해 승객/인물 실루엣 3D 모델 배치가 필수적이다",
+        "false": "정적 건축/집기/광학만으로도 디지털 트윈 판정선 90점 돌파 가능"
+      },
+      "instructions": "인물 모델 배치가 렌더링 현실감 극복에 필수적인지 판정하라."
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 630,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "anchor_authority": {
+          "type": "choice",
+          "choice": "shell_anchor_plus_plan_topology",
+          "confidence": 0.83,
+          "probabilities": {
+            "measured_shell_only": 0.13,
+            "floorplan_homography_only": 0,
+            "photogrammetry_reconstruction": 0,
+            "shell_anchor_plus_plan_topology": 0.87
+          }
+        },
+        "parity_driver": {
+          "type": "choice",
+          "choice": "prop_density_human_scale",
+          "confidence": 0.44,
+          "probabilities": {
+            "lighting_and_exposure": 0.04,
+            "pbr_material_realism": 0.09,
+            "prop_density_human_scale": 0.58,
+            "brand_signage_texture": 0.29
+          }
+        },
+        "storefront_method": {
+          "type": "choice",
+          "choice": "extrude_on_measured_wall_runs",
+          "confidence": 0.99,
+          "probabilities": {
+            "extrude_on_measured_wall_runs": 0.99,
+            "photo_billboard_planes": 0.01,
+            "import_thirdparty_storefronts": 0
+          }
+        },
+        "first_unit": {
+          "type": "choice",
+          "choice": "one_wall_run_vertical_slice",
+          "confidence": 0.96,
+          "probabilities": {
+            "materials_and_lighting_first": 0.01,
+            "one_wall_run_vertical_slice": 0.97,
+            "whole_concourse_at_once": 0.02
+          }
+        },
+        "verification_metric": {
+          "type": "choice",
+          "choice": "both_photo_and_numeric",
+          "confidence": 0.87,
+          "probabilities": {
+            "numeric_dtf_score": 0.07,
+            "both_photo_and_numeric": 0.91,
+            "side_by_side_photo_match": 0.02
+          }
+        },
+        "current_interior_level": {
+          "type": "score",
+          "score": 2.27,
+          "confidence": 0.64,
+          "legend": {
+            "0": "형상조차 없음",
+            "1": "빈 외피만 존재",
+            "2": "구조는 맞고 마감 없음",
+            "3": "마감 일부",
+            "4": "집기까지 갖춤",
+            "5": "외부와 동급 트윈"
+          },
+          "probabilities": {
+            "0": 0,
+            "1": 0.14,
+            "2": 0.45,
+            "3": 0.41,
+            "4": 0,
+            "5": 0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 3213,
+        "output_tokens": 329
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

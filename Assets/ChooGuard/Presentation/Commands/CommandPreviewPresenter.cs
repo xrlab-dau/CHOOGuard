@@ -264,7 +264,8 @@ namespace ChooGuard.Presentation.Commands
                 text.Append("\n\n가상 훈련 데이터에만 적용되는 명령입니다.");
             }
             targetsText.text = text.ToString();
-            if (detailsScroll != null && detailsScroll.content != null)
+            // 꺼진 채 Bind 되면(빌더가 비활성으로 만든다) TMP 는 아직 글꼴을 불러오지 않아 preferredHeight 가 터진다. 켜질 때 OnEnable 이 다시 그린다.
+            if (detailsScroll != null && detailsScroll.content != null && targetsText.isActiveAndEnabled)
             {
                 detailsScroll.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Math.Max(300f, targetsText.preferredHeight + 24f));
                 detailsScroll.verticalNormalizedPosition = 1;

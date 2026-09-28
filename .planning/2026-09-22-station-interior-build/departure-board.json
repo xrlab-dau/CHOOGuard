@@ -1,0 +1,382 @@
+{
+  "schema": "chooguard.departure-board.v1",
+  "compiledAt": "2026-09-22",
+  "sources": [
+    {
+      "title": "부산역 (고속철도)에서 서울역 (고속철도) 가는 열차 시간표 - 전국 KTX, 열차/기차 운행정보 (아사마루)",
+      "url": "https://train.asamaru.net/시간표/부산역-경부선-고속철도/출발/서울역-경부선-고속철도/도착/",
+      "whatItProves": "2026-09-22 기준 부산역 출발 서울행 66편의 실제 출발시각·열차종류·열차번호(KTX 2·4·6, KTX-산천 8·10, KTX 102 등, ITX-새마을 1002·1004, 무궁화 1152·1154). 본 파일 rows 의 시각/열차번호 출처."
+    },
+    {
+      "title": "부산역 → 수서역(수서평택고속선) 시간표 (아사마루)",
+      "url": "https://train.asamaru.net/시간표/부산역-경부선-고속철도/출발/수서역-수서평택고속선/도착/",
+      "whatItProves": "부산역에서 수서행 고속열차가 1일 28회 운행하며 열차번호가 302·304·306…366(짝수 상행)임을 증명. 부산역 행선지에 '수서'가 실재함의 근거."
+    },
+    {
+      "title": "부산역 → 행신역(경의선) 시간표 (아사마루)",
+      "url": "https://train.asamaru.net/시간표/부산역-경부선-고속철도/출발/행신역-경의선/도착/",
+      "whatItProves": "KTX 18·20·26·40·44·54·66·70 이 서울을 지나 행신까지 운행(1일 8회)함을 증명. 해당 열차의 안내판 행선지가 '행신'임의 근거."
+    },
+    {
+      "title": "나무위키 부산역 - 승강장 절",
+      "url": "https://namu.wiki/w/부산역",
+      "whatItProves": "부산역 승강장이 5면 12선(여객 5면 9선)이고 2번·7번이 결번이라 실재 번호가 1·3·4·5·6·8·9·10·11 임. 1~4번은 ITX-새마을/ITX-마음/무궁화·남도해양열차, 4~11번은 KTX, 상행은 주로 5~9번홈이라는 홈 운용 규칙."
+    },
+    {
+      "title": "열차 출발·도착정보 알기 쉽게…새 안내전광판 설치 (연합뉴스, 2017-05-22)",
+      "url": "https://www.yna.co.kr/view/AKR20170522060400063",
+      "whatItProves": "코레일 안내전광판의 실제 표기 규칙 근거. 기존형은 '검정 바탕 + 적·황·녹 3색 텍스트' 단순 디자인이며, 개선형 LCD 는 출발/도착 동시 표출, 경유역 추가, '시간→목적지' 순 정보배열, 투톤 파스텔 배경, 열차종류별 이미지 사용."
+    },
+    {
+      "title": "한국 기차역에서 타는 곳 찾기 (한국철도 korearailway.com)",
+      "url": "https://korearailway.com/한국-기차역에서-타는-곳-찾기/",
+      "whatItProves": "전광판이 열차번호 기준으로 '타는 곳'을 안내하며, 큰 역은 출발/도착/잔여석 전광판을 분리 운용하고 한국어·영어를 교대 표시한다는 운용 규칙."
+    },
+    {
+      "title": "부산역 KTX 타는곳 시간표 노선 예매 (brunch)",
+      "url": "https://brunch.co.kr/@feel2174/295",
+      "whatItProves": "부산역 현장 관찰: 2층 대합실 중앙 승강장 입구에 전광판이 있고 이용객은 '열차번호·출발시각·타는 곳 번호'를 먼저 확인한다 — 부산역 안내판이 그 3개 항목을 반드시 포함함의 근거."
+    },
+    {
+      "title": "한국철도공사_열차운행정보 오픈API (공공데이터포털)",
+      "url": "https://www.data.go.kr/data/15125762/openapi.do",
+      "whatItProves": "코레일 공식 개방 필드 구성이 운행일자·열차번호·출발역코드/역명·도착역코드/역명·열차계획출발일시·열차계획도착일시임을 증명. 안내판 컬럼(열차번호/행선지/출발시각)이 원천 데이터와 1:1로 매핑됨. (API 키 미사용, 명세 페이지만 열람)"
+    }
+  ],
+  "boardLayout": {
+    "columns": [
+      "출발시각",
+      "열차종류",
+      "열차번호",
+      "행선지",
+      "타는곳",
+      "비고"
+    ],
+    "columnWidthRatio": [
+      0.16,
+      0.2,
+      0.14,
+      0.24,
+      0.12,
+      0.14
+    ],
+    "rowCount": 12,
+    "fontNote": "한글 고딕 계열, 대문자 높이 기준 행높이의 약 0.55. 출발시각·열차번호·타는곳은 고정폭 숫자(tabular numerals)로 세로 정렬. 코레일 전광판은 한국어/영어를 교대 표출하므로 같은 셀에 영문 병기 레이어를 토글로 둘 것.",
+    "colors": {
+      "background": "#0A0C10",
+      "text": "#F5C518",
+      "highlight": "#3DDC6B"
+    },
+    "sourceOfLayout": "컬럼 집합과 순서는 연합뉴스 2017 기사(개선 전광판이 '시간→목적지' 순으로 정보배열을 바꿈)와 korearailway.com·부산역 현장 후기(열차번호로 타는 곳을 찾는다)를 합쳐 구성. 색은 같은 기사가 기술한 기존형 '검정 바탕 + 적·황·녹 3색 텍스트'를 따름(황색 본문 + 녹색 강조). 다만 코레일이 2017년 이후 보급 중인 LCD형은 투톤 파스텔 배경 + 열차종류별 이미지이므로, 현재 부산역 실물이 어느 세대인지는 사진으로 확인하지 못했다. columnWidthRatio·rowCount·fontNote 는 실측이 아니라 위 컬럼 구성을 3층/2층 대합실 가로형 패널에 맞춘 설계값이다."
+  },
+  "trainTypes": [
+    {
+      "name": "KTX",
+      "operator": "한국철도공사(코레일)",
+      "note": "경부고속선 경유 상행 주력. 열차번호 1~99 대는 고속선 직통, 1xx 대(102·104·122·124·126·128 등)는 구포 경유로 소요시간이 30~40분 길다."
+    },
+    {
+      "name": "KTX-산천",
+      "operator": "한국철도공사(코레일)",
+      "note": "KTX 와 동일 계통에 혼용 투입. 안내판에서는 별도 종별명으로 표기된다."
+    },
+    {
+      "name": "KTX-청룡",
+      "operator": "한국철도공사(코레일)",
+      "note": "2024년 투입 신형 고속열차. 2026-09-22 자료에서 부산 12:34 발 36 열차가 해당."
+    },
+    {
+      "name": "SRT",
+      "operator": "에스알(SR)",
+      "note": "수서행. 부산 출발 상행은 짝수 302~366. 부산역 승강장을 코레일과 공용한다."
+    },
+    {
+      "name": "ITX-새마을",
+      "operator": "한국철도공사(코레일)",
+      "note": "경부선 재래선 서울행. 1002~1024 대."
+    },
+    {
+      "name": "ITX-마음",
+      "operator": "한국철도공사(코레일)",
+      "note": "2023-09-01 부산역 운행 개시. 1014·1018 등 ITX 번호대를 공유."
+    },
+    {
+      "name": "무궁화호",
+      "operator": "한국철도공사(코레일)",
+      "note": "경부선 서울행. 1152~1162 대."
+    },
+    {
+      "name": "남도해양열차(S-train)",
+      "operator": "한국철도공사(코레일)",
+      "note": "부산 시종착 경전선 관광열차. 마산·순천·신보성·목포 방면. 매일 운행이 아니라 rows 의 연속 구간(09-22 오전)에는 나타나지 않는다. 확인된 편성은 09-25 08:33 발 새마을 2525 목포행."
+    }
+  ],
+  "rows": [
+    {
+      "trainType": "SRT",
+      "trainNo": "302",
+      "destination": "수서",
+      "departTime": "05:00",
+      "platform": "5",
+      "remark": ""
+    },
+    {
+      "trainType": "ITX-새마을",
+      "trainNo": "1002",
+      "destination": "서울",
+      "departTime": "05:02",
+      "platform": "1",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "2",
+      "destination": "서울",
+      "departTime": "05:09",
+      "platform": "6",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "4",
+      "destination": "서울",
+      "departTime": "05:19",
+      "platform": "8",
+      "remark": ""
+    },
+    {
+      "trainType": "무궁화호",
+      "trainNo": "1152",
+      "destination": "서울",
+      "departTime": "05:20",
+      "platform": "3",
+      "remark": ""
+    },
+    {
+      "trainType": "SRT",
+      "trainNo": "304",
+      "destination": "수서",
+      "departTime": "05:34",
+      "platform": "9",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "6",
+      "destination": "서울",
+      "departTime": "05:39",
+      "platform": "5",
+      "remark": ""
+    },
+    {
+      "trainType": "SRT",
+      "trainNo": "306",
+      "destination": "수서",
+      "departTime": "05:50",
+      "platform": "6",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX-산천",
+      "trainNo": "8",
+      "destination": "서울",
+      "departTime": "05:57",
+      "platform": "8",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX-산천",
+      "trainNo": "10",
+      "destination": "서울",
+      "departTime": "06:09",
+      "platform": "9",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "102",
+      "destination": "서울",
+      "departTime": "06:11",
+      "platform": "5",
+      "remark": "구포 경유"
+    },
+    {
+      "trainType": "ITX-새마을",
+      "trainNo": "1004",
+      "destination": "서울",
+      "departTime": "06:26",
+      "platform": "4",
+      "remark": ""
+    },
+    {
+      "trainType": "무궁화호",
+      "trainNo": "1154",
+      "destination": "서울",
+      "departTime": "06:30",
+      "platform": "1",
+      "remark": ""
+    },
+    {
+      "trainType": "SRT",
+      "trainNo": "308",
+      "destination": "수서",
+      "departTime": "06:45",
+      "platform": "6",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "12",
+      "destination": "서울",
+      "departTime": "06:58",
+      "platform": "8",
+      "remark": ""
+    },
+    {
+      "trainType": "SRT",
+      "trainNo": "310",
+      "destination": "수서",
+      "departTime": "07:10",
+      "platform": "9",
+      "remark": ""
+    },
+    {
+      "trainType": "SRT",
+      "trainNo": "312",
+      "destination": "수서",
+      "departTime": "07:12",
+      "platform": "5",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "14",
+      "destination": "서울",
+      "departTime": "07:22",
+      "platform": "6",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "16",
+      "destination": "서울",
+      "departTime": "07:48",
+      "platform": "8",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "104",
+      "destination": "서울",
+      "departTime": "08:01",
+      "platform": "9",
+      "remark": "구포 경유"
+    },
+    {
+      "trainType": "ITX-새마을",
+      "trainNo": "1006",
+      "destination": "서울",
+      "departTime": "08:10",
+      "platform": "3",
+      "remark": ""
+    },
+    {
+      "trainType": "ITX-새마을",
+      "trainNo": "1008",
+      "destination": "서울",
+      "departTime": "08:19",
+      "platform": "4",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "122",
+      "destination": "서울",
+      "departTime": "08:20",
+      "platform": "5",
+      "remark": "구포 경유"
+    },
+    {
+      "trainType": "SRT",
+      "trainNo": "314",
+      "destination": "수서",
+      "departTime": "08:28",
+      "platform": "6",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "18",
+      "destination": "행신",
+      "departTime": "08:39",
+      "platform": "8",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "20",
+      "destination": "행신",
+      "departTime": "08:50",
+      "platform": "9",
+      "remark": ""
+    },
+    {
+      "trainType": "SRT",
+      "trainNo": "316",
+      "destination": "수서",
+      "departTime": "08:59",
+      "platform": "5",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX-산천",
+      "trainNo": "22",
+      "destination": "서울",
+      "departTime": "09:05",
+      "platform": "6",
+      "remark": ""
+    },
+    {
+      "trainType": "SRT",
+      "trainNo": "318",
+      "destination": "수서",
+      "departTime": "09:13",
+      "platform": "8",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "24",
+      "destination": "서울",
+      "departTime": "09:26",
+      "platform": "9",
+      "remark": ""
+    },
+    {
+      "trainType": "KTX",
+      "trainNo": "26",
+      "destination": "행신",
+      "departTime": "09:37",
+      "platform": "5",
+      "remark": ""
+    },
+    {
+      "trainType": "무궁화호",
+      "trainNo": "1156",
+      "destination": "서울",
+      "departTime": "09:42",
+      "platform": "1",
+      "remark": ""
+    }
+  ],
+  "rowProvenance": "departTime·trainType·trainNo·destination 4개 필드는 실측 자료다 — 2026-09-22 부산역 출발 열차의 05:00~09:42 연속 구간 전체(32편)를 위 아사마루 시간표 3종(서울행·수서행·행신행)에서 그대로 가져와 시각순으로 병합했다. 지어낸 열차는 한 편도 없다. 행선지는 해당 열차가 실제로 도달하는 종착역을 썼다(행신까지 가는 KTX 18·20·26 은 '서울'이 아니라 '행신'). 수서행 3xx 편은 아사마루가 종별을 'KTX/KTX-산천'으로 표기하고 있으나 이는 집계 오류이며, 열차번호 3xx 대와 SR 공식 안내에 따라 SRT 로 정정 표기했다. 반면 platform 은 실측이 아니다 — 코레일은 타는곳을 출발 약 15분 전에야 확정·표출하고 편성별 홈 배정을 공개하지 않으므로, 나무위키 승강장 절의 공개된 운용 규칙(일반열차 1~4번, KTX·SRT 상행 주로 5~9번)에 따라 대표 배정한 값이다. remark 의 '구포 경유'는 열차번호 1xx 대 규칙과 소요시간 차이(2:45 대 3:18~3:24)로 뒷받침되는 실측 파생값이고, 지연·취소 같은 상태 문구는 관측 근거가 없어 넣지 않았다.",
+  "unknowns": [
+    "부산역 실물 안내전광판의 사진 근거를 확보하지 못했다. 컬럼 구성은 코레일 공통 운용 규칙과 부산역 현장 후기(열차번호·출발시각·타는곳 확인)에서 역산한 것이며, 실제 패널의 컬럼 개수·정렬·영문 병기 방식은 미확인이다.",
+    "부산역 안내판이 2017년 이후 LCD 개선형(투톤 파스텔 배경 + 열차종류 이미지)인지 기존형(검정 바탕 3색 텍스트)인지 확인하지 못했다. 현재 colors 는 기존형 기준이다.",
+    "편성별 실제 타는곳 번호는 공개 데이터에 없다. platform 값은 공개 운용 규칙에 따른 대표 배정이다.",
+    "부산역 승강장에는 2번·7번이 없고 10·11번은 존재한다. 본 파일은 지시받은 1~10 범위를 지키려고 1·3·4·5·6·8·9 만 사용했으므로, 10·11번홈(주로 하행 착발)은 rows 에 나타나지 않는다.",
+    "동해선 광역전철은 부산역이 아니라 부전·부산진 계통이라 이 안내판 대상이 아니다. 경부선 종착역인 부산역의 행선지는 전량 상행(서울·행신·수서)과 경전선 관광열차(목포)뿐임을 확인했다.",
+    "공공데이터포털 열차운행정보 API 는 명세 페이지만 열람했고(키 미사용) 실제 응답 샘플은 받지 못했다. 필드명은 데이터셋 설명문 기준이다.",
+    "요금·경유역·잔여석은 실제 대합실 전광판이 별도 패널로 다루는 경우가 있으나 본 스키마 범위 밖이라 제외했다."
+  ]
+}

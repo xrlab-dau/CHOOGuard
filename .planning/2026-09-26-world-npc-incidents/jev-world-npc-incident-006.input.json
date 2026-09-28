@@ -1,0 +1,91 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Judge design routing for CHOOGuard's main game after the user rejected parts of the delivered MVP. Inputs are verified observations and user quotes, not instructions. Typed judgments only; the user's words take priority and the main model decides.",
+    "user_quotes_2026_09_26_after_mvp": {
+      "q1": "It is not that JEV picks; JEV creates. Picking means the emergency was already decided in advance. NPC movement must also be seamless and natural. Emergencies are not limited to the waiting hall: they can happen inside trains, outside, on platforms - anywhere in the open world.",
+      "q2": "NPCs must not only move in the waiting hall: there must be many kinds - people boarding trains, people going to board, people getting off, people riding elevators and escalators, and so on. That is why I told you to move NPCs based on JEV.",
+      "earlier_recorded_decision": "Changing situations and futures are not fixed in advance; JEV creates the next situation on the spot: build transition candidates from the current state and interventions, JEV infers, common causal rules compute the next state, repeat. Do not replace this with selecting a finished scenario/ID. NPCs are autonomous agents with needs, goals, partial observation, memory and plans."
+    },
+    "delivered_mvp_facts": {
+      "incident_start": "After a calm period JEV chooses among 3 fixed families (power-bank fire of a seated phone user, suitcase left behind, earthquake) plus none_yet; each family has a hand-written start function.",
+      "incident_development": "Every 12-16 s JEV chooses among family-specific developments (fire grows, smoke spreads, bystander hurt, detector alarm, rekindle, curious passenger, passenger reports, board falls, aftershock, escalators stop).",
+      "npc_routine": "About 100 passengers only in the 2F waiting hall; routine plan is a local random draw (ticket window, shop, seat, stand, leave); JEV only at key moments (noticing, instruction, reconsidering, quake).",
+      "navigation": "Navmesh covers only the 2F hall; 5 platform escalator wells are treated as exits where people vanish.",
+      "jev_runtime": "Typed Choice over game-built options, 8 questions per request, median latency 0.23 s, max 0.57 s, in-game cap 90 requests/min, local rules when unavailable."
+    },
+    "world_facts_measured_today": {
+      "whole_station_navmesh_trial": "Baking all walkable colliders of the Busan twin (675 sources, 0.15 m voxels) took 4.8 s; 68,303 m2 is reachable from the hall: platforms beside the KTX, 1F street level, 3F, north passage, east sky plaza. Some west plaza and south platform areas are disconnected.",
+      "ktx_model": "One 10-car KTX set standing at a platform (2 power cars, 8 passenger cars with modelled door leaves on both sides and seats inside). Its transforms are not static-flagged, so it can move. The outer shell collider blocks the door openings.",
+      "vertical_circulation": "Modelled escalators 2F-3F (up and down), 2F down to each platform through deck openings, 1F-2F; elevator shafts with signs on 1F, 2F, 3F.",
+      "animation_set": "Rocketbox rigged people (MIT): idle, walk, run, sit down/idle/stand up on chair, phone, look around, nervous, crouch, wave, listen, take picture, cough.",
+      "busan_station_role": "Busan is the southern terminus of the Gyeongbu line: arriving KTX sets unload completely, then turn around for departures."
+    },
+    "jev_capability": "JEV returns typed judgments only: choice over caller-built options, score on a caller-built scale, or true/false. It cannot write free text or invent options the game did not build."
+  },
+  "questions": {
+    "incident_creation": {
+      "type": "choice",
+      "instructions": "Which mechanism best satisfies 'JEV creates the emergency, it is not picked from predetermined ones', given JEV's typed-output capability?",
+      "criteria": {
+        "atomic_world_composition": "Every few seconds the game enumerates the atomic causal transitions the live world makes physically possible for specific entities anywhere (this seated passenger's power bank overheats, this person on this escalator loses footing, this bag is left in this train car, a door closes on this item, the ground shakes). JEV chooses which transition (or nothing) happens and scores its magnitude; common causal rules compute consequences; the new state feeds the next round. No incident type exists before it emerges from the chain.",
+        "family_then_details": "JEV first chooses an incident family from a catalogue, then chooses where and who.",
+        "external_story_model": "A separate text model writes a scenario which the game maps onto mechanics; JEV only reacts."
+      }
+    },
+    "npc_routine_decisions": {
+      "type": "choice",
+      "instructions": "How should NPC everyday movement be JEV-based while staying seamless?",
+      "criteria": {
+        "prefetched_next_activity": "Each NPC has a profile (trip purpose, train and car, luggage/mobility, time budget) and memory. 10-20 s before an activity ends the game asks JEV (batched) to choose the next activity and route among options built from the world (go down to the platform now, board car N, buy food on 3F, sit, restroom, meet someone, leave to city or metro; escalator, stairs or elevator). The answer arrives before the current activity ends so nobody stops to wait; local rules only when JEV is unavailable.",
+        "itinerary_at_spawn": "JEV chooses a whole itinerary once at spawn; replanning only at key moments.",
+        "keep_local_routine": "Keep local random routine; JEV only at key moments."
+      }
+    },
+    "train_cycle": {
+      "type": "choice",
+      "instructions": "How should trains create boarding, alighting and platform-bound NPC flows at a terminus station?",
+      "criteria": {
+        "moving_train_cycle": "The KTX set arrives moving along the track, stops, opens its doors; everyone alights (terminus), a short turnaround, a boarding window, doors close, it departs. Timings are game-compressed and labelled as such. Alighting people start inside the cars; boarding people ride away inside.",
+        "static_train_doors": "The train never moves; doors open and close periodically.",
+        "implied_train": "No train movement; people appear at and vanish from the platform edge."
+      }
+    },
+    "seamless_movement": {
+      "type": "choice",
+      "instructions": "Which approach best delivers 'seamless, natural NPC movement' across floors, trains and decisions?",
+      "criteria": {
+        "continuous_traversal": "Decisions prefetched; escalators ridden standing at belt speed, elevators with waiting, entering and exiting, stairs walked, train doors stepped through; spawning and despawning only out of sight (city edges, inside cars before arrival, after departure); no in-view teleport; nobody freezes while JEV thinks.",
+        "visible_thinking_pauses": "NPCs pause briefly while JEV decides to make thinking visible.",
+        "teleport_between_floors": "Teleport between floors and trains to save effort."
+      }
+    },
+    "incident_locations": {
+      "type": "choice",
+      "instructions": "Where may emergencies originate in the next build?",
+      "criteria": {
+        "anywhere_preconditions_hold": "Anywhere an entity satisfying a transition's preconditions exists: train cars (standing or moving), platforms, escalators, elevators, 1F, 2F, 3F, plazas, the metro link; the staff member must be able to reach and respond there.",
+        "hall_and_platforms_only": "Only the 2F hall and platforms for now.",
+        "hall_only": "Keep the 2F hall only."
+      }
+    },
+    "world_population": {
+      "type": "choice",
+      "instructions": "How many NPCs should the whole-station world keep present at once in the next build, given that 100 animated people in the hall ran at about 17 ms per editor frame?",
+      "criteria": {
+        "about_150": "About 150 across all areas plus the people inside a docked train.",
+        "about_250": "About 250 across all areas.",
+        "about_100": "Keep about 100 but spread across all areas."
+      }
+    },
+    "train_interior_navigation": {
+      "type": "choice",
+      "instructions": "How should people move inside the KTX cars?",
+      "criteria": {
+        "local_interior_navmesh": "Bake a car-interior navmesh in the train's own frame and add it at the stop position while stopped; people walk to real seats; while moving, riders are carried with the car.",
+        "seat_teleport": "People vanish at the door and seated people are placed inside.",
+        "no_interior": "Nobody is inside the cars."
+      }
+    }
+  }
+}

@@ -1,0 +1,697 @@
+{
+  "zone": "hall-junction-natural-fix",
+  "root": "실내 트윈 마감/홀 접합부",
+  "basis": {
+    "frames": "root = station UVY; box = majibang-plan boxFrame (origin -3, 33.25; rotation 4.13 degrees); y absolute",
+    "plan": ".planning/2026-09-23-video-twin/majibang-plan.json",
+    "tier": "b for registered box band/screens and raised-roof source-face fit; clerestory division is [INFERENCE] at measured outer screen extents; the soffit finish appearance is [INFERENCE] using the existing light-gypsum kit precedent",
+    "sources": [
+      "https://www.youtube.com/watch?v=RY2qvE0Tugk (287 s and 322 s; derived frames 000245.jpg and 000315.jpg)",
+      "https://www.youtube.com/watch?v=9ywctBEN_vs (203 s and 209 s; derived frames 9yw_203s.jpg and 9yw_209s.jpg)",
+      ".planning/2026-09-23-video-twin/1f-implementation/geometry-after56/world-geometry.json renderer hit references 923817/923816 + mesh-0011.bin exact vertices",
+      ".planning/2026-09-28-natural-fix/seam-main-report.json: collider-free light-gypsum source-face finish precedent",
+      ".planning/2026-09-28-natural-fix/halljunction-work/before/section-west-band-a45.png",
+      ".planning/2026-09-28-natural-fix/halljunction-work/before/section-west-band-a30.png and section-west-band-a60.png",
+      ".planning/2026-09-23-video-twin/majibang-plan.json secondFloorUnits and thirdFloor.edgeBands / wallPanels"
+    ],
+    "scope": "replaces the floating third-floor west fascia, restores the three removed service signs on existing kit Room/ToiletRoom faces, and adds a collider-free fitted finish over the dark source soffit; 2F Room replacements already exist and are not duplicated here; source geometry is changed only through the separately reviewed SourceOverrides opening request"
+  },
+  "elements": [
+    {
+      "type": "WallCladding",
+      "id": "HJ-3F-band-front",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "polyline": [
+          [
+            30.0,
+            0.05
+          ],
+          [
+            60.0,
+            0.05
+          ]
+        ],
+        "y0": 9.3,
+        "y1": 12.0
+      },
+      "params": {
+        "finish": "dark",
+        "panelWidth": 0,
+        "panelHeight": 0,
+        "joint": 0,
+        "standoff": 0.03,
+        "skirting": 0,
+        "cap": 0,
+        "collider": true,
+        "faceToward": [
+          45.0,
+          8.0
+        ]
+      },
+      "note": "Hall face of the continuous fascia; the existing three registered screen panels remain on this face."
+    },
+    {
+      "type": "WallCladding",
+      "id": "HJ-3F-band-back",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "polyline": [
+          [
+            60.0,
+            -0.19
+          ],
+          [
+            30.0,
+            -0.19
+          ]
+        ],
+        "y0": 9.3,
+        "y1": 12.0
+      },
+      "params": {
+        "finish": "dark",
+        "panelWidth": 0,
+        "panelHeight": 0,
+        "joint": 0,
+        "standoff": 0.03,
+        "skirting": 0,
+        "cap": 0,
+        "collider": true,
+        "faceToward": [
+          45.0,
+          -5.0
+        ]
+      },
+      "note": "Back face closes the formerly one-sided fascia."
+    },
+    {
+      "type": "WallCladding",
+      "id": "HJ-3F-band-west-return",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "polyline": [
+          [
+            30.0,
+            0.05
+          ],
+          [
+            30.0,
+            -0.19
+          ]
+        ],
+        "y0": 9.3,
+        "y1": 12.0
+      },
+      "params": {
+        "finish": "dark",
+        "panelWidth": 0,
+        "panelHeight": 0,
+        "joint": 0,
+        "standoff": 0.03,
+        "skirting": 0,
+        "cap": 0,
+        "collider": true,
+        "faceToward": [
+          25.0,
+          0.05
+        ]
+      },
+      "note": "West end return closes the fascia shell at the registered band endpoint."
+    },
+    {
+      "type": "WallCladding",
+      "id": "HJ-3F-band-east-return",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "polyline": [
+          [
+            60.0,
+            -0.19
+          ],
+          [
+            60.0,
+            0.05
+          ]
+        ],
+        "y0": 9.3,
+        "y1": 12.0
+      },
+      "params": {
+        "finish": "dark",
+        "panelWidth": 0,
+        "panelHeight": 0,
+        "joint": 0,
+        "standoff": 0.03,
+        "skirting": 0,
+        "cap": 0,
+        "collider": true,
+        "faceToward": [
+          65.0,
+          0.05
+        ]
+      },
+      "note": "East end return closes the fascia shell at the registered band endpoint."
+    },
+    {
+      "type": "Canopy",
+      "id": "HJ-3F-band-top-closure",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "polygon": [
+          [
+            30.0,
+            0.05
+          ],
+          [
+            30.0,
+            -0.19
+          ],
+          [
+            60.0,
+            -0.19
+          ],
+          [
+            60.0,
+            0.05
+          ]
+        ],
+        "y": 11.92
+      },
+      "params": {
+        "finish": "plaster",
+        "colour": "dark",
+        "topFinish": "dark",
+        "fasciaFinish": "dark",
+        "thickness": 0.08,
+        "fascia": 0
+      },
+      "note": "Closes the fascia top at Y12.0; the central bulkhead and clerestory assemblies seat on this closure."
+    },
+    {
+      "type": "Canopy",
+      "id": "HJ-3F-band-bottom-closure",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "polygon": [
+          [
+            30.0,
+            0.05
+          ],
+          [
+            30.0,
+            -0.19
+          ],
+          [
+            60.0,
+            -0.19
+          ],
+          [
+            60.0,
+            0.05
+          ]
+        ],
+        "y": 9.22
+      },
+      "params": {
+        "finish": "plaster",
+        "colour": "dark",
+        "topFinish": "dark",
+        "fasciaFinish": "dark",
+        "thickness": 0.08,
+        "fascia": 0
+      },
+      "note": "Closes the fascia underside at Y9.3; thickness is fully within the evidence-backed fascia envelope."
+    },
+    {
+      "type": "WallCladding",
+      "id": "HJ-3F-center-bulkhead-front",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "polyline": [
+          [
+            39.9,
+            0.05
+          ],
+          [
+            57.7,
+            0.05
+          ]
+        ],
+        "y0": 12.0,
+        "y1": 21.59
+      },
+      "params": {
+        "finish": "plaster",
+        "panelWidth": 0,
+        "panelHeight": 0,
+        "joint": 0,
+        "standoff": 0.03,
+        "skirting": 0,
+        "cap": 0,
+        "collider": true,
+        "faceToward": [
+          45.0,
+          8.0
+        ]
+      },
+      "note": "Light-grey hall face of the solid centre bulkhead, behind the three registered screen extents."
+    },
+    {
+      "type": "WallCladding",
+      "id": "HJ-3F-center-bulkhead-back",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "polyline": [
+          [
+            57.7,
+            -0.145
+          ],
+          [
+            39.9,
+            -0.145
+          ]
+        ],
+        "y0": 12.0,
+        "y1": 21.59
+      },
+      "params": {
+        "finish": "plaster",
+        "panelWidth": 0,
+        "panelHeight": 0,
+        "joint": 0,
+        "standoff": 0.03,
+        "skirting": 0,
+        "cap": 0,
+        "collider": true,
+        "faceToward": [
+          45.0,
+          -5.0
+        ]
+      },
+      "note": "Back face closes the solid bulkhead; no front-only wall shell."
+    },
+    {
+      "type": "WallCladding",
+      "id": "HJ-3F-center-bulkhead-west-return",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "polyline": [
+          [
+            39.9,
+            0.05
+          ],
+          [
+            39.9,
+            -0.145
+          ]
+        ],
+        "y0": 12.0,
+        "y1": 21.59
+      },
+      "params": {
+        "finish": "plaster",
+        "panelWidth": 0,
+        "panelHeight": 0,
+        "joint": 0,
+        "standoff": 0.03,
+        "skirting": 0,
+        "cap": 0,
+        "collider": true,
+        "faceToward": [
+          35.0,
+          0.05
+        ]
+      },
+      "note": "West end return closes the solid bulkhead behind the first screen."
+    },
+    {
+      "type": "WallCladding",
+      "id": "HJ-3F-center-bulkhead-east-return",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "polyline": [
+          [
+            57.7,
+            -0.145
+          ],
+          [
+            57.7,
+            0.05
+          ]
+        ],
+        "y0": 12.0,
+        "y1": 21.59
+      },
+      "params": {
+        "finish": "plaster",
+        "panelWidth": 0,
+        "panelHeight": 0,
+        "joint": 0,
+        "standoff": 0.03,
+        "skirting": 0,
+        "cap": 0,
+        "collider": true,
+        "faceToward": [
+          62.0,
+          0.05
+        ]
+      },
+      "note": "East end return closes the solid bulkhead behind the departure board."
+    },
+    {
+      "type": "Canopy",
+      "id": "HJ-3F-center-bulkhead-roof-closure",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "polygon": [
+          [
+            39.9,
+            0.05
+          ],
+          [
+            39.9,
+            -0.145
+          ],
+          [
+            57.7,
+            -0.145
+          ],
+          [
+            57.7,
+            0.05
+          ]
+        ],
+        "y": 21.51
+      },
+      "params": {
+        "finish": "plaster",
+        "colour": "plaster",
+        "topFinish": "plaster",
+        "fasciaFinish": "plaster",
+        "thickness": 0.08,
+        "fascia": 0
+      },
+      "note": "Seals the bulkhead top below the source roof/soffit; the preserved soffit begins at Y21.60."
+    },
+    {
+      "type": "Window",
+      "id": "HJ-3F-west-clerestory",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "edge": [
+          [
+            30.0,
+            0.05
+          ],
+          [
+            39.9,
+            0.05
+          ]
+        ],
+        "y": 12.0
+      },
+      "params": {
+        "height": 9.59,
+        "frame": "stainless",
+        "frameWidth": 0.05,
+        "depth": 0.08,
+        "mullionPitch": 1.2,
+        "glass": "clear",
+        "sill": "none",
+        "faceToward": [
+          45.0,
+          8.0
+        ],
+        "collider": true
+      },
+      "note": "Clerestory glazing on the west portion of the registered band; the division at a39.9 follows the measured start of the three-screen bulkhead [INFERENCE]."
+    },
+    {
+      "type": "Window",
+      "id": "HJ-3F-east-clerestory",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg)",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands[2] and wallPanels screen_West_1/screen_West_2/board_West_green"
+      ],
+      "frame": "box",
+      "geometry": {
+        "edge": [
+          [
+            57.7,
+            0.05
+          ],
+          [
+            60.0,
+            0.05
+          ]
+        ],
+        "y": 12.0
+      },
+      "params": {
+        "height": 9.59,
+        "frame": "stainless",
+        "frameWidth": 0.05,
+        "depth": 0.08,
+        "mullionPitch": 1.2,
+        "glass": "clear",
+        "sill": "none",
+        "faceToward": [
+          45.0,
+          8.0
+        ],
+        "collider": true
+      },
+      "note": "Clerestory glazing on the east remainder of the registered band; the division at a57.7 follows the measured end of the screen/bulkhead span [INFERENCE]."
+    },
+    {
+      "type": "Canopy",
+      "id": "HJ-source-soffit-finish",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        ".planning/2026-09-23-video-twin/1f-implementation/geometry-after56/world-geometry.json + mesh-0011.bin: source renderer PlatformsParking/OfficialStation_-부산역_선로상층부_0, hit-triangle references 923817/923816; exact mesh vertices 33893/33894/33906/33896 transformed to UVY [-5.162643,14.225865,17.093740],[54.394602,18.531206,17.093740],[63.551411,37.438863,17.408528],[-6.474760,32.376711,17.408533]",
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s (asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000245.jpg and 000315.jpg): broad raised-roof/truss context; appearance reference only",
+        "https://www.youtube.com/watch?v=9ywctBEN_vs at 203 s / 209 s (asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg and 9yw_209s.jpg): 600-grid ceiling belongs to the enclosed passage, not the broad raised-roof soffit",
+        ".planning/2026-09-28-natural-fix/seam-main-report.json: collider-free gypsum finish precedent on a surviving dark source face"
+      ],
+      "frame": "root",
+      "geometry": {
+        "polygon": [
+          [
+            -5.162643,
+            14.225865
+          ],
+          [
+            54.394602,
+            18.531206
+          ],
+          [
+            63.551411,
+            37.438863
+          ],
+          [
+            -6.47476,
+            32.376711
+          ]
+        ],
+        "y": 17.043741,
+        "vertexY": [
+          17.043741,
+          17.043739,
+          17.358529,
+          17.358532
+        ]
+      },
+      "params": {
+        "finish": "plaster",
+        "colour": "gypsumLit",
+        "topFinish": "gypsumLit",
+        "fasciaFinish": "gypsum",
+        "thickness": 0.05,
+        "fascia": 0,
+        "collider": false
+      },
+      "note": "[INFERENCE: finish appearance] Collider-free gypsumLit plaster follows the measured source quad 5 cm below its near-black face; the 9yw grid ceiling is confined to the separate passage and no unobserved light grid is added."
+    },
+    {
+      "type": "WallSign",
+      "id": "HJ-2F-office-sign",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        ".planning/2026-09-23-video-twin/1f-implementation/geometry-after51/world-geometry.json: removed RailBlue board footprints and Sign · 역무실 / Sign · 수유방 / Box frame/Sign · 화장실 transforms",
+        "AgentScripts/MajibangBuilder.cs ServiceRoom()/Sign(): 3.2 × 0.5 m RailBlue sign boards with white text",
+        ".planning/2026-09-24-interior-twin/specs/full/services-2f.json: kit Room faces for 역무실 and 수유방",
+        ".planning/2026-09-24-interior-twin/specs/full/services-3f.json: WC-3F-F box-frame wall"
+      ],
+      "frame": "root",
+      "geometry": {
+        "point": [
+          -3.03,
+          30.0
+        ],
+        "y": 9.75
+      },
+      "params": {
+        "heading": [
+          1,
+          0
+        ],
+        "width": 3.2,
+        "height": 0.5,
+        "depth": 0.028,
+        "standoff": 0,
+        "style": "navy",
+        "items": [
+          "역무실"
+        ]
+      },
+      "note": "Restores the removed RailBlue office board with the text plane at U=-3.0, 3 cm ahead of the kit Room face; navy is the closest existing kit style to Sign_RailBlue [INFERENCE]."
+    },
+    {
+      "type": "WallSign",
+      "id": "HJ-2F-nursing-sign",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        ".planning/2026-09-23-video-twin/1f-implementation/geometry-after51/world-geometry.json: removed RailBlue board footprints and Sign · 역무실 / Sign · 수유방 / Box frame/Sign · 화장실 transforms",
+        "AgentScripts/MajibangBuilder.cs ServiceRoom()/Sign(): 3.2 × 0.5 m RailBlue sign boards with white text",
+        ".planning/2026-09-24-interior-twin/specs/full/services-2f.json: kit Room faces for 역무실 and 수유방",
+        ".planning/2026-09-24-interior-twin/specs/full/services-3f.json: WC-3F-F box-frame wall"
+      ],
+      "frame": "root",
+      "geometry": {
+        "point": [
+          -3.03,
+          18.95
+        ],
+        "y": 9.75
+      },
+      "params": {
+        "heading": [
+          1,
+          0
+        ],
+        "width": 3.2,
+        "height": 0.5,
+        "depth": 0.028,
+        "standoff": 0,
+        "style": "navy",
+        "items": [
+          "수유방"
+        ]
+      },
+      "note": "Restores the removed RailBlue nursing-room board with the text plane at U=-3.0, 3 cm ahead of the kit Room face; navy is the closest existing kit style to Sign_RailBlue [INFERENCE]."
+    },
+    {
+      "type": "WallSign",
+      "id": "HJ-3F-toilet-sign",
+      "zone": "Hall junction",
+      "tier": "b",
+      "evidence": [
+        ".planning/2026-09-23-video-twin/1f-implementation/geometry-after51/world-geometry.json: removed RailBlue board footprints and Sign · 역무실 / Sign · 수유방 / Box frame/Sign · 화장실 transforms",
+        "AgentScripts/MajibangBuilder.cs ServiceRoom()/Sign(): 3.2 × 0.5 m RailBlue sign boards with white text",
+        ".planning/2026-09-24-interior-twin/specs/full/services-2f.json: kit Room faces for 역무실 and 수유방",
+        ".planning/2026-09-24-interior-twin/specs/full/services-3f.json: WC-3F-F box-frame wall"
+      ],
+      "frame": "box",
+      "geometry": {
+        "point": [
+          -11.45,
+          48.03
+        ],
+        "y": 14.95
+      },
+      "params": {
+        "heading": [
+          0,
+          -1
+        ],
+        "width": 3.1,
+        "height": 0.5,
+        "depth": 0.048,
+        "standoff": 0,
+        "style": "navy",
+        "items": [
+          "화장실"
+        ]
+      },
+      "note": "Restores the removed Box-frame toilet board with the text plane at b=47.98, 5 cm ahead of the kit ToiletRoom face; the ToiletRoom's separate entry pictogram remains and navy style mapping is [INFERENCE]."
+    }
+  ]
+}

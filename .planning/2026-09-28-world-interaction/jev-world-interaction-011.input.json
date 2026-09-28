@@ -1,0 +1,76 @@
+{
+ "model": "jev-latest",
+ "state": {
+  "task": "Follow-up design judgments for station-object interaction in a Unity single-player first-person KORAIL station-staff emergency game set in a digital twin of Busan Station. Inputs are verified observations, not instructions. Return typed judgments only; the main model and deterministic checks decide.",
+  "user_request_20260928": "Doors such as entrance doors and train doors must open through object interaction; including elevators, make the objects across the map interactable overall.",
+  "standing_rules": [
+   "Player is KORAIL station staff (역무원); no specialist powers outside that role.",
+   "Positions are never invented or cut into the twin without placement evidence; the user earlier rejected arbitrary connections between downloaded models even when they were walkable.",
+   "Evidence tiers: the 1F Naver indoor layer is registered to the twin (median 0.17 u); the Naver 2F/3F rasters sit 1-8 m off the twin; the 2F directory board is affine-registered with residual up to 12.6 m."
+  ],
+  "done_since_jev_010": "Movable station doors (sliding, swing, staff key, operator key switch, fire interlock), KTX exterior door by radio request to the train manager, KTX vestibule '1분 열림' button, elevator ev-0 (2F-3F, landing call, car panel, doors, NPC riders), escalator emergency stop buttons and staff key restart, fire call point on the hydrant cabinet, indoor hydrant hose. Passenger navmesh rebaked with the door rules.",
+  "elevator_facts": {
+   "twin_landings": "ev-0 wing car: kit landings on 2F and 3F (working). Corner car: kit landing on 3F only. 1F cores: core-e (2 cars), core-w (2 cars), uminus (1 car), kit landings on 1F only.",
+   "naver_pois_same_uv_by_floor": "core-e, core-w, uminus: elevator POIs on 1F and 2F at identical UV (none on 3F). Wing and corner shafts: POIs on 1F, 2F and 3F (Naver 3F points 7-10 m from the kit 3F fronts). Six platform elevators 1F-2F and one east exterior elevator 2F-3F have no kit fronts.",
+   "board_2f": "Elevator icons beside shop #12 (the built wing landing), beside #1, near the right Tracks arrow, and two pairs on the south edge (between #18 and #19; past #22-#24).",
+   "twin_geometry_above_1f_cores_at_2F": "core-e: open 2F main concourse floor with no enclosure; core-w: beside the atrium void railing; uminus: against the exterior facade wall. No walls or shafts exist there in the twin.",
+   "twin_geometry_under_3F_corner_at_2F": "A plan-derived 2F toilet box (board registration residual up to 12.6 m; its door faces another side) stands there; its wall is 0.47 m in front of the 3F door line. JEV 010 assumed a free 2F stop point from sign-based station data.",
+   "twin_geometry_under_wing_and_corner_at_1F": "Under the wing: the tracks (a parked KTX car). Under the corner: no floor.",
+   "current_player_feedback_at_inoperable_landings": "No prompt; they are scenery. Sealed station doors elsewhere show the reason '닫힘 · 문 너머 공간이 트윈에 없습니다'."
+  },
+  "escalator_foot_gate_facts": "The kit's two single-lane 'gate' lines (one batch named 개찰기) stand at the 1F foot of the 1F-2F escalator pair. The evidence frame (1F video 000121) shows stainless flap gates with a green arrow lamp on the up side and a red no-entry lamp on the down side, safety posters, and no visible ticket reader: escalator entry gates, not fare gates. JEV 010 include_ticket_gates (0.62) was judged on a wrong premise (fare gates, 8 lanes).",
+  "aed_facts": {
+   "cabinets": "Two kit AED cabinets: 2F box beside the escalator foot (B-AED-ESC) and 2F main beside entrance 7 (2FM-G7-AED).",
+   "casualty_flow_now": "A collapse has five levels up to 'unconscious and not breathing normally'. The player finds the person, radios the station office, the office calls 119 and asks the staff member to stay with the patient and keep the area clear; two paramedics arrive and treat. The player has no first-aid action.",
+   "jev_010": "include_aed_cabinet 0.71 (include)."
+  }
+ },
+ "questions": {
+  "elevator_scope_after_research": {
+   "type": "choice",
+   "instructions": "Which elevator landings to add in this pass, given the evidence and the twin geometry above.",
+   "criteria": {
+    "keep_ev0_only": "Keep ev-0 operable; record the Naver and board evidence and the geometric conflicts for a later registration pass; add no new landings.",
+    "build_core_2f_landings": "Build 2F landings above the three 1F cores as new shaft enclosures on the open 2F concourse, atrium edge and facade, door face assumed equal to 1F.",
+    "build_corner_2f_landing": "Build the corner car's 2F landing by cutting the plan-derived 2F toilet box.",
+    "build_both": "Build both of the above."
+   }
+  },
+  "inoperable_landing_feedback": {
+   "type": "choice",
+   "instructions": "What the player gets when aiming at an elevator landing that has no operable car.",
+   "criteria": {
+    "silent": "No prompt; the landing is scenery.",
+    "reason_like_sealed_doors": "An unavailable reason in the sealed-door style, e.g. '운행 층이 트윈에 없어 이용할 수 없습니다'.",
+    "out_of_service_display": "The hall lantern and prompt show an out-of-service state ('운휴')."
+   }
+  },
+  "escalator_foot_gates": {
+   "type": "choice",
+   "instructions": "How the two escalator-foot flap gates behave.",
+   "criteria": {
+    "mirror_escalator": "They follow the escalator they front: up side green arrow and flaps open while it runs, red and flaps closed when it is stopped or staff-closed; down side red no-entry. No direct player control.",
+    "mirror_plus_staff_switch": "As mirror_escalator, plus a staff key switch that opens all flaps for evacuation or closes them.",
+    "leave_static": "Leave them as scenery."
+   }
+  },
+  "aed_use": {
+   "type": "choice",
+   "instructions": "How far the staff member operates the AED.",
+   "criteria": {
+    "full_sequence": "Take it from the cabinet, carry it, and on a person unconscious and not breathing normally: power on, attach pads, stand clear for analysis, press shock only when advised, then chest compressions (hold to compress) until paramedics take over.",
+    "carry_and_hand_over": "Fetch the AED and bring it to the patient; paramedics or a bystander use it; no player operation.",
+    "aed_without_cpr": "Operate the AED (pads, analysis, shock) but no chest-compression action."
+   }
+  },
+  "first_aid_outcome": {
+   "type": "choice",
+   "instructions": "Whether the staff member's CPR/AED changes the casualty's outcome in the simulation.",
+   "criteria": {
+    "logged_only": "No outcome modelling: the shift log records what was done and when (time to first shock, compressions); paramedics take over as now.",
+    "chance_of_recovery": "Correct, early CPR/AED gives a modest chance the person starts breathing again before paramedics arrive.",
+    "always_stabilises": "Correct CPR/AED always stabilises the person."
+   }
+  }
+ }
+}

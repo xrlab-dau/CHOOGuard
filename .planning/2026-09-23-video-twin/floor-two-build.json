@@ -1,0 +1,283 @@
+{
+  "schema": "chooguard.video-floor-two.build.v1",
+  "state": "BUILT_NOT_VISUALLY_VERIFIED",
+  "root": "영상복원 · 2층",
+  "source": "https://www.youtube.com/watch?v=6vxUvCQ5_rY",
+  "epoch": "Uploaded 2022-01-01; capture date unconfirmed, not 2026 as-built",
+  "dimensionsStatus": "ALL_ABSOLUTE_DIMENSIONS_INFERRED; no surveyed dimensions claimed",
+  "registeredBasis": "SfM relative trajectory; absolute scale/anchor authorized assumptions in construction-contract.json",
+  "floorY": 7.0,
+  "longAxisDegrees": 16.2,
+  "sharedOpeningUV": [
+    3.4,
+    10.3,
+    -33.5,
+    -19.5
+  ],
+  "openingOwnership": "VideoFloorOne: both 1F/2F escalators, well and guards. This builder creates no shared core fixtures.",
+  "outline": {
+    "u": [
+      -90.0,
+      -76.0,
+      -60.0,
+      -40.0,
+      -26.0,
+      -10.0,
+      0.0,
+      20.0,
+      40.0,
+      60.0,
+      77.0
+    ],
+    "frontV": [
+      -23.0,
+      -32.0,
+      -39.0,
+      -43.0,
+      -44.0,
+      -44.8,
+      -43.3,
+      -41.9,
+      -40.3,
+      -35.8,
+      -25.0
+    ],
+    "trackV": [
+      3.0,
+      11.0,
+      12.0,
+      11.0,
+      9.0,
+      7.0,
+      5.0,
+      3.0,
+      5.0,
+      10.0,
+      4.0
+    ],
+    "basis": "Source MainShell facade knots supplied in contract; end caps and track-side interpolation inferred, not rectangular guide bbox"
+  },
+  "observed": [
+    "78s glass exit9 vestibule; not fare gates",
+    "90s low soffit/KAKAO FRIENDS/upper escalator/paired green screens",
+    "98s white hierarchical tube spaceframe, grey deck, branched supports, long clerestory",
+    "112s column-centered curved white information counter and dark canopy, LOTTERIA above",
+    "124s grouped brown/metal seats and open low-arcade connection",
+    "138s B&C, square stainless columns",
+    "158s Storyway and 味香한부산/local-food shop",
+    "166/174s low ceiling and shared descent approach"
+  ],
+  "regions": [
+    {
+      "region": "Entire second-floor connected public deck",
+      "u": [
+        -90,
+        77
+      ],
+      "y": 7.0,
+      "observed": "Source facade curvature and video route continuity",
+      "inferred": "End caps, interpolated rear edge, thickness0.28m, all absolute dimensions; same-level exit9 connector v29"
+    },
+    {
+      "region": "Exterior / full low corridor",
+      "observed": "112s static SfM fascia samples aroundu-24.8,y10.9; upper glass aroundy14.8",
+      "inferred": "Rounded relative-landmark fascia/clerestory geometry under inferred7m scale; unseen northern/front strips and platform bays",
+      "routeConnection": "u-30 ceiling transition stays open; fascia farther back atu-24.8"
+    },
+    {
+      "region": "KAKAO FRIENDS",
+      "evidence": "VIDEO_VISIBLE_BRAND_GEOMETRY_INFERRED",
+      "centreUV": [
+        -74.25,
+        14.5
+      ],
+      "widthM": 7.5,
+      "depthM": 3.5,
+      "floorY": 7.0
+    },
+    {
+      "region": "Exit9 / KAKAO entry",
+      "observed": "78s glass portal and90s low arcade/KAKAO FRIENDS",
+      "inferred": "u[-76,-61],v[11,29],ceiling11.2; door clear gap2.8m; 78s camera vertical drift not built as a step"
+    },
+    {
+      "region": "High hall",
+      "observed": "98/112 circular-tube structural hierarchy, grey deck, branched supports, longitudinal daylight; upper-landmark-probe.json constrains relative roof heights; front-fascia-probe.json fixes the front fascia at v-35 (185 points)",
+      "inferred": "u[-76,-24.8],v[-35,11]; visible-member fit y14.199-.0575u-.0250v plus0.7m roof allowance. 172 samples,0.295m residual under inferred7m metric scale. Lattice3m, member radii, deck offset and unseen extent remain inferred."
+    },
+    {
+      "region": "OLIVE YOUNG",
+      "evidence": "VIDEO_VISIBLE_BRAND_GEOMETRY_INFERRED",
+      "centreUV": [
+        -51.0,
+        -29.5
+      ],
+      "widthM": 11.0,
+      "depthM": 5.8,
+      "floorY": 7.0
+    },
+    {
+      "region": "LOTTERIA",
+      "evidence": "VIDEO_VISIBLE_BRAND_GEOMETRY_INFERRED",
+      "centreUV": [
+        -47.0,
+        -30.0
+      ],
+      "widthM": 12.5,
+      "depthM": 4.2,
+      "floorY": 12.2
+    },
+    {
+      "region": "Partial restaurant mezzanine",
+      "observed": "90-95s upper escalator pair rising away just left of the paired green boards; 112 LOTTERIA above OLIVE YOUNG on image-left; SfM model4 90-100s: 70 board points at u[-69.5,-61.5], v median-34.75, y median9.73; two94s base rays at u-71.66/-71.97; front fascia v-35 (front-fascia-probe.json)",
+      "inferred": "Front wing u[-76,-64]v[-35,-27] and left strip u[-76,-74] replace the former plate over the filmed path; strip width inferred",
+      "escalator": "Separate root 영상복원 · 식당층 에스컬레이터 from upper-escalator.json via VerticalCirculationGenerator + WireEscalatorMotion"
+    },
+    {
+      "region": "Tourist information",
+      "observed": "112s normalized counter width about0.20/canopy0.16; Main low-errorSfM front median(-42.94,-8.14,8.25),canopy median(-42.22,-8.68,9.56)",
+      "inferred": "Surface-depth-constrained center(-41,-9.66),camera depth15.11; counter2.4/worktop2.5 radii predictwidth0.195/0.203, canopy1.95 at9.55..9.75 predicts0.158. Front surface(-42.85,-8.13) and canopy sector(-42.20,-8.67) agree supplied point cues. Sign1.65x0.42 at9.25 remains inferred; not a rendered/surveyed verification."
+    },
+    {
+      "region": "B&C",
+      "evidence": "VIDEO_VISIBLE_BRAND_GEOMETRY_INFERRED",
+      "centreUV": [
+        -16.0,
+        -17.8
+      ],
+      "widthM": 9.0,
+      "depthM": 6.0,
+      "floorY": 7.0
+    },
+    {
+      "region": "Storyway",
+      "evidence": "VIDEO_VISIBLE_BRAND_GEOMETRY_INFERRED",
+      "centreUV": [
+        12.8,
+        -10.3
+      ],
+      "widthM": 8.0,
+      "depthM": 5.5,
+      "floorY": 7.0
+    },
+    {
+      "region": "味香한부산\nBUSAN LOCAL FOOD GIFT SHOP",
+      "evidence": "VIDEO_VISIBLE_BRAND_GEOMETRY_INFERRED",
+      "centreUV": [
+        14.2,
+        -18.3
+      ],
+      "widthM": 6.3,
+      "depthM": 5.3,
+      "floorY": 7.0
+    },
+    {
+      "region": "옛날 수제 호두과자",
+      "evidence": "VIDEO_VISIBLE_BRAND_GEOMETRY_INFERRED",
+      "centreUV": [
+        -2.8,
+        -23.6
+      ],
+      "widthM": 6.4,
+      "depthM": 5.2,
+      "floorY": 7.0
+    },
+    {
+      "region": "식음료 매장 · 추정",
+      "evidence": "UNSEEN_METADATA_TOPOLOGY_INFERRED",
+      "centreUV": [
+        -24.0,
+        -28.0
+      ],
+      "widthM": 7.0,
+      "depthM": 6.0,
+      "floorY": 7.0
+    },
+    {
+      "region": "생활용품 매장 · 추정",
+      "evidence": "UNSEEN_METADATA_TOPOLOGY_INFERRED",
+      "centreUV": [
+        -24.0,
+        2.6
+      ],
+      "widthM": 5.0,
+      "depthM": 6.0,
+      "floorY": 7.0
+    },
+    {
+      "region": "Filmed low retail arcade",
+      "observed": "138 B&C;158 Storyway/local-food/food counter;166/174 stainless columns and mixed recessed ceiling",
+      "inferred": "Shop depth/size and exact fronts; all shell dimensions; tenant order follows video, not later board brands",
+      "coreApproach": "u[3.4,10.3],v[-19.5,-15] left open; yellow sign v-18.65"
+    },
+    {
+      "region": "편의점 · 추정 배치",
+      "evidence": "UNSEEN_METADATA_TOPOLOGY_INFERRED",
+      "centreUV": [
+        35.0,
+        -30.0
+      ],
+      "widthM": 11.0,
+      "depthM": 7.0,
+      "floorY": 7.0
+    },
+    {
+      "region": "식음료 매장 · 추정 배치",
+      "evidence": "UNSEEN_METADATA_TOPOLOGY_INFERRED",
+      "centreUV": [
+        51.0,
+        -27.0
+      ],
+      "widthM": 10.0,
+      "depthM": 7.0,
+      "floorY": 7.0
+    },
+    {
+      "region": "여행용품 · 추정 배치",
+      "evidence": "UNSEEN_METADATA_TOPOLOGY_INFERRED",
+      "centreUV": [
+        -45.0,
+        -36.5
+      ],
+      "widthM": 10.0,
+      "depthM": 6.0,
+      "floorY": 7.0
+    },
+    {
+      "region": "카페 · 추정 배치",
+      "evidence": "UNSEEN_METADATA_TOPOLOGY_INFERRED",
+      "centreUV": [
+        -81.0,
+        -16.0
+      ],
+      "widthM": 9.0,
+      "depthM": 6.0,
+      "floorY": 7.0
+    },
+    {
+      "region": "Unfilmed northern/front public retail and services",
+      "observed": "Supporting boards: bent ticket/office/nursery/police edge, toilets and front-side shops; source curved envelope",
+      "inferred": "All rooms, tenant category labels, window count4, furniture and columns u[18,77]; no claim these represent surveyed2022 tenancy",
+      "connection": "Continuous public concourse alongv[-25,-8], return routes to filmed arcade and inferred rear platform portals"
+    },
+    {
+      "region": "Seating and information furniture",
+      "observed": "124 grouped brown/metal benches and free-standing display cases",
+      "inferred": "Pocket centers, count, individual dimensions; north pockets unseen",
+      "asset": "Kits/Web/WaitingBench single geometry/two materials, NOT StationBench4 bundled scene"
+    }
+  ],
+  "generatedMeshBatches": 115,
+  "acquiredPropInstances": 120,
+  "omittedRouteConflictingProps": 1,
+  "routeClearancePolicy": "Entire ground-level shop footprints must clear registered route plus0.8m; construction stops on any conflict before emitting those walls. Optional props omit conflicts. Main must exercise actual traversal.",
+  "constructionNotes": [
+    "No floor-cell perimeter-to-wall derivation",
+    "No crowd billboards, storefront photo boxes or full upper floor slab",
+    "Static mesh and material assets updated in-place to preserve GUIDs on rerun",
+    "WaitingBench single model reused; StationBench4 bundled station seating deliberately not instantiated",
+    "StoreShelf/GONDOLA1 reused as a selected subtree, not entire supermarket",
+    "Scenes are marked dirty, not saved; Main owns integration and global lighting"
+  ],
+  "verification": "NOT_RUN: assigned authoring only. Main must execute builder, remove conflicting source surfaces, inspect registered views, and walk both landings."
+}

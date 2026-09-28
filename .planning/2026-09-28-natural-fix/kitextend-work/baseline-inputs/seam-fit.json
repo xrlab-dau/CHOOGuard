@@ -1,0 +1,561 @@
+{
+ "zone": "seam-fit",
+ "root": "실내 트윈 마감/연결 통로 설비",
+ "basis": {
+  "method": "make_seam.py (SeamPassage lane); needs seam.json built",
+  "audit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after31"
+ },
+ "elements": [
+  {
+   "type": "Balustrade",
+   "id": "seam-core-guard",
+   "zone": "2F main U+ end",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/seam-work/nv-east-stair.png (Naver 1F + 2F stair symbol U 70.7-75.4, V 8.7-11.8, east ICP)",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after31: stair well left open in seam.json between the 2F cell floor edge U 72.5 and the east facade; guard until the stair itself is modelled (report: stair geometry unresolved)"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      75.224,
+      8.6
+     ],
+     [
+      72.4,
+      8.6
+     ],
+     [
+      72.4,
+      11.9
+     ],
+     [
+      76.822,
+      11.9
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "height": 1.1,
+    "panel": "glass",
+    "glass": "clear",
+    "rail": "round",
+    "postPitch": 1.2
+   }
+  },
+  {
+   "type": "Room",
+   "id": "seam-room-r26",
+   "zone": "2F main U+ end",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/services23f-work/seg-polys.json r26 (Naver 2F room fill, east ICP median .37 u)",
+    ".planning/2026-09-26-full-twin/seam-work/nv-east-stair.png",
+    "south edge shared with Services23F RM-2F-N-r56 (services-2f.json); no door symbol in the Naver raster [INFERENCE: closed back-of-house room]"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      65.272,
+      2.328
+     ],
+     [
+      66.35,
+      4.2
+     ],
+     [
+      73.09,
+      4.171
+     ],
+     [
+      71.393,
+      0.663
+     ],
+     [
+      70.672,
+      -0.829
+     ]
+    ],
+    "y": 7.0,
+    "y1": 10.45
+   },
+   "params": {
+    "wallFinish": "plaster",
+    "ceiling": "plaster",
+    "floor": "none",
+    "interior": "none"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "seam-exit8-mat",
+   "zone": "2F seam",
+   "tier": "b",
+   "evidence": [
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_222s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_225s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_228s.jpg",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after31: exit 8 opening at the U 65 plane (Layer0_4 header Y 9.1, Layer0_5 post V 14.3-15.1); red mats lie just past the shutter line in the covered walkway [INFERENCE: mat size 1.8 x 1.7]"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      65.35,
+      12.55
+     ],
+     [
+      67.15,
+      12.6
+     ],
+     [
+      67.15,
+      14.25
+     ],
+     [
+      65.35,
+      14.25
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "finish": "#6E2229",
+    "lift": 0.006
+   }
+  },
+  {
+   "type": "WallSign",
+   "id": "seam-exit8-sign",
+   "zone": "2F seam",
+   "tier": "b",
+   "evidence": [
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_215s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_225s.jpg",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after31: exit 8 double door at the U 65 plane, V 12.4-14.4 (Layer0_5 centre post V 13.26-13.72), header Layer0_4 Y 9.1-10.2; the yellow \"↑ 8 P 선상주차장 Parking\" board sits on the header face, centred on the opening [INFERENCE: board 2.4 x .45]"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     64.84,
+     13.4
+    ],
+    "y": 9.35
+   },
+   "params": {
+    "heading": [
+     -1,
+     0
+    ],
+    "width": 2.4,
+    "height": 0.45,
+    "style": "yellow",
+    "items": [
+     {
+      "text": "선상주차장",
+      "sub": "Parking",
+      "arrow": "up",
+      "badge": "8"
+     }
+    ]
+   }
+  },
+  {
+   "type": "WallSign",
+   "id": "seam-doorbank-sign",
+   "zone": "2F seam",
+   "tier": "b",
+   "evidence": [
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_215s.jpg",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after31: Layer0_4 glass swing-door bank (sills v = 18.6 - .47 (u - 56.9)); 215 s shows a yellow \"나오는 곳\" band over the doors next to exit 8, facing the seam [INFERENCE: 5 m long, centre Y 9.85]"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     61.95,
+     16.09
+    ],
+    "y": 9.85
+   },
+   "params": {
+    "heading": [
+     -0.425,
+     -0.905
+    ],
+    "width": 5.0,
+    "height": 0.5,
+    "style": "yellow",
+    "items": [
+     {
+      "text": "나오는 곳",
+      "sub": "Way out"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Column",
+   "id": "seam-col-a1",
+   "zone": "2F main U+ end",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.stainless_square_columns[0] (58.3, 9.5) sigma .5; frames 199.2, 205.9, 207.2, 209.6",
+    ".planning/2026-09-26-full-twin/regtech-work/seam/proj/s__t00215333.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg",
+    "size from the visible face incl. board ~1.7 m [INFERENCE: 1.0 x 1.0 core]"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     58.3,
+     9.5
+    ],
+    "y0": 7.0,
+    "y1": 10.47
+   },
+   "params": {
+    "shape": "rect",
+    "size": [
+     1.0,
+     1.0
+    ],
+    "cladding": "stainless"
+   }
+  },
+  {
+   "type": "WallSign",
+   "id": "seam-col-a1-board",
+   "zone": "2F main U+ end",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.stainless_square_columns[0] (blue directory board on the face seen from the passage)",
+    ".planning/2026-09-26-full-twin/regtech-work/seam/proj/s__t00215333.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg",
+    "board text not legible [INFERENCE: generic 안내 / Information]"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     58.3,
+     10.0
+    ],
+    "y": 8.4
+   },
+   "params": {
+    "heading": [
+     0,
+     1
+    ],
+    "width": 0.8,
+    "height": 1.3,
+    "style": "navy",
+    "items": [
+     {
+      "text": "안내",
+      "sub": "Information"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Column",
+   "id": "seam-col-s2",
+   "zone": "2F seam",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.stainless_square_columns[1] (52.3, 13.35) sigma .4; frames 199.2, 205.9",
+    ".planning/2026-09-26-full-twin/regtech-work/seam/proj/s__t00215333.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_207s.jpg",
+    "[INFERENCE: 1.0 x 1.0 like A1]"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     52.3,
+     13.35
+    ],
+    "y0": 6.995,
+    "y1": 12.05
+   },
+   "params": {
+    "shape": "rect",
+    "size": [
+     1.0,
+     1.0
+    ],
+    "cladding": "stainless"
+   }
+  },
+  {
+   "type": "Column",
+   "id": "seam-col-r1",
+   "zone": "2F seam",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.round_columns (51.73, 17.4) d 0.84 sigma 0.15",
+    ".planning/2026-09-26-full-twin/regtech-work/seam/proj/s__t00215333.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_190s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_199s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     51.73,
+     17.4
+    ],
+    "y0": 6.995,
+    "y1": 12.05
+   },
+   "params": {
+    "shape": "round",
+    "diameter": 0.84,
+    "cladding": "plaster"
+   }
+  },
+  {
+   "type": "Column",
+   "id": "seam-col-r2",
+   "zone": "2F seam",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.round_columns (48.57, 16.86) d 1.09 sigma 0.2",
+    ".planning/2026-09-26-full-twin/regtech-work/seam/proj/s__t00215333.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_190s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_199s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     48.57,
+     16.86
+    ],
+    "y0": 6.995,
+    "y1": 12.05
+   },
+   "params": {
+    "shape": "round",
+    "diameter": 1.09,
+    "cladding": "plaster"
+   }
+  },
+  {
+   "type": "WallSign",
+   "id": "seam-col-r1-wrap",
+   "zone": "2F seam",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.round_columns[0] (yellow 선상주차장 wrap, vertical text, ~Y 8.2-10.2)",
+    ".planning/2026-09-26-full-twin/regtech-work/seam/proj/s__t00215333.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_195s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_199s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg",
+    "[INFERENCE: flat .6 wide sign on the concourse-facing face instead of a wrapped band]"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     51.309999999999995,
+     17.4
+    ],
+    "y": 9.2
+   },
+   "params": {
+    "heading": [
+     -1,
+     0
+    ],
+    "width": 0.6,
+    "height": 2.0,
+    "style": "yellow",
+    "items": [
+     {
+      "text": "선상주차장"
+     }
+    ]
+   }
+  },
+  {
+   "type": "DisplayBoard",
+   "id": "seam-led-screen",
+   "zone": "2F main U+ end",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.led_screen: plane (62.6,6.8)->(65.1,10.15), right edge sigma .15, left sigma .6, display Y 7.24-10.0, black base to the floor",
+    ".planning/2026-09-26-full-twin/regtech-work/seam/proj/s__t00215333.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_215s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_225s.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     63.85,
+     8.475
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "mount": "floor",
+    "kind": "screen",
+    "heading": [
+     -0.801,
+     0.598
+    ],
+    "width": 4.18,
+    "height": 2.76,
+    "standHeight": 0.24,
+    "depth": 0.15,
+    "housing": "dark"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "seam-floor-band",
+   "zone": "2F seam",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.floor_band_dark_grey (left/right edges, width 1.0, sigma .4)",
+    ".planning/2026-09-26-full-twin/regtech-work/seam/proj/s__t00215333.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_212s.jpg",
+    "clipped 0.35 u clear of the protected MainShell_5 facade line (see report)"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      58.3,
+      14.55
+     ],
+     [
+      56.5,
+      15.35
+     ],
+     [
+      57.29,
+      16.3
+     ],
+     [
+      59.39,
+      15.45
+     ],
+     [
+      64.86,
+      12.89
+     ],
+     [
+      64.334,
+      12.466
+     ],
+     [
+      63.23,
+      12.385
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "finish": "#3A3E42"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "seam-tactile-0",
+   "zone": "2F main U+ end",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.tactile_yellow_line.segment_209 (56.39,9.89)->(57.51,13.26)->(58.73,16.2) sigma .5",
+    ".planning/2026-09-26-full-twin/regtech-work/seam/proj/s__t00215333.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg",
+    "crosses the protected facade line; the part inside the facade band is reported, not built"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      56.532,
+      9.843
+     ],
+     [
+      56.248,
+      9.937
+     ],
+     [
+      56.806,
+      11.617
+     ],
+     [
+      57.13,
+      11.64
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "finish": "tactileLine",
+    "lift": 0.005
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "seam-tactile-1",
+   "zone": "2F seam",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.tactile_yellow_line.segment_209 (56.39,9.89)->(57.51,13.26)->(58.73,16.2) sigma .5",
+    ".planning/2026-09-26-full-twin/regtech-work/seam/proj/s__t00215333.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg",
+    "crosses the protected facade line; the part inside the facade band is reported, not built"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      57.371,
+      13.317
+     ],
+     [
+      58.591,
+      16.257
+     ],
+     [
+      58.869,
+      16.143
+     ],
+     [
+      57.651,
+      13.208
+     ],
+     [
+      57.369,
+      12.359
+     ],
+     [
+      57.045,
+      12.336
+     ],
+     [
+      57.368,
+      13.307
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "finish": "tactileLine",
+    "lift": 0.005
+   }
+  }
+ ]
+}

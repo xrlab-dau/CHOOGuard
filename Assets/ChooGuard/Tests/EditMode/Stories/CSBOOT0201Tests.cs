@@ -312,8 +312,9 @@ namespace ChooGuard.Tests.EditMode.Stories
                 if (definition.noEngineReferences == module.engineReferences) errors.Add("engine-boundary:" + module.name);
                 if (!module.engineReferences && (!definition.overrideReferences || Values(definition.precompiledReferences).Length != 0))
                     errors.Add("plugin-boundary:" + module.name);
+                // FPS 전환 뒤 App 은 게임 층(HUD·입력·렌더 설정)이라 UI·입력·URP 패키지를 쓴다. 순수 모듈 경계는 그대로다.
                 var external = module.name == "ChooGuard.Presentation" ? UiReferences :
-                    module.editorOnly ? UiReferences.Concat(RenderReferences).ToArray() : Array.Empty<string>();
+                    module.editorOnly || module.name == "ChooGuard.App" ? UiReferences.Concat(RenderReferences).ToArray() : Array.Empty<string>();
                 CheckReferences(definition, module.references.Concat(external), errors);
                 CheckPlatforms(definition, module.editorOnly, errors);
                 if (Values(definition.defineConstraints).Length != 0 || Values(definition.optionalUnityReferences).Length != 0)
@@ -334,6 +335,8 @@ namespace ChooGuard.Tests.EditMode.Stories
                 if (definition.Root != expectedRoot || definition.Path != expectedRoot + "/" + name + ".asmdef")
                     errors.Add("assembly-location:" + name);
                 var references = new[] { "ChooGuard.Contracts", "ChooGuard.Presentation" }.Concat(UiReferences);
+                // PlayMode 시험은 FPS 게임 층(App)과 역 세계(World)를 직접 돌린다.
+                if (!editMode) references = references.Concat(new[] { "ChooGuard.App", "ChooGuard.World" });
                 if (editMode) references = references.Concat(new[] { "ChooGuard.Editor", "ChooGuard.Content", "ChooGuard.Application", "ChooGuard.Domain", "ChooGuard.World", "ChooGuard.Persistence" }).Concat(RenderReferences);
                 CheckReferences(definition, references, errors);
                 CheckPlatforms(definition, editMode, errors);

@@ -1,0 +1,24 @@
+{
+  "request": "ShopInteriors-1",
+  "status": "implemented (KitShop + KShopLayout in AgentScripts/MajibangBuilder.cs); KitBuild dry-run compiles; KitValidate test .planning/2026-09-24-interior-twin/kit-preview/full/shop-test.json accepts all 12 fixture keys (13,318 tris incl. cooler/gondola products) and rejects an unknown key as an element error.",
+  "params": {
+    "openEdges": "[int] edges besides `front` with no wall panel, skirting, joint or collider. Out-of-range index = element error.",
+    "back": "int edge for the backWall finish (explicit value used as given); default = farthest edge from the front excluding `front` and openEdges (unchanged when openEdges is empty).",
+    "layout": "[{fixture, at, heading, length?, depth?, height?, elevation?}] replaces the automatic fixtures when present (walls/ceiling/downlights/light unchanged; `fixtures: false` still skips all fixtures). heading must be non-zero. `length` = extent across heading; `elevation` = base above the floor (menu: board centre height, default 2.15)."
+  },
+  "fixtures": {
+    "tableSet": "KTableSet at `at`, chairs left/right of heading",
+    "dining": "kit_dining, size [length 1.5, height .9, depth 1.55]",
+    "kitchen": "kit_kitchenTable [1.35, .87, .9]",
+    "counter": "kit_kitchenCounter [1.2, .95, .65]",
+    "cabinet": "kit_cabinet [1, .9, .5]",
+    "plant": "kit_plant [.5, .75, .5]",
+    "menu": "KMenuBoards, at = wall-face point, heading out of the wall, length 3.2",
+    "shelf": "KShelf one-sided, at = back line centre, length 2, height 2.0, depth .4, 5 levels",
+    "gondola": "KShelf two-sided, at = centre line, length 2, height 1.5, depth .4, 4 levels",
+    "cooler": "KCooler, at = cabinet centre, length 3 (height fixed 2.0, depth .6)",
+    "bakeryShelf": "KShelf one-sided Kit_Bread, at = back line centre, length 2, height 1.6, depth .45, 4 levels",
+    "loafTable": "kit_tableMedium [1.2, .8, .8] + loaves tray (length-.1 x depth-.1)"
+  },
+  "backwardCompatible": "without openEdges/back/layout the code path is unchanged"
+}

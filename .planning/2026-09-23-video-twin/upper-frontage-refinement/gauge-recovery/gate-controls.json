@@ -1,0 +1,17 @@
+{
+  "schema":"chooguard.complete-fixed-bank-candidates.v1",
+  "observationConvention":"1920x1080 native video pixels; divide by2 for existing COLMAP intrinsics. These picks are full rear fixed-glass bank edges, not opening edges at approximatelyx270/550 in HC125 and not foreground hinged leaves.",
+  "observations":{
+    "000124.jpg":{"top_left":[478,156],"top_right":[1400,214],"bottom_left":[478,882]},
+    "000125.jpg":{"top_left":[332,106],"top_right":[1402,182],"bottom_left":[338,960]},
+    "000126.jpg":{"top_left":[66,54],"top_right":[1480,128],"bottom_left":[86,1056]}
+  },
+  "heldOutFrames":["000125.jpg"],
+  "fittingFrames":["000124.jpg","000126.jpg"],
+  "withheldFromPicking":"Bottom-right bank corner is person-occluded. It is not fabricated or treated as an independent observation.",
+  "sourceHypotheses":{
+    "inner_bank":{"top_left":60876,"top_right":60587,"bottom_left":60863},
+    "outer_frame":{"top_leftUVY":[9.283,-30.322,9.7],"top_rightUVY":[13.932,-30.592,9.7],"bottom_leftUVY":[9.283,-30.322,7.0]}
+  },
+  "hypothesisInterpretation":"Test source inner bank vs complete outer fixed-frame identity. A low pixel residual alone cannot accept either: independent floor elevation, gravity and camera-path checks must pass. Source geometry is immutable."
+}

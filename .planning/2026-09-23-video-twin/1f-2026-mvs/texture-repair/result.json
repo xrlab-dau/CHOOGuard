@@ -1,0 +1,527 @@
+{
+  "schema": "chooguard.openmvs-texture-repair-result.v1",
+  "status": "Corrected TextureMesh executed; atlas attribution and two original-camera renders verified. Inactive evidence surface only.",
+  "rootCause": {
+    "source": {
+      "url": "https://raw.githubusercontent.com/cdcseacave/openMVS/v2.4.0/libs/MVS/SceneTexture.cpp",
+      "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/upstream-v2.4.0/libs/MVS/SceneTexture.cpp",
+      "sha256": "a04b36307a610a9cbad4e019b0e3f1c943f74db20e4533b12c2368550bdd6c33"
+    },
+    "lines": [
+      508,
+      511
+    ],
+    "actualIgnoredLabel": 0,
+    "reason": "SceneTexture.cpp uses uninitialized-global OPTDENSE::nIgnoreMaskLabel (0), not nIgnoreMaskLabel. DEFVAR_OPTION declares a static-duration scalar without initializer; TextureMesh does not call OPTDENSE::init. ImportIgnoreMask retains pixels != label.",
+    "supportingSource": [
+      {
+        "url": "https://raw.githubusercontent.com/cdcseacave/openMVS/v2.4.0/libs/MVS/DepthMap.cpp",
+        "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/upstream-v2.4.0/libs/MVS/DepthMap.cpp",
+        "sha256": "3044b638ce2f97ea0628db0a73caca2f632f44e5ca8e6e7136dd4f6f40b6f942"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/cdcseacave/openMVS/v2.4.0/libs/Common/Common.h",
+        "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/upstream-v2.4.0/libs/Common/Common.h",
+        "sha256": "ee669c958e98e31288ae1f63eb7369760a565941b60ec4db1bda68b03b2ed199"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/cdcseacave/openMVS/v2.4.0/apps/TextureMesh/TextureMesh.cpp",
+        "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/upstream-v2.4.0/apps/TextureMesh/TextureMesh.cpp",
+        "sha256": "e5da1cdc7c0b1b45f92a9b0679feb16df92a8d72bc4efdbb3a92ee7d89a9ec57"
+      }
+    ]
+  },
+  "fix": {
+    "script": "/Users/um-yunsang/CHOOGuard/.tools/repair_station_texturing.py",
+    "method": "Separate texture-only image/mask directory; original nonzero person mask -> 0 excluded; original zero background -> 255 retained; --ignore-mask-label 0. Works with stock v2.4.0 zero-global and corrected argument handling.",
+    "oldMasksAndReceiptsPreserved": true,
+    "newToolInstallation": false,
+    "depthEstimationRerun": false,
+    "heavyJobMaxThreads": 2
+  },
+  "sourceVideo": {
+    "path": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-24/busan-1f/media/3TLdCQCjeXE.mp4",
+    "sha256": "d9db6639973b1c59428582cb6a797cb1d5fc98159963de9ff11c44e32701d4ee",
+    "temporalState": "March2026 observed footage, historical B&C hoarding; not present-day as-built certification"
+  },
+  "coordinateSystem": {
+    "outputOBJ": "Unchanged COLMAP/SfM relative coordinates",
+    "diagnosticRegistration": {
+      "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/metric-registration/registration.json",
+      "sha256": "1c0682980275e64cce619e33d8e04ce514d2e2197a624a077d20a966a306f5b2",
+      "snapshotPath": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/registration-snapshot.json",
+      "snapshotSha256": "31ead4289e8fe6e2c1ef279659a95828af833c9d1dffcaedcd91426235d34f69"
+    },
+    "stationFrame": "UVY angle16.2; source-model units, not certified physical survey units"
+  },
+  "preservedInputs": [
+    {
+      "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/scene.mvs",
+      "sha256": "826f1e6d1f1a97036c609d4db65fe4916775c73d838ef0dfb5b8af8873c11a9f"
+    },
+    {
+      "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/scene_dense.ply",
+      "sha256": "132f44c277a240f6caeb93370f2fdecc4c7bc9b5817678fb40a315892bcc561e"
+    },
+    {
+      "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/scene_mesh.ply",
+      "sha256": "ceab25296fcd3cd9ddc51b8d2841d5530408c701b7e8cfe03241c321b8cce544"
+    },
+    {
+      "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/person-mask-receipt.json",
+      "sha256": "1be33fdc40d9bd29b14629f6c03e8b57db98494e437d3a9528b7a02cf5c2d750"
+    },
+    {
+      "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/scene_textured_raw.obj",
+      "sha256": "9a19406bd57d9a41da156ad5c44c150b6bd98a5a697fbef76cebf92ebf218455"
+    }
+  ],
+  "products": [
+    {
+      "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/scene_textured_corrected.obj",
+      "sha256": "f59428fd0b92af74ec601c85e022a66b0015029a5c8e63c0c810c64885b68361",
+      "bytes": 54461825
+    },
+    {
+      "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/scene_textured_corrected.mtl",
+      "sha256": "02631215023a1a34f50e0f4c6956f8fd688db8a2dd785e317990d798652f420f",
+      "bytes": 525
+    },
+    {
+      "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/scene_textured_corrected_material_00_map_Kd.jpg",
+      "sha256": "889c538160cbb62fbd691b694f7ccb73d6c54ccfc709f09fe5cd6fbc5d71d8ba",
+      "bytes": 4901231
+    },
+    {
+      "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/scene_textured_corrected_material_01_map_Kd.jpg",
+      "sha256": "d999960d160d2af002ba62ad82ef5343191e9aed595593a8e49fee854d287e89",
+      "bytes": 3165143
+    },
+    {
+      "path": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/scene_textured_corrected_material_02_map_Kd.jpg",
+      "sha256": "37add47af7746d3b455483d26cd490877a74328c8d2d422864cd0336045c14fc",
+      "bytes": 594471
+    }
+  ],
+  "observedFaceCounts": {
+    "entireUncroppedMesh": {
+      "faces": 448408,
+      "oldObserved": 180249,
+      "correctedObserved": 441322,
+      "correctedUnobserved": 7086,
+      "totalAreaModelUnitsSquared": 1849.034581768001,
+      "oldObservedAreaModelUnitsSquared": 641.920559089502,
+      "correctedObservedAreaModelUnitsSquared": 1718.686015463093
+    },
+    "previousFilmedInteriorWindow": {
+      "faces": 256527,
+      "oldObserved": 138429,
+      "correctedObserved": 251309,
+      "correctedUnobserved": 5218,
+      "totalAreaModelUnitsSquared": 906.3284791947605,
+      "oldObservedAreaModelUnitsSquared": 411.3458003004788,
+      "correctedObservedAreaModelUnitsSquared": 826.7495094899613
+    },
+    "floorCandidates": {
+      "faces": 50510,
+      "oldObserved": 37117,
+      "correctedObserved": 49904,
+      "correctedUnobserved": 606,
+      "totalAreaModelUnitsSquared": 201.61085922643815,
+      "oldObservedAreaModelUnitsSquared": 149.79509025331106,
+      "correctedObservedAreaModelUnitsSquared": 193.2986235423322
+    },
+    "ceilingCandidates": {
+      "faces": 33797,
+      "oldObserved": 1064,
+      "correctedObserved": 33189,
+      "correctedUnobserved": 608,
+      "totalAreaModelUnitsSquared": 159.12424504528047,
+      "oldObservedAreaModelUnitsSquared": 6.089975789114126,
+      "correctedObservedAreaModelUnitsSquared": 145.90781123123617
+    },
+    "wallCandidates": {
+      "faces": 69131,
+      "oldObserved": 46134,
+      "correctedObserved": 68260,
+      "correctedUnobserved": 871,
+      "totalAreaModelUnitsSquared": 203.12736460391076,
+      "oldObservedAreaModelUnitsSquared": 100.81532753189828,
+      "correctedObservedAreaModelUnitsSquared": 187.77909392241799
+    }
+  },
+  "maskConversion": {
+    "pixels": 279611520,
+    "legacy255ExcludedPixels": 23343330,
+    "additionalConservativeEdgePixels": 269448,
+    "excludedPixels": 23612778,
+    "retainedPixels": 255998742,
+    "maskSemanticMismatchPixels": 0
+  },
+  "maskTextureAssignmentChecks": [
+    {
+      "variant": "prior",
+      "sampledObservedTriangles": 20000,
+      "recoveredUnambiguousSourceCameraSamples": 12571,
+      "ambiguousOrSubpixelNotClassified": 7429,
+      "sampledCentroidsOnOriginal255PersonMask": 12424,
+      "sampledCentroidsOnOriginalNonzeroPersonMask": 12491,
+      "sampledCentroidsOnRetainedBackground": 80,
+      "atlasSourceRGBMeanAbsoluteError": 3.6959669079627715,
+      "atlasSourceRGBMedianAbsoluteError": 1.0,
+      "geometricResidualMedianPixels": 0.0024237987237256675
+    },
+    {
+      "variant": "corrected",
+      "sampledObservedTriangles": 20000,
+      "recoveredUnambiguousSourceCameraSamples": 16114,
+      "ambiguousOrSubpixelNotClassified": 3886,
+      "sampledCentroidsOnOriginal255PersonMask": 0,
+      "sampledCentroidsOnOriginalNonzeroPersonMask": 2,
+      "sampledCentroidsOnRetainedBackground": 16112,
+      "atlasSourceRGBMeanAbsoluteError": 2.9506433329196144,
+      "atlasSourceRGBMedianAbsoluteError": 1.0,
+      "geometricResidualMedianPixels": 0.002437518831527541
+    }
+  ],
+  "actualCommands": [
+    {
+      "argv": [
+        "/Users/um-yunsang/CHOOGuard/.tools/openmvs-v2.4.0/InterfaceCOLMAP",
+        "-i",
+        "colmap",
+        "-o",
+        "scene.mvs",
+        "--image-folder",
+        "images",
+        "--max-threads",
+        "2"
+      ],
+      "cwd": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair",
+      "returncode": 0,
+      "elapsedSeconds": 0.14987362502142787,
+      "stdout": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/interface.stdout.log"
+    },
+    {
+      "argv": [
+        "/Users/um-yunsang/CHOOGuard/.tools/openmvs-v2.4.0/TextureMesh",
+        "scene.mvs",
+        "--mesh-file",
+        "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/scene_mesh.ply",
+        "--ignore-mask-label",
+        "0",
+        "--close-holes",
+        "0",
+        "--decimate",
+        "1",
+        "--max-texture-size",
+        "4096",
+        "--sharpness-weight",
+        "0",
+        "--global-seam-leveling",
+        "0",
+        "--local-seam-leveling",
+        "0",
+        "--max-threads",
+        "2",
+        "--export-type",
+        "obj",
+        "-o",
+        "scene_textured_corrected.mvs"
+      ],
+      "cwd": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair",
+      "returncode": 0,
+      "elapsedSeconds": 308.33820224995725,
+      "stdout": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/texture.stdout.log"
+    }
+  ],
+  "verificationCommands": [
+    {
+      "command": ".tools/video-reconstruction/bin/python .tools/repair_station_texturing.py inspect",
+      "exitCode": 0,
+      "output": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/coverage-receipt.json"
+    },
+    {
+      "command": ".tools/blender/Blender.app/Contents/MacOS/Blender --background --threads 2 --python .planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/render_camera_views.py",
+      "exitCode": 0,
+      "output": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/render-receipt.json"
+    },
+    {
+      "command": ".tools/video-reconstruction/bin/python .planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/check_texture_attribution.py",
+      "exitCode": 0,
+      "output": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/texture-attribution.json"
+    },
+    {
+      "command": ".tools/video-reconstruction/bin/python .planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/make_visual_evidence.py",
+      "exitCode": 0,
+      "output": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/render-pixel-diagnostics.json"
+    }
+  ],
+  "inspectionHistory": "First all-stage invocation completed InterfaceCOLMAP and TextureMesh successfully, then the initial inspector rejected material-group face reordering. Inspector fixed to compare oriented topology independently of material order; rerun passed with all vertex coordinates and 448408 triangles unchanged.",
+  "renders": [
+    {
+      "variant": "prior",
+      "obj": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/scene_textured_raw.obj",
+      "frame": "000061.jpg",
+      "render": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/prior-camera-000061.png",
+      "resolution": [
+        960,
+        532
+      ],
+      "intrinsics": [
+        [
+          513.3916889225417,
+          0,
+          480.0
+        ],
+        [
+          0,
+          513.943722996652,
+          266.0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "worldFromBlenderCamera": [
+        [
+          0.8765199184417725,
+          -0.05063887685537338,
+          -0.4786946475505829,
+          -0.5401671528816223
+        ],
+        [
+          0.04376572370529175,
+          -0.9819488525390625,
+          0.18401359021663666,
+          0.19720681011676788
+        ],
+        [
+          -0.47937190532684326,
+          -0.1822419911623001,
+          -0.8584814667701721,
+          -0.8576229214668274
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "geometry": "All 448408 source triangles; no crop, repair, smoothing, or hole fill",
+      "material": "Unlit texture emission, Standard sRGB, no seam color adjustment",
+      "cameraConvention": "COLMAP camera x-right/y-down/z-forward to Blender x-right/y-up/-z-forward; world unchanged"
+    },
+    {
+      "variant": "prior",
+      "obj": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/scene_textured_raw.obj",
+      "frame": "000106.jpg",
+      "render": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/prior-camera-000106.png",
+      "resolution": [
+        960,
+        532
+      ],
+      "intrinsics": [
+        [
+          513.3916889225417,
+          0,
+          480.0
+        ],
+        [
+          0,
+          513.943722996652,
+          266.0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "worldFromBlenderCamera": [
+        [
+          0.4692634642124176,
+          -0.02709485962986946,
+          0.882642388343811,
+          1.907822847366333
+        ],
+        [
+          -0.20243000984191895,
+          -0.9762129187583923,
+          0.07765618711709976,
+          -0.6140581369400024
+        ],
+        [
+          0.8595428466796875,
+          -0.2151145190000534,
+          -0.46358582377433777,
+          2.5823092460632324
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "geometry": "All 448408 source triangles; no crop, repair, smoothing, or hole fill",
+      "material": "Unlit texture emission, Standard sRGB, no seam color adjustment",
+      "cameraConvention": "COLMAP camera x-right/y-down/z-forward to Blender x-right/y-up/-z-forward; world unchanged"
+    },
+    {
+      "variant": "corrected",
+      "obj": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/scene_textured_corrected.obj",
+      "frame": "000061.jpg",
+      "render": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/corrected-camera-000061.png",
+      "resolution": [
+        960,
+        532
+      ],
+      "intrinsics": [
+        [
+          513.3916889225417,
+          0,
+          480.0
+        ],
+        [
+          0,
+          513.943722996652,
+          266.0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "worldFromBlenderCamera": [
+        [
+          0.8765199184417725,
+          -0.05063887685537338,
+          -0.4786946475505829,
+          -0.5401671528816223
+        ],
+        [
+          0.04376572370529175,
+          -0.9819488525390625,
+          0.18401359021663666,
+          0.19720681011676788
+        ],
+        [
+          -0.47937190532684326,
+          -0.1822419911623001,
+          -0.8584814667701721,
+          -0.8576229214668274
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "geometry": "All 448408 source triangles; no crop, repair, smoothing, or hole fill",
+      "material": "Unlit texture emission, Standard sRGB, no seam color adjustment",
+      "cameraConvention": "COLMAP camera x-right/y-down/z-forward to Blender x-right/y-up/-z-forward; world unchanged"
+    },
+    {
+      "variant": "corrected",
+      "obj": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/scene_textured_corrected.obj",
+      "frame": "000106.jpg",
+      "render": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/corrected-camera-000106.png",
+      "resolution": [
+        960,
+        532
+      ],
+      "intrinsics": [
+        [
+          513.3916889225417,
+          0,
+          480.0
+        ],
+        [
+          0,
+          513.943722996652,
+          266.0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "worldFromBlenderCamera": [
+        [
+          0.4692634642124176,
+          -0.02709485962986946,
+          0.882642388343811,
+          1.907822847366333
+        ],
+        [
+          -0.20243000984191895,
+          -0.9762129187583923,
+          0.07765618711709976,
+          -0.6140581369400024
+        ],
+        [
+          0.8595428466796875,
+          -0.2151145190000534,
+          -0.46358582377433777,
+          2.5823092460632324
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "geometry": "All 448408 source triangles; no crop, repair, smoothing, or hole fill",
+      "material": "Unlit texture emission, Standard sRGB, no seam color adjustment",
+      "cameraConvention": "COLMAP camera x-right/y-down/z-forward to Blender x-right/y-up/-z-forward; world unchanged"
+    }
+  ],
+  "visualEvidence": [
+    "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/comparison-camera-000061.jpg",
+    "/Users/um-yunsang/CHOOGuard/.planning/2026-09-23-video-twin/1f-2026-mvs/texture-repair/comparison-camera-000106.jpg"
+  ],
+  "visualFindings": [
+    "Ceiling panel grid and lights restored; previously almost entirely orange.",
+    "B&C historical hoarding, platform-direction wall and escalator-side wall now carry background textures rather than pedestrian silhouettes.",
+    "Floor tile and guidance marking textures restored on existing triangles; major geometric gaps and stretched floor patches remain visible, not filled."
+  ],
+  "supportedBoundary": "Texturing repair for unchanged 448408-face mesh using 137 registered views only. Coverage diagnostics use previous filmed interior window U3..36,V-42..-12,Y-.25..6.5 but do not crop products or authorize added geometry.",
+  "unresolved": [
+    "7086 triangles have no assigned observing image.",
+    "Masks are detector-derived, not exhaustive person/privacy certification. Of 16114 unambiguous corrected attribution samples, 0 hit original255 person regions, 2 hit intermediate antialias edge labels and 16112 hit zero retained background; nearest-pixel projection/raster ambiguity remains.",
+    "Unused rectangular atlas padding can contain people; atlas is not a redacted image for public redistribution.",
+    "Reflections, missed detections, ragged boundaries, floor striping and underlying geometry inaccuracies remain. No rerun of depth estimation was necessary for this mask-routing defect.",
+    "March2026 historical B&C hoarding does not establish current tenancy or full station as-built status.",
+    "No Unity scene/assets/exporter/importer were modified and no surface was activated."
+  ],
+  "selfEvaluation": {
+    "accuracy": {
+      "score": 4,
+      "evidence": "Source bug, hashes, actual TextureMesh exit0 and face-level attribution documented; attribution is sampled and edge ambiguity explicitly retained."
+    },
+    "completeness": {
+      "score": 4,
+      "evidence": "All requested products, counts, masking checks and two aligned renders supplied; cannot certify missed detections or latent geometry."
+    },
+    "clarity": {
+      "score": 4,
+      "evidence": "Consolidated machine-readable receipt plus labeled before/after panels; multiple detailed receipts retained for reproducibility."
+    },
+    "actionability": {
+      "score": 5,
+      "evidence": "Absolute product paths, scripts, commands, source hashes and mask semantics supplied without requiring rebuild or depth recomputation."
+    },
+    "conciseness": {
+      "score": 4,
+      "evidence": "Summary references full receipts rather than repeating per-mask evidence."
+    }
+  }
+}

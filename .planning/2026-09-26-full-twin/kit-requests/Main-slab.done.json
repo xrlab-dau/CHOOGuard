@@ -1,0 +1,8 @@
+{
+  "type": "Slab",
+  "status": "implemented in AgentScripts/MajibangBuilder.cs (KitSlab, dispatcher case \"Slab\"); KitBuild dry-run compiles; KitValidate test .planning/2026-09-24-interior-twin/kit-preview/full/slab-test.json -> 0 errors (72 tris for a 10x6 plate with one hole).",
+  "geometry": "polygon, holes? (same union-of-holes rule as FloorFinish), y = top surface",
+  "params": {"depth": ".3 (>= .02)", "finish": "floorGranite (any material key; new keyword `concrete` = Lane/PBR_Concrete048_2K)", "edgeFinish": "plaster", "soffit": "plaster | none | <material>", "collider": "true: top face + every boundary edge face (outer and holes) in Kit_Colliders", "rotation": "0 (top UV rotation, deg)", "uvOrigin": "polygon[0]", "uvRepeat": "1"},
+  "conventions": "Top face exactly at y (no lift; put a FloorFinish on top if a finish overlay is needed). Edge faces from y-depth to y on every filled-region boundary, facing outward. Batches Kit_Slab_<material>. surfaceArea = walkable top area.",
+  "note": "One-line note for Main: Slab ready; use `\"type\": \"Slab\"` now."
+}

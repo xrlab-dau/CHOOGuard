@@ -1,0 +1,2026 @@
+{
+ "schema": "chooguard.regtech.report.v1",
+ "lane": "RegTech5",
+ "tool": {
+  "code": ".tools/regtech/{register.py,rt_common.py,rt_sfm.py,rt_anchor.py,rt_mesh.py}",
+  "readme": ".tools/regtech/README.md",
+  "ready": true,
+  "controls_generator": ".planning/2026-09-26-full-twin/regtech/controls/make_controls.py"
+ },
+ "cases": {
+  "march-smoke": {
+   "work": ".planning/2026-09-26-full-twin/regtech/march-smoke",
+   "sfm": {
+    "images": 62,
+    "raw_models": {
+     "0": 2,
+     "1": 62
+    },
+    "components": [
+     {
+      "id": 0,
+      "registered": 62,
+      "points": 21009,
+      "mean_reproj_px": 1.129,
+      "t_range": [
+       6.667,
+       46.667
+      ],
+      "gaps": []
+     }
+    ],
+    "merges": [
+     {
+      "base_images": 62,
+      "other_images": 2,
+      "inliers": 790,
+      "accepted": true,
+      "merged_images": 62
+     }
+    ]
+   },
+   "anchors": {
+    "hash": {
+     "file": ".planning/2026-09-26-full-twin/regtech/march-smoke/anchor/hash/anchor.json",
+     "c0": {
+      "status": "PASS",
+      "registered_images": 62,
+      "gate_reasons": [],
+      "fit": {
+       "controls": 42,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 42,
+       "rms_m": 0.118,
+       "max_m": 0.265,
+       "forward_rms_deg": 0.491
+      },
+      "heldout": {
+       "controls": 20,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 20,
+       "rms_m": 0.107,
+       "max_m": 0.182,
+       "forward_rms_deg": 0.603
+      },
+      "loo": {
+       "count": 42,
+       "rms_m": 0.126,
+       "max_m": 0.294
+      },
+      "scale": 3.389,
+      "heldout_items": {
+       "cam:m/000037.jpg": {
+        "err_m": 0.058,
+        "forward_err_deg": 0.11,
+        "center_uvy": [
+         9.034,
+         -46.617,
+         1.4
+        ]
+       },
+       "cam:m/000043.jpg": {
+        "err_m": 0.182,
+        "forward_err_deg": 0.11,
+        "center_uvy": [
+         9.122,
+         -43.193,
+         1.482
+        ]
+       },
+       "cam:m/000053.jpg": {
+        "err_m": 0.172,
+        "forward_err_deg": 0.125,
+        "center_uvy": [
+         9.879,
+         -37.693,
+         1.437
+        ]
+       },
+       "cam:m/000059.jpg": {
+        "err_m": 0.154,
+        "forward_err_deg": 0.129,
+        "center_uvy": [
+         10.238,
+         -34.382,
+         1.427
+        ]
+       },
+       "cam:m/000061.jpg": {
+        "err_m": 0.143,
+        "forward_err_deg": 0.074,
+        "center_uvy": [
+         10.17,
+         -33.363,
+         1.398
+        ]
+       },
+       "cam:m/000063.jpg": {
+        "err_m": 0.134,
+        "forward_err_deg": 0.044,
+        "center_uvy": [
+         10.058,
+         -32.226,
+         1.378
+        ]
+       },
+       "cam:m/000067.jpg": {
+        "err_m": 0.118,
+        "forward_err_deg": 0.027,
+        "center_uvy": [
+         9.724,
+         -30.048,
+         1.362
+        ]
+       },
+       "cam:m/000077.jpg": {
+        "err_m": 0.094,
+        "forward_err_deg": 0.288,
+        "center_uvy": [
+         10.0,
+         -24.5,
+         1.361
+        ]
+       },
+       "cam:m/000079.jpg": {
+        "err_m": 0.089,
+        "forward_err_deg": 0.295,
+        "center_uvy": [
+         10.108,
+         -23.416,
+         1.32
+        ]
+       },
+       "cam:m/000081.jpg": {
+        "err_m": 0.077,
+        "forward_err_deg": 0.282,
+        "center_uvy": [
+         10.14,
+         -22.435,
+         1.354
+        ]
+       },
+       "cam:m/000095.jpg": {
+        "err_m": 0.04,
+        "forward_err_deg": 0.395,
+        "center_uvy": [
+         11.374,
+         -16.898,
+         1.374
+        ]
+       },
+       "cam:m/000117.jpg": {
+        "err_m": 0.06,
+        "forward_err_deg": 0.704,
+        "center_uvy": [
+         12.149,
+         -16.098,
+         1.376
+        ]
+       },
+       "cam:m/000119.jpg": {
+        "err_m": 0.064,
+        "forward_err_deg": 0.685,
+        "center_uvy": [
+         12.26,
+         -16.114,
+         1.351
+        ]
+       },
+       "cam:m/000125.jpg": {
+        "err_m": 0.075,
+        "forward_err_deg": 0.639,
+        "center_uvy": [
+         13.412,
+         -15.873,
+         1.361
+        ]
+       },
+       "cam:m/000127.jpg": {
+        "err_m": 0.08,
+        "forward_err_deg": 0.679,
+        "center_uvy": [
+         13.931,
+         -15.772,
+         1.361
+        ]
+       },
+       "cam:m/000129.jpg": {
+        "err_m": 0.088,
+        "forward_err_deg": 0.625,
+        "center_uvy": [
+         14.483,
+         -15.798,
+         1.361
+        ]
+       },
+       "cam:m/000133.jpg": {
+        "err_m": 0.099,
+        "forward_err_deg": 0.608,
+        "center_uvy": [
+         15.546,
+         -15.95,
+         1.368
+        ]
+       },
+       "cam:m/000135.jpg": {
+        "err_m": 0.111,
+        "forward_err_deg": 0.556,
+        "center_uvy": [
+         16.214,
+         -15.89,
+         1.366
+        ]
+       },
+       "cam:m/000137.jpg": {
+        "err_m": 0.097,
+        "forward_err_deg": 0.777,
+        "center_uvy": [
+         16.989,
+         -15.864,
+         1.355
+        ]
+       },
+       "cam:m/000139.jpg": {
+        "err_m": 0.042,
+        "forward_err_deg": 1.818,
+        "center_uvy": [
+         17.726,
+         -15.772,
+         1.349
+        ]
+       }
+      }
+     },
+     "meshcheck": {
+      "include": ".",
+      "all": {
+       "n": 15342,
+       "near": 0.805,
+       "median_m": 0.046,
+       "p90_m": 0.246
+      },
+      "blocks": [
+       {
+        "t": [
+         7.2,
+         17.2
+        ],
+        "n": 4715,
+        "near": 0.713,
+        "median_m": 0.076,
+        "p90_m": 0.338
+       },
+       {
+        "t": [
+         17.2,
+         27.2
+        ],
+        "n": 3897,
+        "near": 0.739,
+        "median_m": 0.049,
+        "p90_m": 0.158
+       },
+       {
+        "t": [
+         27.2,
+         37.2
+        ],
+        "n": 3470,
+        "near": 0.96,
+        "median_m": 0.033,
+        "p90_m": 0.174
+       },
+       {
+        "t": [
+         37.2,
+         47.2
+        ],
+        "n": 3260,
+        "near": 0.854,
+        "median_m": 0.041,
+        "p90_m": 0.204
+       }
+      ]
+     },
+     "checks": {
+      "frames": 62,
+      "t_range": [
+       6.667,
+       46.667
+      ],
+      "eye_above_floor": {
+       "median": 1.37,
+       "p05": 1.26,
+       "p95": 1.44
+      },
+      "balustrade_walk_283_306": {
+       "n": 0,
+       "min_b": null,
+       "band_edge_b": 44.3
+      },
+      "break_231": null,
+      "break_309": null,
+      "floor_check": {
+       "points": 4784,
+       "layer_points": 3372,
+       "layer_y": -0.002,
+       "expected_y": 0.0,
+       "error": -0.002
+      }
+     },
+     "localized": [
+      {
+       "photo": ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000034.jpg",
+       "inliers": 2258,
+       "inlier_rms_px": 2.276,
+       "intrinsics": "sfm (fixed)",
+       "center_uvy": [
+        8.87,
+        -48.4,
+        1.342
+       ],
+       "error": null,
+       "landmark_check_rms_px": 4.735
+      },
+      {
+       "photo": ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000016.jpg",
+       "inliers": 689,
+       "inlier_rms_px": 2.264,
+       "intrinsics": "sfm (fixed)",
+       "center_uvy": [
+        5.076,
+        -56.992,
+        1.192
+       ],
+       "error": null,
+       "landmark_check_rms_px": null
+      },
+      {
+       "photo": ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000061.jpg",
+       "inliers": 1820,
+       "inlier_rms_px": 2.163,
+       "intrinsics": "sfm (fixed)",
+       "center_uvy": [
+        10.171,
+        -33.363,
+        1.399
+       ],
+       "error": null,
+       "landmark_check_rms_px": null
+      }
+     ]
+    },
+    "mesh-all": {
+     "file": ".planning/2026-09-26-full-twin/regtech/march-smoke/anchor/mesh-all/anchor.json",
+     "c0": {
+      "status": "PASS",
+      "registered_images": 62,
+      "gate_reasons": [],
+      "fit": {
+       "controls": 0,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 0,
+       "rms_m": null,
+       "max_m": null,
+       "forward_rms_deg": null
+      },
+      "heldout": {
+       "controls": 0,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 0,
+       "rms_m": null,
+       "max_m": null,
+       "forward_rms_deg": null
+      },
+      "mesh": {
+       "fit_points": {
+        "n": 10667,
+        "median_m": 0.048,
+        "p90_m": 0.195,
+        "within_2dmax": 0.806
+       },
+       "heldout_points": {
+        "n": 4675,
+        "median_m": 0.07,
+        "p90_m": 0.215,
+        "within_2dmax": 0.858,
+        "before": {
+         "median_m": 0.034,
+         "within_2dmax": 0.874
+        }
+       }
+      },
+      "constraint": [
+       0.098,
+       0.327,
+       0.575
+      ],
+      "scale": 3.405,
+      "heldout_items": {}
+     }
+    },
+    "timeblock": {
+     "file": ".planning/2026-09-26-full-twin/regtech/march-smoke/anchor/timeblock/anchor.json",
+     "c0": {
+      "status": "PASS",
+      "registered_images": 62,
+      "gate_reasons": [],
+      "fit": {
+       "controls": null,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 41,
+       "rms_m": 0.114,
+       "max_m": 0.259,
+       "forward_rms_deg": null
+      },
+      "heldout": {
+       "controls": null,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 21,
+       "rms_m": 0.171,
+       "max_m": 0.257,
+       "forward_rms_deg": null
+      },
+      "loo": {
+       "count": 41,
+       "rms_m": 0.121,
+       "max_m": 0.286
+      },
+      "scale": 3.381,
+      "heldout_items": {
+       "cam:m/000101.jpg": {
+        "err_m": 0.156,
+        "forward_err_deg": null,
+        "center_uvy": [
+         12.019,
+         -16.137,
+         1.379
+        ]
+       },
+       "cam:m/000103.jpg": {
+        "err_m": 0.159,
+        "forward_err_deg": null,
+        "center_uvy": [
+         12.058,
+         -16.06,
+         1.387
+        ]
+       },
+       "cam:m/000105.jpg": {
+        "err_m": 0.161,
+        "forward_err_deg": null,
+        "center_uvy": [
+         12.048,
+         -16.025,
+         1.392
+        ]
+       },
+       "cam:m/000107.jpg": {
+        "err_m": 0.16,
+        "forward_err_deg": null,
+        "center_uvy": [
+         12.047,
+         -16.02,
+         1.392
+        ]
+       },
+       "cam:m/000109.jpg": {
+        "err_m": 0.161,
+        "forward_err_deg": null,
+        "center_uvy": [
+         12.02,
+         -16.027,
+         1.394
+        ]
+       },
+       "cam:m/000111.jpg": {
+        "err_m": 0.158,
+        "forward_err_deg": null,
+        "center_uvy": [
+         11.938,
+         -16.006,
+         1.391
+        ]
+       },
+       "cam:m/000113.jpg": {
+        "err_m": 0.156,
+        "forward_err_deg": null,
+        "center_uvy": [
+         11.953,
+         -16.008,
+         1.383
+        ]
+       },
+       "cam:m/000115.jpg": {
+        "err_m": 0.155,
+        "forward_err_deg": null,
+        "center_uvy": [
+         12.029,
+         -16.085,
+         1.382
+        ]
+       },
+       "cam:m/000117.jpg": {
+        "err_m": 0.156,
+        "forward_err_deg": null,
+        "center_uvy": [
+         12.101,
+         -16.181,
+         1.384
+        ]
+       },
+       "cam:m/000119.jpg": {
+        "err_m": 0.159,
+        "forward_err_deg": null,
+        "center_uvy": [
+         12.212,
+         -16.197,
+         1.359
+        ]
+       },
+       "cam:m/000121.jpg": {
+        "err_m": 0.16,
+        "forward_err_deg": null,
+        "center_uvy": [
+         12.551,
+         -15.999,
+         1.388
+        ]
+       },
+       "cam:m/000123.jpg": {
+        "err_m": 0.164,
+        "forward_err_deg": null,
+        "center_uvy": [
+         12.935,
+         -15.984,
+         1.379
+        ]
+       },
+       "cam:m/000125.jpg": {
+        "err_m": 0.17,
+        "forward_err_deg": null,
+        "center_uvy": [
+         13.36,
+         -15.955,
+         1.366
+        ]
+       },
+       "cam:m/000127.jpg": {
+        "err_m": 0.175,
+        "forward_err_deg": null,
+        "center_uvy": [
+         13.878,
+         -15.854,
+         1.365
+        ]
+       },
+       "cam:m/000129.jpg": {
+        "err_m": 0.181,
+        "forward_err_deg": null,
+        "center_uvy": [
+         14.429,
+         -15.879,
+         1.363
+        ]
+       },
+       "cam:m/000131.jpg": {
+        "err_m": 0.188,
+        "forward_err_deg": null,
+        "center_uvy": [
+         14.949,
+         -15.902,
+         1.367
+        ]
+       },
+       "cam:m/000133.jpg": {
+        "err_m": 0.188,
+        "forward_err_deg": null,
+        "center_uvy": [
+         15.49,
+         -16.03,
+         1.367
+        ]
+       },
+       "cam:m/000135.jpg": {
+        "err_m": 0.195,
+        "forward_err_deg": null,
+        "center_uvy": [
+         16.156,
+         -15.969,
+         1.363
+        ]
+       },
+       "cam:m/000137.jpg": {
+        "err_m": 0.184,
+        "forward_err_deg": null,
+        "center_uvy": [
+         16.929,
+         -15.942,
+         1.35
+        ]
+       },
+       "cam:m/000139.jpg": {
+        "err_m": 0.1,
+        "forward_err_deg": null,
+        "center_uvy": [
+         17.664,
+         -15.849,
+         1.342
+        ]
+       },
+       "cam:m/000141.jpg": {
+        "err_m": 0.257,
+        "forward_err_deg": null,
+        "center_uvy": [
+         18.258,
+         -15.832,
+         1.436
+        ]
+       }
+      }
+     }
+    }
+   },
+   "role": "pipeline smoke: new ALIKED+LightGlue SfM of the March 1F walk anchored on the old registered cameras (circular), then independent checks",
+   "independent_checks": {
+    "portal_corners_localized_000034": {
+     "rms_px": 4.73,
+     "n": 8,
+     "note": "MainShell GATE3/4 source vertices; frame 000034 is not in the model (localized with fixed intrinsics, 2258 inliers); old registration fitted them at 4.10 px (fit, not held out)"
+    },
+    "meshcheck_all_geometry": {
+     "median_m": 0.046,
+     "blocks_median_m": [
+      0.076,
+      0.049,
+      0.033,
+      0.041
+     ]
+    },
+    "floor_layer_vs_Y0": -0.002
+   },
+   "finding": "ICP to the mesh made held-out points worse (0.034 -> 0.070 u): fit from controls, use the mesh as a check"
+  },
+  "ry2-3f": {
+   "work": ".planning/2026-09-26-full-twin/regtech/ry2-3f",
+   "sfm": {
+    "images": 553,
+    "raw_models": {
+     "0": 3,
+     "1": 474,
+     "2": 99
+    },
+    "components": [
+     {
+      "id": 0,
+      "registered": 553,
+      "points": 68646,
+      "mean_reproj_px": 1.216,
+      "t_range": [
+       172.0,
+       333.778
+      ],
+      "gaps": []
+     },
+     {
+      "id": 1,
+      "registered": 3,
+      "points": 0,
+      "mean_reproj_px": 0.0,
+      "t_range": [
+       187.0,
+       187.667
+      ],
+      "gaps": []
+     }
+    ],
+    "merges": [
+     {
+      "base_images": 474,
+      "other_images": 99,
+      "inliers": 230,
+      "accepted": true,
+      "merged_images": 553
+     },
+     {
+      "base_images": 553,
+      "other_images": 3,
+      "inliers": null,
+      "accepted": false,
+      "merged_images": null
+     }
+    ]
+   },
+   "anchors": {
+    "cams-hash": {
+     "file": ".planning/2026-09-26-full-twin/regtech/ry2-3f/anchor/cams-hash/anchor.json",
+     "c0": {
+      "status": "FAIL",
+      "registered_images": 553,
+      "gate_reasons": [
+       "held-out 3D RMS 0.511 > 0.3",
+       "held-out camera heading RMS 6.2 deg > 6.0",
+       "LOO max 3D 5.456 > 0.6"
+      ],
+      "fit": {
+       "controls": 6,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 6,
+       "rms_m": 0.75,
+       "max_m": 1.663,
+       "forward_rms_deg": 4.789
+      },
+      "heldout": {
+       "controls": 3,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 3,
+       "rms_m": 0.511,
+       "max_m": 0.754,
+       "forward_rms_deg": 6.165
+      },
+      "loo": {
+       "count": 6,
+       "rms_m": 2.41,
+       "max_m": 5.456
+      },
+      "scale": 3.608,
+      "heldout_items": {
+       "cam:ry2/t00187000.jpg": {
+        "err_m": 0.754,
+        "forward_err_deg": 7.553,
+        "center_uvy": [
+         15.252,
+         75.508,
+         11.85
+        ]
+       },
+       "cam:ry2/t00212000.jpg": {
+        "err_m": 0.387,
+        "forward_err_deg": 5.501,
+        "center_uvy": [
+         5.58,
+         67.262,
+         13.627
+        ]
+       },
+       "cam:ry2/t00319000.jpg": {
+        "err_m": 0.258,
+        "forward_err_deg": 5.167,
+        "center_uvy": [
+         13.464,
+         77.58,
+         12.805
+        ]
+       }
+      }
+     },
+     "checks": {
+      "frames": 553,
+      "t_range": [
+       172.0,
+       333.778
+      ],
+      "eye_above_floor": {
+       "median": 1.68,
+       "p05": -2.02,
+       "p95": 2.33
+      },
+      "balustrade_walk_283_306": {
+       "n": 75,
+       "min_b": 46.34,
+       "band_edge_b": 44.3
+      },
+      "break_231": {
+       "from_t": 231.0,
+       "to_t": 231.444,
+       "heading_change_deg": -12.9,
+       "step_u": 0.51
+      },
+      "break_309": {
+       "from_t": 308.833,
+       "to_t": 309.389,
+       "heading_change_deg": 20.7,
+       "step_u": 0.55
+      },
+      "floor_check": {
+       "points": 4381,
+       "layer_points": 789,
+       "layer_y": 12.965,
+       "expected_y": 12.2,
+       "error": 0.765
+      }
+     }
+    },
+    "fl-hash": {
+     "file": ".planning/2026-09-26-full-twin/regtech/ry2-3f/anchor/fl-hash/anchor.json",
+     "c0": {
+      "status": "FAIL",
+      "registered_images": 553,
+      "gate_reasons": [
+       "held-out 3D RMS 0.483 > 0.3",
+       "held-out camera heading RMS 6.2 deg > 6.0",
+       "LOO max 3D 2.062 > 0.6"
+      ],
+      "fit": {
+       "controls": 17,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 17,
+       "rms_m": 0.568,
+       "max_m": 1.841,
+       "forward_rms_deg": 5.157
+      },
+      "heldout": {
+       "controls": 8,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 8,
+       "rms_m": 0.483,
+       "max_m": 1.088,
+       "forward_rms_deg": 6.216
+      },
+      "loo": {
+       "count": 17,
+       "rms_m": 0.732,
+       "max_m": 2.062
+      },
+      "scale": 3.556,
+      "heldout_items": {
+       "floor3f-1": {
+        "err_m": 0.013,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor3f-2": {
+        "err_m": 0.04,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor3f-6": {
+        "err_m": 0.042,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor3f-8": {
+        "err_m": 0.031,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor3f-11": {
+        "err_m": 0.084,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "cam:ry2/t00187000.jpg": {
+        "err_m": 1.088,
+        "forward_err_deg": 7.752,
+        "center_uvy": [
+         15.203,
+         75.501,
+         11.312
+        ]
+       },
+       "cam:ry2/t00212000.jpg": {
+        "err_m": 0.307,
+        "forward_err_deg": 5.619,
+        "center_uvy": [
+         5.708,
+         67.388,
+         13.31
+        ]
+       },
+       "cam:ry2/t00319000.jpg": {
+        "err_m": 0.761,
+        "forward_err_deg": 4.925,
+        "center_uvy": [
+         13.44,
+         77.559,
+         12.214
+        ]
+       }
+      }
+     },
+     "checks": {
+      "frames": 553,
+      "t_range": [
+       172.0,
+       333.778
+      ],
+      "eye_above_floor": {
+       "median": 1.06,
+       "p05": -2.59,
+       "p95": 1.27
+      },
+      "balustrade_walk_283_306": {
+       "n": 75,
+       "min_b": 46.36,
+       "band_edge_b": 44.3
+      },
+      "break_231": {
+       "from_t": 231.0,
+       "to_t": 231.444,
+       "heading_change_deg": -12.9,
+       "step_u": 0.5
+      },
+      "break_309": {
+       "from_t": 308.833,
+       "to_t": 309.389,
+       "heading_change_deg": 20.8,
+       "step_u": 0.55
+      },
+      "floor_check": {
+       "points": 4469,
+       "layer_points": 1075,
+       "layer_y": 12.262,
+       "expected_y": 12.2,
+       "error": 0.062
+      }
+     }
+    },
+    "fl-tb-end": {
+     "file": ".planning/2026-09-26-full-twin/regtech/ry2-3f/anchor/fl-tb-end/anchor.json",
+     "c0": {
+      "status": "FAIL",
+      "registered_images": 553,
+      "gate_reasons": [
+       "held-out 3D RMS 1.268 > 0.3",
+       "held-out camera heading RMS 6.2 deg > 6.0",
+       "LOO max 3D 0.853 > 0.6"
+      ],
+      "fit": {
+       "controls": 17,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 17,
+       "rms_m": 0.353,
+       "max_m": 0.784,
+       "forward_rms_deg": 4.059
+      },
+      "heldout": {
+       "controls": 8,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 4,
+       "rms_m": 1.268,
+       "max_m": 1.918,
+       "forward_rms_deg": 6.216
+      },
+      "loo": {
+       "count": 17,
+       "rms_m": 0.411,
+       "max_m": 0.853
+      },
+      "scale": 3.666,
+      "heldout_items": {
+       "floor3f-1": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor3f-8": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor3f-10": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor3f-14": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "cam:ry2/t00178000.jpg": {
+        "err_m": 1.918,
+        "forward_err_deg": 6.424,
+        "center_uvy": [
+         18.394,
+         75.82,
+         9.353
+        ]
+       },
+       "cam:ry2/t00187000.jpg": {
+        "err_m": 1.233,
+        "forward_err_deg": 7.168,
+        "center_uvy": [
+         15.098,
+         75.286,
+         11.307
+        ]
+       },
+       "cam:ry2/t00207000.jpg": {
+        "err_m": 0.765,
+        "forward_err_deg": 6.03,
+        "center_uvy": [
+         6.969,
+         67.658,
+         13.388
+        ]
+       },
+       "cam:ry2/t00212000.jpg": {
+        "err_m": 0.807,
+        "forward_err_deg": 5.054,
+        "center_uvy": [
+         5.228,
+         67.03,
+         13.424
+        ]
+       }
+      }
+     },
+     "checks": {
+      "frames": 553,
+      "t_range": [
+       172.0,
+       333.778
+      ],
+      "eye_above_floor": {
+       "median": 1.1,
+       "p05": -2.67,
+       "p95": 1.22
+      },
+      "balustrade_walk_283_306": {
+       "n": 75,
+       "min_b": 46.15,
+       "band_edge_b": 44.3
+      },
+      "break_231": {
+       "from_t": 231.0,
+       "to_t": 231.444,
+       "heading_change_deg": -12.9,
+       "step_u": 0.52
+      },
+      "break_309": {
+       "from_t": 308.833,
+       "to_t": 309.389,
+       "heading_change_deg": 20.8,
+       "step_u": 0.56
+      },
+      "floor_check": {
+       "points": 4463,
+       "layer_points": 1172,
+       "layer_y": 12.349,
+       "expected_y": 12.2,
+       "error": 0.149
+      }
+     }
+    },
+    "fl-tb-start": {
+     "file": ".planning/2026-09-26-full-twin/regtech/ry2-3f/anchor/fl-tb-start/anchor.json",
+     "c0": {
+      "status": "FAIL",
+      "registered_images": 553,
+      "gate_reasons": [
+       "held-out 3D RMS 1.541 > 0.3",
+       "LOO max 3D 1.096 > 0.6"
+      ],
+      "fit": {
+       "controls": 15,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 15,
+       "rms_m": 0.331,
+       "max_m": 0.909,
+       "forward_rms_deg": 5.392
+      },
+      "heldout": {
+       "controls": 10,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 5,
+       "rms_m": 1.541,
+       "max_m": 1.608,
+       "forward_rms_deg": 2.443
+      },
+      "loo": {
+       "count": 15,
+       "rms_m": 0.435,
+       "max_m": 1.096
+      },
+      "scale": 3.819,
+      "heldout_items": {
+       "floor3f-3": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor3f-5": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor3f-6": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor3f-7": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor3f-11": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "cam:ry2/t00312000.jpg": {
+        "err_m": 1.608,
+        "forward_err_deg": 2.481,
+        "center_uvy": [
+         10.648,
+         78.419,
+         13.299
+        ]
+       },
+       "cam:ry2/t00316000.jpg": {
+        "err_m": 1.553,
+        "forward_err_deg": 2.018,
+        "center_uvy": [
+         13.275,
+         78.186,
+         12.836
+        ]
+       },
+       "cam:ry2/t00319000.jpg": {
+        "err_m": 1.558,
+        "forward_err_deg": 2.543,
+        "center_uvy": [
+         14.494,
+         78.133,
+         12.227
+        ]
+       },
+       "cam:ry2/t00322000.jpg": {
+        "err_m": 1.412,
+        "forward_err_deg": 2.698,
+        "center_uvy": [
+         15.479,
+         78.207,
+         11.624
+        ]
+       },
+       "cam:ry2/t00329500.jpg": {
+        "err_m": 1.567,
+        "forward_err_deg": 2.424,
+        "center_uvy": [
+         18.366,
+         78.5,
+         9.96
+        ]
+       }
+      }
+     },
+     "checks": {
+      "frames": 553,
+      "t_range": [
+       172.0,
+       333.778
+      ],
+      "eye_above_floor": {
+       "median": 1.15,
+       "p05": -2.76,
+       "p95": 1.42
+      },
+      "balustrade_walk_283_306": {
+       "n": 75,
+       "min_b": 46.19,
+       "band_edge_b": 44.3
+      },
+      "break_231": {
+       "from_t": 231.0,
+       "to_t": 231.444,
+       "heading_change_deg": -12.9,
+       "step_u": 0.54
+      },
+      "break_309": {
+       "from_t": 308.833,
+       "to_t": 309.389,
+       "heading_change_deg": 20.8,
+       "step_u": 0.59
+      },
+      "floor_check": {
+       "points": 4435,
+       "layer_points": 813,
+       "layer_y": 12.221,
+       "expected_y": 12.2,
+       "error": 0.021
+      }
+     }
+    },
+    "tb-fit-end": {
+     "file": ".planning/2026-09-26-full-twin/regtech/ry2-3f/anchor/tb-fit-end/anchor.json",
+     "c0": {
+      "status": "FAIL",
+      "registered_images": 553,
+      "gate_reasons": [
+       "held-out 3D RMS 3.264 > 0.3",
+       "held-out camera heading RMS 21.7 deg > 6.0",
+       "LOO max 3D 0.691 > 0.6"
+      ],
+      "fit": {
+       "controls": 5,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 5,
+       "rms_m": 0.099,
+       "max_m": 0.144,
+       "forward_rms_deg": 11.441
+      },
+      "heldout": {
+       "controls": 4,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 4,
+       "rms_m": 3.264,
+       "max_m": 4.621,
+       "forward_rms_deg": 21.65
+      },
+      "loo": {
+       "count": 5,
+       "rms_m": 0.376,
+       "max_m": 0.691
+      },
+      "scale": 3.792,
+      "heldout_items": {
+       "cam:ry2/t00178000.jpg": {
+        "err_m": 1.527,
+        "forward_err_deg": 22.888,
+        "center_uvy": [
+         18.856,
+         75.787,
+         10.503
+        ]
+       },
+       "cam:ry2/t00187000.jpg": {
+        "err_m": 0.802,
+        "forward_err_deg": 20.207,
+        "center_uvy": [
+         15.529,
+         75.433,
+         12.698
+        ]
+       },
+       "cam:ry2/t00207000.jpg": {
+        "err_m": 4.276,
+        "forward_err_deg": 27.566,
+        "center_uvy": [
+         8.428,
+         67.545,
+         17.688
+        ]
+       },
+       "cam:ry2/t00212000.jpg": {
+        "err_m": 4.621,
+        "forward_err_deg": 13.525,
+        "center_uvy": [
+         6.752,
+         66.673,
+         18.003
+        ]
+       }
+      }
+     }
+    },
+    "tb-fit-start": {
+     "file": ".planning/2026-09-26-full-twin/regtech/ry2-3f/anchor/tb-fit-start/anchor.json",
+     "c0": {
+      "status": "FAIL",
+      "registered_images": 553,
+      "gate_reasons": [
+       "held-out 3D RMS 1.381 > 0.3",
+       "held-out camera heading RMS 6.1 deg > 6.0",
+       "LOO max 3D 1.307 > 0.6"
+      ],
+      "fit": {
+       "controls": 4,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 4,
+       "rms_m": 0.31,
+       "max_m": 0.42,
+       "forward_rms_deg": 6.924
+      },
+      "heldout": {
+       "controls": 5,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 5,
+       "rms_m": 1.381,
+       "max_m": 1.536,
+       "forward_rms_deg": 6.099
+      },
+      "loo": {
+       "count": 4,
+       "rms_m": 0.914,
+       "max_m": 1.307
+      },
+      "scale": 3.82,
+      "heldout_items": {
+       "cam:ry2/t00312000.jpg": {
+        "err_m": 1.446,
+        "forward_err_deg": 6.733,
+        "center_uvy": [
+         10.471,
+         78.439,
+         13.456
+        ]
+       },
+       "cam:ry2/t00316000.jpg": {
+        "err_m": 1.319,
+        "forward_err_deg": 5.437,
+        "center_uvy": [
+         13.127,
+         78.229,
+         13.178
+        ]
+       },
+       "cam:ry2/t00319000.jpg": {
+        "err_m": 1.337,
+        "forward_err_deg": 5.768,
+        "center_uvy": [
+         14.385,
+         78.175,
+         12.655
+        ]
+       },
+       "cam:ry2/t00322000.jpg": {
+        "err_m": 1.25,
+        "forward_err_deg": 6.304,
+        "center_uvy": [
+         15.408,
+         78.244,
+         12.118
+        ]
+       },
+       "cam:ry2/t00329500.jpg": {
+        "err_m": 1.536,
+        "forward_err_deg": 6.17,
+        "center_uvy": [
+         18.398,
+         78.528,
+         10.644
+        ]
+       }
+      }
+     }
+    }
+   },
+   "hard_case": "3F food-court block across the 231 / 309 s breaks (BL-18)",
+   "previous_gate": {
+    "ry2-0 fit residuals m": [
+     0.438,
+     0.511,
+     0.341,
+     0.315
+    ],
+    "ry2-2 fit residuals m": [
+     0.061,
+     0.124,
+     0.033,
+     0.136,
+     0.046
+    ],
+    "blockB verdict": "FAILED: balustrade walk 283-306 s lands inside the void beyond band edge b 44.3; heading jumps across the 0.25 s break at 231 s; no rigid anchor for 231-309 s"
+   },
+   "state": "SfM 553 frames in one component 172-334 s (breaks bridged). Anchors fl-hash / fl-tb-start / fl-tb-end use regtech/controls/ry2-3f-floor.json (old cameras plus 16 floor points Y 12.2). The time blocks predict across the food-court block to 1.27-1.54 m. The balustrade walk stays at b >= 46.2 > 44.3. Poses: fl-hash/poses-foodcourt; summary regtech-work/ry2/ry2-result.json",
+   "planned_validation": [
+    "anchor --controls regtech/controls/ry2-3f.json --name cams-hash",
+    "anchor ... --name tb-fit-start --heldout-times 300~335 --heldout-every 0 (fit ry2-0 end, predict ry2-2 end across both breaks)",
+    "anchor ... --name tb-fit-end --heldout-times 170~215 --heldout-every 0",
+    "regtech-work/ry2_checks.py <anchor dir> 0 12.2 (walk, balustrade min b vs 44.3, heading change at 231/309, floor layer)",
+    "meshfit --check-only --include . (and source-only)",
+    "poses for 231-309 s frames -> Services23F5"
+   ]
+  },
+  "kmcz-hall": {
+   "work": ".planning/2026-09-26-full-twin/regtech/kmcz-hall",
+   "sfm": {
+    "images": 321,
+    "raw_models": {
+     "0": 2,
+     "1": 272,
+     "2": 49
+    },
+    "components": [
+     {
+      "id": 0,
+      "registered": 272,
+      "points": 19652,
+      "mean_reproj_px": 1.167,
+      "t_range": [
+       1244.556,
+       1334.667
+      ],
+      "gaps": []
+     },
+     {
+      "id": 1,
+      "registered": 49,
+      "points": 2466,
+      "mean_reproj_px": 1.219,
+      "t_range": [
+       1228.0,
+       1244.222
+      ],
+      "gaps": []
+     },
+     {
+      "id": 2,
+      "registered": 2,
+      "points": 433,
+      "mean_reproj_px": 0.352,
+      "t_range": [
+       1233.444,
+       1234.556
+      ],
+      "gaps": []
+     }
+    ],
+    "merges": [
+     {
+      "base_images": 272,
+      "other_images": 49,
+      "inliers": null,
+      "accepted": false,
+      "merged_images": null
+     },
+     {
+      "base_images": 272,
+      "other_images": 2,
+      "inliers": null,
+      "accepted": false,
+      "merged_images": null
+     }
+    ]
+   },
+   "anchors": {
+    "provisional": {
+     "file": ".planning/2026-09-26-full-twin/regtech/kmcz-hall/anchor/provisional/anchor.json",
+     "c0": {
+      "status": "FAIL",
+      "registered_images": 272,
+      "gate_reasons": [
+       "held-out point-to-mesh median 0.159 > 0.1",
+       "held-out points near the mesh 0.37 < 0.5"
+      ],
+      "fit": {
+       "controls": 0,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 0,
+       "rms_m": null,
+       "max_m": null,
+       "forward_rms_deg": null
+      },
+      "heldout": {
+       "controls": 0,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 0,
+       "rms_m": null,
+       "max_m": null,
+       "forward_rms_deg": null
+      },
+      "mesh": {
+       "fit_points": {
+        "n": 9910,
+        "median_m": 0.082,
+        "p90_m": 0.273,
+        "within_2dmax": 0.659
+       },
+       "heldout_points": {
+        "n": 5402,
+        "median_m": 0.159,
+        "p90_m": 0.329,
+        "within_2dmax": 0.369,
+        "before": {
+         "median_m": 0.154,
+         "within_2dmax": 0.36
+        }
+       }
+      },
+      "constraint": [
+       0.15,
+       0.399,
+       0.452
+      ],
+      "scale": 7.823,
+      "heldout_items": {}
+     }
+    }
+   },
+   "hard_case": "1F U- hall rear-row walk (kmCz 2021)",
+   "sfm_note": "one component 272 frames 1244.6-1334.7 s (bridges the 1300.7 s edit cut and continues outside GATE1); escalator ride 1228-1244 s is a separate 49-frame component (as before)",
+   "previous_gate": {
+    "status": "rejected",
+    "ceiling class-a plane median/p95": [
+     0.212,
+     0.463
+    ],
+    "threshold": "|median|<=0.10, p95<=0.25",
+    "GATE1 chamfer": "non-identifiable (4.05-4.56 px minima)"
+   },
+   "tried": [
+    "cross-epoch localize of kmCz frames into the anchored March model: FAILED (6-28 PnP inliers, arbitrary poses; regtech-work/kmcz-in-march.json)",
+    "provisional start (regtech/kmcz-hall/init-provisional.json: new->old SfM 94 common frames, 0.19 u median) + meshfit vs all geometry with the post-cut block 1300.7-1340 s held out: FAIL, held-out point-to-mesh median 0.159 u (0.154 before ICP), 37% of held-out points near geometry; fit block 0.082 u"
+   ],
+   "verdict": "still FAIL: no identifiable held-out-verified transform; needs source-vertex landmarks at GATE1/exterior canopy picked in 1318-1334 s frames (now registered in the same component)"
+  },
+  "seam-9yw": {
+   "work": ".planning/2026-09-26-full-twin/regtech/seam-9yw",
+   "sfm": {
+    "images": 135,
+    "raw_models": {
+     "0": 134
+    },
+    "components": [
+     {
+      "id": 0,
+      "registered": 134,
+      "points": 10839,
+      "mean_reproj_px": 1.313,
+      "t_range": [
+       186.0,
+       230.667
+      ],
+      "gaps": []
+     }
+    ],
+    "merges": []
+   },
+   "anchors": {
+    "src-hash": {
+     "file": ".planning/2026-09-26-full-twin/regtech/seam-9yw/anchor/src-hash/anchor.json",
+     "c0": {
+      "status": "FAIL",
+      "registered_images": 134,
+      "gate_reasons": [
+       "LOO max 3D 1.041 > 0.6",
+       "LOO reprojection RMS 184.94px > 8.0"
+      ],
+      "fit": {
+       "controls": 21,
+       "obs": 7,
+       "rms_px": 14.44,
+       "points_3d": 21,
+       "rms_m": 0.321,
+       "max_m": 0.983,
+       "forward_rms_deg": null
+      },
+      "heldout": {
+       "controls": 6,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 6,
+       "rms_m": 0.018,
+       "max_m": 0.035,
+       "forward_rms_deg": null
+      },
+      "loo": {
+       "count": 21,
+       "rms_m": 0.424,
+       "max_m": 1.041
+      },
+      "scale": 2.45,
+      "heldout_items": {
+       "floor-0": {
+        "err_m": 0.024,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor-2": {
+        "err_m": 0.035,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor-3": {
+        "err_m": 0.003,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor-5": {
+        "err_m": 0.011,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor-6": {
+        "err_m": 0.004,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor-7": {
+        "err_m": 0.004,
+        "forward_err_deg": null,
+        "center_uvy": null
+       }
+      }
+     },
+     "meshcheck": {
+      "include": "^FPSWorld/공식 자료 부산역",
+      "all": {
+       "n": 8108,
+       "near": 0.269,
+       "median_m": 0.128,
+       "p90_m": 0.304
+      },
+      "blocks": [
+       {
+        "t": [
+         186.4,
+         194.4
+        ],
+        "n": 2206,
+        "near": 0.162,
+        "median_m": 0.162,
+        "p90_m": 0.312
+       },
+       {
+        "t": [
+         194.4,
+         202.4
+        ],
+        "n": 1900,
+        "near": 0.113,
+        "median_m": 0.162,
+        "p90_m": 0.292
+       },
+       {
+        "t": [
+         202.4,
+         210.4
+        ],
+        "n": 1379,
+        "near": 0.186,
+        "median_m": 0.146,
+        "p90_m": 0.309
+       },
+       {
+        "t": [
+         210.4,
+         218.4
+        ],
+        "n": 1257,
+        "near": 0.494,
+        "median_m": 0.121,
+        "p90_m": 0.308
+       },
+       {
+        "t": [
+         218.4,
+         226.4
+        ],
+        "n": 1041,
+        "near": 0.537,
+        "median_m": 0.106,
+        "p90_m": 0.301
+       },
+       {
+        "t": [
+         226.4,
+         234.4
+        ],
+        "n": 325,
+        "near": 0.542,
+        "median_m": 0.092,
+        "p90_m": 0.23
+       }
+      ]
+     }
+    },
+    "src-tb": {
+     "file": ".planning/2026-09-26-full-twin/regtech/seam-9yw/anchor/src-tb/anchor.json",
+     "c0": {
+      "status": "FAIL",
+      "registered_images": 134,
+      "gate_reasons": [
+       "held-out-image reprojection RMS 10.48px > 8.0",
+       "LOO max 3D 2.086 > 0.6",
+       "LOO reprojection RMS 239.66px > 8.0"
+      ],
+      "fit": {
+       "controls": 27,
+       "obs": 7,
+       "rms_px": 16.075,
+       "points_3d": 23,
+       "rms_m": 0.39,
+       "max_m": 1.312,
+       "forward_rms_deg": null
+      },
+      "heldout": {
+       "controls": 0,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 0,
+       "rms_m": null,
+       "max_m": null,
+       "forward_rms_deg": null
+      },
+      "loo": {
+       "count": 27,
+       "rms_m": 0.644,
+       "max_m": 2.086
+      },
+      "scale": 2.505,
+      "heldout_items": {}
+     }
+    }
+   },
+   "request": "SeamPassage-1 (answered: reg-requests/SeamPassage-1.done.json)",
+   "state": "anchor src-hash: source exit-8 jamb in 4 frames, Layer0_5 post, exit-8 corridor south wall, floor. Visually verified at exit 8 (proj/s__t00215333.jpg: the source door-bank sill and round column land on the real ones). meshcheck: 50-54% of points within 0.4 m in the exit blocks. Strict gate FAIL (LOO, 2 point controls)",
+   "finding": "The source facade line V 11.7-12.2 (U 55-65) is open floor at 2F; the LED wall, A1 column and women's toilet are south of it",
+   "files": "regtech-work/seam/"
+  },
+  "pub1f-hcy": {
+   "work": ".planning/2026-09-26-full-twin/regtech/pub1f-hcy",
+   "sfm": {
+    "images": 120,
+    "raw_models": {
+     "0": 120
+    },
+    "components": [
+     {
+      "id": 0,
+      "registered": 120,
+      "points": 8284,
+      "mean_reproj_px": 0.995,
+      "t_range": [
+       560.0,
+       599.889
+      ],
+      "gaps": []
+     }
+    ],
+    "merges": []
+   },
+   "anchors": {
+    "ctl-hash": {
+     "file": ".planning/2026-09-26-full-twin/regtech/pub1f-hcy/anchor/ctl-hash/anchor.json",
+     "c0": {
+      "status": "FAIL",
+      "registered_images": 120,
+      "gate_reasons": [
+       "held-out 3D RMS 0.369 > 0.3",
+       "LOO max 3D 0.755 > 0.6",
+       "LOO reprojection RMS 20.08px > 8.0"
+      ],
+      "fit": {
+       "controls": 24,
+       "obs": 3,
+       "rms_px": 2.956,
+       "points_3d": 23,
+       "rms_m": 0.262,
+       "max_m": 0.755,
+       "forward_rms_deg": null
+      },
+      "heldout": {
+       "controls": 8,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 8,
+       "rms_m": 0.369,
+       "max_m": 0.676,
+       "forward_rms_deg": null
+      },
+      "loo": {
+       "count": 24,
+       "rms_m": 0.276,
+       "max_m": 0.755
+      },
+      "scale": 2.509,
+      "heldout_items": {
+       "toilet-face-0": {
+        "err_m": 0.469,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "toilet-face-3": {
+        "err_m": 0.422,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "toilet-face-4": {
+        "err_m": 0.676,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "north-wall-w-3": {
+        "err_m": 0.179,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "north-wall-w-4": {
+        "err_m": 0.335,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "north-wall-w-5": {
+        "err_m": 0.297,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor-7": {
+        "err_m": 0.008,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor-11": {
+        "err_m": 0.048,
+        "forward_err_deg": null,
+        "center_uvy": null
+       }
+      }
+     }
+    },
+    "tb-shops": {
+     "file": ".planning/2026-09-26-full-twin/regtech/pub1f-hcy/anchor/tb-shops/anchor.json",
+     "c0": {
+      "status": "FAIL",
+      "registered_images": 120,
+      "gate_reasons": [
+       "held-out reprojection RMS 58.68px > 8.0",
+       "held-out-image reprojection RMS 58.68px > 8.0",
+       "LOO max 3D 1.681 > 0.6",
+       "LOO reprojection RMS 21.62px > 8.0"
+      ],
+      "fit": {
+       "controls": 29,
+       "obs": 1,
+       "rms_px": 2.925,
+       "points_3d": 27,
+       "rms_m": 0.56,
+       "max_m": 1.581,
+       "forward_rms_deg": null
+      },
+      "heldout": {
+       "controls": 3,
+       "obs": 2,
+       "rms_px": 58.685,
+       "points_3d": 0,
+       "rms_m": null,
+       "max_m": null,
+       "forward_rms_deg": null
+      },
+      "loo": {
+       "count": 29,
+       "rms_m": 0.667,
+       "max_m": 1.681
+      },
+      "scale": 2.519,
+      "heldout_items": {
+       "part-subway-bnc-floor": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor-2": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor-6": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       }
+      }
+     }
+    },
+    "tb-west": {
+     "file": ".planning/2026-09-26-full-twin/regtech/pub1f-hcy/anchor/tb-west/anchor.json",
+     "c0": {
+      "status": "FAIL",
+      "registered_images": 120,
+      "gate_reasons": [
+       "held-out-image reprojection RMS 238.69px > 8.0",
+       "LOO max 3D 40.929 > 0.6",
+       "LOO reprojection RMS 238.68px > 8.0"
+      ],
+      "fit": {
+       "controls": 24,
+       "obs": 3,
+       "rms_px": 137.827,
+       "points_3d": 18,
+       "rms_m": 4.687,
+       "max_m": 17.289,
+       "forward_rms_deg": null
+      },
+      "heldout": {
+       "controls": 8,
+       "obs": 0,
+       "rms_px": null,
+       "points_3d": 0,
+       "rms_m": null,
+       "max_m": null,
+       "forward_rms_deg": null
+      },
+      "loo": {
+       "count": 24,
+       "rms_m": 11.639,
+       "max_m": 40.929
+      },
+      "scale": 2.621,
+      "heldout_items": {
+       "toilet-face-5": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "north-wall-w-0": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "north-wall-w-2": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "north-wall-w-3": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "north-wall-w-4": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor-0": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor-5": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       },
+       "floor-9": {
+        "err_m": null,
+        "forward_err_deg": null,
+        "center_uvy": null
+       }
+      }
+     }
+    }
+   },
+   "request": "Public1F-1 (answered: reg-requests/Public1F-1.done.json)",
+   "state": "SfM 120/120 0.99 px; anchors ctl-hash (hash 1/3) and tb-shops (hold out 560-573.5 s; partition predicted 0.59 m off). Controls regtech/controls/pub1f.json: builder/Naver kit plus SfM plane points plus one door head; no source geometry is visible",
+   "result": "NO-GO for the polygon as drawn. The north strip V -9.8..-11.3 is seen as floor; columns at V -11.4..-12.4 and a stone ledge along U -55.6. Atrium upper west wall at U -78.9. Main decided GO for a trimmed well (north edge V -11.8) and the atrium west extension",
+   "files": "regtech-work/pub1f/"
+  }
+ },
+ "requests": [
+  {
+   "request": ".planning/2026-09-26-full-twin/reg-requests/Evidence3F-1.json",
+   "answer": ".planning/2026-09-26-full-twin/reg-requests/Evidence3F-1.done.json",
+   "status": "declined"
+  },
+  {
+   "request": ".planning/2026-09-26-full-twin/reg-requests/Public1F-1.json",
+   "answer": ".planning/2026-09-26-full-twin/reg-requests/Public1F-1.done.json",
+   "status": "answered"
+  },
+  {
+   "request": ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.json",
+   "answer": ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json",
+   "status": "answered"
+  },
+  {
+   "request": ".planning/2026-09-26-full-twin/reg-requests/Signage-1.json",
+   "answer": ".planning/2026-09-26-full-twin/reg-requests/Signage-1.done.json",
+   "status": "declined"
+  },
+  {
+   "request": ".planning/2026-09-26-full-twin/reg-requests/SouthGate-1.json",
+   "answer": ".planning/2026-09-26-full-twin/reg-requests/SouthGate-1.done.json",
+   "status": "declined"
+  }
+ ],
+ "disk": {
+  "regtech_dir_mb": 525,
+  "budget_mb": 900
+ },
+ "generated_by": "regtech-work/make_report.py (RegTech6, 2026-09-25 21:10 KST)",
+ "status": "Service READY. Public1F-1 and SeamPassage-1 answered (.done.json). RY2 3F anchored with approximate poses (strict gate FAIL, ~1.5 m across the food-court block). kmCz still FAIL. All the new anchors FAIL the strict 0.30 m gate: their controls are builder/Naver kit or old registrations, or have little redundancy. The files record the stated sigmas and the visual/independent checks.",
+ "tool_changes_this_spawn": [
+  "match --match-kp (top-scored keypoints to LightGlue, indices mapped back)",
+  "REGTECH_DEVICE=cpu / REGTECH_THREADS (CPU matching: MPS is starved by the Editor in background processes, 2-3 s/pair vs 0.5 s/pair on CPU at 1024 kp)",
+  "match-progress flushed every 50 pairs; features validated + atomic writes",
+  "anchor --heldout-times time-block split, camera forward heading check + --gate-deg",
+  "localize: 3D-carrying reference keypoints + cache (~10 s/photo), --same-camera, --check landmarks, --min-inliers rejection, incremental output",
+  "rt_mesh.py: meshfit (point-to-plane ICP vs geometry-afterNN, time-block held-out, constraint report) and --check-only meshcheck"
+ ],
+ "background_jobs_at_handoff": "none"
+}

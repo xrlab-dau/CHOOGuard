@@ -1,0 +1,45 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "bottleneck": "Korail publishes no floor plan (구내도/평면도) for 부산역. Verified by reverse-engineering korail.com's webpack chunk map to the live endpoint GET /com/userStation.do (stationSeq 10279506): the response carries a floor-assigned facility INVENTORY with no geometry, and the component has no plan-image field. So interior fixture placement cannot be grounded in an official plan.",
+    "constraint": "Project rule forbids arbitrary placement. Everything must derive from measurement of an official source, from regulation, or from an equally citable ground truth.",
+    "what_already_works": "The building SHELL is already official and measured: MainShell FBX from 부산디지털로케이션, 2F concourse walkable, wall-based partitions measured (785/404/225/106/45 sqm), ceiling heights, floor materials. What is missing is the INTERIOR PROGRAM — ticket counters, benches, signage, gates, kiosks, lighting fixtures.",
+    "candidate_routes_not_yet_investigated": [
+      "Someone else has already modelled the Busan station interior: Sketchfab, 3D Warehouse, Unity/Unreal asset stores, BIM/IFC files, university or government 3D city projects, OpenStreetMap indoor mapping (S3DB / IndoorOSM / SIT tagging), Korean 공공데이터포털 3D datasets, 국토지리정보원 실내공간정보 (indoor spatial information) which is a real Korean government programme",
+      "Reconstruct from photographs or video: photogrammetry (COLMAP, Meshroom, OpenMVS, RealityCapture), neural methods (NeRF via nerfstudio/instant-ngp, 3D Gaussian Splatting, DUSt3R/MASt3R which need no camera poses), monocular depth (Depth Anything V2, Metric3D), single-image-to-3D room layout (RoomNet, HorizonNet, LayoutNet, Structured3D-trained models)",
+      "Street-level and indoor imagery sources: Kakao/Naver roadview indoor, Google Street View indoor (Business View), Mapillary, YouTube walkthrough videos of 부산역, 네이버 블로그/티스토리 posts with interior photos, news photography",
+      "Floor-plan-like ground truth that is not a plan: fire safety inspection records, 건축물대장 (building register) and its 평면도 attachment, 건축도면 공개 via 세움터, 공공건축물 도면 disclosure requests, academic papers on Busan station renovation",
+      "Derive program from the measured shell itself: the official model may already contain interior fixtures as separate submeshes or materials (counters, benches, gates) that were never examined — the material atlas has 372 materials and only floor materials were ever read"
+    ],
+    "user_instruction": "Do not ask the user back when a bottleneck appears. Reason deterministically with Jev and loop to find solution paths. Research aggressively."
+  },
+  "questions": {
+    "first_route": {
+      "type": "choice",
+      "instructions": "Which route should be attempted FIRST to obtain non-arbitrary interior program data?",
+      "criteria": {
+        "mine_the_existing_official_model": "Examine the official source's own 372 materials and submeshes for interior fixtures that were never looked for — cheapest, already licensed, already measured, and if fixtures exist there the whole bottleneck dissolves",
+        "find_existing_third_party_model": "Search for an existing third-party 3D model of the interior",
+        "photo_video_reconstruction": "Reconstruct geometry from photographs or walkthrough video using photogrammetry or neural methods",
+        "pursue_official_drawings": "Pursue building-register or 세움터 architectural drawings through disclosure channels"
+      }
+    },
+    "reconstruction_viability": {
+      "type": "choice",
+      "instructions": "If photo/video reconstruction is needed, what is the realistic role of that output given the project forbids arbitrary placement?",
+      "criteria": {
+        "positional_evidence_not_geometry": "Use it as POSITIONAL EVIDENCE — where a counter or bench actually sits relative to the measured shell — and place repo/licensed assets at those measured positions, rather than shipping the reconstructed mesh itself",
+        "ship_reconstructed_mesh": "Reconstruct and ship the resulting mesh as the interior geometry",
+        "not_viable": "Not viable under the no-arbitrary-placement rule"
+      }
+    },
+    "parallelism": {
+      "type": "choice",
+      "instructions": "How should these routes be pursued?",
+      "criteria": {
+        "all_in_parallel_then_rank": "Pursue every route in parallel and rank by what actually returns citable data, because each is independent and failure of one says nothing about the others",
+        "strictly_sequential": "Try them one at a time in cost order"
+      }
+    }
+  }
+}

@@ -1,0 +1,88 @@
+{
+ "zone": "2F bridge 보강",
+ "root": "실내 트윈 마감/2F 연결 보강",
+ "basis": {
+  "frames": "root = station UVY; box = majibang-plan boxFrame (origin -3, 33.25; 4.13 deg); y absolute",
+  "plan": ".planning/2026-09-23-video-twin/majibang-plan.json",
+  "liveGeometry": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json",
+  "tiers": "all emitted elements tier b (source mesh / plan / SfM hosts + photo-relative offsets marked [INFERENCE]); tier c items are listed in 2f-box-report.json",
+  "epoch": "appearance per the newest photo of each item (2026-07/09 over 2023-05 when they differ)"
+ },
+ "elements": [
+  {
+   "type": "FloorFinish",
+   "id": "BR-ENH-FLOOR-0",
+   "zone": "2F bridge",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-16 / G-BR01 / G-M23",
+    ".planning/2026-09-23-video-twin/majibang-plan.json cells (bridge = cells v 12..16, u -12..16, as audit/metrics.py)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-07-03_tom2410_-224335650269_008.jpg (polished speckled granite continues through the hall)"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      -3.91,
+      12.5
+     ],
+     [
+      -12.5,
+      12.5
+     ],
+     [
+      -12.5,
+      16.5
+     ],
+     [
+      -9.01,
+      16.5
+     ],
+     [
+      -9.01,
+      16.39
+     ],
+     [
+      -2.99,
+      16.39
+     ],
+     [
+      -2.99,
+      16.5
+     ],
+     [
+      16.5,
+      16.5
+     ],
+     [
+      16.5,
+      12.5
+     ],
+     [
+      -2.89,
+      12.5
+     ],
+     [
+      -2.89,
+      15.51
+     ],
+     [
+      -3.91,
+      15.51
+     ]
+    ],
+    "holes": [],
+    "y": 7.0
+   },
+   "params": {
+    "finish": "polished",
+    "lift": 0.003,
+    "uvOrigin": [
+     0,
+     0
+    ]
+   },
+   "note": "same finish/lift as the box and the 2F main overlays (EnhanceMain2F: polished, lift .003, stops at v 12.5) -> no seam; the 자동발매기 unit is a hole"
+  }
+ ]
+}

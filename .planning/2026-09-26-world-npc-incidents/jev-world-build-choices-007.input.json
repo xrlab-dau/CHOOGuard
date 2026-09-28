@@ -1,0 +1,72 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Resolve ambiguous build choices for CHOOGuard's whole-station NPC world and composed emergencies. Inputs are measured facts from the Busan Station twin and the user's direction; typed judgments only. The user is away and asked that ambiguous judgments be settled with JEV; the main model implements.",
+    "user_direction": "NPCs everywhere: boarding, going to board, getting off, riding elevators and escalators; JEV-based movement; seamless; JEV creates emergencies anywhere (train interiors, outside, platforms).",
+    "prior_jev_routing_006": "atomic world composition 1.00; prefetched next-activity decisions 1.00; moving train cycle 0.99; continuous traversal 1.00; anywhere preconditions hold 1.00; population about 100 (0.59, weak); local interior navigation 0.95.",
+    "measured_twin_facts": {
+      "platforms": "Island platforms signed '1', '3·4', '5·6', '8·9', '10·11' are reached from the 2F concourse through north-deck wells and south wells; every well has one escalator lane beside a stair lane. A sign above one well reads '나가는 곳' (way out).",
+      "ktx": "One 10-car KTX-Sancheon set (cars 1-8, car 3 first class, car 4 has no passenger door) stands at platform 5·6 with its platform-side doors modelled open. Car interiors: aisle about 0.6 m, 13 rows of 2+2 seats in a standard car; floor colliders are missing in the aisle and vestibules.",
+      "circulation": "Two named 2F-3F escalators (one up, one down); two 1F-2F escalator installations; elevator banks between 1F and the 2F plaza level and between 2F and 3F; toilets on 1F, 2F, 3F; shops and cafes with tables and chairs on 1F, 2F and 3F.",
+      "terminus": "Busan is the terminus: an arriving set unloads completely and then boards for the return trip.",
+      "typical_shift": "A shift runs about 8-15 minutes of real time; the first emergency transition is considered after about 1-2 minutes."
+    },
+    "constraints": "Timings are game-compressed and labelled as such. Terror is represented only through observable signs and staff response. JEV answers are advisory (authority 0)."
+  },
+  "questions": {
+    "train_timeline": {
+      "type": "choice",
+      "instructions": "Which train timeline makes boarding, alighting and platform-bound flows visible early in a short shift while staying plausible for a terminus?",
+      "criteria": {
+        "boarding_first_then_arrival": "Shift starts with the set at platform 5·6 boarding for Seoul; it departs after about 2-3 minutes; the next set arrives from Seoul about 2 minutes later and everyone alights; after a short turnaround it boards again. The cycle repeats.",
+        "arrival_first": "Shift starts with the set arriving about 40 s in; everyone alights; turnaround; boarding; departure; next arrival later.",
+        "static_boarding_only": "The set stays and keeps boarding; no arrivals."
+      }
+    },
+    "single_escalator_direction": {
+      "type": "choice",
+      "instructions": "Each platform well has one escalator beside stairs; the model does not encode running direction. Which direction should these escalators run?",
+      "criteria": {
+        "all_up_way_out": "All run up toward the concourse ('way out'): arriving passengers with luggage ride up; departing passengers walk down the stairs or use elevators where available.",
+        "north_up_south_down": "North-deck wells run up and south wells run down.",
+        "all_down": "All run down toward the platforms."
+      }
+    },
+    "population_target": {
+      "type": "choice",
+      "instructions": "How many people should the world hold, given about 17 ms per editor frame with 100 animated people in one hall?",
+      "criteria": {
+        "about_110_plus_train": "About 110 people spread across the concourse, 3F, 1F, plaza and platforms, plus the people inside a docked train (about 30-50).",
+        "about_100_total": "About 100 in total including train riders.",
+        "about_180_total": "About 180 in total."
+      }
+    },
+    "first_new_transitions": {
+      "type": "choice",
+      "instructions": "Beyond overheating batteries, left-behind luggage and ground shaking (already mechanised), which extra atomic transitions should the composer get in this build so that emergencies can emerge in trains, on platforms and on escalators?",
+      "criteria": {
+        "medical_fall_door": "A person collapses (medical) anywhere; a person riding an escalator loses footing and falls (the escalator is stopped by bystanders); a closing train door catches a bag or person and the departure is held.",
+        "track_trespass": "A person drops an item on the track and climbs down to fetch it.",
+        "power_outage": "A station power outage stops escalators and elevators and traps people in an elevator."
+      }
+    },
+    "composer_cadence": {
+      "type": "choice",
+      "instructions": "How often should the composer ask JEV what happens next, and with how many candidates, so the shift is neither dead nor chaotic?",
+      "criteria": {
+        "every_10_to_16s_12_candidates": "Every 10-16 s ask one choice over up to 12 world-derived candidates (sampled across zones) plus 'nothing yet' during the calm phase; once something has happened, keep asking every 10-16 s for developments; a magnitude score is asked only for a chosen transition.",
+        "every_5s_many": "Every 5 s over all possible candidates.",
+        "every_45s": "Every 45 s over a few candidates."
+      }
+    },
+    "calm_pressure": {
+      "type": "choice",
+      "instructions": "If JEV keeps answering 'nothing yet' during the calm phase, what should the game do?",
+      "criteria": {
+        "drop_nothing_after_3": "After three 'nothing yet' answers the option is removed so JEV must compose a first transition from the live candidates (the trainee is on a training shift).",
+        "keep_nothing_forever": "Always keep 'nothing yet'; a shift may pass without incident.",
+        "random_fallback": "After three answers pick a random candidate locally."
+      }
+    }
+  }
+}

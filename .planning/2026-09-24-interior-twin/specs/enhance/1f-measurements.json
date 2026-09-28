@@ -1,0 +1,1915 @@
+{
+ "schema": "chooguard.1f-enhance-measurements.v1",
+ "method": "1F enhancement measurements from the March 2026 registered walk (3TLdCQCjeXE, 1f-2026-sfm frames).\n\nEvery position here is a ray from a registered camera (metric-registration/registered-cameras.json, class-a\nregistration: portal corners + header plane + plumb lines) through a hand-picked pixel of the 960x540 source frame,\nintersected with a known surface (floor Y 0, a class-a / a-failed fitted plane, a fixed height) or triangulated from\ntwo or more registered views (least-squares ray intersection, residual per ray reported).\nPixel picks were read off zoomed, gridded crops of the frames (+-3 px); at 4-12 u range this is +-0.02-0.08 u\nacross the view ray. Two-frame agreement is reported where a feature was picked in more than one frame.\nOutput: 1f-measurements.json (read by make_1f_enhance.py and make_1f_detail.py).",
+ "cameras": ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+ "frames": ".planning/2026-09-23-video-twin/1f-2026-sfm/images",
+ "projectionCheck": {
+  "point": [
+   13.979,
+   -14.39,
+   2.274
+  ],
+  "frame": "000085.jpg",
+  "px": [
+   345.3,
+   214.7
+  ],
+  "expected": "right-approach-wall overlay corner at about (345, 215)"
+ },
+ "planes": {
+  "floor": {
+   "normalUVY": [
+    0,
+    0,
+    1
+   ],
+   "offset": 0.0,
+   "basis": "datum Y 0 (lower-landing floor class a: Y -0.10..-0.003, not a separate surface)"
+  },
+  "rightApproachWall": {
+   "normalUVY": [
+    0.097435,
+    -0.995175,
+    -0.01151
+   ],
+   "offset": -15.68307,
+   "basis": "office-frontage-fit/right-approach-wall.json officeFit (class a; held-out median .006, p95 .019)"
+  },
+  "officeFrontage": {
+   "normalUVY": [
+    0.077414,
+    -0.996675,
+    -0.025398
+   ],
+   "offset": -15.52534,
+   "basis": "office-frontage-fit/office-public-frontage.json (class a-failed: held-out p95 .39; S20 2020 cross-check within .10 u, central-crossval)"
+  },
+  "header": {
+   "normalUVY": [
+    0,
+    1,
+    0
+   ],
+   "offset": 22.05,
+   "basis": "entry header face V -22.05: triangulated elevator-sign corners 72/76 and 66/72 (V -21.85..-22.11, residual <= .02 u); cl-entry-high-fascia range V -22.72..-21.76"
+  },
+  "columnWest": {
+   "normalUVY": [
+    1,
+    0,
+    0
+   ],
+   "offset": -12.03,
+   "basis": "header column U- face U 12.03: triangulated navy sign on it, 76/79 (residual <= .01)"
+  },
+  "columnSouth": {
+   "normalUVY": [
+    0,
+    1,
+    0
+   ],
+   "offset": 22.12,
+   "basis": "header column V- face: floor hits 72 x 215/340 -> V -22.12/-22.01"
+  },
+  "ceilingLow": {
+   "normalUVY": [
+    0,
+    0,
+    1
+   ],
+   "offset": -2.25,
+   "basis": "low suspended ceiling class a (officeFit Y 2.23-2.26; collisionCeilingY 2.256)"
+  }
+ },
+ "points": {
+  "office.door1.east": {
+   "uvy": [
+    11.387,
+    -14.716,
+    0.914
+   ],
+   "spread": 0.075,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      570,
+      300
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      11.375,
+      -14.718,
+      0.95
+     ],
+     "note": "single door, U+ jamb"
+    },
+    {
+     "frame": "000072.jpg",
+     "px": [
+      497,
+      300
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      11.399,
+      -14.714,
+      0.879
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "office.door1.west": {
+   "uvy": [
+    10.519,
+    -14.784,
+    0.921
+   ],
+   "spread": 0.077,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      623,
+      300
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      10.516,
+      -14.785,
+      0.96
+     ],
+     "note": "single door, U- jamb"
+    },
+    {
+     "frame": "000072.jpg",
+     "px": [
+      533,
+      300
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      10.522,
+      -14.782,
+      0.883
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "office.door1.head": {
+   "uvy": [
+    10.935,
+    -14.778,
+    1.984
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      596,
+      237
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      10.935,
+      -14.778,
+      1.984
+     ],
+     "note": "door head"
+    }
+   ]
+  },
+  "office.window.east": {
+   "uvy": [
+    10.249,
+    -14.829,
+    1.849
+   ],
+   "spread": 0.034,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      640,
+      243
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      10.245,
+      -14.829,
+      1.866
+     ],
+     "note": "wood-framed window"
+    },
+    {
+     "frame": "000072.jpg",
+     "px": [
+      544,
+      260
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      10.253,
+      -14.828,
+      1.833
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "office.window.west": {
+   "uvy": [
+    8.819,
+    -14.939,
+    1.82
+   ],
+   "spread": 0.014,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      740,
+      243
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      8.815,
+      -14.939,
+      1.825
+     ],
+     "note": ""
+    },
+    {
+     "frame": "000072.jpg",
+     "px": [
+      606,
+      260
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      8.824,
+      -14.938,
+      1.814
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "office.window.head": {
+   "uvy": [
+    9.505,
+    -14.893,
+    2.105
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      690,
+      226
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      9.505,
+      -14.893,
+      2.105
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "office.window.sill": {
+   "uvy": [
+    9.51,
+    -14.878,
+    1.554
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      690,
+      262
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      9.51,
+      -14.878,
+      1.554
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "office.door2.east": {
+   "uvy": [
+    7.056,
+    -15.053,
+    0.949
+   ],
+   "spread": 0.099,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      882,
+      300
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      7.06,
+      -15.054,
+      0.998
+     ],
+     "note": "double door, U+ jamb"
+    },
+    {
+     "frame": "000072.jpg",
+     "px": [
+      688,
+      300
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      7.051,
+      -15.052,
+      0.899
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "office.door2.west": {
+   "uvy": [
+    5.324,
+    -15.187,
+    0.905
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      773,
+      300
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      5.324,
+      -15.187,
+      0.905
+     ],
+     "note": "double door, U- jamb"
+    }
+   ]
+  },
+  "office.door2.head": {
+   "uvy": [
+    6.404,
+    -15.13,
+    1.97
+   ],
+   "spread": 0.452,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      920,
+      228
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      6.629,
+      -15.112,
+      1.964
+     ],
+     "note": ""
+    },
+    {
+     "frame": "000072.jpg",
+     "px": [
+      730,
+      251
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      6.179,
+      -15.148,
+      1.975
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "office.plate.east": {
+   "uvy": [
+    7.758,
+    -15.019,
+    1.742
+   ],
+   "spread": 0.028,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      822,
+      246
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      7.767,
+      -15.019,
+      1.753
+     ],
+     "note": "navy name plate"
+    },
+    {
+     "frame": "000072.jpg",
+     "px": [
+      655,
+      263
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      7.748,
+      -15.019,
+      1.732
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "office.plate.west": {
+   "uvy": [
+    7.255,
+    -15.058,
+    1.733
+   ],
+   "spread": 0.014,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      865,
+      246
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      7.254,
+      -15.058,
+      1.74
+     ],
+     "note": ""
+    },
+    {
+     "frame": "000072.jpg",
+     "px": [
+      678,
+      263
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      7.257,
+      -15.057,
+      1.726
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "office.end": {
+   "uvy": [
+    5.089,
+    -15.205,
+    0.906
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      785,
+      300
+     ],
+     "surface": "officeFrontage",
+     "uvy": [
+      5.089,
+      -15.205,
+      0.906
+     ],
+     "note": "last white panel before the corner"
+    }
+   ]
+  },
+  "office.corner": {
+   "uvy": [
+    4.975,
+    -15.141,
+    0.0
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      790,
+      342
+     ],
+     "surface": "floor",
+     "uvy": [
+      4.975,
+      -15.141,
+      0.0
+     ],
+     "note": "wall corner at the extinguisher"
+    }
+   ]
+  },
+  "office.extinguisher": {
+   "uvy": [
+    5.242,
+    -15.691,
+    0.0
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      787,
+      345
+     ],
+     "surface": "floor",
+     "uvy": [
+      5.242,
+      -15.691,
+      0.0
+     ],
+     "note": "red extinguisher at the corner"
+    }
+   ]
+  },
+  "unit16.eastGlass.a": {
+   "uvy": [
+    4.878,
+    -16.709,
+    0.0
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      830,
+      352
+     ],
+     "surface": "floor",
+     "uvy": [
+      4.878,
+      -16.709,
+      0.0
+     ],
+     "note": "glass base"
+    }
+   ]
+  },
+  "unit16.eastGlass.b": {
+   "uvy": [
+    5.034,
+    -19.114,
+    0.0
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      900,
+      375
+     ],
+     "surface": "floor",
+     "uvy": [
+      5.034,
+      -19.114,
+      0.0
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "unit16.eastGlass.c": {
+   "uvy": [
+    5.167,
+    -20.331,
+    0.0
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      950,
+      393
+     ],
+     "surface": "floor",
+     "uvy": [
+      5.167,
+      -20.331,
+      0.0
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "box.frontEast": {
+   "uvy": [
+    13.0,
+    -15.126,
+    0.0
+   ],
+   "spread": 0.325,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000085.jpg",
+     "px": [
+      388,
+      398
+     ],
+     "surface": "floor",
+     "uvy": [
+      13.052,
+      -14.972,
+      0.0
+     ],
+     "note": "stainless box, U+ front corner"
+    },
+    {
+     "frame": "000079.jpg",
+     "px": [
+      470,
+      358
+     ],
+     "surface": "floor",
+     "uvy": [
+      12.949,
+      -15.28,
+      0.0
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "box.frontWest": {
+   "uvy": [
+    11.733,
+    -14.866,
+    0.0
+   ],
+   "spread": 0.114,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000085.jpg",
+     "px": [
+      498,
+      402
+     ],
+     "surface": "floor",
+     "uvy": [
+      11.754,
+      -14.813,
+      0.0
+     ],
+     "note": "U- front corner"
+    },
+    {
+     "frame": "000079.jpg",
+     "px": [
+      548,
+      358
+     ],
+     "surface": "floor",
+     "uvy": [
+      11.713,
+      -14.919,
+      0.0
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "box.backWest": {
+   "uvy": [
+    11.515,
+    -15.131,
+    0.0
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000085.jpg",
+     "px": [
+      512,
+      410
+     ],
+     "surface": "floor",
+     "uvy": [
+      11.515,
+      -15.131,
+      0.0
+     ],
+     "note": "U- side face at the wall"
+    }
+   ]
+  },
+  "sign.approach.nw": {
+   "uvy": [
+    16.358,
+    -14.179,
+    1.843
+   ],
+   "spread": 0.023,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      332,
+      253
+     ],
+     "surface": "rightApproachWall",
+     "uvy": [
+      16.352,
+      -14.18,
+      1.852
+     ],
+     "note": "navy \"<- 타는 곳 / 표사는 곳\" sign corners"
+    },
+    {
+     "frame": "000085.jpg",
+     "px": [
+      215,
+      252
+     ],
+     "surface": "rightApproachWall",
+     "uvy": [
+      16.365,
+      -14.178,
+      1.833
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "sign.approach.ne": {
+   "uvy": [
+    13.956,
+    -14.413,
+    1.742
+   ],
+   "spread": 0.109,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      435,
+      253
+     ],
+     "surface": "rightApproachWall",
+     "uvy": [
+      13.941,
+      -14.415,
+      1.795
+     ],
+     "note": ""
+    },
+    {
+     "frame": "000085.jpg",
+     "px": [
+      345,
+      258
+     ],
+     "surface": "rightApproachWall",
+     "uvy": [
+      13.97,
+      -14.411,
+      1.69
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "sign.approach.sw": {
+   "uvy": [
+    16.365,
+    -14.167,
+    0.885
+   ],
+   "spread": 0.113,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      332,
+      297
+     ],
+     "surface": "rightApproachWall",
+     "uvy": [
+      16.362,
+      -14.168,
+      0.942
+     ],
+     "note": ""
+    },
+    {
+     "frame": "000085.jpg",
+     "px": [
+      215,
+      318
+     ],
+     "surface": "rightApproachWall",
+     "uvy": [
+      16.369,
+      -14.166,
+      0.829
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "sign.approach.se": {
+   "uvy": [
+    13.962,
+    -14.403,
+    0.929
+   ],
+   "spread": 0.086,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      435,
+      297
+     ],
+     "surface": "rightApproachWall",
+     "uvy": [
+      13.949,
+      -14.405,
+      0.97
+     ],
+     "note": ""
+    },
+    {
+     "frame": "000085.jpg",
+     "px": [
+      345,
+      318
+     ],
+     "surface": "rightApproachWall",
+     "uvy": [
+      13.975,
+      -14.401,
+      0.888
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "board.yellow.nw": {
+   "uvy": [
+    18.15,
+    -14.008,
+    2.205
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000106.jpg",
+     "px": [
+      783,
+      213
+     ],
+     "surface": "rightApproachWall",
+     "uvy": [
+      18.15,
+      -14.008,
+      2.205
+     ],
+     "note": "yellow escalator-rules board"
+    }
+   ]
+  },
+  "board.yellow.ne": {
+   "uvy": [
+    16.375,
+    -14.181,
+    2.21
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000106.jpg",
+     "px": [
+      838,
+      178
+     ],
+     "surface": "rightApproachWall",
+     "uvy": [
+      16.375,
+      -14.181,
+      2.21
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "board.yellow.sw": {
+   "uvy": [
+    18.301,
+    -13.978,
+    0.965
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000106.jpg",
+     "px": [
+      783,
+      330
+     ],
+     "surface": "rightApproachWall",
+     "uvy": [
+      18.301,
+      -13.978,
+      0.965
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "board.yellow.se": {
+   "uvy": [
+    16.497,
+    -14.155,
+    0.981
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000106.jpg",
+     "px": [
+      838,
+      345
+     ],
+     "surface": "rightApproachWall",
+     "uvy": [
+      16.497,
+      -14.155,
+      0.981
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "standee.approach": {
+   "uvy": [
+    13.308,
+    -15.038,
+    0.0
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      455,
+      355
+     ],
+     "surface": "floor",
+     "uvy": [
+      13.308,
+      -15.038,
+      0.0
+     ],
+     "note": "kick-scooter / bicycle prohibition standee base"
+    }
+   ]
+  },
+  "column.swCorner": {
+   "uvy": [
+    13.512,
+    -22.125,
+    0.0
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      215,
+      405
+     ],
+     "surface": "floor",
+     "uvy": [
+      13.512,
+      -22.125,
+      0.0
+     ],
+     "note": "V- face, U+ corner"
+    }
+   ]
+  },
+  "column.seCorner": {
+   "uvy": [
+    12.081,
+    -22.012,
+    0.0
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      340,
+      408
+     ],
+     "surface": "floor",
+     "uvy": [
+      12.081,
+      -22.012,
+      0.0
+     ],
+     "note": "V- face, U- corner"
+    }
+   ]
+  },
+  "column.westFaceEnd": {
+   "uvy": [
+    12.03,
+    -20.705,
+    1.153
+   ],
+   "spread": 0.105,
+   "views": 2,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      318,
+      300
+     ],
+     "surface": "columnWest",
+     "uvy": [
+      12.03,
+      -20.711,
+      1.205
+     ],
+     "note": "far end of the U- face"
+    },
+    {
+     "frame": "000076.jpg",
+     "px": [
+      405,
+      300
+     ],
+     "surface": "columnWest",
+     "uvy": [
+      12.03,
+      -20.699,
+      1.101
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "column.sign.south": {
+   "uvy": [
+    12.03,
+    -21.843,
+    1.593
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      155,
+      219
+     ],
+     "surface": "columnWest",
+     "uvy": [
+      12.03,
+      -21.843,
+      1.593
+     ],
+     "note": "navy \"타는 곳 / 승차권자동발매기\" sign on the U- face"
+    }
+   ]
+  },
+  "column.sign.north": {
+   "uvy": [
+    12.03,
+    -20.81,
+    1.699
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      308,
+      219
+     ],
+     "surface": "columnWest",
+     "uvy": [
+      12.03,
+      -20.81,
+      1.699
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "column.sign.top": {
+   "uvy": [
+    12.03,
+    -21.43,
+    1.804
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      230,
+      185
+     ],
+     "surface": "columnWest",
+     "uvy": [
+      12.03,
+      -21.43,
+      1.804
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "column.sign.bottom": {
+   "uvy": [
+    12.03,
+    -21.428,
+    1.458
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      230,
+      255
+     ],
+     "surface": "columnWest",
+     "uvy": [
+      12.03,
+      -21.428,
+      1.458
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "column.directory.e": {
+   "uvy": [
+    13.258,
+    -22.12,
+    1.883
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      236,
+      235
+     ],
+     "surface": "columnSouth",
+     "uvy": [
+      13.258,
+      -22.12,
+      1.883
+     ],
+     "note": "회의실 2F/5F directory on the V- face"
+    }
+   ]
+  },
+  "column.directory.w": {
+   "uvy": [
+    12.431,
+    -22.12,
+    1.866
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      305,
+      235
+     ],
+     "surface": "columnSouth",
+     "uvy": [
+      12.431,
+      -22.12,
+      1.866
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "column.directory.bottom": {
+   "uvy": [
+    12.842,
+    -22.12,
+    0.84
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      270,
+      330
+     ],
+     "surface": "columnSouth",
+     "uvy": [
+      12.842,
+      -22.12,
+      0.84
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "column.aedSign": {
+   "uvy": [
+    12.268,
+    -22.12,
+    1.435
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      319,
+      275
+     ],
+     "surface": "columnSouth",
+     "uvy": [
+      12.268,
+      -22.12,
+      1.435
+     ],
+     "note": "green AED sign plate on the V- face"
+    }
+   ]
+  },
+  "header.elevatorEast.a": {
+   "uvy": [
+    11.99,
+    -22.05,
+    2.389
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000066.jpg",
+     "px": [
+      408,
+      215
+     ],
+     "surface": "header",
+     "uvy": [
+      11.99,
+      -22.05,
+      2.389
+     ],
+     "note": "\"엘리베이터 <-\" sign, lower U+ corner"
+    }
+   ]
+  },
+  "header.elevatorEast.b": {
+   "uvy": [
+    10.848,
+    -22.05,
+    2.622
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000066.jpg",
+     "px": [
+      475,
+      200
+     ],
+     "surface": "header",
+     "uvy": [
+      10.848,
+      -22.05,
+      2.622
+     ],
+     "note": "upper U- corner"
+    }
+   ]
+  },
+  "header.tickets.a": {
+   "uvy": [
+    9.822,
+    -22.05,
+    2.391
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000066.jpg",
+     "px": [
+      537,
+      213
+     ],
+     "surface": "header",
+     "uvy": [
+      9.822,
+      -22.05,
+      2.391
+     ],
+     "note": "\"2층 표사는 곳·승차권자동발매기\" sign"
+    }
+   ]
+  },
+  "header.tickets.b": {
+   "uvy": [
+    7.859,
+    -22.05,
+    2.637
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000066.jpg",
+     "px": [
+      660,
+      196
+     ],
+     "surface": "header",
+     "uvy": [
+      7.859,
+      -22.05,
+      2.637
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "header.elevatorWest.a": {
+   "uvy": [
+    6.889,
+    -22.05,
+    2.399
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000066.jpg",
+     "px": [
+      723,
+      210
+     ],
+     "surface": "header",
+     "uvy": [
+      6.889,
+      -22.05,
+      2.399
+     ],
+     "note": "\"엘리베이터 ->\" sign"
+    }
+   ]
+  },
+  "header.elevatorWest.b": {
+   "uvy": [
+    5.603,
+    -22.05,
+    2.681
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000066.jpg",
+     "px": [
+      808,
+      191
+     ],
+     "surface": "header",
+     "uvy": [
+      5.603,
+      -22.05,
+      2.681
+     ],
+     "note": ""
+    }
+   ]
+  },
+  "header.band.bottom": {
+   "uvy": [
+    8.806,
+    -22.05,
+    2.312
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000066.jpg",
+     "px": [
+      600,
+      217
+     ],
+     "surface": "header",
+     "uvy": [
+      8.806,
+      -22.05,
+      2.312
+     ],
+     "note": "stainless band underside"
+    }
+   ]
+  },
+  "header.band.top": {
+   "uvy": [
+    8.804,
+    -22.05,
+    2.831
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000066.jpg",
+     "px": [
+      600,
+      185
+     ],
+     "surface": "header",
+     "uvy": [
+      8.804,
+      -22.05,
+      2.831
+     ],
+     "note": "stainless band top = white fascia bottom"
+    }
+   ]
+  },
+  "header.fascia.east": {
+   "uvy": [
+    12.132,
+    -22.05,
+    3.838
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000066.jpg",
+     "px": [
+      400,
+      130
+     ],
+     "surface": "header",
+     "uvy": [
+      12.132,
+      -22.05,
+      3.838
+     ],
+     "note": "white fascia U+ end (column)"
+    }
+   ]
+  },
+  "header.fascia.west": {
+   "uvy": [
+    5.486,
+    -22.05,
+    3.636
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000066.jpg",
+     "px": [
+      815,
+      130
+     ],
+     "surface": "header",
+     "uvy": [
+      5.486,
+      -22.05,
+      3.636
+     ],
+     "note": "white fascia U- end (ARTBOX pier)"
+    }
+   ]
+  },
+  "header.bandEast.bottom": {
+   "uvy": [
+    14.827,
+    -22.066,
+    2.25
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      120,
+      207
+     ],
+     "surface": "ceilingLow",
+     "uvy": [
+      14.827,
+      -22.066,
+      2.25
+     ],
+     "note": "band underside behind the column"
+    }
+   ]
+  },
+  "ceiling.cctv.a": {
+   "uvy": [
+    10.371,
+    -20.993,
+    2.25
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      580,
+      85
+     ],
+     "surface": "ceilingLow",
+     "uvy": [
+      10.371,
+      -20.993,
+      2.25
+     ],
+     "note": "black bullet CCTV"
+    }
+   ]
+  },
+  "ceiling.cctv.b": {
+   "uvy": [
+    10.015,
+    -21.329,
+    2.25
+   ],
+   "spread": null,
+   "views": 1,
+   "hits": [
+    {
+     "frame": "000079.jpg",
+     "px": [
+      660,
+      45
+     ],
+     "surface": "ceilingLow",
+     "uvy": [
+      10.015,
+      -21.329,
+      2.25
+     ],
+     "note": "dome CCTV"
+    }
+   ]
+  },
+  "header.elevatorEast.lowerEast": {
+   "uvy": [
+    11.956,
+    -21.995,
+    2.376
+   ],
+   "views": 2,
+   "rayResidual": [
+    0.014,
+    0.014
+   ],
+   "observations": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      352,
+      187
+     ]
+    },
+    {
+     "frame": "000076.jpg",
+     "px": [
+      330,
+      127
+     ]
+    }
+   ],
+   "note": "sign corner"
+  },
+  "header.elevatorEast.upperWest": {
+   "uvy": [
+    10.903,
+    -21.847,
+    2.662
+   ],
+   "views": 2,
+   "rayResidual": [
+    0.012,
+    0.012
+   ],
+   "observations": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      450,
+      160
+     ]
+    },
+    {
+     "frame": "000076.jpg",
+     "px": [
+      480,
+      74
+     ]
+    }
+   ],
+   "note": "sign corner"
+  },
+  "header.tickets.lowerEast": {
+   "uvy": [
+    9.823,
+    -22.107,
+    2.383
+   ],
+   "views": 2,
+   "rayResidual": [
+    0.002,
+    0.002
+   ],
+   "observations": [
+    {
+     "frame": "000066.jpg",
+     "px": [
+      537,
+      213
+     ]
+    },
+    {
+     "frame": "000072.jpg",
+     "px": [
+      549,
+      178
+     ]
+    }
+   ],
+   "note": "sign corner"
+  },
+  "header.band.underside": {
+   "uvy": [
+    11.456,
+    -21.852,
+    2.281
+   ],
+   "views": 2,
+   "rayResidual": [
+    0.004,
+    0.004
+   ],
+   "observations": [
+    {
+     "frame": "000072.jpg",
+     "px": [
+      400,
+      197
+     ]
+    },
+    {
+     "frame": "000076.jpg",
+     "px": [
+      405,
+      138
+     ]
+    }
+   ],
+   "note": "band underside"
+  },
+  "hanging.platforms.lowerEast": {
+   "uvy": [
+    10.645,
+    -28.481,
+    2.545
+   ],
+   "views": 3,
+   "rayResidual": [
+    0.01,
+    0.003,
+    0.011
+   ],
+   "observations": [
+    {
+     "frame": "000057.jpg",
+     "px": [
+      612,
+      175
+     ]
+    },
+    {
+     "frame": "000061.jpg",
+     "px": [
+      542,
+      144
+     ]
+    },
+    {
+     "frame": "000066.jpg",
+     "px": [
+      335,
+      13
+     ]
+    }
+   ],
+   "note": "\"↑ 타는 곳 Platforms\" hanging sign"
+  },
+  "hanging.platforms.lowerWest": {
+   "uvy": [
+    8.229,
+    -28.836,
+    2.545
+   ],
+   "views": 2,
+   "rayResidual": [
+    0.022,
+    0.022
+   ],
+   "observations": [
+    {
+     "frame": "000057.jpg",
+     "px": [
+      830,
+      162
+     ]
+    },
+    {
+     "frame": "000061.jpg",
+     "px": [
+      838,
+      118
+     ]
+    }
+   ],
+   "note": ""
+  },
+  "hanging.platforms.upperEast": {
+   "uvy": [
+    10.618,
+    -28.745,
+    2.855
+   ],
+   "views": 2,
+   "rayResidual": [
+    0.003,
+    0.003
+   ],
+   "observations": [
+    {
+     "frame": "000057.jpg",
+     "px": [
+      612,
+      148
+     ]
+    },
+    {
+     "frame": "000061.jpg",
+     "px": [
+      542,
+      103
+     ]
+    }
+   ],
+   "note": ""
+  },
+  "hanging.platforms.upperWest": {
+   "uvy": [
+    8.133,
+    -28.555,
+    2.963
+   ],
+   "views": 2,
+   "rayResidual": [
+    0.01,
+    0.01
+   ],
+   "observations": [
+    {
+     "frame": "000057.jpg",
+     "px": [
+      830,
+      128
+     ]
+    },
+    {
+     "frame": "000061.jpg",
+     "px": [
+      838,
+      80
+     ]
+    }
+   ],
+   "note": ""
+  },
+  "column.sign.centre": {
+   "uvy": [
+    12.009,
+    -21.45,
+    1.635
+   ],
+   "views": 2,
+   "rayResidual": [
+    0.002,
+    0.002
+   ],
+   "observations": [
+    {
+     "frame": "000076.jpg",
+     "px": [
+      365,
+      237
+     ]
+    },
+    {
+     "frame": "000079.jpg",
+     "px": [
+      230,
+      219
+     ]
+    }
+   ],
+   "note": "sign on the column U- face"
+  }
+ }
+}

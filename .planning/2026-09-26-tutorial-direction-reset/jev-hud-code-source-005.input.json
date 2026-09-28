@@ -1,0 +1,26 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Re-judge the HUD code source after a licensing fact was added. Observations only; the user decides.",
+    "user_instruction": "Make the UI/UX and HUD like production games (PUBG, battle royales, My Summer Car), taking or adapting OSS or snippet source code, or referencing them.",
+    "chosen_layout": "PUBG-style edge elements (compass bar with task marker, radio feed, held equipment) plus My-Summer-Car-style centre naming and action prompt, hold-progress ring, TAB work-order/equipment screen, M station map, Esc pause menu, title screen.",
+    "facts": {
+      "repository": "The project repository xrlab-dau/CHOOGuard is public on GitHub.",
+      "fps_microgame": "Unity's FPS Microgame ships uGUI HUD scripts (Compass, CompassMarker, NotificationToast, ObjectiveHUDManager, InGameMenuManager, LoadSceneButton). Its Third-PartyNotice states the asset is governed by the Unity Asset Store EULA, which licenses use inside a product but not redistribution of the asset in source form; committing its scripts to a public repository is a redistribution risk.",
+      "ui_extensions": "Unity UI Extensions: BSD-3-Clause package (some files carry MIT headers); RadialLayout is only a layout component.",
+      "interaction_toolkit": "Unity-FirstPersonInteractionToolkit: MPL-2.0 (file-level copyleft), legacy Text and legacy Input APIs.",
+      "project": "uGUI + TextMeshPro Korean SDF font, Input System; an existing small FpsUiFactory for canvases, labels and panels."
+    }
+  },
+  "questions": {
+    "hud_code_source": {
+      "type": "choice",
+      "instructions": "Where should the HUD implementation come from given the public repository?",
+      "criteria": {
+        "own_code_referencing_microgame": "Write the project's own uGUI/TMP HUD components, using FPS Microgame and PUBG/MSC only as structural and visual references; copy only permissively licensed snippets (MIT/BSD) with notices kept.",
+        "copy_microgame_scripts": "Copy FPS Microgame scripts into the repository and modify them.",
+        "mpl_toolkit_port": "Port the MPL-2.0 toolkit files and keep them under MPL."
+      }
+    }
+  }
+}

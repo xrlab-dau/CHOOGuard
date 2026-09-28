@@ -1,0 +1,43 @@
+{
+ "state": {
+  "task": "Decide whether to re-place the 3F L (band slab edge, wing edge, shopfronts), the 2F-3F escalator pair and the hall tree columns from a metric video registration, replacing positions that came from the schematic board.",
+  "frame": "Station frame: u north (long axis), v east. 2F floor 7.0 m, 3F 12.2 m (original model levels).",
+  "current_model": "3F band slab edge v 70, escalator lanes v 66.9/69.05 with incline top at u 14, wing balustrade u 2 and wing shopfronts u -2. These came from the schematic 3F board scaled to the box plus lease areas (jev-3f-dims-013, jev-3f-band-014), not from measurement.",
+  "measurement": "Two COLMAP models of the 2023 walk video (escalator ascent 177-215 s and descent 310-330 s). Scale from the 2F floor plane and 3F eye height (0.82 and 1.70 m/unit); escalator incline measured 30.3 and 29 deg, so the vertical axis is right. Heading from the descent direction; the north wall plane is perpendicular to it within 1 deg of the original. Position was anchored to the current escalator (the weak link).",
+  "consistency_with_original_under_that_anchor": {
+   "north_wall_u": "SfM north wall at u 65.6-66 vs original 64.2-65.3: u offset about -1.5 m.",
+   "departure_boards": "Two departure boards over the gates at SfM v 53.1 and 58.5; the original north wall has door-leaf sets under three door signs at v 61.1-63.7, 64.9-67.1, 69.1-70.7 (the gates). Offset +7.5..+9.3.",
+   "north_wall_step": "SfM north wall steps from u about 59 to 66 between v 22 and 30; the original steps from u 56 to 61.6 at v 33.5. Offset +7.5..+11.5.",
+   "roof_step": "SfM dense vertical structure at v 26-28 (13-27 m high); the original raised roof starts at v 33-38. Offset about +7.",
+   "columns": "Four white tree columns measured at SfM (39.5,30), (39.5,46), (15,30), (15,47) (triangulated and point clusters, verified by reprojection into 8 frames). At v 30 the original roof is the low 17.2 m roof, which a 20 m tree column cannot stand under; with +8 they sit at v 38 and 54-55, under the raised roof."
+  },
+  "implication_if_offset_applied": "Apply du -1.5, dv +8 to all SfM positions: escalator lanes v about 74.9/77.05, incline top u 12.5; band slab edge v 78.2 (food court 78-95.5, 17 m deep; lease 787 m2 over 39 m would need 20 m); wing shopfronts u 0.25, wing balustrade u 8.5; tree columns (38,38), (38,54), (13.5,38), (13.5,55); band-edge 2F column (43.1,78.9).",
+  "board_evidence": "The 2F board puts the escalator icon below shop 11 편의점 (StoryWay) which is in front of 10 파스쿠찌; photos show StoryWay beside the escalator foot. Board positions carry up to 12.6 m registration residual."
+ },
+ "questions": {
+  "apply": {
+   "type": "choice",
+   "instructions": "Which positions should the model use?",
+   "criteria": {
+    "apply_sfm_with_offset": "Re-place escalator, 3F band edge, wing and columns from the SfM measurement corrected by du -1.5, dv +8",
+    "apply_sfm_no_offset": "Use SfM positions without the offset (keep current escalator anchor)",
+    "keep_board": "Keep the board-derived positions and ignore the SfM"
+   }
+  },
+  "offset_confidence": {
+   "type": "score",
+   "instructions": "How strongly do the four independent checks support a v offset of about +8 m?",
+   "criteria": [
+    "contradicted",
+    "weak",
+    "moderate",
+    "strong",
+    "conclusive"
+   ]
+  },
+  "columns": {
+   "type": "bool",
+   "instructions": "Should the four tree columns be built at the offset-corrected positions?"
+  }
+ }
+}

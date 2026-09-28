@@ -1,0 +1,238 @@
+{
+  "schema": "chooguard.source-metric-registration.v1",
+  "formula": "ENU = scale * rotation * SfM + translation; Unity = ENU[x,z,y]",
+  "scale": 4.125740578356775,
+  "rotation": [
+    [
+      0.42189526822736967,
+      -0.1980538550255425,
+      0.8847480167578097
+    ],
+    [
+      -0.9048338347461363,
+      -0.030333846190739394,
+      0.42468292792844664
+    ],
+    [
+      -0.05727228078187039,
+      -0.9797216585769644,
+      -0.19200353530402675
+    ]
+  ],
+  "translation": [
+    -25.112266753162096,
+    18.584201277921153,
+    1.3917950975055238
+  ],
+  "coordinateFrame": "Right-handed ENU before Unity axis swap",
+  "sourceModel": "1f-2026-sfm/sparse/2",
+  "registeredCameras": 137,
+  "fit": {
+    "portalCorners": 8,
+    "headerPlanePoints": 72,
+    "plumbLineFrames": [
+      "000016.jpg",
+      "000034.jpg",
+      "000079.jpg"
+    ],
+    "portalPixelErrors": [
+      3.7275279945346877,
+      0.5358106110474073,
+      5.668526578952666,
+      3.3808614570513935,
+      1.9426879597705808,
+      3.6366411444138484,
+      3.852396829587185,
+      6.7000831340861104
+    ],
+    "portalPixelRMS": 4.099927535755649,
+    "solverCost": 38.622111631350556,
+    "solverMessage": "Both `ftol` and `xtol` termination conditions are satisfied."
+  },
+  "independentDiagnostics": {
+    "floorPatches": [
+      {
+        "id": "16_foreground",
+        "role": "fit_frame_diagnostic",
+        "count": 22,
+        "medianModelY": -0.19417413341090717,
+        "modelYRange": [
+          -0.2488619105860641,
+          -0.16609403487527263
+        ],
+        "rmsAboutModelZero": 0.19390003758924085,
+        "caution": "Exterior pavement may be graded; these were not constrained to model zero."
+      },
+      {
+        "id": "16_corridor",
+        "role": "fit_frame_diagnostic",
+        "count": 23,
+        "medianModelY": -0.17372675471900823,
+        "modelYRange": [
+          -0.33557970172078844,
+          -0.08697553537478786
+        ],
+        "rmsAboutModelZero": 0.18497127133028582,
+        "caution": "Exterior pavement may be graded; these were not constrained to model zero."
+      },
+      {
+        "id": "34_foreground",
+        "role": "insufficient_support",
+        "count": 2,
+        "medianModelY": 0.03477708651706102,
+        "modelYRange": [
+          0.028335368679015538,
+          0.0412188043551065
+        ],
+        "rmsAboutModelZero": 0.035368651024885595,
+        "caution": "Exterior pavement may be graded; these were not constrained to model zero."
+      },
+      {
+        "id": "61_tape",
+        "role": "held_out_diagnostic",
+        "count": 12,
+        "medianModelY": -0.006818683355723776,
+        "modelYRange": [
+          -0.05511493471384865,
+          0.016917862617258583
+        ],
+        "rmsAboutModelZero": 0.02443760553555138,
+        "caution": "Exterior pavement may be graded; these were not constrained to model zero."
+      },
+      {
+        "id": "106_left_floor",
+        "role": "held_out_diagnostic",
+        "count": 26,
+        "medianModelY": -0.09344097915681426,
+        "modelYRange": [
+          -0.1193365585026267,
+          -0.06651119726911725
+        ],
+        "rmsAboutModelZero": 0.09367969529214881,
+        "caution": "Exterior pavement may be graded; these were not constrained to model zero."
+      },
+      {
+        "id": "106_right_floor",
+        "role": "held_out_diagnostic",
+        "count": 33,
+        "medianModelY": -0.08690682342661882,
+        "modelYRange": [
+          -0.11245326633129094,
+          -0.054240955958249515
+        ],
+        "rmsAboutModelZero": 0.08779682302104165,
+        "caution": "Exterior pavement may be graded; these were not constrained to model zero."
+      }
+    ],
+    "heldOutPlumbFrames": [
+      "000061.jpg",
+      "000106.jpg",
+      "000133.jpg"
+    ],
+    "plumbResiduals": {
+      "000016.jpg": {
+        "line_count": 5,
+        "independent_vertical_sfm": [
+          -0.0568199532334999,
+          -0.9793950326008519,
+          -0.19379593141064388
+        ],
+        "independent_vertical_angle_to_fit_deg": 0.10755700677952325,
+        "plane_residual_rms_deg": 0.3565973602463187,
+        "plane_residual_max_deg": 0.4150469957639511,
+        "normal_singular_values": [
+          1.8434389214228277,
+          1.2655220561454406,
+          0.013669981450543574
+        ]
+      },
+      "000034.jpg": {
+        "line_count": 7,
+        "independent_vertical_sfm": [
+          -0.05359523286989903,
+          -0.9805790972016399,
+          -0.1886589121797262
+        ],
+        "independent_vertical_angle_to_fit_deg": 0.28900277510436095,
+        "plane_residual_rms_deg": 0.1641206800402614,
+        "plane_residual_max_deg": 0.31631401947396054,
+        "normal_singular_values": [
+          2.4030697085314348,
+          1.1069106061854521,
+          0.002210396525805847
+        ]
+      },
+      "000061.jpg": {
+        "line_count": 5,
+        "independent_vertical_sfm": [
+          -0.04757767397853479,
+          -0.9813336308199806,
+          -0.18633483292306363
+        ],
+        "independent_vertical_angle_to_fit_deg": 0.6500468745788687,
+        "plane_residual_rms_deg": 0.29218714836384185,
+        "plane_residual_max_deg": 0.42850942706894507,
+        "normal_singular_values": [
+          2.1208794444747405,
+          0.7083968961137291,
+          0.0066497805189603505
+        ]
+      },
+      "000079.jpg": {
+        "line_count": 9,
+        "independent_vertical_sfm": [
+          -0.05554575230659066,
+          -0.9808648405166773,
+          -0.18659805475644273
+        ],
+        "independent_vertical_angle_to_fit_deg": 0.3316583359762535,
+        "plane_residual_rms_deg": 0.19131144331744768,
+        "plane_residual_max_deg": 0.28320197066348307,
+        "normal_singular_values": [
+          2.804559577345225,
+          1.0650851654729108,
+          0.006258387229362019
+        ]
+      },
+      "000106.jpg": {
+        "line_count": 4,
+        "independent_vertical_sfm": [
+          -0.06025889066791378,
+          -0.9782325191658907,
+          -0.19856989837794528
+        ],
+        "independent_vertical_angle_to_fit_deg": 0.42202822002252843,
+        "plane_residual_rms_deg": 0.3728530062055997,
+        "plane_residual_max_deg": 0.5555243000315583,
+        "normal_singular_values": [
+          1.7089750892967306,
+          1.0389377405218585,
+          0.0035377227937974025
+        ]
+      },
+      "000133.jpg": {
+        "line_count": 5,
+        "independent_vertical_sfm": [
+          -0.05945474760982834,
+          -0.978101455731939,
+          -0.19945594822344476
+        ],
+        "independent_vertical_angle_to_fit_deg": 0.4545076217523854,
+        "plane_residual_rms_deg": 0.33809042893075686,
+        "plane_residual_max_deg": 0.4014137985370825,
+        "normal_singular_values": [
+          2.0147623384164137,
+          0.9699088183599143,
+          0.00309899443338902
+        ]
+      }
+    }
+  },
+  "limits": [
+    "Metric unit inherits the supplied original model; no independent survey scale.",
+    "Portal corners are manually identified image edges; source and photo epochs can differ.",
+    "Plumb-line uncertainty includes up to 0.65 degree held-out disagreement.",
+    "Single video covers the central entry/core only, not the full station.",
+    "No floor plane or constant camera-height assumption used in fitting."
+  ]
+}

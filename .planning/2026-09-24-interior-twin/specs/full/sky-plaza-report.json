@@ -1,0 +1,647 @@
+{
+  "lane": "SkyPlaza",
+  "zone": "sky_plaza",
+  "root": "실내 트윈 마감/하늘광장",
+  "fit_zone": "sky_plaza_fit",
+  "fit_root": "실내 트윈 마감/하늘광장 시설",
+  "status": "validated-ready-for-Main-fitout; no fitout scene mutation performed",
+  "coordinate_system": {
+    "horizontal": "station UV, metres",
+    "world_rotation_deg": 16.2,
+    "deck_y": 7.03,
+    "ground_y": 0.0
+  },
+  "scope": "2F sky-plaza deck, apron and supported exit approaches only; no 570 m port-deck continuation.",
+  "validation": {
+    "audit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after52",
+    "check_spec": {
+      "deckErrors": 0,
+      "deckWarnings": 1,
+      "fitoutErrors": 0,
+      "fitoutWarnings": 5
+    },
+    "kitValidate": {
+      "deckErrors": 0,
+      "fitoutErrors": 0
+    },
+    "fitoutWarnings": "Five intentional facade contacts at the south frontage; inspect in Main after-build render."
+  },
+  "preserved_source_overrides": {
+    "path": ".planning/2026-09-27-openings-extension/openings/EastExits.json",
+    "target": "FPSWorld/공식 자료 부산역 역사/PlatformsParking/OfficialStation_-부산역_선로상층부_0",
+    "opening_ids": [
+      "east-exit9-2f",
+      "east-exit10-2f"
+    ],
+    "action": "unchanged; existing doors/reveals retained. No opening requested for Layer0_4 support fin; preserve original source pending Main visual review."
+  },
+  "replacement_specs": [
+    ".planning/2026-09-24-interior-twin/specs/full/sky-plaza.json",
+    ".planning/2026-09-24-interior-twin/specs/full/sky-plaza-fit.json"
+  ],
+  "routes": [
+    ".planning/2026-09-28-natural-fix/walks/route-2f-exit9-to-sky-plaza-gate.json",
+    ".planning/2026-09-28-natural-fix/walks/route-2f-exit10-to-sky-plaza-gate.json"
+  ],
+  "items": [
+    {
+      "id": "exit-9-reveal",
+      "status": "fixed",
+      "scene_status": "keep existing measured opening/reveal unchanged",
+      "sources_tried": [
+        "https://m.blog.naver.com/simplyssol/223307683182 (2023-12-30 visitor photos: Exit 9/10 door banks, covered walkway and station-side plaza).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route)."
+      ]
+    },
+    {
+      "id": "exit-9-doors",
+      "status": "fixed",
+      "scene_status": "keep existing measured door set unchanged",
+      "sources_tried": [
+        "https://m.blog.naver.com/simplyssol/223307683182 (2023-12-30 visitor photos: Exit 9/10 door banks, covered walkway and station-side plaza).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route)."
+      ]
+    },
+    {
+      "id": "exit-10-reveal",
+      "status": "fixed",
+      "scene_status": "keep existing measured opening/reveal unchanged",
+      "sources_tried": [
+        "https://m.blog.naver.com/simplyssol/223307683182 (2023-12-30 visitor photos: Exit 9/10 door banks, covered walkway and station-side plaza).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction)."
+      ]
+    },
+    {
+      "id": "exit-10-doors",
+      "status": "fixed",
+      "scene_status": "keep existing measured door set unchanged",
+      "sources_tried": [
+        "https://m.blog.naver.com/simplyssol/223307683182 (2023-12-30 visitor photos: Exit 9/10 door banks, covered walkway and station-side plaza).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction)."
+      ]
+    },
+    {
+      "id": "sky-plaza-deck-and-apron",
+      "status": "built",
+      "scene_status": "two-Slab deck/apron spec; Main scene build/save is pending",
+      "spec": ".planning/2026-09-24-interior-twin/specs/full/sky-plaza.json",
+      "elements": [
+        "sky-plaza-deck-2f",
+        "sky-plaza-ground-apron-1f"
+      ],
+      "sources_tried": [
+        "https://www.busanpa.com/board/view.do?boardId=BBS_0000031&dataSid=20383&menuCd=DOM_000000105002001000&paging=ok&startPage=265 (2017-12-27, BPA: elevated 570 m station-terminal connection; stage-1 plaza planned at about 100 x 60 m).",
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "[INFERENCE] footprint is conservatively registered as U=-5..56, V=source facade..187.5 from the 60 x 100 m public-plaza description, satellite and station door frame; exact boundary and paving divisions are not surveyed.",
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://m.blog.naver.com/ssh19938/223027519848 (2023-02-25 visitor photos: open covered walkway with guardrails and visible piers; public parking / waterside route context).",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE].",
+        "[INFERENCE] support grid and ground-apron elevation Y=0.0 use the station 1F model datum; exact pier coordinates and road/parking use below the plaza are not registered."
+      ]
+    },
+    {
+      "id": "sky-plaza-fitout",
+      "status": "built",
+      "scene_status": "separate fitout spec depends on sky-plaza.json slabs being built first",
+      "spec": ".planning/2026-09-24-interior-twin/specs/full/sky-plaza-fit.json",
+      "elements": [
+        "sky-plaza-lawn-west-bed",
+        "sky-plaza-lawn-east-strip",
+        "sky-plaza-dark-grey-paving",
+        "sky-plaza-diagonal-north-path",
+        "sky-plaza-pier-00-00",
+        "sky-plaza-pier-00-01",
+        "sky-plaza-pier-00-02",
+        "sky-plaza-pier-00-03",
+        "sky-plaza-pier-00-04",
+        "sky-plaza-pier-01-00",
+        "sky-plaza-pier-01-01",
+        "sky-plaza-pier-01-02",
+        "sky-plaza-pier-01-03",
+        "sky-plaza-pier-01-04",
+        "sky-plaza-pier-02-00",
+        "sky-plaza-pier-02-01",
+        "sky-plaza-pier-02-02",
+        "sky-plaza-pier-02-03",
+        "sky-plaza-pier-02-04",
+        "sky-plaza-pier-03-00",
+        "sky-plaza-pier-03-01",
+        "sky-plaza-pier-03-02",
+        "sky-plaza-pier-03-03",
+        "sky-plaza-pier-03-04",
+        "sky-plaza-pier-04-00",
+        "sky-plaza-pier-04-01",
+        "sky-plaza-pier-04-02",
+        "sky-plaza-pier-04-03",
+        "sky-plaza-pier-04-04",
+        "sky-plaza-north-edge-pier-00",
+        "sky-plaza-north-edge-pier-01",
+        "sky-plaza-north-edge-pier-02",
+        "sky-plaza-north-edge-pier-03",
+        "sky-plaza-north-edge-pier-04",
+        "sky-plaza-west-guard",
+        "sky-plaza-east-guard",
+        "sky-plaza-north-guard-west",
+        "sky-plaza-closed-bridge-mouth-ne",
+        "sky-plaza-exit9-slat-canopy",
+        "sky-plaza-exit9-post-west-1",
+        "sky-plaza-exit9-post-east-1",
+        "sky-plaza-exit9-post-west-2",
+        "sky-plaza-exit9-post-east-2",
+        "sky-plaza-exit10-glass-canopy",
+        "sky-plaza-exit10-post-west-00",
+        "sky-plaza-exit10-post-west-01",
+        "sky-plaza-exit10-post-west-02",
+        "sky-plaza-exit10-post-west-03",
+        "sky-plaza-exit10-post-west-04",
+        "sky-plaza-exit10-post-west-05",
+        "sky-plaza-exit10-post-west-06",
+        "sky-plaza-exit10-post-west-07",
+        "sky-plaza-exit10-post-west-08",
+        "sky-plaza-exit10-post-west-09",
+        "sky-plaza-exit10-post-east-00",
+        "sky-plaza-exit10-post-east-01",
+        "sky-plaza-exit10-post-east-02",
+        "sky-plaza-exit10-post-east-03",
+        "sky-plaza-exit10-post-east-04",
+        "sky-plaza-exit10-post-east-05",
+        "sky-plaza-exit10-post-east-06",
+        "sky-plaza-exit10-post-east-07",
+        "sky-plaza-exit10-post-east-08",
+        "sky-plaza-exit10-post-east-09",
+        "sky-plaza-exit10-glass-guard-west",
+        "sky-plaza-exit10-glass-guard-east"
+      ],
+      "sources_tried": [
+        "https://www.busanpa.com/board/view.do?boardId=BBS_0000031&dataSid=20383&menuCd=DOM_000000105002001000&paging=ok&startPage=265 (2017-12-27, BPA: elevated 570 m station-terminal connection; stage-1 plaza planned at about 100 x 60 m).",
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "[INFERENCE] footprint is conservatively registered as U=-5..56, V=source facade..187.5 from the 60 x 100 m public-plaza description, satellite and station door frame; exact boundary and paving divisions are not surveyed.",
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://m.blog.naver.com/ssh19938/223027519848 (2023-02-25 visitor photos: open covered walkway with guardrails and visible piers; public parking / waterside route context).",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE].",
+        "[INFERENCE] support grid and ground-apron elevation Y=0.0 use the station 1F model datum; exact pier coordinates and road/parking use below the plaza are not registered."
+      ]
+    },
+    {
+      "id": "sky-plaza-2f-public-edge",
+      "status": "built-with-inferred-closure",
+      "scene_status": "glass guards cover exposed edges; conservative closure replaces the northeast end of the north rail, not the NW corner",
+      "sources_tried": [
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE].",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "[INFERENCE] exact bridge-mouth gate form/access state is not verified."
+      ]
+    },
+    {
+      "id": "exit9-slat-colour",
+      "status": "fixed",
+      "finding": "Slat soffit changed to warm wood-tone #9A8366 based on Hmj t032; t029 shows the contrasting dark steel frame and yellow accent.",
+      "sources_tried": [
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/t029.jpg and t032.jpg"
+      ]
+    },
+    {
+      "id": "exit9-wing-west-rail-2f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "exit9-wing-east-rail-2f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "exit9-wing-west-rail-3f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "exit9-wing-east-rail-3f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "port-deck-west-rail",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "port-deck-east-rail",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "port-deck-far-end-guard",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "exit10-landing-side-a-guard",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "exit10-landing-side-b-guard",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "exit10-landing-far-guard",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "exit9-wing-3f-roof",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "port-deck-covered-segment",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "exit10-landing-canopy",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "east-elevator-lobby-2f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "east-elevator-2f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "east-elevator-window-2f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "east-elevator-lobby-3f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "east-elevator-3f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "east-elevator-window-3f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "exit9-wing-and-port-deck-2f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "exit9-wing-3f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "exit10-guarded-landing-2f",
+      "status": "removed",
+      "reason": "Retired by Main in geometry-after51; the old unregistered exterior extensions are not present in the replacement specs and must not be rebuilt.",
+      "sources_tried": [
+        "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    },
+    {
+      "id": "lawn-boundary",
+      "status": "built-with-inferred-curb",
+      "finding": "Satellite-visible west lawn bed and narrow eastern planting strip are traced as separate irregular patches, with the diagonal north path left paved. Exact curb/bed boundaries remain [INFERENCE] because the satellite is blurred and no survey/orthophoto was found.",
+      "sources_tried": [
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "https://m.blog.naver.com/polipoli37/223199394054 (2023-09-01 visitor account from Exit 10 toward Busan Harbor Bridge; describes green lawn in the sky plaza).",
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction)."
+      ]
+    },
+    {
+      "id": "dark-grey-forecourt",
+      "status": "built",
+      "finding": "Grey paver area U10-44,V100-130 is represented as paving, not a lower roof or planting. Satellite supports the broad footprint; GMl t100-t110 footage supports grey pavers. No separate sand or roof layer is evidenced.",
+      "sources_tried": [
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "https://m.blog.naver.com/polipoli37/223199394054 (2023-09-01 visitor account from Exit 10 toward Busan Harbor Bridge; describes green lawn in the sky plaza)."
+      ]
+    },
+    {
+      "id": "exit10-roof-strip",
+      "status": "built",
+      "finding": "White-framed roof strip, repeated posts and open guards extend from the registered Exit 10 frontage along U44-56 to V≈190. Satellite, Hmj t049/t052, ssh19938 image 14 and GMl t017 agree on the covered open-sided form. GMl t170-t190 dark underside footage is unregistered to this exit segment and does not contradict it.",
+      "sources_tried": [
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://m.blog.naver.com/ssh19938/223027519848 (2023-02-25 visitor photos: open covered walkway with guardrails and visible piers; public parking / waterside route context).",
+        "https://m.blog.naver.com/simplyssol/223307683182 (2023-12-30 visitor photos: Exit 9/10 door banks, covered walkway and station-side plaza).",
+        "Hmj t049/t052",
+        "ssh19938 image 14"
+      ]
+    },
+    {
+      "id": "north-edge-and-bridge-mouth",
+      "status": "built-with-inferred-closure",
+      "finding": "Deck north edge follows the satellite slant V188 west to V195 east, with glass guards outside the final NE segment. A conservative 6.7 m closure occupies that NE bridge-start segment at U49-55.7,V≈194-195 per satellite and OSM way 987862341; no bridge deck beyond the closure is built, and actual gate hardware/access remains unverified.",
+      "sources_tried": [
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE].",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction)."
+      ]
+    },
+    {
+      "id": "ground-apron",
+      "status": "built-with-inferred-land-use",
+      "finding": "Apron starts at V118, north of the source ground/track objects ending around V117.5 in the owner map, and extends 20 m beyond the deck west, north and east. Asphalt/road use and Y=0 datum remain [INFERENCE] where satellite is ambiguous.",
+      "sources_tried": [
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://m.blog.naver.com/ssh19938/223027519848 (2023-02-25 visitor photos: open covered walkway with guardrails and visible piers; public parking / waterside route context).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        ".planning/2026-09-27-openings-extension/diag/plaza-south-top.png"
+      ]
+    },
+    {
+      "id": "source-platform-fin-layer0-4",
+      "status": "still-c-preserved",
+      "finding": "geometry-after51/world-geometry.json and plaza-south-top.png identify original FPSWorld/공식 자료 부산역 역사/Layer0PlatformsDetails/OfficialStation_Layer0_4 (approx U30.9-32.1,V95.9-107.3,Y1.2-7.2), a tall narrow source fin at the deck junction. Its role as support/retaining fin is [INFERENCE], but it is pre-existing station geometry; no SourceOverrides cut is requested because trimming could remove a structural element. Retain for Main visual review; it rises 0.17 m above the 7.03 deck.",
+      "sources_tried": [
+        ".planning/2026-09-27-openings-extension/diag/plaza-south-top.png",
+        ".planning/2026-09-23-video-twin/1f-implementation/geometry-after51/world-geometry.json",
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation."
+      ]
+    },
+    {
+      "id": "sand-zone",
+      "status": "still-c",
+      "finding": "No independent evidence found for a distinct loose-sand zone; do not build sand based on tan-looking video pixels alone.",
+      "sources_tried": [
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+        "https://m.blog.naver.com/polipoli37/223199394054 (2023-09-01 visitor account from Exit 10 toward Busan Harbor Bridge; describes green lawn in the sky plaza).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation."
+      ]
+    },
+    {
+      "id": "red-forecourt-band-and-steps",
+      "status": "still-c",
+      "finding": "2021/2022 video and the News1 photo show red-brown hardscape, grey pavers, stairs/ramp, planted beds and tactile paving. Exact positions relative to registered UV are not established; do not invent stepped offsets or an ornamental band.",
+      "sources_tried": [
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://m.blog.naver.com/ssh19938/223027519848 (2023-02-25 visitor photos: open covered walkway with guardrails and visible piers; public parking / waterside route context).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation."
+      ]
+    },
+    {
+      "id": "support-grid",
+      "status": "built-with-inferred-spacing",
+      "finding": "Photo/video confirm deck support piers but not their exact grid. A 5 x 5 grounded support grid plus five piers about 2.5 m inside the sloping north edge gives the 6.6 m-deep deck local supports instead of a long unsupported cantilever; all 30 coordinates remain [INFERENCE] pending live-geometry/voidscan review.",
+      "sources_tried": [
+        "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "https://m.blog.naver.com/ssh19938/223027519848 (2023-02-25 visitor photos: open covered walkway with guardrails and visible piers; public parking / waterside route context).",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation."
+      ]
+    },
+    {
+      "id": "elevator-and-3f-wing",
+      "status": "still-c",
+      "finding": "2F and 3F elevator POIs exist at (U=1.29,V=120.46) and OSM tags the station as three levels. No source proves a separate exterior glass shaft, guessed 3F wing footprint, or public connection; old exterior elevator/3F extension is removed.",
+      "sources_tried": [
+        "Naver indoor zorder 301000/302000 tiles at asset-library/research-public/2026-09-26/Services23F/naver-indoor-harvest/; elevator POIs at station UV (1.29,120.46) on both 2F and 3F.",
+        "OSM way 165346389 (building=train_station, building:levels=3, layer=2); outline does not register an exterior elevator-box footprint.",
+        "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+        "https://m.blog.naver.com/simplyssol/223307683182 (2023-12-30 visitor photos: Exit 9/10 door banks, covered walkway and station-side plaza).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction)."
+      ]
+    },
+    {
+      "id": "port-bridge-beyond-closure",
+      "status": "still-c",
+      "finding": "Official sources establish a longer station-terminal connection, but this lane stops at the requested conservative NE edge; actual access/gate status beyond it remains unverified.",
+      "sources_tried": [
+        "https://www.busanpa.com/board/view.do?boardId=BBS_0000031&dataSid=20383&menuCd=DOM_000000105002001000&paging=ok&startPage=265 (2017-12-27, BPA: elevated 570 m station-terminal connection; stage-1 plaza planned at about 100 x 60 m).",
+        "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+        "https://www.klnews.co.kr/news/articleView.html?idxno=307540 (2023-03-23: pedestrian link completed; cites an additional 263 m x 6.8 m section and moving walkways).",
+        "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+        "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE]."
+      ]
+    }
+  ],
+  "sources": {
+    "bpa_2017": "https://www.busanpa.com/board/view.do?boardId=BBS_0000031&dataSid=20383&menuCd=DOM_000000105002001000&paging=ok&startPage=265 (2017-12-27, BPA: elevated 570 m station-terminal connection; stage-1 plaza planned at about 100 x 60 m).",
+    "news1_2022": "https://www.news1.kr/local/busan-gyeongnam/4670818 (2022-05-04, public-facility opening; photo caption identifies 60 m-wide sky-plaza pedestrian deck).",
+    "news1_photo": "https://image.news1.kr/system/photos/2022/5/4/5354573/high.jpg/dims/optimize (News1 opening-day photo: broad red-brown hardscape and grey pavers; visible support pier; internal visual evidence only, never a texture).",
+    "mof_2023": "https://www.mof.go.kr/doc/ko/selectDoc.do?&bbsSeq=10&docSeq=50500&menuSeq=971 (2023-04-03, Ministry of Oceans and Fisheries: North Port first-phase public facilities open; pedestrian deck connects Busan Station to International Passenger Terminal).",
+    "klnews_2023": "https://www.klnews.co.kr/news/articleView.html?idxno=307540 (2023-03-23: pedestrian link completed; cites an additional 263 m x 6.8 m section and moving walkways).",
+    "walk_2021": "https://www.youtube.com/watch?v=GMlCL2vnhck (2021-02-09, public walk from Busan Port International Terminal to Busan Station; local 720p frames t=50-190 s at asset-library/research-public/2026-09-28/SkyPlaza/yt/f-GMl/; original clip deleted after extraction).",
+    "walk_2022": "https://www.youtube.com/watch?v=HmjSAeRWiqU (2022-11-11; local frames t025-t055 at asset-library/research-public/2026-09-27/EastExits/yt/f-Hmj/; exit-9 canopy, open deck and covered route).",
+    "blog_lawn": "https://m.blog.naver.com/polipoli37/223199394054 (2023-09-01 visitor account from Exit 10 toward Busan Harbor Bridge; describes green lawn in the sky plaza).",
+    "blog_walk": "https://m.blog.naver.com/ssh19938/223027519848 (2023-02-25 visitor photos: open covered walkway with guardrails and visible piers; public parking / waterside route context).",
+    "blog_exit": "https://m.blog.naver.com/simplyssol/223307683182 (2023-12-30 visitor photos: Exit 9/10 door banks, covered walkway and station-side plaza).",
+    "osm_bridge": "OSM way 987862341 (bridge=yes, highway=footway, layer=1, surface=concrete), local registered UV via .planning/2026-09-26/PlatformSide/osmuv.py; OSM/source alignment shift (-4.0 U,-4.5 V) is [INFERENCE].",
+    "osm_station": "OSM way 165346389 (building=train_station, building:levels=3, layer=2); outline does not register an exterior elevator-box footprint.",
+    "naver_sat": "Naver z19 satellite tiles at asset-library/research-public/2026-09-23/naver-poi/satellite, registered with .planning/2026-09-27/openings-extension/east-exits-work/satuv.py; blurred imagery supports only the broad plaza footprint, not exact finishes or elevation.",
+    "naver_floor": "Naver indoor zorder 301000/302000 tiles at asset-library/research-public/2026-09-26/Services23F/naver-indoor-harvest/; elevator POIs at station UV (1.29,120.46) on both 2F and 3F."
+  },
+  "main_acceptance": [
+    "Build the 66 sky-plaza-fit.json elements after the two sky-plaza.json Slabs are present.",
+    "Run wide voidscan with bounds [-30,90,80,225], both safe-stop routes, and before/after plaza renders.",
+    "Inspect the five source-shell contact warnings, north-edge support row, NE closure, and preserved Layer0_4 fin; save only from Main."
+  ]
+}

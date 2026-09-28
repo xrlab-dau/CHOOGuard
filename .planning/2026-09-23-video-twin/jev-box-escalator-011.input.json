@@ -1,0 +1,41 @@
+{
+ "state": {
+  "task": "Fill the empty over-track box (신맞이방 extension, 2010) of the Busan KTX station twin with its 2F hall and 3F level, 2022 epoch. Station frame: u points north (NNE), v points east (ESE, tracks, then North Port); y is height. The existing twin already has the main-building 2F hall (west of the box) with its own filmed 3F mezzanine.",
+  "facts": {
+   "B1_shell": "Box interior at y 14.2 is fully enclosed by original mesh (선상층부): polygon u -21.4..68.8, v 15.3..99.7, 6354 m2. No interior masses at 2F or 3F height except a thin partition line at u about -6, v 15..33, which appears at 14.5 m only.",
+   "B2_levels": "Deck structure band y 4.0-6.5 under the box. West wall (v 15-20, faces the main building): open from y 7.0 to 12.0 across u -12..52, solid 12.5-17.0. South end wall (u -15..-21): solid 6.5-18.5 with piers every 16-22 m. Main-building 2F floor = 7.0; main-building 3F mezzanine = 12.2.",
+   "B3_roof": "Roof underside: low band 16-19 m over the south wing u -21..0 (all v), the west band v 15..40 (all u) and the east band v 88..100. Raised 23-26 m over u 2..56, v 42..88.",
+   "B4_gap": "Between the main-building east wall (original mesh at v 6-12, y 8.5) and the box west wall (v 15-20) there is a 3-8 m gap with no floor in the original model.",
+   "B5_naver_pins_3F": "East band: Menmusha (32,92), EDIYA (22,91), Food Court (15,84), Bibimga (-14,89). South wing: Busanok (0,65), Egg Box (2.6,36).",
+   "B6_naver_pins_2F_in_box": "Pascucci (17,92), Krispy Kreme (44,94, address says 2층 신맞이방), Somidam (25,92), 부산별빛샌드 (13,46), Tourist Information Center (36,32), l'amant (46,63), 국제시장 donut (64,27).",
+   "B7_3F_guide": "L-shaped plan: a long row (계단, 멘무샤, 육수당, 북창동순두부, EDIYA, 빈츠38, 비빔家), a corner with W.C/EV, then a column (부산옥, EV, eggbox). Red railing runs along the inner edges. \"3층 에스컬레이터\" is labelled at the inner corner.",
+   "B8_2F_guide": "The 2F guide is a schematic, not to scale. It draws \"3층 에스컬레이터\" directly below the top row of shops (Krispy Kreme, KAKAO FRIENDS, CAFFE PASCUCCI, exit 9, l'amant), adjacent to the PASCUCCI box. The earlier metric conversion (u 2, v 59) is withdrawn as unsupported.",
+   "B9_walk_2023": "RY2qvE0Tugk (2023-05). 2:49: escalator entry under a low ceiling beside the CAFFE PASCUCCI storefront, with large LED screens above. 2:53-2:57: rising with the hall on the right. 3:05: the 2F hall below, densely seated, with green departure boards. 3:17: 3F arrival onto a walkway along a glass railing over the void. 3:19-3:47: shops on one side, railing on the other; 부산옥 at 3:31. 3:51: 푸드코트 entrance. 3:59-4:35: food court interior about 20 m deep, exterior windows on the far side. 4:37-5:09: walkway along the railing. 5:11-5:21: escalator down along a glazed wall into the seated hall.",
+   "B10_windows": "3F food-court window photos look east, directly onto the North Port park.",
+   "B11_leases": "Food court 787 m2 (2019-01). 부산옥 86.7 m2 (2021-02). eggbox 230.6 m2 (2023-03). 비빔가 428.2 m2 (2024-01). The twin epoch is 2022.",
+   "B12_main_hall_separate": "Hillside housing is visible through the west clerestory of the existing filmed high hall (2022 video, 98 s). That hall is in the main building, a different space from the box.",
+   "B13_frame": "Directions: +u is north, +v is east. The east band (v 88-100) lies under the low roof. On 2F, the Naver pins for PASCUCCI (17,92), Somidam (25,92) and Krispy Kreme (44,94) are in the east band, so the 2F under the 3F food-court row is a low-ceiling shop arcade. RY2 1:35-2:21 walks a low-ceiling arcade with KAKAO FRIENDS, CAFFE PASCUCCI and Storyway, then 2:23-2:45 enters the high hall, and 2:49 boards the up escalator beside the PASCUCCI storefront."
+  },
+  "note": "All numbers were computed by tools before this call."
+ },
+ "questions": {
+  "escalator_site": {
+   "type": "choice",
+   "instructions": "Where should the 2F<->3F escalator pair go?",
+   "criteria": {
+    "inner_corner_SE": "At the void edge near the inner corner of the L (around u 2, v 84)",
+    "south_wing_edge_mid": "Along the south wing inner edge mid-length (around u 2, v 59), per the scaled 2F guide",
+    "east_band_near_pascucci": "At the east band edge near the Pascucci pin (around u 17, v 84)"
+   }
+  },
+  "escalator_direction": {
+   "type": "choice",
+   "instructions": "Which way should the escalator rise?",
+   "criteria": {
+    "along_east_band_edge_rising_south": "Along the void edge of the east band (v about 84), rising toward -u (south) so it arrives on the east band near the SE inner corner",
+    "perpendicular_into_east_band": "Perpendicular to the band, rising toward +v into the east band",
+    "along_south_wing_edge": "Along the south wing edge (u about 2)"
+   }
+  }
+ }
+}

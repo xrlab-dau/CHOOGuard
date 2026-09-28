@@ -1,0 +1,258 @@
+{
+ "status": [
+  {
+   "item": "2F seam passage floor (voidscan fall-7-7 trench U 16.5-65, V 11.4-20.6)",
+   "status": "built",
+   "elements": [
+    "seam-slab"
+   ],
+   "tier": "b",
+   "sources": [
+    "9ywctBEN_vs 188-228 s (frames 203/209/215/225)",
+    "live audit hole between main 2F floor edge, box/deck floor and Layer0_4 sills"
+   ],
+   "note": "voidscan2-after20: fall-7-7 closed"
+  },
+  {
+   "item": "seam east-end ceiling (U 48.5-65, open to the exit roof before)",
+   "status": "built",
+   "elements": [
+    "seam-ceiling-east"
+   ],
+   "tier": "b",
+   "sources": [
+    "9yw 203/209 s (flat 600 tile ceiling with LED panels)",
+    "MainShell roof edge + 2F 박스 gypsum ceiling 12.05"
+   ],
+   "inference": "height = adjoining seam ceiling 12.05"
+  },
+  {
+   "item": "main 2F U+ end wedge void (fall-7-9, U 67.5-77, V -7.5..12.9)",
+   "status": "built",
+   "elements": [
+    "seam-east-slab",
+    "seam-east-slab-1",
+    "seam-east-ceiling"
+   ],
+   "tier": "b",
+   "sources": [
+    "Naver 2F raster rooms r56/r26 + stair core (seam-work/nv-east-123f.png, nv-east-stair.png)",
+    "Services23F seg-polys.json"
+   ],
+   "note": "after28: the RM-2F-N-r56 footprint is floored by Services23F (Room slab .3); seam-east-slab/-ceiling cover the rest"
+  },
+  {
+   "item": "seam west-end slot (fall-7-6, U -13.1..-12.6, V 8.6-11.4)",
+   "status": "built",
+   "elements": [
+    "seam-west-infill"
+   ],
+   "tier": "b",
+   "sources": [
+    "live audit: 2F floor edge vs MainShell_6 ledge Y 6.8"
+   ]
+  },
+  {
+   "item": "3F floor steps against the 선로상층부_0 west wall and south glazing (voidscan after25/27 seen-12-3, seen-12-2, seen-12-5)",
+   "status": "built",
+   "elements": [
+    "seam-3f-west-strip",
+    "seam-3f-glass-strip"
+   ],
+   "tier": "b",
+   "sources": [
+    "live audit cuts at Y 13 (wall/glass lines, residual < 1e-5)",
+    "renders seam-work/reg/seen-12-3.png, seen-12-5.png"
+   ]
+  },
+  {
+   "item": "stair well 1F-2F at the main-building NE corner (U 70.7-75.4, V 8.7-11.8)",
+   "status": "fixed (guarded)",
+   "elements": [
+    "seam-core-guard (seam-fit.json)"
+   ],
+   "tier": "b",
+   "sources": [
+    "Naver 1F + 2F raster stair symbol (identical on both floors, east ICP median .37 u)",
+    "Naver 3F raster (no stair)",
+    "9yw walk (does not pass it)",
+    "voidscan fall-7-31 view"
+   ],
+   "note": "the stair itself stays tier c: the Naver symbol is schematic (two 4.7 m flights for a 7 m rise do not fit), the model 2F cell floor covers U 70.7-72.5 of the core and MainShell_5 east facade lies ~1 u west of the Naver outline; see requests"
+  },
+  {
+   "item": "lift at the NE corner (~72.5, 6.5)",
+   "status": "still-c",
+   "sources": [
+    "Naver 1F + 2F lift symbol"
+   ],
+   "note": "no shaft/front evidence in the model or footage; Services23F has none either"
+  },
+  {
+   "item": "room r26 (unlabelled Naver 2F room at the NE corner)",
+   "status": "built (seam-fit.json)",
+   "elements": [
+    "seam-room-r26"
+   ],
+   "tier": "b",
+   "sources": [
+    "Naver 2F raster",
+    "Services23F seg-polys.json r26"
+   ],
+   "inference": "closed back-of-house (no door symbol)"
+  },
+  {
+   "item": "room r56",
+   "status": "Services23F (RM-2F-N-r56, extended to the facade with its own slab in after28)"
+  },
+  {
+   "item": "exit 8 and door-bank signs",
+   "status": "built (seam-fit.json)",
+   "elements": [
+    "seam-exit8-sign",
+    "seam-doorbank-sign"
+   ],
+   "tier": "b",
+   "sources": [
+    "9yw 209/215/225 s",
+    "exit-8 header Layer0_4 Y 9.1-10.2, door-bank sill line"
+   ],
+   "inference": "board sizes; door-bank band length 5 m, centre Y 9.85"
+  },
+  {
+   "item": "exit 8 mats",
+   "status": "built (seam-fit.json)",
+   "elements": [
+    "seam-exit8-mat"
+   ],
+   "tier": "b",
+   "sources": [
+    "9yw 222-228 s"
+   ],
+   "inference": "mat size"
+  },
+  {
+   "item": "platform-side seen runs seen-7-35/36/39 (U 73-78, V 15-24)",
+   "status": "not seam",
+   "note": "paid deck escalator well / glass doors to the exit-8 walkway: PlatformSide scope (renders seam-work/reg/seen-7-35.png, seen-7-36.png)"
+  },
+  {
+   "item": "2F west wall run seen-7-11 (U -16.4..-13.9, V 7.4-37.6)",
+   "status": "no action",
+   "note": "cells lie behind the continuous 선로상층부_0 west wall (u = -.0723 v - 13.63, V 14.7-39.6) and on the MainShell_6 ledge; floors reach the wall; the sawtooth in seam-work/reg/seen-7-11.png is shadow aliasing"
+  },
+  {
+   "item": "stainless A1 column + blue directory board (58.3, 9.5) and stainless column S2 (52.3, 13.35)",
+   "status": "built (seam-fit.json v3)",
+   "elements": [
+    "seam-col-a1",
+    "seam-col-a1-board",
+    "seam-col-s2"
+   ],
+   "tier": "b",
+   "sources": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json (RegTech6, sigma .5 / .4)",
+    "9yw 199-210 s"
+   ],
+   "inference": "1.0 x 1.0 core size; board text"
+  },
+  {
+   "item": "white round columns with the yellow 선상주차장 wrap (51.73, 17.40) d .84 and (48.57, 16.86) d 1.09",
+   "status": "built (seam-fit.json v3)",
+   "elements": [
+    "seam-col-r1",
+    "seam-col-r2",
+    "seam-col-r1-wrap"
+   ],
+   "tier": "b",
+   "sources": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json (sigma .15 / .2)",
+    "9yw 190-203 s"
+   ],
+   "inference": "wrap modelled as a flat yellow sign on the concourse-facing face"
+  },
+  {
+   "item": "LED screen (freestanding, plane (62.6,6.8)->(65.1,10.15), display Y 7.24-10.0)",
+   "status": "built (seam-fit.json v3)",
+   "elements": [
+    "seam-led-screen"
+   ],
+   "tier": "b",
+   "sources": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json (right edge sigma .15, left .6)",
+    "9yw 203-225 s"
+   ],
+   "note": "stands on the main 2F floor SOUTH of the protected facade line; in the live model it is only visible from the main-building side until the facade question below is decided"
+  },
+  {
+   "item": "dark-grey diagonal floor band and yellow tactile line (209 s segment)",
+   "status": "built (seam-fit.json v3), clipped",
+   "elements": [
+    "seam-floor-band",
+    "seam-tactile-0",
+    "seam-tactile-1"
+   ],
+   "tier": "b",
+   "sources": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json (sigma .4 / .5)",
+    "9yw 209-212 s"
+   ],
+   "note": "the parts within .35 u of the MainShell_5 facade line (U 56.9-64.9, V 11.6-12.5) are not built (protected facade)"
+  },
+  {
+   "item": "tactile line segment seen at 199 s ((52.82,16.56)->(54.01,19.5))",
+   "status": "still-c",
+   "sources": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json"
+   ],
+   "note": "RegTech6 flags it as uncertain / possibly a different line"
+  },
+  {
+   "item": "glass elevator box front (45.53,15.0)->(48.32,16.59)",
+   "status": "still-c",
+   "sources": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json (single view 193 s, sigma .6)",
+    "9yw 190 s"
+   ],
+   "note": "no live geometry there, but the front's east end lies .37 u from the centre of round column seam-col-r2 (radius .545, sigma .2) so the two overlap; depth and shaft (1F-2F through the 1F roof at Y 4.4) are unknown; needs a second view"
+  },
+  {
+   "item": "women's toilet pictogram (60.35,0.44)-(60.87,1.36), sigma 1.0 (207.2 s)",
+   "status": "not built (conflict reported)",
+   "sources": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json",
+    "services-2f.json WC-2F-N-F"
+   ],
+   "note": "Services23F's WC-2F-N-F entry (edge 0 at 2.17 m) is at about (59.7,-6.7), 7.6 m south of the pictogram, well outside its 1.0 sigma; the live model has no wall at the pictogram (open main 2F floor; nearest wall = RM-2F-N-r56 west wall at U ~63.3). The pictogram is either a signpost on a wall that is missing from the model or the real toilet entrance is further north than the Naver-based toilet; no second toilet built. Services23F5 should decide (a second view of 205-209 s would settle it)."
+  }
+ ],
+ "requests": [
+  {
+   "to": "Main",
+   "kind": "PROTECTED-SOURCE opening",
+   "region": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_5 north facade, U 55-65 along the line (55,11.84)->(58.5,12.09)->(58.52,11.69)->(64.95,12.16), V 11.7-12.2, Y 7.0 to the 2F ceiling (10.47)",
+   "evidence": ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json (RegTech6: the LED wall, the A1 column and the toilet pictogram all lie south of this line and the walker sees them across open floor); frames 9yw 199.2, 205.9, 207.2, 209.6, 211.9, 215.3 s (regtech-work/seam/proj/s__t00215333.jpg, g_t00209556.jpg, g_t00215333.jpg); asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg, 9yw_209s.jpg",
+   "note": "in reality the seam passage and the main 2F north end are one open floor here; the source facade is a solid full-height wall. Needs Main's decision (hide/cut the facade span); the seam-fit floor band and tactile line stop .35 u short of it"
+  },
+  {
+   "to": "Main",
+   "kind": "builder-plan edit (slabOpenings) + stair design",
+   "region": "majibang-plan.json 2F cell floor U 70.7-72.5, V 8.7-11.8 (stair core west part)",
+   "evidence": "Naver 1F + 2F stair symbol U 70.7-75.4, V 8.7-11.8; model east facade ~1 u west of the Naver outline",
+   "note": "only if Main wants the NE stair built: open the cell floor over the core, then a two-flight Stair pair + landing can be specced; until then seam-core-guard closes the well"
+  },
+  {
+   "to": "Main",
+   "kind": "protected-source check",
+   "region": "exit 8 at the U 65 plane, V 12.3-14.3 (Layer0_4 / Layer0_5)",
+   "evidence": "9yw 215-228 s: exit 8 stands open (shutter up, glass leaves open); the source shows closed glass leaves (render seam-work/reg/try3.png)",
+   "note": "if the source leaves carry colliders the passage to the exit-8 walkway is blocked"
+  },
+  {
+   "to": "ShopInteriors/Main",
+   "kind": "orientation check",
+   "region": "국제시장도나스 unit U 46-53, V 20.4-25.4",
+   "evidence": "9yw 188-195 s: the bakery front faces the walker going U+ along the seam (front on V 20.4, facing V-); the storefront is built on V 25.4 facing +V [INFERENCE on identity from the '국제' fascia]"
+  }
+ ]
+}

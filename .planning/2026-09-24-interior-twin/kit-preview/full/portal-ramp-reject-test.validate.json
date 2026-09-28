@@ -1,0 +1,59 @@
+{
+  "schema": "chooguard.interior-kit-validate.v1",
+  "spec": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-24-interior-twin/kit-preview/full/portal-ramp-reject-test.json",
+  "validatedUtc": "2026-09-25T12:14:20.4335190Z",
+  "zone": "kit-openings-test",
+  "folder": "Assets/ChooGuard/Art/StationInterior/Kit/kit-openings-test",
+  "root": "실내 트윈 마감/kit-openings-test",
+  "folderOwner": null,
+  "folderConflict": null,
+  "elements": [
+    {
+      "id": "reject-portal-no-height",
+      "type": "Portal",
+      "tier": "b",
+      "ok": false,
+      "built": false,
+      "error": "InvalidOperationException: reject-portal-no-height: required field 'height' missing.",
+      "triangles": 0
+    },
+    {
+      "id": "reject-portal-align",
+      "type": "Portal",
+      "tier": "b",
+      "ok": false,
+      "built": false,
+      "error": "InvalidOperationException: reject-portal-align: align must be centre, front or back.",
+      "triangles": 0
+    },
+    {
+      "id": "reject-ramp-steep",
+      "type": "Ramp",
+      "tier": "b",
+      "ok": false,
+      "built": false,
+      "error": "InvalidOperationException: reject-ramp-steep: slope 0.60 exceeds .35 (1:2.9); use a Stair.",
+      "triangles": 0
+    },
+    {
+      "id": "reject-ramp-no-heading",
+      "type": "Ramp",
+      "tier": "b",
+      "ok": false,
+      "built": false,
+      "error": "InvalidOperationException: reject-ramp-no-heading: polygon ramps need params.heading or faceToward (ascent direction).",
+      "triangles": 0
+    },
+    {
+      "id": "reject-ramp-guard-index",
+      "type": "Ramp",
+      "tier": "b",
+      "ok": false,
+      "built": false,
+      "error": "InvalidOperationException: reject-ramp-guard-index: guard edge 7 out of range.",
+      "triangles": 0
+    }
+  ],
+  "errors": 5,
+  "note": "Dry build under a temporary HideAndDontSave root (in-memory meshes/materials); no scene, asset or receipt writes."
+}

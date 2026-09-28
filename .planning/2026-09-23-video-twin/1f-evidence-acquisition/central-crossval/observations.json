@@ -1,0 +1,3233 @@
+{
+  "schema": "chooguard.1f-registered-observation.v1",
+  "lane": "central-crossval",
+  "frame": "station UVY source-model units (not surveyed metres)",
+  "classAThresholds": {
+    "views": 3,
+    "triangulationAngleDeg": 2.0,
+    "reprojRMSPx": 2.0,
+    "heldOutViewMedianPx": 3.0,
+    "planeInlierRMSU": 0.03,
+    "planeHeldOutWithin005Fraction": 0.85,
+    "verdicts": {
+      "upgraded-to-a": "independent new-epoch evidence meets every class-a number and agrees with (or replaces) the March geometry",
+      "confirmed": "March geometry already class a and new-epoch held-out numbers pass",
+      "still-failing": "new evidence insufficient or numbers short of class a",
+      "contradicted": "new-epoch evidence meets class-a numbers but disagrees with March geometry by > 0.10 u (plane offset) or > 3 deg (normal)"
+    }
+  },
+  "components": [
+    {
+      "componentId": "st-artbox-terminal-pier",
+      "feature": "planar face (March st-artbox-terminal-pier)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          -0.16213,
+          -0.9844,
+          -0.06839
+        ],
+        "offset": -21.473721974799272,
+        "centroidUVY": [
+          4.941,
+          -22.743,
+          1.652
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            0.009905,
+            -0.9996,
+            -0.026476
+          ],
+          "offset": -22.627433,
+          "boundsUVY": [
+            [
+              4.389,
+              -22.724,
+              -0.071
+            ],
+            [
+              5.538,
+              -22.581,
+              4.988
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 8.0,
+        "points": 63,
+        "inlierRMS": 0.01625745660359391,
+        "inlierFraction": 0.5833333333333334,
+        "triangulationAngleDeg": 7.356408807539418,
+        "reprojPx": 0.4197163741505155,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 63,
+        "median": 0.12184348818975366,
+        "p95": 0.31905434332731625,
+        "withinTolerance": 0.1746031746031746,
+        "medianSigned": 0.08938765635659962,
+        "segmentPlaneHeldOutWithin005": 0.37037037037037035,
+        "segmentPlaneAngleToMarchDeg": 10.196309714983832,
+        "segmentPlaneOffsetFromMarchU": 0.11132656859536283
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000039.jpg",
+        "000040.jpg",
+        "000041.jpg",
+        "000042.jpg",
+        "000043.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000046.jpg",
+        "000047.jpg",
+        "000048.jpg",
+        "000049.jpg",
+        "000050.jpg",
+        "000051.jpg",
+        "000052.jpg",
+        "000053.jpg",
+        "000054.jpg",
+        "000055.jpg",
+        "000056.jpg",
+        "000057.jpg",
+        "000058.jpg",
+        "000059.jpg",
+        "000060.jpg",
+        "000061.jpg",
+        "000062.jpg",
+        "000063.jpg",
+        "000064.jpg",
+        "000065.jpg",
+        "000066.jpg",
+        "000067.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "wl-office-public-frontage",
+      "feature": "planar face (March wl-office-public-frontage)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.0865,
+          -0.99624,
+          0.00398
+        ],
+        "offset": -15.526889107257931,
+        "centroidUVY": [
+          8.456,
+          -14.846,
+          1.408
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            0.077414,
+            -0.996675,
+            -0.025398
+          ],
+          "offset": -15.52534,
+          "boundsUVY": [
+            [
+              6.193,
+              -15.191,
+              0.02
+            ],
+            [
+              11.521,
+              -14.641,
+              2.288
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 8.0,
+        "points": 219,
+        "inlierRMS": 0.015557578465064276,
+        "inlierFraction": 0.3684210526315789,
+        "triangulationAngleDeg": 9.81090780871837,
+        "reprojPx": 0.5561662229670469,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 219,
+        "median": 0.08644366570219475,
+        "p95": 0.23868757941801208,
+        "withinTolerance": 0.2511415525114155,
+        "medianSigned": -0.073182358794039,
+        "segmentPlaneHeldOutWithin005": 0.3904761904761905,
+        "segmentPlaneAngleToMarchDeg": 1.7623422340075072,
+        "segmentPlaneOffsetFromMarchU": -0.11028233168956447
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000017.jpg",
+        "000018.jpg",
+        "000019.jpg",
+        "000020.jpg",
+        "000021.jpg",
+        "000022.jpg",
+        "000023.jpg",
+        "000024.jpg",
+        "000025.jpg",
+        "000026.jpg",
+        "000027.jpg",
+        "000028.jpg",
+        "000029.jpg",
+        "000030.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000038.jpg",
+        "000039.jpg",
+        "000040.jpg",
+        "000041.jpg",
+        "000042.jpg",
+        "000043.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000046.jpg",
+        "000047.jpg",
+        "000048.jpg",
+        "000049.jpg",
+        "000050.jpg",
+        "000051.jpg",
+        "000052.jpg",
+        "000053.jpg",
+        "000054.jpg",
+        "000055.jpg",
+        "000056.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "wl-office-lower-wall-panels",
+      "feature": "planar face (March wl-office-lower-wall-panels)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.15727,
+          -0.98378,
+          0.08626
+        ],
+        "offset": -16.37416107489498,
+        "centroidUVY": [
+          8.639,
+          -15.134,
+          1.474
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            0.091797,
+            -0.995744,
+            0.008152
+          ],
+          "offset": -15.72137,
+          "boundsUVY": [
+            [
+              7.202,
+              -15.092,
+              0.295
+            ],
+            [
+              10.244,
+              -14.791,
+              1.445
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 11.0,
+        "points": 11,
+        "inlierRMS": 5.465081627777648e-17,
+        "inlierFraction": 0.6,
+        "triangulationAngleDeg": 7.906153247496088,
+        "reprojPx": 1.448013994371115,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 11,
+        "median": 0.13704606403907427,
+        "p95": 0.3377862773818201,
+        "withinTolerance": 0.2727272727272727,
+        "medianSigned": 0.13704606403907427,
+        "segmentPlaneHeldOutWithin005": 0.16666666666666666,
+        "segmentPlaneAngleToMarchDeg": 5.882236337554145,
+        "segmentPlaneOffsetFromMarchU": 0.15312044439012418
+      },
+      "evidenceClass": "b-pixel",
+      "verdict": "still-failing",
+      "frames": [
+        "000024.jpg",
+        "000025.jpg",
+        "000026.jpg",
+        "000027.jpg",
+        "000028.jpg",
+        "000029.jpg",
+        "000030.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000038.jpg",
+        "000039.jpg",
+        "000040.jpg",
+        "000041.jpg",
+        "000042.jpg",
+        "000043.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000046.jpg",
+        "000047.jpg",
+        "000048.jpg",
+        "000049.jpg",
+        "000050.jpg",
+        "000051.jpg",
+        "000052.jpg",
+        "000053.jpg",
+        "000054.jpg",
+        "000055.jpg",
+        "000056.jpg",
+        "000057.jpg",
+        "000058.jpg",
+        "000059.jpg",
+        "000060.jpg",
+        "000061.jpg",
+        "000062.jpg",
+        "000063.jpg"
+      ],
+      "notes": "too few independent points",
+      "observed": true
+    },
+    {
+      "componentId": "st-right-core-metal-return",
+      "feature": "planar face (March st-right-core-metal-return)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.09031,
+          0.96487,
+          -0.24672
+        ],
+        "offset": 12.297922617253334,
+        "centroidUVY": [
+          20.583,
+          -14.171,
+          1.96
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            -0.826,
+            0.0851,
+            -0.5573
+          ],
+          "offset": 19.5188,
+          "boundsUVY": [
+            [
+              20.664,
+              -14.358,
+              1.797
+            ],
+            [
+              20.944,
+              -13.903,
+              2.169
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 7.0,
+        "points": 29,
+        "inlierRMS": 0.013961003062446785,
+        "inlierFraction": 0.4666666666666667,
+        "triangulationAngleDeg": 4.247995248243356,
+        "reprojPx": 1.250366505212156,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 29,
+        "median": 0.362282545483243,
+        "p95": 0.4657301004431332,
+        "withinTolerance": 0.0,
+        "medianSigned": 0.3499726568497685,
+        "segmentPlaneHeldOutWithin005": 0.2857142857142857,
+        "segmentPlaneAngleToMarchDeg": 81.66255764915807,
+        "segmentPlaneOffsetFromMarchU": 0.2196393903996423
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000068.jpg",
+        "000069.jpg",
+        "000070.jpg",
+        "000071.jpg",
+        "000072.jpg",
+        "000073.jpg",
+        "000098.jpg",
+        "000099.jpg",
+        "000100.jpg",
+        "000101.jpg",
+        "000102.jpg",
+        "000103.jpg",
+        "000104.jpg",
+        "000105.jpg",
+        "000106.jpg",
+        "000107.jpg",
+        "000108.jpg",
+        "000109.jpg",
+        "000110.jpg",
+        "000111.jpg",
+        "000112.jpg",
+        "000113.jpg",
+        "000114.jpg",
+        "000115.jpg",
+        "000116.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "vc-central-rail-side-plane",
+      "feature": "planar face (March vc-central-rail-side-plane)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          -0.48927,
+          -0.5596,
+          0.66893
+        ],
+        "offset": 1.1173889756234134,
+        "centroidUVY": [
+          23.623,
+          -16.266,
+          2.001
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            0.021358,
+            -0.991385,
+            0.129229
+          ],
+          "offset": -17.01597,
+          "boundsUVY": [
+            [
+              20.464,
+              -16.648,
+              0.435
+            ],
+            [
+              24.066,
+              -16.287,
+              2.688
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 4.0,
+        "points": 48,
+        "inlierRMS": 0.012910128001184837,
+        "inlierFraction": 0.41379310344827586,
+        "triangulationAngleDeg": 3.726500413886063,
+        "reprojPx": 1.134453802840088,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 48,
+        "median": 0.18827914535655488,
+        "p95": 0.37489078679980636,
+        "withinTolerance": 0.10416666666666667,
+        "medianSigned": -0.17618484901818654,
+        "segmentPlaneHeldOutWithin005": 0.3684210526315789,
+        "segmentPlaneAngleToMarchDeg": 50.89299814147011,
+        "segmentPlaneOffsetFromMarchU": -0.12702644286691722
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000105.jpg",
+        "000106.jpg",
+        "000107.jpg",
+        "000108.jpg",
+        "000109.jpg",
+        "000110.jpg",
+        "000111.jpg",
+        "000112.jpg",
+        "000113.jpg",
+        "000114.jpg",
+        "000115.jpg",
+        "000116.jpg",
+        "000117.jpg",
+        "000118.jpg",
+        "000119.jpg",
+        "000120.jpg",
+        "000121.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "vc-right-ramp-side-plane",
+      "feature": "planar face (March vc-right-ramp-side-plane)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": null,
+      "fit": {
+        "views": null,
+        "points": 0,
+        "inlierRMS": null,
+        "inlierFraction": null,
+        "triangulationAngleDeg": null,
+        "reprojPx": null
+      },
+      "heldOut": null,
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [],
+      "notes": "unobserved in this segment (no independent points/views); too few independent points",
+      "observed": false
+    },
+    {
+      "componentId": "cl-low-suspended-ceiling",
+      "feature": "planar face (March cl-low-suspended-ceiling/officeFit)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.00068,
+          -0.00625,
+          -0.99998
+        ],
+        "offset": 2.1572438228502193,
+        "centroidUVY": [
+          11.498,
+          -17.109,
+          2.272
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            0.000653,
+            -0.000979,
+            -0.999999
+          ],
+          "offset": 2.23124,
+          "boundsUVY": [
+            [
+              6.431,
+              -20.84,
+              2.202
+            ],
+            [
+              19.297,
+              -13.962,
+              2.309
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 6.0,
+        "points": 582,
+        "inlierRMS": 0.014118197839560956,
+        "inlierFraction": 0.4064748201438849,
+        "triangulationAngleDeg": 4.435728006393312,
+        "reprojPx": 0.7441457285444524,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 582,
+        "median": 0.06675954349527968,
+        "p95": 0.45156484613316195,
+        "withinTolerance": 0.4518900343642612,
+        "medianSigned": 0.014143766455315676,
+        "segmentPlaneHeldOutWithin005": 0.4407894736842105,
+        "segmentPlaneAngleToMarchDeg": 0.3022157001719828,
+        "segmentPlaneOffsetFromMarchU": -0.016634335002847056
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000012.jpg",
+        "000013.jpg",
+        "000014.jpg",
+        "000015.jpg",
+        "000016.jpg",
+        "000017.jpg",
+        "000018.jpg",
+        "000019.jpg",
+        "000020.jpg",
+        "000021.jpg",
+        "000022.jpg",
+        "000023.jpg",
+        "000024.jpg",
+        "000025.jpg",
+        "000026.jpg",
+        "000027.jpg",
+        "000028.jpg",
+        "000029.jpg",
+        "000030.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000038.jpg",
+        "000039.jpg",
+        "000040.jpg",
+        "000041.jpg",
+        "000042.jpg",
+        "000043.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000046.jpg",
+        "000047.jpg",
+        "000048.jpg",
+        "000049.jpg",
+        "000050.jpg",
+        "000051.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "cl-higher-lobby-ceiling",
+      "feature": "planar face (March cl-higher-lobby-ceiling)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.01386,
+          -0.01601,
+          -0.99978
+        ],
+        "offset": 4.4333004462773795,
+        "centroidUVY": [
+          8.63,
+          -25.923,
+          4.969
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            -0.009087,
+            -0.013749,
+            -0.999864
+          ],
+          "offset": 4.70159,
+          "boundsUVY": [
+            [
+              5.538,
+              -29.651,
+              4.865
+            ],
+            [
+              12.179,
+              -23.45,
+              5.071
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 8.5,
+        "points": 182,
+        "inlierRMS": 0.01606211190766779,
+        "inlierFraction": 0.5111111111111111,
+        "triangulationAngleDeg": 5.0852820847386315,
+        "reprojPx": 0.4483740858328765,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 182,
+        "median": 0.037669910789400074,
+        "p95": 0.12422472963595649,
+        "withinTolerance": 0.5989010989010989,
+        "medianSigned": 0.003035190121541742,
+        "segmentPlaneHeldOutWithin005": 0.717391304347826,
+        "segmentPlaneAngleToMarchDeg": 1.3208868643864462,
+        "segmentPlaneOffsetFromMarchU": 0.011342759270843494
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000028.jpg",
+        "000029.jpg",
+        "000030.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000038.jpg",
+        "000039.jpg",
+        "000040.jpg",
+        "000041.jpg",
+        "000042.jpg",
+        "000043.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000046.jpg",
+        "000047.jpg",
+        "000048.jpg",
+        "000049.jpg",
+        "000050.jpg",
+        "000051.jpg",
+        "000052.jpg",
+        "000053.jpg",
+        "000054.jpg",
+        "000055.jpg",
+        "000056.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "wl-right-approach-wall",
+      "feature": "planar face (March wl-right-approach-wall/officeFit)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.08081,
+          -0.99666,
+          0.01144
+        ],
+        "offset": -15.49517870664031,
+        "centroidUVY": [
+          15.044,
+          -14.312,
+          1.354
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            0.097435,
+            -0.995175,
+            -0.01151
+          ],
+          "offset": -15.68307,
+          "boundsUVY": [
+            [
+              13.979,
+              -14.465,
+              0.174
+            ],
+            [
+              18.238,
+              -13.954,
+              2.274
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 9.0,
+        "points": 716,
+        "inlierRMS": 0.009815345469406598,
+        "inlierFraction": 0.7658959537572254,
+        "triangulationAngleDeg": 11.156271481816352,
+        "reprojPx": 0.44551516122531154,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 716,
+        "median": 0.015809083866948015,
+        "p95": 0.1701583015910697,
+        "withinTolerance": 0.8337988826815642,
+        "medianSigned": 0.012469764079938273,
+        "segmentPlaneHeldOutWithin005": 0.8405405405405405,
+        "segmentPlaneAngleToMarchDeg": 1.6259671391661643,
+        "segmentPlaneOffsetFromMarchU": 0.009889181753150567
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000057.jpg",
+        "000058.jpg",
+        "000060.jpg",
+        "000062.jpg",
+        "000063.jpg",
+        "000064.jpg",
+        "000065.jpg",
+        "000066.jpg",
+        "000067.jpg",
+        "000068.jpg",
+        "000069.jpg",
+        "000070.jpg",
+        "000071.jpg",
+        "000072.jpg",
+        "000073.jpg",
+        "000074.jpg",
+        "000075.jpg",
+        "000076.jpg",
+        "000077.jpg",
+        "000078.jpg",
+        "000079.jpg",
+        "000080.jpg",
+        "000081.jpg",
+        "000082.jpg",
+        "000083.jpg",
+        "000084.jpg",
+        "000085.jpg",
+        "000086.jpg",
+        "000087.jpg",
+        "000088.jpg",
+        "000089.jpg",
+        "000090.jpg",
+        "000091.jpg",
+        "000092.jpg",
+        "000093.jpg",
+        "000094.jpg",
+        "000095.jpg",
+        "000096.jpg",
+        "000097.jpg",
+        "000098.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "vc-lower-landing-floor",
+      "feature": "planar face (March vc-lower-landing-floor)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": null,
+      "fit": {
+        "views": null,
+        "points": 0,
+        "inlierRMS": null,
+        "inlierFraction": null,
+        "triangulationAngleDeg": null,
+        "reprojPx": null
+      },
+      "heldOut": null,
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [],
+      "notes": "unobserved in this segment (no independent points/views); too few independent points",
+      "observed": false
+    },
+    {
+      "componentId": "st-artbox-terminal-pier",
+      "feature": "pier left (U~5.53) vertical edge",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "polyline",
+        "points": [
+          [
+            6.062,
+            -24.35,
+            -0.11
+          ],
+          [
+            6.109,
+            -24.513,
+            4.717
+          ]
+        ],
+        "priorMarch": [
+          [
+            5.525,
+            -22.581,
+            -0.045
+          ],
+          [
+            5.538,
+            -22.708,
+            4.784
+          ]
+        ],
+        "offsetsFromMarch": [
+          {
+            "priorUVY": [
+              5.526,
+              -22.594,
+              0.438
+            ],
+            "observedUVY": [
+              6.067,
+              -24.366,
+              0.373
+            ],
+            "offsetU": 1.8539201133589773
+          },
+          {
+            "priorUVY": [
+              5.532,
+              -22.644,
+              2.37
+            ],
+            "observedUVY": [
+              6.086,
+              -24.431,
+              2.304
+            ],
+            "offsetU": 1.8718831358920078
+          },
+          {
+            "priorUVY": [
+              5.537,
+              -22.695,
+              4.301
+            ],
+            "observedUVY": [
+              6.105,
+              -24.497,
+              4.235
+            ],
+            "offsetU": 1.8898873926654294
+          }
+        ]
+      },
+      "fit": {
+        "views": 16,
+        "fitViews": 8,
+        "points": null,
+        "inlierRMS": null,
+        "triangulationAngleDeg": 8.727422712730368,
+        "reprojPx": 3.70403247861282
+      },
+      "heldOut": {
+        "method": "odd observing frames held out; perpendicular px distance of observed segment endpoints",
+        "n": 8,
+        "median": 2.5454743882230675,
+        "p95": 11.644518250468273,
+        "withinTolerance": true
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000047.jpg",
+        "000048.jpg",
+        "000049.jpg",
+        "000050.jpg",
+        "000051.jpg",
+        "000052.jpg",
+        "000053.jpg",
+        "000054.jpg",
+        "000055.jpg",
+        "000056.jpg",
+        "000060.jpg",
+        "000061.jpg",
+        "000062.jpg",
+        "000063.jpg",
+        "000064.jpg",
+        "000065.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; fitRMS 3.70 px, held-out median 2.55 px, tri 8.7 deg",
+      "observed": true
+    },
+    {
+      "componentId": "st-artbox-terminal-pier",
+      "feature": "pier right (U~4.4-4.5) vertical edge",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "polyline",
+        "points": [
+          [
+            4.369,
+            -22.439,
+            -0.071
+          ],
+          [
+            4.393,
+            -22.441,
+            4.989
+          ]
+        ],
+        "priorMarch": [
+          [
+            4.389,
+            -22.591,
+            -0.071
+          ],
+          [
+            4.542,
+            -22.724,
+            4.988
+          ]
+        ],
+        "offsetsFromMarch": [
+          {
+            "priorUVY": [
+              4.404,
+              -22.604,
+              0.435
+            ],
+            "observedUVY": [
+              4.372,
+              -22.439,
+              0.435
+            ],
+            "offsetU": 0.16802997354303767
+          },
+          {
+            "priorUVY": [
+              4.466,
+              -22.658,
+              2.458
+            ],
+            "observedUVY": [
+              4.381,
+              -22.44,
+              2.459
+            ],
+            "offsetU": 0.2332048637698235
+          },
+          {
+            "priorUVY": [
+              4.527,
+              -22.711,
+              4.482
+            ],
+            "observedUVY": [
+              4.391,
+              -22.441,
+              4.483
+            ],
+            "offsetU": 0.3023701213694432
+          }
+        ]
+      },
+      "fit": {
+        "views": 18,
+        "fitViews": 9,
+        "points": null,
+        "inlierRMS": null,
+        "triangulationAngleDeg": 10.975057671550594,
+        "reprojPx": 2.9517243112573075
+      },
+      "heldOut": {
+        "method": "odd observing frames held out; perpendicular px distance of observed segment endpoints",
+        "n": 9,
+        "median": 2.8691140339431547,
+        "p95": 5.384232235873416,
+        "withinTolerance": true
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000047.jpg",
+        "000048.jpg",
+        "000051.jpg",
+        "000052.jpg",
+        "000053.jpg",
+        "000054.jpg",
+        "000055.jpg",
+        "000056.jpg",
+        "000057.jpg",
+        "000058.jpg",
+        "000059.jpg",
+        "000060.jpg",
+        "000061.jpg",
+        "000062.jpg",
+        "000063.jpg",
+        "000064.jpg",
+        "000065.jpg",
+        "000066.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; fitRMS 2.95 px, held-out median 2.87 px, tri 11.0 deg",
+      "observed": true
+    },
+    {
+      "componentId": "cl-ceiling-void-edge",
+      "feature": "low-ceiling void edge above escalator (horizontal)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "polyline",
+        "points": [
+          [
+            20.429,
+            -17.917,
+            2.286
+          ],
+          [
+            19.589,
+            -14.834,
+            2.237
+          ]
+        ],
+        "priorMarch": [
+          [
+            20.349,
+            -17.939,
+            2.255
+          ],
+          [
+            20.028,
+            -14.714,
+            2.255
+          ]
+        ],
+        "offsetsFromMarch": [
+          {
+            "priorUVY": [
+              20.349,
+              -17.939,
+              2.255
+            ],
+            "observedUVY": [
+              20.429,
+              -17.917,
+              2.286
+            ],
+            "offsetU": 0.08894275429126543
+          },
+          {
+            "priorUVY": [
+              20.188,
+              -16.326,
+              2.255
+            ],
+            "observedUVY": [
+              20.009,
+              -16.375,
+              2.262
+            ],
+            "offsetU": 0.185777776361809
+          },
+          {
+            "priorUVY": [
+              20.028,
+              -14.714,
+              2.255
+            ],
+            "observedUVY": [
+              19.589,
+              -14.834,
+              2.237
+            ],
+            "offsetU": 0.45503861493756526
+          }
+        ]
+      },
+      "fit": {
+        "views": 17,
+        "fitViews": 9,
+        "points": null,
+        "inlierRMS": null,
+        "triangulationAngleDeg": 18.788470114517185,
+        "reprojPx": 3.7837037403424407
+      },
+      "heldOut": {
+        "method": "odd observing frames held out; perpendicular px distance of observed segment endpoints",
+        "n": 8,
+        "median": 2.8894744292183776,
+        "p95": 9.167618625303449,
+        "withinTolerance": true
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000075.jpg",
+        "000099.jpg",
+        "000100.jpg",
+        "000101.jpg",
+        "000102.jpg",
+        "000103.jpg",
+        "000104.jpg",
+        "000105.jpg",
+        "000106.jpg",
+        "000107.jpg",
+        "000108.jpg",
+        "000109.jpg",
+        "000110.jpg",
+        "000111.jpg",
+        "000112.jpg",
+        "000113.jpg",
+        "000114.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; fitRMS 3.78 px, held-out median 2.89 px, tri 18.8 deg",
+      "observed": true
+    },
+    {
+      "componentId": "st-left-core-column-face",
+      "feature": "left core column face (inventory search ROI)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": null,
+      "fit": {
+        "points": 0
+      },
+      "heldOut": null,
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [],
+      "notes": "unobserved in this segment (no independent points/views); 0 quality points in ROI [20.0, -20.2, 0.3]..[22.6, -18.5, 2.0]",
+      "observed": false
+    },
+    {
+      "componentId": "new-gate-3-4-vestibule-inner-doors",
+      "feature": "inner door line of the GATE3/4 vestibule (ROI plane)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.06671,
+          -0.99777,
+          0.0
+        ],
+        "offset": -40.17454083987647,
+        "centroidUVY": [
+          9.544,
+          -39.626,
+          1.464
+        ],
+        "normalTiltFromHorizontalDeg": 0.0,
+        "roiUVY": [
+          [
+            6.5,
+            -41.8,
+            0.2
+          ],
+          [
+            14.5,
+            -36.0,
+            2.6
+          ]
+        ]
+      },
+      "fit": {
+        "views": 4,
+        "points": 405,
+        "inliers": 64,
+        "inlierRMS": 0.014340428750359407,
+        "triangulationAngleDeg": 5.3256139552841715,
+        "reprojPx": 0.4241898814130919
+      },
+      "heldOut": {
+        "method": "points first seen in odd frames held out",
+        "n": 415,
+        "median": 1.1413849393515463,
+        "p95": 2.320218467859099,
+        "withinTolerance": 0.14216867469879518
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000001.jpg",
+        "000002.jpg",
+        "000003.jpg",
+        "000004.jpg",
+        "000005.jpg",
+        "000006.jpg",
+        "000007.jpg",
+        "000008.jpg",
+        "000009.jpg",
+        "000010.jpg",
+        "000011.jpg",
+        "000012.jpg",
+        "000013.jpg",
+        "000014.jpg",
+        "000015.jpg",
+        "000016.jpg",
+        "000017.jpg",
+        "000018.jpg",
+        "000019.jpg",
+        "000020.jpg",
+        "000021.jpg",
+        "000022.jpg",
+        "000023.jpg",
+        "000024.jpg",
+        "000025.jpg",
+        "000026.jpg",
+        "000027.jpg",
+        "000028.jpg",
+        "000029.jpg",
+        "000030.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000038.jpg",
+        "000039.jpg",
+        "000040.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; ROI plane short of class-a numbers (inlier RMS / held-out fraction)",
+      "observed": true
+    },
+    {
+      "componentId": "new-corridor-end-stainless-box-face",
+      "feature": "front face of the stainless panel-clad box left of the red office doors (rectangular column family)",
+      "segment": "S20",
+      "epoch": "2020-11 (upload 2020-11-14)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.16278,
+          -0.98666,
+          0.0
+        ],
+        "offset": -16.951249216383594,
+        "centroidUVY": [
+          13.002,
+          -15.035,
+          1.472
+        ],
+        "normalTiltFromHorizontalDeg": 0.0,
+        "roiUVY": [
+          [
+            11.5,
+            -16.8,
+            0.3
+          ],
+          [
+            14.5,
+            -14.8,
+            2.1
+          ]
+        ]
+      },
+      "fit": {
+        "views": 6,
+        "points": 286,
+        "inliers": 174,
+        "inlierRMS": 0.01578753609849272,
+        "triangulationAngleDeg": 8.007162087508306,
+        "reprojPx": 0.43175454235442684
+      },
+      "heldOut": {
+        "method": "points first seen in odd frames held out",
+        "n": 337,
+        "median": 0.02576877580249272,
+        "p95": 0.1284928055292701,
+        "withinTolerance": 0.7151335311572701
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000038.jpg",
+        "000039.jpg",
+        "000040.jpg",
+        "000041.jpg",
+        "000042.jpg",
+        "000043.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000046.jpg",
+        "000047.jpg",
+        "000048.jpg",
+        "000049.jpg",
+        "000050.jpg",
+        "000051.jpg",
+        "000052.jpg",
+        "000053.jpg",
+        "000054.jpg",
+        "000055.jpg",
+        "000056.jpg",
+        "000057.jpg",
+        "000058.jpg",
+        "000059.jpg",
+        "000060.jpg",
+        "000061.jpg",
+        "000062.jpg",
+        "000063.jpg",
+        "000064.jpg",
+        "000065.jpg",
+        "000066.jpg",
+        "000067.jpg",
+        "000068.jpg",
+        "000069.jpg",
+        "000070.jpg",
+        "000071.jpg",
+        "000072.jpg",
+        "000073.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; ROI plane short of class-a numbers (inlier RMS / held-out fraction)",
+      "observed": true
+    },
+    {
+      "componentId": "st-artbox-terminal-pier",
+      "feature": "planar face (March st-artbox-terminal-pier)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.10559,
+          -0.99431,
+          0.01435
+        ],
+        "offset": -23.188159232490985,
+        "centroidUVY": [
+          4.983,
+          -22.77,
+          1.5
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            0.009905,
+            -0.9996,
+            -0.026476
+          ],
+          "offset": -22.627433,
+          "boundsUVY": [
+            [
+              4.389,
+              -22.724,
+              -0.071
+            ],
+            [
+              5.538,
+              -22.581,
+              4.988
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 4.0,
+        "points": 106,
+        "inlierRMS": 0.015217747681350579,
+        "inlierFraction": 0.6086956521739131,
+        "triangulationAngleDeg": 7.17401964969557,
+        "reprojPx": 0.5191663202876272,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 106,
+        "median": 0.15028700356139524,
+        "p95": 0.3254064955905376,
+        "withinTolerance": 0.03773584905660377,
+        "medianSigned": 0.14622010212331737,
+        "segmentPlaneHeldOutWithin005": 0.7297297297297297,
+        "segmentPlaneAngleToMarchDeg": 5.97070973607032,
+        "segmentPlaneOffsetFromMarchU": 0.14319913390910344
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000008.jpg",
+        "000009.jpg",
+        "000010.jpg",
+        "000011.jpg",
+        "000012.jpg",
+        "000014.jpg",
+        "000016.jpg",
+        "000017.jpg",
+        "000018.jpg",
+        "000019.jpg",
+        "000020.jpg",
+        "000021.jpg",
+        "000023.jpg",
+        "000030.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000038.jpg",
+        "000039.jpg",
+        "000040.jpg",
+        "000042.jpg",
+        "000043.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000046.jpg",
+        "000047.jpg",
+        "000048.jpg",
+        "000049.jpg",
+        "000050.jpg",
+        "000051.jpg",
+        "000052.jpg",
+        "000053.jpg",
+        "000054.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "wl-office-public-frontage",
+      "feature": "planar face (March wl-office-public-frontage)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.08114,
+          -0.13385,
+          -0.98767
+        ],
+        "offset": -1.0029219969962695,
+        "centroidUVY": [
+          9.864,
+          -14.927,
+          1.818
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            0.077414,
+            -0.996675,
+            -0.025398
+          ],
+          "offset": -15.52534,
+          "boundsUVY": [
+            [
+              6.193,
+              -15.191,
+              0.02
+            ],
+            [
+              11.521,
+              -14.641,
+              2.288
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 6.0,
+        "points": 141,
+        "inlierRMS": 0.01618744656064287,
+        "inlierFraction": 0.29411764705882354,
+        "triangulationAngleDeg": 4.644413518766549,
+        "reprojPx": 0.7200585201782167,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 141,
+        "median": 0.1473532754984035,
+        "p95": 0.4191525818450188,
+        "withinTolerance": 0.2127659574468085,
+        "medianSigned": 0.06156625744250732,
+        "segmentPlaneHeldOutWithin005": 0.136986301369863,
+        "segmentPlaneAngleToMarchDeg": 80.51579604137554,
+        "segmentPlaneOffsetFromMarchU": 0.06938022574040659
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000011.jpg",
+        "000012.jpg",
+        "000013.jpg",
+        "000014.jpg",
+        "000015.jpg",
+        "000016.jpg",
+        "000017.jpg",
+        "000018.jpg",
+        "000019.jpg",
+        "000020.jpg",
+        "000021.jpg",
+        "000022.jpg",
+        "000023.jpg",
+        "000024.jpg",
+        "000025.jpg",
+        "000026.jpg",
+        "000027.jpg",
+        "000028.jpg",
+        "000029.jpg",
+        "000030.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000038.jpg",
+        "000039.jpg",
+        "000040.jpg",
+        "000041.jpg",
+        "000042.jpg",
+        "000043.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000046.jpg",
+        "000047.jpg",
+        "000048.jpg",
+        "000049.jpg",
+        "000050.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "wl-office-lower-wall-panels",
+      "feature": "planar face (March wl-office-lower-wall-panels)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.20952,
+          -0.94887,
+          -0.23612
+        ],
+        "offset": -16.268610093370715,
+        "centroidUVY": [
+          9.487,
+          -15.229,
+          0.719
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            0.091797,
+            -0.995744,
+            0.008152
+          ],
+          "offset": -15.72137,
+          "boundsUVY": [
+            [
+              7.202,
+              -15.092,
+              0.295
+            ],
+            [
+              10.244,
+              -14.791,
+              1.445
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 5.0,
+        "points": 235,
+        "inlierRMS": 0.014536048499348215,
+        "inlierFraction": 0.2708333333333333,
+        "triangulationAngleDeg": 3.785105244794473,
+        "reprojPx": 0.5503913935512519,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 235,
+        "median": 0.2606655882507365,
+        "p95": 0.46835824178697183,
+        "withinTolerance": 0.03829787234042553,
+        "medianSigned": 0.2606655882507365,
+        "segmentPlaneHeldOutWithin005": 0.2158273381294964,
+        "segmentPlaneAngleToMarchDeg": 15.816626511233343,
+        "segmentPlaneOffsetFromMarchU": 0.3199782889929601
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000012.jpg",
+        "000013.jpg",
+        "000014.jpg",
+        "000015.jpg",
+        "000016.jpg",
+        "000017.jpg",
+        "000018.jpg",
+        "000019.jpg",
+        "000020.jpg",
+        "000021.jpg",
+        "000022.jpg",
+        "000023.jpg",
+        "000024.jpg",
+        "000025.jpg",
+        "000026.jpg",
+        "000027.jpg",
+        "000028.jpg",
+        "000029.jpg",
+        "000030.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000038.jpg",
+        "000039.jpg",
+        "000040.jpg",
+        "000041.jpg",
+        "000042.jpg",
+        "000043.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000046.jpg",
+        "000047.jpg",
+        "000061.jpg",
+        "000062.jpg",
+        "000063.jpg",
+        "000064.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "st-right-core-metal-return",
+      "feature": "planar face (March st-right-core-metal-return)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": null,
+      "fit": {
+        "views": null,
+        "points": 2,
+        "inlierRMS": null,
+        "inlierFraction": null,
+        "triangulationAngleDeg": null,
+        "reprojPx": null
+      },
+      "heldOut": null,
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [],
+      "notes": "unobserved in this segment (no independent points/views); too few independent points",
+      "observed": false
+    },
+    {
+      "componentId": "vc-central-rail-side-plane",
+      "feature": "planar face (March vc-central-rail-side-plane)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.08806,
+          -0.98402,
+          0.15474
+        ],
+        "offset": -18.240159741708695,
+        "centroidUVY": [
+          22.701,
+          -16.227,
+          1.765
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            0.021358,
+            -0.991385,
+            0.129229
+          ],
+          "offset": -17.01597,
+          "boundsUVY": [
+            [
+              20.464,
+              -16.648,
+              0.435
+            ],
+            [
+              24.066,
+              -16.287,
+              2.688
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 5.0,
+        "points": 41,
+        "inlierRMS": 0.011067311852557481,
+        "inlierFraction": 0.48,
+        "triangulationAngleDeg": 2.6472629356741897,
+        "reprojPx": 0.898342922161867,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 41,
+        "median": 0.2385183604157568,
+        "p95": 0.4468018357511312,
+        "withinTolerance": 0.17073170731707318,
+        "medianSigned": -0.23297564719302244,
+        "segmentPlaneHeldOutWithin005": 0.0625,
+        "segmentPlaneAngleToMarchDeg": 4.114200497788957,
+        "segmentPlaneOffsetFromMarchU": -0.2155475550179382
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000072.jpg",
+        "000073.jpg",
+        "000074.jpg",
+        "000075.jpg",
+        "000076.jpg",
+        "000077.jpg",
+        "000078.jpg",
+        "000079.jpg",
+        "000080.jpg",
+        "000081.jpg",
+        "000082.jpg",
+        "000083.jpg",
+        "000084.jpg",
+        "000085.jpg",
+        "000092.jpg",
+        "000093.jpg",
+        "000094.jpg",
+        "000095.jpg",
+        "000096.jpg",
+        "000097.jpg",
+        "000098.jpg",
+        "000099.jpg",
+        "000100.jpg",
+        "000101.jpg",
+        "000102.jpg",
+        "000103.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "vc-right-ramp-side-plane",
+      "feature": "planar face (March vc-right-ramp-side-plane)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": null,
+      "fit": {
+        "views": null,
+        "points": 0,
+        "inlierRMS": null,
+        "inlierFraction": null,
+        "triangulationAngleDeg": null,
+        "reprojPx": null
+      },
+      "heldOut": null,
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [],
+      "notes": "unobserved in this segment (no independent points/views); too few independent points",
+      "observed": false
+    },
+    {
+      "componentId": "cl-low-suspended-ceiling",
+      "feature": "planar face (March cl-low-suspended-ceiling/officeFit)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.00314,
+          -0.0077,
+          -0.99997
+        ],
+        "offset": 2.0985229091553834,
+        "centroidUVY": [
+          13.535,
+          -16.755,
+          2.27
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            0.000653,
+            -0.000979,
+            -0.999999
+          ],
+          "offset": 2.23124,
+          "boundsUVY": [
+            [
+              6.431,
+              -20.84,
+              2.202
+            ],
+            [
+              19.297,
+              -13.962,
+              2.309
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 5.0,
+        "points": 221,
+        "inlierRMS": 0.014104671230333184,
+        "inlierFraction": 0.47619047619047616,
+        "triangulationAngleDeg": 4.842712775810913,
+        "reprojPx": 0.8441085279734278,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 221,
+        "median": 0.045007421861194885,
+        "p95": 0.4568513201868307,
+        "withinTolerance": 0.5113122171945701,
+        "medianSigned": -0.0023563658040641755,
+        "segmentPlaneHeldOutWithin005": 0.49473684210526314,
+        "segmentPlaneAngleToMarchDeg": 0.4106173027053988,
+        "segmentPlaneOffsetFromMarchU": -0.013664596859000344
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000011.jpg",
+        "000012.jpg",
+        "000013.jpg",
+        "000014.jpg",
+        "000015.jpg",
+        "000016.jpg",
+        "000017.jpg",
+        "000018.jpg",
+        "000019.jpg",
+        "000020.jpg",
+        "000021.jpg",
+        "000022.jpg",
+        "000023.jpg",
+        "000024.jpg",
+        "000025.jpg",
+        "000026.jpg",
+        "000027.jpg",
+        "000028.jpg",
+        "000029.jpg",
+        "000030.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000038.jpg",
+        "000039.jpg",
+        "000040.jpg",
+        "000041.jpg",
+        "000042.jpg",
+        "000043.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000046.jpg",
+        "000047.jpg",
+        "000048.jpg",
+        "000049.jpg",
+        "000050.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "cl-higher-lobby-ceiling",
+      "feature": "planar face (March cl-higher-lobby-ceiling)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          -0.00363,
+          0.00059,
+          -0.99999
+        ],
+        "offset": 5.077342679119293,
+        "centroidUVY": [
+          8.764,
+          -25.576,
+          5.03
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            -0.009087,
+            -0.013749,
+            -0.999864
+          ],
+          "offset": 4.70159,
+          "boundsUVY": [
+            [
+              5.538,
+              -29.651,
+              4.865
+            ],
+            [
+              12.179,
+              -23.45,
+              5.071
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 7.0,
+        "points": 129,
+        "inlierRMS": 0.011880810303834692,
+        "inlierFraction": 0.44642857142857145,
+        "triangulationAngleDeg": 5.778954642568087,
+        "reprojPx": 0.6075931607226905,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 129,
+        "median": 0.06308245192645678,
+        "p95": 0.22903450955585966,
+        "withinTolerance": 0.4186046511627907,
+        "medianSigned": -0.04999114222606327,
+        "segmentPlaneHeldOutWithin005": 0.6986301369863014,
+        "segmentPlaneAngleToMarchDeg": 0.8793763778155912,
+        "segmentPlaneOffsetFromMarchU": -0.056119438771808916
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000005.jpg",
+        "000006.jpg",
+        "000007.jpg",
+        "000008.jpg",
+        "000009.jpg",
+        "000010.jpg",
+        "000011.jpg",
+        "000012.jpg",
+        "000013.jpg",
+        "000014.jpg",
+        "000015.jpg",
+        "000016.jpg",
+        "000017.jpg",
+        "000018.jpg",
+        "000019.jpg",
+        "000020.jpg",
+        "000021.jpg",
+        "000022.jpg",
+        "000023.jpg",
+        "000024.jpg",
+        "000025.jpg",
+        "000026.jpg",
+        "000027.jpg",
+        "000028.jpg",
+        "000029.jpg",
+        "000030.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000048.jpg",
+        "000050.jpg",
+        "000051.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "wl-right-approach-wall",
+      "feature": "planar face (March wl-right-approach-wall/officeFit)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          0.15785,
+          -0.98658,
+          0.04166
+        ],
+        "offset": -16.528386745906285,
+        "centroidUVY": [
+          15.143,
+          -14.273,
+          1.356
+        ],
+        "marchPlane": {
+          "normalUVY": [
+            0.097435,
+            -0.995175,
+            -0.01151
+          ],
+          "offset": -15.68307,
+          "boundsUVY": [
+            [
+              13.979,
+              -14.465,
+              0.174
+            ],
+            [
+              18.238,
+              -13.954,
+              2.274
+            ]
+          ]
+        }
+      },
+      "fit": {
+        "views": 6.0,
+        "points": 510,
+        "inlierRMS": 0.016276842478916805,
+        "inlierFraction": 0.4016393442622951,
+        "triangulationAngleDeg": 2.774733390791152,
+        "reprojPx": 0.39868756904763725,
+        "viewsMin": 3
+      },
+      "heldOut": {
+        "method": "all segment points vs March plane (none used by March); segment plane: odd-frame points held out",
+        "n": 510,
+        "median": 0.06002031687663756,
+        "p95": 0.2610433180427515,
+        "withinTolerance": 0.42745098039215684,
+        "medianSigned": 0.00733468330693654,
+        "segmentPlaneHeldOutWithin005": 0.45112781954887216,
+        "segmentPlaneAngleToMarchDeg": 4.638957393779615,
+        "segmentPlaneOffsetFromMarchU": -0.01905150430191327
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000042.jpg",
+        "000043.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000062.jpg",
+        "000063.jpg",
+        "000064.jpg",
+        "000065.jpg",
+        "000066.jpg",
+        "000068.jpg",
+        "000069.jpg",
+        "000070.jpg",
+        "000071.jpg",
+        "000072.jpg",
+        "000073.jpg",
+        "000074.jpg",
+        "000075.jpg",
+        "000076.jpg",
+        "000077.jpg",
+        "000078.jpg",
+        "000079.jpg",
+        "000080.jpg",
+        "000081.jpg",
+        "000082.jpg",
+        "000083.jpg",
+        "000084.jpg",
+        "000085.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; segment plane itself also short of class-a numbers",
+      "observed": true
+    },
+    {
+      "componentId": "vc-lower-landing-floor",
+      "feature": "planar face (March vc-lower-landing-floor)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": null,
+      "fit": {
+        "views": null,
+        "points": 0,
+        "inlierRMS": null,
+        "inlierFraction": null,
+        "triangulationAngleDeg": null,
+        "reprojPx": null
+      },
+      "heldOut": null,
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [],
+      "notes": "unobserved in this segment (no independent points/views); too few independent points",
+      "observed": false
+    },
+    {
+      "componentId": "st-artbox-terminal-pier",
+      "feature": "pier left (U~5.53) vertical edge",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": {
+        "type": "polyline",
+        "points": [
+          [
+            5.867,
+            -23.3,
+            -0.053
+          ],
+          [
+            5.879,
+            -23.346,
+            4.777
+          ]
+        ],
+        "priorMarch": [
+          [
+            5.525,
+            -22.581,
+            -0.045
+          ],
+          [
+            5.538,
+            -22.708,
+            4.784
+          ]
+        ],
+        "offsetsFromMarch": [
+          {
+            "priorUVY": [
+              5.526,
+              -22.594,
+              0.438
+            ],
+            "observedUVY": [
+              5.869,
+              -23.305,
+              0.43
+            ],
+            "offsetU": 0.7893292393806242
+          },
+          {
+            "priorUVY": [
+              5.532,
+              -22.644,
+              2.37
+            ],
+            "observedUVY": [
+              5.873,
+              -23.323,
+              2.362
+            ],
+            "offsetU": 0.7599565784604831
+          },
+          {
+            "priorUVY": [
+              5.537,
+              -22.695,
+              4.301
+            ],
+            "observedUVY": [
+              5.878,
+              -23.341,
+              4.294
+            ],
+            "offsetU": 0.7308524795623491
+          }
+        ]
+      },
+      "fit": {
+        "views": 22,
+        "fitViews": 11,
+        "points": null,
+        "inlierRMS": null,
+        "triangulationAngleDeg": 19.7680268706057,
+        "reprojPx": 3.400308549276453
+      },
+      "heldOut": {
+        "method": "odd observing frames held out; perpendicular px distance of observed segment endpoints",
+        "n": 11,
+        "median": 2.662770319383859,
+        "p95": 6.3351958200795755,
+        "withinTolerance": true
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000023.jpg",
+        "000024.jpg",
+        "000028.jpg",
+        "000029.jpg",
+        "000030.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000038.jpg",
+        "000039.jpg",
+        "000040.jpg",
+        "000041.jpg",
+        "000042.jpg",
+        "000043.jpg",
+        "000049.jpg",
+        "000050.jpg",
+        "000051.jpg",
+        "000052.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; fitRMS 3.40 px, held-out median 2.66 px, tri 19.8 deg",
+      "observed": true
+    },
+    {
+      "componentId": "st-artbox-terminal-pier",
+      "feature": "pier right (U~4.4-4.5) vertical edge",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": {
+        "type": "polyline",
+        "points": [
+          [
+            4.586,
+            -22.906,
+            -0.077
+          ],
+          [
+            4.621,
+            -22.973,
+            4.984
+          ]
+        ],
+        "priorMarch": [
+          [
+            4.389,
+            -22.591,
+            -0.071
+          ],
+          [
+            4.542,
+            -22.724,
+            4.988
+          ]
+        ],
+        "offsetsFromMarch": [
+          {
+            "priorUVY": [
+              4.404,
+              -22.604,
+              0.435
+            ],
+            "observedUVY": [
+              4.589,
+              -22.912,
+              0.429
+            ],
+            "offsetU": 0.3592281806198368
+          },
+          {
+            "priorUVY": [
+              4.466,
+              -22.658,
+              2.458
+            ],
+            "observedUVY": [
+              4.603,
+              -22.939,
+              2.454
+            ],
+            "offsetU": 0.31377152099131417
+          },
+          {
+            "priorUVY": [
+              4.527,
+              -22.711,
+              4.482
+            ],
+            "observedUVY": [
+              4.617,
+              -22.966,
+              4.478
+            ],
+            "offsetU": 0.27139315966484956
+          }
+        ]
+      },
+      "fit": {
+        "views": 19,
+        "fitViews": 10,
+        "points": null,
+        "inlierRMS": null,
+        "triangulationAngleDeg": 32.76398465289453,
+        "reprojPx": 3.5031852625009017
+      },
+      "heldOut": {
+        "method": "odd observing frames held out; perpendicular px distance of observed segment endpoints",
+        "n": 9,
+        "median": 3.849349500186739,
+        "p95": 8.40477151296117,
+        "withinTolerance": false
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000030.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000035.jpg",
+        "000036.jpg",
+        "000037.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000046.jpg",
+        "000047.jpg",
+        "000048.jpg",
+        "000049.jpg",
+        "000050.jpg",
+        "000051.jpg",
+        "000052.jpg",
+        "000053.jpg",
+        "000054.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; fitRMS 3.50 px, held-out median 3.85 px, tri 32.8 deg",
+      "observed": true
+    },
+    {
+      "componentId": "cl-ceiling-void-edge",
+      "feature": "low-ceiling void edge above escalator (horizontal)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": {
+        "type": "polyline",
+        "points": [
+          [
+            20.066,
+            -17.958,
+            2.231
+          ],
+          [
+            19.85,
+            -14.726,
+            2.248
+          ]
+        ],
+        "priorMarch": [
+          [
+            20.349,
+            -17.939,
+            2.255
+          ],
+          [
+            20.028,
+            -14.714,
+            2.255
+          ]
+        ],
+        "offsetsFromMarch": [
+          {
+            "priorUVY": [
+              20.349,
+              -17.939,
+              2.255
+            ],
+            "observedUVY": [
+              20.066,
+              -17.958,
+              2.231
+            ],
+            "offsetU": 0.2841548987103491
+          },
+          {
+            "priorUVY": [
+              20.188,
+              -16.326,
+              2.255
+            ],
+            "observedUVY": [
+              19.958,
+              -16.342,
+              2.239
+            ],
+            "offsetU": 0.23140259898794455
+          },
+          {
+            "priorUVY": [
+              20.028,
+              -14.714,
+              2.255
+            ],
+            "observedUVY": [
+              19.85,
+              -14.726,
+              2.248
+            ],
+            "offsetU": 0.17876221930812594
+          }
+        ]
+      },
+      "fit": {
+        "views": 39,
+        "fitViews": 20,
+        "points": null,
+        "inlierRMS": null,
+        "triangulationAngleDeg": 14.099948267308195,
+        "reprojPx": 1.31242695818873
+      },
+      "heldOut": {
+        "method": "odd observing frames held out; perpendicular px distance of observed segment endpoints",
+        "n": 19,
+        "median": 0.8430823941403893,
+        "p95": 2.6460927573202584,
+        "withinTolerance": true
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000065.jpg",
+        "000066.jpg",
+        "000067.jpg",
+        "000068.jpg",
+        "000069.jpg",
+        "000070.jpg",
+        "000071.jpg",
+        "000072.jpg",
+        "000073.jpg",
+        "000074.jpg",
+        "000075.jpg",
+        "000076.jpg",
+        "000077.jpg",
+        "000078.jpg",
+        "000079.jpg",
+        "000080.jpg",
+        "000081.jpg",
+        "000082.jpg",
+        "000083.jpg",
+        "000084.jpg",
+        "000085.jpg",
+        "000086.jpg",
+        "000087.jpg",
+        "000088.jpg",
+        "000089.jpg",
+        "000090.jpg",
+        "000091.jpg",
+        "000092.jpg",
+        "000093.jpg",
+        "000094.jpg",
+        "000095.jpg",
+        "000096.jpg",
+        "000097.jpg",
+        "000098.jpg",
+        "000099.jpg",
+        "000100.jpg",
+        "000101.jpg",
+        "000102.jpg",
+        "000103.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate",
+      "observed": true
+    },
+    {
+      "componentId": "st-left-core-column-face",
+      "feature": "left core column face (inventory search ROI)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": null,
+      "fit": {
+        "points": 6
+      },
+      "heldOut": null,
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [],
+      "notes": "unobserved in this segment (no independent points/views); 6 quality points in ROI [20.0, -20.2, 0.3]..[22.6, -18.5, 2.0]",
+      "observed": false
+    },
+    {
+      "componentId": "new-gate-3-4-vestibule-inner-doors",
+      "feature": "inner door line of the GATE3/4 vestibule (ROI plane)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          -0.00221,
+          -1.0,
+          0.0
+        ],
+        "offset": -36.0888605104677,
+        "centroidUVY": [
+          9.439,
+          -36.11,
+          1.278
+        ],
+        "normalTiltFromHorizontalDeg": 0.0,
+        "roiUVY": [
+          [
+            6.5,
+            -41.8,
+            0.2
+          ],
+          [
+            14.5,
+            -36.0,
+            2.6
+          ]
+        ]
+      },
+      "fit": {
+        "views": 3,
+        "points": 128,
+        "inliers": 13,
+        "inlierRMS": 0.01619569638403779,
+        "triangulationAngleDeg": 6.62613224807196,
+        "reprojPx": 0.6858833338055517
+      },
+      "heldOut": {
+        "method": "points first seen in odd frames held out",
+        "n": 171,
+        "median": 4.02555182130222,
+        "p95": 5.441153826902514,
+        "withinTolerance": 0.08771929824561403
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000001.jpg",
+        "000002.jpg",
+        "000003.jpg",
+        "000004.jpg",
+        "000005.jpg",
+        "000006.jpg",
+        "000007.jpg",
+        "000008.jpg",
+        "000009.jpg",
+        "000010.jpg",
+        "000011.jpg",
+        "000012.jpg",
+        "000013.jpg",
+        "000014.jpg",
+        "000015.jpg",
+        "000016.jpg",
+        "000017.jpg",
+        "000018.jpg",
+        "000019.jpg",
+        "000020.jpg",
+        "000021.jpg",
+        "000022.jpg",
+        "000023.jpg",
+        "000024.jpg",
+        "000025.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; ROI plane short of class-a numbers (inlier RMS / held-out fraction)",
+      "observed": true
+    },
+    {
+      "componentId": "new-corridor-end-stainless-box-face",
+      "feature": "front face of the stainless panel-clad box left of the red office doors (rectangular column family)",
+      "segment": "S22",
+      "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+      "geometryUVY": {
+        "type": "plane",
+        "normalUVY": [
+          -0.16925,
+          0.98557,
+          0.0
+        ],
+        "offset": 16.985240191022783,
+        "centroidUVY": [
+          12.481,
+          -15.091,
+          1.698
+        ],
+        "normalTiltFromHorizontalDeg": 0.0,
+        "roiUVY": [
+          [
+            11.5,
+            -16.8,
+            0.3
+          ],
+          [
+            14.5,
+            -14.8,
+            2.1
+          ]
+        ]
+      },
+      "fit": {
+        "views": 5,
+        "points": 19,
+        "inliers": 11,
+        "inlierRMS": 0.015871667298934272,
+        "triangulationAngleDeg": 3.3558666364702425,
+        "reprojPx": 0.7250465501732938
+      },
+      "heldOut": {
+        "method": "points first seen in odd frames held out",
+        "n": 21,
+        "median": 0.015384085952562888,
+        "p95": 0.15602265213454106,
+        "withinTolerance": 0.7619047619047619
+      },
+      "evidenceClass": "a-failed",
+      "verdict": "still-failing",
+      "frames": [
+        "000024.jpg",
+        "000025.jpg",
+        "000026.jpg",
+        "000027.jpg",
+        "000028.jpg",
+        "000031.jpg",
+        "000032.jpg",
+        "000033.jpg",
+        "000034.jpg",
+        "000038.jpg",
+        "000039.jpg",
+        "000040.jpg",
+        "000041.jpg",
+        "000042.jpg",
+        "000043.jpg",
+        "000044.jpg",
+        "000045.jpg",
+        "000046.jpg",
+        "000062.jpg",
+        "000063.jpg",
+        "000064.jpg",
+        "000065.jpg",
+        "000066.jpg",
+        "000067.jpg",
+        "000068.jpg",
+        "000069.jpg",
+        "000070.jpg",
+        "000071.jpg",
+        "000072.jpg",
+        "000073.jpg",
+        "000074.jpg",
+        "000075.jpg"
+      ],
+      "notes": "registration rejected by the pre-registered gate; ROI plane short of class-a numbers (inlier RMS / held-out fraction)",
+      "observed": true
+    }
+  ],
+  "targetVerdicts": {
+    "registrationNote": "No new-epoch registration passed the pre-registered gate (registration.json summary); every verdict below is therefore capped at still-failing / a-failed, whatever the component numbers.",
+    "registrationSummary": {
+      "S20": {
+        "finalAttempt": "v3-march-anchored-ba",
+        "status": "rejected",
+        "reason": "failed pre-registered gate(s): GATE3/4 portal corners (MainShell source mesh); cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up; cross-video S20<->S22 (non-anchor points triangulated in both)"
+      },
+      "S22": {
+        "finalAttempt": "v3-march-anchored-ba",
+        "status": "rejected",
+        "reason": "failed pre-registered gate(s): GATE3/4 portal corners (MainShell source mesh); cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; cl-higher-lobby-ceiling; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up; cross-video S20<->S22 (non-anchor points triangulated in both)"
+      },
+      "S23": {
+        "finalAttempt": "v2-heldout-sim3",
+        "status": "rejected",
+        "reason": "failed pre-registered gate(s): cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; cl-higher-lobby-ceiling; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up"
+      }
+    },
+    "table": [
+      {
+        "componentId": "st-artbox-terminal-pier",
+        "verdict": "still-failing",
+        "evidenceClass": "a-failed",
+        "numbers": {
+          "S20": {
+            "face": {
+              "points": 63,
+              "marchPlaneHeldOutMedianU": 0.12184348818975366,
+              "marchPlaneWithin005": 0.1746031746031746,
+              "segmentPlaneInlierRMS": 0.01625745660359391,
+              "segmentPlaneHeldOutWithin005": 0.37037037037037035,
+              "segmentPlaneOffsetFromMarchU": 0.11132656859536283,
+              "segmentPlaneAngleToMarchDeg": 10.196309714983832,
+              "segmentPlaneCentroidUVY": [
+                4.941,
+                -22.743,
+                1.652
+              ]
+            },
+            "rightEdgeU4.4": {
+              "views": 18,
+              "triangulationAngleDeg": 10.98,
+              "fitReprojRMSPx": 2.95,
+              "heldOutMedianPx": 2.87,
+              "lineUVY": [
+                [
+                  4.369,
+                  -22.439,
+                  -0.071
+                ],
+                [
+                  4.393,
+                  -22.441,
+                  4.989
+                ]
+              ],
+              "offsetsFromMarchU": [
+                0.168,
+                0.233,
+                0.302
+              ]
+            },
+            "leftEdgeU5.53": {
+              "views": 16,
+              "triangulationAngleDeg": 8.73,
+              "fitReprojRMSPx": 3.7,
+              "heldOutMedianPx": 2.55,
+              "lineUVY": [
+                [
+                  6.062,
+                  -24.35,
+                  -0.11
+                ],
+                [
+                  6.109,
+                  -24.513,
+                  4.717
+                ]
+              ],
+              "offsetsFromMarchU": [
+                1.854,
+                1.872,
+                1.89
+              ]
+            }
+          },
+          "S22": {
+            "face": {
+              "points": 106,
+              "marchPlaneHeldOutMedianU": 0.15028700356139524,
+              "marchPlaneWithin005": 0.03773584905660377,
+              "segmentPlaneInlierRMS": 0.015217747681350579,
+              "segmentPlaneHeldOutWithin005": 0.7297297297297297,
+              "segmentPlaneOffsetFromMarchU": 0.14319913390910344,
+              "segmentPlaneAngleToMarchDeg": 5.97070973607032,
+              "segmentPlaneCentroidUVY": [
+                4.983,
+                -22.77,
+                1.5
+              ]
+            },
+            "rightEdgeU4.4": {
+              "views": 19,
+              "triangulationAngleDeg": 32.76,
+              "fitReprojRMSPx": 3.5,
+              "heldOutMedianPx": 3.85,
+              "lineUVY": [
+                [
+                  4.586,
+                  -22.906,
+                  -0.077
+                ],
+                [
+                  4.621,
+                  -22.973,
+                  4.984
+                ]
+              ],
+              "offsetsFromMarchU": [
+                0.359,
+                0.314,
+                0.271
+              ]
+            },
+            "leftEdgeU5.53": {
+              "views": 22,
+              "triangulationAngleDeg": 19.77,
+              "fitReprojRMSPx": 3.4,
+              "heldOutMedianPx": 2.66,
+              "lineUVY": [
+                [
+                  5.867,
+                  -23.3,
+                  -0.053
+                ],
+                [
+                  5.879,
+                  -23.346,
+                  4.777
+                ]
+              ],
+              "offsetsFromMarchU": [
+                0.789,
+                0.76,
+                0.731
+              ]
+            }
+          }
+        },
+        "finding": "Third/fourth-view edges now exist (2020: 16-18 views, 2022: 19-22 views) but edge fits are 2.95-3.7 px RMS (> 2 px) and the two epochs disagree with each other (right edge 0.17-0.30 u vs 0.27-0.36 u from March; left edge 1.85 u vs 0.73-0.79 u: forward-walking views make edge depth ill-conditioned). Segment face planes of both epochs sit 0.11 (2020) / 0.14 u (2022) on the plaza side of the March plane, <20% within 0.05 u. Same dark grey panelled pier with small signs is visible in 2020-11, 2022-12 and 2026-03: architecture stable (pixel-level). Not confirmed, not contradicted at class-a level.",
+        "observed": true
+      },
+      {
+        "componentId": "wl-office-public-frontage",
+        "verdict": "still-failing",
+        "evidenceClass": "a-failed",
+        "numbers": {
+          "S20": {
+            "points": 219,
+            "marchPlaneHeldOutMedianU": 0.08644366570219475,
+            "marchPlaneWithin005": 0.2511415525114155,
+            "segmentPlaneInlierRMS": 0.015557578465064276,
+            "segmentPlaneHeldOutWithin005": 0.3904761904761905,
+            "segmentPlaneOffsetFromMarchU": -0.11028233168956447,
+            "segmentPlaneAngleToMarchDeg": 1.7623422340075072,
+            "segmentPlaneCentroidUVY": [
+              8.456,
+              -14.846,
+              1.408
+            ]
+          },
+          "S22": {
+            "points": 141,
+            "marchPlaneHeldOutMedianU": 0.1473532754984035,
+            "marchPlaneWithin005": 0.2127659574468085,
+            "segmentPlaneInlierRMS": 0.01618744656064287,
+            "segmentPlaneHeldOutWithin005": 0.136986301369863,
+            "segmentPlaneOffsetFromMarchU": 0.06938022574040659,
+            "segmentPlaneAngleToMarchDeg": 80.51579604137554,
+            "segmentPlaneCentroidUVY": [
+              9.864,
+              -14.927,
+              1.818
+            ]
+          }
+        },
+        "finding": "Red doors, rear window and blue notice identical in 2020/2022/2023/2026 (pixel-level). 2020 segment plane lies 0.11 u deeper (+V) than March, 1.8 deg rotated; only 25% of 2020 (21% of 2022) points within 0.05 u of the March plane.",
+        "observed": true
+      },
+      {
+        "componentId": "wl-office-lower-wall-panels",
+        "verdict": "still-failing",
+        "evidenceClass": "a-failed",
+        "numbers": {
+          "S20": {
+            "points": 11,
+            "marchPlaneHeldOutMedianU": 0.13704606403907427,
+            "marchPlaneWithin005": 0.2727272727272727,
+            "segmentPlaneInlierRMS": 5.465081627777648e-17,
+            "segmentPlaneHeldOutWithin005": 0.16666666666666666,
+            "segmentPlaneOffsetFromMarchU": 0.15312044439012418,
+            "segmentPlaneAngleToMarchDeg": 5.882236337554145,
+            "segmentPlaneCentroidUVY": [
+              8.639,
+              -15.134,
+              1.474
+            ]
+          },
+          "S22": {
+            "points": 235,
+            "marchPlaneHeldOutMedianU": 0.2606655882507365,
+            "marchPlaneWithin005": 0.03829787234042553,
+            "segmentPlaneInlierRMS": 0.014536048499348215,
+            "segmentPlaneHeldOutWithin005": 0.2158273381294964,
+            "segmentPlaneOffsetFromMarchU": 0.3199782889929601,
+            "segmentPlaneAngleToMarchDeg": 15.816626511233343,
+            "segmentPlaneCentroidUVY": [
+              9.487,
+              -15.229,
+              0.719
+            ]
+          }
+        },
+        "finding": "Too few 2020 points (11); 2022 points (235) sit ~0.26 u in front of the March plane ([INFERENCE] free-standing signs/furniture in front of the panels in the crowded 2022 walk) - not a wall measurement.",
+        "observed": true
+      },
+      {
+        "componentId": "st-right-core-metal-return",
+        "verdict": "still-failing",
+        "evidenceClass": "a-failed",
+        "numbers": {
+          "S20": {
+            "points": 29,
+            "marchPlaneHeldOutMedianU": 0.362282545483243,
+            "marchPlaneWithin005": 0.0,
+            "segmentPlaneInlierRMS": 0.013961003062446785,
+            "segmentPlaneHeldOutWithin005": 0.2857142857142857,
+            "segmentPlaneOffsetFromMarchU": 0.2196393903996423,
+            "segmentPlaneAngleToMarchDeg": 81.66255764915807,
+            "segmentPlaneCentroidUVY": [
+              20.583,
+              -14.171,
+              1.96
+            ]
+          },
+          "S22": {
+            "points": 2
+          }
+        },
+        "finding": "2020: 29 points, median 0.36 u from the March plane, 0% within 0.05 u; the March plane (normal Y -0.56, i.e. tilted 34 deg) is not supported by independent points - consistent with a reflection-driven March fit, but the independent data do not form a class-a plane either. 2022: 2 points.",
+        "observed": true
+      },
+      {
+        "componentId": "vc-central-rail-side-plane",
+        "verdict": "still-failing",
+        "evidenceClass": "a-failed",
+        "numbers": {
+          "S20": {
+            "points": 48,
+            "marchPlaneHeldOutMedianU": 0.18827914535655488,
+            "marchPlaneWithin005": 0.10416666666666667,
+            "segmentPlaneInlierRMS": 0.012910128001184837,
+            "segmentPlaneHeldOutWithin005": 0.3684210526315789,
+            "segmentPlaneOffsetFromMarchU": -0.12702644286691722,
+            "segmentPlaneAngleToMarchDeg": 50.89299814147011,
+            "segmentPlaneCentroidUVY": [
+              23.623,
+              -16.266,
+              2.001
+            ]
+          },
+          "S22": {
+            "points": 41,
+            "marchPlaneHeldOutMedianU": 0.2385183604157568,
+            "marchPlaneWithin005": 0.17073170731707318,
+            "segmentPlaneInlierRMS": 0.011067311852557481,
+            "segmentPlaneHeldOutWithin005": 0.0625,
+            "segmentPlaneOffsetFromMarchU": -0.2155475550179382,
+            "segmentPlaneAngleToMarchDeg": 4.114200497788957,
+            "segmentPlaneCentroidUVY": [
+              22.701,
+              -16.227,
+              1.765
+            ]
+          }
+        },
+        "finding": "Independent points 0.19 u (2020) / 0.24 u (2022) median from the March plane, no coherent segment plane (segment fits 70+ deg off): glass balustrade, reflection-dominated.",
+        "observed": true
+      },
+      {
+        "componentId": "vc-right-ramp-side-plane",
+        "verdict": "still-failing",
+        "evidenceClass": null,
+        "numbers": {
+          "S20": {
+            "points": 0
+          },
+          "S22": {
+            "points": 0
+          }
+        },
+        "finding": "No independent point in the supported box in either epoch (the corridor walks turn onto the escalator before this face is resolved).",
+        "observed": false
+      },
+      {
+        "componentId": "cl-ceiling-void-edge",
+        "verdict": "still-failing",
+        "evidenceClass": "a-failed",
+        "numbers": {
+          "S20": {
+            "views": 17,
+            "triangulationAngleDeg": 18.79,
+            "fitReprojRMSPx": 3.78,
+            "heldOutMedianPx": 2.89,
+            "lineUVY": [
+              [
+                20.429,
+                -17.917,
+                2.286
+              ],
+              [
+                19.589,
+                -14.834,
+                2.237
+              ]
+            ],
+            "offsetsFromMarchU": [
+              0.089,
+              0.186,
+              0.455
+            ]
+          },
+          "S22": {
+            "views": 39,
+            "triangulationAngleDeg": 14.1,
+            "fitReprojRMSPx": 1.31,
+            "heldOutMedianPx": 0.84,
+            "lineUVY": [
+              [
+                20.066,
+                -17.958,
+                2.231
+              ],
+              [
+                19.85,
+                -14.726,
+                2.248
+              ]
+            ],
+            "offsetsFromMarchU": [
+              0.284,
+              0.231,
+              0.179
+            ]
+          }
+        },
+        "finding": "2022 edge meets every class-a edge number (39 views, 14.1 deg, 1.31 px fit RMS, 0.84 px held-out median) but its registration is rejected. Both epochs place the lip 0.18-0.28 u (2022) / 0.09-0.46 u (2020) toward -U of the March first-view line and within 0.14 u (both epochs) of the March HELD-OUT view 000140 intersections (20.050,-17.034) / (19.758,-15.437): the independent views side with the March held-out view, i.e. the March first-view line is the likelier outlier. Still no opening polygon; do not cut the slab.",
+        "observed": true
+      },
+      {
+        "componentId": "st-left-core-column-face",
+        "verdict": "still-failing",
+        "evidenceClass": null,
+        "numbers": {
+          "S20": {
+            "points": 0
+          },
+          "S22": {
+            "points": 6
+          }
+        },
+        "finding": "Inventory search ROI (U 20-22.6, V -20.2..-18.5) holds 0 (2020) / 6 (2022) quality points; the face is not resolved by these walks.",
+        "observed": false
+      },
+      {
+        "componentId": "st-rectangular-columns-topology",
+        "verdict": "still-failing",
+        "evidenceClass": "a-failed",
+        "numbers": {
+          "S20": {
+            "normalUVY": [
+              0.16278,
+              -0.98666,
+              0.0
+            ],
+            "offset": -16.9512,
+            "centroidUVY": [
+              13.002,
+              -15.035,
+              1.472
+            ],
+            "inliers": 174,
+            "inlierRMS": 0.0158,
+            "heldOutMedianU": 0.02576877580249272,
+            "heldOutWithin005": 0.7151335311572701
+          },
+          "S22": {
+            "normalUVY": [
+              -0.16925,
+              0.98557,
+              0.0
+            ],
+            "offset": 16.9852,
+            "centroidUVY": [
+              12.481,
+              -15.091,
+              1.698
+            ],
+            "inliers": 11,
+            "inlierRMS": 0.0159,
+            "heldOutMedianU": 0.015384085952562888,
+            "heldOutWithin005": 0.7619047619047619
+          }
+        },
+        "finding": "New measurable member of the stainless panel-clad box family: front face of the box left of the red office doors. 2020 and 2022 independently give the same face (V -15.036 vs -15.001 at U 13, yaw 9.4 vs 9.7 deg; 2020: 174 inliers, 0.016 u RMS, 72% held-out within 0.05 u; 2022: 11 inliers, 76%). Held-out fraction < 0.85 and registration rejected -> not class a. This box explains the unmodelled cluster (U 12-14, V -16..-15, Y~1.85) that failed the low-ceiling p95 check.",
+        "observed": true
+      },
+      {
+        "componentId": "st-cylindrical-column-hwangong",
+        "verdict": "still-failing",
+        "evidenceClass": null,
+        "numbers": {},
+        "finding": "Not in view: the \ud658\uacf5\uc5b4\ubb35 / core-B side (U -8..-2) is outside every corridor sightline of the three segments.",
+        "observed": false
+      },
+      {
+        "componentId": "vc-core-A",
+        "verdict": "still-failing",
+        "evidenceClass": null,
+        "numbers": {},
+        "finding": "Elevator doors not in view; only the \"\uc5d8\ub9ac\ubca0\uc774\ud130\" direction signs on the stainless band at the corridor end (2020, 2022, 2026).",
+        "observed": false
+      },
+      {
+        "componentId": "vc-core-B",
+        "verdict": "still-failing",
+        "evidenceClass": null,
+        "numbers": {},
+        "finding": "Elevator doors not in view (see vc-core-A).",
+        "observed": false
+      },
+      {
+        "componentId": "wl-bnc-partition-edge",
+        "verdict": "still-failing",
+        "evidenceClass": "b-pixel",
+        "numbers": {},
+        "finding": "#3 frontage is an open glazed B&C DONUT shop in 2022-12 and 2023-10 versus the 2026-03 hoarding: tenant-state change (identity from the 2026-08 board, not from these videos). Partition edge not triangulated.",
+        "observed": true
+      },
+      {
+        "componentId": "new-#4-partition",
+        "verdict": "still-failing",
+        "evidenceClass": "b-pixel",
+        "numbers": {},
+        "finding": "#4 glazing line on the inbound right: DESIGN SKIN fascia in 2020-11 and 2023-10 (and \"DESI..\" in 2022-12 per triage) versus ARTBOX in 2026; glazing mullions are the parallel lines that confuse the pier left-edge search. Not measured.",
+        "observed": true
+      },
+      {
+        "componentId": "new-gate-3-4-vestibule-inner-doors",
+        "verdict": "still-failing",
+        "evidenceClass": "b-pixel",
+        "numbers": {
+          "S20": {
+            "normalUVY": [
+              0.06671,
+              -0.99777,
+              0.0
+            ],
+            "offset": -40.1745,
+            "centroidUVY": [
+              9.544,
+              -39.626,
+              1.464
+            ],
+            "inliers": 64,
+            "inlierRMS": 0.0143,
+            "heldOutMedianU": 1.1413849393515463,
+            "heldOutWithin005": 0.14216867469879518
+          },
+          "S22": {
+            "normalUVY": [
+              -0.00221,
+              -1.0,
+              0.0
+            ],
+            "offset": -36.0889,
+            "centroidUVY": [
+              9.439,
+              -36.11,
+              1.278
+            ],
+            "inliers": 13,
+            "inlierRMS": 0.0162,
+            "heldOutMedianU": 4.02555182130222,
+            "heldOutWithin005": 0.08771929824561403
+          }
+        },
+        "finding": "Epochs disagree: best vertical V-facing plane at V~-39.6 (2020) vs V~-36.1 (2022, 13 inliers); held-out medians 1.1 / 4.0 u -> the ROI mixes door leaves, frames and lobby structure. Glass doors give too few stable points.",
+        "observed": true
+      },
+      {
+        "componentId": "vc-escalator-core-topology",
+        "verdict": "still-failing",
+        "evidenceClass": null,
+        "numbers": {},
+        "finding": "Flight footprint not measured: the escalator-ride sub-models (S20 123-158 s, S22 243-285 s) could only be chained through shared frames and those chains fail held-out (shared camera centres 0.30 u / 0.92 u apart, plumb 4.5 / 46 deg); S23 descent is in a rejected registration. Pixel-level: barrier gates with green indicators stand at the foot in 2020, 2022 and 2026. The 2F slab opening remains unmeasured.",
+        "observed": false
+      }
+    ],
+    "architectureAcrossEpochs": {
+      "stable (pixel-level, not metric)": [
+        "GATE3/4 portals with blue entrance signs (2020, 2022, 2026)",
+        "ARTBOX-side dark panelled pier (2020, 2022, 2026)",
+        "red service doors / rear window of the office frontage (2020, 2022, 2023, 2026)",
+        "stainless panel-clad boxes and escalator foot barrier gates (2020, 2022, 2026)",
+        "low suspended ceiling with square light panels (2020, 2022, 2026)"
+      ],
+      "changed (tenant layer only)": [
+        "#3: open B&C DONUT glazed shop (2022-12, 2023-10) vs hoarding (2026-03)",
+        "#4: DESIGN SKIN (2020-11, 2023-10) vs ARTBOX (2026)"
+      ],
+      "metric change established": "none (no accepted registration)"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "schema": "chooguard.video-twin-evidence.v1",
+  "reference": {
+    "url": "https://www.youtube.com/watch?v=6vxUvCQ5_rY",
+    "localPath": "asset-library/research-public/2026-09-22/busan-station-interior/imagery/video/ytb_6vxUvCQ5_rY.mp4",
+    "uploadDate": "2022-01-01",
+    "captureDate": null,
+    "durationSeconds": 608.1,
+    "width": 1920,
+    "height": 1080,
+    "fps": 59.94
+  },
+  "target": "Reconstruct the train-to-Busan-Station-2F-to-1F-to-metro route visible in this video, preserving first and second floor scope. Whole-floor unseen spaces require independent evidence.",
+  "priorClaimsWithdrawn": [
+    "5212 square metres is a measured hall area: it is an arbitrarily clipped occupancy-grid result.",
+    "Histogram similarity proves digital twin fidelity: it does not establish shape, scale, spatial registration or camera pose.",
+    "The old flat route proves the video route: it omits vestibules, low ceilings, first-floor descent and subway transfer.",
+    "Per-floor schematic board scaling yields measured aligned elevator/escalator locations: it does not.",
+    "The original renderer failure is established as backface culling: inspected persistent source material already has _Cull=0; no current proof supports that cause."
+  ],
+  "jev": {
+    "attempted": true,
+    "executed": false,
+    "failure": "credential_unavailable: TYPESAFE_API_KEY not set",
+    "fabricatedResult": false
+  },
+  "nextMeasurement": "Estimate multi-view camera poses and sparse structure from original timestamped video before moving structural landmarks. Monocular reconstruction has unresolved metric scale until registered against source or measured anchors.",
+  "completion": "NOT_VERIFIED",
+  "unresolved": [
+    "Camera intrinsics and registered world poses",
+    "Metric source-to-video landmark correspondence",
+    "Unseen first and second floor spaces",
+    "All floor openings and service spaces",
+    "Route-era tenant identity outside visible footage"
+  ],
+  "userDecision": {
+    "choice": "영상 중심 전체 복원",
+    "scope": "Visible video shape/signage/route first; unobserved first/second floor portions inferred from supplemental photos and existing model; label inferred coordinates/dimensions, never claim surveyed completion."
+  }
+}

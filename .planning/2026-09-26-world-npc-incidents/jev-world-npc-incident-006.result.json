@@ -1,0 +1,91 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 410,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "incident_creation": {
+          "type": "choice",
+          "choice": "atomic_world_composition",
+          "confidence": 1,
+          "probabilities": {
+            "family_then_details": 0,
+            "external_story_model": 0,
+            "atomic_world_composition": 1
+          }
+        },
+        "npc_routine_decisions": {
+          "type": "choice",
+          "choice": "prefetched_next_activity",
+          "confidence": 1,
+          "probabilities": {
+            "prefetched_next_activity": 1,
+            "keep_local_routine": 0,
+            "itinerary_at_spawn": 0
+          }
+        },
+        "train_cycle": {
+          "type": "choice",
+          "choice": "moving_train_cycle",
+          "confidence": 0.99,
+          "probabilities": {
+            "implied_train": 0,
+            "moving_train_cycle": 1,
+            "static_train_doors": 0
+          }
+        },
+        "seamless_movement": {
+          "type": "choice",
+          "choice": "continuous_traversal",
+          "confidence": 1,
+          "probabilities": {
+            "visible_thinking_pauses": 0,
+            "teleport_between_floors": 0,
+            "continuous_traversal": 1
+          }
+        },
+        "incident_locations": {
+          "type": "choice",
+          "choice": "anywhere_preconditions_hold",
+          "confidence": 1,
+          "probabilities": {
+            "anywhere_preconditions_hold": 1,
+            "hall_only": 0,
+            "hall_and_platforms_only": 0
+          }
+        },
+        "world_population": {
+          "type": "choice",
+          "choice": "about_100",
+          "confidence": 0.39,
+          "probabilities": {
+            "about_150": 0.27,
+            "about_250": 0.14,
+            "about_100": 0.59
+          }
+        },
+        "train_interior_navigation": {
+          "type": "choice",
+          "choice": "local_interior_navmesh",
+          "confidence": 0.95,
+          "probabilities": {
+            "seat_teleport": 0,
+            "local_interior_navmesh": 0.97,
+            "no_interior": 0.03
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 2417,
+        "output_tokens": 373
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

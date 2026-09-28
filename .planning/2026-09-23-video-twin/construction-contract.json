@@ -1,0 +1,75 @@
+{
+  "goal": "Implement the user-approved video-centred complete first/second-floor reconstruction. Prioritize the filmed route; infer unseen parts from existing photos/model and label those inferences. Never call this surveyed or perfectly verified.",
+  "reference": "https://www.youtube.com/watch?v=6vxUvCQ5_rY",
+  "epoch": "Upload 2022-01-01, capture date unconfirmed; keep visible 2022-era tenant identities",
+  "coordinateSystem": {
+    "longAxisDegrees": 16.2,
+    "worldX": "u*sin(16.2deg)+v*cos(16.2deg)",
+    "worldZ": "u*cos(16.2deg)-v*sin(16.2deg)",
+    "floor1Y": 0,
+    "floor2Y": 7,
+    "status": "INFERRED_ABSOLUTE_REGISTRATION_FROM_SFM",
+    "basis": "640-frame COLMAP reconstruction. Models 3/4/5 merged using overlapping camera poses. Relative route is measured from video; 7m floor separation, 1.6m camera height and world anchoring at 220s (u=20,v=-42) are explicit assumptions authorized by user."
+  },
+  "cameraData": ".planning/2026-09-23-video-twin/registered-video-cameras.json",
+  "routeData": ".planning/2026-09-23-video-twin/video-route-waypoints.json",
+  "referenceFrames": ".planning/2026-09-23-video-twin/video-NNN.jpg",
+  "referencePlates": [".planning/2026-09-23-video-twin/reference-hall.jpg", ".planning/2026-09-23-video-twin/reference-ground-and-metro.jpg"],
+  "sourceSections": ".planning/2026-09-23-video-twin/source-sections.json",
+  "floorOutline": "Use source-section original MainShell curved facade v~-39 at u-60, -43 at u-40, -44 at u-26, -44.8 at u-10, -43.3 at u0, -41.9 at u20, -40.3 at u40, -35.8 at u60; track edge v roughly3..14. Entry arcades may extend to v18 at southern platform connector. Do not treat prior 169.7x68.4 rectangular guide bbox as real polygon.",
+  "sharedCore": {
+    "ownership": "VideoFloorOne builds both escalators, their well lining/guards and first-floor ceiling opening. VideoFloorTwo excludes this opening from floor slab, mezzanine and fixtures.",
+    "floorOpeningUV": [3.4, 10.3, -33.5, -19.5],
+    "descendingCentreU": 5.2,
+    "oppositeCentreU": 8.3,
+    "upperLandingV": -21.0863638,
+    "lowerLandingV": -32.5860699,
+    "upperFloorY": 7,
+    "lowerFloorY": 0,
+    "runM": 11.4997061,
+    "inclineBasis": "Least-squares SfM175..199: y=0.60871121*v+19.83550597. Relative slope from recovered trajectory; floor7m metric scaling inferred. End landings remain inside original shared opening.",
+    "visibleClearWidthEachM": 1.15,
+    "physicalWalkSurface": "Continuous slope collider over visible stepped tread, <=45deg, linked to both landing floors; no invisible teleport and no filled 2F opening.",
+    "topPortal": "u5.2,v-19.0 facing descent toward -v. Low-ceiling retail zone, not open high hall.",
+    "sourceVideo": [166, 174, 198, 200]
+  },
+  "routeLandmarksUV": {
+    "exit9Bridge78": [-68.67,27.59,7.49],
+    "entryArcade90": [-68.95,14.66,7],
+    "highHall98": [-64.63,8.30,7],
+    "informationView112": [-52.72,-0.11,7],
+    "arcadeApproach124": [-40.99,-3.50,7],
+    "lowArcade138": [-26.76,-6.30,7],
+    "giftShop158": [-7.06,-13.71,7],
+    "coreApproach166": [1.78,-15.31,7],
+    "firstFloorLanding200": [5.34,-32.39,0],
+    "parisBaguette204": [5.78,-36.85,0],
+    "designSkinCorner208": [7.92,-40.33,0],
+    "exitAisle216": [15.85,-42.19,0],
+    "exitDoors220": [20,-42,0]
+  },
+  "firstFloorLandmarkGeometry": {
+    "parisBaguette": "Superseded coarse v=-41.3 column-depth anchor: 200s static SfM landmarks place actual PB front at v~-45.9, narrow glazed bay u~4.7..8.5 and adjacent shutter u~3..4.7. Left stainless column is u~2.43,v~-41.39, not the shop glazing. Camera descends along -v and turns +u around u8,v-40, leaving PB recessed beyond the turn. See ground-landmark-probe.json. Geometry remains inferred in absolute scale.",
+    "designSkin": "Left of +u-facing exit aisle: u[10,21], v[-49,-44]; glass corner near u10,v-44.",
+    "bncDoughnut": "Right of +u-facing exit aisle: u[10,21], v[-40,-32]; keep aisle v[-44,-40] clear.",
+    "exits3and4": "Glass portal across +u-facing aisle at u22,v[-45,-39]. Ground-floor route continues toward +u outside. Signs are KTX exits 3 and 4, not track numbers, not metro fare gates.",
+    "unseenFirstFloor": "Fill coherent long retail/public strip within source curved footprint with supplemental tenant/service topology, locally labelled inferred in JSON. Do not scatter fake crowd billboards. Keep filmed corridor and lower landing open."
+  },
+  "secondFloorSpatialZones": {
+    "entryArcade": "Exit9 glass portal near u-68,v23, corridor extends from v28 to v8; low soffit abouty11.2. KAKAO FRONT visible left upon entry; no 12-lane fare-gate bank.",
+    "highHall": "u[-76,-24.8],v[-33,11]. Static112s roof-member landmarks replace oldy22.5 assumption: fitted y=14.199-.0575u-.0250v,172 points,RMS0.295m under inferred7m scale. Deck offset+0.7m,3m lattice, sparse supports and unseen extent remain inferred. Clerestory relative landmarks place fascia aroundu-24.8,y10.9 and upper glass near14.8; see upper-landmark-probe.json.",
+    "mezzanine": "Partial restaurant level: front balcony u[-64,-30]v[-33,-25.5] (LOTTERIA above OLIVE YOUNG, 112s image-left), front corner wing u[-76,-64]v[-33,-27] and narrow left strip u[-76,-74]. No plate over the filmed 90->98s path. 90-95s frames plus SfM model4: paired green boards under the front fascia (70 points, u clusters -67.6/-63.0, y9.7, v median-34.75 = 1.75m beyond the inferred front wall); upper escalator pair just left of the boards centred u~-71.8 (two 94s base rays), rising toward -v into the front wing edge v-27. The pair is the project-standard generated escalator (upper-escalator.json -> VerticalCirculationGenerator + WireEscalatorMotion, root 영상복원 · 식당층 에스컬레이터), not a rescaled source mesh. Lane width 1.15, rise 5.2 and strip width remain inferred.",
+    "lowRetailArcade": "Begins aroundu-30 and contains u[-30,30],v[-42,4], ceilingy11..11.5. B&C, then Storyway/local-food gift shop near the route, stainless square columns, square LEDs and circular-recess panels. Tall hall must transition into this low corridor.",
+    "informationDesk": "One circular column with dark circular canopy and curved white counter; use 112s projection and static SfM landmarks rather than old coarse center(-44,-2). Counter front samples median(u-42.94,v-8.14,y8.25); canopy visible surface median(-42.22,-8.68,y9.56). Final fitted center/radii recorded in floor-two-build.json. No giant concentric ring bench.",
+    "seating": "Grouped brown/metal benches in visible open side pockets; keep registered route clear, not uniform rows across entire hall.",
+    "unseenSecondFloor": "Retain complete floor public/service areas in northern part and front-side retail using supporting plans as topology only; do not truncate whole2F to high-hall size. Label inferred zones in evidence output."
+  },
+  "ownership": {
+    "VideoFloorOne": ["AgentScripts/VideoFloorOne.cs", "Assets/ChooGuard/Art/StationInterior/VideoFirstFloor/", ".planning/2026-09-23-video-twin/floor-one-build.json"],
+    "VideoFloorTwo": ["AgentScripts/VideoFloorTwo.cs", "Assets/ChooGuard/Art/StationInterior/VideoSecondFloor/", ".planning/2026-09-23-video-twin/floor-two-build.json"],
+    "Main": "All Unity execution, scene edits, source-opening integration, platform/plaza/metro connection, movement/render verification. Main removes obsolete synthetic hall when replacing."
+  },
+  "builderContract": "Standalone AgentScripts C# compiled via unity run_script, public static void Main(string[] args). Each script self-contained helpers; owns only its root (영상복원 · 1층 or 영상복원 · 2층) and its separate art directory. Use Unity Editor API for assets/scene; never raw YAML. Build while in Edit mode; reusable/idempotent. Main runs scripts after all editing. No agents run Unity, builds, tests, formatters or validation.",
+  "assetReuse": "Reuse existing StationInterior/PBR textures, Materials, Props/*.fbx and Reused escalator prefab/profile; existing research/ contains broad downloaded OSS asset search. Structural mesh custom extrusion is allowed after checking reuse. No plain primitive stand-ins where an acquired actual prop exists. No blank storefront boxes or people photo billboards.",
+  "quality": "Actual geometry, openings and usable collision; recessed shop interiors with reused furniture and lighting; correct text signs, glass muntins/doors, handrails and tread details; no stubs, scene-breaking guessed references, teleport links, or fabricated completion claims. All new dimensions not obtained from SfM/source are explicit inference. Keep allocations bounded/batch static meshes. Main alone tunes global light/post."
+}

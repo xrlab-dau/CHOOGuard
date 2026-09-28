@@ -196,7 +196,15 @@ namespace ChooGuard.Editor.Assets
                 MarkOwned(FontPath);
             }
             Require(font.sourceFontFile == source, "Owned TMP font has unexpected sourceFontFile");
-            font.atlasPopulationMode = AtlasPopulationMode.Dynamic;
+            // TMP 의 atlasPopulationMode 설정자는 에디터 참조가 아직 풀리지 않은 도메인에서 원본 글꼴 연결(m_SourceFontFile)을 지운다.
+            // 이미 동적이면 다시 설정하지 않는다. 지워진 채 저장되면 빌드에서 한글 글리프를 만들지 못한다.
+            if (font.atlasPopulationMode != AtlasPopulationMode.Dynamic) font.atlasPopulationMode = AtlasPopulationMode.Dynamic;
+            if (font.sourceFontFile != source)
+            {
+                var serialized = new SerializedObject(font);
+                serialized.FindProperty("m_SourceFontFile").objectReferenceValue = source;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+            }
             font.isMultiAtlasTexturesEnabled = true;
             if (!font.HasCharacters(KoreanSeed))
             {

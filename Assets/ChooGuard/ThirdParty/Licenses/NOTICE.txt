@@ -19,6 +19,11 @@ Textures/Concrete031/ 및 Textures/Metal032/: ambientCG.
 CC0-1.0.txt 참조. https://ambientcg.com/view?id=Concrete031 및 https://ambientcg.com/view?id=Metal032
 Audio/Interface/: Kenney (www.kenney.nl).
 Kenney-InterfaceSounds.txt 및 CC0-1.0.txt 참조. https://kenney.nl/assets/interface-sounds
+Models/Rocketbox/: Microsoft Rocketbox Avatar Library, Copyright (c) 2020 Microsoft. MIT License.
+전문은 Models/Rocketbox/LICENSE.md 참조. https://github.com/microsoft/Microsoft-Rocketbox
+사용: Avatars/Adults 12종, Avatars/Professions 7종(Business 2·Fire 2·Police 2·Medical 1) 본체 FBX, all_animations_max_motextr 16개 동작 FBX.
+변환(2026-09-26): 본체 텍스처 TGA를 JPG(색상)·PNG(노멀·불투명)로 바꿨고 FBX는 byte 단위 그대로 복사했다.
+URP 재질·Animator·prefab 은 Editor/CrowdAssetBuilder.cs 가 만든다. 실제 인물·기관 복장 규격의 근거가 아니다.
 CC0 제작자 표시는 자율 표기이며 상표·특허·제3자 권리의 포괄 허락이나 보증이 아니다.
 
 변환: Lucide SVG 20개를 geometry allowlist, 스크립트·이벤트·외부 참조 부재 검사 후
@@ -34,3 +39,29 @@ Unity 6000.3.23f1 / URP 17.3 / TMP 5 / InputSystem 1.20 유지.
 텍스처 normal 방향·roughness→smoothness 변환·sprite import 설정 등은 후속 검증이 필요하다.
 배포 빌드에는 이 고지와 적용 라이선스 전문을 사용자가 읽을 수 있게 별도 동봉해야 한다.
 Assets 폴더에 있는 것만으로 최종 빌드의 고지 포함을 보장하지 않는다.
+
+2026-09-27 프로덕션 작업에서 더한 에셋 (영수증: asset-library/research-public/2026-09-27/production-pass/)
+Textures/Sky/kloofendal_48d_partly_cloudy_puresky_2k_sunclamp24.hdr: Poly Haven "Kloofendal 48d Partly Cloudy (Pure Sky)", CC0.
+https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky . 변환: 해 원반 휘도를 24 로 눌러 다시 저장(원본은 asset-library).
+Textures/OfficeCeiling001/, Textures/MetalPlates004/, Textures/Concrete034/: ambientCG, CC0. 색·NormalGL 지도만 복사.
+https://ambientcg.com/view?id=OfficeCeiling001 · https://ambientcg.com/view?id=MetalPlates004 · https://ambientcg.com/view?id=Concrete034
+Art/StationInterior/PBR/OfficeCeiling003_2K/OfficeCeiling003_2K-Derived_Emission.png: ambientCG OfficeCeiling003(CC0) 색 지도에서 조명판만 뽑은 마스크.
+Audio/Station/: Freesound CC0 녹음을 잘라 반복 구간을 만들고 크기를 맞춤(원본 미리듣기 OGG 는 asset-library).
+  amb_concourse_crowd = 453906 kyles "crowd int large hall carpeted murmur2 busier" + 480728 craigsmith "R08-48-Crowd in Reverberant Space"
+  amb_platform_korea = 239940 nikitralala "korea_zugansage" (광주역) · amb_plaza_city = 36734 moxobna "citystreet3"
+  train_arrive·train_depart = 481082 Astounded "train entering and leaving station" · door_open·door_close = 209969 jrosin "Opening and closing the train door"
+  escalator_loop = 98687 wniebelski "Escalator" · fire_loop = 181563 kingsrow "Fire Crackling 01"
+  https://freesound.org/s/<번호>/ , 모두 Creative Commons 0.
+Audio/Station/footstep_concrete_0~4.wav: Kenney "Impact Sounds" footstep_concrete_000~004, CC0. https://kenney.nl/assets/impact-sounds
+Art/Audio/Announcements/pa_*.wav: MeloTTS-Korean(MyShell.ai, 코드·가중치 MIT)으로 만든 합성 음성에 역 안내방송 음향(대역·반사·잔향)을 입힘.
+https://github.com/myshell-ai/MeloTTS · https://huggingface.co/myshell-ai/MeloTTS-Korean
+Animations/Quaternius/UAL1_Standard.fbx: Quaternius "Universal Animation Library" Standard, CC0 1.0 (UAL-License.txt). 쓰러짐(Death01)·무릎 꿇고 처치(Fixing_Kneeling 을 세 토막으로).
+https://quaternius.itch.io/universal-animation-library
+Art/Emergency/PBR/Fabric031_1K/, Art/Emergency/PBR/Leather027_1K/: ambientCG Fabric031·Leather027, CC0. 색·NormalGL 복사, 거칠기에서 매끄러움(알파) 지도를 만듦.
+https://ambientcg.com/view?id=Fabric031 · https://ambientcg.com/view?id=Leather027
+Art/Emergency/Materials/CordonBelt.png: 이 저장소에서 만든 벨트 인쇄(글꼴 Noto Sans CJK KR, SIL OFL 1.1). 생성기 asset-library/research-public/2026-09-27/production-pass/props/make_belt.py.
+Models/Objaverse/ (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/ — 저작자 표시 필요). Sketchfab 원본의 Objaverse 사본(allenai/objaverse)을
+OBJ·PNG 로 바꾸고 실제 높이로 크기만 맞춤(변환기 asset-library/research-public/2026-09-27/production-pass/props/convert_glb.py, 영수증 props/objaverse/receipts.json):
+  Suitcase = "Suitcase" by Moon_Studio, https://sketchfab.com/3d-models/16a80a9f0375413e9f752e493ff24341 (높이 0.60 m)
+  Handbag = "Purse" by Jogetsu, https://sketchfab.com/3d-models/1e2b45735eb340588a4adecbb4bf5ef0 (높이 0.34 m)
+  MedicalBag = "First Aid Kit" by Shedmon, https://sketchfab.com/3d-models/8b0d64278d504c508d02d33e22ea7f12 (높이 0.26 m)

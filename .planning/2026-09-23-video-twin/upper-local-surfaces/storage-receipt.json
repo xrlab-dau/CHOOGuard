@@ -1,0 +1,11 @@
+{
+  "schema": "chooguard.reconstruction-storage.v1",
+  "authorizedPolicy": "Main requested bounded owned intermediates, deletion of regenerable intermediates after receipts, and stopping heavy writes below2GiB free.",
+  "removedRegenerableDirectory": "native-images",
+  "removedApproximateSizeMiB": 21,
+  "reason": "Native frame verification completed with42–43dB resized agreement; all undistorted color images and calibrated cameras retained in colmap. Native frames can be regenerated from the unchanged source video with extract-native.command.json.",
+  "retainedEvidence": ["preparation.json", "extract-native.command.json", "local-ba", "native-sparse", "colmap", "canonical-person-masks", "person-mask-receipt.json"],
+  "depthMapPolicy": "DensifyPointCloud --remove-dmaps1 removes depth maps only after successful fusion. Never delete active depth maps.",
+  "subsequentCommandGuard": "reconstruct_upper_surfaces.py checks free disk before each external command and every5seconds while it runs, terminating its own child below2GiB.",
+  "otherOwnersFilesDeleted": false
+}

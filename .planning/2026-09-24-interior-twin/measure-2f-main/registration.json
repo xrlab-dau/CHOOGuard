@@ -1,0 +1,143 @@
+{
+ "schema": "chooguard.measure-2f-main-registration.v1",
+ "createdUtc": "2026-09-24T16:12:26Z",
+ "frame": "station UVY (angle 16.2) source-model units",
+ "registrations": {
+  "REG-VESTIBULE": {
+   "source": ".planning/2026-09-23-video-twin/main-metric-registration/registration.json",
+   "what": "HC-450 sparse/0 -> Unity/UVY Sim3 at Gate 7 vestibule (frames 61-71)",
+   "scale": 8.604620467895549,
+   "residuals": {
+    "fit": {
+     "count": 30,
+     "rmsPixels": 3.864911804628765,
+     "maxPixels": 6.664099227354764
+    },
+    "held-out frame": {
+     "count": 16,
+     "rmsPixels": 4.338277911336119,
+     "maxPixels": 6.621707494079816
+    },
+    "held-out feature": {
+     "count": 10,
+     "rmsPixels": 5.165197440202601,
+     "maxPixels": 8.162909285212626
+    }
+   },
+   "validity": "frames <= ~133 only"
+  },
+  "FINDING-HC0-SCALE-JUMP": {
+   "what": "hc0 is internally non-rigid: frames 141-247 are a Sim3 copy of the isolated 121-247 model with scale 0.7013 while frames 121-133 match at 1.048 → hc0 corridor unit = 12.86 u vs 8.60 u at the vestibule (x1.495).",
+   "consequence": "All prior corridor positions/heights derived through main-metric-registration (복순도가/꽃들 apertures, observed-location-evidence, upper-frontage-refinement) are compressed x0.669 about the Gate 7 turn; aperture heights 1.46-1.83 → 2.2-2.45.",
+   "evidence": {
+    "pathLengthRatioHc0OverIsolated": {
+     "121-131": [
+      1.044,
+      0.926
+     ],
+     "141-247": 0.7
+    },
+    "sim3Fits": {
+     "121-133": {
+      "scale": 1.0479,
+      "maxResSfm": 0.0063
+     },
+     "141-247": {
+      "scale": 0.7013,
+      "medianResSfm": 0.0018
+     }
+    }
+   }
+  },
+  "REG-HC-UL-CHAIN": {
+   "what": "isolated HC 121-247 local-BA model (upper-local-surfaces) -> hc0 gate frames 121-133 -> REG-VESTIBULE",
+   "scaleUPerUnit": 9.0169,
+   "rotation": "orientation-averaged over 13 gate frames (spread 0.25-2.0 deg); gate-vs-corridor rotation 1.22 deg",
+   "translationResidualU": [
+    0.072,
+    0.07,
+    0.063,
+    0.044,
+    0.03,
+    0.024,
+    0.016,
+    0.024,
+    0.026,
+    0.027,
+    0.026,
+    0.026,
+    0.025
+   ],
+   "leveling": "local UP (ceiling+floor planes, 0.42 deg apart; vertical-line plumb agrees 0.69 deg) mapped to +Y; registered-up tilt 2.82 deg removed",
+   "gridAlignmentDeg": -3.521,
+   "gridAlignmentBasis": "six corridor wall planes had normal yaw 91.8-94.3 deg (mean 93.52); source walls here are parallel to U, so the map is rotated about the gate anchor (8.77, -31.06)",
+   "scaleChecks": {
+    "cameraHeightVestibuleU": 1.609,
+    "cameraHeightIsolatedModelU": 1.576,
+    "pedestrianHeights": {
+     "n": 53,
+     "medianRatioRect": 1.1,
+     "rectLoosenessCorrection": 0.03,
+     "impliedCamHU": "1.56 (mean adult 1.67) vs 1.59 chained = -2%"
+    },
+    "gate7VestibuleSoffit": "2.72 measured vs source bank top 2.70",
+    "verdict": "within 10% gate"
+   },
+   "positionalHeldOut": "none available beyond the gate anchor → positions tier b; yaw uncertainty ~±1 deg after grid alignment"
+  },
+  "REG-RY-CHAIN": {
+   "what": "ry-shops local BA (≈RY2 sparse/2, scale 1.0022) -> ryToHc (upper-frontage-refinement, 7 architectural controls, scale 0.3058) -> hc0 corridor -> isolated HC -> REG-HC-UL-CHAIN",
+   "scaleUPerUnit": 3.9424,
+   "residuals": {
+    "count": 7,
+    "rms": 0.337940667051807,
+    "median": 0.24921988560503647,
+    "max": 0.5722334700642518
+   },
+   "leaveFamilyOutScaleSpread": "~±5%",
+   "check": "RY camera Y 8.14 = 7 + RY floor-based camera height 1.14; enamel wall V agrees HC within ~0.05 u"
+  },
+  "REG-HALL-LINK": {
+   "what": "new local re-reconstruction of HC 240-345 (pycolmap incremental on HC-450 features, 106/106 registered) linked to isolated HC via 8 common frames 240-247",
+   "scaleHallToIsolated": 0.4928,
+   "scaleUPerUnit": 4.4432,
+   "linkResidualU": [
+    0.258,
+    0.174,
+    0.143,
+    0.135,
+    0.048,
+    0.057,
+    0.088,
+    0.119
+   ],
+   "orientationSpreadDeg": [
+    1.97,
+    1.38,
+    0.72,
+    1.3,
+    0.26,
+    0.38,
+    0.84,
+    1.45
+   ],
+   "cameraHeightChecksU": [
+    1.47,
+    1.77,
+    1.65,
+    1.51
+   ],
+   "verdict": "weak (short baseline, ±10% scale); tier b at best"
+  },
+  "REG-ASC-PEOPLE": {
+   "what": "2026-03 local-ascent model 0, level-frame ABH (H=0 upper walking floor), scale from 60 pedestrian detections on the upper floor",
+   "scaleUPerUnit": 1.8058,
+   "medianHeightOverCamH": 1.19,
+   "rectLooseness": 0.03,
+   "assumedMeanAdultHeightU": 1.67,
+   "uncertainty": "±5%",
+   "uvy": "none (model 0 not registered)"
+  }
+ },
+ "thresholdsFile": "thresholds.json"
+}

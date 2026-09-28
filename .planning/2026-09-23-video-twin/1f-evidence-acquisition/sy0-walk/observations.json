@@ -1,0 +1,803 @@
+{
+ "schema": "chooguard.1f-registered-observation.v1",
+ "lane": "sy0-walk",
+ "registration": "registration.json (status rejected)",
+ "classRules": "class a requires accepted registration + >=3 views, >=2 deg, reproj RMS <=2 px, held-out median <=3 px, planes inlier RMS <=0.03 u & >=85% held-out within 0.05 u (thresholds.json). No component qualifies: every entry is class b.",
+ "topologyFindings": [
+  "Walk order U+ -> U- along the rear corridor (2024 tenants): #16 Paris Baguette, #15 새벽집, staff stair core (직원식당), #14 개미집, #13 채선당, #12 BOX&CUP, #11 udon, #10 스시보노, café (K19, slot unresolved), #9 복순도가, U- escalator 1F->2F, #8 양산국밥, #7 SELF StoryWay, U- hall, GATE1 hall.",
+  "The staff stair rises between #15 and #14 directly off the corridor (SY0 206-218 s and tiV8 207-217 s agree).",
+  "The U- 1F->2F escalator is reached immediately after 복순도가 #9, before 양산국밥 #8 (SY0 308-312 s).",
+  "#17 lockers stand beside an escalator next to the 짐캐리 approach (62-77 s), continuous with 짐캐리 (77-84 s) and, via the pan at 115-116 s, with the U+ hall (elevator doors, AED, phones, yellow door) and KTX특송 / 김밥천국 pavilions under tall glazing (124-144 s).",
+  "Cross-video: RearRowWalkReg and UPlusEndReg registrations were also rejected; no accepted model exists to cross-check against."
+ ],
+ "components": [
+  {
+   "componentId": "unit-16",
+   "feature": "Paris Baguette #16 glazed frontage along the rear corridor (2024 tenant = 2026 board)",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      -5.62,
+      -20.708
+     ],
+     [
+      6.242,
+      -19.834
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K12",
+    "secondsRange": [
+     181.0,
+     186.7
+    ],
+    "frames": [
+     "SY0 181.000 s",
+     "SY0 183.000 s",
+     "SY0 184.667 s",
+     "SY0 186.667 s"
+    ],
+    "sfmModel": "sub-model 8/bridge-3 (K12+B1); not linked to the anchored centre model"
+   },
+   "overlay": "overlays/unit-16.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "unit-15",
+   "feature": "새벽집 국밥국수 #15 frontage, fascia and interior depth (2024 tenant = 2026 board)",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      -11.713,
+      -21.16
+     ],
+     [
+      -5.62,
+      -20.708
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K13",
+    "secondsRange": [
+     186.9,
+     205.7
+    ],
+    "frames": [
+     "SY0 186.900 s",
+     "SY0 187.900 s",
+     "SY0 188.900 s",
+     "SY0 189.900 s"
+    ],
+    "sfmModel": "rear model 1 (K13-K20 + B1)"
+   },
+   "overlay": "overlays/unit-15.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "new-staff-stair-core-15-14",
+   "feature": "narrow staff stair (직원식당 sign) rising between #15 and #14, entered from the corridor",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": null,
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K16",
+    "secondsRange": [
+     206.6,
+     218.0
+    ],
+    "frames": [
+     "SY0 206.600 s",
+     "SY0 210.267 s",
+     "SY0 214.267 s",
+     "SY0 217.933 s"
+    ],
+    "sfmModel": "rear model 1"
+   },
+   "overlay": "overlays/new-staff-stair-core-15-14.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "unit-14",
+   "feature": "개미집 #14 frontage (낙지볶음전문 fascia)",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      -17.654,
+      -18.596
+     ],
+     [
+      -11.886,
+      -18.173
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K16",
+    "secondsRange": [
+     218.0,
+     229.0
+    ],
+    "frames": [
+     "SY0 218.267 s",
+     "SY0 223.267 s",
+     "SY0 225.933 s",
+     "SY0 228.933 s"
+    ],
+    "sfmModel": "rear model 1"
+   },
+   "overlay": "overlays/unit-14.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "unit-13",
+   "feature": "채선당 #13 dining room behind glazing",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      -23.94,
+      -19.053
+     ],
+     [
+      -17.654,
+      -18.596
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K18",
+    "secondsRange": [
+     247.1,
+     252.5
+    ],
+    "frames": [
+     "SY0 247.100 s",
+     "SY0 248.767 s",
+     "SY0 250.767 s",
+     "SY0 252.433 s"
+    ],
+    "sfmModel": "rear model 1"
+   },
+   "overlay": "overlays/unit-13.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "unit-12",
+   "feature": "B&C BOX&CUP #12 counter frontage",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      -28.155,
+      -19.371
+     ],
+     [
+      -23.94,
+      -19.053
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K18",
+    "secondsRange": [
+     252.5,
+     257.5
+    ],
+    "frames": [
+     "SY0 252.767 s",
+     "SY0 254.433 s",
+     "SY0 255.767 s",
+     "SY0 257.433 s"
+    ],
+    "sfmModel": "rear model 1"
+   },
+   "overlay": "overlays/unit-12.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "unit-11",
+   "feature": "udon shop (간사이 우동 menu board) in the #11 slot in 2024 (2026: PHO-RAIL)",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      -32.161,
+      -19.626
+     ],
+     [
+      -28.155,
+      -19.371
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K18",
+    "secondsRange": [
+     258.0,
+     275.0
+    ],
+    "frames": [
+     "SY0 258.100 s",
+     "SY0 270.433 s",
+     "SY0 272.433 s",
+     "SY0 274.767 s"
+    ],
+    "sfmModel": "rear model 1"
+   },
+   "overlay": "overlays/unit-11.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "unit-10",
+   "feature": "스시보노 SUSHI BONO in the #10 slot in 2024 (2026: ARTCENT)",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      -38.063,
+      -20.072
+     ],
+     [
+      -32.161,
+      -19.626
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K18",
+    "secondsRange": [
+     275.0,
+     284.0
+    ],
+    "frames": [
+     "SY0 275.100 s",
+     "SY0 278.100 s",
+     "SY0 280.767 s",
+     "SY0 283.767 s"
+    ],
+    "sfmModel": "rear model 1"
+   },
+   "overlay": "overlays/unit-10.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "new-cafe-k19",
+   "feature": "café counter seen 286-296 s between 스시보노 and 복순도가 (slot unresolved; may face the corridor from the V- side)",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": null,
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K19",
+    "secondsRange": [
+     286.6,
+     295.8
+    ],
+    "frames": [
+     "SY0 286.600 s",
+     "SY0 289.600 s",
+     "SY0 292.600 s",
+     "SY0 295.600 s"
+    ],
+    "sfmModel": "split sub-models 2/4/7 (not linked)"
+   },
+   "overlay": "overlays/new-cafe-k19.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "unit-09",
+   "feature": "복순도가 #9 frontage and interior",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      -48.814,
+      -20.836
+     ],
+     [
+      -38.063,
+      -20.072
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K20",
+    "secondsRange": [
+     296.0,
+     308.0
+    ],
+    "frames": [
+     "SY0 296.000 s",
+     "SY0 300.000 s",
+     "SY0 304.000 s",
+     "SY0 308.000 s"
+    ],
+    "sfmModel": "rear model 1"
+   },
+   "overlay": "overlays/unit-09.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "vc-escalator-rear-9",
+   "feature": "U- 1F->2F escalator immediately past 복순도가 (hanging pictogram sign)",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": null,
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K20",
+    "secondsRange": [
+     308.0,
+     312.0
+    ],
+    "frames": [
+     "SY0 308.000 s",
+     "SY0 309.333 s",
+     "SY0 310.667 s",
+     "SY0 312.000 s"
+    ],
+    "sfmModel": "rear model 1"
+   },
+   "overlay": "overlays/vc-escalator-rear-9.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "unit-08",
+   "feature": "양산국밥 #8 frontage",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      -70.044,
+      -18.746
+     ],
+     [
+      -82.672,
+      -19.643
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K20",
+    "secondsRange": [
+     313.0,
+     326.0
+    ],
+    "frames": [
+     "SY0 313.000 s",
+     "SY0 317.333 s",
+     "SY0 321.667 s",
+     "SY0 326.000 s"
+    ],
+    "sfmModel": "rear model 1"
+   },
+   "overlay": "overlays/unit-08.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "unit-07",
+   "feature": "SELF StoryWay #7 vending frontage",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      -44.436,
+      -31.284
+     ],
+     [
+      -55.321,
+      -32.072
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K20",
+    "secondsRange": [
+     326.0,
+     334.0
+    ],
+    "frames": [
+     "SY0 326.000 s",
+     "SY0 329.667 s",
+     "SY0 333.000 s",
+     "SY0 334.000 s"
+    ],
+    "sfmModel": "rear model 1"
+   },
+   "overlay": "overlays/unit-07.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "en-gates-1-2-5-6",
+   "feature": "GATE1 interior hall: stainless columns, yellow gate signs, departure board, glazed facade",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": null,
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K20",
+    "secondsRange": [
+     334.9,
+     341.3
+    ],
+    "frames": [
+     "SY0 334.900 s",
+     "SY0 335.900 s",
+     "SY0 337.333 s",
+     "SY0 341.000 s"
+    ],
+    "sfmModel": "separate model 2 (pan 334.1-334.9 not bridged)"
+   },
+   "overlay": "overlays/en-gates-1-2-5-6.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "fx-lockers",
+   "feature": "#17 coin-locker bank beside an escalator (pink ETUDE vending machine)",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": null,
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K03",
+    "secondsRange": [
+     62.5,
+     76.7
+    ],
+    "frames": [
+     "SY0 62.500 s",
+     "SY0 67.167 s",
+     "SY0 71.833 s",
+     "SY0 76.500 s"
+    ],
+    "sfmModel": "centre model 0"
+   },
+   "overlay": "overlays/fx-lockers.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "svc-zimcarry",
+   "feature": "짐캐리 glazed frontage",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": null,
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K04",
+    "secondsRange": [
+     76.9,
+     83.8
+    ],
+    "frames": [
+     "SY0 76.900 s",
+     "SY0 79.233 s",
+     "SY0 81.233 s",
+     "SY0 83.567 s"
+    ],
+    "sfmModel": "centre model 0"
+   },
+   "overlay": "overlays/svc-zimcarry.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "vc-elevator-arrival-zimcarry",
+   "feature": "U+ end hall: stainless elevator doors, AED, public phones, yellow-lit office-core door",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": null,
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K05",
+    "secondsRange": [
+     116.5,
+     123.9
+    ],
+    "frames": [
+     "SY0 116.500 s",
+     "SY0 118.833 s",
+     "SY0 121.500 s",
+     "SY0 123.833 s"
+    ],
+    "sfmModel": "centre model 0"
+   },
+   "overlay": "overlays/vc-elevator-arrival-zimcarry.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "svc-ktx-express",
+   "feature": "KTX특송 glass box + 1544-7781 window under tall glazing",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": null,
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K06",
+    "secondsRange": [
+     124.1,
+     130.0
+    ],
+    "frames": [
+     "SY0 124.100 s",
+     "SY0 126.100 s",
+     "SY0 127.767 s",
+     "SY0 129.767 s"
+    ],
+    "sfmModel": "centre model 0"
+   },
+   "overlay": "overlays/svc-ktx-express.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "unit-01",
+   "feature": "김밥천국 free-standing glazed pavilion at the U+ end under double-height glazing (likely the #1 slot)",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      60.346,
+      -25.709
+     ],
+     [
+      53.453,
+      -27.367
+     ]
+    ],
+    [
+     [
+      53.453,
+      -27.367
+     ],
+     [
+      48.47,
+      -27.708
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K06",
+    "secondsRange": [
+     130.0,
+     144.1
+    ],
+    "frames": [
+     "SY0 130.100 s",
+     "SY0 134.767 s",
+     "SY0 139.433 s",
+     "SY0 144.100 s"
+    ],
+    "sfmModel": "centre model 0"
+   },
+   "overlay": "overlays/unit-01.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "new-uplus-exit-convenience",
+   "feature": "convenience store / exit doors at the U+ end",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": null,
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K07",
+    "secondsRange": [
+     144.3,
+     146.6
+    ],
+    "frames": [
+     "SY0 144.300 s",
+     "SY0 144.967 s",
+     "SY0 145.633 s",
+     "SY0 146.300 s"
+    ],
+    "sfmModel": "separate model (K07)"
+   },
+   "overlay": "overlays/new-uplus-exit-convenience.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "unit-03",
+   "feature": "B&C DOUNUT #3 frontage (2024 shop; 2026 hoarding)",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      14.147,
+      -26.375
+     ],
+     [
+      15.203,
+      -41.304
+     ]
+    ],
+    [
+     [
+      15.203,
+      -41.304
+     ],
+     [
+      22.098,
+      -40.542
+     ]
+    ],
+    [
+     [
+      20.361,
+      -33.482
+     ],
+     [
+      22.092,
+      -33.273
+     ]
+    ],
+    [
+     [
+      21.275,
+      -25.854
+     ],
+     [
+      14.147,
+      -26.375
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K10",
+    "secondsRange": [
+     169.9,
+     178.1
+    ],
+    "frames": [
+     "SY0 169.900 s",
+     "SY0 172.567 s",
+     "SY0 175.233 s",
+     "SY0 177.900 s"
+    ],
+    "sfmModel": "bridge sub-model 5 (K10) / not linked to model 0 in the final run"
+   },
+   "overlay": "overlays/unit-03.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  },
+  {
+   "componentId": "unit-04",
+   "feature": "DESIGNSKIN glazing in the #4 slot (2024; 2026 ARTBOX) with GATE3/4 signs beyond",
+   "evidenceClass": "b",
+   "classReason": "registration rejected (registration.json); identity, order along the walk and topology only",
+   "geometryUVY": null,
+   "naverFrontEdgeUV": [
+    [
+     [
+      -1.439,
+      -34.939
+     ],
+     [
+      -0.576,
+      -34.955
+     ]
+    ],
+    [
+     [
+      -0.919,
+      -42.228
+     ],
+     [
+      6.464,
+      -41.912
+     ]
+    ],
+    [
+     [
+      6.464,
+      -41.912
+     ],
+     [
+      5.408,
+      -26.982
+     ]
+    ],
+    [
+     [
+      5.408,
+      -26.982
+     ],
+     [
+      -1.97,
+      -27.491
+     ]
+    ]
+   ],
+   "naverOffsets": null,
+   "naverOffsetsReason": "no accepted or plumb-sane UVY transform for this footage",
+   "sy0Evidence": {
+    "clip": "K11",
+    "secondsRange": [
+     178.3,
+     180.8
+    ],
+    "frames": [
+     "SY0 178.300 s",
+     "SY0 178.967 s",
+     "SY0 179.967 s",
+     "SY0 180.633 s"
+    ],
+    "sfmModel": "bridge sub-model 4 (B1+K10+K11)"
+   },
+   "overlay": "overlays/unit-04.jpg",
+   "epoch": "summer 2024 (SY0 upload 2024-08-27)"
+  }
+ ],
+ "unobserved": [
+  "corridor widths, ceiling heights, column positions and glazing heights in UVY (need an accepted registration)"
+ ]
+}

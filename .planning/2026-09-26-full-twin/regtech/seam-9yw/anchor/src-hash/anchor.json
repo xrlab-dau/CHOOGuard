@@ -1,0 +1,751 @@
+{
+ "schema": "chooguard.regtech.anchor.v1",
+ "work": ".planning/2026-09-26-full-twin/regtech/seam-9yw",
+ "controls": ".planning/2026-09-26-full-twin/regtech/controls/seam.json",
+ "frame": "uvy",
+ "gate_thresholds": {
+  "heldout_rms_m": 0.3,
+  "heldout_rms_px": 8.0,
+  "min_heldout": 3,
+  "loo_max_m": 0.6,
+  "heldout_forward_rms_deg": 6.0
+ },
+ "components": {
+  "0": {
+   "component": 0,
+   "registered_images": 134,
+   "status": "FAIL",
+   "gate": {
+    "pass": false,
+    "reasons": [
+     "LOO max 3D 1.041 > 0.6",
+     "LOO reprojection RMS 184.94px > 8.0"
+    ]
+   },
+   "fit": {
+    "controls": 21,
+    "obs": 7,
+    "rms_px": 14.439699531252652,
+    "max_px": 26.4685625481707,
+    "points_3d": 21,
+    "rms_m": 0.32086674417498423,
+    "max_m": 0.9834641502999416,
+    "forward_rms_deg": null,
+    "forward_max_deg": null
+   },
+   "heldout": {
+    "controls": 6,
+    "obs": 0,
+    "rms_px": null,
+    "max_px": null,
+    "points_3d": 6,
+    "rms_m": 0.0181656466670277,
+    "max_m": 0.0353306680812695,
+    "forward_rms_deg": null,
+    "forward_max_deg": null
+   },
+   "heldout_images": {
+    "images": [],
+    "obs": 0,
+    "rms_px": null
+   },
+   "loo": {
+    "count": 21,
+    "rms_m": 0.42424131705322526,
+    "max_m": 1.0410096728310023,
+    "rms_px": 184.9417291778232,
+    "max_px": 260.7301167242531,
+    "items": {
+     "exit8-jamb-south-floor": {
+      "err_m": 0.7953827280202196,
+      "rms_px": 20.65653929204887
+     },
+     "exit8-jamb-north-floor": {
+      "err_m": 1.0410096728310023,
+      "rms_px": 260.7301167242531
+     },
+     "corr-south-0": {
+      "err_m": 0.03359644517095006,
+      "rms_px": null
+     },
+     "corr-south-1": {
+      "err_m": 0.04730874726481815,
+      "rms_px": null
+     },
+     "corr-south-2": {
+      "err_m": 0.1254923097971279,
+      "rms_px": null
+     },
+     "corr-south-3": {
+      "err_m": 0.38500298391206655,
+      "rms_px": null
+     },
+     "corr-south-4": {
+      "err_m": 0.09681997633239092,
+      "rms_px": null
+     },
+     "corr-south-5": {
+      "err_m": 0.016112995467224778,
+      "rms_px": null
+     },
+     "corr-south-6": {
+      "err_m": 0.032350986545441884,
+      "rms_px": null
+     },
+     "corr-south-7": {
+      "err_m": 0.09404325595942709,
+      "rms_px": null
+     },
+     "floor-1": {
+      "err_m": 0.03560609304073292,
+      "rms_px": null
+     },
+     "floor-4": {
+      "err_m": 0.0376005453833006,
+      "rms_px": null
+     },
+     "floor-8": {
+      "err_m": 0.02612744752628071,
+      "rms_px": null
+     },
+     "floor-9": {
+      "err_m": 0.007977011683144575,
+      "rms_px": null
+     },
+     "floor-10": {
+      "err_m": 0.024129891314741414,
+      "rms_px": null
+     },
+     "floor-11": {
+      "err_m": 0.03204977553553867,
+      "rms_px": null
+     },
+     "cam:s/t00190000.jpg": {
+      "err_m": 0.9836333435574074,
+      "rms_px": null
+     },
+     "cam:s/t00200111.jpg": {
+      "err_m": 0.6848931279451409,
+      "rms_px": null
+     },
+     "cam:s/t00209556.jpg": {
+      "err_m": 0.4986770055882029,
+      "rms_px": null
+     },
+     "cam:s/t00218111.jpg": {
+      "err_m": 0.3408338506026355,
+      "rms_px": null
+     },
+     "cam:s/t00225111.jpg": {
+      "err_m": 0.2643783829738256,
+      "rms_px": null
+     }
+    }
+   },
+   "sim3_sfm_to_enu": {
+    "scale": 2.449526223112937,
+    "rotation": [
+     [
+      0.7313377414177342,
+      0.07884943730317712,
+      -0.677442155622884
+     ],
+     [
+      0.6807923047147514,
+      -0.1438627450785368,
+      0.7182098220016523
+     ],
+     [
+      -0.0408282478093841,
+      -0.9864513555241538,
+      -0.15889234520698348
+     ]
+    ],
+    "translation": [
+     33.77559565283557,
+     43.75332145925187,
+     8.482316180785622
+    ],
+    "formula": "ENU = scale*R*X_sfm + t; Unity=(E,Up,N); UVY via README"
+   },
+   "solver": {
+    "init_inliers": 7,
+    "cost": 12.409373011483737,
+    "nfev": 12,
+    "status": 2
+   },
+   "controls": {
+    "exit8-jamb-south-floor": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": true,
+     "note": "source MainShell_5 vertex (64.95,12.16,7.0): exit-8 opening south jamb at floor (facade corner)",
+     "obs": [
+      {
+       "image": "s/t00225111.jpg",
+       "px": [
+        510.0,
+        522.0
+       ],
+       "proj": [
+        512.5866943694799,
+        516.4991254800553
+       ],
+       "err_px": 6.078701197235762,
+       "heldout_image": false
+      },
+      {
+       "image": "s/t00218111.jpg",
+       "px": [
+        605.0,
+        498.0
+       ],
+       "proj": [
+        599.3224224494799,
+        500.64414497036944
+       ],
+       "err_px": 6.263097433898046,
+       "heldout_image": false
+      },
+      {
+       "image": "s/t00212222.jpg",
+       "px": [
+        613.0,
+        446.0
+       ],
+       "proj": [
+        612.7286995407286,
+        445.79147691687075
+       ],
+       "err_px": 0.34217804634225396,
+       "heldout_image": false
+      },
+      {
+       "image": "s/t00209556.jpg",
+       "px": [
+        845.0,
+        442.0
+       ],
+       "proj": [
+        844.4319230466338,
+        441.6917165161958
+       ],
+       "err_px": 0.6463359276199349,
+       "heldout_image": false
+      }
+     ],
+     "triangulated": [
+      64.90856413096911,
+      12.171437427808605,
+      6.995574336529728
+     ],
+     "err_m": 0.04321264276082127,
+     "err_components": [
+      -0.04143586903089158,
+      0.01143742780860535,
+      -0.004425663470271957
+     ],
+     "tri_angle_deg": 14.588852384297597,
+     "tri_views": 4,
+     "tri_rms_px": 4.097820846404168
+    },
+    "exit8-jamb-north-floor": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": true,
+     "note": "source Layer0_5 post west face (V 14.33) at floor; dark picks, sigma 0.3; picks uncertain (dark), sigma_px 15",
+     "obs": [
+      {
+       "image": "s/t00225111.jpg",
+       "px": [
+        845.0,
+        480.0
+       ],
+       "proj": [
+        851.7640983329329,
+        505.5896810669621
+       ],
+       "err_px": 26.4685625481707,
+       "heldout_image": false
+      },
+      {
+       "image": "s/t00218111.jpg",
+       "px": [
+        858.0,
+        470.0
+       ],
+       "proj": [
+        858.8849836509391,
+        492.20321723420545
+       ],
+       "err_px": 22.220847229836842,
+       "heldout_image": false
+      },
+      {
+       "image": "s/t00212222.jpg",
+       "px": [
+        818.0,
+        432.0
+       ],
+       "proj": [
+        810.831728639179,
+        443.7084437450483
+       ],
+       "err_px": 13.728502075365972,
+       "heldout_image": false
+      }
+     ],
+     "triangulated": [
+      65.17959976705814,
+      14.380730057567717,
+      7.102015503560995
+     ],
+     "err_m": 0.39632901087129674,
+     "err_components": [
+      0.3795997670581386,
+      0.050730057567717424,
+      0.10201550356099531
+     ],
+     "tri_angle_deg": 17.829976161000236,
+     "tri_views": 3,
+     "tri_rms_px": 2.4980575593677115
+    },
+    "corr-south-0": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on exit-8 corridor south wall (source line V 12.2..12.8 over U 65..72)",
+     "obs": [],
+     "triangulated": [
+      73.89596895431964,
+      12.471207791739857,
+      9.307329094524059
+     ],
+     "err_m": 0.021207791739858095,
+     "err_components": [
+      0.021207791739858095
+     ],
+     "tri_angle_deg": 2.896175474970305,
+     "tri_views": 4,
+     "tri_rms_px": 0.5507652160401361
+    },
+    "corr-south-1": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on exit-8 corridor south wall (source line V 12.2..12.8 over U 65..72)",
+     "obs": [],
+     "triangulated": [
+      65.53951132424895,
+      12.402908264513208,
+      7.413909340064702
+     ],
+     "err_m": 0.047091735486791464,
+     "err_components": [
+      -0.047091735486791464
+     ],
+     "tri_angle_deg": 7.333612841582569,
+     "tri_views": 6,
+     "tri_rms_px": 1.0756102632556184
+    },
+    "corr-south-2": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on exit-8 corridor south wall (source line V 12.2..12.8 over U 65..72)",
+     "obs": [],
+     "triangulated": [
+      69.11093777657648,
+      12.334601461946836,
+      9.83503215309844
+     ],
+     "err_m": 0.11539853805316369,
+     "err_components": [
+      -0.11539853805316369
+     ],
+     "tri_angle_deg": 2.1480777123602977,
+     "tri_views": 6,
+     "tri_rms_px": 0.8427390673863879
+    },
+    "corr-south-3": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on exit-8 corridor south wall (source line V 12.2..12.8 over U 65..72)",
+     "obs": [],
+     "triangulated": [
+      71.39914406060504,
+      12.761689810990177,
+      7.559917984284558
+     ],
+     "err_m": 0.31168981099017756,
+     "err_components": [
+      0.31168981099017756
+     ],
+     "tri_angle_deg": 3.1705355799608217,
+     "tri_views": 8,
+     "tri_rms_px": 1.3672463827549288
+    },
+    "corr-south-4": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on exit-8 corridor south wall (source line V 12.2..12.8 over U 65..72)",
+     "obs": [],
+     "triangulated": [
+      66.01305472826033,
+      12.35409344308422,
+      10.046307667924292
+     ],
+     "err_m": 0.09590655691577865,
+     "err_components": [
+      -0.09590655691577865
+     ],
+     "tri_angle_deg": 11.682878159473795,
+     "tri_views": 7,
+     "tri_rms_px": 1.2858154184704478
+    },
+    "corr-south-5": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on exit-8 corridor south wall (source line V 12.2..12.8 over U 65..72)",
+     "obs": [],
+     "triangulated": [
+      68.25131253562388,
+      12.434696976578675,
+      7.328842519923973
+     ],
+     "err_m": 0.015303023421324724,
+     "err_components": [
+      -0.015303023421324724
+     ],
+     "tri_angle_deg": 3.8566144219598373,
+     "tri_views": 7,
+     "tri_rms_px": 1.2404185781511083
+    },
+    "corr-south-6": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on exit-8 corridor south wall (source line V 12.2..12.8 over U 65..72)",
+     "obs": [],
+     "triangulated": [
+      71.32610095757464,
+      12.423688464251786,
+      10.032474839360939
+     ],
+     "err_m": 0.026311535748213544,
+     "err_components": [
+      -0.026311535748213544
+     ],
+     "tri_angle_deg": 2.2286855568053974,
+     "tri_views": 5,
+     "tri_rms_px": 0.9687136593727486
+    },
+    "corr-south-7": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on exit-8 corridor south wall (source line V 12.2..12.8 over U 65..72)",
+     "obs": [],
+     "triangulated": [
+      69.96303018536386,
+      12.366811137560926,
+      8.381549805009836
+     ],
+     "err_m": 0.08318886243907286,
+     "err_components": [
+      -0.08318886243907286
+     ],
+     "tri_angle_deg": 1.940263612595693,
+     "tri_views": 5,
+     "tri_rms_px": 1.2387303643011127
+    },
+    "floor-0": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point, 2F Y 7.0",
+     "obs": [],
+     "triangulated": [
+      58.673541013284634,
+      10.322192173421733,
+      6.975999989832729
+     ],
+     "err_m": 0.024000010167270602,
+     "err_components": [
+      -0.024000010167270602
+     ],
+     "tri_angle_deg": 3.4515371626605718,
+     "tri_views": 8,
+     "tri_rms_px": 1.5307910982222743
+    },
+    "floor-1": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point, 2F Y 7.0",
+     "obs": [],
+     "triangulated": [
+      78.11792887061804,
+      21.92188771703457,
+      6.9918951256728805
+     ],
+     "err_m": 0.008104874327119482,
+     "err_components": [
+      -0.008104874327119482
+     ],
+     "tri_angle_deg": 1.9209778700229734,
+     "tri_views": 8,
+     "tri_rms_px": 0.9772589859589568
+    },
+    "floor-2": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point, 2F Y 7.0",
+     "obs": [],
+     "triangulated": [
+      42.57120753830671,
+      -5.448528728900502,
+      6.9646693319187305
+     ],
+     "err_m": 0.0353306680812695,
+     "err_components": [
+      -0.0353306680812695
+     ],
+     "tri_angle_deg": 2.369500326787443,
+     "tri_views": 8,
+     "tri_rms_px": 1.0251898447033523
+    },
+    "floor-3": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point, 2F Y 7.0",
+     "obs": [],
+     "triangulated": [
+      50.716533134272055,
+      24.17386623699671,
+      6.997186589380771
+     ],
+     "err_m": 0.0028134106192290176,
+     "err_components": [
+      -0.0028134106192290176
+     ],
+     "tri_angle_deg": 4.248189653348526,
+     "tri_views": 4,
+     "tri_rms_px": 1.2410862096086894
+    },
+    "floor-4": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point, 2F Y 7.0",
+     "obs": [],
+     "triangulated": [
+      69.1683455850666,
+      14.482502637616438,
+      7.033113861623115
+     ],
+     "err_m": 0.03311386162311525,
+     "err_components": [
+      0.03311386162311525
+     ],
+     "tri_angle_deg": 1.7335831323331279,
+     "tri_views": 8,
+     "tri_rms_px": 1.1668284592951208
+    },
+    "floor-5": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point, 2F Y 7.0",
+     "obs": [],
+     "triangulated": [
+      49.506876352800354,
+      13.837882507478646,
+      7.010501922116241
+     ],
+     "err_m": 0.010501922116240792,
+     "err_components": [
+      0.010501922116240792
+     ],
+     "tri_angle_deg": 5.9962263579743205,
+     "tri_views": 8,
+     "tri_rms_px": 1.0412621569527836
+    },
+    "floor-6": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point, 2F Y 7.0",
+     "obs": [],
+     "triangulated": [
+      76.7381478872075,
+      14.574670945865684,
+      7.004297610801247
+     ],
+     "err_m": 0.0042976108012471315,
+     "err_components": [
+      0.0042976108012471315
+     ],
+     "tri_angle_deg": 2.068042864032572,
+     "tri_views": 8,
+     "tri_rms_px": 1.8839215660612378
+    },
+    "floor-7": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point, 2F Y 7.0",
+     "obs": [],
+     "triangulated": [
+      62.125788802592446,
+      16.764480452411902,
+      6.995639654618856
+     ],
+     "err_m": 0.0043603453811442705,
+     "err_components": [
+      -0.0043603453811442705
+     ],
+     "tri_angle_deg": 11.995441959076746,
+     "tri_views": 6,
+     "tri_rms_px": 1.4026775785070467
+    },
+    "floor-8": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point, 2F Y 7.0",
+     "obs": [],
+     "triangulated": [
+      54.46926811833464,
+      18.285046210056834,
+      6.9825888080991145
+     ],
+     "err_m": 0.01741119190088547,
+     "err_components": [
+      -0.01741119190088547
+     ],
+     "tri_angle_deg": 8.696038949572564,
+     "tri_views": 6,
+     "tri_rms_px": 1.676097394542079
+    },
+    "floor-9": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point, 2F Y 7.0",
+     "obs": [],
+     "triangulated": [
+      65.2605291769449,
+      10.060861972158897,
+      7.006990964694749
+     ],
+     "err_m": 0.0069909646947490245,
+     "err_components": [
+      0.0069909646947490245
+     ],
+     "tri_angle_deg": 11.026516526811696,
+     "tri_views": 8,
+     "tri_rms_px": 0.8301241164274453
+    },
+    "floor-10": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point, 2F Y 7.0",
+     "obs": [],
+     "triangulated": [
+      47.5424440875627,
+      18.814334123761235,
+      7.008340529972598
+     ],
+     "err_m": 0.008340529972597821,
+     "err_components": [
+      0.008340529972597821
+     ],
+     "tri_angle_deg": 4.973717285070882,
+     "tri_views": 6,
+     "tri_rms_px": 1.1468031912746963
+    },
+    "floor-11": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point, 2F Y 7.0",
+     "obs": [],
+     "triangulated": [
+      62.07676133687652,
+      5.863784252539112,
+      7.020984515093277
+     ],
+     "err_m": 0.020984515093276812,
+     "err_components": [
+      0.020984515093276812
+     ],
+     "tri_angle_deg": 2.7030967500093994,
+     "tri_views": 8,
+     "tri_rms_px": 0.8738634437713096
+    },
+    "cam:s/t00190000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.9834641502999416,
+     "center_uvy": [
+      46.2369530503128,
+      32.84517487064352,
+      8.534287847575001
+     ],
+     "note": "init only"
+    },
+    "cam:s/t00200111.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.6848367945627941,
+     "center_uvy": [
+      48.99508459845477,
+      22.907451297089104,
+      8.501607016383
+     ],
+     "note": "init only"
+    },
+    "cam:s/t00209556.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.49865460111268745,
+     "center_uvy": [
+      51.80205268984998,
+      16.412895604253713,
+      8.509415980144334
+     ],
+     "note": "init only"
+    },
+    "cam:s/t00218111.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.3408269697985386,
+     "center_uvy": [
+      55.69167734808556,
+      13.06650301304367,
+      8.465474509329832
+     ],
+     "note": "init only"
+    },
+    "cam:s/t00225111.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 0.26437538605271343,
+     "center_uvy": [
+      57.94621724968691,
+      12.693672330287903,
+      8.465076942336783
+     ],
+     "note": "init only"
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,183 @@
+{
+  "schema": "chooguard.main-metric-registration-evidence-summary.v1",
+  "scope": "Read-only source registration and observed-location inventory; geometry proposals paused per parent priority change.",
+  "delivered": [
+    "Source-world vertex/index export with exact per-control source indices and coordinates",
+    "Proper positive-scale HC-450 to ENU Sim3 plus 420 transformed cameras",
+    "30 fitting image controls, held-out 482s frame, and separately withheld circular features",
+    "Original-source metric plane support and independent plumb diagnostics",
+    "RY2-330 sparse/2 cross-video alignment and provisional shop aperture ranges",
+    "Original-source preservation comparison"
+  ],
+  "calibration": {
+    "matrix4x4": [
+      [
+        -8.327965627155107,
+        -0.18890949095959164,
+        -2.1561064708579214,
+        -36.76897214183947
+      ],
+      [
+        2.059143564417304,
+        1.9486306364889894,
+        -8.124177485763239,
+        -5.893797040712954
+      ],
+      [
+        0.6666406007503689,
+        -8.37894058000705,
+        -1.8407711597776846,
+        10.367751958523758
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "scale": 8.604620467895549,
+    "residualSummary": {
+      "fit": {
+        "count": 30,
+        "rmsPixels": 3.864911804628765,
+        "maxPixels": 6.664099227354764
+      },
+      "held-out frame": {
+        "count": 16,
+        "rmsPixels": 4.338277911336119,
+        "maxPixels": 6.621707494079816
+      },
+      "held-out feature": {
+        "count": 10,
+        "rmsPixels": 5.165197440202601,
+        "maxPixels": 8.162909285212626
+      }
+    },
+    "planeMedianAbsMeters": 0.021819274737774785,
+    "globalPlumbDisagreementDegrees": 3.384689049431184
+  },
+  "sourcePreservation": {
+    "schema": "chooguard.original-source-preservation.v1",
+    "vertexCount": 261021,
+    "maxWorldUVYVertexDelta": 3.813383e-06,
+    "allSubmeshIndicesIdentical": true,
+    "preserved": true,
+    "sourcePath": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_0",
+    "sceneSaved": false,
+    "sceneViewChanged": false,
+    "playModeChanged": false
+  },
+  "inventoryFindings": {
+    "boksoondoga": {
+      "observedCornerRangesUVY": {
+        "minimum": [
+          1.002021204284801,
+          -27.89895868390742,
+          7.655167402715534
+        ],
+        "maximum": [
+          4.814414101526911,
+          -27.26430340274816,
+          9.355708197048896
+        ]
+      },
+      "observedFrontageCentreUV": [
+        3.0044020840119634,
+        -27.608473666990548
+      ],
+      "currentFrontToObservedCentreDeltaUV": [
+        0.10440208401196349,
+        18.991526333009453
+      ],
+      "horizontalCentreDisplacementMeters": 18.99181329553704,
+      "inventoryDecision": "Record mismatch and uncertainty only. No replacement retail bounds or geometry application authorized; classify actual implemented/missing scene boundaries first."
+    },
+    "kkotdeul": {
+      "observedCornerRangesUVY": {
+        "minimum": [
+          11.282320639492022,
+          -27.027277013549007,
+          6.906772630956369
+        ],
+        "maximum": [
+          16.211323338877627,
+          -26.75094957662521,
+          8.699044015385654
+        ]
+      },
+      "observedFrontageCentreUV": [
+        13.843299416185385,
+        -26.944808057361346
+      ],
+      "currentFrontToObservedCentreDeltaUV": [
+        -5.206700583814616,
+        18.655191942638655
+      ],
+      "horizontalCentreDisplacementMeters": 19.36816763109473,
+      "inventoryDecision": "Record mismatch and uncertainty only. No replacement retail bounds or geometry application authorized; classify actual implemented/missing scene boundaries first."
+    }
+  },
+  "uncertainty": [
+    "Vestibule-local source registration is supported; global SfM rigidity is NOT established.",
+    "3.385-degree discrepancy between source-local and dominant indoor plumb is a deformation/source-mismatch warning, not a corrected global survey.",
+    "Cross-video visual support includes repeated commercial logos and cloud paintings; 0.422m spatial-split residual is conditional on selected correspondence consensus.",
+    "Visible aperture ranges are not full retail footprint bounds, confirmed missing-scene regions, or instructions to move existing geometry.",
+    "Comparison is against assignment-supplied generated bounds; parent owns actual live-scene implemented/missing boundary inventory."
+  ],
+  "proofExecuted": [
+    "Unity run_script ExportMainSource.Main: 261021 vertices exported read-only",
+    "Unity run_script CaptureMainSource.Main: temporary source-only camera rendered and destroyed; renderer states restored",
+    "sfm_dump_model.py: HC420 cameras and RY98 cameras exported",
+    "python3 extract_global_plumb.py then register_main.py: calibration reproduced",
+    "video-reconstruction Python align_ry2.py: 62 inlier pairs from523 unique candidates",
+    "python3 analyze_shop_geometry.py: observed-location evidence and image overlays generated",
+    "Unity run_script VerifyMainSource.Main: all submesh indices identical; maximum UVY vertex difference3.813383e-6"
+  ],
+  "reproduction": [
+    "/Users/um-yunsang/.unity/bin/unity command run_script --file .planning/2026-09-23-video-twin/main-metric-registration/ExportMainSource.cs --entry ExportMainSource.Main --format json",
+    ".tools/video-reconstruction/bin/python .tools/sfm_dump_model.py asset-library/research-public/2026-09-24/main-building-sfm/HC-450/sparse/0 000001.jpg 000420.jpg .planning/2026-09-23-video-twin/main-metric-registration/observations.json",
+    ".tools/video-reconstruction/bin/python .tools/sfm_dump_model.py asset-library/research-public/2026-09-24/main-building-sfm/RY2-330/sparse/2 000001.jpg 999999.jpg .planning/2026-09-23-video-twin/main-metric-registration/ry2-observations.json",
+    "python3 .planning/2026-09-23-video-twin/main-metric-registration/extract_global_plumb.py",
+    "python3 .planning/2026-09-23-video-twin/main-metric-registration/register_main.py",
+    ".tools/video-reconstruction/bin/python .planning/2026-09-23-video-twin/main-metric-registration/align_ry2.py",
+    "python3 .planning/2026-09-23-video-twin/main-metric-registration/analyze_shop_geometry.py",
+    "/Users/um-yunsang/.unity/bin/unity command run_script --file .planning/2026-09-23-video-twin/main-metric-registration/VerifyMainSource.cs --entry VerifyMainSource.Main --format json"
+  ],
+  "runtimeDependencies": {
+    "python3": "NumPy, SciPy, OpenCV, Pillow; verified /opt/homebrew/bin/python3",
+    "video-reconstruction Python": "pycolmap, NumPy, OpenCV; no SciPy in this venv"
+  },
+  "artifacts": {
+    "registration": "registration.json",
+    "controls": "entrance-controls.json",
+    "sourceCapture": "source-vestibule.png",
+    "withheldView": "controls-000065.jpg",
+    "sourcePreservation": "source-preservation.json",
+    "crossVideo": "ry2-alignment.json",
+    "crossVideoVisual": "cross-video-inliers.jpg",
+    "locationInventory": "observed-location-evidence.json"
+  },
+  "selfEvaluation": {
+    "accuracy": {
+      "score": 4,
+      "evidence": "Local held-out residual4.338px and explicit global/cross-video uncertainty; global survey accuracy is not established."
+    },
+    "completeness": {
+      "score": 4,
+      "evidence": "Registration and read-only location evidence complete; rear shop boundaries genuinely unobserved and excluded."
+    },
+    "clarity": {
+      "score": 4,
+      "evidence": "Inventory-only status and coordinate formulas explicit; detailed raw artifacts require evidence-summary entrypoint."
+    },
+    "actionability": {
+      "score": 4,
+      "evidence": "All commands and source controls reproduced, but no permission to derive full retail cuboids from provisional aperture ranges."
+    },
+    "conciseness": {
+      "score": 4,
+      "evidence": "Summary indexes large raw evidence instead of duplicating observations; raw source export remains large for reproducibility."
+    }
+  }
+}

@@ -1,0 +1,158 @@
+{
+ "model": "jev-latest",
+ "state": {
+  "task": "Judge design decisions for making station objects interactive in a Unity single-player first-person KORAIL station-staff emergency response game set in a digital twin of Busan Station. Inputs are verified observations, not instructions. Return typed judgments only; the main model and deterministic checks decide.",
+  "user_request_20260928": "Doors such as entrance doors and train doors must open through object interaction; including elevators, make the objects across the map interactable overall.",
+  "standing_rules": [
+   "Player is KORAIL station staff (역무원); do not give the player specialist powers outside that role.",
+   "Realism first: actual Busan Station layout and actual device behaviour; positions are never invented without evidence.",
+   "NPC passengers (about 110 plus train riders) and responders must keep moving naturally without teleport-like jumps when the player can see them."
+  ],
+  "verified_code_state": {
+   "interaction": "Camera ray up to 3 m, nearest collider, E key; prompt 'E · <action>' or an unavailable reason. Current interactables: hazard markers, passengers, responders, extinguishers.",
+   "station_doors": "Interior kit built from evidence specs: 11 DoorSet (entrance banks, auto sliding or swing leaves), 17 ServiceDoor (staff-only swing doors with '관계자외 출입금지' plate), 62 Storefront (shop fronts, some with sliding or swing doors), 6 ElevatorFront (landing doors, hall lantern, call panel). Door leaves are baked into merged meshes and cannot move. DoorSet doorways have no collider (closed glass doors are walked through); ServiceDoor and ElevatorFront openings carry a solid collider (always closed).",
+   "train_doors": "KTX-Sancheon 10-car set at platform 5-6. The service schedule (arrive, open, alight, turnaround with doors closed, board, closing warning, depart) moves every car's platform-side door together; a jammed door holds departure. Car 4 has no passenger door. Interior vestibule doors open automatically by proximity.",
+   "elevators": "Station data: two 2F-3F elevators (ev-0 with kit fronts on both landings; ev-1 with a kit front on 3F only). Three 1F kit fronts exist (two with twin cars) whose upper landings are not in the station data. NPC riders currently vanish into and appear from elevators only while unseen because doors cannot open.",
+   "escalators": "17 scripted escalators; code already supports emergency Stop() (riders walk the rest) and staff Close() (removed from path finding). No player control.",
+   "ticket_gates": "Two 8-lane gate lines built as merged meshes (cabinets, flaps).",
+   "fire_equipment": "Kit fixtures include wall extinguishers, indoor hydrant cabinets and AED cabinets; extinguishers can already be picked up and used.",
+   "alarm": "Automatic fire detection rings the station bell until the shift ends (earlier JEV 009)."
+  },
+  "verified_research": {
+   "ktx_exterior_doors": "Closed and handled by the train team leader (열차팀장) on KTX including KTX-Sancheon. The green '1분 열림' button above doors holds only the interior vestibule door open for one minute and is explicitly not a way to open the exterior boarding doors. Urban metro cars have a passenger emergency manual door release; the KTX equivalent was not confirmed from a primary source.",
+   "automatic_doors": "Sliding door controllers have modes: auto (sensor, closes 1-5 s after passage), hold-open, lock, and emergency open (fire alarm interlock opens regardless of power; power cut releases the brake for manual push). Modes are changed at the controller or by key switch.",
+   "ticket_gates": "Old steel emergency gates are one-way manual swing gates opened by staff; modern flap gates can be interlocked with the fire alarm receiver to open automatically.",
+   "escalators": "Anyone may press the landing emergency stop in an accident; restart is by key switch at the control box.",
+   "elevators": "Korea: 'do not use the elevator in a fire' signage on all lifts (smoke in the shaft, entrapment on power loss). No general Korean fire-mode rule for ordinary lifts; EN81-73 recalls lifts to a designated floor; fire-interlocked Korean buildings recall to the main floor.",
+   "fire_equipment": "Pressing a fire alarm call point (발신기) signals the receiver and rings the bells. Indoor hydrant cabinets are used by occupants or staff for first-stage firefighting with hose and nozzle."
+  }
+ },
+ "questions": {
+  "ktx_exterior_door": {
+   "type": "choice",
+   "instructions": "What should the E interaction on a KTX car's platform-side exterior door do for the station-staff player?",
+   "criteria": {
+    "radio_crew_request": "E on the door (or its door-side call) asks the train team leader by radio to open or close that car's door; the crew operates it when the train is stopped and the phase allows; the player never drives the door mechanism.",
+    "emergency_release_when_stopped": "E operates an exterior emergency manual release: only when the set is stopped at the platform the door opens, the set is held until the crew re-closes it; never while moving.",
+    "open_when_released": "E opens a closed door like a passenger button only while doors are released for alighting or boarding; locked otherwise.",
+    "free_toggle": "E opens or closes any car door whenever the train is stopped."
+   }
+  },
+  "ktx_inner_door": {
+   "type": "choice",
+   "instructions": "Interior vestibule doors inside the KTX cars.",
+   "criteria": {
+    "auto_plus_one_minute_button": "Keep proximity-automatic; E on the green button above holds it open for one minute (the real feature).",
+    "auto_only": "Keep proximity-automatic with no interaction."
+   }
+  },
+  "automatic_entrance_door": {
+   "type": "choice",
+   "instructions": "Station entrance DoorSets with automatic sliding leaves (and shop sliding doors).",
+   "criteria": {
+    "sensor_with_staff_mode_switch": "Open by sensor for anyone approaching; staff E on the door controller cycles auto, hold-open, lock; the fire alarm forces them open.",
+    "sensor_only": "Purely sensor-driven; E does nothing.",
+    "manual_toggle": "E opens and closes them like a manual door."
+   }
+  },
+  "swing_door": {
+   "type": "choice",
+   "instructions": "Swing doors: staff-only ServiceDoors, shop swing doors and swing entrance leaves.",
+   "criteria": {
+    "push_open_with_closer": "E pushes the door open; its closer returns it shut a few seconds after nobody is in the doorway; NPCs never route through staff-only doors and push public swing doors open as they pass.",
+    "toggle_stays": "E toggles open or closed and it stays that way; NPCs treat a closed door as a wall.",
+    "public_fixed_open": "Public swing doors stay open during operating hours; only staff-only doors are operable."
+   }
+  },
+  "door_locking": {
+   "type": "choice",
+   "instructions": "Should the station staff player be able to lock doors?",
+   "criteria": {
+    "staff_key_lock": "Staff can lock and unlock staff-only doors and switch entrance banks to lock mode (e.g. isolating a suspicious object or a fire zone); passengers inside can always exit (panic side).",
+    "no_locking": "No locking; doors only open and close."
+   }
+  },
+  "elevator_player_model": {
+   "type": "choice",
+   "instructions": "How the player rides an elevator.",
+   "criteria": {
+    "cabin_ride_between_identical_cabins": "Call button, car arrives after real travel time, landing and car doors open, step in, press a floor on the car panel, doors close, ride time with sound, then the identical cabin at the other landing opens; NPC riders share the same car, queue and capacity.",
+    "moving_car_in_shaft": "One car physically moves along a modelled shaft between floors.",
+    "fade_transition": "Fade to black and relocate the player."
+   }
+  },
+  "elevator_scope": {
+   "type": "choice",
+   "instructions": "Which elevators become usable in this pass.",
+   "criteria": {
+    "evidenced_landings_only": "Only elevators whose every landing is evidenced: ev-0 now, ev-1 after adding its 2F landing front from the station data stop; the three 1F fronts stay inoperable until their upper landings are evidenced.",
+    "research_1f_then_build": "Also research evidence for the 1F elevators' upper landings in this pass and build them if found.",
+    "infer_all": "Infer the 1F elevators' upper landings from the shaft line and build them now."
+   }
+  },
+  "elevator_fire_mode": {
+   "type": "bool",
+   "instructions": "When the fire alarm is active, elevators return to the exit floor, open, and stop taking calls ('화재 시 사용 금지') for both player and NPCs.",
+   "criteria": {
+    "true": "Yes, fire recall and out of service.",
+    "false": "No, they keep running."
+   }
+  },
+  "include_escalator_estop": {
+   "type": "bool",
+   "instructions": "Include escalator landing emergency stop buttons (anyone) and staff key restart in this pass.",
+   "criteria": {
+    "true": "Include.",
+    "false": "Leave out."
+   }
+  },
+  "include_ticket_gates": {
+   "type": "bool",
+   "instructions": "Include ticket gates: staff switch opens all flaps for evacuation and closes them again; fire alarm opens them.",
+   "criteria": {
+    "true": "Include.",
+    "false": "Leave out."
+   }
+  },
+  "include_fire_call_point": {
+   "type": "bool",
+   "instructions": "Include fire alarm call points (발신기): pressing one rings the station alarm.",
+   "criteria": {
+    "true": "Include.",
+    "false": "Leave out."
+   }
+  },
+  "include_hydrant_cabinet": {
+   "type": "bool",
+   "instructions": "Include indoor hydrant cabinets: open and use the hose on a fire like the extinguisher.",
+   "criteria": {
+    "true": "Include.",
+    "false": "Leave out."
+   }
+  },
+  "include_aed_cabinet": {
+   "type": "bool",
+   "instructions": "Include AED cabinets: open, carry the AED to a collapsed person and use it.",
+   "criteria": {
+    "true": "Include.",
+    "false": "Leave out."
+   }
+  },
+  "include_amenities": {
+   "type": "bool",
+   "instructions": "Include amenity objects (lockers, vending machines, shop fridges, toilet stall doors, seats) as interactables in this pass.",
+   "criteria": {
+    "true": "Include.",
+    "false": "Leave out."
+   }
+  },
+  "npc_door_use": {
+   "type": "choice",
+   "instructions": "How NPCs deal with operable doors.",
+   "criteria": {
+    "npcs_use_public_doors": "NPCs trigger automatic doors, push public swing doors, never enter staff-only doors, and reroute around locked doors.",
+    "npcs_ignore_doors": "Doors are visual only for NPCs; they pass through regardless of state."
+   }
+  }
+ }
+}

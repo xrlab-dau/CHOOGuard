@@ -1,0 +1,94 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "부산역 역사 실내를 Unity URP 씬에서 디지털트윈 수준으로 올린다. 사용자 판정: '내부 렌더링이 실제와 너무 다르다'.",
+    "built_now": {
+      "levels": [
+        "1F FL0.00",
+        "2F FL7.00",
+        "3F FL12.00",
+        "4F FL17.00(신규저작)",
+        "B1 지하도상가"
+      ],
+      "meshRenderers": 5232,
+      "fitoutBoxes": 687,
+      "tenants": 44,
+      "escalators": 26,
+      "elevators": 14,
+      "stairs": 8,
+      "departureBoards": 5,
+      "interiorLights": 500,
+      "navMeshTriangles": 39899
+    },
+    "render_state_observed": {
+      "floor": "테라조 텍스처 적용됨(PBR Terrazzo048_2K)",
+      "ceiling": "시스템천장 패널 + 목재 슬랫 일부, 조명기구 박스",
+      "columns": "무지 흰색 직육면체, 텍스처 없음",
+      "tenant_units": "바닥판+3면벽+간판 박스. 간판에 글자 없음. 유리 전면 없음. 내부 집기 없음",
+      "signage": "행선안내 전광판 5매만 텍스트 있음. 벽면/천장 유도사인 0",
+      "furniture": "대합실 의자 0열, 벤치 미배치",
+      "people": 0,
+      "lighting": "포인트라이트 500개, 이미시브 천장기구 없음, 반사/베이크 라이팅 없음"
+    },
+    "real_reference_available": {
+      "official_floor_guide_photo": "역 현장 안내판 실사진 5장 확보. 실축척 평면 + 점포 폴리곤 32개(2F)/31개(1F)/4개(3F) + 매표창구·역무실·철도경찰서·종합안내·수유방 위치. 현재 병렬 디지타이즈 진행 중",
+      "tenant_names_with_areas": "KORAIL API 188건 승인면적",
+      "timetable": "32편 실측",
+      "pbr_materials": 33,
+      "downloaded_3d_assets": 2558,
+      "pictograms": 260,
+      "interior_photos_of_concourse": "미확보 - 대합실 내부 실사진 없음"
+    },
+    "constraint": "Unity 에디터는 메인 에이전트가 단독 점유. 병렬 작업은 파일 생성만 가능. 저작권 제약 없음."
+  },
+  "questions": {
+    "dominant_gap": {
+      "type": "choice",
+      "criteria": {
+        "material_and_texture": "기둥·벽·간판이 무지 흰색이라 형상은 맞아도 사진처럼 안 보인다. 텍스처·머티리얼이 1순위",
+        "signage_and_graphics": "역은 사인으로 읽힌다. 점포 간판 글자·천장 유도사인·타는곳 표지가 없어 '역'으로 안 읽힌다",
+        "furniture_and_props": "대합실 의자열·발권기·게이트 집기가 없어 빈 창고로 보인다",
+        "lighting": "라이팅이 평평해 깊이감이 없다. 이미시브 기구·베이크·반사가 없다",
+        "geometry_accuracy": "평면 배치가 실제와 달라서 다르게 보인다"
+      },
+      "instructions": "관찰된 렌더 상태와 실제 철도역사 실내 사진의 지배적 차이를 만드는 단일 요인을 고르라. 형상은 이미 공식 3D 모델 실측 기반이다."
+    },
+    "second_gap": {
+      "type": "choice",
+      "criteria": {
+        "material_and_texture": "위와 같음",
+        "signage_and_graphics": "위와 같음",
+        "furniture_and_props": "위와 같음",
+        "lighting": "위와 같음",
+        "geometry_accuracy": "위와 같음"
+      },
+      "instructions": "1순위를 해결한 뒤 두 번째로 큰 격차를 만드는 요인을 고르라."
+    },
+    "sign_text_source": {
+      "type": "choice",
+      "criteria": {
+        "bake_from_api_names": "KORAIL API 의 stor_nm 을 정규화해 한글 간판 텍스처를 구워 붙인다. 상호는 실제값이고 로고는 없다",
+        "scrape_brand_logos": "웹에서 각 브랜드 로고 이미지를 수집해 붙인다. 시각적으로는 가장 근접하나 수집 실패·해상도 편차 위험",
+        "generic_colored_bands": "글자 없이 색 띠만 둔다"
+      },
+      "instructions": "점포 간판을 어떻게 채울지 결정론적으로 고르라. 저작권 제약은 없다."
+    },
+    "parallel_split": {
+      "type": "choice",
+      "criteria": {
+        "four_lanes": "도면 디지타이즈 / 간판·사인 텍스처 베이크 / 집기 배치 스펙 / 조명 스펙 을 4레인 병렬로 돌리고 메인은 에디터에서 적용만 한다",
+        "two_lanes": "도면 디지타이즈 + 텍스처 베이크 2레인만 돌린다",
+        "serial": "병렬 없이 메인이 순차 처리한다"
+      },
+      "instructions": "Unity 에디터를 메인이 단독 점유하는 제약에서 최대 처리량을 내는 분할을 고르라."
+    },
+    "people_needed": {
+      "type": "noul",
+      "criteria": {
+        "true": "디지털트윈 판정에 인물(승객) 배치가 필요하다",
+        "false": "인물 없이도 건축·사인·집기만으로 디지털트윈 판정이 선다"
+      },
+      "instructions": "이 프로젝트는 소방 대응 FPS 훈련용이다. 인물 배치가 렌더링 충실도 판정에 필수인가."
+    }
+  }
+}

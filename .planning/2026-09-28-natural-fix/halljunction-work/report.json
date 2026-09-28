@@ -1,0 +1,204 @@
+{
+  "schema": "chooguard.natural-fix-lane-report.v1",
+  "lane": "HallJunction",
+  "scene": "Assets/ChooGuard/Scenes/FpsStation.unity",
+  "sceneChanged": false,
+  "deliverables": {
+    "generator": ".planning/2026-09-24-interior-twin/specs/full/make_hall_junction.py",
+    "kitSpec": ".planning/2026-09-24-interior-twin/specs/full/hall-junction.json",
+    "kitValidate": ".planning/2026-09-24-interior-twin/specs/full/hall-junction.validate.json",
+    "checkSpecAfter57": ".planning/2026-09-28-natural-fix/halljunction-work/check-after57-gypsumlit.json",
+    "previewSpec": ".planning/2026-09-28-natural-fix/halljunction-work/hall-junction-preview.json",
+    "kitPreviewReport": ".planning/2026-09-28-natural-fix/halljunction-work/after/hj-natural-gypsumLit-report.json",
+    "mainPlanPatch": ".planning/2026-09-28-natural-fix/halljunction-work/plan-patch.json",
+    "sourceOpeningRequest": ".planning/2026-09-28-natural-fix/halljunction-work/source-openings.json",
+    "sourceOpeningPreview": ".planning/2026-09-28-natural-fix/halljunction-work/source-openings.preview.json",
+    "canopyFeatureRequest": ".planning/2026-09-28-natural-fix/kit-requests/HallJunction-1.json",
+    "canopyFeatureDone": ".planning/2026-09-28-natural-fix/kit-requests/HallJunction-1.done.json",
+    "canopyFeatureTest": ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-test.validate.json",
+    "canopyInvalidInputTest": ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-invalid-test.validate.json",
+    "canopyColliderTest": ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-collider-test.validate.json",
+    "canopyIsolatedPreviewSpec": ".planning/2026-09-28-natural-fix/halljunction-work/canopy-isolated-preview.json",
+    "canopyIsolatedPreviewValidate": ".planning/2026-09-28-natural-fix/halljunction-work/canopy-isolated-preview.validate.json",
+    "canopyIsolatedPreviewReport": ".planning/2026-09-28-natural-fix/halljunction-work/after/canopy-isolated-lit-report.json",
+    "canopyIsolatedPreviewImage": ".planning/2026-09-28-natural-fix/halljunction-work/after/canopy-isolated-lit-soffit-from-below.png",
+    "receipts": "asset-library/research-public/2026-09-28/HallJunction/receipts.json",
+    "beforeSoffitPose": ".planning/2026-09-28-natural-fix/halljunction-work/before-soffit.pose.json"
+  },
+  "checks": [
+    {
+      "check": "check_spec.py --audit geometry-after57",
+      "result": "17 elements, 0 errors, 5 warnings",
+      "report": ".planning/2026-09-28-natural-fix/halljunction-work/check-after57-gypsumlit.json",
+      "notes": "Three warnings are existing roof-closure/window contacts or no-floor-below notes; the two new warnings are planned canopy contact with the protected source soffit and no floor below that overhead face. collider:false prevents collision geometry."
+    },
+    {
+      "check": "MajibangBuilder.KitValidate",
+      "result": "17 elements built, 0 errors; no folder conflict",
+      "report": ".planning/2026-09-24-interior-twin/specs/full/hall-junction.validate.json",
+      "notes": "Dry validation only; no scene or asset writes. The new gypsumLit canopy and all three WallSigns validated as built."
+    },
+    {
+      "check": "MajibangBuilder.KitPreview",
+      "result": "success; 17 kit elements rendered across three views",
+      "report": ".planning/2026-09-28-natural-fix/halljunction-work/after/hj-natural-gypsumLit-report.json",
+      "images": [
+        ".planning/2026-09-28-natural-fix/halljunction-work/after/hj-natural-gypsumLit-west-band.png",
+        ".planning/2026-09-28-natural-fix/halljunction-work/after/hj-natural-gypsumLit-source-soffit-from-hall.png",
+        ".planning/2026-09-28-natural-fix/halljunction-work/after/hj-natural-gypsumLit-source-soffit-from-seam.png"
+      ],
+      "notes": "Kit-only temporary preview; it is not an integrated station after-render. Preview root and assets were destroyed after capture."
+    },
+    {
+      "check": "sloped canopy geometry fit",
+      "result": "source vertices match within 2 micrometres; underside is planar within 2 micrometres; top face is within 2 micrometres of the source plane; collider:false",
+      "evidence": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after56/world-geometry.json and .planning/2026-09-23-video-twin/1f-implementation/geometry-after56/mesh-0011.bin"
+    },
+    {
+      "check": "current plan state",
+      "result": "verified prior HallJunction cutovers already integrated; two unrelated edge bands remain, 2F service shells and 3F toilet shell are absent, both 3F elevator shells remain",
+      "report": ".planning/2026-09-23-video-twin/majibang-plan.json",
+      "notes": "plan-patch.json is intentionally an empty RFC 6902 patch; its former destructive operations are stale and must not be reapplied."
+    },
+    {
+      "check": "SourceOverrides.Preview (prior Main integration)",
+      "result": "integrity pass; 157 triangles removed from the requested wall panel (64.2646 m2 total); 0.0224 m2 horizontal-surface warning",
+      "report": ".planning/2026-09-28-natural-fix/halljunction-work/source-openings.preview.json",
+      "notes": "Main applied the separate opening request; this lane made no protected source override or source material edit."
+    },
+    {
+      "check": "KitExtend8 sloped Canopy tests",
+      "result": "valid slope: 0 errors; malformed count and non-planar height inputs rejected; collider:false skips collider-mesh generation; frozen-spec comparison unchanged (19 reports, 265 elements, 367776 triangles, 0 errors)",
+      "reports": [
+        ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-test.validate.json",
+        ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-invalid-test.validate.json",
+        ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-collider-test.validate.json"
+      ],
+      "featureDone": ".planning/2026-09-28-natural-fix/kit-requests/HallJunction-1.done.json",
+      "preview": ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-nolight-soffit-from-below.png",
+      "previewResult": "visible continuous moderate-gray underside with gypsumLit and no auxiliary preview light."
+    },
+    {
+      "check": "independent isolated gypsumLit KitPreview",
+      "result": "1 canopy built, 0 validation errors, 12 triangles; no light element; correct vertical [U,V,Y] view shows a continuous moderate-gray underside",
+      "validation": ".planning/2026-09-28-natural-fix/halljunction-work/canopy-isolated-preview.validate.json",
+      "report": ".planning/2026-09-28-natural-fix/halljunction-work/after/canopy-isolated-lit-report.json",
+      "image": ".planning/2026-09-28-natural-fix/halljunction-work/after/canopy-isolated-lit-soffit-from-below.png",
+      "notes": "The previous gypsum-only capture was all-black; the gypsumLit kit finish resolves it."
+    },
+    {
+      "check": "remaining source-face visibility after58",
+      "result": "CPU owner picks on the three repeated poses plus the new band3 view show source-renderer shares 9.8%, 7.1%, 2.5%, 3.2%. Representative source-owned pixels are RGB 93/104/118, 95/119/139, 97/108/122; the band3 source sample is 56/63/72 at image y672, outside the overhead soffit. No broad near-black source soffit is visible.",
+      "evidence": ".planning/2026-09-28-natural-fix/halljunction-work/picks/hj-lit-*-ids.json and *-ids.png; .planning/2026-09-28-natural-fix/main-work/renders/hj-lit/*.png",
+      "notes": "The measured gypsumLit canopy sample is RGB 74/73/66 (approximately 71 sRGB mean), continuous and no longer black. Remaining black overhead-looking regions are kit Box_Kit_Clad_Canopy_Dark, not the source renderer; no extra source-face overlay is justified."
+    }
+  ],
+  "issues": [
+    {
+      "issue": "Floating third-floor west EdgeBand",
+      "status": "fixed",
+      "integration": "Main integrated the band cutover and kit replacement before geometry-after56; no new plan operation is pending.",
+      "change": "The source plan no longer includes the floating west band; the kit spec retains the closed front/back/ends/top/bottom and glazing replacement.",
+      "sourcesTried": [
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s and 322 s; existing frames 000245.jpg and 000315.jpg",
+        ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands / wallPanels",
+        ".planning/2026-09-28-natural-fix/halljunction-work/before/section-west-band-a30.png",
+        ".planning/2026-09-28-natural-fix/halljunction-work/before/section-west-band-a45.png",
+        ".planning/2026-09-28-natural-fix/halljunction-work/before/section-west-band-a60.png"
+      ],
+      "limitations": "The glazing split at box a=39.9 and a=57.7 remains [INFERENCE] from measured screen extents."
+    },
+    {
+      "issue": "Upper junction wall behind bulkhead/clerestory",
+      "status": "fixed",
+      "integration": "Main separately applied the reviewed SourceOverrides opening request.",
+      "change": "A narrow opening removes only the measured source wall face through Y21.59, preserving the horizontal ledge and soffit above.",
+      "sourcesTried": [
+        ".planning/2026-09-28-natural-fix/halljunction-work/source-openings.preview.json",
+        ".planning/2026-09-28-natural-fix/halljunction-work/before/section-west-band-a45.png",
+        "FPSWorld/공식 자료 부산역 역사/PlatformsParking/OfficialStation_-부산역_선로상층부_0"
+      ],
+      "limitations": "Preview reported a 0.0224 m2 horizontal-surface warning; Main accepted the separate request. No source edits were made by this lane."
+    },
+    {
+      "issue": "Duplicate service shells and floating west band plan entries",
+      "status": "removed",
+      "integration": "Already removed by Main from majibang-plan.json; current state was verified.",
+      "change": "2F service shells, 3F toilet shell, and west EdgeBand are absent; both 3F elevator shells remain because 3f.json models portal fronts but no shafts.",
+      "sourcesTried": [
+        ".planning/2026-09-23-video-twin/majibang-plan.json",
+        ".planning/2026-09-24-interior-twin/specs/full/services-2f.json",
+        ".planning/2026-09-24-interior-twin/specs/full/3f.json",
+        ".planning/2026-09-24-interior-twin/specs/full/services-3f.json"
+      ]
+    },
+    {
+      "issue": "Removed RailBlue service signs",
+      "status": "built",
+      "integration": "Three WallSigns are in the validated kit spec; Main must build the spec for the integrated scene.",
+      "change": "Restores 역무실 and 수유방 at the recorded 2F text plane U=-3.0 and 화장실 at box-frame b=47.98 on existing kit Room/ToiletRoom faces; the separate ToiletRoom entry pictogram remains.",
+      "sourcesTried": [
+        ".planning/2026-09-23-video-twin/1f-implementation/geometry-after51/world-geometry.json removed sign transforms and board footprints",
+        "AgentScripts/MajibangBuilder.cs ServiceRoom()/Sign(): 3.2 x 0.5 m RailBlue sign boards with white text",
+        ".planning/2026-09-24-interior-twin/specs/full/services-2f.json",
+        ".planning/2026-09-24-interior-twin/specs/full/services-3f.json"
+      ],
+      "limitations": "WallSign navy is the closest existing kit style to Sign_RailBlue [INFERENCE]."
+    },
+    {
+      "issue": "Near-black source soffit visible from walkable junction views",
+      "status": "built",
+      "integration": "Main integrated the measured Canopy geometry with gypsumLit in geometry-after58; the integrated hall/seam views are captured under main-work/renders/hj-lit/.",
+      "change": "HJ-source-soffit-finish follows the after56 mesh-0011 vertices 33893/33894/33906/33896, 5 cm below the measured sloped source face; colour and topFinish use gypsumLit. The integrated view shows a continuous gray soffit. No source opening, source-material edit, overlap hack, invented structure, or new light grid was added.",
+      "sourcesTried": [
+        ".planning/2026-09-23-video-twin/1f-implementation/geometry-after56/world-geometry.json and mesh-0011.bin; source renderer hit references 923817/923816",
+        "https://www.youtube.com/watch?v=RY2qvE0Tugk at 287 s / 322 s; frames 000245.jpg / 000315.jpg show broad raised-roof/truss context",
+        "https://www.youtube.com/watch?v=9ywctBEN_vs at 203 s / 209 s; frames 9yw_203s.jpg / 9yw_209s.jpg show the separate enclosed passage's 600-grid ceiling",
+        ".planning/2026-09-28-natural-fix/seam-main-report.json collider-free light-gypsum source-face precedent",
+        ".planning/2026-09-28-natural-fix/kit-requests/HallJunction-1.done.json and no-light gypsumLit KitPreview",
+        ".planning/2026-09-23-video-twin/1f-implementation/geometry-after58 and .planning/2026-09-28-natural-fix/main-work/renders/hj-lit/"
+      ],
+      "limitations": "Geometry is measured from after56; gypsumLit finish appearance is [INFERENCE]. check_spec has two expected canopy contact/no-floor warnings. Main-owned walk routes remain outside this lane."
+    },
+    {
+      "issue": "Other source faces visible outside the measured soffit quad",
+      "status": "still-c",
+      "integration": "No additional canopy or SourceOverrides request was added after the gypsumLit integrated render recheck.",
+      "change": "After58 CPU owner picks show source-renderer shares of 9.8%, 7.1%, 2.5%, 3.2% in the four tested walkable poses; sampled overhead source pixels are RGB 93/104/118, 95/119/139, and 97/108/122. The fourth sample at y672 is below the overhead region. Remaining dark bands pick as kit Box_Kit_Clad_Canopy_Dark, not a broad dark source soffit; extending the finish risks masking structure.",
+      "sourcesTried": [
+        ".planning/2026-09-23-video-twin/1f-implementation/geometry-after58/world-geometry.json",
+        ".planning/2026-09-28-natural-fix/main-work/renders/hj-lit/*.png and *.png.json",
+        ".planning/2026-09-28-natural-fix/halljunction-work/picks/hj-lit-*-ids.json and *-ids.png"
+      ],
+      "limitations": "Sparse source hits outside the measured quad are mixed roof/truss and vertical faces; no additional bounded dark face is justified in these tested views."
+    },
+    {
+      "issue": "Exterior deck mismatch",
+      "status": "still-c",
+      "integration": "Owned by SkyPlaza lane; no HallJunction exterior geometry or materials changed.",
+      "change": "No work performed in this lane."
+    }
+  ],
+  "beforeRenders": [
+    ".planning/2026-09-27-openings-extension/diag/renders-band/band3-from-hall.png",
+    ".planning/2026-09-27-openings-extension/diag/renders/box-hall-to-west.png",
+    ".planning/2026-09-27-openings-extension/diag/renders/box-hall-to-sw.png",
+    ".planning/2026-09-28-natural-fix/halljunction-work/before/after56-soffit-from-hall.png"
+  ],
+  "afterRenders": [
+    ".planning/2026-09-28-natural-fix/main-work/renders/hj-lit/box-hall-to-west.png",
+    ".planning/2026-09-28-natural-fix/main-work/renders/hj-lit/seam-to-box-wall.png",
+    ".planning/2026-09-28-natural-fix/main-work/renders/hj-lit/box-west-from-seam.png",
+    ".planning/2026-09-28-natural-fix/main-work/renders/hj-lit/band3-behind-after.png",
+    ".planning/2026-09-28-natural-fix/halljunction-work/after/hj-natural-gypsumLit-west-band.png",
+    ".planning/2026-09-28-natural-fix/halljunction-work/after/hj-natural-gypsumLit-source-soffit-from-hall.png",
+    ".planning/2026-09-28-natural-fix/halljunction-work/after/hj-natural-gypsumLit-source-soffit-from-seam.png",
+    ".planning/2026-09-28-natural-fix/halljunction-work/after/canopy-isolated-lit-soffit-from-below.png"
+  ],
+  "mainRequests": [
+    "Build and save the regenerated, revalidated 17-element hall-junction kit spec through Main's integration flow; do not run KitBuild from this lane.",
+    "Do not reapply plan-patch.json: it is intentionally empty because Main already integrated the cutovers; both 3F elevator shells must remain.",
+    "The SourceOverrides opening request was previously applied by Main; only the kit Canopy finish is gypsumLit; no protected source material edit was made.",
+    "Integrated gypsumLit hall/seam captures exist under main-work/renders/hj-lit/; Main-owned walk-route checks remain."
+  ]
+}

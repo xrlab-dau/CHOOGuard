@@ -1,0 +1,96 @@
+{
+  "exit_code": 0,
+  "elapsed_s": 0.3,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "model": "typesafe/jev-1.13.0",
+  "caller": "omp judge_batch (noul questions sent as bool; answer 'bool' = P(true))",
+  "result": [
+    {
+      "answers": {
+        "first_emergency": {
+          "type": "choice",
+          "choice": "concourse_fire_smoke",
+          "confidence": 0.85,
+          "probabilities": {
+            "concourse_fire_smoke": 0.87,
+            "earthquake": 0,
+            "suspicious_object": 0.01,
+            "random_from_three": 0.06,
+            "medical_collapse": 0.06,
+            "power_outage": 0
+          }
+        },
+        "emergency_origin": {
+          "type": "choice",
+          "choice": "npc_action_seeded",
+          "confidence": 0.28,
+          "probabilities": {
+            "jev_composed_from_start": 0.46,
+            "environment_trigger": 0.02,
+            "npc_action_seeded": 0.52
+          }
+        },
+        "player_role": {
+          "type": "choice",
+          "choice": "station_staff_only",
+          "confidence": 0.11,
+          "probabilities": {
+            "four_role_switch": 0.45,
+            "station_staff_only": 0.55
+          }
+        },
+        "npc_scale": {
+          "type": "choice",
+          "choice": "about_hundred_local_plus_jev_key",
+          "confidence": 0.64,
+          "probabilities": {
+            "hundreds_full_jev": 0.23,
+            "dozens_scripted": 0.01,
+            "about_hundred_local_plus_jev_key": 0.76
+          }
+        },
+        "jev_future_in_mvp": {
+          "type": "bool",
+          "bool": 0.6
+        },
+        "end_condition": {
+          "type": "choice",
+          "choice": "handover_after_initial_response",
+          "confidence": 0.89,
+          "probabilities": {
+            "everyone_out": 0.05,
+            "open_sandbox": 0.03,
+            "timer": 0.01,
+            "handover_after_initial_response": 0.91
+          }
+        },
+        "npc_visuals": {
+          "type": "choice",
+          "choice": "stylised_existing",
+          "confidence": 0.87,
+          "probabilities": {
+            "acquire_realistic_rigged": 0.07,
+            "capsules": 0.01,
+            "stylised_existing": 0.92
+          }
+        },
+        "first_question_to_user": {
+          "type": "choice",
+          "choice": "npc_scale_and_jev",
+          "confidence": 0.27,
+          "probabilities": {
+            "first_emergency": 0.03,
+            "npc_visuals": 0.1,
+            "player_role": 0.4,
+            "npc_scale_and_jev": 0.42,
+            "end_condition": 0.05
+          }
+        }
+      }
+    }
+  ],
+  "cost_usd": 9.966600000000002e-05,
+  "authority": 0,
+  "note": "Advice distribution only. Not user approval, not implementation evidence."
+}

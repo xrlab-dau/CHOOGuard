@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -16,9 +17,14 @@ namespace ChooGuard.App.Fps
         public float JumpHeight=.35f;
         public bool IsPaused { get; private set; }=true;
         public bool ExternalInputMode { get; private set; }
+        public bool SuppressLookInput { get; set; }
+        public bool SuppressInteractionInput { get; set; }
         public bool HasFocus { get; private set; }
         public bool HasTarget=>targetBehaviour!=null;
+        public IFpsInteraction CurrentInteraction=>target;
         public string CurrentPrompt { get; private set; }="";
+        // 두 번째 동작(R, 역무원 열쇠 등). 없으면 빈 문자열, 있으면 "R · 동작".
+        public string CurrentSecondaryPrompt { get; private set; }="";
         public string LastFeedback { get; private set; }="";
         public Collider CurrentTargetCollider { get; private set; }
         public CollisionFlags LastCollisionFlags { get; private set; }
@@ -31,8 +37,12 @@ namespace ChooGuard.App.Fps
         private MonoBehaviour targetBehaviour;
         private IFpsInteraction target;
         private float yaw,pitch,verticalVelocity;
-        private bool interactionHeld,jumpHeld,suppressCaptureUntilRelease;
+        private bool interactionHeld,secondaryHeld,jumpHeld,suppressCaptureUntilRelease;
         private int firstCaptureFrame;
+        private readonly List<MonoBehaviour> interactionComponents=new List<MonoBehaviour>(8);
+        private Collider cachedCollider;
+        private MonoBehaviour cachedInteraction;
+        private string cachedPromptSource,cachedPrompt,cachedSecondarySource,cachedSecondary;
         private const float MaxStepSeconds=.05f,MaxFrameSeconds=.5f,Gravity=-9.81f;
         private static bool Finite(float f)=>!float.IsNaN(f)&&!float.IsInfinity(f);
         private void Awake()
@@ -46,8 +56,9 @@ namespace ChooGuard.App.Fps
         }
         private void OnEnable(){HasFocus=UnityEngine.Application.isFocused;IsPaused=true;firstCaptureFrame=Time.frameCount+1;UnlockPointer();}
         private void OnDisable(){Pause();UnlockPointer();}
-        private void OnApplicationFocus(bool focused){HasFocus=focused;if(!focused){suppressCaptureUntilRelease=true;Pause();}}
-        private void OnApplicationPause(bool paused){if(paused){suppressCaptureUntilRelease=true;Pause();}}
+        // External input (verification adapter) does not come from this window, so losing OS focus must not pause it.
+        private void OnApplicationFocus(bool focused){HasFocus=focused;if(!focused&&!ExternalInputMode){suppressCaptureUntilRelease=true;Pause();}}
+        private void OnApplicationPause(bool paused){if(paused&&!ExternalInputMode){suppressCaptureUntilRelease=true;Pause();}}
         private static void UnlockPointer(){Cursor.lockState=CursorLockMode.None;Cursor.visible=true;}
         public void Pause()
         {
@@ -57,12 +68,25 @@ namespace ChooGuard.App.Fps
         {
             if(!ExternalInputMode&&(!HasFocus||!capturePointer))return false;
             interactionHeld=ExternalInputMode?false:Keyboard.current!=null&&Keyboard.current.eKey.isPressed;
+            secondaryHeld=ExternalInputMode?false:Keyboard.current!=null&&Keyboard.current.rKey.isPressed;
             jumpHeld=ExternalInputMode?false:Keyboard.current!=null&&Keyboard.current.spaceKey.isPressed;
             IsPaused=false;if(capturePointer&&!ExternalInputMode){Cursor.lockState=CursorLockMode.Locked;Cursor.visible=false;}
             PauseChanged?.Invoke(false);return true;
         }
         // Explicit root verification adapter. It never synthesizes OS keyboard/mouse events.
         public void SetExternalInputMode(bool enabled){Pause();ExternalInputMode=enabled;}
+        public void RestorePhysicalPose(Vector3 position,float yawDegrees,float pitchDegrees)
+        {
+            if(!Finite(position.x)||!Finite(position.y)||!Finite(position.z)||!Finite(yawDegrees)||!Finite(pitchDegrees))
+                throw new ArgumentOutOfRangeException(nameof(position));
+            bool enabledBody=body!=null&&body.enabled;
+            if(enabledBody)body.enabled=false;
+            yaw=Mathf.Repeat(yawDegrees,360);pitch=Mathf.Clamp(pitchDegrees,-85,85);
+            transform.SetPositionAndRotation(position,Quaternion.Euler(0,yaw,0));
+            if(PlayerCamera!=null)PlayerCamera.transform.localRotation=Quaternion.Euler(pitch,0,0);
+            verticalVelocity=0;interactionHeld=false;secondaryHeld=false;jumpHeld=false;ClearTarget();
+            if(enabledBody)body.enabled=true;
+        }
         private void Update()
         {
             var keyboard=Keyboard.current;var mouse=Mouse.current;
@@ -78,16 +102,17 @@ namespace ChooGuard.App.Fps
             Vector2 movement=Vector2.zero;
             if(keyboard!=null){if(keyboard.wKey.isPressed)movement.y++;if(keyboard.sKey.isPressed)movement.y--;if(keyboard.dKey.isPressed)movement.x++;if(keyboard.aKey.isPressed)movement.x--;}
             if(Time.deltaTime>MaxFrameSeconds){ShowFeedback("긴 화면 지연으로 일시 정지되었습니다. 클릭하여 계속하세요");Pause();return;}
-            Simulate(movement,mouse==null?Vector2.zero:mouse.delta.ReadValue()*LookDegreesPerPixel,keyboard!=null&&(keyboard.leftShiftKey.isPressed||keyboard.rightShiftKey.isPressed),keyboard!=null&&keyboard.eKey.isPressed,keyboard!=null&&keyboard.spaceKey.isPressed,Time.deltaTime);
+            Simulate(movement,mouse==null?Vector2.zero:mouse.delta.ReadValue()*LookDegreesPerPixel,keyboard!=null&&(keyboard.leftShiftKey.isPressed||keyboard.rightShiftKey.isPressed),keyboard!=null&&keyboard.eKey.isPressed,keyboard!=null&&keyboard.spaceKey.isPressed,Time.deltaTime,keyboard!=null&&keyboard.rKey.isPressed);
         }
-        public bool StepInput(Vector2 movement,Vector2 lookDegrees,bool sprint,bool interactHeld,bool jumpPressed,float deltaSeconds)
+        public bool StepInput(Vector2 movement,Vector2 lookDegrees,bool sprint,bool interactHeld,bool jumpPressed,float deltaSeconds,bool secondaryPressed=false)
         {
-            if(!ExternalInputMode||IsPaused)return false;return Simulate(movement,lookDegrees,sprint,interactHeld,jumpPressed,deltaSeconds);
+            if(!ExternalInputMode||IsPaused)return false;return Simulate(movement,lookDegrees,sprint,interactHeld,jumpPressed,deltaSeconds,secondaryPressed);
         }
-        private bool Simulate(Vector2 movement,Vector2 look,bool sprint,bool interact,bool jump,float deltaSeconds)
+        private bool Simulate(Vector2 movement,Vector2 look,bool sprint,bool interact,bool jump,float deltaSeconds,bool secondary)
         {
             if(IsPaused||body==null||!body.enabled||!Finite(deltaSeconds)||deltaSeconds<=0||deltaSeconds>MaxFrameSeconds||!Finite(movement.x)||!Finite(movement.y)||!Finite(look.x)||!Finite(look.y))return false;
             if((transform.lossyScale-Vector3.one).sqrMagnitude>.0001f){ShowFeedback("플레이어의 미터 단위 크기 설정을 확인하세요");Pause();return false;}
+            if(SuppressLookInput)look=Vector2.zero;
             int steps=Mathf.CeilToInt(deltaSeconds/MaxStepSeconds);float dt=deltaSeconds/steps;yaw=Mathf.Repeat(yaw+Mathf.Clamp(look.x,-45,45),360);pitch=Mathf.Clamp(pitch-Mathf.Clamp(look.y,-45,45),-85,85);
             transform.rotation=Quaternion.Euler(0,yaw,0);PlayerCamera.transform.localRotation=Quaternion.Euler(pitch,0,0);
             movement=Vector2.ClampMagnitude(movement,1);float speed=Mathf.Clamp(sprint?SprintSpeed:WalkSpeed,0,5);
@@ -102,7 +127,9 @@ namespace ChooGuard.App.Fps
                 var flags=body.Move(motion);LastCollisionFlags|=flags;
                 if((flags&CollisionFlags.Above)!=0&&verticalVelocity>0)verticalVelocity=0;if((flags&CollisionFlags.Below)!=0&&verticalVelocity<0)verticalVelocity=-2;
             }
-            RefreshInteraction();bool edge=interact&&!interactionHeld;interactionHeld=interact;if(edge)TryInteract();return true;
+            RefreshInteraction();bool edge=interact&&!interactionHeld&&!SuppressInteractionInput;interactionHeld=interact;
+            bool secondaryEdge=secondary&&!secondaryHeld&&!SuppressInteractionInput;secondaryHeld=secondary;
+            if(edge)TryInteract();else if(secondaryEdge)TrySecondary();return true;
         }
         public void RefreshInteraction()
         {
@@ -112,6 +139,7 @@ namespace ChooGuard.App.Fps
             // single-hit raycast used to abandon the query there, making every target below roughly
             // eye level minus 35 degrees silently unreachable. Self colliders are excluded, not fatal.
             int count=Physics.RaycastNonAlloc(PlayerCamera.transform.position,PlayerCamera.transform.forward,hitBuffer,Mathf.Clamp(InteractionDistance,.25f,3),InteractionMask,QueryTriggerInteraction.Ignore);
+            if(count==hitBuffer.Length){CurrentPrompt="차폐를 확정할 수 없어 조작을 보류합니다";return;}
             int nearest=-1;float nearestDistance=float.PositiveInfinity;
             for(int i=0;i<count;i++)
             {
@@ -122,21 +150,43 @@ namespace ChooGuard.App.Fps
             }
             if(nearest<0)return;
             var hit=hitBuffer[nearest];
-            foreach(var behaviour in hit.collider.GetComponentsInParent<MonoBehaviour>())if(behaviour is IFpsInteraction candidate)
+            if(cachedCollider!=hit.collider||cachedInteraction==null)
             {
-                targetBehaviour=behaviour;target=candidate;CurrentTargetCollider=hit.collider;
-                CurrentPrompt=candidate.CanInteract(this,out var reason)?"E · "+candidate.InteractionPrompt:reason??"지금은 사용할 수 없습니다";return;
+                cachedCollider=hit.collider;cachedInteraction=null;interactionComponents.Clear();
+                hit.collider.GetComponentsInParent(false,interactionComponents);
+                foreach(var behaviour in interactionComponents)if(behaviour is IFpsInteraction){cachedInteraction=behaviour;break;}
+            }
+            if(cachedInteraction==null||!(cachedInteraction is IFpsInteraction candidate))return;
+            targetBehaviour=cachedInteraction;target=candidate;CurrentTargetCollider=hit.collider;
+            if(candidate.CanInteract(this,out var reason))
+            {
+                string source=candidate.InteractionPrompt;
+                if(cachedPromptSource!=source){cachedPromptSource=source;cachedPrompt="E · "+source;}
+                CurrentPrompt=cachedPrompt;
+            }
+            else CurrentPrompt=reason??"지금은 사용할 수 없습니다";
+            string secondarySource=(cachedInteraction as IFpsSecondaryInteraction)?.SecondaryPrompt;
+            if(!string.IsNullOrEmpty(secondarySource))
+            {
+                if(cachedSecondarySource!=secondarySource){cachedSecondarySource=secondarySource;cachedSecondary="R · "+secondarySource;}
+                CurrentSecondaryPrompt=cachedSecondary;
             }
         }
         // Preallocated so the per-frame interaction query stays allocation-free.
         private readonly RaycastHit[] hitBuffer=new RaycastHit[16];
         public bool TryInteract()
         {
-            if(IsPaused)return false;RefreshInteraction();if(targetBehaviour==null||target==null)return false;
+            if(IsPaused||SuppressInteractionInput)return false;RefreshInteraction();if(targetBehaviour==null||target==null)return false;
             if(!target.CanInteract(this,out var reason)){if(!string.IsNullOrEmpty(reason))ShowFeedback(reason);return false;}
             bool performed=target.TryInteract(this,out var feedback);if(performed)SuccessfulInteractions++;if(!string.IsNullOrEmpty(feedback))ShowFeedback(feedback);RefreshInteraction();return performed;
         }
+        public bool TrySecondary()
+        {
+            if(IsPaused||SuppressInteractionInput)return false;RefreshInteraction();
+            if(!(targetBehaviour is IFpsSecondaryInteraction secondary)||CurrentSecondaryPrompt.Length==0)return false;
+            bool performed=secondary.TrySecondary(this,out var feedback);if(performed)SuccessfulInteractions++;if(!string.IsNullOrEmpty(feedback))ShowFeedback(feedback);RefreshInteraction();return performed;
+        }
         public void ShowFeedback(string message){LastFeedback=message??"";FeedbackChanged?.Invoke(LastFeedback);}
-        private void ClearTarget(){target=null;targetBehaviour=null;CurrentTargetCollider=null;CurrentPrompt="";}
+        private void ClearTarget(){target=null;targetBehaviour=null;CurrentTargetCollider=null;CurrentPrompt="";CurrentSecondaryPrompt="";}
     }
 }

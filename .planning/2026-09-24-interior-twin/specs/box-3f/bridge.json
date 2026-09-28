@@ -1,0 +1,170 @@
+{
+ "zone": "2F bridge",
+ "root": "실내 트윈 마감/2F 연결",
+ "basis": {
+  "frames": "root = station UVY; box = majibang-plan boxFrame (origin -3, 33.25; 4.13 deg), y absolute",
+  "plan": ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json",
+  "tiers": "all emitted elements tier b (plan topology / original source mesh / photo-relative on tier-b hosts); tier c items listed in report.json omitted[]",
+  "epoch": "geometry 2023-05 SfM / 2026-04 board; identities per plan (CX-20)",
+  "heights": "main low ceiling 10.47 (tier a); original seam roof top 12.10 (source mesh) -> ceiling 12.05; wing ceiling 11.25 (plan)"
+ },
+ "elements": [
+  {
+   "type": "SuspendedCeiling",
+   "id": "BR-SEAM-ceiling-0",
+   "zone": "2F bridge",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-15 / BR-SEAM / G-BR01",
+    ".planning/2026-09-23-video-twin/jev-reconcile-012.input.json C7",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json MainShell/OfficialStation_-부산역_5: up-facing roof top y 12.10 over the strip, no underside",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json cells (bridge floor u -14.5..16.5, v 12.5..box west wall)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2010-11-03_unna.kr-58_001.jpg (600 tiles + troffers at the seam, appearance)"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      -12.5,
+      14.5
+     ],
+     [
+      -14.5,
+      14.5
+     ],
+     [
+      -14.5,
+      14.543
+     ],
+     [
+      14.243,
+      16.619
+     ],
+     [
+      14.261,
+      16.369
+     ],
+     [
+      16.5,
+      16.531
+     ],
+     [
+      16.5,
+      12.5
+     ],
+     [
+      -12.5,
+      12.5
+     ]
+    ],
+    "holes": [],
+    "y": 12.05
+   },
+   "params": {
+    "module": "600x600",
+    "finish": "ceiling600",
+    "gridOrigin": [
+     0,
+     0
+    ],
+    "fixtures": {
+     "layout": "grid",
+     "pitch": [
+      2.4,
+      2.4
+     ]
+    },
+    "bulkhead": 0,
+    "trim": true
+   },
+   "note": "closes the unroofed strip: the source roof at y 12.10 is single-sided (up-facing)"
+  },
+  {
+   "type": "WallCladding",
+   "id": "BR-SEAM-soffit-edge",
+   "zone": "2F bridge",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-15 / BR-SEAM / G-BR01",
+    ".planning/2026-09-23-video-twin/jev-reconcile-012.input.json C7",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json MainShell/OfficialStation_-부산역_5: up-facing roof top y 12.10 over the strip, no underside",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json cells (bridge floor u -14.5..16.5, v 12.5..box west wall)",
+    ".planning/2026-09-24-interior-twin/specs/2f-main.json 2F-main-low-ceiling-0 north edge v 12.5, u -13.5..58.5 (y 10.47, tier a height)",
+    ".planning/2026-09-23-video-twin/compare/ry-330-832.jpg tile r4c1 (RY2 ~582 s): dark slat band where the low ceiling meets the box"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      -12.5,
+      12.5
+     ],
+     [
+      16.5,
+      12.5
+     ]
+    ],
+    "y0": 10.47,
+    "y1": 12.05
+   },
+   "params": {
+    "finish": "dark",
+    "panelWidth": 0.15,
+    "panelHeight": 0,
+    "joint": 0.05,
+    "standoff": 0.02,
+    "skirting": 0,
+    "cap": 0,
+    "collider": false,
+    "faceToward": [
+     2.0,
+     20.0
+    ]
+   },
+   "note": "soffit edge of the main low ceiling facing the bridge; covers the plenum 10.47-12.05"
+  },
+  {
+   "type": "WallCladding",
+   "id": "BR-WING-edge-closure",
+   "zone": "2F bridge",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-15 / BR-SEAM / G-BR01",
+    ".planning/2026-09-23-video-twin/jev-reconcile-012.input.json C7",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json MainShell/OfficialStation_-부산역_5: up-facing roof top y 12.10 over the strip, no underside",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json cells (bridge floor u -14.5..16.5, v 12.5..box west wall)",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.slabs Majibang_3F_L edge b -17.8 and ceiling2F y 11.25"
+   ],
+   "frame": "box",
+   "geometry": {
+    "polyline": [
+     [
+      -12.818,
+      -17.8
+     ],
+     [
+      16.0,
+      -17.8
+     ]
+    ],
+    "y0": 11.25,
+    "y1": 12.05
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 0,
+    "panelHeight": 0,
+    "joint": 0,
+    "standoff": 0.03,
+    "skirting": 0,
+    "cap": 0,
+    "collider": false,
+    "faceToward": [
+     0.0,
+     -30.0
+    ]
+   },
+   "note": "vertical closure between the wing ceiling (11.25) and the bridge ceiling (12.05)"
+  }
+ ]
+}

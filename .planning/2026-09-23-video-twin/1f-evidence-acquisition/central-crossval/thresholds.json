@@ -1,0 +1,24 @@
+{
+  "schema": "chooguard.central-crossval.thresholds.v1",
+  "fixedAt": "2026-09-24T22:20 (before any held-out result of this lane was computed)",
+  "processedResolution": "1280x720 (new epochs); March frames 960x540",
+  "registrationHeldOut": {
+    "source-control": {"what": "GATE3/4 source-mesh portal corners, manually marked in new frames, vs projection through the registered pose", "medianPx": 6.0, "maxPx": 12.0,
+                        "rationale": "March registration itself fits these corners at 4.1 px RMS / 6.7 px max @960 (= 5.5 / 8.9 px @1280)"},
+    "class-a-plane": {"what": "segment sparse points (>=3 views, err<=2 px, tri>=2 deg) inside each March class-a plane's supported box", "medianAbsU": 0.05, "p95AbsU": 0.15, "minPoints": 20},
+    "plumb": {"what": "vertical vanishing direction from LSD near-vertical segments vs registered camera up", "medianDeg": 0.5, "p95Deg": 1.0},
+    "floor-diagnostic": {"what": "segment points within |Y|<0.3 on the corridor floor; Ground_Floor Y=0 is a GENERATED fill, diagnostic only", "medianAbsY": 0.1, "tiltDeg": 0.5, "gating": false},
+    "cross-video": {"what": "same physical point triangulated independently in two new-epoch segments, distance after both registrations", "medianU": 0.10, "p95U": 0.30},
+    "travel-continuity": {"maxStepU": 1.0, "maxStepOverMedian": 3.0}
+  },
+  "componentClassA": {
+    "views": 3, "triangulationAngleDeg": 2.0, "reprojRMSPx": 2.0, "heldOutViewMedianPx": 3.0,
+    "planeInlierRMSU": 0.03, "planeHeldOutWithin005Fraction": 0.85,
+    "verdicts": {
+      "upgraded-to-a": "independent new-epoch evidence meets every class-a number and agrees with (or replaces) the March geometry",
+      "confirmed": "March geometry already class a and new-epoch held-out numbers pass",
+      "still-failing": "new evidence insufficient or numbers short of class a",
+      "contradicted": "new-epoch evidence meets class-a numbers but disagrees with March geometry by > 0.10 u (plane offset) or > 3 deg (normal)"
+    }
+  }
+}

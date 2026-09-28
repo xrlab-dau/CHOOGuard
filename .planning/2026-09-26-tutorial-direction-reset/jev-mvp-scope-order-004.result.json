@@ -1,0 +1,47 @@
+{
+  "exit_code": 0,
+  "elapsed_s": 0.3,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "model": "typesafe/jev-1.13.0",
+  "caller": "omp judge_batch",
+  "result": [
+    {
+      "answers": {
+        "hazard_families": {
+          "type": "choice",
+          "choice": "one_per_category",
+          "confidence": 0.91,
+          "probabilities": {
+            "one_per_category": 0.94,
+            "fire_only": 0.03,
+            "broad_set": 0.03
+          }
+        },
+        "build_order": {
+          "type": "choice",
+          "choice": "shell_first",
+          "confidence": 1,
+          "probabilities": {
+            "hazard_first": 0,
+            "npc_first": 0,
+            "shell_first": 1
+          }
+        },
+        "offline_behaviour": {
+          "type": "choice",
+          "choice": "local_rules_continue_marked",
+          "confidence": 1,
+          "probabilities": {
+            "block_game": 0,
+            "local_rules_continue_marked": 1,
+            "random_choice": 0
+          }
+        }
+      }
+    }
+  ],
+  "cost_usd": 5.733000000000001e-05,
+  "authority": 0,
+  "note": "Advice distribution only. Not user approval, not implementation evidence."
+}

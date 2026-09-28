@@ -1,0 +1,74 @@
+{
+  "state": {
+    "task": "Refit the Busan KTX station 3F restaurant level (식당가) in the live Unity twin. The video epoch is 2022 (upload 2022-01-01). Station frame: u = long axis (+u north), v = across (+v east / track side, -v west / plaza front). 2F floor y=7.0, current 3F floor y=12.2 (5.2 m rise, matches the generated escalator).",
+    "facts": {
+      "F1_guide": "2025 blogger composite 3F guide (hi_shoobong): an L. Long row, left to right: 계단, 멘무샤, 육수당, 북창동순두부, EDIYA, 빈츠38, 비빔家; then W.C/EV at the corner; then a column top to bottom: 부산옥, EV, eggbox. Red railing runs along the inner edge of the row and of the column. '3층 에스컬레이터' is labelled at the inner corner. The bottom of the image is cut off while the column railing continues.",
+      "F2_naver_3f_pins": "Naver place pins tagged 3층, projected into station uv: Menmusha (32.4, 92.0), EDIYA (22.0, 91.2), Food Court (15.1, 83.9), Bibimga (-13.9, 89.0), Busanok (0.0, 65.4), Egg Box (2.6, 36.4). All six lie inside the over-track structure footprint (u -21..68, v 18..100), 25-90 m east of the main building's east wall. Their relative order matches F1: a row along u with the corner at the low-u end, then a column running toward -v.",
+      "F3_naver_other_floors": "Naver 2F-tagged pins fall inside the main building (e.g. B&C bakery (-72, -33), Soban (-58, -35)). The Naver 1F indoor polygons land within about 5 m of the original model's 1F section. Naver's 3F ground polygon is a generalised outline covering both the main building and the over-track structure.",
+      "F4_photos_3f": "A 2026 photo shows the EDIYA storefront on a 3F walkway. A glass railing beside it overlooks the high hall. Overhead are the same space-frame lattice and glass lanterns as in the video's high hall, and green departure boards hang below at 2F. Food-court seating photos (2023-2026) show large windows looking out at the Busan Harbour Bridge, port cranes and the North Port park, which lie east and south-east of the station.",
+      "F5_photo_2021": "2021-06 photo taken from a 3F wing: across the high-hall void (tree columns, lattice roof) is a parallel wing with 북창동순두부 ... 빈츠38 COFFEE shopfronts, bright exterior windows behind them and LED ad screens hung under its railing. Viewer and far wing are at the same level.",
+      "F6_video_2022": "At 90 s the camera enters from exit 9 (east side) under a low slab ceiling whose edge is about 11-12 m ahead (registration v about 3). At 94 s, facing west: a 3F balcony with a glass railing runs along the left (south) side to the far west wall. The far west wall has a 3F balcony with red parasols. The 2F-to-3F escalator pair rises westward to that west balcony. At 112 s a LOTTERIA sign is on the west 3F wing. The video never faces east at 3F height.",
+      "F7_original_model": "The original model is an exterior shell with no interior partitions. At y 12.1 there is an upward slab over the east band u[-92,-48] x v[about 2.4, about 11.4]. It has an outer wall at 3F height at v=0.0631u+16.17 and an inner face at v=0.0723u+7.86. The main building's south exterior wall at 3F height is at u -90.8..-92.9. There is no other 12 m slab inside the main building. The over-track structure (선로상층부) has walls from 7.6 to 16.5 m.",
+      "F8_leases": "KORAIL 3F leases active by 2022: 푸드코트 787 m2 (opened 2019-01), 부산옥 86.7 m2 (2021-02). Later leases: eggbox 230.6 m2 (2023-03, contract 2022-12) and 비빔가 428.2 m2 (2024-01). A 2021 photo shows LOTTERIA on 3F.",
+      "F9_current_build": "The current 3F is a west wing only (u -76..-30, v -35..-25.5) plus a 2 m south strip (u -76..-74, v -27..11). It has no east wing, and its total area is about 495 m2, against at least 874 m2 leased in 2022 plus circulation."
+    },
+    "note": "All numbers above were computed by tools before this call. Decide from the facts only."
+  },
+  "questions": {
+    "food_court_location": {
+      "type": "choice",
+      "instructions": "Where is the F1 long row (the food-court brands 멘무샤 through 비빔家) physically located?",
+      "criteria": {
+        "east_wing_main_hall": "Along the east (track-side) side of the main high hall, over the original 12.1 m band, with the walkway and railing facing the void",
+        "west_wing_main_hall": "Along the west (plaza) side of the main high hall",
+        "south_wing_main_hall": "Along the south end of the main high hall",
+        "over_track_structure": "Inside the separate over-track structure, where the Naver pins are"
+      }
+    },
+    "naver_pin_use": {
+      "type": "choice",
+      "instructions": "How should the absolute positions of the Naver 3F pins be used?",
+      "criteria": {
+        "trust_absolute": "Place tenants at the pinned coordinates",
+        "relative_order_only": "Use only their relative order and turn direction; ignore their absolute coordinates",
+        "discard": "Ignore them entirely"
+      }
+    },
+    "plan_shape": {
+      "type": "choice",
+      "instructions": "Which 3F plan shape should be built for the 2022 twin?",
+      "criteria": {
+        "U_east_south_west": "East food-court wing + south wing + existing west wing, all around the high-hall void",
+        "L_east_south": "East wing + south wing only",
+        "L_west_south": "Keep the west wing and widen the south wing only",
+        "keep_current": "Leave the current west wing and 2 m strip"
+      }
+    },
+    "east_wing_geometry_source": {
+      "type": "choice",
+      "instructions": "What should set the east wing's footprint and floor height?",
+      "criteria": {
+        "original_band_slab_and_walls": "F7 original 12.1 m slab, inner face and outer wall, with the walkway cantilevered toward the void",
+        "video_ceiling_edge": "Registration-derived ceiling edge from the 90 s frame only",
+        "guide_proportions": "Scale the blogger guide's drawing"
+      }
+    },
+    "tenant_epoch": {
+      "type": "choice",
+      "instructions": "Which tenant identities should the 2022-epoch build show?",
+      "criteria": {
+        "epoch_2022_labelled": "Food-court brands seen in 2020-2021 photos, 부산옥 and LOTTERIA, all active by 2022; later tenants omitted; positions labelled as inferred",
+        "guide_2025": "The 2025 guide set, including eggbox and 비빔家",
+        "unlabelled_generic": "Generic unnamed shops"
+      }
+    },
+    "evidence_sufficient_to_build": {
+      "type": "noul",
+      "instructions": "Are these facts sufficient to rebuild the 3F footprint now without further collection?",
+      "criteria": {
+        "true": "Yes: the footprint and topology are constrained enough; the remaining uncertainty can be labelled",
+        "false": "No: a decisive source is still missing"
+      }
+    }
+  }
+}
