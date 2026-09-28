@@ -29,7 +29,8 @@ asset-library/**/*.dmg
 
 # --- 증거는 추적한다: .planning 은 제외하되 JSON/MD 만 되살린다 (2026-09-22) ---
 # v5 progress.json 의 evidenceRef 14건이 .planning 안을 가리키는 자기모순 해소
-!.planning/
+# 루트 .planning 만 되살린다(앵커 없는 !.planning/ 은 위의 Assets/.planning/ 제외까지 풀었다, 2026-09-28).
+!/.planning/
 .planning/**
 !.planning/**/
 !.planning/**/*.json
@@ -56,3 +57,13 @@ asset-library/models-materials/downloads/polyhaven/**/*.jpg
 asset-library/models-materials/downloads/polyhaven/**/*.jpeg
 asset-library/models-materials/downloads/polyhaven/**/*.png
 asset-library/models-materials/downloads/polyhaven/**/*.exr
+
+# Rebuilt on the cloud worker; never publish executable caches or process memory.
+/workers/runtime/
+/workers/prediction/node_modules/
+/workers/physics/.package-cache/
+/mono_crash.*
+/*.log
+/Builds/
+# Unity 는 Assets/Temp/ 를 무시 목록(위 Temp/)으로 빼므로 폴더 없는 .meta 도 올리지 않는다.
+/Assets/Temp.meta
