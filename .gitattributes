@@ -1,0 +1,83 @@
+# Line endings (2026-09-28). The team works on Windows and macOS; Unity writes its YAML assets with LF on every OS, so a
+# Windows checkout with core.autocrlf turned them into CRLF and every save showed a line-ending-only diff. Every text file
+# is LF in the repository and in every working tree; binaries are never converted.
+* text=auto eol=lf
+
+# Unity YAML (Force Text) and project text
+*.unity text eol=lf
+*.prefab text eol=lf
+*.mat text eol=lf
+*.meta text eol=lf
+*.anim text eol=lf
+*.controller text eol=lf
+*.overrideController text eol=lf
+*.physicMaterial text eol=lf
+*.lighting text eol=lf
+*.mask text eol=lf
+*.rendertexture text eol=lf
+*.inputactions text eol=lf
+*.shadergraph text eol=lf
+*.asmdef text eol=lf
+*.asmref text eol=lf
+*.cs text eol=lf diff=csharp
+*.shader text eol=lf
+*.hlsl text eol=lf
+*.cginc text eol=lf
+# NavMesh and LightingData .asset files are binary by design; let git detect them instead of forcing text.
+*.asset text=auto eol=lf
+
+# Windows command scripts need CRLF to run
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary formats present in this repository (never normalised, never diffed as text)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.bmp binary
+*.tga binary
+*.tif binary
+*.tiff binary
+*.gif binary
+*.psd binary
+*.exr binary
+*.hdr binary
+*.fbx binary
+*.glb binary
+*.blend binary
+*.blend1 binary
+*.skp binary
+*.b3d binary
+*.wav binary
+*.ogg binary
+*.mp3 binary
+*.mp4 binary
+*.otf binary
+*.ttf binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.a binary
+*.exe binary
+*.bytes binary
+*.bin binary
+*.f32 binary
+*.zip binary
+*.7z binary
+*.pdf binary
+*.docx binary
+*.hwp binary
+*.pickle binary
+*.p7s binary
+# Fire Dynamics Simulator / Smokeview outputs
+*.sf binary
+*.s3d binary
+*.bnd binary
+*.sz binary
+
+# Byte-exact trees (last, so they win over the type rules above): research receipts and worker evidence record SHA-256 of these files, and third-party licence texts
+# stay as shipped. -text means git never converts them (they keep their committed bytes on every OS).
+asset-library/** -text
+workers/traffic/reference-network/** -text
+Assets/ChooGuard/ThirdParty/** -text
+Assets/ChooGuard/Art/StationInterior/Kits/** -text

@@ -1,12 +1,20 @@
-name: Set up Unity (macOS)
+name: Set up Unity
 description: >
-  Installs the exact editor pinned in ProjectSettings/ProjectVersion.txt on a GitHub-hosted Apple-silicon
-  macOS runner, after verifying that Apple's Developer ID chain signs the installer for Unity's team.
-  The macOS lane exists because the suites and the persistence layer assume a macOS editor host.
+  Installs the exact editor pinned in ProjectSettings/ProjectVersion.txt on a GitHub-hosted macOS, Windows or Linux
+  runner, after verifying the installer: Apple's Developer ID chain for Unity's team on macOS, a valid Authenticode
+  signature by Unity Technologies on Windows, and the MD5 that Unity's release manifest publishes for the Linux archive
+  (Linux archives carry no code signature).
+inputs:
+  project-path:
+    description: Unity project directory (relative to the workspace)
+    default: "."
+  modules:
+    description: "Extra macOS build-support modules for cross-building players: space-separated from windows-mono, linux-mono"
+    default: ""
 outputs:
   editor:
     description: Path to the Unity executable
-    value: ${{ steps.install.outputs.editor }}
+    value: ${{ steps.mac.outputs.editor || steps.windows.outputs.editor || steps.linux.outputs.editor }}
   version:
     description: Editor version from ProjectVersion.txt
     value: ${{ steps.version.outputs.version }}
@@ -16,37 +24,119 @@ runs:
     - id: version
       name: Read the pinned editor version
       shell: bash
+      env:
+        PROJECT: ${{ inputs.project-path }}
       run: |
-        line=$(grep '^m_EditorVersionWithRevision:' ProjectSettings/ProjectVersion.txt)
+        line=$(grep '^m_EditorVersionWithRevision:' "$PROJECT/ProjectSettings/ProjectVersion.txt" | tr -d '\r')
         version=$(sed -E 's/^m_EditorVersionWithRevision: ([^ ]+) \(([0-9a-f]+)\)$/\1/' <<<"$line")
         changeset=$(sed -E 's/^m_EditorVersionWithRevision: ([^ ]+) \(([0-9a-f]+)\)$/\2/' <<<"$line")
         [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+[abfp][0-9]+$ && $changeset =~ ^[0-9a-f]{12}$ ]] || { echo "::error::cannot parse '$line'"; exit 1; }
-        echo "version=$version" >> "$GITHUB_OUTPUT"
-        echo "changeset=$changeset" >> "$GITHUB_OUTPUT"
+        {
+          echo "version=$version"
+          echo "changeset=$changeset"
+          echo "base=https://download.unity3d.com/download_unity/$changeset"
+        } >> "$GITHUB_OUTPUT"
         echo "Unity $version ($changeset)"
 
-    - id: install
-      name: Install and verify the editor
+    - id: mac
+      if: runner.os == 'macOS'
+      name: Install on macOS (Developer ID verified)
       shell: bash
       env:
         VERSION: ${{ steps.version.outputs.version }}
-        CHANGESET: ${{ steps.version.outputs.changeset }}
-        # Developer ID Installer identity observed on this editor's installer (xar signature, 2026-09-28).
+        BASE: ${{ steps.version.outputs.base }}
+        MODULES: ${{ inputs.modules }}
+        # Developer ID Installer identity observed on this editor's installers (xar signature, 2026-09-28).
         UNITY_SIGNER: "Developer ID Installer: Unity Technologies SF (9QW8UQUTAA)"
       run: |
-        df -h / | tail -1
-        pkg="$RUNNER_TEMP/Unity-$VERSION.pkg"
-        curl --fail --silent --show-error --location --retry 4 --retry-all-errors \
-          -o "$pkg" "https://download.unity3d.com/download_unity/$CHANGESET/MacEditorInstallerArm64/Unity-$VERSION.pkg"
-        signature=$(pkgutil --check-signature "$pkg")
-        grep -q 'Status: signed by a developer certificate issued by Apple' <<<"$signature" || { echo "$signature"; echo "::error::installer is not Developer ID signed"; exit 1; }
-        grep -qF "1. $UNITY_SIGNER" <<<"$signature" || { echo "$signature"; echo "::error::installer is not signed by $UNITY_SIGNER"; exit 1; }
-        sudo installer -pkg "$pkg" -target / >/dev/null
-        rm -f "$pkg"
+        free_gb() { df -g / | awk 'NR==2 {print $4}'; }
+        echo "free before: $(free_gb) GB"
+        if (( $(free_gb) < 45 )); then
+          # Extra Xcode versions are the runner's largest removable payload; keep the selected one.
+          keep=$(xcode-select -p | sed 's|/Contents/Developer||')
+          find /Applications -maxdepth 1 -name 'Xcode*.app' ! -path "$keep" -print0 | xargs -0 sudo rm -rf
+          echo "free after removing unused Xcode: $(free_gb) GB"
+        fi
+        install_pkg() {
+          local pkg
+          pkg="$RUNNER_TEMP/$(basename "$1")"
+          curl --fail --silent --show-error --location --retry 4 --retry-all-errors -o "$pkg" "$BASE/$1"
+          local signature
+          signature=$(pkgutil --check-signature "$pkg")
+          grep -q 'Status: signed by a developer certificate issued by Apple' <<<"$signature" || { echo "$signature"; echo "::error::$1 is not Developer ID signed"; exit 1; }
+          grep -qF "1. $UNITY_SIGNER" <<<"$signature" || { echo "$signature"; echo "::error::$1 is not signed by $UNITY_SIGNER"; exit 1; }
+          sudo installer -pkg "$pkg" -target / >/dev/null
+          rm -f "$pkg"
+        }
+        install_pkg "MacEditorInstallerArm64/Unity-$VERSION.pkg"
+        for module in $MODULES; do
+          case "$module" in
+            windows-mono) install_pkg "MacEditorTargetInstaller/UnitySetup-Windows-Mono-Support-for-Editor-$VERSION.pkg" ;;
+            linux-mono) install_pkg "MacEditorTargetInstaller/UnitySetup-Linux-Mono-Support-for-Editor-$VERSION.pkg" ;;
+            *) echo "::error::unknown module '$module'"; exit 1 ;;
+          esac
+        done
         editor=$(find /Applications/Unity -maxdepth 6 -path '*/Unity.app/Contents/MacOS/Unity' -type f | head -1)
         [[ -x $editor ]] || { echo "::error::Unity executable not found after install"; exit 1; }
         # Serial licences are written here; the runner user must own it.
         sudo mkdir -p "/Library/Application Support/Unity"
         sudo chown -R "$(id -un)" "/Library/Application Support/Unity"
         echo "editor=$editor" >> "$GITHUB_OUTPUT"
-        df -h / | tail -1
+        echo "free after install: $(free_gb) GB"
+
+    - id: windows
+      if: runner.os == 'Windows'
+      name: Install on Windows (Authenticode verified)
+      shell: pwsh
+      env:
+        VERSION: ${{ steps.version.outputs.version }}
+        BASE: ${{ steps.version.outputs.base }}
+      run: |
+        $ErrorActionPreference = 'Stop'
+        Get-PSDrive -PSProvider FileSystem | Format-Table Name, @{n='FreeGB';e={[math]::Round($_.Free/1GB)}} -AutoSize
+        $drive = (Get-PSDrive -PSProvider FileSystem | Where-Object Free | Sort-Object Free -Descending | Select-Object -First 1).Root
+        $installer = Join-Path $env:RUNNER_TEMP "UnitySetup64-$env:VERSION.exe"
+        Invoke-WebRequest -Uri "$env:BASE/Windows64EditorInstaller/UnitySetup64-$env:VERSION.exe" -OutFile $installer -MaximumRetryCount 4 -RetryIntervalSec 15
+        $signature = Get-AuthenticodeSignature $installer
+        if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'O="?Unity Technologies') {
+          Write-Output "status=$($signature.Status) subject=$($signature.SignerCertificate.Subject)"
+          throw "Unity installer is not validly signed by Unity Technologies"
+        }
+        $target = Join-Path $drive 'Unity'
+        Start-Process -FilePath $installer -ArgumentList '/S', "/D=$target" -Wait -NoNewWindow
+        Remove-Item $installer
+        $editor = Join-Path $target 'Editor\Unity.exe'
+        if (-not (Test-Path $editor)) { throw "Unity executable not found after install" }
+        New-Item -ItemType Directory -Force -Path (Join-Path $env:ProgramData 'Unity') | Out-Null
+        "editor=$($editor -replace '\\', '/')" >> $env:GITHUB_OUTPUT
+        Get-PSDrive -PSProvider FileSystem | Format-Table Name, @{n='FreeGB';e={[math]::Round($_.Free/1GB)}} -AutoSize
+
+    - id: linux
+      if: runner.os == 'Linux'
+      name: Install on Linux (manifest MD5 verified)
+      shell: bash
+      env:
+        VERSION: ${{ steps.version.outputs.version }}
+        BASE: ${{ steps.version.outputs.base }}
+      run: |
+        df -h / /mnt | tail -2
+        # The archive is 4.5 GB and unpacks to 8.7 GB: stream it into the larger temporary disk and hash it on the way.
+        target=/mnt/unity
+        sudo mkdir -p "$target" && sudo chown "$(id -un)" "$target"
+        expected=$(curl --fail --silent --show-error --location "$BASE/unity-$VERSION-linux.ini" | awk -F= '/^\[Unity\]/ {s=1; next} /^\[/ {s=0} s && $1=="md5" {print $2}' | tr -d '\r')
+        [[ $expected =~ ^[0-9a-f]{32}$ ]] || { echo "::error::no MD5 for the editor archive in Unity's manifest"; exit 1; }
+        exec 3> >(md5sum | cut -d' ' -f1 > "$RUNNER_TEMP/unity.md5")
+        hasher=$!
+        curl --fail --silent --show-error --location --retry 4 --retry-all-errors "$BASE/LinuxEditorInstaller/Unity.tar.xz" \
+          | tee /dev/fd/3 | tar -xJ -C "$target"
+        exec 3>&-
+        wait "$hasher"
+        actual=$(cat "$RUNNER_TEMP/unity.md5")
+        [[ $actual == "$expected" ]] || { rm -rf "$target"; echo "::error::editor archive MD5 $actual != manifest $expected"; exit 1; }
+        editor="$target/Editor/Unity"
+        [[ -x $editor ]] || { echo "::error::Unity executable not found after unpacking"; exit 1; }
+        # Headless editor runtime libraries and a virtual display for PlayMode.
+        sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends xvfb libgbm1 libasound2t64 libnss3 libgtk-3-0t64 >/dev/null
+        mkdir -p "$HOME/.local/share/unity3d/Unity"
+        echo "editor=$editor" >> "$GITHUB_OUTPUT"
+        df -h / /mnt | tail -2

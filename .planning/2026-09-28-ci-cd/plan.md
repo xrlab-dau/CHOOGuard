@@ -69,3 +69,13 @@
 - 최소 Unity 프로젝트에서 실제 종료 3회: 311개판·395개판(아틀라스 2장) 모두 같은 6,528바이트(`3ea6f262…`)가 되고 두 번째 종료에도 그대로다. 저장소에 이 파일을 커밋하면 누구의 종료·빌드·배치 시험에도 차이가 생기지 않는다.
 - JEV: 1차(`jev-issue248-018`) flag off 0.50 / 빈 상태+가드 0.44 → 저장소 비용 사실 추가 후 2차(`jev-issue248-019`) 빈 상태+가드 0.72, flag off 0.20. `com.unity.textmeshpro` 5.0.0(의존 없는 폐기 예정 껍데기)은 별도 변경(0.89).
 - 조치: TMP가 만든 휴지 상태 파일 커밋, 정책 게이트 `tmp-dynamic-font`(변경분) 추가.
+
+## 모든 운영체제 지원 (사용자 요구 2026-09-28)
+
+- 요구: 게임은 모든 운영체제에서 실행되고 모든 운영체제에서 개발할 수 있어야 한다(팀원 Windows). 학생 플랜이면 Unity Cloud로 옮겨야 하는지 문의.
+- 비밀값: `UNITY_EMAIL`(Unity ID dbstkd5865@gmail.com, 2단계 인증 꺼짐)과 `UNITY_SERIAL`(My Seats의 Unity Student 구독 키, 2027-09-28 만료; Aside 브라우저에서 해시로 소속을 확인하고 출력 없이 gh로 전달)을 등록했다. `UNITY_PASSWORD`는 사용자 입력 대기.
+- 조사: Unity Build Automation 무료 월 Windows 200분·Mac 100분, 동시 2대(2026-03 공식 공지). GitHub 공개 저장소 러너는 세 OS 무료·무제한. 에디터 설치본 Windows 4.13 GB·Linux 4.46 GB·macOS 5.1 GB. macOS 시스템 SQLite 3.51.0 < 기준 3.51.3.
+- JEV `jev-crossplatform-020`: GitHub Actions 다중 OS(0.54, 하이브리드 0.35, UBA 0.11), PR은 Windows·macOS·develop/야간/태그는 Linux 포함(0.41, 전 OS 매 PR 0.31), mac 한 대에서 세 플레이어 빌드 후 OS별 스모크(0.87), SQLite 다중 OS 로더+공식 원본 고정(0.98), .gitattributes(0.89), arm64 유지(0.98).
+- 코드: `SqliteProvider` Windows/Linux 로더, `MvpPhysicsBridge` venv 경로, `CSBOOT0101` Windows 호스트 건너뜀, `CSBOOT0201` `GetName()` 대신 `FullName`(한글 경로), `PlayerBuild` Windows·Linux·`BuildAll`. 정적 배칭은 Standalone 그룹 공통이라 변경 없음.
+- 로컬 검증(macOS 에디터): 컴파일 오류 0. 고정 SQLite 3.53.4로 CSOPS0201 3건·CSOPS0203 10건 첫 실행 통과, CSBOOT0201 통과, CSBOOT0101 Windows 빌드 시험은 기존대로 -cgFixtureRoot 없이 건너뜀.
+- `.gitattributes`: 재정규화 결과 기존 파일 변경 0(CRLF 14건과 연구 자료 1,450건은 바이트 보존 트리).

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ChooGuard.Persistence
 {
-    /// <summary>Exact-file native loading. Currently macOS only; other ABIs fail closed.
+    /// <summary>Exact-file native loading on Windows, macOS and Linux; any other ABI fails closed.
     /// The caller supplies deployment-pinned source ID and SHA-256, never a discovered auto-approval.
     /// A successful probe is not Player qualification or a power-loss durability certification.</summary>
     public sealed class SqliteProvider : IDisposable
@@ -40,11 +40,9 @@ namespace ChooGuard.Persistence
             using (var input = File.OpenRead(nativePath)) using (var hash = SHA256.Create())
                 BinarySha256 = Hex(hash.ComputeHash(input));
             if (!StringComparer.Ordinal.Equals(BinarySha256, expectedSha256)) throw new InvalidOperationException("SQLITE_BINARY_HASH_MISMATCH");
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) throw new PlatformNotSupportedException("SQLite ABI is not implemented for this host.");
             try
             {
-                library = dlopen(nativePath, 2); // RTLD_NOW; no global search-name fallback.
-                if (library == IntPtr.Zero) throw new InvalidOperationException("SQLITE_NATIVE_LOAD_FAILED");
+                library = NativeBinary.Open(nativePath); // exact file only; no search-path or bare-name fallback.
                 VersionNumber = Load<Version>("sqlite3_libversion_number")();
                 SourceId = Text(Load<Source>("sqlite3_sourceid")());
                 if (SourceId != expectedSourceId) throw new InvalidOperationException("SQLITE_SOURCE_ID_MISMATCH");
@@ -114,7 +112,7 @@ namespace ChooGuard.Persistence
         }
         private T Load<T>(string name) where T : class
         {
-            var address = dlsym(library, name);
+            var address = NativeBinary.Symbol(library, name);
             if (address == IntPtr.Zero) throw new EntryPointNotFoundException(name);
             return Marshal.GetDelegateForFunctionPointer(address, typeof(T)) as T;
         }
@@ -133,12 +131,53 @@ namespace ChooGuard.Persistence
             lock (Gate)
             {
                 if (database != IntPtr.Zero) { close(database); database = IntPtr.Zero; }
-                if (library != IntPtr.Zero) { dlclose(library); library = IntPtr.Zero; }
+                if (library != IntPtr.Zero) { NativeBinary.Close(library); library = IntPtr.Zero; }
             }
         }
-        [DllImport("/usr/lib/libSystem.B.dylib")] private static extern IntPtr dlopen(string path, int flags);
-        [DllImport("/usr/lib/libSystem.B.dylib")] private static extern IntPtr dlsym(IntPtr handle, string name);
-        [DllImport("/usr/lib/libSystem.B.dylib")] private static extern int dlclose(IntPtr handle);
+        /// <summary>Per-OS loader. Windows resolves the binary's own dependencies only next to it and in System32
+        /// (LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32), never through PATH or the working directory.</summary>
+        private static class NativeBinary
+        {
+            private const int RtldNow = 2;
+            private const uint SearchDllLoadDir = 0x100, SearchSystem32 = 0x800;
+            private static bool Windows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            private static bool Mac => RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+            private static bool Linux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+
+            public static IntPtr Open(string path)
+            {
+                IntPtr handle;
+                if (Windows) handle = LoadLibraryExW(path, IntPtr.Zero, SearchDllLoadDir | SearchSystem32);
+                else if (Mac) handle = MacOS.dlopen(path, RtldNow);
+                else if (Linux) handle = Glibc.dlopen(path, RtldNow);
+                else throw new PlatformNotSupportedException("SQLite ABI is not implemented for this host.");
+                if (handle == IntPtr.Zero) throw new InvalidOperationException("SQLITE_NATIVE_LOAD_FAILED");
+                return handle;
+            }
+            public static IntPtr Symbol(IntPtr library, string name) =>
+                Windows ? GetProcAddress(library, name) : Mac ? MacOS.dlsym(library, name) : Glibc.dlsym(library, name);
+            public static void Close(IntPtr library)
+            {
+                if (Windows) FreeLibrary(library);
+                else if (Mac) MacOS.dlclose(library);
+                else Glibc.dlclose(library);
+            }
+            [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)] private static extern IntPtr LoadLibraryExW(string path, IntPtr reserved, uint flags);
+            [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true)] private static extern IntPtr GetProcAddress(IntPtr module, string name);
+            [DllImport("kernel32")] [return: MarshalAs(UnmanagedType.Bool)] private static extern bool FreeLibrary(IntPtr module);
+            private static class MacOS
+            {
+                [DllImport("/usr/lib/libSystem.B.dylib")] public static extern IntPtr dlopen(string path, int flags);
+                [DllImport("/usr/lib/libSystem.B.dylib")] public static extern IntPtr dlsym(IntPtr handle, string name);
+                [DllImport("/usr/lib/libSystem.B.dylib")] public static extern int dlclose(IntPtr handle);
+            }
+            private static class Glibc
+            {
+                [DllImport("libdl.so.2")] public static extern IntPtr dlopen(string path, int flags);
+                [DllImport("libdl.so.2")] public static extern IntPtr dlsym(IntPtr handle, string name);
+                [DllImport("libdl.so.2")] public static extern int dlclose(IntPtr handle);
+            }
+        }
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int Version();
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr Source();
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int Open(byte[] path, out IntPtr db, int flags, IntPtr vfs);

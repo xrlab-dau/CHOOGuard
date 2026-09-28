@@ -442,9 +442,11 @@ namespace ChooGuard.Tests.EditMode.Stories
             finally { Directory.Delete(root, true); }
         }
         [Test]
-        public void WindowsBuild_OnMacRecordsNotRunBeforeValidatorWithoutOutputOrTargetFallback()
+        public void WindowsBuild_OnNonWindowsHostRecordsNotRunBeforeValidatorWithoutOutputOrTargetFallback()
         {
-            Assert.That(global::UnityEngine.Application.platform, Is.EqualTo(RuntimePlatform.OSXEditor), "This local no-Windows-host oracle requires the observed Mac host");
+            // BuildBaseline builds Windows only on a Windows host, so macOS and Linux hosts must record NOT_RUN.
+            if (global::UnityEngine.Application.platform == RuntimePlatform.WindowsEditor)
+                Assert.Ignore("A Windows host performs the real Windows build; this NOT_RUN oracle applies to macOS and Linux hosts.");
             var root = BuildFixture();
             var previous = GraphicsSettings.defaultRenderPipeline;
             var target = EditorUserBuildSettings.activeBuildTarget;

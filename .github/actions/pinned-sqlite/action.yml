@@ -1,0 +1,44 @@
+name: Pinned SQLite for tests
+description: >
+  Provides SQLite >= 3.51.3 (the SqliteProvider WAL baseline) as one exact file for the persistence tests on every OS:
+  compiled from the official amalgamation on macOS and Linux, the official x64 DLL on Windows, each verified against the
+  SHA3-256 that sqlite.org publishes. Exports CG_TEST_SQLITE_BINARY, CG_TEST_SQLITE_SHA256 and CG_TEST_SQLITE_SOURCE_ID,
+  which CSOPS0201Tests read; without them those tests are skipped as NOT_VERIFIED.
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        # sqlite.org/download.html, 2026-09-28 (3.53.4).
+        AMALGAMATION: 2026/sqlite-amalgamation-3530400.zip
+        AMALGAMATION_SHA3: 628a44cfe82c66aed1ccbbe85a562d2e33ebe64b3288981ed76285612227934e
+        WINDOWS_DLL: 2026/sqlite-dll-win-x64-3530400.zip
+        WINDOWS_DLL_SHA3: deddee963c810d1eeac3ce5e15c7c41da21a1c54d7a39cf54fbf577d2f50de3a
+      run: |
+        py=$(command -v python3 || command -v python)
+        digest() { "$py" -c 'import hashlib, sys; print(hashlib.new(sys.argv[1], open(sys.argv[2], "rb").read()).hexdigest())' "$1" "$2"; }
+        dir="$RUNNER_TEMP/pinned-sqlite"
+        mkdir -p "$dir" && cd "$dir"
+        fetch() {
+          local file; file=$(basename "$1")
+          curl --fail --silent --show-error --location --retry 4 --retry-all-errors -o "$file" "https://sqlite.org/$1"
+          [[ $(digest sha3_256 "$file") == "$2" ]] || { echo "::error::$file does not match sqlite.org's SHA3-256"; exit 1; }
+          "$py" -m zipfile -e "$file" .
+        }
+        fetch "$AMALGAMATION" "$AMALGAMATION_SHA3"
+        source=$(sed -n 's/^#define SQLITE_SOURCE_ID *"\(.*\)"\r\{0,1\}$/\1/p' sqlite-amalgamation-*/sqlite3.h)
+        [[ -n $source ]] || { echo "::error::SQLITE_SOURCE_ID not found"; exit 1; }
+        case "$RUNNER_OS" in
+          macOS) cc -O2 -dynamiclib -DSQLITE_THREADSAFE=1 -o libsqlite3.dylib sqlite-amalgamation-*/sqlite3.c; file=libsqlite3.dylib ;;
+          Linux) cc -O2 -shared -fPIC -DSQLITE_THREADSAFE=1 -o libsqlite3.so sqlite-amalgamation-*/sqlite3.c -lpthread -ldl -lm; file=libsqlite3.so ;;
+          Windows) fetch "$WINDOWS_DLL" "$WINDOWS_DLL_SHA3"; file=sqlite3.dll ;;
+        esac
+        sha=$(digest sha256 "$file")
+        binary="$dir/$file"
+        [[ $RUNNER_OS == Windows ]] && binary=$(cygpath -w "$binary")
+        {
+          echo "CG_TEST_SQLITE_BINARY=$binary"
+          echo "CG_TEST_SQLITE_SHA256=$sha"
+          echo "CG_TEST_SQLITE_SOURCE_ID=$source"
+        } >> "$GITHUB_ENV"
+        echo "SQLite for tests: $binary ($sha)"
