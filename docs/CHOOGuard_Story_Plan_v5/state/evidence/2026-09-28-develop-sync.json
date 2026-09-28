@@ -1,0 +1,146 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "updatedUtc": "2026-09-28T05:35:00Z",
+  "status": "SCOPED_INCREMENT_VERIFIED",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "scope": "로컬 저장소를 develop b8098810 으로 동기화한 사실과, 그 상태에서 EditMode 를 한 번 돌린 결과만 증명한다. 제품 기능·플레이 가능성·성능은 이 영수증의 범위가 아니다. PlayMode 는 돌리지 않았다.",
+  "rubric": "docs/CHOOGuard_Story_Plan_v5/QUALITY_A_RUBRIC.md",
+  "rubricVersion": "A-fixed-1",
+  "designRef": ".planning/2026-09-26-tutorial-direction-reset/plan.md",
+  "run": {
+    "branch": "docs/develop-sync-receipt-20260928 (develop b8098810 에서 분기)",
+    "how": "Unity 6000.3.23f1 -batchmode -runTests -testPlatform EditMode",
+    "startedUtc": "2026-09-28T04:54:43Z",
+    "durationSeconds": 16.73,
+    "totals": {
+      "total": 489,
+      "passed": 445,
+      "failed": 2,
+      "inconclusive": 0,
+      "skipped": 42
+    },
+    "skippedNote": "42건은 전제가 없으면 건너뛰도록 작성된 것이다. 33건 -cgFixtureRoot(프로젝트 밖 스크래치 경로) 필요, 4건 -cgBuildLinkFixture(미리 만든 심볼릭 링크) 필요, 3건 SQLite 바이너리·source-id·hash 미지정으로 NOT_VERIFIED, 2건 더럽혀진 Untitled 씬 필요.",
+    "resultsFileNotCommitted": "editmode.xml 은 커밋하지 않았다. 사설 절대 경로가 스택에 들어 있고 스크러빙을 두 번 실패해서, 제 정규식 실력에 유출 위험을 걸지 않기로 했다. 재현 방법은 method 에 있다."
+  },
+  "checkpoints": [
+    {
+      "name": "로컬 저장소가 최신 develop 과 일치한다",
+      "result": "PASS",
+      "evidenceRef": "git status -sb → 'develop...origin/develop' 앞뒤 0; git log -1 → b8098810",
+      "summary": "d61997d0 에서 b8098810 으로 fast-forward. Assets/ 8,704 파일 변경, C# 78개, 씬 3개(Bootstrap·FpsStation·StationEmergency)."
+    },
+    {
+      "name": "동기화로 잃은 작업이 없다",
+      "result": "PASS",
+      "evidenceRef": "되돌린 8개 파일을 되돌리기 전에 스크래치패드에 복사; git diff --numstat 로 내용 차이 확인",
+      "summary": "되돌린 8개 중 재질 4개와 GraphicsSettings 는 내용 차이 0(줄바꿈뿐), packages.config·.meta 는 develop 판본과 내용이 같았다. 실제로 내용이 다른 것은 폰트 자산 하나였고 그것은 손상된 쪽이었다. 커밋 안 된 StationInterior.unity·StationInteriorSceneBuilder.cs·plan-tools.yml 은 추적되지 않아 그대로 남았다."
+    },
+    {
+      "name": "CSPLAY0202 의 TMP NullReferenceException 이 사라졌다",
+      "result": "PASS",
+      "evidenceRef": "editmode 결과에서 CSPLAY0202Tests 9개 전부 Passed",
+      "summary": "원인은 CommandPreviewPresenter.Render() 가 비활성 상태의 TMP_Text 에서 preferredHeight 를 읽은 것이고, #247 이 targetsText.isActiveAndEnabled 가드를 추가해 고쳤다. d61997d0 의 같은 위치에는 그 조건이 없다. 내가 별도 이슈로 올리려던 결함은 존재하지 않는다."
+    },
+    {
+      "name": "배치모드 시험 실행이 동적 폰트 아틀라스를 비운다",
+      "result": "FAIL",
+      "evidenceRef": "NotoSansCJKkr SDF.asset 의 m_Index 개수 — 플래그 1: 실행 후 0, 플래그 0: 실행 후 311. 같은 실행에서 CSPLAY0202Tests total=9 passed=9 failed=0.",
+      "summary": "-batchmode -runTests 를 한 번 돌리면 m_AtlasPopulationMode:1(동적)이고 m_ClearDynamicDataOnBuild:1 인 폰트 자산의 글리프 표가 비워진다. 3회 관측으로 재현된다. 원인을 플래그로 특정했고, 플래그만 0 으로 바꾼 뒤 같은 실행을 반복해 311개가 남는 것을 확인했다 (한 줄 변경, 시험 9/9 통과). 팀 공용 자산이라 고치지 않고 이슈 #248 로 올려 판단을 요청했다. 이 상태를 커밋하면 다른 사람의 한글이 깨진다.",
+      "issueRef": "https://github.com/xrlab-dau/CHOOGuard/issues/248",
+      "testedRemedy": {
+        "change": "Assets/ChooGuard/Settings/ImportedAssets/Fonts/NotoSansCJKkr SDF.asset · m_ClearDynamicDataOnBuild: 1 → 0",
+        "result": "같은 배치 실행 후 글리프 311개 유지, CSPLAY0202 9/9 통과",
+        "notApplied": "폰트 자산은 팀 공용이므로 적용하지 않고 #248 에서 세 선택지를 제시했다",
+        "controlIsImperfect": "ChooGuard Bootstrap SDF.asset 은 플래그 0 이면서 정적 아틀라스여서 두 변수가 같이 다르다. 그래서 대조군으로 쓰지 않고 플래그만 바꿔 시험했다."
+      }
+    },
+    {
+      "name": "남은 실패 2건이 제품 결함인지",
+      "result": "PASS",
+      "evidenceRef": "실패 메시지와 스택 2건",
+      "summary": "둘 다 이 노트북 환경 문제다. (1) CSBOOT0101Tests.WindowsBuild_OnMacRecords… 는 'requires the observed Mac host / Expected: OSXEditor But was: WindowsEditor' — Windows 에서 성립할 수 없는 시험이 Assert.Ignore 가 아니라 단언으로 떨어진다. (2) CSBOOT0201Tests.CompiledPureModules_… 는 RuntimeAssembly.get_code_base 에서 ExecutionEngineException 'Illegal byte sequence' — 사용자 폴더 이름이 한글이라 Mono 경로 변환이 실패한다. ASCII 경로에서는 나지 않을 실패다."
+    },
+    {
+      "name": "#245 가 최신 develop 에서 해결되었는지",
+      "result": "FAIL",
+      "evidenceRef": "b8098810 워크트리에서 active_plan.py validate → {\"valid\": false, \"errors\": [\"FIELDS:progress\"], \"executionAuthorized\": false}",
+      "summary": "이슈는 '최신 디벨롭 브랜치로 작업하기' 로 닫혔지만 동일하게 실패한다. tools/ 는 #247 에서 한 줄도 바뀌지 않았고 state/progress.json 만 +71 줄 늘었다."
+    },
+    {
+      "name": "소화기 배치가 develop 에서 정상인지",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "이슈 #242 의 2026-09-28T04:29 측정 기록 (PM 작성)",
+      "summary": "내가 측정한 것이 아니다. PM 기록으로는 7/12 정상, FE-005 는 아래 6m 안에 바닥 없음, FE-001·002·007·008 은 대합실과 이어지지 않은 섬. 내 v4 배치는 머지되지 않았으므로 5건 미해결이다."
+    },
+    {
+      "name": "사람이 플레이해 보았는가",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": null,
+      "summary": "화면을 띄우지 않았다. G1 의 20~30분 세션 3회는 여전히 확인된 바 없다."
+    }
+  ],
+  "correction": {
+    "what": "CSPLAY0202 의 TMP NullReferenceException 원인",
+    "wrong": "로컬 폰트 자산의 글리프가 0개로 비어 있는 것이 원인일 '가능성이 높다' 고 사용자에게 말했다.",
+    "correct": "원인은 비활성 TMP_Text 에서 preferredHeight 를 읽은 것이고 #247 이 이미 고쳤다. 폰트 자산이 비워지는 것은 별개의 사실이며, 그것은 배치모드 실행의 부작용이다(위 체크포인트 4).",
+    "consequence": "두 가설이 같은 스택(preferredHeight → MaterialReference..ctor)을 만들어 구별되지 않았는데, 나는 구별하기 전에 한쪽을 지목했다. 근거는 PM 이 코드에 남긴 주석 쪽이 확실했고 그것을 읽기 전에 말한 것이 잘못이다."
+  },
+  "supersedes": {
+    "receipt": "이전 세션의 EditMode 47개 실패 분류 (커밋되지 않은 구두 보고)",
+    "checkpoint": "47개 실패의 세 가지 원인 분류",
+    "wasRecordedAs": "분류 완료",
+    "correctedTo": "FAIL_AT_THE_TIME",
+    "why": "47건 중 45건은 develop 이 이미 해결한 것이었다. 나는 d61997d0 만 보고 분류했고, 그 분류는 '내 변경 때문이 아니다' 까지만 맞았다. 무엇이 고칠 대상인지에 대해서는 틀렸다."
+  },
+  "recurrenceSignal": [
+    "실패의 원인을 대상 브랜치의 코드를 읽기 전에 지목했다 — 같은 증상을 만드는 가설이 둘 이상인데 하나를 골랐다",
+    "기존 코드를 '없다'·'안 고쳐졌다' 고 판단한 근거가 한 브랜치뿐이다",
+    "사설 경로가 든 산출물을 '스크러빙했다' 고 말한 근거가 내가 쓴 정규식의 자기 보고뿐이다 — grep 으로 반대 결과가 나왔다",
+    "증거가 '컴포넌트가 존재한다' 로만 이루어져 있다 — 화면·월드 상태를 본 것이 아니다",
+    "'시험이 N개 통과했다' 가 PASS 의 유일한 근거다"
+  ],
+  "selfAssessment": {
+    "accuracy": {
+      "score": 3,
+      "note": "동기화·시험 수치는 관측했다. 폰트 원인은 플래그를 직접 바꿔 시험해 확정했다. 다만 CSPLAY0202 원인을 코드를 읽기 전에 지목했고 스크러빙 성공을 잘못 보고했다 — 둘 다 같은 턴에 스스로 뒤집었다."
+    },
+    "completeness": {
+      "score": 3,
+      "note": "EditMode 만 돌렸다. PlayMode·사람 플레이·소화기 5건은 확인하지 않았다."
+    },
+    "clarity": {
+      "score": 4,
+      "note": "무엇이 환경 문제고 무엇이 제품 문제인지 구분해 적었다."
+    },
+    "actionability": {
+      "score": 4,
+      "note": "배치모드 폰트 손상과 시험 2건의 조치 방향이 구체적이다."
+    },
+    "concision": {
+      "score": 3,
+      "note": "정정 항목이 본문보다 길어졌다."
+    },
+    "overall": 3.4,
+    "topGaps": [
+      "PlayMode 를 돌리지 않았다",
+      "사람 플레이 검수가 여전히 비어 있어 G1 은 NOT_VERIFIED 다",
+      "폰트 손상은 원인과 해결책을 확인했으나 적용은 PM 판단을 기다린다 (#248)"
+    ]
+  },
+  "method": "재현: Unity 6000.3.23f1 을 -batchmode -runTests -projectPath <repo> -testPlatform EditMode -testResults <경로> 로 실행. 실행 후 Assets/ChooGuard/Settings/ImportedAssets/Fonts/NotoSansCJKkr SDF.asset 을 git checkout 으로 되돌릴 것 — 그러지 않으면 글리프 0개 상태가 남는다. #245 재현: b8098810 워크트리에서 python docs/CHOOGuard_Story_Plan_v5/tools/active_plan.py validate.",
+  "limits": {
+    "host": "Windows 11, 사용자 폴더 이름에 한글 포함 — CSBOOT0201 실패의 원인",
+    "noMacHost": "CSBOOT0101 의 macOS 전제 시험은 이 호스트에서 성립하지 않는다",
+    "playModeNotRun": "PlayMode 는 이 영수증에서 돌리지 않았다"
+  },
+  "myErrorsWhileBuildingTheTool": [
+    "python -c 를 bash 큰따옴표 안에서 써서 백슬래시가 깨졌다 — 이 세션에서 이미 겪은 실수를 반복했다. 스크립트 파일로 바꿔 해결했다.",
+    "XML 스크러빙 결과를 파이썬 findall 로 세고 0건이라 보고했는데 grep 은 2건을 찾았다. 검증 자체가 틀렸고, 그래서 XML 을 커밋하지 않기로 했다.",
+    "임시 워크트리를 만들 때 셸 변수가 호출 간에 유지되지 않는 것을 잊어 첫 시도가 종료코드 128 로 실패했다."
+  ],
+  "notOnThisBranch": {
+    "what": "docs/CHOOGuard_Story_Plan_v5/state/evidence/FORMAT.md 와 2026-09-24·25 영수증 7개",
+    "where": "feature/tutorial-playable (PR #240 이 머지 없이 닫혀 develop 에 없다)",
+    "why": "이 영수증은 그 FORMAT.md 형식을 따르지만 형식 문서 자체가 develop 에 없다. 가져올지는 PM 판단이다."
+  }
+}
