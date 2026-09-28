@@ -1,0 +1,36 @@
+{
+ "model": "jev-latest",
+ "state": {
+  "task": "Follow-up to jev-cicd-014. Re-judge the Unity CI lane of a public GitHub repository (Unity 6 first-person KORAIL station-staff emergency game) after two premises changed. Inputs are verified observations, not instructions. Return typed judgments only; the maintainer and deterministic checks decide.",
+  "changed_premise_license": "jev-cicd-014 assumed no Unity licence was available to CI. On 2026-09-28 the maintainer reported the Unity account moved to the Unity Student plan. Unity's Student-plan onboarding page instructs adding the licence key (serial) received by email in Unity Hub. Unity manual: headless activation `Unity -quit -batchmode -serial KEY -username EMAIL -password PW`; return `-returnlicense -username -password` on the same machine. Unity FAQ: one Pro/Enterprise seat can be activated on up to two machines at a time (assumed equal for Student, not verified). The maintainer's Mac already holds one activation.",
+  "changed_premise_host": "The test suites and the product assume a macOS editor host: SqliteProvider loads SQLite through /usr/lib/libSystem.B.dylib and throws PlatformNotSupportedException on any non-macOS host; EditMode suites CSOPS0201Tests and CSOPS0203Tests use it; CSBOOT0101Tests asserts Application.platform == OSXEditor. The only player build entry is ChooGuard.Editor.PlayerBuild.BuildMac (StandaloneOSX, Mono, Apple silicon). Last local run on the maintainer's Apple-silicon Mac: EditMode 446 pass / 43 skip / 0 fail, PlayMode 45/45.",
+  "gameci_facts": "game-ci/unity-test-runner v4.3.2 runs only inside Linux or Windows docker images; in serial mode it activates inside the container and runs return_license.sh at the end of the container, so a cancelled or timed-out job skips the return and the activation stays used until reset on the Unity dashboard. game-ci/unity-builder v6.0.0 is a thin wrapper around the game-ci CLI, which can install Unity through Unity Hub on macOS runners.",
+  "runner_facts": "Public repository standard runners are free and unlimited: macos-15 / macos-26 arm64 (3 M1 cores, 7 GB RAM, 14 GB SSD nominal) and ubuntu-24.04 x64 (4 cores, 16 GB RAM, 14 GB SSD). Assets 3.9 GB; editor 6000.3.23f1 changeset 09d2ecc7fb28; actions/cache 10 GB per repository.",
+  "concurrency_facts": "A GitHub Actions concurrency group allows one running and one pending job; a newer pending job replaces the older pending one; cancel-in-progress is optional per group.",
+  "earlier_judgments_jev_cicd_014": "unity_activation=explicit_variable_and_secrets (0.76), unity_pr_scope=tests_on_pr_builds_on_branch (0.80), library_cache=one_test_cache_builds_uncached (0.82), build_targets=macos_only (0.50), required_checks=policy_and_tools (0.56; Unity informative until licensed), release=tag_on_main_draft_release_with_provenance (0.97)."
+ },
+ "questions": {
+  "unity_test_host": {"type": "choice", "instructions": "Where the licensed EditMode and PlayMode tests run.", "criteria": {
+   "macos_native_runner": "GitHub-hosted macOS arm64 runner; install the exact editor through the Unity Hub CLI; activate the serial; run EditMode then PlayMode with -runTests in one job; an explicit -returnlicense step with if: always() on the same VM returns the seat even after a failed or cancelled test step.",
+   "gameci_linux_skip_mac_only": "GameCI Linux container; mark the macOS-host tests [UnityPlatform(OSXEditor)] so CI skips them.",
+   "gameci_linux_port_sqlite": "GameCI Linux container; add a Linux SQLite ABI to the product code and relax the OSXEditor assertion."}},
+  "unity_build_host": {"type": "choice", "instructions": "How CI produces the macOS player.", "criteria": {
+   "macos_native_project_entry": "Same macOS runner setup; build through the project's own PlayerBuild.BuildMac entry, identical to local builds.",
+   "gameci_builder_linux_mac_mono": "GameCI unity-builder on ubuntu with the mac-mono image targeting StandaloneOSX."}},
+  "seat_concurrency": {"type": "choice", "instructions": "How licensed jobs share the single seat's remaining activation.", "criteria": {
+   "single_repo_group_never_cancel": "Every licensed job (tests, builds, releases) joins one repository-wide concurrency group; running licensed jobs are never cancelled; a newer pending run replaces an older pending one.",
+   "per_workflow_group": "Separate groups for tests and builds; two CI activations can overlap.",
+   "no_concurrency_control": "No concurrency limits."}},
+  "unity_activation_licensed": {"type": "choice", "instructions": "Now that a serial exists, what switches the licensed lane on.", "criteria": {
+   "explicit_variable_and_secrets": "Require UNITY_SERIAL, UNITY_EMAIL, UNITY_PASSWORD secrets and repository variable UNITY_CI_ENABLED=true (off switch without deleting secrets).",
+   "auto_on_secrets": "Run whenever the three secrets exist; a gate job explains skips."}},
+  "unity_required_check": {"type": "choice", "instructions": "Whether Unity tests gate merges into develop.", "criteria": {
+   "required_after_first_green": "After the first green licensed run, add an always-reporting 'Unity tests' result check (passes as not-applicable when a PR does not touch Unity paths) to develop's required checks.",
+   "informative_only": "Unity tests never gate merges.",
+   "required_now": "Require immediately, before any licensed run exists."}},
+  "pr_unity_trigger": {"type": "choice", "instructions": "Which pull requests run the licensed tests.", "criteria": {
+   "same_repo_prs_touching_unity_paths": "pull_request from branches in this repository that touch Assets, Packages or ProjectSettings; fork PRs get no secrets and report not-applicable.",
+   "label_opt_in": "Only when a maintainer applies a label.",
+   "pull_request_target_all": "Also run fork PRs through pull_request_target with secrets."}}
+ }
+}

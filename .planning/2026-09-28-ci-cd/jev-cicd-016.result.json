@@ -1,0 +1,66 @@
+{
+ "model_requested": "jev-latest",
+ "judged_at": "2026-09-28T04:44:04Z",
+ "elapsed_ms": 293,
+ "authority": 0,
+ "answers": {
+  "unity_test_host": {
+   "type": "choice",
+   "choice": "macos_native_runner",
+   "confidence": 0.99,
+   "probabilities": {
+    "gameci_linux_skip_mac_only": 0.01,
+    "gameci_linux_port_sqlite": 0,
+    "macos_native_runner": 0.99
+   }
+  },
+  "unity_build_host": {
+   "type": "choice",
+   "choice": "macos_native_project_entry",
+   "confidence": 0.85,
+   "probabilities": {
+    "macos_native_project_entry": 0.93,
+    "gameci_builder_linux_mac_mono": 0.07
+   }
+  },
+  "seat_concurrency": {
+   "type": "choice",
+   "choice": "single_repo_group_never_cancel",
+   "confidence": 0.63,
+   "probabilities": {
+    "per_workflow_group": 0.19,
+    "single_repo_group_never_cancel": 0.76,
+    "no_concurrency_control": 0.05
+   }
+  },
+  "unity_activation_licensed": {
+   "type": "choice",
+   "choice": "explicit_variable_and_secrets",
+   "confidence": 0.67,
+   "probabilities": {
+    "auto_on_secrets": 0.16,
+    "explicit_variable_and_secrets": 0.84
+   }
+  },
+  "unity_required_check": {
+   "type": "choice",
+   "choice": "required_after_first_green",
+   "confidence": 0.76,
+   "probabilities": {
+    "required_now": 0.01,
+    "required_after_first_green": 0.83,
+    "informative_only": 0.16
+   }
+  },
+  "pr_unity_trigger": {
+   "type": "choice",
+   "choice": "same_repo_prs_touching_unity_paths",
+   "confidence": 0.85,
+   "probabilities": {
+    "same_repo_prs_touching_unity_paths": 0.89,
+    "pull_request_target_all": 0.09,
+    "label_opt_in": 0.02
+   }
+  }
+ }
+}
