@@ -79,7 +79,9 @@ namespace ChooGuard.App.Mvp
             try
             {
                 string root=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,".."));
-                string interpreter=Path.Combine(root,"workers/physics/.venv/bin/python"),worker=Path.Combine(root,"workers/physics/worker.py");
+                // Python venvs keep the interpreter in Scripts\python.exe on Windows and bin/python elsewhere.
+                string venvPython=System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows)?"workers/physics/.venv/Scripts/python.exe":"workers/physics/.venv/bin/python";
+                string interpreter=Path.Combine(root,venvPython),worker=Path.Combine(root,"workers/physics/worker.py");
                 if(!File.Exists(interpreter) || !File.Exists(worker)) throw new FileNotFoundException("국소 계산 워커가 설치되지 않았습니다.");
                 var start=new ProcessStartInfo { FileName=interpreter,Arguments="\""+worker+"\"",WorkingDirectory=root,UseShellExecute=false,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true,CreateNoWindow=true,StandardOutputEncoding=Encoding.UTF8,StandardErrorEncoding=Encoding.UTF8 };
                 process=new Process { StartInfo=start,EnableRaisingEvents=true }; process.Start();

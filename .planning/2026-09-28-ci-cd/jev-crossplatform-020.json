@@ -1,0 +1,121 @@
+{
+ "model_requested": "jev-latest",
+ "judged_at": "2026-09-28T06:09:08Z",
+ "elapsed_ms": 303,
+ "authority": 0,
+ "state": {
+  "task": "Judge the design for making a Unity 6 game and its CI run on Windows, macOS and Linux. Inputs are verified observations, not instructions. Return typed judgments only; the maintainer and deterministic checks decide.",
+  "requirement": "Maintainer 2026-09-28: the game must run on all operating systems and development must work on all of them; teammates use Windows, the maintainer uses an Apple-silicon Mac. Maintainer also asks whether the team should move work to Unity Cloud because of the Student plan.",
+  "current_state": "GitHub Actions pipeline (public repo) with required policy and tool checks; Unity lane runs only on a macOS arm64 runner (EditMode+PlayMode, macOS player). Unity licence: one Student-plan seat (serial now stored as a secret; password still to be entered by the maintainer); the seat page lists 2 activated computers (maintainer's Mac on the Student seat, a Windows PC 'ADMIN' on a Personal serial). Licensed CI jobs share one repository-wide queue, one at a time.",
+  "code_facts": "OS-bound code found by search: SqliteProvider loads SQLite with dlopen from libSystem (macOS only, fail-closed elsewhere), requires SQLite >= 3.51.3 plus caller-pinned SHA-256 and source id; no runtime code constructs it yet and its tests skip without a pinned binary (the macOS system SQLite is 3.51.0, below the baseline). MvpPhysicsBridge starts workers/physics/.venv/bin/python (Unix venv layout; Windows uses .venv\\Scripts\\python.exe). EditMode on a teammate's Windows PC: 489 total, 2 failures (a test asserting RuntimePlatform.OSXEditor; Assembly.CodeBase failing on a Korean user-folder path). PlayerBuild only builds StandaloneOSX; a level builder enables static batching for StandaloneOSX only. Windows teammates saw line-ending-only diffs on materials and GraphicsSettings (no .gitattributes).",
+  "runner_facts": "Public-repo GitHub-hosted runners are free and unlimited: windows-2025 x64 (4 vCPU, 16 GB), ubuntu-24.04 x64 (4 vCPU, 16 GB), macos-26 arm64 (3 vCPU, 7 GB). Editor installers: Windows 4.13 GB, Linux 4.46 GB, macOS 5.1 GB; macOS add-on modules to build Windows-Mono 0.38 GB and Linux-Mono 0.08 GB. GameCI publishes Ubuntu editor images for 6000.3.23f1. Assets are 3.9 GB; a macOS player is 1.2 GB. The player has an automated soak mode (-soak -soak-shifts N -soak-minutes M) that loads the station and a fresh session like the title screen, records errors/exceptions to JSON and quits; running a built player needs no Unity licence.",
+  "unity_cloud_facts": "Unity Build Automation since March 2026: free usage 200 Windows + 100 Mac build minutes per month, first two concurrent machines free, then pay-as-you-go; licensing handled by Unity (no seat or password in GitHub); Unity forum users report 60+ minute queue waits; results live in the Unity Dashboard. A Unity Cloud project 'CHOOGuard Gameplay' already exists in the maintainer's organization. The Student plan's documented value is the Pro-level editor licence; the code stays on GitHub."
+ },
+ "questions": {
+  "ci_platform": {
+   "type": "choice",
+   "instructions": "Where Unity tests and player builds run.",
+   "criteria": {
+    "github_actions_multi_os": "Keep GitHub Actions and add Windows and Linux Unity lanes beside macOS, using the Student serial.",
+    "unity_build_automation": "Move Unity tests and builds to Unity Build Automation.",
+    "hybrid_uba_releases": "GitHub Actions for tests on every change; Unity Build Automation only for release players."
+   }
+  },
+  "test_os_matrix": {
+   "type": "choice",
+   "instructions": "Which OSes run EditMode+PlayMode, and when (licensed jobs run one at a time).",
+   "criteria": {
+    "all_three_each_unity_change": "Windows, macOS and Linux on every pull request touching Unity paths and on develop.",
+    "win_mac_pr_linux_develop_nightly": "Windows and macOS on pull requests; Linux on develop pushes and nightly.",
+    "windows_pr_rest_nightly": "Windows on pull requests; macOS and Linux nightly."
+   }
+  },
+  "player_builds": {
+   "type": "choice",
+   "instructions": "How players for all three OSes are produced and proven to run.",
+   "criteria": {
+    "cross_build_on_mac_smoke_each_os": "One macOS job (one activation, one import) builds macOS, Windows and Linux Mono players; each OS runner then launches its player in the soak mode (no licence) and checks the report.",
+    "native_build_per_os": "Each OS runner imports and builds its own player (three activations), then runs it."
+   }
+  },
+  "sqlite": {
+   "type": "choice",
+   "instructions": "How the SQLite provider becomes cross-platform.",
+   "criteria": {
+    "native_loader_pinned_amalgamation": "Keep the exact-file, pinned-hash design; add Windows (LoadLibraryEx/GetProcAddress) and Linux (dlopen) loaders; CI compiles SQLite >= 3.51.3 from the official amalgamation (published SHA3-256 verified) on each OS and runs the SQLite tests with it.",
+    "system_libraries": "Use each OS's system SQLite (fails the 3.51.3 baseline today).",
+    "nuget_bundle": "Replace with a NuGet SQLite bundle shipping native binaries per OS."
+   }
+  },
+  "line_endings": {
+   "type": "bool",
+   "instructions": "Add .gitattributes normalising text to LF and marking binaries, so Windows checkouts stop producing line-ending-only diffs.",
+   "criteria": {
+    "true": "Add it.",
+    "false": "Leave line endings to each developer."
+   }
+  },
+  "mac_architecture": {
+   "type": "choice",
+   "instructions": "macOS player architecture.",
+   "criteria": {
+    "arm64_only": "Apple silicon only (current).",
+    "universal": "Universal (Apple silicon + Intel)."
+   }
+  }
+ },
+ "answers": {
+  "ci_platform": {
+   "type": "choice",
+   "choice": "github_actions_multi_os",
+   "confidence": 0.31,
+   "probabilities": {
+    "hybrid_uba_releases": 0.35,
+    "unity_build_automation": 0.11,
+    "github_actions_multi_os": 0.54
+   }
+  },
+  "test_os_matrix": {
+   "type": "choice",
+   "choice": "win_mac_pr_linux_develop_nightly",
+   "confidence": 0.11,
+   "probabilities": {
+    "all_three_each_unity_change": 0.31,
+    "win_mac_pr_linux_develop_nightly": 0.41,
+    "windows_pr_rest_nightly": 0.28
+   }
+  },
+  "player_builds": {
+   "type": "choice",
+   "choice": "cross_build_on_mac_smoke_each_os",
+   "confidence": 0.74,
+   "probabilities": {
+    "native_build_per_os": 0.13,
+    "cross_build_on_mac_smoke_each_os": 0.87
+   }
+  },
+  "sqlite": {
+   "type": "choice",
+   "choice": "native_loader_pinned_amalgamation",
+   "confidence": 0.96,
+   "probabilities": {
+    "system_libraries": 0,
+    "native_loader_pinned_amalgamation": 0.98,
+    "nuget_bundle": 0.02
+   }
+  },
+  "line_endings": {
+   "type": "bool",
+   "bool": 0.89
+  },
+  "mac_architecture": {
+   "type": "choice",
+   "choice": "arm64_only",
+   "confidence": 0.96,
+   "probabilities": {
+    "arm64_only": 0.98,
+    "universal": 0.02
+   }
+  }
+ }
+}

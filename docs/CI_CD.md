@@ -8,7 +8,7 @@
 |---|---|---|---|
 | `quality-gate.yml` | develop·main 대상 PR, develop·main push | **Policy, security and repository hygiene** | 필수 |
 | `tools.yml` | 같음 | Docs tool suites, Worker checks → **Tool tests** | 필수 |
-| `unity.yml` | Unity 경로를 바꾼 같은 저장소 PR, develop·main push, `v*` 태그, 매일 03:00 KST, 수동 | Unity lane gate → EditMode + PlayMode (macOS) → macOS player → Draft release, **Unity tests** | 첫 녹색 실행 후 필수 |
+| `unity.yml` | Unity 경로를 바꾼 같은 저장소 PR(Windows·macOS), develop·main push·`v*` 태그·매일 03:00 KST(Windows·macOS·Linux), 수동 | Unity lane gate → EditMode + PlayMode (OS별) → Players (macOS, Windows, Linux) → Player smoke (OS별) → Draft release, **Unity tests** | 첫 녹색 실행 후 필수 |
 | `security.yml` | PR, push, 매주 월 04:00 KST | CodeQL(Actions·C#·JS·Python), Dependency review | 정보 |
 | `scorecard.yml` | develop push, 매주, 규칙 변경 | Scorecard analysis → scorecard.dev 게시 | 정보 |
 | `pr-labels.yml` | 같은 저장소 PR | 경로 라벨(`.github/labeler.yml`) | — |
@@ -41,17 +41,23 @@ blob 없이 전체 이력만 받은 체크아웃에서 돈다. 파일 내용은 
 
 ## Unity 레인 (`unity.yml`)
 
-### 왜 macOS 러너인가
+### 세 운영체제 레인
 
-`SqliteProvider`는 macOS에서만 SQLite를 열고(다른 OS는 `PlatformNotSupportedException`), `CSBOOT0101Tests`는 `OSXEditor`를 단정한다. 플레이어 빌드 대상도 StandaloneOSX뿐이다. GameCI 시험 러너는 리눅스·윈도 도커 전용이라 구조적으로 실패한다. 그래서 GitHub 호스팅 Apple silicon 러너(`macos-26`)에 `ProjectVersion.txt`의 에디터를 그대로 설치한다. 설치 파일은 Apple Developer ID 체인과 Unity 팀(`Unity Technologies SF (9QW8UQUTAA)`) 서명을 확인한 뒤에만 설치한다.
+게임은 Windows·macOS·Linux 데스크톱 모두에서 돌아야 하고, 팀원은 Windows, 관리자는 Apple silicon Mac에서 개발한다. 그래서 GitHub 호스팅 러너 세 종류(`windows-2025`, `macos-26`, `ubuntu-24.04`)에 `ProjectVersion.txt`의 에디터를 그대로 설치해 같은 시험을 돌린다. 설치 파일은 OS마다 검증한 뒤에만 설치한다. macOS는 Apple Developer ID 체인과 Unity 팀(`Unity Technologies SF (9QW8UQUTAA)`) 서명, Windows는 Unity Technologies의 유효한 Authenticode 서명, Linux는 Unity 릴리스 매니페스트의 MD5다(Linux 압축본에는 코드 서명이 없다). 에디터는 러너에서 가장 여유 있는 디스크에 설치하고 전후 여유 공간을 기록한다.
+
+- **SQLite 시험**: `SqliteProvider`는 OS마다 정확한 파일만 연다(Windows `LoadLibraryExW`, macOS·Linux `dlopen`). WAL 기준(3.51.3 이상)을 넘는 시스템 SQLite가 어느 OS에도 없으므로, `.github/actions/pinned-sqlite`가 sqlite.org 공식 원본(SHA3-256 확인)으로 3.53.4를 만든다. macOS·Linux는 amalgamation을 컴파일하고 Windows는 공식 DLL을 쓴다. 만든 파일은 `CG_TEST_SQLITE_*` 환경 변수로 넘긴다. 이 변수가 없으면 CSOPS 영속성 시험은 NOT_VERIFIED로 건너뛴다.
+- **Windows는 비ASCII 경로에서 시험한다** (`경로 검사/CHOOGuard`). 한글 사용자 폴더에서 Mono 경로 변환이 터진 적이 있다(#249). 공백과 한글이 든 경로를 매번 확인한다.
+- **Linux PlayMode**는 가상 디스플레이(`xvfb-run`)에서 OpenGL로 돈다.
+
+### Unity Cloud(Build Automation)를 쓰지 않는 이유
+
+학생 플랜의 실익은 Pro급 에디터 라이선스(시리얼)이고, 이 저장소는 그 시리얼로 GitHub Actions에서 돈다. Unity Build Automation은 2026-03부터 무료가 월 Windows 200분·Mac 100분이다. 동시 실행은 2대까지 무료이고, 그 뒤로는 사용한 만큼 과금한다. 포럼에는 60분 넘는 대기 보고도 있다. 3.9 GB 프로젝트를 PR마다 세 OS에서 시험하면 무료분이 며칠 만에 끝난다. 공개 저장소의 GitHub 호스팅 러너는 세 OS 모두 무료·무제한이고 결과가 PR 체크로 바로 붙는다. JEV 판정도 GitHub Actions(0.54)를 택했다. Build Automation을 릴리스 빌드에만 쓰는 안(0.35)은 필요해지면 추가한다. 조직에는 Unity Cloud 프로젝트 "CHOOGuard Gameplay"가 이미 있다.
 
 ### 켜기 (학생 플랜)
 
-학생 플랜은 메일로 받은 **라이선스 키(시리얼)** 방식이다.
+학생 플랜은 **라이선스 키(시리얼)** 방식이다. 키는 id.unity.com → My Seats의 "Unity Student" 구독(조직 `dbstkd5865`, 2027-09-28 만료)에 있다. `UNITY_EMAIL`과 `UNITY_SERIAL`은 등록돼 있다. 남은 것은 Unity 계정 비밀번호 하나다(2단계 인증은 꺼져 있어야 CLI 활성화가 된다).
 
 ```sh
-gh secret set UNITY_SERIAL   -R xrlab-dau/CHOOGuard   # 학생 플랜 라이선스 키
-gh secret set UNITY_EMAIL    -R xrlab-dau/CHOOGuard
 gh secret set UNITY_PASSWORD -R xrlab-dau/CHOOGuard
 gh variable set UNITY_CI_ENABLED --body true -R xrlab-dau/CHOOGuard
 ```
@@ -60,23 +66,24 @@ gh variable set UNITY_CI_ENABLED --body true -R xrlab-dau/CHOOGuard
 
 ### 시트 한 개를 나눠 쓰는 규칙
 
-- 시트 하나는 동시에 두 대까지 활성화된다(Unity FAQ, Pro/Enterprise 기준. 학생 플랜도 같다고 가정했고 검증하지 않았다). 관리자 Mac이 한 대, CI가 한 대를 쓴다. 다른 PC에서도 활성화돼 있으면 CI 활성화가 실패한다.
-- 라이선스를 쓰는 잡(시험·빌드)은 저장소 전체 동시성 그룹 `unity-licence` 하나에서 한 번에 하나씩 돈다. `queue: max`라 최대 100개가 순서대로 기다린다. 실행 중인 잡은 취소하지 않는다. 강제로 종료된 에디터는 활성화를 반납하지 못한다.
+- 시트 하나는 동시에 두 대까지 활성화된다(Unity FAQ, Pro/Enterprise 기준. 학생 플랜도 같다고 가정했고 검증하지 않았다). 관리자 Mac이 한 대, CI가 한 대를 쓴다. My Seats에는 Personal 시리얼로 활성화된 Windows PC `ADMIN`도 보인다. CI 활성화가 한도 초과로 실패하면 쓰지 않는 활성화부터 반납한다.
+- 라이선스를 쓰는 잡(세 OS의 시험, 플레이어 빌드)은 저장소 전체 동시성 그룹 `unity-licence` 하나에서 한 번에 하나씩 돈다. `queue: max`라 최대 100개가 순서대로 기다린다. PR의 Windows·macOS 시험도 차례로 돈다. 실행 중인 잡은 취소하지 않는다. 강제로 종료된 에디터는 활성화를 반납하지 못한다.
 - 반납은 `if: always()` 단계가 같은 VM에서 한다. 시험 단계가 실패하거나 시간 초과여도 반납은 실행된다.
 - "no free activation"으로 실패하면 id.unity.com → **My Account → My Seats**에서 활성화를 반납하고 다시 실행한다.
 
 ### 무엇이 언제 도는가
 
-| 이벤트 | 시험 | 빌드 |
+| 이벤트 | 에디터 시험 | 플레이어 빌드 + 스모크 |
 |---|---|---|
-| 같은 저장소 PR, `Assets`·`Packages`·`ProjectSettings` 변경 | ✅ | — |
-| develop·main push, Unity 경로 변경 | ✅ | ✅ |
-| `v*` 태그, 야간, 수동(`build` 입력) | ✅ | ✅ |
+| 같은 저장소 PR, `Assets`·`Packages`·`ProjectSettings` 변경 | Windows, macOS | — |
+| develop·main push(Unity 경로 변경), `v*` 태그, 야간 | Windows, macOS, Linux | ✅ 세 OS |
+| 수동 실행 | 선택한 OS 또는 전부 | `build` 입력 |
 | 포크 PR, Unity 경로 무변경 | 사유를 남기고 건너뜀 | — |
 
-- 시험: EditMode(`-nographics`)와 PlayMode(Metal)를 한 번의 활성화 안에서 돌린다. 판정은 `unity_results.py`가 결과 XML과 에디터 종료 코드를 함께 보고 내린다. 결과 파일 없음(컴파일 오류·크래시), 0건 실행, 실패, 종료 코드와 결과의 불일치는 실패다. Inconclusive는 경고다.
-- 빌드: 로컬과 같은 진입점 `ChooGuard.Editor.PlayerBuild.BuildMac`을 쓴다. 이 메서드는 실패해도 0으로 끝나므로 `CG_PLAYER_BUILD result=Succeeded` 표식과 `.app` 존재로 판정한다. 산출물은 `player-macos-arm64`(zip + `SHA256SUMS.txt`, 30일)다.
-- Library 캐시: 시험 잡만 복원한다. 저장은 develop push에서만 한다(PR은 develop 캐시를 읽기만 한다). 빌드는 캐시 없이 새로 임포트한다.
+- 시험: EditMode(`-nographics`)와 PlayMode(Metal, Direct3D/WARP, 가상 디스플레이의 OpenGL)를 한 번의 활성화 안에서 돌린다. 판정은 `unity_results.py`가 결과 XML과 에디터 종료 코드를 함께 보고 내린다. 결과 파일 없음(컴파일 오류·크래시), 0건 실행, 실패, 종료 코드와 결과의 불일치는 실패다. Inconclusive는 경고다.
+- 빌드: macOS 러너 한 대가 Windows·Linux Mono 빌드 모듈을 함께 설치하고, 활성화 한 번과 임포트 한 번으로 세 플레이어를 만든다. 진입점은 메뉴와 같은 `ChooGuard.Editor.PlayerBuild.BuildAll`이다. 이 메서드는 실패해도 0으로 끝나므로 대상별 `CG_PLAYER_BUILD target=… result=Succeeded` 표식과 출력물로 판정한다. 산출물은 `player-macos`·`player-windows`·`player-linux`(zip, 30일)다.
+- 스모크: 각 OS 러너가 자기 플레이어를 `-batchmode -nographics -soak -soak-shifts 1 -soak-minutes 0.5`로 실행한다. 역사를 불러오고, 새 비상 세션의 군중이 생기고, 플레이한 뒤 타이틀로 돌아와 보고서를 쓰는 전 과정이다. `soak_verdict.py`가 판정한다. 보고서 없음(크래시·멈춤), 근무 누락, 예외, 군중이 생기지 않은 세션은 실패이고, 로그 오류는 경고다. 플레이어는 Unity 라이선스가 필요 없어 세 OS가 동시에 돈다.
+- Library 캐시: Windows·macOS 시험 잡만 복원한다. 저장은 develop push에서만 한다(PR은 develop 캐시를 읽기만 한다). Linux와 빌드는 10 GB 캐시 한도를 지키려고 캐시 없이 새로 임포트한다.
 
 ### 로그와 비밀값
 
@@ -86,10 +93,18 @@ Unity는 로그 첫머리에 `-serial`·`-password`를 포함한 명령줄 전�
 
 1. `develop` → `main` PR을 만들고 머지 커밋으로 병합한다(`main` 규칙).
 2. `main`의 머지 커밋에 태그를 붙인다: `git tag v0.2.0 && git push origin v0.2.0`.
-3. Unity 워크플로가 시험 → 빌드 → **초안 릴리스**(zip, `SHA256SUMS.txt`, 빌드 출처 증명)를 만든다. `main`에 없는 커밋의 태그는 거부한다.
-4. 초안을 검토하고 게시한다. 받은 쪽 검증: `gh attestation verify CHOOGuard-macOS-arm64-v0.2.0.zip -R xrlab-dau/CHOOGuard`.
+3. Unity 워크플로가 세 OS 시험 → 세 플레이어 빌드 → 세 OS 스모크 → **초안 릴리스**(macOS·Windows·Linux zip, `SHA256SUMS.txt`, 빌드 출처 증명)를 만든다. `main`에 없는 커밋의 태그는 거부한다.
+4. 초안을 검토하고 게시한다. 받은 쪽 검증: `gh attestation verify CHOOGuard-Windows-x64-v0.2.0.zip -R xrlab-dau/CHOOGuard`.
 
-플레이어는 Apple 코드 서명·공증을 하지 않아 macOS에서 처음 열 때 Gatekeeper 경고가 나온다. 없애려면 Apple Developer 계정이 필요하다.
+플레이어는 코드 서명을 하지 않는다. macOS는 처음 열 때 Gatekeeper 경고가 나오고(Apple Developer 계정 필요), Windows는 SmartScreen 경고가 나온다(코드 서명 인증서 필요). macOS 플레이어는 Apple silicon 전용이다.
+
+## Windows·macOS 팀원 개발 환경
+
+- **줄바꿈**: `.gitattributes`가 텍스트를 저장소와 작업 트리 모두 LF로 맞춘다. Windows의 `core.autocrlf` 때문에 Unity가 다시 저장할 때마다 생기던 줄바꿈만의 차이가 사라진다. 연구 자료(`asset-library`), 해시가 기록된 워커 증거, 제3자 라이선스 파일은 바이트 그대로 둔다(`-text`).
+- **물리 워커**: `MvpPhysicsBridge`는 Windows에서 `workers/physics/.venv/Scripts/python.exe`, 그 밖에서 `workers/physics/.venv/bin/python`을 찾는다.
+- **로컬 SQLite 시험**: 3.51.3 이상 SQLite 파일을 `CG_TEST_SQLITE_BINARY`·`CG_TEST_SQLITE_SHA256`·`CG_TEST_SQLITE_SOURCE_ID`로 지정하면 CSOPS 영속성 시험이 돈다. 없으면 건너뛴다. 만드는 방법은 `.github/actions/pinned-sqlite/action.yml`과 같다.
+- **호스트 전제 시험**: `CSBOOT0101`의 Windows 빌드 NOT_RUN 시험은 Windows에서 건너뛴다. Windows 호스트는 실제로 Windows를 빌드하기 때문이다. `CSBOOT0201`은 한글 사용자 폴더에서도 돈다.
+- **플레이어 빌드**: 메뉴 `ChooGuard/Build/`에서 macOS·Windows·Linux 플레이어를 만든다. 다른 OS 플레이어를 만들려면 Unity Hub에서 해당 Mono 빌드 모듈을 설치한다.
 
 ## 공급망·권한
 
@@ -116,6 +131,9 @@ uvx zizmor@1.30.1 --offline .
 ## 알려진 제약
 
 - actionlint 1.7.12(최신)는 `queue`(2026-05)와 `$/`(2026-07)를 모른다. 이 두 메시지만 무시한다. 새 actionlint가 나오면 무시 목록을 지운다.
-- macOS 표준 러너의 보장 디스크는 14 GB다(에디터 설치 9.4 GB). 실제 여유 공간은 설치 단계가 `df`로 기록한다.
-- 첫 Unity 실행과 모든 빌드는 3.9 GB 에셋을 새로 임포트하므로 수십 분 걸린다.
+- 표준 러너의 보장 디스크는 14 GB다(에디터 설치 8.1–9.5 GB). 설치 단계가 여유 공간을 기록하고, macOS는 45 GB 미만이면 쓰지 않는 Xcode를 지운다. Windows는 여유가 가장 큰 드라이브에, Linux는 `/mnt` 임시 디스크에 설치한다.
+- 첫 Unity 실행과 모든 빌드는 3.9 GB 에셋을 새로 임포트하므로 수십 분 걸린다. 라이선스가 한 자리라 PR의 Windows·macOS 시험은 차례로 돈다.
+- Linux 에디터 압축본은 코드 서명이 없어 Unity 매니페스트의 MD5로만 무결성을 확인한다.
+- 스모크는 헤드리스(`-nographics`)라 시작·씬 로드·세션·종료를 확인하지만 화면 렌더링까지는 보지 않는다. 렌더링은 PlayMode 시험(그래픽 장치 사용)이 맡는다.
+- `CSBOOT0101`의 경계 재시험(`-cgFixtureRoot` 등 33건, 실제 Bootstrap 빌드 포함)은 아직 CI에서 돌리지 않는다. 세 OS 레인이 녹색이 된 뒤 야간 잡으로 붙인다.
 - OpenSSF Scorecard 기준선은 5.6(2026-09-28, `3c05e778`)이다. Pinned-Dependencies 9점의 감점 2건은 `uses: $/.github/actions/setup-unity`다. Scorecard v2.4.4(2026-07-23)가 GitHub의 self-repository 문법(2026-07-30)을 몰라 해시 없는 외부 action으로 오판한 것이다. GitHub는 `$/`를 고정 참조로 취급하므로 점수 때문에 `./`로 되돌리지 않는다. 나머지 감점(저장소 생성 90일 미만, LICENSE 없음, 승인 없는 머지, `Assets/Packages`의 DotRecast DLL 등 바이너리)은 CI 밖의 결정이다.

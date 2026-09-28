@@ -64,7 +64,9 @@ namespace ChooGuard.Tests.EditMode.Stories
                 var outputPath = Path.GetFullPath(Path.Combine(ProjectRoot, assembly.outputPath));
                 Assert.That(File.Exists(outputPath), Is.True, module.name + " emitted DLL is required");
                 var emitted = System.Reflection.Assembly.ReflectionOnlyLoad(File.ReadAllBytes(outputPath));
-                Assert.That(emitted.GetName().Name, Is.EqualTo(module.name), outputPath);
+                // FullName, not GetName(): Mono fills AssemblyName.CodeBase from the project path, which throws
+                // "Illegal byte sequence" on Windows hosts whose user folder is not ASCII (e.g. Korean).
+                Assert.That(new System.Reflection.AssemblyName(emitted.FullName).Name, Is.EqualTo(module.name), outputPath);
                 var references = emitted.GetReferencedAssemblies().Select(reference => reference.Name).ToArray();
                 TestContext.WriteLine(module.name + " emitted AssemblyRef: " + string.Join(", ", references));
                 Assert.That(references.Where(IsForbiddenPureReference), Is.Empty, module.name + " emitted AssemblyRef");

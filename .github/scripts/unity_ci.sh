@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Unity editor operations for the macOS CI lane.
+# Unity editor operations for the macOS, Windows (Git Bash) and Linux CI lanes.
 #
 #   unity_ci.sh activate            serial activation (UNITY_SERIAL, UNITY_EMAIL, UNITY_PASSWORD)
 #   unity_ci.sh test EditMode|PlayMode
-#   unity_ci.sh build               ChooGuard.Editor.PlayerBuild.BuildMac, same entry as local builds
+#   unity_ci.sh build               ChooGuard.Editor.PlayerBuild.BuildAll: macOS, Windows and Linux players, the same
+#                                   entry points as the editor's ChooGuard/Build menu
 #   unity_ci.sh return              give the activation back to the seat (run with if: always())
 #   unity_ci.sh scrub               remove credentials from logs before they are uploaded
 #
@@ -19,8 +20,18 @@ logs="${UNITY_LOGS:-$RUNNER_TEMP/unity}"           # uploaded as an artifact aft
 private="$RUNNER_TEMP/unity-licence"               # never uploaded
 mkdir -p "$logs" "$private"
 project="${UNITY_PROJECT:-${GITHUB_WORKSPACE:-$PWD}}"
-serial_licence="/Library/Application Support/Unity/Unity_lic.ulf"
-named_licence="$HOME/Library/Unity/licenses/UnityEntitlementLicense.xml"
+case "${RUNNER_OS:-$(uname -s)}" in
+  macOS|Darwin)
+    serial_licence="/Library/Application Support/Unity/Unity_lic.ulf"
+    named_licence="$HOME/Library/Unity/licenses/UnityEntitlementLicense.xml" ;;
+  Windows|MINGW*|MSYS*)
+    serial_licence="${PROGRAMDATA:-C:/ProgramData}/Unity/Unity_lic.ulf"
+    named_licence="${LOCALAPPDATA:-}/Unity/licenses/UnityEntitlementLicense.xml" ;;
+  *)
+    serial_licence="$HOME/.local/share/unity3d/Unity/Unity_lic.ulf"
+    named_licence="$HOME/.config/unity3d/Unity/licenses/UnityEntitlementLicense.xml" ;;
+esac
+py=$(command -v python3 || command -v python)
 
 editor() { : "${UNITY_EDITOR:?path to the Unity executable}"; "$UNITY_EDITOR" "$@"; }
 
@@ -51,24 +62,38 @@ test)
   [[ $platform == EditMode || $platform == PlayMode ]] || usage
   args=(-batchmode -projectPath "$project" -runTests -testPlatform "$platform"
         -testResults "$logs/$platform-results.xml" -logFile "$logs/$platform.log")
-  # EditMode needs no GPU; PlayMode keeps Metal so rendering paths run as they do on the team's Macs.
-  [[ $platform == EditMode ]] && args+=(-nographics)
+  # EditMode needs no GPU. PlayMode keeps a real device (Metal, Direct3D/WARP, OpenGL on a virtual X display) so
+  # rendering paths run as they do on the team's machines.
+  runner=()
+  if [[ $platform == EditMode ]]; then
+    args+=(-nographics)
+  elif [[ ${RUNNER_OS:-} == Linux ]]; then
+    runner=(xvfb-run -a -s "-screen 0 1920x1080x24")
+  fi
   status=0
-  editor "${args[@]}" || status=$?
+  ${runner[@]+"${runner[@]}"} "$UNITY_EDITOR" "${args[@]}" || status=$?
   echo "exit_code=$status" >> "${GITHUB_OUTPUT:-/dev/null}"
   echo "Unity $platform exited $status (verdict comes from unity_results.py)"
   ;;
 build)
   status=0
-  editor -quit -batchmode -projectPath "$project" -executeMethod ChooGuard.Editor.PlayerBuild.BuildMac \
+  editor -quit -batchmode -projectPath "$project" -executeMethod ChooGuard.Editor.PlayerBuild.BuildAll \
     -logFile "$logs/build.log" || status=$?
-  # PlayerBuild logs its verdict but never exits non-zero, so the marker and the bundle decide.
-  if [[ $status -ne 0 ]] || ! grep -q 'CG_PLAYER_BUILD result=Succeeded' "$logs/build.log" || [[ ! -d $project/Builds/macOS/CHOOGuard.app ]]; then
+  # PlayerBuild logs a verdict per target but never exits non-zero, so the markers and the outputs decide.
+  failed=()
+  for target in StandaloneOSX:Builds/macOS/CHOOGuard.app StandaloneWindows64:Builds/Windows/CHOOGuard.exe StandaloneLinux64:Builds/Linux/CHOOGuard.x86_64; do
+    name=${target%%:*}; output=$project/${target#*:}
+    if grep -q "CG_PLAYER_BUILD target=$name result=Succeeded" "$logs/build.log" && [[ -e $output ]]; then
+      grep -m1 "CG_PLAYER_BUILD target=$name " "$logs/build.log"
+    else
+      failed+=("$name")
+    fi
+  done
+  if [[ $status -ne 0 || ${#failed[@]} -gt 0 ]]; then
     grep -E 'CG_PLAYER_BUILD|error CS[0-9]+|Scripts have compiler errors' "$logs/build.log" | head -40 || true
-    echo "::error title=Unity build::macOS player build failed (editor exit $status); see the unity-build-logs artifact"
+    echo "::error title=Unity build::player build failed for ${failed[*]:-the editor} (editor exit $status); see the unity-build-logs artifact"
     exit 1
   fi
-  grep -m1 'CG_PLAYER_BUILD result=' "$logs/build.log"
   ;;
 return)
   : "${UNITY_EMAIL:?}" "${UNITY_PASSWORD:?}"
@@ -83,7 +108,7 @@ return)
   rm -rf "$private"
   ;;
 scrub)
-  python3 - "$logs" <<'PY'
+  "$py" - "$logs" <<'PY'
 import os, pathlib, re, sys
 secrets = [os.environ.get(k, "") for k in ("UNITY_SERIAL", "UNITY_EMAIL", "UNITY_PASSWORD")]
 serial_like = re.compile(rb"\b[A-Z0-9]{2}-[A-Z0-9*]{4}-[A-Z0-9*]{4}-[A-Z0-9*]{4}-[A-Z0-9*]{4}-[A-Z0-9*]{4}\b")
