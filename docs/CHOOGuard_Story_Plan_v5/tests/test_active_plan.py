@@ -95,6 +95,10 @@ class ActivePlanTests(unittest.TestCase):
             lambda s: s.update(areas=[]),
             lambda s: s["issues"][0].update(requiredForAcceptance="false"),
             lambda s: s["tests"][0].update(evidenceRef=None),
+            # #245: only the documented optional reference keys are allowed, and each must name an existing file.
+            lambda s: s.update(unknownPointer="docs/CHOOGuard_Story_Plan_v5/MVP_DIRECTION.md"),
+            lambda s: s.update(activeDirection="docs/CHOOGuard_Story_Plan_v5/MISSING.md"),
+            lambda s: s.update(transferReport="../outside.md"),
         ):
             state = copy.deepcopy(self.state)
             mutate(state)

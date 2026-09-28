@@ -12,6 +12,9 @@ from planlib import PlanError, digest, read_json, safe_path
 
 STORY_ID = "CS-EXEC.01.01"
 LEGACY_PATH = "docs/CHOOGuard_Story_Plan_v4/plan.json"
+PROGRESS_FIELDS = "storyId status acceptanceStatus acceptanceRef currentWork areas tests issues"
+# Pointers to the active direction documents added by #237; each must name an existing repository file (#245).
+PROGRESS_REFERENCES = "activeDirection activeEvidenceGraph transferReport"
 
 
 def require(condition, message):
@@ -19,8 +22,10 @@ def require(condition, message):
         raise PlanError(message)
 
 
-def fields(value, names, label):
-    require(isinstance(value, dict) and set(value) == set(names.split()), "FIELDS:" + label)
+def fields(value, names, label, optional=""):
+    """Exactly the required keys, plus any of the documented optional keys."""
+    keys = set(value) if isinstance(value, dict) else set()
+    require(isinstance(value, dict) and set(names.split()) <= keys <= set(names.split()) | set(optional.split()), "FIELDS:" + label)
 
 
 def text(value, label):
@@ -91,7 +96,11 @@ def validate(plan, state, repo):
                 text(value, key)
         references(repo, plan["historyRefs"])
 
-        fields(state, "storyId status acceptanceStatus acceptanceRef currentWork areas tests issues", "progress")
+        fields(state, PROGRESS_FIELDS, "progress", PROGRESS_REFERENCES)
+        for key in PROGRESS_REFERENCES.split():
+            if key in state:
+                text(state[key], "progress." + key)
+                existing_path(repo, state[key])
         require(state["storyId"] == STORY_ID, "PROGRESS_STORY_ID")
         require(state["status"] in ("NOT_STARTED", "IN_PROGRESS", "BLOCKED", "COMPLETED"), "PROGRESS_STATUS")
         require(state["acceptanceStatus"] in ("NOT_ACCEPTED", "ACCEPTED"), "ACCEPTANCE_STATUS")
