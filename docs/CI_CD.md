@@ -25,6 +25,7 @@ blob 없이 전체 이력만 받은 체크아웃에서 돈다. 파일 내용은 
 | `unity-meta` | 전체 트리 | `Assets/`(와 임베디드 패키지)의 파일·폴더마다 `.meta`, `.meta`마다 대상. 빈 폴더의 `.meta`는 받은 쪽 Unity가 지우므로 고아로 본다 |
 | `generated-files` | 전체 트리 | `Library/`·`Temp/`·`Obj/`·`Logs/`·`UserSettings/`·`Builds/`, 파이썬 바이트코드, `.DS_Store` 금지 |
 | `unity-text` | 설정 + 변경분 | `m_SerializationMode: 2`(Force Text). 바뀐 씬·프리팹·머티리얼·애니메이션은 `%YAML`로 시작. NavMesh·LightingData `.asset`은 원래 바이너리라 제외 |
+| `tmp-dynamic-font` | 변경분 | Dynamic·DynamicOS이면서 *Clear Dynamic Data On Build*가 켜진 TMP 폰트(`*SDF*.asset`)는 **빈 상태로 커밋**한다. TMP가 Unity를 끌 때와 빌드할 때마다 이 폰트를 비우고, 한글은 쓰는 순간 원본 폰트에서 다시 채운다(#248). Unity를 켠 채 커밋하면 채워진 상태가 섞이므로 그 파일은 커밋에서 빼거나 `git checkout -- <파일>`로 되돌린다 |
 | `ignored-files` | 변경분 | `.gitignore`에 걸리는 경로를 강제로 추가하지 않는다(macOS·Windows와 같게 대소문자 무시) |
 | `large-files` | 변경분 | 50 MiB 초과 경고, 100 MiB 초과 오류 |
 | `branch-flow` | PR | `main`에는 `develop`, `release/*`, `hotfix/*`만 |

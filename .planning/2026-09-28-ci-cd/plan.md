@@ -60,3 +60,12 @@
 - develop `3c05e778` push: Quality gate·Tool tests·Security·Unity(gate)·Scorecard 성공. Scorecard 게시 수용, 점수 5.6 (Token-Permissions·Dangerous-Workflow·Dependency-Update-Tool·Vulnerabilities 10, Pinned-Dependencies·Security-Policy 9, Branch-Protection 8, SAST 7, CI-Tests 3; Maintained·Code-Review·License·Binary-Artifacts·Contributors·Fuzzing·CII 0).
 - Pinned-Dependencies 감점 2건은 `$/` self-repository 참조를 Scorecard v2.4.4가 인식하지 못한 오탐.
 - 필수 체크: `Policy, security and repository hygiene` + `Tool tests` (규칙 22267761). `Unity tests`는 학생 플랜 비밀값 등록·첫 녹색 실행 후.
+
+## 이슈 #248 판정 (NotoSansCJKkr 동적 폰트)
+
+- 원인(TMP 원본, com.unity.ugui 2.0.0): Dynamic/DynamicOS + `clearDynamicDataOnBuild`인 폰트는 `EditorApplication.quitting`(대화형·배치모드 종료 모두)과 `IPreprocessBuildWithReport`에서 `ClearCharacterAndGlyphTablesInternal()`로 문자·글리프 표와 아틀라스를 비우고 저장한다. 커밋된 글리프 수가 커밋 시점에 따라 달라졌다(d61997d0 395개, b8098810 311개).
+- 이슈의 "빈 폰트면 한글이 깨진다"는 사실이 아니다: 에디터에서 사본을 0개로 비운 뒤 `TryAddCharacters` 24자 성공(누락 0), 새 한글 TMP 배치 15/15 표시(원본 .otf, includeFontData=1). 플레이어 빌드는 어차피 빈 상태로 시작한다.
+- 채운 상태를 커밋하면 아틀라스가 hex로 .asset에 들어가 버전마다 2.27–4.37 MB(압축 0.34 MB)가 쌓이고 한 줄짜리 hex에서 병합 충돌이 난다.
+- 최소 Unity 프로젝트에서 실제 종료 3회: 311개판·395개판(아틀라스 2장) 모두 같은 6,528바이트(`3ea6f262…`)가 되고 두 번째 종료에도 그대로다. 저장소에 이 파일을 커밋하면 누구의 종료·빌드·배치 시험에도 차이가 생기지 않는다.
+- JEV: 1차(`jev-issue248-018`) flag off 0.50 / 빈 상태+가드 0.44 → 저장소 비용 사실 추가 후 2차(`jev-issue248-019`) 빈 상태+가드 0.72, flag off 0.20. `com.unity.textmeshpro` 5.0.0(의존 없는 폐기 예정 껍데기)은 별도 변경(0.89).
+- 조치: TMP가 만든 휴지 상태 파일 커밋, 정책 게이트 `tmp-dynamic-font`(변경분) 추가.
