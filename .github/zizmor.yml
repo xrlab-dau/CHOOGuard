@@ -1,0 +1,7 @@
+# zizmor configuration (auto-discovered by the Quality gate's zizmor run).
+rules:
+  # GitHub's self-repository syntax (`uses: $/...`) resolves a same-repository action by downloading the whole
+  # repository archive at the running commit. This repository carries ~4 GB of Unity assets, and that download timed
+  # out on every runner (2026-09-28, run 36393274297). Local actions come from a .github-only checkout instead.
+  self-repository:
+    disable: true

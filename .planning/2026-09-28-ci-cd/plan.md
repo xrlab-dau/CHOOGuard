@@ -79,3 +79,9 @@
 - 코드: `SqliteProvider` Windows/Linux 로더, `MvpPhysicsBridge` venv 경로, `CSBOOT0101` Windows 호스트 건너뜀, `CSBOOT0201` `GetName()` 대신 `FullName`(한글 경로), `PlayerBuild` Windows·Linux·`BuildAll`. 정적 배칭은 Standalone 그룹 공통이라 변경 없음.
 - 로컬 검증(macOS 에디터): 컴파일 오류 0. 고정 SQLite 3.53.4로 CSOPS0201 3건·CSOPS0203 10건 첫 실행 통과, CSBOOT0201 통과, CSBOOT0101 Windows 빌드 시험은 기존대로 -cgFixtureRoot 없이 건너뜀.
 - `.gitattributes`: 재정규화 결과 기존 파일 변경 0(CRLF 14건과 연구 자료 1,450건은 바이트 보존 트리).
+
+## 첫 세 OS 실행 (run 36393274297) — self-repository 참조 철회
+
+- `UNITY_PASSWORD`: 계정이 구글 로그인이라 Unity 비밀번호가 없었다. 사용자 승인 후 Security → Change Password 재설정 메일(Aside Gmail)로 페이지 안에서 생성한 무작위 30자 비밀번호를 설정하고, 성공 확인 뒤에만 gh로 전달했다(출력·파일 없음). 재설정 링크는 사용 후 오류 페이지로 바뀌었다. 모든 에디터 로그아웃은 사용자가 승인했다.
+- 결과: macOS 잡이 `Set up job`에서 실패했다. `uses: $/.github/actions/setup-unity`는 러너가 codeload에서 저장소 전체 tar.gz를 받게 하는데, 에셋 약 4 GB라 100초 제한을 세 번 넘겼다. Linux도 같은 단계에서 멈췄다. 활성화 전이라 실행을 취소했다(반납할 활성화 없음).
+- 조치: 테스트 잡은 루트에 `.github`만 체크아웃하고 프로젝트는 별도 디렉터리(`project`, Windows는 `경로 검사/CHOOGuard`)에 받는다. 로컬 action은 `./.github/actions/...`로 쓴다. zizmor `self-repository` 검사는 이유를 적어 끄고, actionlint `$/` 무시 규칙은 삭제했다.

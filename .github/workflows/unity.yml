@@ -120,14 +120,24 @@ jobs:
     permissions:
       contents: read
     env:
-      # Windows checks out under a non-ASCII folder: a teammate's Korean user folder broke Mono path handling before.
-      PROJECT: ${{ matrix.os == 'windows' && '경로 검사/CHOOGuard' || '.' }}
+      # The project lives in its own directory so the local actions can come from a small .github-only checkout at the
+      # workspace root (`uses:` cannot vary per OS). Windows uses a non-ASCII folder with a space: a teammate's Korean
+      # user folder broke Mono path handling before.
+      PROJECT: ${{ matrix.os == 'windows' && '경로 검사/CHOOGuard' || 'project' }}
     defaults:
       run:
         shell: bash
-        working-directory: ${{ matrix.os == 'windows' && '경로 검사/CHOOGuard' || '.' }}
+        working-directory: ${{ matrix.os == 'windows' && '경로 검사/CHOOGuard' || 'project' }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # First, so its clean step can never touch the project checkout below.
+      - name: Check out the CI actions
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: .github
+          persist-credentials: false
+
+      - name: Check out the project
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: ${{ env.PROJECT }}
           sparse-checkout: |
@@ -138,12 +148,12 @@ jobs:
           persist-credentials: false
 
       - id: unity
-        uses: $/.github/actions/setup-unity
+        uses: ./.github/actions/setup-unity
         with:
           project-path: ${{ env.PROJECT }}
 
       - name: Pinned SQLite for the persistence tests
-        uses: $/.github/actions/pinned-sqlite
+        uses: ./.github/actions/pinned-sqlite
 
       - id: library
         name: Restore the Library import cache
@@ -254,7 +264,7 @@ jobs:
           persist-credentials: false
 
       - id: unity
-        uses: $/.github/actions/setup-unity
+        uses: ./.github/actions/setup-unity
         with:
           modules: windows-mono linux-mono
 
