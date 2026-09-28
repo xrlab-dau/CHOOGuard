@@ -92,3 +92,12 @@
 - 실패 102건은 두 원인뿐이다. 희소 체크아웃에 `content/`가 없어 55건(`content/fixtures/two-agency.json`), `docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts/`가 없어 47건(`assembly-layout.json`)이 실패했다. local-action 변경 전부터 있던 누락이고, 레인이 처음 실제로 돌면서 드러났다.
 - 수정: 시험 잡 체크아웃과 게이트 `unity_paths`에 `content`, `docs/build`(영수증·기준 스키마), 계약 디렉터리를 같은 목록으로 추가했다. 로컬 cone 희소 체크아웃으로 세 경로가 있는지 확인했다(디스크 219개 파일).
 - 같은 실행의 Windows 잡(비ASCII·공백 경로 첫 실행)은 취소하지 않고 끝까지 돌려 Windows 고유 문제를 먼저 본다.
+
+## 수정 실행 (run 36396147103, `075e9931`) - 시험 입력 수정 확인, Windows 스크립트 결함 2건
+
+- macOS·Linux: EditMode·PlayMode 전부 통과(잡 성공). 시험 입력 누락 수정이 확인됐다.
+- Windows: EditMode 449 통과·0 실패·40 건너뜀, PlayMode 45/45 통과. 그런데 잡은 실패했다. 원인은 시험이 아니라 스크립트 두 곳이다.
+  1. 판정: `unity_results.py`가 `MODE:PATH:EXIT`를 모든 콜론에서 나눠, Windows의 `D:\a\_temp` 드라이브 문자에서 경로가 잘렸다. 그래서 "no results file (editor exit unknown)"이 나왔다. 첫 실행(36394165119)의 Windows 판정도 같은 오류였는데, 실제 실패 102건에 가려 있었다. 첫 콜론과 마지막 콜론에서 나누게 고치고(`parse_spec`), 실제 CI 문자열로 회귀 시험을 넣었다. 이 실행의 Windows 결과 파일을 새 판정에 넣으면 통과한다.
+  2. 반납: "Unity licence returned" 뒤 `rm -rf "$private"`가 "Device or resource busy"로 실패했다(Unity 보조 프로세스가 return.log를 잡고 있음). 첫 실행에서는 성공했으니 경쟁 상태다. 10초까지 다시 지워 보고, 그래도 안 되면 알림만 남긴다. bash 3.2에서 정상·잠김 두 경로를 흉내 내 확인했다.
+- 모든 OS의 에셋 임포트가 실제로 일어났다(10,964개, 4-5분). LFS가 없어 러너가 실제 바이너리를 받는다. 문서의 "수십 분" 추정을 측정값으로 바꿨다.
+- 다음: `os=windows build=true`로 Windows 수정 확인과 첫 플레이어 빌드·세 OS 스모크를 한 번에 본다.
