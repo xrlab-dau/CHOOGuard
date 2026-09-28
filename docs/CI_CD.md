@@ -117,3 +117,4 @@ uvx zizmor@1.30.1 --offline .
 - actionlint 1.7.12(최신)는 `queue`(2026-05)와 `$/`(2026-07)를 모른다. 이 두 메시지만 무시한다. 새 actionlint가 나오면 무시 목록을 지운다.
 - macOS 표준 러너의 보장 디스크는 14 GB다(에디터 설치 9.4 GB). 실제 여유 공간은 설치 단계가 `df`로 기록한다.
 - 첫 Unity 실행과 모든 빌드는 3.9 GB 에셋을 새로 임포트하므로 수십 분 걸린다.
+- OpenSSF Scorecard 기준선은 5.6(2026-09-28, `3c05e778`)이다. Pinned-Dependencies 9점의 감점 2건은 `uses: $/.github/actions/setup-unity`다. Scorecard v2.4.4(2026-07-23)가 GitHub의 self-repository 문법(2026-07-30)을 몰라 해시 없는 외부 action으로 오판한 것이다. GitHub는 `$/`를 고정 참조로 취급하므로 점수 때문에 `./`로 되돌리지 않는다. 나머지 감점(저장소 생성 90일 미만, LICENSE 없음, 승인 없는 머지, `Assets/Packages`의 DotRecast DLL 등 바이너리)은 CI 밖의 결정이다.
