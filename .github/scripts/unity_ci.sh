@@ -83,7 +83,13 @@ links = sys.argv[1]
 for name, target in (("root-link", "target"), ("parent-link", "target"), ("leaf-link", "target"), ("dangling-link", "absent")):
     os.symlink(os.path.join(links, target), os.path.join(links, name), target_is_directory=True)
 PY
-    args+=(-cgFixtureRoot "$fixture/scratch" -cgBuildLinkFixture "$fixture/links")
+    scratch="$fixture/scratch" links="$fixture/links"
+    # The tests compare paths built from these values with the normalised paths BuildBaseline records, so Windows gets
+    # native separators: RUNNER_TEMP is D:\a\_temp and the mixed D:\a\_temp/cg-boundary/... failed 4 tests (run 36446374412).
+    case "${RUNNER_OS:-$(uname -s)}" in
+      Windows|MINGW*|MSYS*) scratch=$(cygpath -w "$scratch") links=$(cygpath -w "$links") ;;
+    esac
+    args+=(-cgFixtureRoot "$scratch" -cgBuildLinkFixture "$links")
   elif [[ ${RUNNER_OS:-} == Linux ]]; then
     runner=(xvfb-run -a -s "-screen 0 1920x1080x24")
   fi
