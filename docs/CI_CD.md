@@ -75,11 +75,12 @@ gh variable set UNITY_CI_ENABLED --body true -R xrlab-dau/CHOOGuard
 
 | 이벤트 | 에디터 시험 | 플레이어 빌드 + 스모크 |
 |---|---|---|
-| 같은 저장소 PR, `Assets`·`Packages`·`ProjectSettings` 변경 | Windows, macOS | — |
+| 같은 저장소 PR, Unity 경로 변경 | Windows, macOS | — |
 | develop·main push(Unity 경로 변경), `v*` 태그, 야간 | Windows, macOS, Linux | ✅ 세 OS |
 | 수동 실행 | 선택한 OS 또는 전부 | `build` 입력 |
 | 포크 PR, Unity 경로 무변경 | 사유를 남기고 건너뜀 | — |
 
+- Unity 경로: `Assets`·`Packages`·`ProjectSettings`에 더해, EditMode 시험이 저장소 루트에서 읽는 `content/`(픽스처), `docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts/`(어셈블리 계약), `docs/build/`(빌드 영수증·기준 스키마)다. 게이트의 `unity_paths`와 시험 잡의 희소 체크아웃이 같은 목록을 쓴다. 첫 Linux 실행(run 36394165119)에서 체크아웃에 이 셋이 빠져 EditMode 102건이 파일 없음으로 실패했다. 시험이 루트의 다른 파일을 읽게 되면 두 곳에 함께 추가한다.
 - 시험: EditMode(`-nographics`)와 PlayMode(Metal, Direct3D/WARP, 가상 디스플레이의 OpenGL)를 한 번의 활성화 안에서 돌린다. 판정은 `unity_results.py`가 결과 XML과 에디터 종료 코드를 함께 보고 내린다. 결과 파일 없음(컴파일 오류·크래시), 0건 실행, 실패, 종료 코드와 결과의 불일치는 실패다. Inconclusive는 경고다.
 - 빌드: macOS 러너 한 대가 Windows·Linux Mono 빌드 모듈을 함께 설치하고, 활성화 한 번과 임포트 한 번으로 세 플레이어를 만든다. 진입점은 메뉴와 같은 `ChooGuard.Editor.PlayerBuild.BuildAll`이다. 이 메서드는 실패해도 0으로 끝나므로 대상별 `CG_PLAYER_BUILD target=… result=Succeeded` 표식과 출력물로 판정한다. 산출물은 `player-macos`·`player-windows`·`player-linux`(zip, 30일)다.
 - 스모크: 각 OS 러너가 자기 플레이어를 `-batchmode -nographics -soak -soak-shifts 1 -soak-minutes 0.5`로 실행한다. 역사를 불러오고, 새 비상 세션의 군중이 생기고, 플레이한 뒤 타이틀로 돌아와 보고서를 쓰는 전 과정이다. `soak_verdict.py`가 판정한다. 보고서 없음(크래시·멈춤), 근무 누락, 예외, 군중이 생기지 않은 세션은 실패이고, 로그 오류는 경고다. 플레이어는 Unity 라이선스가 필요 없어 세 OS가 동시에 돈다.

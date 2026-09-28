@@ -58,7 +58,9 @@ jobs:
           BUILD_INPUT: ${{ inputs.build }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          unity_paths='^(Assets|Packages|ProjectSettings)/'
+          # The Unity project plus the files its EditMode tests read from the repository root (fixtures, the assembly
+          # contract, build receipts). Keep in sync with the project checkout in the tests job.
+          unity_paths='^(Assets|Packages|ProjectSettings|content|docs/build|docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts)/'
           all='["windows","macos","linux"]'
           # Pull requests cover the team's development OSes; Linux runs on develop, nightly and release tags.
           pr='["windows","macos"]'
@@ -75,7 +77,7 @@ jobs:
             if grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 3000 )); then
               tests=$pr
             else
-              reason="the pull request does not touch Assets, Packages or ProjectSettings"
+              reason="the pull request does not touch the Unity project or its test inputs"
             fi
           elif [[ $EVENT == push && $REF == refs/tags/v* ]]; then
             tests=$all build=true
@@ -87,7 +89,7 @@ jobs:
               if grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 300 )); then
                 tests=$all build=true
               else
-                reason="the push does not touch Assets, Packages or ProjectSettings"
+                reason="the push does not touch the Unity project or its test inputs"
               fi
             fi
           elif [[ $EVENT == workflow_dispatch ]]; then
@@ -136,6 +138,8 @@ jobs:
           sparse-checkout: .github
           persist-credentials: false
 
+      # Test inputs outside Assets come along (content/fixtures, the assembly contract, docs/build receipts);
+      # the gate's unity_paths lists the same directories.
       - name: Check out the project
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -145,6 +149,9 @@ jobs:
             Assets
             Packages
             ProjectSettings
+            content
+            docs/build
+            docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts
           persist-credentials: false
 
       - id: unity

@@ -85,3 +85,10 @@
 - `UNITY_PASSWORD`: 계정이 구글 로그인이라 Unity 비밀번호가 없었다. 사용자 승인 후 Security → Change Password 재설정 메일(Aside Gmail)로 페이지 안에서 생성한 무작위 30자 비밀번호를 설정하고, 성공 확인 뒤에만 gh로 전달했다(출력·파일 없음). 재설정 링크는 사용 후 오류 페이지로 바뀌었다. 모든 에디터 로그아웃은 사용자가 승인했다.
 - 결과: macOS 잡이 `Set up job`에서 실패했다. `uses: $/.github/actions/setup-unity`는 러너가 codeload에서 저장소 전체 tar.gz를 받게 하는데, 에셋 약 4 GB라 100초 제한을 세 번 넘겼다. Linux도 같은 단계에서 멈췄다. 활성화 전이라 실행을 취소했다(반납할 활성화 없음).
 - 조치: 테스트 잡은 루트에 `.github`만 체크아웃하고 프로젝트는 별도 디렉터리(`project`, Windows는 `경로 검사/CHOOGuard`)에 받는다. 로컬 action은 `./.github/actions/...`로 쓴다. zizmor `self-repository` 검사는 이유를 적어 끄고, actionlint `$/` 무시 규칙은 삭제했다.
+
+## 첫 Linux 시험 (run 36394165119) - 시험 입력 누락
+
+- 설치 -> 시리얼 활성화 -> EditMode -> PlayMode -> 반납까지 모두 실행됨. PlayMode 45/45 통과. EditMode 489건: 347 통과, 102 실패, 40 건너뜀.
+- 실패 102건은 두 원인뿐이다. 희소 체크아웃에 `content/`가 없어 55건(`content/fixtures/two-agency.json`), `docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts/`가 없어 47건(`assembly-layout.json`)이 실패했다. local-action 변경 전부터 있던 누락이고, 레인이 처음 실제로 돌면서 드러났다.
+- 수정: 시험 잡 체크아웃과 게이트 `unity_paths`에 `content`, `docs/build`(영수증·기준 스키마), 계약 디렉터리를 같은 목록으로 추가했다. 로컬 cone 희소 체크아웃으로 세 경로가 있는지 확인했다(디스크 219개 파일).
+- 같은 실행의 Windows 잡(비ASCII·공백 경로 첫 실행)은 취소하지 않고 끝까지 돌려 Windows 고유 문제를 먼저 본다.
