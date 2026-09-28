@@ -25,11 +25,10 @@ jobs:
         with:
           egress-policy: audit
 
+      # Full tree on purpose: the v5 validator checks that every referenced file exists (Assets sources,
+      # .planning evidence) and the entry-point test reads prompts/; a sparse tree fails them by construction.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          sparse-checkout: |
-            .github
-            docs
           persist-credentials: false
 
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
