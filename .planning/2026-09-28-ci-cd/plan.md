@@ -126,3 +126,4 @@
 - 로컬 확인(가짜 에디터, bash 3.2): 에디터가 두 인자를 받는다. 링크 셋은 `target/`, 끊긴 링크 하나. bootstrap 성공 경로(CRLF 표식, 영수증 복사, exit 0), 실패 경로(exit 1, 오류 주석), Linux 호스트 거부.
 - 첫 실행(run 36446374412, `6af88727`, os=all bootstrap=true): macOS·Linux EditMode 487 통과·0 실패·2 건너뜀, 경계 38/38 통과. Bootstrap 실제 빌드 macOS(StandaloneOSX, 10분, 출력 304개)·Windows(StandaloneWindows64, 5분, 출력 306개) 모두 영수증 SUCCEEDED. Windows EditMode는 경계 4건이 실패했다. 원인은 스크립트가 넘긴 `D:\a\_temp/cg-boundary/scratch` 같은 섞인 구분자 경로다. 시험은 이 값으로 만든 기대 경로를, 결과는 `Path.GetFullPath`로 정규화된 기록 경로를 비교한다(index 10에서 `/`와 `\`가 다름). 시험은 맞으므로 Windows에서는 `cygpath -w`로 네이티브 경로를 넘긴다.
 - 문서 정정: "몇 초"가 아니다. 37건은 1초 안에 끝나지만 NOT_RUN 오라클은 영수증의 소스 트리 해시(3.5 GB) 때문에 46-68초 걸린다.
+- Windows 재실행(run 36453619925, `83db6e83`): EditMode 486 통과·0 실패·3 건너뜀, 경계 37/37(오라클 1건은 설계상 macOS·Linux 전용), PlayMode 45/45, Bootstrap 빌드 SUCCEEDED(출력 306개). macOS·Linux는 36446374412에서 경계 38/38이었고, 이후 변경은 Windows 분기뿐이다.
