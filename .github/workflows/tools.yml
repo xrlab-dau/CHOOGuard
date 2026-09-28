@@ -1,0 +1,123 @@
+name: Tool tests
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: tool-tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  docs:
+    name: Docs tool suites
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: |
+            .github
+            docs
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: .github/requirements/tools.txt
+
+      - name: Install locked dependencies
+        run: python -m pip install --require-hashes --no-deps -r .github/requirements/tools.txt
+
+      - name: Run every docs tool suite
+        run: |
+          failed=()
+          for suite in docs/*/tests; do
+            dir=${suite%/tests}
+            echo "::group::$dir"
+            (cd "$dir" && python -m pytest -q -p no:cacheprovider tests) || failed+=("$dir")
+            echo "::endgroup::"
+          done
+          if (( ${#failed[@]} )); then
+            printf '::error title=Docs tool suite::%s\n' "${failed[@]}"
+            exit 1
+          fi
+
+      - name: Active plan validator and derived view (#245)
+        run: |
+          python docs/CHOOGuard_Story_Plan_v5/tools/active_plan.py validate
+          python docs/CHOOGuard_Story_Plan_v5/tools/active_plan.py render --check
+
+  workers:
+    name: Worker checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: |
+            .github
+            workers
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: .github/requirements/physics.txt
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+
+      - name: Syntax of every worker entry point
+        run: |
+          python -m compileall -q workers
+          for script in workers/*/*.mjs; do node --check "$script"; done
+
+      - name: Install the physics core (locked, without JuPedSim's GUI stack)
+        run: python -m pip install --require-hashes --no-deps -r .github/requirements/physics.txt
+
+      - name: Physics verification probes
+        run: |
+          receipt=workers/physics/verification/receipt.json
+          git show "HEAD:$receipt" > "$RUNNER_TEMP/committed-receipt.json"
+          python workers/physics/verification/run_probes.py > "$RUNNER_TEMP/probe-run.json"
+          # run_probes.py exits 0 even when a probe fails, so the verdict is read from its report.
+          python .github/scripts/physics_probes.py "$RUNNER_TEMP/committed-receipt.json" "$receipt"
+          git diff --exit-code -- workers/physics/verification/prespecified.json
+
+  result:
+    # Required status check: reports on every change, even when a needed job was skipped or cancelled.
+    name: Tool tests
+    needs: [docs, workers]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Combine results
+        env:
+          DOCS: ${{ needs.docs.result }}
+          WORKERS: ${{ needs.workers.result }}
+        run: |
+          echo "docs=$DOCS workers=$WORKERS"
+          [[ $DOCS == success && $WORKERS == success ]]

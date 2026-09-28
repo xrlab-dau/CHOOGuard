@@ -1,0 +1,11 @@
+name: CHOOGuard CodeQL
+
+queries:
+  - uses: security-extended
+
+# Third-party code kept as research evidence, not shipped or executed by the game or CI.
+paths-ignore:
+  - asset-library/**
+  - .planning/**
+  - Assets/.planning/**
+  - Assets/ChooGuard/ThirdParty/**
