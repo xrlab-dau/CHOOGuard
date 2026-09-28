@@ -111,3 +111,10 @@
 - 수정: Linux 스모크를 `xvfb-run` 안에서 실행한다. 게임 코드는 바꾸지 않는다(실제 Linux 사용자는 X11·Wayland가 있다).
 - 포장: `ditto -c -k`가 확장 속성(com.apple.provenance)이 있는 파일마다 `._` AppleDouble 파일을 Windows·Linux zip에 넣는다. 로컬 왕복으로 확인하고 `--norsrc --noextattr --noqtn --noacl`로 뺐다(`d14b1fee`). 실행 비트와 심볼릭 링크는 유지된다.
 - 다음: 모든 수정을 담아 `os=all build=true`로 한 번에 녹색을 확인한다.
+
+## 최종: 세 OS 전 과정 녹색 (run 36420972690, `d51e5d35`)
+
+- 시험(Windows·macOS·Linux 모두): EditMode 449/489 통과·0 실패·40 건너뜀(의도된 경계 재시험 등), PlayMode 45/45.
+- 빌드: 2시간 10분(13:04-15:14 UTC). 반납·포장 성공.
+- 스모크(세 OS 모두 exit 0): 1근무, 오류 0, 예외 0, 군중 148명. 최대 프레임은 Windows 399 ms, macOS 412 ms, Linux 297 ms이고 각각 히치 1회다. Linux는 Xvfb 안에서 `window backend: x11`.
+- 남은 일(문서 "알려진 제약"): `CSBOOT0101` 경계 재시험 야간 잡, Scorecard의 CI 밖 감점.
