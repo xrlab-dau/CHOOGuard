@@ -12,6 +12,7 @@ import argparse
 import json
 import os
 import posixpath
+import re
 import subprocess
 import sys
 import urllib.error
@@ -27,6 +28,10 @@ JUNK_NAMES = (".DS_Store", "Thumbs.db")
 BYTECODE_SUFFIXES = (".pyc", ".pyo")
 # Unity writes these as YAML under Force Text; LightingData/NavMesh `.asset` files stay binary by design.
 UNITY_TEXT_EXTENSIONS = frozenset((".unity", ".prefab", ".mat", ".controller", ".overridecontroller", ".anim", ".mask", ".physicmaterial", ".lighting"))
+# TextMesh Pro empties Dynamic/DynamicOS font assets that have "Clear Dynamic Data On Build" on every editor exit
+# and every player build (com.unity.ugui 2.0 TMP_EditorResourceManager, TMP_PreBuildProcessor). Their resting,
+# committed state is therefore empty; editor sessions refill them on demand from the source font (#248).
+TMP_DYNAMIC_MODES = frozenset(("1", "2"))
 RELEASE_SOURCES = ("develop",)
 RELEASE_SOURCE_PREFIXES = ("hotfix/", "release/")
 GRAPH_FILE = "graphify-out/graph.json"
@@ -132,6 +137,27 @@ def check_text_assets(heads: dict[str, bytes]) -> list[Finding]:
             for path, head in sorted(heads.items()) if not head.startswith(b"%YAML")]
 
 
+def tmp_font_asset(path: str) -> bool:
+    """TextMesh Pro names its font assets "<Font> SDF.asset" (fallbacks "<Font> SDF - Fallback.asset")."""
+    return path.startswith(("Assets/", "Packages/")) and path.endswith(".asset") and "SDF" in posixpath.basename(path)
+
+
+def check_dynamic_fonts(texts: dict[str, bytes]) -> list[Finding]:
+    """Changed dynamic, clear-on-build TMP font assets must be committed empty, the state TMP itself writes at rest."""
+    findings = []
+    for path, data in sorted(texts.items()):
+        text = data.decode("utf-8", errors="replace")
+        mode = re.search(r"^\s*m_AtlasPopulationMode: (\d+)\s*$", text, re.M)
+        clear = re.search(r"^\s*m_ClearDynamicDataOnBuild: (\d+)\s*$", text, re.M)
+        if not mode or mode.group(1) not in TMP_DYNAMIC_MODES or not clear or clear.group(1) != "1":
+            continue
+        if not re.search(r"^\s*m_GlyphTable: \[\]\s*$", text, re.M):
+            findings.append(Finding("error", "tmp-dynamic-font",
+                                    "dynamic TextMesh Pro font committed with editor-filled glyphs; TMP empties it on every Unity exit and build, "
+                                    "so it is committed empty: leave it out of the commit or run `git checkout -- <file>` (Unity refills it on demand)", path))
+    return findings
+
+
 def check_sizes(sizes: dict[str, int]) -> list[Finding]:
     findings = []
     for path, size in sorted(sizes.items()):
@@ -199,8 +225,8 @@ def git_ignored(paths: Sequence[str]) -> set[str]:
     return set(split_z(result.stdout))
 
 
-def blob_heads(oids: dict[str, str], length: int = 8) -> dict[str, bytes]:
-    """First bytes of each blob. Missing blobs are requested in one fetch (as git's own promisor fetch does), then read locally."""
+def blob_heads(oids: dict[str, str], length: int | None = 8) -> dict[str, bytes]:
+    """First `length` bytes (whole blob when None). Missing blobs are requested in one fetch (as git's own promisor fetch does), then read locally."""
     if not oids:
         return {}
     subprocess.run(["git", "-c", "fetch.negotiationAlgorithm=noop", "fetch", "-q", "--no-tags", "--no-write-fetch-head",
@@ -215,7 +241,7 @@ def blob_heads(oids: dict[str, str], length: int = 8) -> dict[str, bytes]:
             cursor = end + 1
             continue
         size = int(header[2])
-        heads[path] = data[end + 1:end + 1 + min(size, length)]
+        heads[path] = data[end + 1:end + 1 + (size if length is None else min(size, length))]
         cursor = end + 1 + size + 1
     return heads
 
@@ -310,6 +336,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     changed = list(blobs)
     findings += check_ignored(changed, git_ignored)
     findings += check_text_assets(blob_heads({p: oid for p, oid in blobs.items() if unity_text_asset(p)}))
+    findings += check_dynamic_fonts(blob_heads({p: oid for p, oid in blobs.items() if tmp_font_asset(p)}, length=None))
     token = env("GITHUB_TOKEN", "")
     if changed and token and args.repo:
         sizes = api_blob_sizes(args.repo, head, token)
@@ -323,7 +350,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         findings += check_branch_flow(args.base_ref, args.head_ref)
     findings += graph_findings(*graph_state(head))
 
-    checks = ["unity-meta", "generated-files", "unity-text", "ignored-files", "large-files", "branch-flow", "graph-freshness"]
+    checks = ["unity-meta", "generated-files", "unity-text", "tmp-dynamic-font", "ignored-files", "large-files", "branch-flow", "graph-freshness"]
     for finding in findings[:MAX_ANNOTATIONS]:
         print(annotation(finding))
     for finding in findings[MAX_ANNOTATIONS:]:

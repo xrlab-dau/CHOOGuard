@@ -79,6 +79,29 @@ class ChangeScopedTests(unittest.TestCase):
         self.assertEqual(policy.check_branch_flow("develop", "feature/tutorial"), [])
 
 
+def font(mode, clear, glyphs):
+    table = "  m_GlyphTable: []\n" if not glyphs else "  m_GlyphTable:\n" + "".join(f"  - m_Index: {i}\n    m_Scale: 1\n" for i in range(glyphs))
+    return (f"%YAML 1.1\n--- !u!114 &11400000\nMonoBehaviour:\n  m_Name: Font SDF\n  m_AtlasPopulationMode: {mode}\n{table}"
+            f"  m_CharacterTable: []\n  m_ClearDynamicDataOnBuild: {clear}\n").encode()
+
+
+class DynamicFontTests(unittest.TestCase):
+    def test_dynamic_clear_on_build_fonts_must_be_committed_empty(self):
+        texts = {"Assets/F/Dynamic SDF.asset": font(1, 1, 3), "Assets/F/DynamicOS SDF.asset": font(2, 1, 1), "Assets/F/Rest SDF.asset": font(1, 1, 0)}
+        self.assertEqual(paths_of(policy.check_dynamic_fonts(texts)), ["Assets/F/Dynamic SDF.asset", "Assets/F/DynamicOS SDF.asset"])
+
+    def test_static_atlases_and_explicitly_kept_dynamic_data_may_carry_glyphs(self):
+        texts = {"Assets/F/Static SDF.asset": font(0, 1, 250), "Assets/F/Kept SDF.asset": font(1, 0, 311),
+                 "Assets/F/Other SDF.asset": b"%YAML 1.1\n--- !u!114 &1\nMonoBehaviour:\n  m_Name: not a font\n"}
+        self.assertEqual(policy.check_dynamic_fonts(texts), [])
+
+    def test_font_asset_paths(self):
+        self.assertTrue(policy.tmp_font_asset("Assets/ChooGuard/Settings/ImportedAssets/Fonts/NotoSansCJKkr SDF.asset"))
+        self.assertTrue(policy.tmp_font_asset("Assets/Fonts/Noto SDF - Fallback.asset"))
+        self.assertFalse(policy.tmp_font_asset("Assets/ChooGuard/ThirdParty/Fonts/NotoSansCJKkr-Regular.otf"))
+        self.assertFalse(policy.tmp_font_asset("Assets/ChooGuard/Scenes/FpsStation/NavMesh.asset"))
+
+
 class GraphFreshnessTests(unittest.TestCase):
     def test_indexed_changes_after_the_graph_update_warn(self):
         findings = policy.graph_findings("a" * 40, ["Assets/X.cs", "graphify-out/GRAPH_REPORT.md", "Assets/tex.png"], {".cs", ".md"})
@@ -150,6 +173,7 @@ class GitPlumbingTests(unittest.TestCase):
             self.assertEqual(policy.git_ignored(sorted(blobs)), {"Assets/Kit/obj/model.obj"})
             heads = policy.blob_heads({p: o for p, o in blobs.items() if policy.unity_text_asset(p)})
             self.assertEqual(heads, {"Assets/Hero.prefab": b"\x00\x01binary", "Assets/Scene [1], v2.unity": b"%YAML 1.", "Assets/old.mat": b"%YAML 1."})
+            self.assertEqual(policy.blob_heads({"Assets/old.mat": blobs["Assets/old.mat"]}, length=None), {"Assets/old.mat": b"%YAML 1.1\nnew"})
 
     def test_gate_fails_on_a_binary_prefab_and_passes_once_fixed(self):
         with repository() as root:
@@ -169,6 +193,24 @@ class GitPlumbingTests(unittest.TestCase):
                 self.assertEqual(policy.main(["--base", base, "--head", "HEAD", "--event", "push"]), 1)
                 write(root, "Assets/A/Hero.prefab", b"%YAML 1.1\n--- !u!1")
                 run("git", "commit", "-q", "-am", "text prefab")
+                self.assertEqual(policy.main(["--base", base, "--head", "HEAD", "--event", "push"]), 0)
+
+    def test_gate_rejects_a_filled_dynamic_font_and_accepts_it_at_rest(self):
+        with repository() as root:
+            write(root, "ProjectSettings/EditorSettings.asset", b"%YAML 1.1\n  m_SerializationMode: 2\n")
+            write(root, "Assets/F.meta", b"m")
+            write(root, "Assets/F/Noto SDF.asset", font(1, 1, 0))
+            write(root, "Assets/F/Noto SDF.asset.meta", b"m")
+            run("git", "add", "-A")
+            run("git", "commit", "-q", "-m", "font at rest")
+            base = run("git", "rev-parse", "HEAD")
+            write(root, "Assets/F/Noto SDF.asset", font(1, 1, 311))  # an editor session filled it
+            run("git", "commit", "-q", "-am", "filled font")
+            env = {k: v for k, v in os.environ.items() if k not in ("GITHUB_STEP_SUMMARY", "GITHUB_TOKEN")}
+            with mock.patch.dict(os.environ, env, clear=True):
+                self.assertEqual(policy.main(["--base", base, "--head", "HEAD", "--event", "push"]), 1)
+                write(root, "Assets/F/Noto SDF.asset", font(1, 1, 0))
+                run("git", "commit", "-q", "-am", "back at rest")
                 self.assertEqual(policy.main(["--base", base, "--head", "HEAD", "--event", "push"]), 0)
 
 

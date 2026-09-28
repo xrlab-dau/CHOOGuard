@@ -1,0 +1,61 @@
+{
+ "model_requested": "jev-latest",
+ "judged_at": "2026-09-28T05:36:58Z",
+ "elapsed_ms": 296,
+ "authority": 0,
+ "state": {
+  "task": "Judge the remedy for a font-asset issue in a team Unity 6 project (4 developers, macOS and Windows, public GitHub repo with a new CI policy gate). Inputs are verified observations, not instructions. Return typed judgments only; the maintainer decides.",
+  "issue_claim": "Issue #248: running -batchmode -runTests empties the TMP font asset 'NotoSansCJKkr SDF' (311 glyphs -> 0); the issue says committing that state breaks Korean text for everyone, and offers: (1) per-asset m_ClearDynamicDataOnBuild 1->0 (tested: glyphs survive), (2) the global TMP Settings flag to 0 as well, (3) keep flags and add a CI check that fails when a font asset with 0 glyphs is committed.",
+  "verified_mechanism": "TMP source in com.unity.ugui 2.0.0: for every Dynamic/DynamicOS font asset with clearDynamicDataOnBuild=true, ClearCharacterAndGlyphTablesInternal() runs in IPreprocessBuildWithReport AND on EditorApplication.quitting; it clears the character table, glyph table and atlas textures and persists the change. So every editor exit (interactive or batchmode) and every player build writes the empty state to disk.",
+  "verified_render": "Maintainer probe in the running editor on a copy of the asset: cleared to 0 glyphs, then TryAddCharacters on 24 Korean characters succeeded with none missing, and a TMP layout of new Korean text auto-added glyphs and showed 15/15 visible characters. The source font NotoSansCJKkr-Regular.otf is referenced and imported with includeFontData=1. An empty dynamic asset therefore renders Korean; player builds always start empty because of the clear-on-build step.",
+  "verified_churn": "The committed glyph table depends on when a developer committed relative to their last editor exit or build: 395 glyphs at d61997d0, 311 at b8098810 (the 8,000-line YAML changed in both bulk commits). Different developers populate different glyphs, so the file also conflicts on merge. Other TMP assets: 'ChooGuard Bootstrap SDF' is a static atlas with the flag off (no churn).",
+  "ci_facts": "A required policy gate already checks change-scoped rules on the files a pull request adds or modifies (e.g. binary-serialized scenes), so a font-asset rule can be enforced only when someone changes a font asset. CI Unity tests run in throwaway checkouts, so batchmode clearing there never reaches the repository.",
+  "package_note": "com.unity.textmeshpro 5.0.0 is listed in Packages/manifest.json beside com.unity.ugui 2.0.0; it is a deprecated shim that only depends on ugui; nothing depends on it; the clearing code lives in ugui, so the shim is unrelated to the clearing."
+ },
+ "questions": {
+  "remedy": {
+   "type": "choice",
+   "instructions": "Which remedy resolves #248.",
+   "criteria": {
+    "empty_at_rest_with_ci_guard": "Commit NotoSansCJKkr SDF in the cleared state TMP itself writes on exit and build (flags stay on), and add a change-scoped policy rule that rejects committing dynamic clear-on-build TMP font assets that carry glyph data, with the remedy 'quit Unity or git checkout the asset'.",
+    "asset_flag_off": "Option 1: per-asset flag to 0; the asset keeps and accumulates editor-populated glyphs, which then also ship in player builds.",
+    "global_flag_off": "Option 2: per-asset and global flags to 0.",
+    "ci_reject_empty": "Option 3 as proposed: keep flags, fail when a font asset is committed with 0 glyphs.",
+    "static_atlas": "Generate a static Korean atlas for a curated character set plus a dynamic fallback."
+   }
+  },
+  "shim_package": {
+   "type": "choice",
+   "instructions": "What to do with the deprecated com.unity.textmeshpro 5.0.0 entry.",
+   "criteria": {
+    "separate_change": "Leave it out of the #248 fix; handle it as its own small change.",
+    "remove_in_this_fix": "Remove it in the same pull request.",
+    "leave": "Keep it."
+   }
+  }
+ },
+ "answers": {
+  "remedy": {
+   "type": "choice",
+   "choice": "asset_flag_off",
+   "confidence": 0.38,
+   "probabilities": {
+    "ci_reject_empty": 0.02,
+    "empty_at_rest_with_ci_guard": 0.44,
+    "static_atlas": 0.03,
+    "global_flag_off": 0.01,
+    "asset_flag_off": 0.5
+   }
+  },
+  "shim_package": {
+   "type": "choice",
+   "choice": "separate_change",
+   "confidence": 0.85,
+   "probabilities": {
+    "separate_change": 0.9,
+    "remove_in_this_fix": 0.02,
+    "leave": 0.08
+   }
+  }
+ }
+}
