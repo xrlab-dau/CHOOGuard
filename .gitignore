@@ -67,3 +67,6 @@ asset-library/models-materials/downloads/polyhaven/**/*.exr
 /Builds/
 # Unity 는 Assets/Temp/ 를 무시 목록(위 Temp/)으로 빼므로 폴더 없는 .meta 도 올리지 않는다.
 /Assets/Temp.meta
+# 위 Obj/ (Unity 캐시) 규칙은 대소문자를 가리지 않아 에셋 팩 안의 obj/ 폴더(KayKit OBJ 원본, 씬에서 쓰지 않음)도 뺀다.
+# 폴더 없이 .meta 만 올라가면 받은 쪽 Unity 가 경고하고 지우므로 그 .meta 도 뺀다.
+Assets/**/obj.meta
