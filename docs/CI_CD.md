@@ -137,5 +137,6 @@ uvx zizmor@1.30.1 --offline .
 - Linux 에디터 압축본은 코드 서명이 없어 Unity 매니페스트의 MD5로만 무결성을 확인한다.
 - Windows에서는 에디터가 끝난 뒤에도 Unity 보조 프로세스가 `return.log`를 잠시 잡고 있을 수 있다. 반납 단계는 10초까지 다시 지워 보고, 그래도 잠겨 있으면 알림(`::notice`)만 남긴다. 반납은 이미 끝났고, 러너가 잡과 함께 임시 폴더를 지운다.
 - 스모크는 헤드리스(`-nographics`)라 시작·씬 로드·세션·종료를 확인하지만 화면 렌더링까지는 보지 않는다. 렌더링은 PlayMode 시험(그래픽 장치 사용)이 맡는다.
+- Linux 플레이어는 디스플레이가 없으면 창 백엔드가 null이라 첫 프레임에서 segfault한다(Unity 버그. 실제 사용자는 X11·Wayland가 있어 해당하지 않는다). 그래서 Linux 스모크는 PlayMode 시험처럼 Xvfb 안에서 돈다. 같은 플레이어를 헤드리스와 Xvfb로 나란히 돌려 확인했다(run 36420682952: 헤드리스 exit 139, Xvfb exit 0·오류 0·예외 0).
 - `CSBOOT0101`의 경계 재시험(`-cgFixtureRoot` 등 33건, 실제 Bootstrap 빌드 포함)은 아직 CI에서 돌리지 않는다. 세 OS 레인이 녹색이 된 뒤 야간 잡으로 붙인다.
 - OpenSSF Scorecard 기준선은 5.6(2026-09-28, `3c05e778`)이다. Pinned-Dependencies 9점의 감점 2건은 당시 쓰던 `uses: $/...` 참조였고, `./` 로컬 action으로 바꾸면서 없어진다. 나머지 감점(저장소 생성 90일 미만, LICENSE 없음, 승인 없는 머지, `Assets/Packages`의 DotRecast DLL 등 바이너리)은 CI 밖의 결정이다.

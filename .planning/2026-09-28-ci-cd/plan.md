@@ -101,3 +101,13 @@
   2. 반납: "Unity licence returned" 뒤 `rm -rf "$private"`가 "Device or resource busy"로 실패했다(Unity 보조 프로세스가 return.log를 잡고 있음). 첫 실행에서는 성공했으니 경쟁 상태다. 10초까지 다시 지워 보고, 그래도 안 되면 알림만 남긴다. bash 3.2에서 정상·잠김 두 경로를 흉내 내 확인했다.
 - 모든 OS의 에셋 임포트가 실제로 일어났다(10,964개, 4-5분). LFS가 없어 러너가 실제 바이너리를 받는다. 문서의 "수십 분" 추정을 측정값으로 바꿨다.
 - 다음: `os=windows build=true`로 Windows 수정 확인과 첫 플레이어 빌드·세 OS 스모크를 한 번에 본다.
+
+## Windows 시험 + 첫 빌드·스모크 (run 36406455457, `5efe9b93`)
+
+- Windows 시험 잡 성공: 판정 경로 수정과 반납 정리가 실제 러너에서 확인됐다("Unity licence returned", 알림 없음).
+- 빌드 성공: 에디터+모듈 설치 4분, 빌드 1시간 53분(냉 임포트와 세 플레이어의 셰이더 컴파일), zip 455-470 MB.
+- 스모크: macOS·Windows 통과. Linux는 첫 프레임에서 segfault(exit 139). 로그에 "Selected window backend: (null)"가 찍혔다. 디스플레이가 없으면 Unity Linux 플레이어의 창 백엔드가 초기화되지 않는 버그다(Unity 포럼 보고, Xvfb 우회).
+- 확인: 같은 `player-linux` 산출물로 임시 워크플로(`diag/linux-smoke`, run 36420682952)에서 헤드리스와 Xvfb를 나란히 돌렸다. 헤드리스는 exit 139로 재현됐고, Xvfb는 backend x11, exit 0, `CG_SOAK errors=0 exceptions=0`로 통과했다. 우분투 24.04 이미지에 `xvfb-run`이 기본으로 있다. 임시 브랜치와 실행은 지웠다.
+- 수정: Linux 스모크를 `xvfb-run` 안에서 실행한다. 게임 코드는 바꾸지 않는다(실제 Linux 사용자는 X11·Wayland가 있다).
+- 포장: `ditto -c -k`가 확장 속성(com.apple.provenance)이 있는 파일마다 `._` AppleDouble 파일을 Windows·Linux zip에 넣는다. 로컬 왕복으로 확인하고 `--norsrc --noextattr --noqtn --noacl`로 뺐다(`d14b1fee`). 실행 비트와 심볼릭 링크는 유지된다.
+- 다음: 모든 수정을 담아 `os=all build=true`로 한 번에 녹색을 확인한다.
