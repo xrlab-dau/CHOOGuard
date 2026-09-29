@@ -244,7 +244,8 @@ namespace ChooGuard.App.Fps.Emergency
                     int best = int.MaxValue;
                     foreach (var person in byZone[zone])
                     {
-                        if (!filter(person)) continue;
+                        // 목록은 여러 프레임에 걸쳐 만들어진다: 그 사이 역을 떠나 사라진 승객은 건너뛴다.
+                        if (person == null || !filter(person)) continue;
                         int rank = Mix(director.Rank(person), cause);
                         if (rank < best) { best = rank; match = person; }
                     }
@@ -335,14 +336,15 @@ namespace ChooGuard.App.Fps.Emergency
             "passenger #" + p.Number + " (" + (p.Body.Female ? "woman" : "man") + (p.Elderly ? ", elderly" : "") + (p.Luggage == 2 ? ", large suitcase" : p.Luggage == 1 ? ", bag" : "") + ")";
 
         // 후보 설명은 1 s 마다 다시 만들어진다. 앉거나 서 있는 사람이 대부분이라 같은 자리의 이름(가장 가까운 표지를 찾는 일)을
-        // 반 미터 칸마다 5 s 동안 기억해 둔다.
+        // 반 미터 칸마다 기억해 둔다. 이름이 바뀌는 것은 열차(호차 위치·승강장 문 앞)뿐이라 열차 단계가 바뀔 때 비운다.
         private readonly Dictionary<Vector3Int, string> places = new Dictionary<Vector3Int, string>();
-        private float placesClearedAt;
+        private TrainService.Phase placesTrainStage;
 
-        /// <summary>The name staff would give a spot in a candidate's description, remembered per half-metre cell for a few seconds.</summary>
+        /// <summary>The name staff would give a spot in a candidate's description, remembered per half-metre cell until the train changes stage.</summary>
         private string Place(Vector3 position)
         {
-            if (Time.time - placesClearedAt > 5f) { places.Clear(); placesClearedAt = Time.time; }
+            var stage = Train != null ? Train.Stage : TrainService.Phase.Away;
+            if (stage != placesTrainStage || places.Count > 4000) { places.Clear(); placesTrainStage = stage; }
             var cell = new Vector3Int(Mathf.RoundToInt(position.x * 2), Mathf.RoundToInt(position.y), Mathf.RoundToInt(position.z * 2));
             if (!places.TryGetValue(cell, out var text)) places[cell] = text = world.Area(position) + ", " + world.Describe(position);
             return text;

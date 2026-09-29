@@ -209,10 +209,14 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void NewEmergency() { if (firstNewEmergency < 0) firstNewEmergency = session.ShiftSeconds; }
 
-        /// <summary>The hazard the draw used over the last <paramref name="dt"/> seconds of game time (events per second).</summary>
-        public void Trace(float dt, float origin, float development, int candidates, int rated, string top)
+        /// <summary>
+        /// The hazard the draw used over the last <paramref name="dt"/> seconds of game time (events per second): how many
+        /// candidates were listed, how many of them counted with their own rating and how many with the rating of the newest
+        /// candidate of their kind (not rated yet), and the highest terms.
+        /// </summary>
+        public void Trace(float dt, float origin, float development, int candidates, int rated, int borrowed, string top)
         {
-            trajectory.Add(new JArray(Math.Round(session.ShiftSeconds, 2), Math.Round(dt, 3), origin, development, candidates, rated, top));
+            trajectory.Add(new JArray(Math.Round(session.ShiftSeconds, 2), Math.Round(dt, 3), origin, development, candidates, rated, borrowed, top));
         }
 
         /// <summary>
@@ -237,7 +241,7 @@ namespace ChooGuard.App.Fps.Emergency
                 ["events"] = events, ["new_emergencies"] = newEmergencies, ["first_new_emergency_at"] = firstNewEmergency < 0 ? null : (JToken)Math.Round(firstNewEmergency, 1),
                 ["levels"] = new JObject { ["calm_origin"] = Counts(0), ["incident_origin"] = Counts(1), ["development"] = Counts(2) },
                 ["heartbeat_ms"] = new JObject { ["heartbeats"] = totalMs.Count, ["requests_built"] = requestMs.Count, ["frame_slices"] = sliceMs.Count, ["per_frame"] = Percentiles(sliceMs), ["enumeration"] = Percentiles(enumerationMs), ["request"] = Percentiles(requestMs), ["total"] = Percentiles(totalMs) },
-                ["hazard_columns"] = new JArray("t", "dt", "origin_per_second", "development_per_second", "candidates", "rated", "top_terms"),
+                ["hazard_columns"] = new JArray("t", "dt", "origin_per_second", "development_per_second", "candidates", "rated", "borrowed", "top_terms"),
                 ["hazard"] = trajectory,
             };
         }

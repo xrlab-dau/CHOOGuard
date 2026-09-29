@@ -66,7 +66,7 @@ namespace ChooGuard.App.Fps.Emergency
         private static readonly float[] Multiplier = { 0f, 1f, 4f, 16f, 64f };
         private const float CalmOriginBase = 2.5e-4f;
         private const float IncidentOriginBase = 2.0e-5f;
-        private const float DevelopmentBase = 2.2e-4f;
+        private const float DevelopmentBase = 5.0e-4f;
 
         private static float Base(ImminenceScale scale) =>
             scale == ImminenceScale.CalmOrigin ? CalmOriginBase : scale == ImminenceScale.IncidentOrigin ? IncidentOriginBase : DevelopmentBase;
