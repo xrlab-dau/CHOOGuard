@@ -502,9 +502,9 @@ namespace ChooGuard.Editor
         /// Each OBJ material is remapped to a URP Lit material built from those maps (<see cref="JsonMaterial"/>). Equipment
         /// models are imported <paramref name="readable"/>: the shift combines their meshes into static batches at run time.
         /// </summary>
-        public static GameObject ObjaverseModel(string name, bool readable = false)
+        public static GameObject ObjaverseModel(string name, bool readable = false, string root = null)
         {
-            string folder = ObjaverseRoot + "/" + name + "/", objPath = folder + name + ".obj";
+            string folder = (root ?? ObjaverseRoot) + "/" + name + "/", objPath = folder + name + ".obj";
             var info = JsonUtility.FromJson<ObjaverseInfo>(File.ReadAllText(folder + name + ".json"));
             var importer = AssetImporter.GetAtPath(objPath) as ModelImporter ?? throw new FileNotFoundException(objPath);
             importer.globalScale = 1;
@@ -514,7 +514,7 @@ namespace ChooGuard.Editor
             importer.materialImportMode = ModelImporterMaterialImportMode.ImportStandard;
             importer.isReadable = readable;
             foreach (var entry in info.materials)
-                importer.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material), entry.name), JsonMaterial(name, entry.name));
+                importer.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material), entry.name), JsonMaterial(name, entry.name, root));
             importer.SaveAndReimport();
             return AssetDatabase.LoadAssetAtPath<GameObject>(objPath) ?? throw new FileNotFoundException(objPath);
         }
@@ -523,9 +523,9 @@ namespace ChooGuard.Editor
         /// URP Lit for one material of a converted model's sidecar JSON: base colour or colour map, normal map, metallic in
         /// R and smoothness (1 − glTF roughness) in A; alpha-tested when the JSON says MASK (printed liveries, decals).
         /// </summary>
-        public static Material JsonMaterial(string name, string entryName)
+        public static Material JsonMaterial(string name, string entryName, string root = null)
         {
-            string folder = ObjaverseRoot + "/" + name + "/";
+            string folder = (root ?? ObjaverseRoot) + "/" + name + "/";
             var info = JsonUtility.FromJson<ObjaverseInfo>(File.ReadAllText(folder + name + ".json"));
             var entry = info.materials.First(m => m.name == entryName);
             var material = LitMaterial(name + "_" + entry.name, entry.baseColor != null && entry.baseColor.Length >= 3 ? new Color(entry.baseColor[0], entry.baseColor[1], entry.baseColor[2]) : Color.white, 1f, 0);

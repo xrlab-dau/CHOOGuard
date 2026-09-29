@@ -208,7 +208,7 @@ namespace ChooGuard.App.Fps.Emergency
     /// (<see cref="Subject"/>: a bag, a litter bin, a fryer, a ticket machine, the underside of a KTX car) only changes
     /// what people see and what the office advises.
     /// </summary>
-    public sealed class FireHazard : Hazard
+    public sealed partial class FireHazard : Hazard
     {
         public const float Growth = .0035f;
         public float Intensity { get; private set; }
@@ -382,7 +382,7 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 var fe = flames.emission; fe.rateOverTime = 18 + 90 * Intensity;
                 var fm = flames.main; fm.startSize = new ParticleSystem.MinMaxCurve(.2f + .5f * Intensity, .4f + 1.1f * Intensity);
-                var fs = flames.shape; fs.radius = .12f + .9f * Intensity;
+                var fs = flames.shape; fs.radius = Mathf.Min(.12f + .9f * Intensity, Footprint);
                 glow.intensity = (2 + 10 * Intensity) * (0.85f + .15f * Mathf.PerlinNoise(Time.time * 7, 0));
                 glow.range = 4 + 10 * Intensity;
             }
