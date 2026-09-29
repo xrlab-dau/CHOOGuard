@@ -64,9 +64,9 @@ namespace ChooGuard.App.Fps.Emergency
         // 사건 빈도는 수준마다 4배로 벌어진다(0 수준은 일어나지 않음). 척도별 기준값(초당, 1 수준 후보 하나의 빈도)은 JEV 의 실제 판단 분포에 맞춰
         // 보정한다(.planning/2026-09-29-jev-all-emergencies/plan.md '실시간 판단 디렉터').
         private static readonly float[] Multiplier = { 0f, 1f, 4f, 16f, 64f };
-        private const float CalmOriginBase = 1.7e-4f;
-        private const float IncidentOriginBase = 6.5e-6f;
-        private const float DevelopmentBase = 1.1e-4f;
+        private const float CalmOriginBase = 2.5e-4f;
+        private const float IncidentOriginBase = 2.0e-5f;
+        private const float DevelopmentBase = 2.2e-4f;
 
         private static float Base(ImminenceScale scale) =>
             scale == ImminenceScale.CalmOrigin ? CalmOriginBase : scale == ImminenceScale.IncidentOrigin ? IncidentOriginBase : DevelopmentBase;

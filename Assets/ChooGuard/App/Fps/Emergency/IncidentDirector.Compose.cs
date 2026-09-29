@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -74,11 +75,15 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<Candidate> gone = new List<Candidate>();
         private readonly List<float> rates = new List<float>();
         private readonly List<Candidate> drawn = new List<Candidate>();
-        private readonly Stopwatch stopwatch = new Stopwatch();
         private System.Random drawRandom;
         private float nextBeat, nextWatch, integratedAt, lastEmergencyAt = -1;
         private int watchHash, stateHash, listedOrigins;
-        private bool judging, applying;
+        private bool judging, applying, beatWanted;
+        private Dictionary<string, object> lastFocus;
+        // 목록 만들기는 한 프레임에 원천 하나씩 나누어 한다(후보 목록 전체를 한 프레임에 만들면 수 ms 가 든다).
+        private IEnumerator<bool> listing;
+        private List<Transition> listed;
+        private float listingMs;
 
         private void BeginCompose()
         {
@@ -94,14 +99,23 @@ namespace ChooGuard.App.Fps.Emergency
             if (jev == null || !jev.Available || session.Player.IsPaused) return;
             float now = session.ShiftSeconds;
             if (now < QuietSeconds - WarmUpSeconds) return;
-            bool beat = now >= nextBeat;
+            if (now >= nextBeat) beatWanted = true;
             if (now >= nextWatch)
             {
                 nextWatch = now + WatchSeconds;
                 int hash = SituationHash();
-                if (hash != watchHash) { watchHash = hash; beat = true; }
+                if (hash != watchHash) { watchHash = hash; beatWanted = true; }
             }
-            if (beat) Beat(now);
+            // 박동은 겹치지 않는다: 목록을 만드는 중이면 이번 박동은 끝난 뒤에 이어 한다.
+            if (listing == null && beatWanted)
+            {
+                beatWanted = false;
+                nextBeat = now + HeartbeatSeconds;
+                listed = new List<Transition>();
+                listing = ListingSteps(listed).GetEnumerator();
+                listingMs = 0;
+            }
+            if (listing != null) StepListing();
         }
 
         /// <summary>
@@ -135,19 +149,35 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 후보 ────────────────────────────────────────────────────────────
 
-        /// <summary>What could happen next: a new emergency while none is going on; otherwise developments of those that are, and separate new ones.</summary>
-        private List<Transition> Enumerate()
+        /// <summary>
+        /// What could happen next, one source per step: a new emergency while none is going on; otherwise developments of
+        /// those that are, and separate new ones.
+        /// </summary>
+        private IEnumerable<bool> ListingSteps(List<Transition> into)
         {
-            if (Stage == Phase.Calm) return Origins();
-            var list = Developments();
-            foreach (var origin in Origins())
+            if (Stage == Phase.Calm)
+            {
+                foreach (var step in OriginSteps(into)) yield return step;
+                yield break;
+            }
+            foreach (var step in DevelopmentSteps(into)) yield return step;
+            var origins = new List<Transition>();
+            foreach (var step in OriginSteps(origins)) yield return step;
+            foreach (var origin in Distinct(origins))
             {
                 // 이미 있는 종류는 다시 만들지 않고, 지진은 진행 중인 사건 도중에 겹치지 않는다.
                 if (origin.Kind == "quake" || composedKinds.Contains(origin.Kind)) continue;
                 origin.Description = "Separately from the emergency already in progress, and unrelated to it: " + origin.Description;
-                list.Add(origin);
+                into.Add(origin);
             }
-            return list;
+        }
+
+        /// <summary>The whole listing at once (a draw checking that its candidate still exists).</summary>
+        private List<Transition> Enumerate()
+        {
+            var list = new List<Transition>();
+            foreach (var _ in ListingSteps(list)) { }
+            return Distinct(list);
         }
 
         /// <summary>Brings the candidate set in line with the fresh list: new ones appear, ones whose text changed are marked for a new rating, ones no longer possible go.</summary>
@@ -177,22 +207,32 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 판단 ────────────────────────────────────────────────────────────
 
-        private void Beat(float now)
+        /// <summary>One frame's slice of the listing; the frame that completes it also reconciles, builds the state, asks JEV and draws.</summary>
+        private void StepListing()
         {
-            stopwatch.Restart();
-            nextBeat = now + HeartbeatSeconds;
-            Reconcile(Enumerate());
-            var focus = Focus(now, out stateHash);
-            float enumerationMs = (float)stopwatch.Elapsed.TotalMilliseconds;
+            long began = Stopwatch.GetTimestamp();
+            bool more = listing.MoveNext();
+            float step = Elapsed(began);
+            listingMs += step;
+            if (more) { log.Director.Slice(step); return; }
+            listing = null;
+            float now = session.ShiftSeconds;
+            long reconciling = Stopwatch.GetTimestamp();
+            Reconcile(Distinct(listed));
+            lastFocus = Focus(now, out stateHash);
+            float enumerationMs = listingMs + Elapsed(reconciling);
             float requestMs = -1;
             if (!judging && !applying)
             {
-                stopwatch.Restart();
-                if (SendDue(now, focus)) requestMs = (float)stopwatch.Elapsed.TotalMilliseconds;
+                long asking = Stopwatch.GetTimestamp();
+                if (SendDue(now, lastFocus)) requestMs = Elapsed(asking);
             }
-            log.Director.Beat(enumerationMs, requestMs);
             Integrate(now);
+            log.Director.Beat(enumerationMs, requestMs);
+            log.Director.Slice(Elapsed(began));
         }
+
+        private static float Elapsed(long since) => (float)((Stopwatch.GetTimestamp() - since) * 1000.0 / Stopwatch.Frequency);
 
         /// <summary>The rating needs asking for: none yet, made under another situation, the description drifted (not too often) or it is older than <paramref name="life"/>.</summary>
         private bool Due(Candidate candidate, float now, float life) =>
@@ -243,8 +283,9 @@ namespace ChooGuard.App.Fps.Emergency
                 candidate.Stale = candidate.Description != descriptions[i];
                 log.Director.Rated(candidate.Scale, candidate.Levels);
             }
-            // 판단하는 사이 상황이 또 바뀌었으면 바로 다시 판단한다.
+            // 판단하는 사이 상황이 또 바뀌었으면 바로 다시 판단하고, 새로 생긴 후보가 있으면 다음 박동을 기다리지 않고 바로 묻는다.
             if (askedState != stateHash) nextBeat = 0;
+            if (!applying && lastFocus != null && candidates.Values.Any(candidate => !candidate.Rated)) SendDue(session.ShiftSeconds, lastFocus);
             Integrate(session.ShiftSeconds);
         }
 

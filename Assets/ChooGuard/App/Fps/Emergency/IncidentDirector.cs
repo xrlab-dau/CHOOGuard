@@ -284,33 +284,51 @@ namespace ChooGuard.App.Fps.Emergency
 
         /// <summary>
         /// Every cause whose preconditions hold anywhere right now, each with one or two concrete instances (JEV 012
-        /// every_cause_every_round). The family files list them; which instances they pick follows the ranks so the list
-        /// only changes when the world does.
+        /// every_cause_every_round), appended to <paramref name="list"/> one source (the pools, then each family) per step, so
+        /// the real-time loop can spread a listing over frames. The family files list them; which instances they pick follows
+        /// the ranks so the list only changes when the world does.
         /// </summary>
-        private List<Transition> Origins()
+        private IEnumerable<bool> OriginSteps(List<Transition> list)
         {
             var pools = new Pools(this);
-            var list = new List<Transition>();
+            yield return true;
             list.AddRange(FireOrigins(pools));
+            yield return true;
             list.AddRange(CasualtyOrigins(pools));
+            yield return true;
             list.AddRange(SecurityOrigins(pools));
+            yield return true;
             list.AddRange(TrainOrigins(pools));
+            yield return true;
             list.AddRange(FacilityOrigins(pools));
+            yield return true;
             EquipmentOrigins(pools, list);
-            // 같은 사람·장소가 여러 원인의 후보가 되어도 키는 원인마다 다르다.
-            return list.GroupBy(t => t.Key).Select(g => g.First()).ToList();
         }
 
-        private List<Transition> Developments()
+        /// <summary>The developments of what exists, one family per step.</summary>
+        private IEnumerable<bool> DevelopmentSteps(List<Transition> list)
+        {
+            list.AddRange(FireDevelopments());
+            yield return true;
+            list.AddRange(CasualtyDevelopments());
+            yield return true;
+            list.AddRange(SecurityDevelopments());
+            yield return true;
+            list.AddRange(TrainDevelopments());
+            yield return true;
+            list.AddRange(FacilityDevelopments());
+            yield return true;
+            EquipmentDevelopments(list);
+        }
+
+        /// <summary>The same person or place can be the candidate of several causes, but every key names one cause: the first wins.</summary>
+        private static List<Transition> Distinct(List<Transition> list) => list.GroupBy(t => t.Key).Select(g => g.First()).ToList();
+
+        private List<Transition> Origins()
         {
             var list = new List<Transition>();
-            list.AddRange(FireDevelopments());
-            list.AddRange(CasualtyDevelopments());
-            list.AddRange(SecurityDevelopments());
-            list.AddRange(TrainDevelopments());
-            list.AddRange(FacilityDevelopments());
-            EquipmentDevelopments(list);
-            return list;
+            foreach (var _ in OriginSteps(list)) { }
+            return Distinct(list);
         }
 
         private string Profile(Passenger p) =>

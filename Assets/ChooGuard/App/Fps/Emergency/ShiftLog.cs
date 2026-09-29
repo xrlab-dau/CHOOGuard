@@ -189,6 +189,7 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<float> enumerationMs = new List<float>();
         private readonly List<float> requestMs = new List<float>();
         private readonly List<float> totalMs = new List<float>();
+        private readonly List<float> sliceMs = new List<float>();
         private float firstNewEmergency = -1;
 
         public DirectorRecord(EmergencySession owner) { session = owner; }
@@ -216,7 +217,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         /// <summary>
         /// One heartbeat's cost in milliseconds: listing and reconciling candidates and building the state, then (when a
-        /// request was needed, otherwise negative) building and starting it.
+        /// request was needed, otherwise negative) building and starting it. The listing is spread over frames.
         /// </summary>
         public void Beat(float enumeration, float request)
         {
@@ -225,6 +226,9 @@ namespace ChooGuard.App.Fps.Emergency
             totalMs.Add(enumeration + Mathf.Max(0, request));
         }
 
+        /// <summary>What the director took from one frame (a step of the listing, or the closing step that also asks and draws).</summary>
+        public void Slice(float milliseconds) => sliceMs.Add(milliseconds);
+
         public JObject ToJson(int events, int newEmergencies)
         {
             return new JObject
@@ -232,7 +236,7 @@ namespace ChooGuard.App.Fps.Emergency
                 ["rate_scale"] = RateScale, ["rounds"] = Rounds, ["unanswered_rounds"] = Unanswered, ["rated_candidates"] = Judged, ["vanished_draws"] = Vanished,
                 ["events"] = events, ["new_emergencies"] = newEmergencies, ["first_new_emergency_at"] = firstNewEmergency < 0 ? null : (JToken)Math.Round(firstNewEmergency, 1),
                 ["levels"] = new JObject { ["calm_origin"] = Counts(0), ["incident_origin"] = Counts(1), ["development"] = Counts(2) },
-                ["heartbeat_ms"] = new JObject { ["heartbeats"] = totalMs.Count, ["requests_built"] = requestMs.Count, ["enumeration"] = Percentiles(enumerationMs), ["request"] = Percentiles(requestMs), ["total"] = Percentiles(totalMs) },
+                ["heartbeat_ms"] = new JObject { ["heartbeats"] = totalMs.Count, ["requests_built"] = requestMs.Count, ["frame_slices"] = sliceMs.Count, ["per_frame"] = Percentiles(sliceMs), ["enumeration"] = Percentiles(enumerationMs), ["request"] = Percentiles(requestMs), ["total"] = Percentiles(totalMs) },
                 ["hazard_columns"] = new JArray("t", "dt", "origin_per_second", "development_per_second", "candidates", "rated", "top_terms"),
                 ["hazard"] = trajectory,
             };
