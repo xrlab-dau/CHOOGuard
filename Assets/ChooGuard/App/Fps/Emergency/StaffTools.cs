@@ -305,8 +305,10 @@ namespace ChooGuard.App.Fps.Emergency
             SetEmission(260);
             Held.Agent = Mathf.Max(0, Held.Agent - Time.deltaTime / Extinguisher.DischargeSeconds);
             Held.SprayedSeconds += Time.deltaTime;
-            foreach (var hazard in HazardRegistry.Active)
+            // 끝에서부터: 불이 꺼지면 OnFireOut 이 그 위험을 목록에서 빼므로 앞으로 돌면 목록이 바뀌었다는 예외가 난다.
+            for (int i = HazardRegistry.Active.Count - 1; i >= 0; i--)
             {
+                var hazard = HazardRegistry.Active[i];
                 if (!(hazard is FireHazard fire) || fire.Extinguished) continue;
                 float quality = AimQuality(view, fire);
                 if (quality <= 0) continue;
@@ -360,8 +362,9 @@ namespace ChooGuard.App.Fps.Emergency
             if (session.Player.IsPaused || !trigger) { Spraying = false; SetWater(0); return; }
             Spraying = true;
             SetWater(320);
-            foreach (var hazard in HazardRegistry.Active)
+            for (int i = HazardRegistry.Active.Count - 1; i >= 0; i--)
             {
+                var hazard = HazardRegistry.Active[i];
                 if (!(hazard is FireHazard fire) || fire.Extinguished) continue;
                 float quality = HoseAimQuality(view, fire);
                 if (quality <= 0) continue;
