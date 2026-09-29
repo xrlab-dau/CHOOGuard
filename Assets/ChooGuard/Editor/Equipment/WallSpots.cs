@@ -27,6 +27,8 @@ namespace ChooGuard.Editor
             public float FlatPlus, FlatMinus;
             /// <summary>Free floor in front along the normal (m, capped at <see cref="FreeReach"/>): the least of a few rays at body heights.</summary>
             public float Free;
+            /// <summary>How many of nine rays fanned across the room in front (within 6 m, chest height) hit something: high in an alcove, a shop interior or a corridor, low in the open concourse.</summary>
+            public int Enclosed;
             /// <summary>Name of the collider the wall belongs to (diagnostics and the column/wall distinction).</summary>
             public string Collider;
             /// <summary>The wall is a free-standing column or pier: it ends within a metre to a side.</summary>
@@ -139,6 +141,7 @@ namespace ChooGuard.Editor
             spot.FlatMinus = Flat(wall, normal, -tangent, hit.collider, train, escalators);
             if (spot.FlatPlus + spot.FlatMinus < .4f) return null;
             spot.Free = FreeAhead(wall, normal, tangent);
+            spot.Enclosed = Enclosure(wall, normal);
             return spot;
         }
 
@@ -157,6 +160,15 @@ namespace ChooGuard.Editor
                 reached = s;
             }
             return reached;
+        }
+
+        private static int Enclosure(Vector3 wall, Vector3 normal)
+        {
+            int hits = 0;
+            var origin = wall + normal * 1f + Vector3.up * 1.3f;
+            for (int i = 0; i < 9; i++)
+                if (Physics.Raycast(origin, Quaternion.AngleAxis(-90f + i * 22.5f, Vector3.up) * normal, 6f, ~0, QueryTriggerInteraction.Ignore)) hits++;
+            return hits;
         }
 
         private static float FreeAhead(Vector3 wall, Vector3 normal, Vector3 tangent)
