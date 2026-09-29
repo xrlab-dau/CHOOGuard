@@ -78,8 +78,6 @@ namespace ChooGuard.App.Fps.Emergency
                 if (elevator.Running && elevator.Inside.Count > 0 && !elevatorTraps.Exists(t => t.Active && t.Elevator == elevator)) yield return ElevatorStops(elevator);
             }
             if (outage == null) yield return PowerCut();
-            var leakAt = world.Points.Of(PointKind.Wait).Where(w => w.Zone != "plaza" && w.Zone != "skyplaza" && !world.IsClosed(w.Position, 3)).OrderBy(w => Rank(w.Id)).FirstOrDefault();
-            if (leakAt != null && leaks.Count == 0) yield return PipeBursts(leakAt);
             var kitchen = world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s)?.ko == "가스레인지" && !gasLeaks.Exists(g => g.Shop == s.Label)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
             if (kitchen != null) yield return GasSmell(kitchen);
         }
@@ -114,14 +112,6 @@ namespace ChooGuard.App.Fps.Emergency
             Description = "The station loses mains power (a fault at the substation or in the grid).",
             Levels = new List<string> { "the lights flicker and come back within seconds", "part of the lighting goes out for under a minute", "the whole station goes dark on emergency lighting for a minute or two", "a long cut: lights out and escalators and elevators stop", "a long cut: lights out, lifts stop and people are trapped in an elevator" },
             Apply = StartOutage,
-        };
-
-        private Transition PipeBursts(StationPoints.Point at) => new Transition
-        {
-            Key = "pipe_" + at.Id, Kind = "water_leak", Origin = true,
-            Description = "A water pipe above the ceiling at " + Place(at.Position) + " bursts.",
-            Levels = new List<string> { "water drips through a ceiling panel", "a steady stream of water pours from the ceiling", "water pours down and spreads across the floor", "the floor around floods", "the pipe gushes and water flows along the concourse" },
-            Apply = m => StartLeak(at.Position, m),
         };
 
         private Transition GasSmell(StationPoints.Point shop) => new Transition
@@ -305,24 +295,16 @@ namespace ChooGuard.App.Fps.Emergency
         private void ResetReceiver(string how)
         {
             if (!alarm) return;
+            // 스프링클러 유수 신호가 남아 있으면 수신기는 복구되지 않는다: 시설 담당이 그 구역 급수 밸브를 먼저 잠근다.
+            if (SprinklerFlowing)
+            {
+                Office("역무실입니다. 스프링클러 유수 신호가 남아 있어 수신기가 복구되지 않습니다. 시설 담당이 급수 밸브를 잠근 뒤에 복구하겠습니다.");
+                return;
+            }
             alarm = false;
             Facilities.StationSignals.FireAlarm = false;
             ResetDetectors();
             log.Add("수신기 복구 · 비상벨 멈춤 (" + how + ")");
-        }
-
-        private void StartLeak(Vector3 at, float magnitude)
-        {
-            int level = Mathf.Clamp(Mathf.RoundToInt(magnitude * 4), 0, 4);
-            var floor = Floor(StationWorld.OnNavMesh(at, 2f));
-            float ceiling = Physics.Raycast(floor + Vector3.up * 1.5f, Vector3.up, out var hit, 12f, ~0, QueryTriggerInteraction.Ignore) ? hit.point.y : floor.y + 4.5f;
-            var leak = new WaterLeakHazard("leak-" + ++serial, floor, ceiling, level, art, root) { Where = world.Describe(floor) };
-            leaks.Add(leak);
-            CordonMarker(leak, leak.View, "천장 누수");
-            Register(leak);
-            // 물이 번진 바닥은 사람들이 피해서 자리를 잡는다.
-            if (level >= 2) world.Closed.Add((floor, 1f + 1.6f * level, "누수"));
-            log.Add("누수 · " + leak.Where + " — " + leak.Visible);
         }
 
         private void StartGas(StationPoints.Point shop, float magnitude)

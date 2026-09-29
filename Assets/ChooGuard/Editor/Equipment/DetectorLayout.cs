@@ -27,6 +27,8 @@ namespace ChooGuard.Editor
             public float Yaw, Height, Area, Coverage;
             public bool Smoke = true;
             public string ClassName = "", ZoneId = "", Rule = "", Room = "";
+            /// <summary>Id of the fire shutter this detector closes (a detector on either side of a curtain), or empty.</summary>
+            public string Shutter = "";
             public int Level;
         }
 
@@ -38,10 +40,10 @@ namespace ChooGuard.Editor
             public float FloorArea, AreaPerDetector;
         }
 
-        private static readonly HashSet<string> Enclosed = new HashSet<string> { "hall2f", "main2f", "southgate", "eastexit", "upper3f", "ground1f" };
+        internal static readonly HashSet<string> Enclosed = new HashSet<string> { "hall2f", "main2f", "southgate", "eastexit", "upper3f", "ground1f" };
         private const float SmokeArea4 = 150f, SmokeArea20 = 75f, WallClear = .65f, CorridorWalk = 30f, CeilingLimit = 20f, MinComponentCells = 6;
 
-        private static int Level(StationCeilings.Cell c) => c.Floor.y < 3f ? 0 : c.Floor.y < 9.5f ? 1 : 2;
+        internal static int Level(StationCeilings.Cell c) => c.Floor.y < 3f ? 0 : c.Floor.y < 9.5f ? 1 : 2;
         private static int Band(float h) => h < 4f ? 0 : h < 8f ? 1 : h < 15f ? 2 : 3;
         private static readonly string[] BandNames = { "<4 m", "4-8 m", "8-15 m", "15-20 m" };
         private static readonly string[] LevelNames = { "1F/platform", "2F", "3F" };
@@ -145,17 +147,22 @@ namespace ChooGuard.Editor
             notes.Add("audit added " + added + " detectors; " + stuck + " floor cells without a possible spot");
         }
 
-        /// <summary>The survey plus the mounting spot of each ceiling cell: clear of walls and lamp panels (asked for lazily, only for cells a detector may go on).</summary>
-        private sealed class Context
+        /// <summary>The survey plus the mounting spot of each ceiling cell: clear of walls and lamp panels (asked for lazily, only for cells a fitting may go on).</summary>
+        internal sealed class Context
         {
             private readonly StationCeilings.Result survey;
+            private readonly float wallClear, lampClear;
             private readonly Dictionary<StationCeilings.Cell, Vector2?> spots = new Dictionary<StationCeilings.Cell, Vector2?>();
             private readonly Dictionary<StationCeilings.Cell, HashSet<(int x, int z)>> closedOf = new Dictionary<StationCeilings.Cell, HashSet<(int, int)>>();
             private readonly HashSet<(int x, int z)> anyCeiling;
 
-            public Context(StationCeilings.Result survey)
+            /// <param name="wallClear">Least distance of a spot from a wall or a step in the ceiling, metres (NFTC 203 2.4.3.10.5: 0.65 for detectors).</param>
+            /// <param name="lampClear">Least distance of a spot from a lamp panel, metres.</param>
+            public Context(StationCeilings.Result survey, float wallClear = WallClear, float lampClear = .3f)
             {
                 this.survey = survey;
+                this.wallClear = wallClear;
+                this.lampClear = lampClear;
                 anyCeiling = new HashSet<(int, int)>(survey.Cells.Select(c => (c.X, c.Z)));
             }
 
@@ -178,7 +185,7 @@ namespace ChooGuard.Editor
                 return best;
             }
 
-            /// <summary>The point inside the cell nearest its centre that is 0.65 m from every wall and 0.3 m clear of every lamp panel (0.15 m steps), or null.</summary>
+            /// <summary>The point inside the cell nearest its centre that is <c>wallClear</c> from every wall and <c>lampClear</c> clear of every lamp panel (0.15 m steps), or null.</summary>
             public Vector2? Spot(StationCeilings.Cell cell)
             {
                 if (spots.TryGetValue(cell, out var known)) return known;
@@ -189,11 +196,31 @@ namespace ChooGuard.Editor
                     {
                         float d = (i * i + j * j) * .0225f;
                         var point = new Vector2(cell.Floor.x + i * .15f, cell.Floor.z + j * .15f);
-                        if (d >= best || WallDistance(point, cell) < WallClear || survey.LampNear(point.x, point.y, cell.CeilingY, .3f)) continue;
+                        if (d >= best || WallDistance(point, cell) < wallClear || survey.LampNear(point.x, point.y, cell.CeilingY, lampClear)) continue;
                         best = d;
                         found = point;
                     }
                 return spots[cell] = found;
+            }
+
+            /// <summary>Whether the point keeps the wall and lamp clearances of this context (the cell tells which area's edge to measure against).</summary>
+            public bool Clear(Vector2 point, StationCeilings.Cell cell) => WallDistance(point, cell) >= wallClear && !survey.LampNear(point.x, point.y, cell.CeilingY, lampClear);
+
+            /// <summary>The point of <paramref name="cell"/> nearest <paramref name="target"/> that keeps the clearances and is not rejected, or null (0.15 m steps over the cell, not cached).</summary>
+            public Vector2? SpotNear(StationCeilings.Cell cell, Vector2 target, Func<Vector2, bool> reject = null)
+            {
+                Vector2? found = null;
+                float best = float.MaxValue;
+                for (int i = -3; i <= 3; i++)
+                    for (int j = -3; j <= 3; j++)
+                    {
+                        var point = new Vector2(cell.Floor.x + i * .15f, cell.Floor.z + j * .15f);
+                        float d = (point - target).sqrMagnitude;
+                        if (d >= best || WallDistance(point, cell) < wallClear || survey.LampNear(point.x, point.y, cell.CeilingY, lampClear) || reject != null && reject(point)) continue;
+                        best = d;
+                        found = point;
+                    }
+                return found;
             }
 
             /// <summary>The ceiling point a detector on this cell is mounted at (the ceiling's own height and slope at the spot) and the ceiling's downward normal there.</summary>
@@ -207,7 +234,7 @@ namespace ChooGuard.Editor
 
         // ── 구성 요소 ──
 
-        private sealed class Component
+        internal sealed class Component
         {
             public readonly List<StationCeilings.Cell> Real = new List<StationCeilings.Cell>();
             public readonly HashSet<(int x, int z)> Closed = new HashSet<(int, int)>();
@@ -216,7 +243,7 @@ namespace ChooGuard.Editor
         private static readonly (int dx, int dz)[] Around = { (-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1) };
 
         /// <summary>Connected areas of one level and height band; slots up to two metres wide (lamp strips, joints) do not split an area.</summary>
-        private static List<Component> Components(List<StationCeilings.Cell> cells)
+        internal static List<Component> Components(List<StationCeilings.Cell> cells)
         {
             // 같은 칸에 층이 둘(경사로·계단참)이면 낮은 천장 쪽을 본다.
             var byPosition = cells.GroupBy(c => (c.X, c.Z)).ToDictionary(g => g.Key, g => g.OrderBy(c => c.CeilingY).First());

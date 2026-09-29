@@ -52,12 +52,19 @@ namespace ChooGuard.App.Fps.Emergency
                 }
                 if (nearest != null) kitchenDetectors[shop.Id] = nearest;
             }
+            BindSprinklers();
+            BindShutters();
+            BindCameras();
         }
+
+        partial void EndFireSafety() => UnbindShutters();
 
         // ── 원인 ──
 
         partial void FireSafetyOrigins(Pools pools, List<Transition> list)
         {
+            SprinklerOrigins(list);
+            ShutterOrigins(list);
             if (falseAlarm != null || alarm || detectors.Count == 0) return;
             var picked = new List<(DetectorPoint detector, string en, string ko)>();
             // 조리 연기는 실제 주방 가까운 연기감지기만 울린다.
@@ -106,6 +113,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             alarm = true;
             first.Trip();
+            ShutterOnDetector(first);
             trippedDetectors = 1;
             Facilities.StationSignals.FireAlarm = true;
             log.Add("자동화재탐지설비 동작 · 비상벨 · " + first.ZoneName + " · " + first.Equipment.Label);
@@ -121,6 +129,7 @@ namespace ChooGuard.App.Fps.Emergency
             else if (!detector.Tripped)
             {
                 detector.Trip();
+                ShutterOnDetector(detector);
                 // 처음 몇 개만 적는다: 번지는 불이면 감지기가 줄줄이 동작한다.
                 if (++trippedDetectors <= 4) log.Add("감지기 추가 동작 · " + detector.ZoneName + " · " + detector.Equipment.Label);
             }
@@ -133,6 +142,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (falseAlarm != null && falseAlarm.Active && falseAlarm.Detector != null) falseAlarm.Detector.Equipment.State = "점검 필요";
             sensing.Clear();
             trippedDetectors = 0;
+            ClearShutterTriggers();
         }
 
         // ── 규칙 ──
@@ -156,6 +166,8 @@ namespace ChooGuard.App.Fps.Emergency
                     if (Time.time - since >= ResponseDelay(detector)) TripDetector(fire, detector);
                 }
             }
+            SprinklerFireTick();
+            ShutterTick();
         }
 
         /// <summary>
@@ -175,6 +187,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         partial void LookAroundFireSafety(Vector3 eye, Vector3 forward)
         {
+            LookAroundShutters(eye, forward);
             // 동작한 감지기 아래(같은 층)에서 올려다보면 동작표시등이 켜져 있고 주변에 불이나 연기가 없다는 것을 안다(비화재보).
             if (falseAlarm == null || falseAlarm.Checked || falseAlarm.Detector == null) return;
             var detector = falseAlarm.Detector;
@@ -191,6 +204,44 @@ namespace ChooGuard.App.Fps.Emergency
         {
             // 시설 담당이 감지기를 점검하고 나면 그 감지기는 정상이다.
             if (hazard is FalseAlarmHazard alarmHazard && !alarmHazard.Active && alarmHazard.Detector != null) alarmHazard.Detector.Equipment.State = "정상";
+            SprinklerResolved(hazard);
+        }
+
+        partial void FireSafetyDevelopments(List<Transition> list)
+        {
+            SprinklerDevelopments(list);
+            ShutterDevelopments(list);
+        }
+
+        // ── 무전 ──
+
+        partial void FireSafetyRadio(List<EmergencySession.RadioOption> options)
+        {
+            // 불이 꺼지고 물이 멈췄는데 벨이 울리고 있으면 역무실에 수신기 복구를 요청한다(비화재보는 보고할 때 복구된다).
+            if (alarm && falseAlarm == null && !SprinklerFlowing && !fires.Exists(f => !f.Extinguished))
+            {
+                bool afterFire = fires.Count > 0;
+                options.Add(Option(afterFire ? "역무실 · 수신기 복구 요청 (불 꺼짐 확인)" : "역무실 · 수신기 복구 요청 (화재 아님·물 멈춤 확인)", () =>
+                {
+                    Say("역무실, " + (afterFire ? "불이 꺼진 것을 확인했습니다." : "화재가 아닌 것을 확인했습니다.") + " 수신기 복구 바랍니다.");
+                    Office("역무실 수신. 수신기를 복구하겠습니다.");
+                    ResetReceiver("역무원 요청");
+                }));
+            }
+            if (CctvSubject(out var point, out var where))
+                options.Add(Option("역무실 · CCTV 로 현장 확인 요청", () =>
+                {
+                    Say("역무실, " + where + " CCTV 확인 부탁합니다.");
+                    CctvCheck(point, where);
+                }));
+            var left = shutters.FirstOrDefault(s => s.Opening < .999f && !s.Triggered && !s.ControllerFault && !s.Moving);
+            if (left != null && !calledBy.ContainsKey(Agency.Facility))
+                options.Add(Option("역무실 · 방화셔터 복구 요청 (시설 담당)", () =>
+                {
+                    Say("역무실, " + left.Equipment.Label + " 내려와 있습니다. 시설 담당 복구 부탁합니다.");
+                    Office("역무실 수신. 시설 담당 보내 방화셔터를 복구하겠습니다.");
+                    Call(Agency.Facility, "역무원 방화셔터 복구 요청");
+                }));
         }
     }
 }

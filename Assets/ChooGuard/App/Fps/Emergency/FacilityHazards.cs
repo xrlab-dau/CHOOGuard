@@ -260,9 +260,13 @@ namespace ChooGuard.App.Fps.Emergency
         }
     }
 
+    /// <summary>Where the water of a <see cref="WaterLeakHazard"/> comes from: a sprinkler pipe that sprang a leak, or a sprinkler head that let go.</summary>
+    public enum LeakSource { Pipe, Head }
+
     /// <summary>
-    /// A burst water pipe above the ceiling: water pours down and spreads over the floor. Slippery floors and wet
-    /// electrics are the danger; the facility team shuts the supply valve (research.md). <see cref="Level"/>: flow.
+    /// Water pours from the ceiling and spreads over the floor: a sprinkler pipe that sprang a leak (above a finished ceiling or exposed under a deck) or a sprinkler head
+    /// that let go (a knock, a burst bulb) — its flow starts the sprinkler bell. Slippery floors and wet electrics are the danger; the facility team shuts the zone's control
+    /// valve (research.md; the tamper switch shows it at the receiver, NFTC 103 2.5.16.1). <see cref="Level"/>: flow.
     /// </summary>
     public sealed class WaterLeakHazard : Hazard
     {
@@ -272,30 +276,46 @@ namespace ChooGuard.App.Fps.Emergency
             "물이 쏟아져 주변 바닥이 물에 잠김", "배관이 터져 물이 쏟아지고 통로로 흘러감",
         };
 
+        private static readonly string[] SeenHead =
+        {
+            "스프링클러 헤드에서 물이 흘러내림", "스프링클러 헤드에서 물이 뿜어져 나옴", "헤드에서 물이 넓게 뿜어져 바닥이 젖음",
+            "헤드에서 물이 쏟아져 주변 바닥이 물에 잠김", "헤드가 떨어져 나가 물이 솟구치고 통로로 흘러감",
+        };
+
+        public LeakSource Source { get; }
+        /// <summary>Key of the protection zone whose supply feeds it: shutting that valve stops it.</summary>
+        public string ValveKey { get; set; } = "";
+        /// <summary>Label of the pipe or head it comes from (for the log).</summary>
+        public string Component { get; set; } = "";
         public int Level { get; private set; }
         public bool Stopped { get; private set; }
         public float Radius { get; private set; } = .6f;
         public GameObject View { get; }
         private readonly ParticleSystem stream;
         private readonly Transform puddle;
+        private bool FromHead => Source == LeakSource.Head;
 
         private float Target => 1f + 1.6f * Level;
 
-        public override string Label => "누수";
+        public override string Label => FromHead ? "스프링클러 살수" : "누수";
         public override float NoticeRadius => 10 + 2 * Level;
         public override float DangerRadius => 0;
         public override float Clearance => Radius + 2;
-        public override string Visible => Stopped ? "물은 멈췄고 바닥이 젖어 있음" : Seen[Level];
+        public override string Visible => Stopped ? "물은 멈췄고 바닥이 젖어 있음" : FromHead ? SeenHead[Level] : Seen[Level];
 
         public override Agency Command => Agency.Facility;
-        public override string ToldByPassenger => Where + " 천장에서 물이 쏟아져요!";
-        public override string ReportLine => "역무실, " + Where + " 천장에서 물이 새고 있습니다." + (Level >= 3 ? " 바닥에 물이 넓게 고였습니다." : "");
-        public override string OfficeReply => "역무실 수신. 시설 담당 보내 급수 밸브 잠그겠습니다. 미끄러지지 않게 주변을 통제하고, 물 가까운 전기 설비는 만지지 마십시오.";
+        public override string ToldByPassenger => FromHead ? Where + " 천장 스프링클러에서 물이 나와요! 비상벨도 울려요!" : Where + " 천장에서 물이 쏟아져요!";
+        public override string ReportLine => FromHead
+            ? "역무실, " + Where + " 스프링클러 헤드에서 물이 나오고 있습니다. 불은 없습니다." + (Level >= 3 ? " 바닥이 물에 잠겼습니다." : "")
+            : "역무실, " + Where + " 천장에서 물이 새고 있습니다." + (Level >= 3 ? " 바닥에 물이 넓게 고였습니다." : "");
+        public override string OfficeReply => FromHead
+            ? "역무실 수신. 스프링클러 유수 신호가 수신기에 들어와 있습니다. 시설 담당 보내 해당 구역 급수 밸브를 잠그겠습니다. 미끄러지지 않게 통제하고 물 가까운 전기 설비는 만지지 마십시오. 밸브를 잠근 뒤 수신기를 복구하겠습니다."
+            : "역무실 수신. 시설 담당 보내 급수 밸브 잠그겠습니다. 미끄러지지 않게 주변을 통제하고, 물 가까운 전기 설비는 만지지 마십시오.";
         public override PaRequest Announcement => new PaRequest("안내방송(우회) 요청", PaLine.WetFloor,
             "안내 말씀 드립니다. " + Where + " 누수로 바닥이 미끄럽습니다. 해당 구역을 피해 다른 통로를 이용해 주십시오.", PaScope.ClearAround, Radius + 4);
-        public override string State => Stopped ? "물 멈춤" : Cordoned ? "통제 중" : "물 새는 중";
+        public override string State => Stopped ? "물 멈춤" : Cordoned ? "통제 중" : FromHead ? "살수 중" : "물 새는 중";
         public override bool UnderControl => Stopped || Cordoned;
-        public override string Handover => Named + (Stopped ? " 밸브 잠김" : " 계속 샘") + (Cordoned ? " · 통제선 설치" : "");
+        public override string Handover => Named + (Stopped ? " 밸브 잠김" + (FromHead ? " · 헤드 교체 필요" : "") : FromHead ? " 계속 살수" : " 계속 샘") + (Cordoned ? " · 통제선 설치" : "");
         public override bool Cordonable => true;
         public override float CordonRadius => Radius + 1.5f;
         public override float WorkSeconds(Agency agency) => agency == Agency.Facility && !Stopped ? 30 : 0;
@@ -303,28 +323,35 @@ namespace ChooGuard.App.Fps.Emergency
         public override string Resolve(Agency agency)
         {
             Stopped = true;
-            var emission = stream.emission;
-            emission.rateOverTime = 0;
+            if (stream != null)
+            {
+                var emission = stream.emission;
+                emission.rateOverTime = 0;
+            }
             End();
-            return "시설 담당입니다. " + Where + " 급수 밸브 잠갔습니다. 물기 닦고 천장 점검하겠습니다.";
+            return FromHead
+                ? "시설 담당입니다. " + Where + " 구역 스프링클러 급수 밸브 잠갔습니다. 헤드는 교체하고 물기 닦겠습니다. 수신기 복구는 역무실에서 하십시오."
+                : "시설 담당입니다. " + Where + " 급수 밸브 잠갔습니다. 물기 닦고 배관 점검하겠습니다.";
         }
 
-        public WaterLeakHazard(string id, Vector3 floor, float ceiling, int level, EmergencyArt art, Transform parent)
+        public WaterLeakHazard(string id, Vector3 floor, float ceiling, int level, EmergencyArt art, Transform parent, LeakSource source = LeakSource.Pipe)
         {
             Id = id;
             Kind = HazardKind.WaterLeak;
+            Source = source;
             Position = floor;
             Level = Mathf.Clamp(level, 0, 4);
             StartedAt = Time.time;
-            View = new GameObject("누수");
+            View = new GameObject(FromHead ? "스프링클러 살수" : "누수");
             View.transform.SetParent(parent, false);
             View.transform.position = floor;
-            stream = Particles.Stream(View.transform, art.Smoke, ceiling - floor.y, .3f + .35f * Level);
+            // 헤드의 물줄기는 헤드가 뿜는다(SprinklerHeadPoint): 여기서는 바닥의 물만 맡는다.
+            if (!FromHead) stream = Particles.Stream(View.transform, art.Smoke, ceiling - floor.y, .3f + .35f * Level);
             puddle = Props.Puddle(View.transform, floor, art.Smoke).transform;
             puddle.localScale = Vector3.one * Radius * 2;
             var marker = View.AddComponent<HazardMarker>();
             marker.Hazard = this;
-            marker.Name = "천장 누수";
+            marker.Name = FromHead ? "스프링클러 살수" : "천장 누수";
             var collider = View.AddComponent<SphereCollider>();
             collider.isTrigger = false;
             collider.radius = .25f;
@@ -339,6 +366,70 @@ namespace ChooGuard.App.Fps.Emergency
             if (!Stopped) Radius = Mathf.MoveTowards(Radius, Target, deltaSeconds * .06f);
             if (puddle != null) puddle.localScale = Vector3.one * Radius * 2;
         }
+    }
+
+    /// <summary>
+    /// An automatic fire shutter whose control fails: it comes down by itself although nothing burns (the 2019 Gimhae school accident began with a switch turned to manual: twelve
+    /// shutters dropped, one on a pupil's neck). People are cut off from the passage, and where the obstacle sensor is dead someone can be caught under the curtain. The staff
+    /// member stops it at the control box (정지) and frees anyone caught; it rises once the control is reset with the key switch (복구); the facility team repairs the control.
+    /// <see cref="Level"/>: 0 stops half way, 1 comes down whole, 2 crowds gather at it, 3 its sensor is dead, 4 it comes down on a person.
+    /// </summary>
+    public sealed class ShutterFaultHazard : Hazard
+    {
+        private static readonly string[] Seen =
+        {
+            "방화셔터가 저절로 반쯤 내려와 멈춤", "방화셔터가 저절로 내려와 통로가 막힘", "방화셔터가 내려와 통로가 막히고 사람들이 앞에 몰림",
+            "방화셔터가 장애물 감지 없이 내려옴", "방화셔터가 사람 위로 내려와 끼임",
+        };
+
+        public FireShutterPoint Shutter { get; }
+        public int Level { get; }
+        public bool Repaired { get; private set; }
+        /// <summary>The person the curtain came down on (level 4), and whether the staff have freed them.</summary>
+        public Passenger Caught { get; set; }
+        public bool Freed { get; set; }
+
+        private bool Open => Shutter.Opening >= .999f;
+
+        public override string Label => "방화셔터 오동작";
+        public override float NoticeRadius => 16 + 2 * Level;
+        public override float DangerRadius => Level >= 3 && !Open ? 2f : 0;
+        public override float Clearance => 3;
+        public override string Visible => Repaired || Open && !Shutter.ControllerFault ? "방화셔터가 올라가 통로가 열림" : Caught != null && !Freed ? Seen[4] : Seen[Mathf.Min(Level, 3)];
+
+        public override Agency Command => Agency.Facility;
+        public override string ToldByPassenger => Where + " 방화셔터가 저절로 내려와요!" + (Caught != null && !Freed ? " 사람이 깔렸어요!" : "");
+        public override string ReportLine => "역무실, " + Where + " 방화셔터가 저절로 내려왔습니다. 화재는 없습니다." + (Caught != null && !Freed ? " 셔터 아래에 사람이 끼어 있습니다." : "");
+        public override string OfficeReply => "역무실 수신. 수신기에는 이 구역 화재 신호가 없습니다. 시설 담당 보내겠습니다. 조작함의 정지 버튼으로 멈추고, 열쇠로 복구 스위치를 눌러 올리십시오." +
+                                              (Caught != null && !Freed ? " 끼인 사람을 먼저 구해 주십시오. 119 구급도 요청하겠습니다." : "");
+        public override PaRequest Announcement => new PaRequest("방화셔터 오작동 안내방송 요청", PaLine.FalseAlarm,
+            "안내 말씀 드립니다. " + Where + " 방화셔터가 오작동으로 내려와 있습니다. 화재가 아니니 놀라지 마시고 다른 통로를 이용해 주십시오.", PaScope.ClearAround, 12);
+        public override string State => Repaired ? "복구됨" : Shutter.Equipment.State;
+        public override bool UnderControl => Repaired || !Active;
+        public override string Handover => Named + (Repaired ? " 복구됨" : Open ? " 올려 둠 · 제어기 점검 필요" : " 내려온 채") + (Caught != null ? (Freed ? " · 끼인 승객 구조" : " · 끼인 승객 있음") : "");
+        public override float WorkSeconds(Agency agency) => agency == Agency.Facility && !Repaired ? 35 : 0;
+
+        public override string Resolve(Agency agency)
+        {
+            Repaired = true;
+            Shutter.Repair();
+            Shutter.Operate(FireShutterPoint.Command.Reset, "시설 담당");
+            End();
+            return "시설 담당입니다. " + Where + " 방화셔터 제어기를 점검해 복구했습니다. 감지기 배선은 이상 없습니다.";
+        }
+
+        public ShutterFaultHazard(string id, FireShutterPoint shutter, int level)
+        {
+            Id = id;
+            Kind = HazardKind.ShutterFault;
+            Shutter = shutter;
+            Level = Mathf.Clamp(level, 0, 4);
+            Position = shutter.transform.position;
+            StartedAt = Time.time;
+        }
+
+        /// <summary>The fault is over (the staff raised the shutter after a reset, or the facility team repaired it).</summary>
+        public void Cleared() => End();
     }
 
     /// <summary>

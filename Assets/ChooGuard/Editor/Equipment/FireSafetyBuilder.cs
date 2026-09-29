@@ -30,13 +30,31 @@ namespace ChooGuard.Editor
             var regions = new List<DetectorLayout.RegionReport>();
             var notes = new List<string>();
             var detectors = DetectorLayout.Plan(station, survey, points, regions, notes, out var beams);
-            var items = Name(detectors, beams, points);
+            var walls = StationWalls.Collect(station, new Bounds(new Vector3(40, 8, 0), new Vector3(400, 60, 400)));
+            var compartmentNotes = new List<string>();
+            var shutters = CompartmentLayout.Plan(survey, walls, compartmentNotes);
+            detectors.AddRange(shutters.SelectMany(s => s.Detectors));
+            var detectorIds = new Dictionary<DetectorLayout.Detector, string>();
+            var items = Name(detectors, beams, points, detectorIds);
+            var sprinklerNotes = new List<string>();
+            var sprinklers = SprinklerLayout.Plan(survey, points, walls, detectors.Select(d => d.Ceiling).ToList(), sprinklerNotes);
+            var surveillanceNotes = new List<string>();
+            var surveillance = SurveillanceLayout.Plan(survey, points, walls, detectors.Select(d => d.Ceiling).Concat(sprinklers.Heads.Select(h => h.Ceiling)).ToList(), shutters, surveillanceNotes);
 
             BuildDetectorPrefab("SmokeDetector", DetectorPoint.SmokeKind, "연기감지기", false);
             BuildDetectorPrefab("HeatDetector", DetectorPoint.HeatKind, "열감지기", false);
             BuildDetectorPrefab("BeamDetector", DetectorPoint.BeamKind, "광전식 분리형 감지기", true);
+            SprinklerBuilder.BuildPrefabs();
+            CompartmentBuilder.BuildPrefabs();
+            SurveillanceBuilder.BuildPrefabs();
             EquipmentBuilder.WritePlacements(Group,
                 "Spot-type smoke and heat detectors placed by NFTC 203 on the ceilings of the twin (FireSafetyBuilder, DetectorLayout). Positions are ceiling points; rotation follows the ceiling.", items);
+            EquipmentBuilder.WritePlacements(SprinklerBuilder.Group,
+                "Sprinkler heads, pipe runs and alarm valve stations placed by NFTC 103 on the ceilings of the twin (SprinklerLayout). Pipes above finished ceilings are records without mesh; exposed pipe is built from its end points when the spawner places it.", SprinklerBuilder.Items(sprinklers));
+            EquipmentBuilder.WritePlacements(CompartmentBuilder.Group,
+                "Automatic fire shutters at the openings of the station's fire compartment lines, with their keyed control boxes (CompartmentLayout). Their smoke and heat detectors are in FireSafety.json and name the shutter in 'shutter='.", CompartmentBuilder.Items(shutters, detectorIds, points));
+            EquipmentBuilder.WritePlacements(SurveillanceBuilder.Group,
+                "CCTV cameras (ceiling domes and wall-mounted fixed cameras) and public-address speakers (ceiling speakers and horns) placed by SurveillanceLayout.", SurveillanceBuilder.Items(surveillance));
 
             var log = new List<string> { "CG_FIRESAFETY placements=" + items.Count + " smoke=" + items.Count(i => i.kind == DetectorPoint.SmokeKind) + " heat=" + items.Count(i => i.kind == DetectorPoint.HeatKind) + " beam pairs=" + beams.Count };
             foreach (var region in regions)
@@ -46,11 +64,14 @@ namespace ChooGuard.Editor
                 log.Add("  beam(" + beam.Layer + ") " + beam.Transmitter.ToString("F1") + " -> " + beam.Receiver.ToString("F1") + " length=" + beam.Length.ToString("0.0") + " m axis=" + beam.AxisHeight.ToString("0.0") + " m above the floor");
             foreach (var g in detectors.GroupBy(d => d.ZoneId).OrderBy(g => g.Key)) log.Add("  zone " + g.Key + ": " + g.Count());
             foreach (var note in notes.Take(40)) log.Add("  note " + note);
+            log.AddRange(SprinklerBuilder.Log(sprinklers, sprinklerNotes));
+            foreach (var note in compartmentNotes) log.Add("  compartment " + note);
+            foreach (var note in surveillanceNotes) log.Add("  surveillance " + note);
             Debug.Log(string.Join("\n", log));
         }
 
         /// <summary>Ids, labels and the receiver's detection zones (경계구역: 24 m tiles per floor, under the 600 m² and 50 m limits of NFTC 203 2.1.1.3) for every detector and beam unit.</summary>
-        private static List<EquipmentPlacement> Name(List<DetectorLayout.Detector> detectors, List<BeamLayout.Beam> beams, StationPoints points)
+        private static List<EquipmentPlacement> Name(List<DetectorLayout.Detector> detectors, List<BeamLayout.Beam> beams, StationPoints points, Dictionary<DetectorLayout.Detector, string> ids)
         {
             string Floor(int level) => level == 0 ? "1층" : level == 1 ? "2층" : "3층";
             (string floor, int tx, int tz) Tile(int level, Vector3 at) => (Floor(level), Mathf.FloorToInt(at.x / 24f), Mathf.FloorToInt(at.z / 24f));
@@ -70,16 +91,18 @@ namespace ChooGuard.Editor
                     number++;
                     string zoneName = group.Key.tile.floor + " " + zoneNumbers[group.Key.tile] + "구역";
                     var rotation = Quaternion.FromToRotation(Vector3.down, d.Normal) * Quaternion.Euler(0, d.Yaw, 0);
+                    string id = (d.Smoke ? "smoke-" : "heat-") + LevelCodes[d.Level] + "-z" + zoneNumbers[group.Key.tile].ToString("00") + "-" + number.ToString("00");
+                    ids[d] = id;
                     items.Add(new EquipmentPlacement
                     {
-                        id = (d.Smoke ? "smoke-" : "heat-") + LevelCodes[d.Level] + "-z" + zoneNumbers[group.Key.tile].ToString("00") + "-" + number.ToString("00"),
+                        id = id,
                         kind = d.Smoke ? DetectorPoint.SmokeKind : DetectorPoint.HeatKind,
                         label = (d.Smoke ? "연기감지기 " : "열감지기 ") + zoneName + " " + number.ToString("00") + "번",
                         zone = d.ZoneId,
                         prefab = d.Smoke ? "SmokeDetector" : "HeatDetector",
                         position = d.Ceiling,
                         rotation = rotation.eulerAngles,
-                        data = "coverage=" + F(d.Coverage) + ";height=" + F(d.Height) + ";area=" + F(d.Area) + ";class=" + d.ClassName + ";zone=" + zoneName + (d.Room.Length > 0 ? ";room=" + d.Room : ""),
+                        data = "coverage=" + F(d.Coverage) + ";height=" + F(d.Height) + ";area=" + F(d.Area) + ";class=" + d.ClassName + ";zone=" + zoneName + (d.Room.Length > 0 ? ";room=" + d.Room : "") + (d.Shutter.Length > 0 ? ";shutter=" + d.Shutter : ""),
                     });
                 }
             }

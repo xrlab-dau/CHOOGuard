@@ -43,14 +43,12 @@ namespace ChooGuard.Editor
             public int Level;
         }
 
-        private struct Wall { public Vector3 A, B, C, Normal; public string Owner; }
-
         /// <summary>Beams for every component of ceiling cells with mounting heights of 15 m to under 20 m.</summary>
         public static List<Beam> Plan(Scene station, List<StationCeilings.Cell> cells, List<string> notes)
         {
             var beams = new List<Beam>();
             if (cells.Count == 0) return beams;
-            var walls = CollectWalls(station, cells);
+            var walls = StationWalls.Collect(station, RegionOf(cells));
             foreach (var level in cells.GroupBy(c => c.Floor.y < 3f ? 0 : c.Floor.y < 9.5f ? 1 : 2))
                 foreach (var area in Areas(level.ToList()))
                     PlanArea(area, level.Key, walls, beams, notes);
@@ -82,7 +80,7 @@ namespace ChooGuard.Editor
             return areas;
         }
 
-        private static void PlanArea(List<StationCeilings.Cell> area, int level, List<Wall> walls, List<Beam> beams, List<string> notes)
+        private static void PlanArea(List<StationCeilings.Cell> area, int level, StationWalls walls, List<Beam> beams, List<string> notes)
         {
             var centre = new Vector2(area.Average(c => c.Floor.x), area.Average(c => c.Floor.z));
             float sxx = 0, szz = 0, sxz = 0;
@@ -116,7 +114,7 @@ namespace ChooGuard.Editor
             }
         }
 
-        private static Beam Cast(List<StationCeilings.Cell> area, Vector2 centre, Vector2 direction, Vector2 across, float offset, int level, List<Wall> walls, bool lower)
+        private static Beam Cast(List<StationCeilings.Cell> area, Vector2 centre, Vector2 direction, Vector2 across, float offset, int level, StationWalls walls, bool lower)
         {
             // 축 위 천장 칸(2 m 안)의 높이로 광축 높이를 정한다.
             var line = centre + across * offset;
@@ -131,81 +129,27 @@ namespace ChooGuard.Editor
             var dir = new Vector3(direction.x, 0, direction.y);
             // 천장 칸이 끝나는 곳 앞의 가는 부재는 벽이 아니다. 그 뒤 첫 큰 면(벽·기둥)에 단다: 광축은 공칭감시거리(100 m)까지 뻗을 수 있다.
             float forwardEdge = near.Max(c => Vector2.Dot(new Vector2(c.Floor.x, c.Floor.z) - origin2, direction)), backEdge = -near.Min(c => Vector2.Dot(new Vector2(c.Floor.x, c.Floor.z) - origin2, direction));
-            if (!Hit(walls, origin, dir, .75f * forwardEdge, MaxLength, out var forward) || !Hit(walls, origin, -dir, .75f * backEdge, MaxLength, out var back))
+            if (!walls.Cast(origin, dir, .75f * forwardEdge, MaxLength, out var forward) || !walls.Cast(origin, -dir, .75f * backEdge, MaxLength, out var back))
                 return null;
-            float length = forward.distance + back.distance;
+            float length = forward.Distance + back.Distance;
             if (length > MaxLength || length < 8f) return null;
             // 벽면이 광축과 거의 수직이어야 뒷벽에 설치한 것이다.
-            if (Vector3.Dot(forward.normal, -dir) < .85f || Vector3.Dot(back.normal, dir) < .85f) return null;
-            var transmitter = back.point + back.normal * .04f;
-            var receiver = forward.point + forward.normal * .04f;
+            if (Vector3.Dot(forward.Normal, -dir) < .85f || Vector3.Dot(back.Normal, dir) < .85f) return null;
+            var transmitter = back.Point + back.Normal * .04f;
+            var receiver = forward.Point + forward.Normal * .04f;
             return new Beam
             {
-                Transmitter = transmitter, Receiver = receiver, TransmitterNormal = back.normal, ReceiverNormal = forward.normal,
+                Transmitter = transmitter, Receiver = receiver, TransmitterNormal = back.Normal, ReceiverNormal = forward.Normal,
                 AxisHeight = axis - floorY, Length = length, Level = level, Layer = lower ? "lower" : "upper",
             };
         }
 
-        private static bool Hit(List<Wall> walls, Vector3 origin, Vector3 direction, float nearest, float farthest, out (float distance, Vector3 point, Vector3 normal) best)
-        {
-            best = (float.MaxValue, default, default);
-            foreach (var w in walls)
-            {
-                // 유리·패널은 한쪽 면만 그려진 메시가 많다: 어느 쪽을 보든 벽으로 보고, 설치 면은 광선을 마주 보는 쪽이다.
-                if (Mathf.Abs(Vector3.Dot(w.Normal, direction)) < .3f) continue;
-                var e1 = w.B - w.A; var e2 = w.C - w.A;
-                var p = Vector3.Cross(direction, e2);
-                float det = Vector3.Dot(e1, p);
-                if (Mathf.Abs(det) < 1e-8f) continue;
-                float inv = 1f / det;
-                var t = origin - w.A;
-                float uu = Vector3.Dot(t, p) * inv;
-                if (uu < 0 || uu > 1) continue;
-                var q = Vector3.Cross(t, e1);
-                float vv = Vector3.Dot(direction, q) * inv;
-                if (vv < 0 || uu + vv > 1) continue;
-                float distance = Vector3.Dot(e2, q) * inv;
-                if (distance >= nearest && distance <= farthest && distance < best.distance) best = (distance, origin + direction * distance, Vector3.Dot(w.Normal, direction) > 0 ? -w.Normal : w.Normal);
-            }
-            return best.distance < float.MaxValue;
-        }
-
-        /// <summary>Vertical faces (steep triangles) of every mesh near the space, at the heights the beams run.</summary>
-        private static List<Wall> CollectWalls(Scene station, List<StationCeilings.Cell> cells)
+        /// <summary>The volume the beam layout looks for walls in: the area's footprint plus 70 m, from 6 m above the lowest floor to 4 m over the highest ceiling.</summary>
+        private static Bounds RegionOf(List<StationCeilings.Cell> cells)
         {
             var min = new Vector3(cells.Min(c => c.Floor.x) - 70, cells.Min(c => c.Floor.y) + 6, cells.Min(c => c.Floor.z) - 70);
             var max = new Vector3(cells.Max(c => c.Floor.x) + 70, cells.Max(c => c.CeilingY) + 4, cells.Max(c => c.Floor.z) + 70);
-            var region = new Bounds((min + max) * .5f, max - min);
-            var walls = new List<Wall>();
-            foreach (var root in station.GetRootGameObjects())
-                foreach (var filter in root.GetComponentsInChildren<MeshFilter>(false))
-                {
-                    var renderer = filter.GetComponent<MeshRenderer>();
-                    if (renderer == null || !renderer.enabled || filter.sharedMesh == null || !renderer.bounds.Intersects(region)) continue;
-                    var path = StationCeilings.PathOf(filter.transform);
-                    if (path.Contains("KTXSource")) continue;
-                    var mesh = filter.sharedMesh;
-                    var vertices = mesh.vertices;
-                    var matrix = filter.transform.localToWorldMatrix;
-                    for (int sub = 0; sub < mesh.subMeshCount; sub++)
-                    {
-                        var indices = mesh.GetIndices(sub);
-                        for (int i = 0; i + 2 < indices.Length; i += 3)
-                        {
-                            var a = matrix.MultiplyPoint3x4(vertices[indices[i]]);
-                            var b = matrix.MultiplyPoint3x4(vertices[indices[i + 1]]);
-                            var c = matrix.MultiplyPoint3x4(vertices[indices[i + 2]]);
-                            var normal = Vector3.Cross(b - a, c - a);
-                            if (normal.sqrMagnitude < 1e-8f) continue;
-                            normal.Normalize();
-                            float top = Mathf.Max(a.y, b.y, c.y), bottom = Mathf.Min(a.y, b.y, c.y);
-                            // 큰 면만 벽으로 본다(가는 부재·조명 갓은 뺀다).
-                            if (Mathf.Abs(normal.y) > .3f || top < min.y || bottom > max.y || Vector3.Cross(b - a, c - a).magnitude * .5f < .6f) continue;
-                            walls.Add(new Wall { A = a, B = b, C = c, Normal = normal, Owner = path });
-                        }
-                    }
-                }
-            return walls;
+            return new Bounds((min + max) * .5f, max - min);
         }
     }
 }

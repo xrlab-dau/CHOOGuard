@@ -29,6 +29,12 @@ namespace ChooGuard.App.Fps.Equipment
         [Tooltip("The renderers may be merged into static batches (one draw for many identical fittings). False for anything that moves: shutter curtains, doors, fans.")]
         public bool Batchable = true;
 
+        /// <summary>
+        /// Set by an owner that switches some renderers off itself (a burst sprinkler head hides its bulb): the culling keeps a renderer for which this returns true off
+        /// when the object comes back into draw distance.
+        /// </summary>
+        public Func<Renderer, bool> KeepOff;
+
         [SerializeField] private string state = "정상";
 
         /// <summary>How it stands now in words the staff sees ("정상", "동작", "고장", "점검 중"); groups own the vocabulary of their kinds.</summary>

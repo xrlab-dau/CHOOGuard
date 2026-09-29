@@ -1,0 +1,202 @@
+{
+ "name": "AlarmValve",
+ "source": "alarm_valve",
+ "scale": 1.0,
+ "triangles": 2372,
+ "liveryFaces": 0,
+ "signFaces": 0,
+ "materials": [
+  {
+   "name": "m0",
+   "source": "steel",
+   "baseColor": [
+    0.72,
+    0.73,
+    0.75,
+    1.0
+   ],
+   "metallic": 0.9,
+   "roughness": 0.3,
+   "albedo": null,
+   "normal": null,
+   "metallicSmoothness": null,
+   "alphaMode": "OPAQUE",
+   "faces": 428
+  },
+  {
+   "name": "m1",
+   "source": "red paint",
+   "baseColor": [
+    0.62,
+    0.05,
+    0.04,
+    1.0
+   ],
+   "metallic": 0.0,
+   "roughness": 0.42,
+   "albedo": null,
+   "normal": null,
+   "metallicSmoothness": null,
+   "alphaMode": "OPAQUE",
+   "faces": 750
+  },
+  {
+   "name": "m2",
+   "source": "dark grey",
+   "baseColor": [
+    0.12,
+    0.12,
+    0.13,
+    1.0
+   ],
+   "metallic": 0.0,
+   "roughness": 0.5,
+   "albedo": null,
+   "normal": null,
+   "metallicSmoothness": null,
+   "alphaMode": "OPAQUE",
+   "faces": 168
+  },
+  {
+   "name": "m3",
+   "source": "gauge dial",
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 0.0,
+   "roughness": 0.4,
+   "albedo": "AlarmValve_m3_Color.png",
+   "normal": null,
+   "metallicSmoothness": null,
+   "alphaMode": "MASK",
+   "faces": 4
+  },
+  {
+   "name": "m4",
+   "source": "brass",
+   "baseColor": [
+    0.85,
+    0.65,
+    0.22,
+    1.0
+   ],
+   "metallic": 0.9,
+   "roughness": 0.35,
+   "albedo": null,
+   "normal": null,
+   "metallicSmoothness": null,
+   "alphaMode": "OPAQUE",
+   "faces": 120
+  },
+  {
+   "name": "m5",
+   "source": "blue paint",
+   "baseColor": [
+    0.1,
+    0.16,
+    0.62,
+    1.0
+   ],
+   "metallic": 0.0,
+   "roughness": 0.4,
+   "albedo": null,
+   "normal": null,
+   "metallicSmoothness": null,
+   "alphaMode": "OPAQUE",
+   "faces": 356
+  },
+  {
+   "name": "m6",
+   "source": "zinc-plated steel",
+   "baseColor": [
+    0.66,
+    0.67,
+    0.69,
+    1.0
+   ],
+   "metallic": 0.85,
+   "roughness": 0.42,
+   "albedo": null,
+   "normal": null,
+   "metallicSmoothness": null,
+   "alphaMode": "OPAQUE",
+   "faces": 120
+  },
+  {
+   "name": "m7",
+   "source": "switch housing",
+   "baseColor": [
+    0.32,
+    0.33,
+    0.35,
+    1.0
+   ],
+   "metallic": 0.2,
+   "roughness": 0.45,
+   "albedo": null,
+   "normal": null,
+   "metallicSmoothness": null,
+   "alphaMode": "OPAQUE",
+   "faces": 12
+  }
+ ],
+ "size": [
+  0.5209,
+  1.35,
+  0.3078
+ ],
+ "sizeMm": [
+  520.9,
+  1350.0,
+  307.8
+ ],
+ "boundsM": {
+  "min": [
+   -0.2604,
+   -0.675,
+   -0.002
+  ],
+  "max": [
+   0.2604,
+   0.675,
+   0.3058
+  ]
+ },
+ "front": "+z",
+ "pivot": "mount",
+ "mount": "wall",
+ "pointsM": {
+  "riserAxisBottom": [
+   0.0213,
+   -0.675,
+   0.12
+  ],
+  "riserAxisTop": [
+   0.0213,
+   0.675,
+   0.12
+  ]
+ },
+ "generatedParts": [
+  "DN100 riser pipe stubs (below and above the valve set)",
+  "grooved coupling on the upper stub",
+  "two wall brackets (strap, arm, wall plate)",
+  "handhole cover plate closing the source's cutaway",
+  "pressure/flow switch box on the alarm line (replaces the source's water-motor gong)",
+  "tamper switch box on the lower control valve"
+ ],
+ "riser": {
+  "nominal": "DN100 (100A)",
+  "outerDiameterMm": 114.3,
+  "heightM": 1.35,
+  "axis": "vertical, in front of the wall bracket line",
+  "axisFromWallM": 0.12,
+  "controlValveBelow": "the lower butterfly valve of the set (blue handwheel) with the tamper switch",
+  "couplingUpperZM": 1.18
+ },
+ "sizeBasis": "ccych's model scaled x2.4 so its pipe (about 48 mm) is DN100 (114.3 mm): the gauge dials then read 60 mm (25 mm in the source) like a 2.5 in gauge and the body block 0.26 m; overall 1.35 m tall as specified",
+ "pivotNote": "back face centre = the wall bracket line (y mid-height, x mid-width, z = wall plane); front toward +z"
+}

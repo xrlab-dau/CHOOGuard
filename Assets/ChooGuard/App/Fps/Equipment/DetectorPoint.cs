@@ -35,6 +35,8 @@ namespace ChooGuard.App.Fps.Equipment
         public bool Receiver { get; private set; }
         /// <summary>The kind of room it hangs in when that matters for what can set it off ("toilet"), or empty.</summary>
         public string Room { get; private set; } = "";
+        /// <summary>Id of the fire shutter this detector closes when it trips (a detector on either side of a curtain), or empty.</summary>
+        public string ShutterId { get; private set; } = "";
         public bool Tripped { get; private set; }
         /// <summary>The other end of a beam pair (resolved through the registry on first use), or null.</summary>
         public DetectorPoint Partner => partner != null ? partner : partnerId.Length == 0 ? null : partner = EquipmentRegistry.Find(partnerId)?.GetComponent<DetectorPoint>();
@@ -56,6 +58,7 @@ namespace ChooGuard.App.Fps.Equipment
             Class = Equipment.Text("class");
             ZoneName = Equipment.Text("zone");
             Room = Equipment.Text("room");
+            ShutterId = Equipment.Text("shutter");
             Receiver = Equipment.Text("role") == "rx";
             partnerId = Equipment.Text("partner");
             var live = transform.Find(EquipmentSpawner.LiveChild);

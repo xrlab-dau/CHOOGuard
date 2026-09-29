@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 namespace ChooGuard.App.Fps.Emergency
 {
-    public enum HazardKind { Fire, SuspiciousItem, Earthquake, Collapse, DoorTrap, Disturbance, BombThreat, Substance, GasLeak, ElevatorTrap, PowerOutage, FalseAlarm, FallingObject, WaterLeak, TrackFall }
+    public enum HazardKind { Fire, SuspiciousItem, Earthquake, Collapse, DoorTrap, Disturbance, BombThreat, Substance, GasLeak, ElevatorTrap, PowerOutage, FalseAlarm, FallingObject, WaterLeak, TrackFall, ShutterFault }
 
     /// <summary>How far an announcement asks people to move.</summary>
     public enum PaScope { ClearAround, EvacuateArea, EvacuateStation, Inform }
