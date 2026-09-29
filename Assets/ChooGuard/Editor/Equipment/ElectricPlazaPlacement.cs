@@ -27,6 +27,11 @@ namespace ChooGuard.Editor
         private readonly Vector3[] publicDoors, staffDoors, tenantDoors, elevatorDoors, exits, toilets, cores, seats, shops, escalatorEnds, fittings, people, doors, entrances;
         private readonly List<Placed> placed = new List<Placed>();
         private readonly Dictionary<string, int> serial = new Dictionary<string, int>(), boards = new Dictionary<string, int>();
+        private readonly List<Bounds> tactile = new List<Bounds>();
+        /// <summary>How many candidate spots (or accepted-then-dropped candidates) each rule removed, by "kind: rule": the builder logs it.</summary>
+        public readonly SortedDictionary<string, int> Rejected = new SortedDictionary<string, int>(StringComparer.Ordinal);
+        /// <summary>One row per placed item with its measured clearances (m): the builder writes them next to the log for the views tool and the review.</summary>
+        public readonly List<string> Clearances = new List<string>();
 
         private struct Placed { public Vector3 Centre; public float Radius; public string Kind; }
 
@@ -50,6 +55,8 @@ namespace ChooGuard.Editor
             public bool CentredPivot;
             /// <summary>A second fitting stands beside the first (a bank of vending machines, a litter bin by the recycling station).</summary>
             public Rule Beside;
+            /// <summary>Real height of the model and how far above the floor it hangs (a distribution board), for the collision box.</summary>
+            public float Height, Elevation;
         }
 
         public ElectricPlazaPlacement(StationPoints stationPoints, WallSpots.Survey wallSurvey)
@@ -75,6 +82,10 @@ namespace ChooGuard.Editor
             // 소화기·옥내소화전·발신기·AED 함: 앞을 가리지 않는다.
             fittings = UnityEngine.Object.FindObjectsByType<StationFixture>(FindObjectsSortMode.None).Select(f => f.transform.position)
                 .Concat(UnityEngine.Object.FindObjectsByType<FacilityInspectable>(FindObjectsSortMode.None).Select(f => f.transform.position)).ToArray();
+            // 점자블록(노란 촉각 포장)은 걷는 길이다: 재질 이름으로 찾는다.
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None))
+                foreach (var material in renderer.sharedMaterials)
+                    if (material != null && material.name.IndexOf("tactile", StringComparison.OrdinalIgnoreCase) >= 0) { tactile.Add(renderer.bounds); break; }
         }
 
         private static float Near(Vector3 p, Vector3[] set)
@@ -106,41 +117,49 @@ namespace ChooGuard.Editor
 
         private static bool Indoor(string zone) => zone != "plaza" && zone != "skyplaza";
 
-        // ── 규칙 ──
+        // ── 규칙과 개수 ──
+        // 개수는 근거를 적는다. 공식은 면적 기준(설계 지침), 표는 설계 가정(공개 자료 없음)이다. 빌더 로그의 quota 표가 zone 별 결과를 보인다.
 
         private Rule[] Rules() => new[] { BoardRule(), DrinkBank(), KioskRule(), RecyclingStation() };
 
+        /// <summary>Design assumption (no public plan): vending banks (a drink and a snack machine) per waiting area: the main hall 2, 1F arcade 2, platforms 2, every other floor zone 1.</summary>
+        private static readonly Dictionary<string, int> Banks = new Dictionary<string, int> { { "hall2f", 2 }, { "main2f", 1 }, { "ground1f", 2 }, { "upper3f", 1 }, { "eastexit", 1 }, { "southgate", 1 }, { "northdeck", 1 }, { "tracks", 2 } };
+        /// <summary>Design assumption: phone-charging kiosks beside seating: 2 in the main hall, 1 in each other seated zone.</summary>
+        private static readonly Dictionary<string, int> Kiosks = new Dictionary<string, int> { { "hall2f", 2 }, { "main2f", 1 }, { "ground1f", 1 }, { "upper3f", 1 }, { "eastexit", 1 } };
+        /// <summary>Recycling stations with a litter bin (KORAIL put drink-sorting bins in the Seoul Station hall, 2022; Busan is an assumption): main halls 2, 1F 3, others 1.</summary>
+        private static readonly Dictionary<string, int> Stations = new Dictionary<string, int> { { "hall2f", 2 }, { "main2f", 2 }, { "ground1f", 3 }, { "upper3f", 1 }, { "eastexit", 1 }, { "southgate", 1 } };
+
+        private static int Table(Dictionary<string, int> table, string zone) => table.TryGetValue(zone, out int n) ? n : 0;
+
         /// <summary>
-        /// Distribution boards: on every floor, in the core (beside the toilets, the office, the elevators or a staff door) where
-        /// the electrical shaft stands, one per 1,500 m² of floor (design guidance: one board per about 1,000 m² of office floor and
-        /// branch circuits up to 30 m; a hall has fewer outlets than offices), never in a doorway, with the door's swing free.
+        /// Distribution boards live in the cores (beside the toilets, the office, the elevators or a staff door: the electrical shaft),
+        /// never on the open public floor, so a spot must be within 10 m of a core. Count: one per 4,000 m² of floor, at most 3 per
+        /// zone (design guidance: a board on each floor in the core or shaft, about one per 1,000 m² of office floor; a concourse has
+        /// only lighting, vending machines, kiosks and cleaning sockets to feed, so its density is lower — a stated assumption).
         /// </summary>
         private Rule BoardRule() => new Rule
         {
             Kind = "distribution_board", Prefab = ElectricPlazaPrefabs.Board, Label = "분전반", IdPrefix = "board",
-            Width = .56f, Depth = .37f, MinFree = 1.5f, Spacing = 26f,
-            Door = 1.8f, TenantDoor = 2.5f, Exit = 4f, Escalator = 4f, Elevator = 2.5f, Fitting = 1.5f, Person = 1f,
-            Quota = zone => Indoor(zone) ? Mathf.Clamp(Mathf.CeilToInt(Area(zone) / 1500f), 1, 12) : 0,
+            Width = .56f, Depth = .37f, Height = .8f, Elevation = ElectricPlazaPrefabs.BoardBottom, MinFree = 1.5f, Spacing = 26f,
+            Door = 1.8f, TenantDoor = 2.5f, Exit = 4f, Escalator = 4f, Elevator = 3f, Fitting = 1.5f, Person = 1f,
+            Quota = zone => Indoor(zone) ? Mathf.Clamp(Mathf.CeilToInt(Area(zone) / 4000f), 1, 3) : 0,
             Score = s =>
             {
-                float core = Mathf.Min(Near(s.Wall, cores), 99f);
-                return core <= 14f ? 1f + (14f - core) / 14f * 2f : .1f;
+                float core = Near(s.Wall, cores);
+                return core <= 10f ? 1f + (10f - core) / 10f * 2f : 0;
             },
         };
 
-        /// <summary>
-        /// Vending machines stand in banks of two (a drink and a snack machine side by side) on walls where people wait: near seats and
-        /// shops, well away from exits, escalators and shop fronts, with a clear walking width in front.
-        /// </summary>
+        /// <summary>Vending machines stand in banks of two on walls where people wait: near seats and shops, away from exits, landings and shop fronts.</summary>
         private Rule DrinkBank()
         {
-            var snack = new Rule { Kind = "vending_machine", Prefab = ElectricPlazaPrefabs.VendingSnack, Label = "스낵 자동판매기", IdPrefix = "vending", Width = .93f, Depth = .95f };
+            var snack = new Rule { Kind = "vending_machine", Prefab = ElectricPlazaPrefabs.VendingSnack, Label = "스낵 자동판매기", IdPrefix = "vending", Width = .93f, Depth = .95f, Height = 1.85f };
             return new Rule
             {
-                Kind = "vending_machine", Prefab = ElectricPlazaPrefabs.VendingDrink, Label = "음료 자동판매기", IdPrefix = "vending", Width = .96f, Depth = .54f,
+                Kind = "vending_machine", Prefab = ElectricPlazaPrefabs.VendingDrink, Label = "음료 자동판매기", IdPrefix = "vending", Width = .96f, Depth = .54f, Height = 1.83f,
                 MinFree = .95f + Passage + .3f, Spacing = 22f, Door = 2f, TenantDoor = 3f, Exit = 6f, Escalator = 5f, Elevator = 4f, Fitting = 2f, Person = 1.2f, MaxEnclosed = 6,
                 Beside = snack,
-                Quota = zone => zone == "tracks" ? 2 : Indoor(zone) ? Mathf.Clamp(Mathf.CeilToInt(Area(zone) / 3500f), Area(zone) > 1000f ? 1 : 0, 4) : 0,
+                Quota = zone => Table(Banks, zone),
                 Score = s =>
                 {
                     int crowd = Within(s.Wall, seats, 14f);
@@ -150,12 +169,12 @@ namespace ChooGuard.Editor
             };
         }
 
-        /// <summary>Phone-charging kiosks: one per about 5,000 m² next to the seating, where people wait with a phone in hand.</summary>
+        /// <summary>Phone-charging kiosks: beside the seating, where people wait with a phone in hand.</summary>
         private Rule KioskRule() => new Rule
         {
             Kind = "charging_kiosk", Prefab = ElectricPlazaPrefabs.ChargingKiosk, Label = "휴대폰 충전 키오스크", IdPrefix = "kiosk",
-            Width = .76f, Depth = .25f, MinFree = Passage + .9f, Spacing = 28f, Door = 2f, TenantDoor = 3f, Exit = 6f, Escalator = 5f, Elevator = 4f, Fitting = 2f, Person = 1.2f, MaxEnclosed = 6,
-            Quota = zone => Indoor(zone) && zone != "tracks" ? Mathf.Clamp(Mathf.CeilToInt(Area(zone) / 3500f), Area(zone) > 1500f ? 1 : 0, 4) : 0,
+            Width = .76f, Depth = .25f, Height = 1.8f, MinFree = Passage + .9f, Spacing = 28f, Door = 2f, TenantDoor = 3f, Exit = 6f, Escalator = 5f, Elevator = 4f, Fitting = 2f, Person = 1.2f, MaxEnclosed = 6,
+            Quota = zone => Table(Kiosks, zone),
             Score = s =>
             {
                 int crowd = Within(s.Wall, seats, 12f);
@@ -163,19 +182,16 @@ namespace ChooGuard.Editor
             },
         };
 
-        /// <summary>
-        /// Recycling stations with a litter bin beside them: at the entrances and exits, near the toilets and the shops and among the
-        /// seating, one per about 3,000 m², on platforms none (the platform has plain litter bins).
-        /// </summary>
+        /// <summary>Recycling stations with a litter bin beside them: at the entrances, near the toilets and the shops and among the seating; on platforms none.</summary>
         private Rule RecyclingStation()
         {
-            var bin = new Rule { Kind = "litter_bin", Prefab = ElectricPlazaPrefabs.LitterBin, Label = "휴지통", IdPrefix = "bin", Width = .43f, Depth = .43f };
+            var bin = new Rule { Kind = "litter_bin", Prefab = ElectricPlazaPrefabs.LitterBin, Label = "휴지통", IdPrefix = "bin", Width = .43f, Depth = .43f, Height = .85f };
             return new Rule
             {
-                Kind = "recycling_bin", Prefab = ElectricPlazaPrefabs.RecyclingBin, Label = "분리수거함", IdPrefix = "recycling", Width = .94f, Depth = .38f, CentredPivot = true,
+                Kind = "recycling_bin", Prefab = ElectricPlazaPrefabs.RecyclingBin, Label = "분리수거함", IdPrefix = "recycling", Width = .94f, Depth = .38f, Height = 1.05f, CentredPivot = true,
                 MinFree = .4f + Passage, Spacing = 24f, Door = 1.5f, TenantDoor = 2f, Exit = 2.5f, Escalator = 4f, Elevator = 3f, Fitting = 1.5f, Person = 1f, MaxEnclosed = 6,
                 Beside = bin,
-                Quota = zone => zone != "tracks" && Indoor(zone) ? Mathf.Clamp(Mathf.FloorToInt(Area(zone) / 3000f), Area(zone) > 800f ? 1 : 0, 6) : 0,
+                Quota = zone => Table(Stations, zone),
                 Score = s =>
                 {
                     float exit = Near(s.Wall, entrances), toilet = Near(s.Wall, toilets), shop = Near(s.Wall, shops);
@@ -198,15 +214,62 @@ namespace ChooGuard.Editor
             return items;
         }
 
-        private bool Passes(Rule rule, WallSpots.Spot s)
+        /// <summary>Why a spot cannot take this kind, or null when it can. Every rule that removes a spot is counted in <see cref="Rejected"/>.</summary>
+        private string Reject(Rule rule, WallSpots.Spot s)
         {
-            if (s.FlatPlus < rule.Width * .5f + .05f || s.FlatMinus < rule.Width * .5f + .05f || s.Free < rule.MinFree || s.Enclosed > rule.MaxEnclosed) return false;
+            // 벽은 폭 + 0.3 m 이상 이어져야 한다: 더 좁은 틈·기둥 모서리·문틀 옆은 뺀다.
+            float half = rule.Width * .5f + .15f;
+            if (s.FlatPlus < half || s.FlatMinus < half) return "wall narrower than item + 0.3 m";
+            if (s.Free < rule.MinFree) return "less than " + rule.MinFree.ToString("0.0") + " m free in front";
+            if (s.Enclosed > rule.MaxEnclosed) return "alcove, shop interior or corridor";
             // 가게 안쪽 벽(계산대·손님 자리를 마주 보는 벽)은 가게 것이다: 역 비품이 서지 않는다.
-            if (FacesShopFront(s)) return false;
-            if (Near(s.Wall, doors) < rule.Door || Near(s.Wall, tenantDoors) < rule.TenantDoor) return false;
-            if (Near(s.Wall, exits) < rule.Exit || Near(s.Wall, escalatorEnds) < rule.Escalator || Near(s.Wall, elevatorDoors) < rule.Elevator) return false;
-            if (Near(s.Wall, fittings) < rule.Fitting || Near(s.Wall + s.Normal * (rule.Depth * .5f + .5f), people) < rule.Person) return false;
-            return true;
+            if (FacesShopFront(s)) return "wall faces a shop counter within 5 m";
+            if (Near(s.Wall, doors) < rule.Door || Near(s.Wall, tenantDoors) < rule.TenantDoor) return "door clearance";
+            if (Near(s.Wall, exits) < rule.Exit) return "exit clearance";
+            if (Near(s.Wall, escalatorEnds) < rule.Escalator) return "stair/escalator landing clearance";
+            if (Near(s.Wall, elevatorDoors) < rule.Elevator) return "elevator landing clearance";
+            if (Near(s.Wall, fittings) < rule.Fitting) return "fire fitting clearance";
+            if (Near(s.Wall + s.Normal * (rule.Depth * .5f + .5f), people) < rule.Person) return "people's places";
+            if (OnTactile(Centre(rule, s, 0), Mathf.Max(rule.Width, rule.Depth) * .5f)) return "tactile paving within 0.6 m";
+            if (!SeenFromFront(rule, s)) return "no clear line of sight from 2.8 m in front";
+            return null;
+        }
+
+        /// <summary>A person standing 2.8 m in front (straight, or 25° to either side) at eye height must see the item's centre without a wall, column or glass in between.</summary>
+        private static bool SeenFromFront(Rule rule, WallSpots.Spot s)
+        {
+            var target = s.Wall + s.Normal * (rule.CentredPivot ? rule.Depth * .5f : .1f) + Vector3.up * (rule.Elevation + rule.Height * .5f);
+            foreach (float yaw in new[] { 0f, 25f, -25f })
+            {
+                var eye = s.Wall + Quaternion.Euler(0, yaw, 0) * s.Normal * 2.8f + Vector3.up * 1.6f;
+                var direction = target - eye;
+                if (!Physics.Raycast(eye, direction.normalized, direction.magnitude - .5f, ~0, QueryTriggerInteraction.Ignore)) return true;
+            }
+            return false;
+        }
+
+        private void Reject(Rule rule, string reason)
+        {
+            string key = rule.Kind + ": " + reason;
+            Rejected[key] = Rejected.TryGetValue(key, out int n) ? n + 1 : 1;
+        }
+
+        /// <summary>The paving that guides the blind (yellow tactile blocks) is a walking line: nothing stands on it or within 0.6 m of it.</summary>
+        private bool OnTactile(Vector3 centre, float radius)
+        {
+            float reach = radius + .6f;
+            foreach (var b in tactile) if (b.SqrDistance(centre) < reach * reach) return true;
+            return false;
+        }
+
+        /// <summary>The item's real box (a few cm inset, above the floor) overlaps a collider of the twin: it would clip into a wall, a column or a fitting.</summary>
+        private static bool Collides(Rule rule, Vector3 centre, float yaw)
+        {
+            var rotation = Quaternion.Euler(0, yaw, 0);
+            const float inset = .03f;
+            var local = new Vector3(0, rule.Elevation + .03f + (rule.Height - .06f) * .5f, rule.CentredPivot ? 0 : rule.Depth * .5f);
+            var half = new Vector3(rule.Width * .5f - inset, (rule.Height - .06f) * .5f, rule.Depth * .5f - inset);
+            return Physics.CheckBox(centre + rotation * local, half, rotation, ~0, QueryTriggerInteraction.Ignore);
         }
 
         /// <summary>A shop's customer place (or ticket counter) lies within 5 m straight in front of the wall: that wall is the inside of the shop (or the counter's own wall).</summary>
@@ -235,25 +298,36 @@ namespace ChooGuard.Editor
         private void PlaceRule(Rule rule, List<EquipmentPlacement> items)
         {
             var count = new Dictionary<string, int>();
-            var candidates = survey.Spots.Where(s => Passes(rule, s)).Select(s => (spot: s, score: rule.Score(s))).Where(c => c.score > 0)
-                .OrderByDescending(c => c.score).ThenBy(c => c.spot.Wall.x).ThenBy(c => c.spot.Wall.z).ToList();
+            var candidates = new List<(WallSpots.Spot spot, float score)>();
+            foreach (var spot in survey.Spots)
+            {
+                if (rule.Quota(spot.Zone) <= 0) continue;
+                var reason = Reject(rule, spot);
+                if (reason != null) { Reject(rule, reason); continue; }
+                float score = rule.Score(spot);
+                if (score > 0) candidates.Add((spot, score)); else Reject(rule, "not where it is used (score 0)");
+            }
+            candidates = candidates.OrderByDescending(c => c.score).ThenBy(c => c.spot.Wall.x).ThenBy(c => c.spot.Wall.z).ToList();
             foreach (var (spot, _) in candidates)
             {
                 count.TryGetValue(spot.Zone, out int have);
                 if (have >= rule.Quota(spot.Zone)) continue;
                 var centre = Centre(rule, spot, 0);
                 float radius = Mathf.Max(rule.Width, rule.Depth) * .5f;
-                if (placed.Any(p => p.Kind == rule.Kind && Mathf.Abs(p.Centre.y - centre.y) < 3f && Vector2.Distance(new Vector2(p.Centre.x, p.Centre.z), new Vector2(centre.x, centre.z)) < rule.Spacing)) continue;
-                if (!Free(centre, radius)) continue;
+                float yaw = Mathf.Atan2(spot.Normal.x, spot.Normal.z) * Mathf.Rad2Deg;
+                if (placed.Any(p => p.Kind == rule.Kind && Mathf.Abs(p.Centre.y - centre.y) < 3f && Vector2.Distance(new Vector2(p.Centre.x, p.Centre.z), new Vector2(centre.x, centre.z)) < rule.Spacing)) { Reject(rule, "closer than " + rule.Spacing + " m to one of its kind"); continue; }
+                if (!Free(centre, radius)) { Reject(rule, "overlaps another placed fitting"); continue; }
+                if (Collides(rule, centre, yaw)) { Reject(rule, "collides with twin geometry"); continue; }
                 // 옆에 하나 더(자판기 두 대·수거함과 휴지통): 벽이 그만큼 이어져야 한다.
                 float offset = 0;
                 if (rule.Beside != null)
                 {
-                    float need = rule.Width * .5f + .03f + rule.Beside.Width;
-                    if (spot.FlatPlus >= need + .05f && spot.FlatMinus >= rule.Width * .5f + .05f) offset = rule.Width * .5f + .03f + rule.Beside.Width * .5f;
-                    else if (spot.FlatMinus >= need + .05f && spot.FlatPlus >= rule.Width * .5f + .05f) offset = -(rule.Width * .5f + .03f + rule.Beside.Width * .5f);
-                    else continue;
-                    if (!Free(Centre(rule.Beside, spot, offset), Mathf.Max(rule.Beside.Width, rule.Beside.Depth) * .5f)) continue;
+                    float need = rule.Width * .5f + .03f + rule.Beside.Width + .15f;
+                    if (spot.FlatPlus >= need && spot.FlatMinus >= rule.Width * .5f + .15f) offset = rule.Width * .5f + .03f + rule.Beside.Width * .5f;
+                    else if (spot.FlatMinus >= need && spot.FlatPlus >= rule.Width * .5f + .15f) offset = -(rule.Width * .5f + .03f + rule.Beside.Width * .5f);
+                    else { Reject(rule, "no wall beside for the second fitting"); continue; }
+                    var second = Centre(rule.Beside, spot, offset);
+                    if (!Free(second, Mathf.Max(rule.Beside.Width, rule.Beside.Depth) * .5f) || Collides(rule.Beside, second, yaw)) { Reject(rule, "second fitting overlaps geometry"); continue; }
                 }
                 count[spot.Zone] = have + 1;
                 Add(rule, spot, 0, items);
@@ -268,11 +342,16 @@ namespace ChooGuard.Editor
             string key = rule.IdPrefix + "-" + spot.Zone;
             serial[key] = serial.TryGetValue(key, out int n) ? n + 1 : 1;
             string label = rule.Kind == "distribution_board" ? BoardLabel(spot.Zone) : rule.Label;
+            string id = key + "-" + serial[key].ToString("00");
             items.Add(new EquipmentPlacement
             {
-                id = key + "-" + serial[key].ToString("00"), kind = rule.Kind, label = label, zone = spot.Zone, prefab = rule.Prefab,
+                id = id, kind = rule.Kind, label = label, zone = spot.Zone, prefab = rule.Prefab,
                 position = centre, rotation = new Vector3(0, Mathf.Atan2(spot.Normal.x, spot.Normal.z) * Mathf.Rad2Deg, 0),
             });
+            // 요구 조건보다 얼마나 여유가 있는지(작을수록 빠듯하다).
+            float tight = Mathf.Min(spot.Free - rule.MinFree, Mathf.Min(spot.FlatPlus, spot.FlatMinus) - (rule.Width * .5f + .15f), Near(spot.Wall, doors) - rule.Door, Near(spot.Wall, escalatorEnds) - rule.Escalator, Near(spot.Wall, elevatorDoors) - rule.Elevator, Near(spot.Wall, people) - rule.Person);
+            Clearances.Add(string.Join(",", id, rule.Kind, spot.Zone, spot.Free.ToString("0.00"), Mathf.Min(spot.FlatPlus, spot.FlatMinus).ToString("0.00"), spot.Enclosed, Near(spot.Wall, doors).ToString("0.0"), Near(spot.Wall, escalatorEnds).ToString("0.0"),
+                Near(spot.Wall, elevatorDoors).ToString("0.0"), Near(spot.Wall, people).ToString("0.0"), tight.ToString("0.00")));
         }
 
         /// <summary>Korean panel designations: LP = lighting and outlet panel, then the floor and a running number over the whole floor (LP-2F-03). Platforms: LP-P-nn.</summary>
@@ -291,9 +370,10 @@ namespace ChooGuard.Editor
         {
             var rule = new Rule
             {
-                Kind = "litter_bin", Prefab = ElectricPlazaPrefabs.LitterBin, Label = "휴지통", IdPrefix = "bin", Width = .43f, Depth = .43f, MinFree = .4f + Passage, Spacing = 9f,
-                Door = 1.2f, TenantDoor = 1.5f, Exit = 2f, Escalator = 3f, Elevator = 2.5f, Fitting = 1.2f, Person = .8f, MaxEnclosed = 6,
-                Quota = zone => Indoor(zone) ? Mathf.Clamp(Mathf.FloorToInt(Area(zone) / 700f), Area(zone) > 300f ? 1 : 0, 24) : 0,
+                Kind = "litter_bin", Prefab = ElectricPlazaPrefabs.LitterBin, Label = "휴지통", IdPrefix = "bin", Width = .43f, Depth = .43f, Height = .85f, MinFree = .4f + Passage, Spacing = 9f,
+                Door = 1.2f, TenantDoor = 1.5f, Exit = 2f, Escalator = 3f, Elevator = 3f, Fitting = 1.2f, Person = .8f, MaxEnclosed = 6,
+                // 근거: 역사 쓰레기통은 출입구·화장실·점포·좌석 곁에 둔다. 1,200 m² 당 1개(설계 가정), 구역당 12개까지.
+                Quota = zone => Indoor(zone) ? Mathf.Clamp(Mathf.FloorToInt(Area(zone) / 1200f), Area(zone) > 300f ? 1 : 0, 12) : 0,
                 Score = s =>
                 {
                     float exit = Near(s.Wall, entrances), toilet = Near(s.Wall, toilets), shop = Near(s.Wall, shops);
@@ -314,7 +394,7 @@ namespace ChooGuard.Editor
         {
             var recycling = RecyclingStation();
             var bin = recycling.Beside;
-            var ash = new Rule { Kind = "ash_bin", Prefab = ElectricPlazaPrefabs.AshBin, Label = "담배꽁초 수거함", IdPrefix = "ash", Width = .37f, Depth = .36f, CentredPivot = true };
+            var ash = new Rule { Kind = "ash_bin", Prefab = ElectricPlazaPrefabs.AshBin, Label = "담배꽁초 수거함", IdPrefix = "ash", Width = .37f, Depth = .36f, Height = 1f, CentredPivot = true };
             foreach (var exit in points.Of(PointKind.Exit).Where(e => !Indoor(e.Zone)).OrderBy(e => e.Id, StringComparer.Ordinal))
             {
                 var into = points.Nearest(PointKind.Wait, exit.Position);
@@ -322,12 +402,13 @@ namespace ChooGuard.Editor
                 var side = Vector3.Cross(Vector3.up, inward);
                 // 나오는 사람들을 마주 본다.
                 float yaw = Mathf.Atan2(inward.x, inward.z) * Mathf.Rad2Deg;
-                var wanted = new List<(Rule rule, Vector3 at)> { (recycling, exit.Position + inward * 4f + side * 1.6f), (bin, exit.Position + inward * 4f + side * 2.6f) };
+                // 출구에서 안쪽으로 걷는 길(가운데 줄)에서 3.5 m 이상 옆으로 비켜 세운다: 흡연 자리는 반대쪽.
+                var wanted = new List<(Rule rule, Vector3 at)> { (recycling, exit.Position + inward * 5f + side * 3.5f), (bin, exit.Position + inward * 5f + side * 4.6f) };
                 if (exit.Id == "exit-west-north")
                 {
-                    wanted.Add((ash, exit.Position + inward * 7f - side * 2.5f));
-                    wanted.Add((ash, exit.Position + inward * 7f - side * 3.3f));
-                    wanted.Add((bin, exit.Position + inward * 7f - side * 4.2f));
+                    wanted.Add((ash, exit.Position + inward * 6f - side * 3.5f));
+                    wanted.Add((ash, exit.Position + inward * 6f - side * 4.3f));
+                    wanted.Add((bin, exit.Position + inward * 6f - side * 5.2f));
                 }
                 foreach (var (rule, at) in wanted)
                 {
@@ -348,15 +429,26 @@ namespace ChooGuard.Editor
 
         private Vector3? FloorNear(Vector3 wanted, float floorY, float radius)
         {
-            for (float ring = 0; ring <= 4f; ring += .5f)
+            for (float ring = 0; ring <= 6f; ring += .5f)
                 for (int step = 0; step < (ring == 0 ? 1 : 12); step++)
                 {
                     var at = wanted + Quaternion.Euler(0, step * 30f, 0) * Vector3.forward * ring;
                     if (!NavMesh.SamplePosition(at, out var hit, .3f, NavMesh.AllAreas) || Mathf.Abs(hit.position.y - floorY) > 1.2f) continue;
-                    if (Physics.CheckSphere(hit.position + Vector3.up * .6f, .4f, ~0, QueryTriggerInteraction.Ignore) || !Free(hit.position, radius)) continue;
+                    if (Physics.CheckSphere(hit.position + Vector3.up * .6f, .4f, ~0, QueryTriggerInteraction.Ignore) || !Free(hit.position, radius) || OnTactile(hit.position, radius) || !FlatGround(hit.position, radius)) continue;
                     return hit.position;
                 }
             return null;
+        }
+
+        /// <summary>The paving under the item is level (no stair edge or ramp): four rays at its corners and one at the centre stay within 4 cm of the site's height.</summary>
+        private static bool FlatGround(Vector3 site, float radius)
+        {
+            foreach (var offset in new[] { Vector3.zero, new Vector3(radius, 0, radius), new Vector3(-radius, 0, radius), new Vector3(radius, 0, -radius), new Vector3(-radius, 0, -radius) })
+            {
+                if (!Physics.Raycast(site + offset + Vector3.up * .5f, Vector3.down, out var hit, 1.5f, ~0, QueryTriggerInteraction.Ignore)) return false;
+                if (Mathf.Abs(hit.point.y - site.y) > .06f || hit.normal.y < .97f) return false;
+            }
+            return true;
         }
     }
 }
