@@ -386,7 +386,7 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 ["frozen"] = kind, ["passenger"] = person.Number, ["activity"] = person.Current.ToString(), ["seconds"] = System.Math.Round(seconds, 1),
                 ["at"] = person.Doing, ["to_goal_m"] = System.Math.Round(Vector3.Distance(person.Body.Goal, person.transform.position), 1),
-                ["seen_by_staff"] = PlayerView.Sees(person.transform.position, 45), ["trace"] = new Newtonsoft.Json.Linq.JArray(person.Slot.Trace),
+                ["seen_by_staff"] = PlayerView.Sees(person.transform.position, 45), ["walk"] = person.WalkState(), ["trace"] = new Newtonsoft.Json.Linq.JArray(person.Slot.Trace),
             });
         }
 

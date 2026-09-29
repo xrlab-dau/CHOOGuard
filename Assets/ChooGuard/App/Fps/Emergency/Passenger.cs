@@ -63,7 +63,8 @@ namespace ChooGuard.App.Fps.Emergency
         private float until, walkSpeed, nextRepath, reportStarted, stepSeconds, hiddenUntil, phoneCallEnds = -1;
         private Vector3 lookAt;
         private bool pendingStand, running, hidden, prefetched, alightQueued, helping, itinerary, blockedRaised;
-        private float nextPathCheck, stuckSince = -1, reportAskedAt;
+        private float nextPathCheck, stuckSince = -1, reportAskedAt, stallSince;
+        private Vector3 stallAt;
         /// <summary>Gone over to help someone who collapsed or fell (see <see cref="HelpNearby"/>).</summary>
         public bool Helping => helping;
         private int reevaluations, sitTries;
@@ -232,6 +233,7 @@ namespace ChooGuard.App.Fps.Emergency
             var danger = Focus != null && Focus.Localized ? Focus.Position : (Vector3?)null;
             exit = Crowd.SafeExitFor(transform.position, danger, Focus != null ? Focus.Clearance : 0, exit);
             blockedRaised = false;
+            stallSince = Time.time;
             Current = Activity.Evacuate;
             Travel(exit.Position, running ? World.Range(2.6f, 3.4f) : walkSpeed * 1.35f);
         }
@@ -278,6 +280,7 @@ namespace ChooGuard.App.Fps.Emergency
             prefetched = false;
             itinerary = false;
             blockedRaised = false;
+            stallSince = Time.time;
             if (!Travel(destination, speed)) { Current = then; until = Time.time + 2; }
         }
 
@@ -875,6 +878,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             Current = Activity.Evacuate;
             blockedRaised = false;
+            stallSince = Time.time;
             var danger = Focus != null && Focus.Localized ? Focus.Position : (Vector3?)null;
             if (exit == null || !Instructed || exit.Kind != PointKind.Exit) exit = Crowd.SafeExitFor(transform.position, danger, Focus != null ? Focus.Clearance : 0);
             Travel(exit.Position, running ? World.Range(2.6f, 3.4f) : walkSpeed * 1.35f);
@@ -1091,17 +1095,30 @@ namespace ChooGuard.App.Fps.Emergency
             nextPathCheck = Time.time + 1f;
             if (HazardRegistry.Active.Count == 0 && World.Closed.Count == 0) { stuckSince = -1; return; }
             var agent = Body.Agent;
-            if (!Body.OnNavMesh || Body.Scripted || Body.Seat != PersonBody.SeatPhase.None || agent.pathPending || agent.isOnOffMeshLink) { stuckSince = -1; return; }
+            if (!Body.OnNavMesh || Body.Scripted || Body.Seat != PersonBody.SeatPhase.None || agent.pathPending || agent.isOnOffMeshLink || Body.Riding != null) { stuckSince = -1; stallSince = Time.time; return; }
             var status = agent.pathStatus;
-            bool cut = (status == UnityEngine.AI.NavMeshPathStatus.PathPartial || status == UnityEngine.AI.NavMeshPathStatus.PathInvalid && !agent.isStopped)
-                && (Body.Goal - transform.position).sqrMagnitude > 9f;
-            if (!cut) { stuckSince = -1; return; }
-            if (stuckSince < 0) { stuckSince = Time.time; return; }
-            if (Time.time - stuckSince < 1.5f) return;
+            bool far = (Body.Goal - transform.position).sqrMagnitude > 9f;
+            bool cut = (status == UnityEngine.AI.NavMeshPathStatus.PathPartial || status == UnityEngine.AI.NavMeshPathStatus.PathInvalid && !agent.isStopped) && far;
+            // 길이 있어 보여도 6초 넘게 한 걸음도 못 가면(앞이 막힘, 길을 잃고 멈춤) 막힌 것으로 본다.
+            var here = transform.position;
+            if ((here - stallAt).sqrMagnitude > .25f || !far) { stallAt = here; stallSince = Time.time; }
+            bool stalled = far && Time.time - stallSince > 6f;
+            if (!cut && !stalled) { stuckSince = -1; return; }
+            if (!stalled)
+            {
+                if (stuckSince < 0) { stuckSince = Time.time; return; }
+                if (Time.time - stuckSince < 1.5f) return;
+            }
             blockedRaised = true;
             stuckSince = -1;
+            stallSince = Time.time;
             Crowd.Mind.OnBlocked(this);
         }
+
+        /// <summary>Where the walk stands (navmesh and agent state, current leg), to trace a person who stopped short of where they were going.</summary>
+        public string WalkState() =>
+            "onNavMesh=" + Body.OnNavMesh + " hasPath=" + Body.Agent.hasPath + " status=" + Body.Agent.pathStatus + " stopped=" + Body.Agent.isStopped + " pending=" + Body.Agent.pathPending +
+            " remaining=" + Body.Agent.remainingDistance.ToString("0.0") + " speed=" + Body.Agent.velocity.magnitude.ToString("0.0") + " leg=" + leg + "/" + legs.Count + " seat=" + Body.Seat + " link=" + Body.Agent.isOnOffMeshLink;
 
         private System.Collections.IEnumerator AfterStanding(System.Action then)
         {
