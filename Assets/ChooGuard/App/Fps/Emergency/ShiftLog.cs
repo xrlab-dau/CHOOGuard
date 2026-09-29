@@ -112,11 +112,27 @@ namespace ChooGuard.App.Fps.Emergency
                 ["compositions"] = Compositions,
                 ["jev"] = new JObject
                 {
-                    ["status"] = session.Jev.Status, ["requests"] = session.Jev.Requests, ["failures"] = session.Jev.Failures,
-                    ["input_tokens"] = session.Jev.InputTokens, ["output_tokens"] = session.Jev.OutputTokens,
+                    ["status"] = session.Jev.Status,
+                    ["usage"] = UsageJson(session.Jev.Usage),
+                    ["lanes"] = new JObject
+                    {
+                        ["director"] = UsageJson(session.Jev.UsageOf(JevLane.Director)),
+                        ["crowd_urgent"] = UsageJson(session.Jev.UsageOf(JevLane.CrowdUrgent)),
+                        ["crowd_routine"] = UsageJson(session.Jev.UsageOf(JevLane.CrowdRoutine)),
+                    },
+                    ["budget"] = new JObject { ["requests_per_minute"] = JevBudget.MaxRequestsPerMinute, ["dollars_per_hour"] = JevBudget.MaxDollarsPerHour, ["dollars_per_million_input_tokens"] = JevBudget.DollarsPerMillionInputTokens },
                 },
             };
         }
+
+        /// <summary>A lane's spend: the shift's totals, the average hourly rate over the shift and the highest minute.</summary>
+        private JObject UsageJson(JevUsage usage) => new JObject
+        {
+            ["requests"] = usage.Requests, ["failures"] = usage.Failures, ["input_tokens"] = usage.InputTokens, ["output_tokens"] = usage.OutputTokens,
+            ["dollars"] = Math.Round(usage.Dollars, 5),
+            ["average_dollars_per_hour"] = session.ShiftSeconds > 0 ? Math.Round(usage.Dollars * 3600 / session.ShiftSeconds, 4) : 0,
+            ["peak_requests_per_minute"] = usage.PeakRequestsPerMinute, ["peak_dollars_per_hour"] = Math.Round(usage.PeakDollarsPerHour, 4),
+        };
 
         public string Save(string ending)
         {
@@ -175,7 +191,8 @@ namespace ChooGuard.App.Fps.Emergency
                 "부상  " + crowd.Injured.Count + "명\n" +
                 "소화 약제 분사  " + log.SprayedSeconds.ToString("0") + "초 (" + log.ExtinguishersUsed + "대)\n\n" +
                 "<color=#ffffff88>상황 전개 판단  JEV " + log.JevCompositions + (log.DeferredRounds > 0 ? " · 응답 없어 미룸 " + log.DeferredRounds : "") + "\n" +
-                "승객 판단  JEV " + log.JevDecisions + " · 지연 시 규칙 " + log.LocalDecisions + "\n" + session.Jev.Status + "</color>";
+                "승객 판단  JEV " + log.JevDecisions + " · 지연 시 규칙 " + log.LocalDecisions + "\n" +
+                "JEV 사용  요청 " + session.Jev.Usage.Requests + "건 · 평균 $" + (session.ShiftSeconds > 0 ? session.Jev.Usage.Dollars * 3600 / session.ShiftSeconds : 0).ToString("0.00") + "/시간\n" + session.Jev.Status + "</color>";
 
             FpsUiFactory.Button(panel, font, "다시 근무", new Vector2(0, 0), new Vector2(0, 0), new Vector2(300, 56), () => SceneFlow.StartShift(font, null), 24);
             FpsUiFactory.Button(panel, font, "타이틀로", new Vector2(0, 0), new Vector2(320, 0), new Vector2(300, 56), SceneFlow.ToTitle, 24);

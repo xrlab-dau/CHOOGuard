@@ -247,7 +247,7 @@ namespace ChooGuard.App.Fps.Emergency
             nextRound = Time.time + (Shaking ? 4 : world.Range(10, 16));
             // 비상상황은 JEV 만 만든다. JEV 가 없으면 이 판은 평온하게 흐른다(키가 생기면 다음 근무부터).
             if (jev == null || !jev.Available) return;
-            if (!jev.CanSend(true)) { nextRound = Time.time + 2; return; }
+            if (!jev.CanSend(JevLane.Director)) { nextRound = Time.time + 2; return; }
             var candidates = Stage == Phase.Calm ? Origins() : Developments();
             // JEV 007: '아직 없음'은 JEV 가 답한 평온 판 세 번까지만 둔다. 이 근무는 훈련 근무다.
             if (Stage == Phase.Calm && calmRounds < 3) candidates.Insert(0, NothingYet);
@@ -274,7 +274,7 @@ namespace ChooGuard.App.Fps.Emergency
                 string detail = "JEV p" + Probability(answer, drawn) + " / " + candidates.Count + "개 후보";
                 if (chosen.Levels == null) { asking = false; Execute(chosen, .5f, candidates.Count, detail); return; }
                 AskMagnitude(chosen, candidates.Count, detail);
-            }, true));
+            }, JevLane.Director));
         }
 
         private static string Probability(JevAnswer answer, string key) =>
@@ -298,7 +298,7 @@ namespace ChooGuard.App.Fps.Emergency
                 int levels = chosen.Levels.Count, level = answer.DrawLevel(world.Random, levels);
                 float magnitude = levels > 1 ? level / (float)(levels - 1) : .5f;
                 Execute(chosen, magnitude, candidates, detail + " · 크기 " + (level + 1) + "/" + levels + " p" + Probability(answer, level.ToString()));
-            }, true));
+            }, JevLane.Director));
         }
 
         /// <summary>JEV did not answer: nothing happens now and the round is asked again shortly.</summary>

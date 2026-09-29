@@ -68,18 +68,14 @@ namespace ChooGuard.App.Fps.Emergency
     /// <summary>
     /// Direct TypeSafe System One client (POST /v1/systemone) with explicit budgets. JEV only ranks candidates the game
     /// built; control flow and world writes stay in code. The key comes from <see cref="JevKey"/> (this machine's user)
-    /// and is never logged or written by the client. Composition requests are critical: crowd batches leave them one
-    /// in-flight slot and part of the per-minute budget.
+    /// and is never logged or written by the client. Every request belongs to a <see cref="JevLane"/>; the lanes share
+    /// the budget of <see cref="JevBudget"/> (the director reserved first, urgent crowd decisions next, routine ones the
+    /// remainder) and each has its own in-flight limit.
     /// </summary>
     public sealed class JevClient
     {
         public const string Endpoint = "https://api.typesafe.ai/v1/systemone";
         public const string Model = "jev-latest";
-        public int MaxRequestsPerRun = 1500;
-        public int MaxRequestsPerMinute = 90;
-        public int MaxInFlight = 3;
-        /// <summary>Per-minute requests kept free of crowd batches for composition.</summary>
-        public int ReservedPerMinute = 12;
         public float TimeoutSeconds = 8f;
 
         public JevKeySource Source { get; }
@@ -87,17 +83,15 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>The server refused the key (401/403): it stays off for this shift.</summary>
         public bool Rejected => disabled;
         public string Status { get; private set; }
-        public int Requests { get; private set; }
-        public int Failures { get; private set; }
         /// <summary>Failed requests since the last answer (0 while JEV answers).</summary>
         public int FailuresInARow { get; private set; }
-        public long InputTokens { get; private set; }
-        public long OutputTokens { get; private set; }
         public string LastModel { get; private set; } = "";
+        /// <summary>Requests, tokens and dollars of all lanes together: the last minute's rate and the shift's totals.</summary>
+        public JevUsage Usage => budget.Usage(Time.realtimeSinceStartup);
+        public JevUsage UsageOf(JevLane lane) => budget.Usage(lane, Time.realtimeSinceStartup);
 
         private readonly string key;
-        private readonly Queue<float> recent = new Queue<float>();
-        private int inFlight;
+        private readonly JevBudget budget = new JevBudget();
         private bool disabled;
         private readonly string logPath;
 
@@ -112,29 +106,23 @@ namespace ChooGuard.App.Fps.Emergency
             if (key != null && JevKey.KnownFor(key) == JevKeyCheck.Rejected) disabled = true;
         }
 
-        /// <summary>
-        /// True when a request may be sent now under the per-minute, per-run and in-flight caps. Non-critical (crowd)
-        /// requests leave one in-flight slot and <see cref="ReservedPerMinute"/> of the minute to critical ones.
-        /// </summary>
-        public bool CanSend(bool critical = false)
-        {
-            if (!Available || Requests >= MaxRequestsPerRun) return false;
-            if (inFlight >= (critical ? MaxInFlight : MaxInFlight - 1)) return false;
-            float now = Time.realtimeSinceStartup;
-            while (recent.Count > 0 && now - recent.Peek() > 60f) recent.Dequeue();
-            return recent.Count < (critical ? MaxRequestsPerMinute : MaxRequestsPerMinute - ReservedPerMinute);
-        }
+        /// <summary>True when a request of <paramref name="lane"/> may be sent now under the lane's in-flight limit and the shared budget.</summary>
+        public bool CanSend(JevLane lane) => Available && budget.CanSend(lane, Time.realtimeSinceStartup);
+
+        /// <summary>Old two-lane form (critical = urgent crowd lane, otherwise routine); it goes once the crowd uses lanes directly.</summary>
+        public bool CanSend(bool critical = false) => CanSend(critical ? JevLane.CrowdUrgent : JevLane.CrowdRoutine);
+
+        /// <summary>Old two-lane form of <see cref="Ask(string, object, IReadOnlyList{JevChoice}, Action{Dictionary{string, JevAnswer}}, JevLane)"/>.</summary>
+        public IEnumerator Ask(string purpose, object state, IReadOnlyList<JevChoice> questions, Action<Dictionary<string, JevAnswer>> done, bool critical = false) =>
+            Ask(purpose, state, questions, done, critical ? JevLane.CrowdUrgent : JevLane.CrowdRoutine);
 
         /// <summary>
         /// Sends one request holding several independent questions over the same state. The callback always runs on
-        /// the main thread; answers is null when the request failed, timed out or was refused by the caps.
+        /// the main thread; answers is null when the request failed, timed out or was refused by the budget.
         /// </summary>
-        public IEnumerator Ask(string purpose, object state, IReadOnlyList<JevChoice> questions, Action<Dictionary<string, JevAnswer>> done, bool critical = false)
+        public IEnumerator Ask(string purpose, object state, IReadOnlyList<JevChoice> questions, Action<Dictionary<string, JevAnswer>> done, JevLane lane)
         {
-            if (!CanSend(critical) || questions.Count == 0) { done(null); yield break; }
-            inFlight++;
-            Requests++;
-            recent.Enqueue(Time.realtimeSinceStartup);
+            if (questions.Count == 0 || !CanSend(lane)) { done(null); yield break; }
             var questionObject = new JObject();
             foreach (var question in questions)
             {
@@ -149,8 +137,13 @@ namespace ChooGuard.App.Fps.Emergency
             }
             var payload = new JObject { ["model"] = Model, ["state"] = JToken.FromObject(state), ["questions"] = questionObject };
             var body = Encoding.UTF8.GetBytes(payload.ToString(Formatting.None));
+            long estimate = EstimateInputTokens(body.Length);
+            if (!budget.CanSend(lane, Time.realtimeSinceStartup, estimate)) { done(null); yield break; }
+            var ticket = budget.Begin(lane, Time.realtimeSinceStartup, estimate);
             float started = Time.realtimeSinceStartup;
             Dictionary<string, JevAnswer> answers = null;
+            long? inputTokens = null;
+            long outputTokens = 0;
             using (var request = new UnityWebRequest(Endpoint, UnityWebRequest.kHttpVerbPOST))
             {
                 request.uploadHandler = new UploadHandlerRaw(body) { contentType = "application/json" };
@@ -159,16 +152,22 @@ namespace ChooGuard.App.Fps.Emergency
                 request.SetRequestHeader("Accept", "application/json");
                 request.timeout = Mathf.CeilToInt(TimeoutSeconds);
                 yield return request.SendWebRequest();
-                inFlight--;
                 if (request.result == UnityWebRequest.Result.Success)
                 {
-                    try { answers = Parse(request.downloadHandler.text, questions); }
+                    try
+                    {
+                        var root = JObject.Parse(request.downloadHandler.text);
+                        LastModel = (string)root["model"] ?? "";
+                        var usage = root["usage"];
+                        if (usage != null) { inputTokens = (long?)usage["input_tokens"]; outputTokens = (long?)usage["output_tokens"] ?? 0; }
+                        answers = Parse(root, questions);
+                    }
                     catch (Exception) { answers = null; }
                 }
+                budget.End(ticket, inputTokens, outputTokens, answers == null);
                 bool refused = request.responseCode == 401 || request.responseCode == 403;
                 if (answers == null)
                 {
-                    Failures++;
                     FailuresInARow++;
                     Status = refused ? "JEV 키 거부 · 타이틀의 JEV 연결에서 다시 입력" :
                         request.responseCode == 429 ? "JEV 요청 한도 · 잠시 뒤 다시 물음" : "JEV 응답 없음 · 다시 묻는 중";
@@ -180,17 +179,19 @@ namespace ChooGuard.App.Fps.Emergency
                     Status = "JEV 연결됨 · " + LastModel;
                     JevKey.Observed(key, JevKeyCheck.Accepted);
                 }
-                Log(purpose, payload, answers, request.responseCode, Time.realtimeSinceStartup - started);
+                Log(purpose, lane, payload, answers, request.responseCode, Time.realtimeSinceStartup - started, inputTokens);
             }
             done(answers);
         }
 
-        private Dictionary<string, JevAnswer> Parse(string text, IReadOnlyList<JevChoice> questions)
+        /// <summary>
+        /// Input tokens of a request body before JEV counts them (measured on this project's requests: 1.75–2.5 bytes of
+        /// UTF-8 JSON per token, the Korean-heavy small ones densest). The estimate is replaced by JEV's count on the answer.
+        /// </summary>
+        private static long EstimateInputTokens(int bodyBytes) => (long)(bodyBytes / 1.75f) + 1;
+
+        private static Dictionary<string, JevAnswer> Parse(JObject root, IReadOnlyList<JevChoice> questions)
         {
-            var root = JObject.Parse(text);
-            LastModel = (string)root["model"] ?? "";
-            var usage = root["usage"];
-            if (usage != null) { InputTokens += (long?)usage["input_tokens"] ?? 0; OutputTokens += (long?)usage["output_tokens"] ?? 0; }
             var answersToken = root["answers"] as JObject;
             if (answersToken == null) return null;
             var result = new Dictionary<string, JevAnswer>();
@@ -222,7 +223,7 @@ namespace ChooGuard.App.Fps.Emergency
             return result;
         }
 
-        private void Log(string purpose, JObject payload, Dictionary<string, JevAnswer> answers, long status, float seconds)
+        private void Log(string purpose, JevLane lane, JObject payload, Dictionary<string, JevAnswer> answers, long status, float seconds, long? inputTokens)
         {
             if (string.IsNullOrEmpty(logPath)) return;
             try
@@ -231,9 +232,11 @@ namespace ChooGuard.App.Fps.Emergency
                 {
                     ["at"] = DateTime.UtcNow.ToString("o"),
                     ["purpose"] = purpose,
+                    ["lane"] = lane.ToString(),
                     ["http"] = status,
                     ["seconds"] = Math.Round(seconds, 3),
                     ["model"] = LastModel,
+                    ["input_tokens"] = inputTokens,
                     ["request"] = payload,
                     ["answers"] = answers == null ? null : JToken.FromObject(answers),
                 };
