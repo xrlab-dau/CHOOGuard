@@ -1,4 +1,5 @@
 using System;
+using ChooGuard.App.Fps.Equipment;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -51,6 +52,8 @@ namespace ChooGuard.App.Fps.Emergency
         public GameObject SwatVan;
         [Header("지진 때 떨어질 수 있는 매달린 안내판")]
         public HangingItem[] Hanging = Array.Empty<HangingItem>();
+        [Header("설비 배치(화재 감지·소화·방화구획·감시, 전기·광장, 주방·가스): 그룹별 배치 파일과 프리팹")]
+        public EquipmentCatalog Equipment;
         [Header("소리(녹음, ThirdParty/Audio/Station)")]
         public AudioClip ConcourseBed;
         public AudioClip PlatformBed;
