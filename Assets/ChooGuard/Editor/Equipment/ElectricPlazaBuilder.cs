@@ -28,6 +28,9 @@ namespace ChooGuard.Editor
             var instance = NavMesh.AddNavMeshData(data);
             try
             {
+                // 콜라이더 없는 유리·외장도 규칙에 보이도록 빌드 동안만 임시 콜라이더를 단다(저장하지 않는다).
+                using var glass = new TwinColliders();
+                Debug.Log("CG_TWIN_COLLIDERS temporary=" + glass.Count);
                 var survey = WallSpots.Find(points);
                 var placement = new ElectricPlazaPlacement(points, survey);
                 var items = placement.Place();

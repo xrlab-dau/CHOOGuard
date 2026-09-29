@@ -22,6 +22,12 @@ namespace ChooGuard.Editor
         /// <summary>Walking width kept free beside any fitting (m): access routes are at least 1.2 m wide (accessibility act, enforcement rule appendix 1).</summary>
         private const float Passage = 1.2f;
 
+        /// <summary>Gap kept between two different fittings (m), so a bank of machines, a kiosk and a bin never crowd each other.</summary>
+        private const float Clearance = .8f;
+
+        /// <summary>Wall that must continue beside a fitting on each side (m), so nothing stands wedged into a corner, a glass wall or a door frame.</summary>
+        private const float Side = .3f;
+
         private readonly StationPoints points;
         private readonly WallSpots.Survey survey;
         private readonly Vector3[] publicDoors, staffDoors, tenantDoors, elevatorDoors, exits, toilets, cores, seats, shops, escalatorEnds, fittings, people, doors, entrances;
@@ -217,9 +223,9 @@ namespace ChooGuard.Editor
         /// <summary>Why a spot cannot take this kind, or null when it can. Every rule that removes a spot is counted in <see cref="Rejected"/>.</summary>
         private string Reject(Rule rule, WallSpots.Spot s)
         {
-            // 벽은 폭 + 0.3 m 이상 이어져야 한다: 더 좁은 틈·기둥 모서리·문틀 옆은 뺀다.
-            float half = rule.Width * .5f + .15f;
-            if (s.FlatPlus < half || s.FlatMinus < half) return "wall narrower than item + 0.3 m";
+            // 벽은 양옆으로 0.3 m 씩 더 이어져야 한다(폭 + 0.6 m): 모서리·유리벽·문틀에 붙어 낀 자리는 뺀다.
+            float half = rule.Width * .5f + Side;
+            if (s.FlatPlus < half || s.FlatMinus < half) return "wall narrower than item + 0.6 m";
             if (s.Free < rule.MinFree) return "less than " + rule.MinFree.ToString("0.0") + " m free in front";
             if (s.Enclosed > rule.MaxEnclosed) return "alcove, shop interior or corridor";
             // 가게 안쪽 벽(계산대·손님 자리를 마주 보는 벽)은 가게 것이다: 역 비품이 서지 않는다.
@@ -322,9 +328,9 @@ namespace ChooGuard.Editor
                 float offset = 0;
                 if (rule.Beside != null)
                 {
-                    float need = rule.Width * .5f + .03f + rule.Beside.Width + .15f;
-                    if (spot.FlatPlus >= need && spot.FlatMinus >= rule.Width * .5f + .15f) offset = rule.Width * .5f + .03f + rule.Beside.Width * .5f;
-                    else if (spot.FlatMinus >= need && spot.FlatPlus >= rule.Width * .5f + .15f) offset = -(rule.Width * .5f + .03f + rule.Beside.Width * .5f);
+                    float need = rule.Width * .5f + .03f + rule.Beside.Width + Side;
+                    if (spot.FlatPlus >= need && spot.FlatMinus >= rule.Width * .5f + Side) offset = rule.Width * .5f + .03f + rule.Beside.Width * .5f;
+                    else if (spot.FlatMinus >= need && spot.FlatPlus >= rule.Width * .5f + Side) offset = -(rule.Width * .5f + .03f + rule.Beside.Width * .5f);
                     else { Reject(rule, "no wall beside for the second fitting"); continue; }
                     var second = Centre(rule.Beside, spot, offset);
                     if (!Free(second, Mathf.Max(rule.Beside.Width, rule.Beside.Depth) * .5f) || Collides(rule.Beside, second, yaw)) { Reject(rule, "second fitting overlaps geometry"); continue; }
@@ -338,7 +344,8 @@ namespace ChooGuard.Editor
         private void Add(Rule rule, WallSpots.Spot spot, float along, List<EquipmentPlacement> items)
         {
             var centre = Centre(rule, spot, along);
-            placed.Add(new Placed { Centre = centre, Radius = Mathf.Max(rule.Width, rule.Depth) * .5f, Kind = rule.Kind });
+            // 반지름에 0.8 m 를 더해 두어, 뒤에 놓이는 다른 비품은 이 비품에서 0.8 m 이상 떨어진다(붙어 서서 빽빽해 보이는 것을 막는다). 짝(옆에 하나 더)은 이미 함께 검사했다.
+            placed.Add(new Placed { Centre = centre, Radius = Mathf.Max(rule.Width, rule.Depth) * .5f + Clearance, Kind = rule.Kind });
             string key = rule.IdPrefix + "-" + spot.Zone;
             serial[key] = serial.TryGetValue(key, out int n) ? n + 1 : 1;
             string label = rule.Kind == "distribution_board" ? BoardLabel(spot.Zone) : rule.Label;
@@ -349,7 +356,7 @@ namespace ChooGuard.Editor
                 position = centre, rotation = new Vector3(0, Mathf.Atan2(spot.Normal.x, spot.Normal.z) * Mathf.Rad2Deg, 0),
             });
             // 요구 조건보다 얼마나 여유가 있는지(작을수록 빠듯하다).
-            float tight = Mathf.Min(spot.Free - rule.MinFree, Mathf.Min(spot.FlatPlus, spot.FlatMinus) - (rule.Width * .5f + .15f), Near(spot.Wall, doors) - rule.Door, Near(spot.Wall, escalatorEnds) - rule.Escalator, Near(spot.Wall, elevatorDoors) - rule.Elevator, Near(spot.Wall, people) - rule.Person);
+            float tight = Mathf.Min(spot.Free - rule.MinFree, Mathf.Min(spot.FlatPlus, spot.FlatMinus) - (rule.Width * .5f + Side), Near(spot.Wall, doors) - rule.Door, Near(spot.Wall, escalatorEnds) - rule.Escalator, Near(spot.Wall, elevatorDoors) - rule.Elevator, Near(spot.Wall, people) - rule.Person);
             Clearances.Add(string.Join(",", id, rule.Kind, spot.Zone, spot.Free.ToString("0.00"), Mathf.Min(spot.FlatPlus, spot.FlatMinus).ToString("0.00"), spot.Enclosed, Near(spot.Wall, doors).ToString("0.0"), Near(spot.Wall, escalatorEnds).ToString("0.0"),
                 Near(spot.Wall, elevatorDoors).ToString("0.0"), Near(spot.Wall, people).ToString("0.0"), tight.ToString("0.00")));
         }
@@ -415,7 +422,7 @@ namespace ChooGuard.Editor
                     float radius = Mathf.Max(rule.Width, rule.Depth) * .5f;
                     var centre = FloorNear(at, exit.Position.y, radius);
                     if (centre == null) continue;
-                    placed.Add(new Placed { Centre = centre.Value, Radius = radius, Kind = rule.Kind });
+                    placed.Add(new Placed { Centre = centre.Value, Radius = radius + Clearance, Kind = rule.Kind });
                     string key = rule.IdPrefix + "-" + exit.Zone + "-" + exit.Id;
                     serial[key] = serial.TryGetValue(key, out int n) ? n + 1 : 1;
                     items.Add(new EquipmentPlacement

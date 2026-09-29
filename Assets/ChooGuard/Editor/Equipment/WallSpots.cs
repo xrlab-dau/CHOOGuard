@@ -126,11 +126,42 @@ namespace ChooGuard.Editor
             return survey;
         }
 
+        private static readonly RaycastHit[] Hits = new RaycastHit[8];
+
+        /// <summary>
+        /// The nearest hit of a ray. Colliders that lie in one plane (a glass panel over a wall, the temporary colliders next to the
+        /// twin's own) tie within a centimetre; the one whose hierarchy path sorts first wins, so two runs pick the same collider.
+        /// </summary>
+        private static bool Cast(Vector3 origin, Vector3 direction, float distance, out RaycastHit best)
+        {
+            best = default;
+            int count = Physics.RaycastNonAlloc(origin, direction, Hits, distance, ~0, QueryTriggerInteraction.Ignore);
+            if (count == 0) return false;
+            float nearest = float.MaxValue;
+            for (int i = 0; i < count; i++) nearest = Mathf.Min(nearest, Hits[i].distance);
+            string bestPath = null;
+            for (int i = 0; i < count; i++)
+            {
+                if (Hits[i].distance - nearest > .01f) continue;
+                string path = PathOf(Hits[i].collider.transform);
+                if (bestPath != null && string.CompareOrdinal(path, bestPath) >= 0) continue;
+                bestPath = path;
+                best = Hits[i];
+            }
+            return true;
+        }
+
+        private static string PathOf(Transform transform)
+        {
+            string path = transform.name;
+            for (var t = transform.parent; t != null; t = t.parent) path = t.name + "/" + path;
+            return path;
+        }
         private static Spot Measure(Vector3 floor, Vector3 inward, StationPoints points, Transform train, Transform escalators)
         {
             var zone = points.ZoneAt(floor);
             if (zone == null) return null;
-            if (!Physics.Raycast(floor + Vector3.up * 1f, -inward, out var hit, 1f, ~0, QueryTriggerInteraction.Ignore)) return null;
+            if (!Cast(floor + Vector3.up * 1f, -inward, 1f, out var hit)) return null;
             if (hit.distance < .1f || Mathf.Abs(hit.normal.y) > .2f) return null;
             var normal = new Vector3(hit.normal.x, 0, hit.normal.z).normalized;
             if (Vector3.Dot(normal, inward) < .9f || NotAWall(hit.collider, train, escalators)) return null;
@@ -154,7 +185,7 @@ namespace ChooGuard.Editor
                 foreach (float h in new[] { 1.0f, 1.8f })
                 {
                     var origin = wall + normal * .4f + direction * s + Vector3.up * h;
-                    if (!Physics.Raycast(origin, -normal, out var hit, .6f, ~0, QueryTriggerInteraction.Ignore)) return reached;
+                    if (!Cast(origin, -normal, .6f, out var hit)) return reached;
                     if (Mathf.Abs(hit.distance - .4f) > .06f || Vector3.Dot(hit.normal, normal) < .97f || NotAWall(hit.collider, train, escalators)) return reached;
                 }
                 reached = s;

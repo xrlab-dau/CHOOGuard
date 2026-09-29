@@ -36,6 +36,9 @@ namespace ChooGuard.Editor
             EquipmentBuilder.EnsureStation();
             var catalog = AssetDatabase.LoadAssetAtPath<EquipmentCatalog>(EquipmentBuilder.CatalogPath);
             var root = new GameObject("views");
+            // 콜라이더 없는 유리·외장이 시야와 겹침 검사에 보이도록 임시 콜라이더를 단다(저장하지 않는다).
+            using var glass = new TwinColliders();
+            Debug.Log("CG_TWIN_COLLIDERS temporary=" + glass.Count);
             var report = EquipmentSpawner.Spawn(catalog, root.transform);
             string folder = Path.GetFullPath(Path.Combine(Application.dataPath, "..", ".gate"));
             Directory.CreateDirectory(folder);
@@ -72,7 +75,9 @@ namespace ChooGuard.Editor
             foreach (var kind in all.Select(e => e.Kind).Distinct().OrderBy(k => k, StringComparer.Ordinal))
             {
                 var pool = all.Where(e => e.Kind == kind).OrderBy(e => e.Id, StringComparer.Ordinal).ToList();
-                for (int i = 0; i < 2 && pool.Count > 0; i++)
+                // 수거함·키오스크는 전부, 나머지 종류는 시드 무작위 2개.
+                int take = kind == "recycling_bin" || kind == "charging_kiosk" ? pool.Count : 2;
+                for (int i = 0; i < take && pool.Count > 0; i++)
                 {
                     var pick = pool[random.Next(pool.Count)];
                     pool.Remove(pick);
