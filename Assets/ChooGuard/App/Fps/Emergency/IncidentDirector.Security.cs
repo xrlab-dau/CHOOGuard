@@ -29,7 +29,9 @@ namespace ChooGuard.App.Fps.Emergency
         private IEnumerable<Transition> SecurityOrigins(Pools pools)
         {
             foreach (var p in pools.Spread(p => p.Luggage == 2 && Settled(p) && p.Current != Passenger.Activity.InTrain, 2)) yield return BagLeft(p);
+            yield return null;
             foreach (var p in pools.Spread(p => !p.Elderly && p.Current != Passenger.Activity.InTrain && p.Current != Passenger.Activity.Sit && p.Current != Passenger.Activity.Toilet, 2)) yield return Aggression(p);
+            yield return null;
             if (threat == null) yield return ThreatCall();
             seatsByRank = seatsByRank ?? world.Points.Of(PointKind.Seat).OrderBy(s => Rank(s.Id)).ToList();
             var seat = seatsByRank.FirstOrDefault(s => !world.IsClosed(s.Position, 2));

@@ -81,11 +81,17 @@ namespace ChooGuard.App.Fps.Emergency
         private IEnumerable<Transition> CasualtyOrigins(Pools pools)
         {
             foreach (var p in pools.Spread(p => p.Current != Passenger.Activity.Walk || p.Elderly, 2)) yield return Medical(p, Faint);
+            yield return null;
             foreach (var p in pools.Spread(p => true, 1)) yield return Medical(p, Seizure);
+            yield return null;
             foreach (var p in pools.Spread(p => p.Current != Passenger.Activity.InTrain || p.Elderly, 1)) yield return Medical(p, ChestPain);
+            yield return null;
             foreach (var p in pools.Spread(p => true, 1)) yield return Medical(p, Breathing);
+            yield return null;
             foreach (var p in pools.Spread(p => p.Current != Passenger.Activity.Walk, 1)) yield return Medical(p, LowSugar);
+            yield return null;
             foreach (var p in pools.Spread(p => p.Current == Passenger.Activity.Walk && OnStairs(p), 2)) yield return StairsFall(p);
+            yield return null;
             int falls = 0, caught = 0;
             foreach (var escalator in world.Escalators.OrderBy(e => Rank(e.Entry.id)))
             {
@@ -100,6 +106,7 @@ namespace ChooGuard.App.Fps.Emergency
                     var below = Below(owner, escalator);
                     if (below != null) { yield return SuitcaseTumble(owner, below, escalator); break; }
                 }
+                yield return null;
             }
         }
 

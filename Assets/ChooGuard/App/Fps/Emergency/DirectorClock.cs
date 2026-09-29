@@ -9,6 +9,7 @@ namespace ChooGuard.App.Fps.Emergency
         public float WallMs, CpuMs;
 
         public static Cost operator +(Cost a, Cost b) => new Cost { WallMs = a.WallMs + b.WallMs, CpuMs = a.CpuMs + b.CpuMs };
+        public static Cost operator -(Cost a, Cost b) => new Cost { WallMs = a.WallMs - b.WallMs, CpuMs = a.CpuMs - b.CpuMs };
     }
 
     /// <summary>

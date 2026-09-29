@@ -305,41 +305,61 @@ namespace ChooGuard.App.Fps.Emergency
 
         /// <summary>
         /// Every cause whose preconditions hold anywhere right now, each with one or two concrete instances (JEV 012
-        /// every_cause_every_round), appended to <paramref name="list"/> one source (the pools, then each family) per step, so
-        /// the real-time loop can spread a listing over frames. The family files list them; which instances they pick follows
-        /// the ranks so the list only changes when the world does. <paramref name="pools"/> is refilled by the first step.
+        /// every_cause_every_round), appended to <paramref name="list"/>. The family files list them lazily, so each step
+        /// does the work up to the end of the frame's share (<see cref="SliceSpent"/>), which lets the real-time loop spread
+        /// a listing over frames. Which instances the families pick follows the ranks so the list only changes when the
+        /// world does. <paramref name="pools"/> is refilled by the first step.
         /// </summary>
         private IEnumerable<bool> OriginSteps(List<Transition> list, Pools pools)
         {
             pools.Refill();
-            yield return true;
-            list.AddRange(FireOrigins(pools));
-            yield return true;
-            list.AddRange(CasualtyOrigins(pools));
-            yield return true;
-            list.AddRange(SecurityOrigins(pools));
-            yield return true;
-            list.AddRange(TrainOrigins(pools));
-            yield return true;
-            list.AddRange(FacilityOrigins(pools));
-            yield return true;
+            if (SliceSpent) yield return true;
+            foreach (var step in Fill(list, FireOrigins(pools))) yield return step;
+            foreach (var step in Fill(list, CasualtyOrigins(pools))) yield return step;
+            foreach (var step in Fill(list, SecurityOrigins(pools))) yield return step;
+            foreach (var step in Fill(list, TrainOrigins(pools))) yield return step;
+            foreach (var step in Fill(list, FacilityOrigins(pools))) yield return step;
             EquipmentOrigins(pools, list);
         }
 
-        /// <summary>The developments of what exists, one family per step.</summary>
+        /// <summary>The developments of what exists, in steps of the frame's share like <see cref="OriginSteps"/>.</summary>
         private IEnumerable<bool> DevelopmentSteps(List<Transition> list)
         {
-            list.AddRange(FireDevelopments());
-            yield return true;
-            list.AddRange(CasualtyDevelopments());
-            yield return true;
-            list.AddRange(SecurityDevelopments());
-            yield return true;
-            list.AddRange(TrainDevelopments());
-            yield return true;
-            list.AddRange(FacilityDevelopments());
-            yield return true;
+            foreach (var step in Fill(list, FireDevelopments())) yield return step;
+            foreach (var step in Fill(list, CasualtyDevelopments())) yield return step;
+            foreach (var step in Fill(list, SecurityDevelopments())) yield return step;
+            foreach (var step in Fill(list, TrainDevelopments())) yield return step;
+            foreach (var step in Fill(list, FacilityDevelopments())) yield return step;
             EquipmentDevelopments(list);
+        }
+
+        /// <summary>
+        /// Appends what <paramref name="source"/> lists. A family is consumed whole in one step unless it marks safe places
+        /// (no live collection is being enumerated there) with a <c>null</c> checkpoint: at a checkpoint, and after the
+        /// family, the step ends once this frame's share is spent.
+        /// </summary>
+        private IEnumerable<bool> Fill(List<Transition> list, IEnumerable<Transition> source)
+        {
+            foreach (var transition in source)
+            {
+                if (transition == null)
+                {
+                    if (SliceSpent) yield return true;
+                    continue;
+                }
+                list.Add(transition);
+            }
+            if (SliceSpent) yield return true;
+        }
+
+        /// <summary>The whole list of new-emergency candidates at once (editor harnesses read it by reflection to force every kind; the play loop lists in steps).</summary>
+        private List<Transition> Origins()
+        {
+            wholePools = wholePools ?? new Pools(this);
+            var list = new List<Transition>();
+            foreach (var _ in OriginSteps(list, wholePools)) { }
+            Distinct(list);
+            return list;
         }
 
         /// <summary>The same person or place can be the candidate of several causes, but every key names one cause: the first wins (in place).</summary>

@@ -84,11 +84,19 @@ namespace ChooGuard.App.Fps.Emergency
         private int watchHash, stateHash, listedOrigins;
         private bool judging, applying, beatWanted;
         private Dictionary<string, object> lastFocus;
-        // 목록 만들기는 한 프레임에 원천 하나씩 나누어 한다(후보 목록 전체를 한 프레임에 만들면 수 ms 가 든다).
-        private IEnumerator<bool> listing;
+        // 박동 하나는 여러 프레임에 나누어 한다: 한 프레임의 몫을 다 쓰면 다음 프레임으로 넘긴다(목록 전체를 한 프레임에 만들면 수 ms 가 든다).
+        private IEnumerator<bool> beat;
         private List<Transition> listed;
-        private float listingKilobytes;
-        private Cost listingCost;
+        private Cost beatCost, beatRequest;
+        private bool beatRequested;
+        private float beatKilobytes;
+        private long sliceEnds;
+        /// <summary>The director's share of one frame (wall clock): when it is spent the heartbeat goes on in the next frame.</summary>
+        private const float SliceMilliseconds = .35f;
+        private static readonly long SliceTicks = (long)(SliceMilliseconds * Stopwatch.Frequency / 1000.0);
+
+        /// <summary>True once this frame's share is spent; listing code ends its step there.</summary>
+        private bool SliceSpent => Stopwatch.GetTimestamp() >= sliceEnds;
 
         private void BeginCompose()
         {
@@ -113,19 +121,20 @@ namespace ChooGuard.App.Fps.Emergency
                 int hash = SituationHash();
                 if (hash != watchHash) { watchHash = hash; beatWanted = true; }
             }
-            // 박동은 겹치지 않는다: 목록을 만드는 중이면 이번 박동은 끝난 뒤에 이어 한다.
-            if (listing == null && beatWanted)
+            // 박동은 겹치지 않는다: 박동이 진행 중이면 다음 박동은 끝난 뒤에 이어 한다.
+            if (beat == null && beatWanted)
             {
                 beatWanted = false;
                 nextBeat = now + HeartbeatSeconds;
                 listed = listed ?? new List<Transition>();
                 listed.Clear();
                 listingPools = listingPools ?? new Pools(this);
-                listing = ListingSteps(listed, listingPools).GetEnumerator();
-                listingCost = default;
-                listingKilobytes = 0;
+                beat = HeartbeatSteps().GetEnumerator();
+                beatCost = default;
+                beatRequested = false;
+                beatKilobytes = 0;
             }
-            if (listing != null) StepListing();
+            if (beat != null) StepBeat();
         }
 
         /// <summary>
@@ -220,37 +229,52 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 판단 ────────────────────────────────────────────────────────────
 
-        /// <summary>One frame's slice of the listing; the frame that completes it also reconciles, builds the state, asks JEV and draws.</summary>
-        private void StepListing()
+        /// <summary>
+        /// One frame's share of the heartbeat. The heartbeat is a sequence of steps that each end when <see cref="SliceSpent"/>,
+        /// so it takes as many frames as its work needs and no frame carries much of it.
+        /// </summary>
+        private void StepBeat()
         {
             var span = DirectorSpan.Begin();
             long heap = System.GC.GetTotalMemory(false);
-            bool more = listing.MoveNext();
-            var step = span.Stop();
-            listingCost += step;
+            sliceEnds = Stopwatch.GetTimestamp() + SliceTicks;
+            bool more = beat.MoveNext();
+            var cost = span.Stop();
+            beatCost += cost;
+            beatKilobytes += Allocated(heap);
             if (more)
             {
-                listingKilobytes += Allocated(heap);
-                log.Director.Slice(DirectorRecord.SliceKind.Step, step);
+                log.Director.Slice(DirectorRecord.SliceKind.Step, cost);
                 return;
             }
-            listing = null;
-            float now = session.ShiftSeconds;
-            var reconciling = DirectorSpan.Begin();
+            beat = null;
+            log.Director.Beat(beatRequested ? beatCost - beatRequest : beatCost, beatRequested ? beatRequest : (Cost?)null, beatKilobytes);
+            log.Director.Slice(DirectorRecord.SliceKind.Close, cost);
+        }
+
+        /// <summary>
+        /// One heartbeat: lists the candidates, reconciles them with the ones already rated, builds the state, asks JEV for
+        /// the ratings that are due and draws.
+        /// </summary>
+        private IEnumerable<bool> HeartbeatSteps()
+        {
+            foreach (var step in ListingSteps(listed, listingPools)) yield return step;
             Distinct(listed);
             Reconcile(listed);
-            lastFocus = Focus(now, out stateHash);
-            var enumeration = listingCost + reconciling.Stop();
-            Cost? request = null;
+            if (SliceSpent) yield return true;
+            lastFocus = Focus(session.ShiftSeconds, out stateHash);
+            if (SliceSpent) yield return true;
+            float now = session.ShiftSeconds;
             if (!judging && !applying)
             {
                 var asking = DirectorSpan.Begin();
-                if (SendDue(now, lastFocus)) request = asking.Stop();
+                if (SendDue(now, lastFocus))
+                {
+                    beatRequest = asking.Stop();
+                    beatRequested = true;
+                }
             }
             Integrate(now);
-            listingKilobytes += Allocated(heap);
-            log.Director.Beat(enumeration, request, listingKilobytes);
-            log.Director.Slice(DirectorRecord.SliceKind.Close, span.Stop());
         }
 
         /// <summary>

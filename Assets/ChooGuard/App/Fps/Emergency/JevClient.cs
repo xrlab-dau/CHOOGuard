@@ -126,7 +126,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>What each Ask took from the main thread (waiting for the pool threads and the network is not counted).</summary>
         public IReadOnlyList<Cost> MainThread => mainThread;
 
-        private readonly string key;
+        private readonly string key, authorization;
         private readonly JevBudget budget = new JevBudget();
         private readonly List<Cost> mainThread = new List<Cost>();
         private bool disabled;
@@ -137,6 +137,7 @@ namespace ChooGuard.App.Fps.Emergency
         public JevClient(string runLogPath)
         {
             key = JevKey.Load(out var source);
+            authorization = key == null ? null : "Bearer " + key;
             Source = source;
             logPath = runLogPath;
             TrimRunLogs(runLogPath);
@@ -166,19 +167,19 @@ namespace ChooGuard.App.Fps.Emergency
             var questions = new[] { score, choice };
             var text = Body(state, questions);
             var bytes = Encoding.UTF8.GetBytes(text);
-            var reply = Read("{\"model\":\"warm-up\",\"usage\":{\"input_tokens\":1,\"output_tokens\":1},\"answers\":{\"score\":{\"score\":1,\"confidence\":0.5,\"probabilities\":{\"0\":0.4,\"1\":0.6}},\"choice\":{\"choice\":\"a\",\"confidence\":1,\"probabilities\":{\"a\":1}}}}", questions);
+            var reply = Read(Encoding.UTF8.GetBytes("{\"model\":\"warm-up\",\"usage\":{\"input_tokens\":1,\"output_tokens\":1},\"answers\":{\"score\":{\"score\":1,\"confidence\":0.5,\"probabilities\":{\"0\":0.4,\"1\":0.6}},\"choice\":{\"choice\":\"a\",\"confidence\":1,\"probabilities\":{\"a\":1}}}}"), questions);
             LogLine(DateTime.UtcNow.ToString("o"), "warm-up", JevLane.Director, text, reply?.Answers, 200, 0.1f, 1, reply?.Model);
             using (var unsent = new UnityWebRequest(Endpoint, UnityWebRequest.kHttpVerbPOST))
             {
                 unsent.uploadHandler = new UploadHandlerRaw(bytes) { contentType = "application/json" };
                 unsent.downloadHandler = new DownloadHandlerBuffer();
-                unsent.SetRequestHeader("Authorization", "Bearer " + key);
+                unsent.SetRequestHeader("Authorization", authorization);
                 unsent.SetRequestHeader("Accept", "application/json");
                 unsent.timeout = Mathf.CeilToInt(TimeoutSeconds);
             }
             using (var request = UnityWebRequest.Get(JevKey.ModelsEndpoint))
             {
-                request.SetRequestHeader("Authorization", "Bearer " + key);
+                request.SetRequestHeader("Authorization", authorization);
                 request.SetRequestHeader("Accept", "application/json");
                 request.timeout = JevKey.TimeoutSeconds;
                 yield return request.SendWebRequest();
@@ -207,13 +208,13 @@ namespace ChooGuard.App.Fps.Emergency
             if (!budget.CanSend(lane, Time.realtimeSinceStartup, estimate)) { mainThread.Add(main + span.Stop()); done(null); yield break; }
             var ticket = budget.Begin(lane, Time.realtimeSinceStartup, estimate);
             float started = Time.realtimeSinceStartup;
-            string answerText = null;
+            byte[] answerBytes = null;
             long code;
             using (var request = new UnityWebRequest(Endpoint, UnityWebRequest.kHttpVerbPOST))
             {
                 request.uploadHandler = new UploadHandlerRaw(prepared.Bytes) { contentType = "application/json" };
                 request.downloadHandler = new DownloadHandlerBuffer();
-                request.SetRequestHeader("Authorization", "Bearer " + key);
+                request.SetRequestHeader("Authorization", authorization);
                 request.SetRequestHeader("Accept", "application/json");
                 request.timeout = Mathf.CeilToInt(TimeoutSeconds);
                 var sending = request.SendWebRequest();
@@ -221,12 +222,12 @@ namespace ChooGuard.App.Fps.Emergency
                 yield return sending;
                 span = DirectorSpan.Begin();
                 code = request.responseCode;
-                if (request.result == UnityWebRequest.Result.Success) answerText = request.downloadHandler.text;
+                if (request.result == UnityWebRequest.Result.Success) answerBytes = request.downloadHandler.data;
             }
             Reply reply = null;
-            if (answerText != null)
+            if (answerBytes != null)
             {
-                var parsing = Task.Run(() => Read(answerText, questions));
+                var parsing = Task.Run(() => Read(answerBytes, questions));
                 main += span.Stop();
                 while (!parsing.IsCompleted) yield return null;
                 span = DirectorSpan.Begin();
@@ -327,12 +328,12 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         private static long EstimateInputTokens(int bodyBytes) => (long)(bodyBytes / 1.75f) + 1;
 
-        /// <summary>Reads JEV's reply (model, token usage, one answer per question) — meant for a pool thread; null when it is not a usable reply.</summary>
-        private static Reply Read(string text, IReadOnlyList<JevChoice> questions)
+        /// <summary>Reads JEV's reply (UTF-8 JSON: model, token usage, one answer per question) — meant for a pool thread; null when it is not a usable reply.</summary>
+        private static Reply Read(byte[] body, IReadOnlyList<JevChoice> questions)
         {
             try
             {
-                var root = JObject.Parse(text);
+                var root = JObject.Parse(Encoding.UTF8.GetString(body));
                 var reply = new Reply { Model = (string)root["model"] ?? "" };
                 var usage = root["usage"];
                 if (usage != null) { reply.InputTokens = (long?)usage["input_tokens"]; reply.OutputTokens = (long?)usage["output_tokens"] ?? 0; }

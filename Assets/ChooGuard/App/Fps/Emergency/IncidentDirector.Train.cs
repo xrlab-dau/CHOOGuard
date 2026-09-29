@@ -35,8 +35,11 @@ namespace ChooGuard.App.Fps.Emergency
             // 떨어짐과 (떨어뜨린 휴대전화를 주우려) 내려감은 다른 원인이라 따로 뽑는다: 승강장은 대개 한 구역이라
             // 구역마다 한 명씩 뽑으면 둘째 사람이 없다.
             foreach (bool deliberate in new[] { false, true })
+            {
                 foreach (var person in pools.Spread(p => p.Current != Passenger.Activity.InTrain && p.Current != Passenger.Activity.Sit && (!deliberate || p.UsesPhone) && world.Points.PlatformAt(p.transform.position) != null, 1))
                     if (TrackSpot(person, out var bed, out var edge, out var onTrain, out var platform)) yield return TrackFall(person, platform, bed, edge, onTrain, deliberate);
+                yield return null;
+            }
         }
 
         /// <summary>Someone still boarding <paramref name="car"/> within 1.5 m of its door: only they can be caught by it.</summary>
