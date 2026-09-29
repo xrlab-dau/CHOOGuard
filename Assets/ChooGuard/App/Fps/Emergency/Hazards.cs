@@ -241,7 +241,7 @@ namespace ChooGuard.App.Fps.Emergency
         public override bool Irritates(Vector3 position) => InSmoke(position);
 
         public override Agency Command => Agency.Fire;
-        public override bool Involves(Agency agency) => agency == Agency.Fire || Aboard && agency == Agency.Crew;
+        public override bool Involves(Agency agency) => agency == Agency.Fire || Aboard && agency == Agency.Crew || FeedCutBy == agency;
         public override Agency? CitizenCalls => Agency.Fire;
         public override string ToldByPassenger => "저기 " + Where + " 쪽에서 연기가 나요!";
         public override string ReportLine => "역무실, " + Where + " 화재 발생. " + (Intensity > .6f ? "불길이 큽니다." : "초기 단계입니다.");
@@ -252,6 +252,7 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 yield return Agency.Fire;
                 if (Aboard) yield return Agency.Crew;
+                if (FeedCutBy is Agency cutter) yield return cutter;
             }
         }
         public override string TrainHold => Aboard ? "차내 화재" : null;
@@ -260,7 +261,7 @@ namespace ChooGuard.App.Fps.Emergency
         public override string State => Extinguished ? "진화됨" : "타는 중";
         public override string BoardState => Extinguished ? "꺼짐 · 연기 남음" : Intensity > 1 ? "크게 번짐 · 소화기로는 어려움" : "타는 중";
         public override bool UnderControl => Extinguished;
-        public override string Handover => Where + (Extinguished ? " 불 꺼짐" : " 불 계속 탐");
+        public override string Handover => Where + (Extinguished ? " 불 꺼짐" : " 불 계속 탐") + FeedNote;
 
         public FireHazard(string id, Vector3 position, string source, string subject, float intensity, EmergencyArt art, Transform parent)
         {
@@ -334,9 +335,11 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (Extinguished) return;
             SuppressedSeconds = .6f;
+            if (hose) WaterApplied();
             // 초기 단계(1 이하)에서만 소화기가 제대로 듣는다. 옥내소화전 방수는 그 뒤에도 듣는다.
             float effect = hose ? (Intensity > 1f ? .7f : 1.6f) : Intensity > 1f ? .15f : 1f;
-            Intensity -= .08f * quality * effect * deltaSeconds;
+            // 불을 먹이는 것(통전된 전기, 새는 가스)이 그대로면 불씨 이하로는 꺼지지 않는다.
+            Intensity = Mathf.Max(Intensity - .08f * quality * effect * deltaSeconds, FeedFloor);
             if (Intensity <= 0) Extinguish();
             else Apply();
         }
