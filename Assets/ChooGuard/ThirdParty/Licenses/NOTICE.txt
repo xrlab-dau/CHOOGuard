@@ -99,3 +99,20 @@ blender_convert_equipment.py 로 OBJ·PNG 로 바꾸고 삼각형 수·크기·�
   AlarmPanel = "Fire Alarm Control Panel" by bigtree3d, https://sketchfab.com/3d-models/fire-alarm-control-panel-813c052b25fd4471a254f2fe742a1ce4 (프린터 내부 부품을 뺌)
 HeatDetector, BeamDetector = 이 저장소에서 생성한 3D 모델(asset-library/research-public/2026-09-29/responder-assets/make_detectors.py); 외부 자산 없음
 Art/Emergency/Equipment/FireSafety.json: 이 저장소의 FireSafetyBuilder(NFTC 203 배치)가 트윈의 천장에서 계산한 배치 데이터.
+
+2026-09-30 방화·소화·감시 설비 (스프링클러·배관·경보밸브·방화셔터·방화문·CCTV·방송 스피커) (w3-firesafety) — 영수증: asset-library/research-public/2026-09-29/responder-assets/equipment2-receipts.json, 검색 기록 equipment2-search.json
+Models/Objaverse/ 추가분 (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/ — 저작자 표시 필요). Sketchfab 원본의 Objaverse 사본(allenai/objaverse)을
+blender_convert_equipment2.py 로 OBJ·PNG 로 바꾸고 실제 크기로 맞추고 삼각형 수를 줄이고 장착면 기준으로 피벗을 잡음. 이름 뒤에 Low 는 같은 원본을 적은 삼각형으로 줄인 것:
+  SprinklerHeadLow = "Sprinkler Head Without Bulb" by ccych, https://sketchfab.com/3d-models/sprinkler-head-without-bulb-1ef88938c9fc486fa2981b2725bf396d (유리관은 "Sprinkler bulb" by ccych, https://sketchfab.com/3d-models/sprinkler-bulb-b45754b5a71e4aab8d9650098df1b819 를 붉게 다시 칠해 끼웠고, 15A 배관 토막은 이 저장소에서 만듦)
+  SprinklerUprightLow = "Fire alarm system Sprinkler" by tasha.kosaykina, https://sketchfab.com/3d-models/fire-alarm-system-sprinkler-9416e1a971524b1a89b89cfcf7c2d33f (스프링클러 부분만, 바닥 원반을 줄임)
+  FireDoorFrame, FireDoorLeaf = "Exit Door Double" by moderncolin, https://sketchfab.com/3d-models/exit-door-double-0d1770e0baa942ecb14422f729b1f351 (문틀 도색을 문짝과 같게 하고 문 닫힘 장치를 이 저장소에서 만들어 덧댐; FireDoorFrame 은 문틀만, FireDoorLeaf 는 왼쪽 문짝 한 장이며 오른쪽은 이 모델을 좌우 반전해 씀)
+  DomeCameraLow = "Ceiling Camera" by Marcin.Kwiatkowski, https://sketchfab.com/3d-models/ceiling-camera-1cf07a773f8e4feda7191655b1460c66
+  CeilingSpeakerLow = "Ceiling Speaker" by chives1996, https://sketchfab.com/3d-models/ceiling-speaker-58580cd22a144b64b2aa9873d429a0b5
+  HornSpeakerLow = "SiRcom ESd Maestro Horn speaker" by matyprokopiswinner, https://sketchfab.com/3d-models/sircom-esd-maestro-horn-speaker-5ce27fbad31443f4af82353a630b436d
+  AlarmValve = "alarm valve cross-section" by ccych, https://sketchfab.com/3d-models/alarm-valve-cross-section-eca6b02cf6c74faa8a7b9520332e0626 (경보밸브 세트만 쓰고 수압 경종은 뺐으며, 파트별로 줄여 DN100 크기(×2.4)로 키우고 도색을 다시 하고, 입상관·고정 브래킷·덮개판·압력스위치함·탬퍼스위치함을 이 저장소에서 만들어 붙임)
+Models/Objaverse/ 추가분 (CC0 1.0, https://creativecommons.org/publicdomain/zero/1.0/ — 표시 의무 없음, 출처 기록). Poly Haven(https://polyhaven.com) glTF 를 같은 변환기로 바꿈:
+  BulletCameraLow = "Security Camera 01" by Alexander Otterbeck (Modeling & Texturing), Yann Kervran (Rigging), https://polyhaven.com/a/security_camera_01
+  FireShutterBox, FireShutterCurtain = "Rollershutter Door" by MP (All), https://polyhaven.com/a/rollershutter_door (개구부 4.0 m × 4.0 m 로 비율을 다시 맞추고 고정부(상자·가이드레일)와 움직이는 막(커튼)으로 나눔)
+PipeRun, PipeHanger, ShutterBox: 이 저장소에서 만든 모델(무료 원본 없음). 치수 근거: Victaulic FireLock Style 005H 자료 10.02 (https://assets.victaulic.com/assets/uploads/literature/10.02.pdf), Tyco TY-B TFP152 (스프링클러 치수 대조);
+  ShutterBox 표지 글자는 Noto Sans CJK KR (SIL OFL 1.1), 생성기 asset-library/research-public/2026-09-29/responder-assets/make_shutter_box_legend.py, 모델 생성기 blender_convert_equipment2.py, 색 추출 glb_specgloss_colours.py.
+Art/Emergency/Equipment/{Sprinklers,Compartments,Surveillance}.json: 이 저장소의 빌더(SprinklerBuilder·CompartmentBuilder·SurveillanceBuilder, NFTC 103·건축물의 피난·방화구조 등의 기준에 관한 규칙 제14조·NFTC 202 배치)가 트윈에서 계산한 배치 데이터.
