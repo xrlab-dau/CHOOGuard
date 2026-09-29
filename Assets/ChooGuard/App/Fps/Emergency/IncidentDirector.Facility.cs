@@ -23,7 +23,6 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<WaterLeakHazard> leaks = new List<WaterLeakHazard>();
         /// <summary>Shops whose electrics leak water already shorted: that fire then grows or rekindles, it does not start again.</summary>
         private readonly HashSet<string> shorted = new HashSet<string>();
-        private readonly List<GasLeakHazard> gasLeaks = new List<GasLeakHazard>();
         private PowerOutageHazard outage;
         private FalseAlarmHazard falseAlarm;
         private float lastFall = -100;
@@ -91,8 +90,6 @@ namespace ChooGuard.App.Fps.Emergency
             }
             var leakAt = world.Points.Of(PointKind.Wait).Where(w => w.Zone != "plaza" && w.Zone != "skyplaza" && !world.IsClosed(w.Position, 3)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
             if (leakAt != null && leaks.Count == 0) yield return PipeBursts(leakAt);
-            var kitchen = world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s)?.ko == "가스레인지" && !gasLeaks.Exists(g => g.Shop == s.Label)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
-            if (kitchen != null) yield return GasSmell(kitchen);
         }
 
         private Transition QuakeOrigin() => new Transition
@@ -144,14 +141,6 @@ namespace ChooGuard.App.Fps.Emergency
             Description = "A water pipe above the ceiling at " + Place(at.Position) + " bursts.",
             Levels = new List<string> { "water drips through a ceiling panel", "a steady stream of water pours from the ceiling", "water pours down and spreads across the floor", "the floor around floods", "the pipe gushes and water flows along the concourse" },
             Apply = m => StartLeak(at.Position, m),
-        };
-
-        private Transition GasSmell(StationPoints.Point shop) => new Transition
-        {
-            Key = "gas_" + shop.Id, Kind = "gas_leak", Origin = true,
-            Description = "A gas hose in the kitchen of the food shop '" + shop.Label + "' (" + Place(shop.Position) + ") works loose and gas starts to leak.",
-            Levels = new List<string> { "a faint smell of gas near the kitchen", "a clear smell of gas in the shop", "the smell spreads into the passage in front of the shop", "a strong smell; people nearby get headaches", "a hissing leak; the smell spreads across the floor" },
-            Apply = m => StartGas(shop, m),
         };
 
         // ── 적용 ──
@@ -360,15 +349,6 @@ namespace ChooGuard.App.Fps.Emergency
             log.Add("누수 · " + leak.Where + " — " + leak.Visible);
         }
 
-        private void StartGas(StationPoints.Point shop, float magnitude)
-        {
-            int level = Mathf.Clamp(Mathf.RoundToInt(magnitude * 4), 0, 4);
-            var gas = new GasLeakHazard("gas-" + ++serial, shop.Position, shop.Label, level) { Where = world.Describe(shop.Position) };
-            gasLeaks.Add(gas);
-            Register(gas);
-            log.Add("가스 누출 · " + gas.Where + " — " + gas.Visible);
-        }
-
         // ── 전개 ──
 
         private IEnumerable<Transition> FacilityDevelopments()
@@ -423,20 +403,6 @@ namespace ChooGuard.App.Fps.Emergency
                 if (shop != null && l.Level >= 2 && !shorted.Contains(shop.Id) && Ready("water_electrics"))
                     yield return new Transition { Key = "water_electrics_" + shop.Id, Kind = "electrical_fire", Description = "Water from the burst pipe reaches the electrics of '" + shop.Label + "' and sparks fly", Levels = new List<string> { "sparks and a burning smell", "grey smoke from the socket", "small flames at the socket", "flames and acrid smoke", "the wiring burns fiercely" }, Apply = m => { shorted.Add(shop.Id); Ignite(Floor(shop.Position), shop.Label + " 전기 설비(누수)", "젖은 전기 설비", m, " 전기 화재입니다. 전원 차단을 요청하고 물을 쓰지 마십시오."); } };
             }
-            foreach (var gas in gasLeaks)
-            {
-                if (!gas.Active) continue;
-                var g = gas;
-                if (g.Level < 4 && Ready("gas_worse_" + g.Id))
-                    yield return new Transition { Key = "gas_worse_" + g.Id, Kind = "gas_spreads", Description = "The gas smell from '" + g.Shop + "' grows stronger and spreads", Apply = _ => { g.Worsen(); log.Add("가스 냄새가 짙어짐 · " + g.Where); } };
-                if (Ready("gas_valve"))
-                    yield return new Transition { Key = "gas_valve_" + g.Id, Kind = "gas_valve_shut", Description = "A worker at '" + g.Shop + "' finds the loose hose and shuts the gas valve", Apply = _ => { g.ShutOff(); HazardRegistry.Remove(g); log.Add(g.Shop + " 직원이 가스 밸브를 잠금"); } };
-                var dizzy = NearestPerson(g.Position, g.DangerRadius + 2, p => !p.Hurt && !p.Hostile);
-                if (dizzy != null && g.Level >= 2 && Ready("gas_dizzy"))
-                    yield return new Transition { Key = "gas_dizzy_" + dizzy.Number, Kind = "gas_dizzy", Description = Profile(dizzy) + " near '" + g.Shop + "' feels dizzy from the gas and sits down", Apply = _ => dizzy.Injure("가스 냄새를 맡고 어지러워 주저앉음") };
-                if (g.Level >= 3 && Ready("gas_ignites"))
-                    yield return new Transition { Key = "gas_ignites_" + g.Id, Kind = "gas_ignites", Description = "Someone in '" + g.Shop + "' switches on an appliance and the gas ignites with a flash", Levels = new List<string> { "a brief flash that goes out", "a flash and a small fire in the kitchen", "a fireball in the kitchen; a worker is burnt", "a fireball that blows out the shop front", "a fierce fire after the flash" }, Apply = m => GasIgnites(g, m) };
-            }
         }
 
         private void Slip(Passenger walker, WaterLeakHazard leak)
@@ -448,30 +414,12 @@ namespace ChooGuard.App.Fps.Emergency
             log.Add("젖은 바닥에서 승객이 미끄러짐 · " + leak.Where);
         }
 
-        private void GasIgnites(GasLeakHazard gas, float magnitude)
-        {
-            gas.ShutOff();
-            HazardRegistry.Remove(gas);
-            log.Add("가스에 불이 붙음 · " + gas.Where);
-            if (magnitude < .2f) { log.Add("순간 불꽃이 일었다 꺼짐"); return; }
-            var fire = Ignite(Floor(gas.Position), gas.Shop + " 주방 가스", gas.Shop + " 주방", magnitude, " 가스 밸브를 잠그게 하고 불씨가 번지지 않게 주변을 비우십시오.");
-            if (magnitude >= .5f)
-            {
-                var burnt = NearestPerson(gas.Position, 4, p => !p.Hurt && !p.Hostile);
-                if (burnt != null) burnt.Injure("가스 불꽃에 화상을 입음");
-            }
-            crowd.Alert(fire.Position, 25, fire, null, "there was a bang and a flash of fire");
-        }
-
         // ── 규칙 ──
 
         private void FacilityTick()
         {
             crowd.Shaking = Shaking;
             if (outage != null && outage.Active && Time.time > outage.Until) RestorePower("저절로 복구");
-            if (Stage != Phase.Incident) return;
-            foreach (var gas in gasLeaks)
-                if (gas.Active && Time.time - gas.StartedAt > 60 && CountAware(gas) >= 2) CitizenCall(null, gas);
         }
 
         private void OfficeFollowUp()

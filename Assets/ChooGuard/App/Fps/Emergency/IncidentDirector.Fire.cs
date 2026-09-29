@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using ChooGuard.App.Fps.Equipment;
 using ChooGuard.App.Fps.Hud;
 using UnityEngine;
 
@@ -7,27 +8,24 @@ namespace ChooGuard.App.Fps.Emergency
 {
     /// <summary>
     /// Fire family: what can catch fire right now and how a fire develops. Ignition sources are things that are really
-    /// there: a power bank in a passenger's bag (hall, platform, KTX car), the fryer or stove of a food shop, a litter bin at
-    /// a city entrance, the electrics of a ticket window or a shop fridge, the running gear under the KTX set at the
-    /// platform. Detectors, the bell, smoke, rekindling and the office's own 119 call follow common rules.
+    /// there: a power bank in a passenger's bag (hall, platform, KTX car), a litter bin at a city entrance, the electrics of
+    /// a ticket window or a shop fridge, the running gear under the KTX set at the platform (the kitchen fires of the food
+    /// shops start from their real appliances: IncidentDirector.KitchenGas.cs). Detectors, the bell, smoke, rekindling and
+    /// the office's own 119 call follow common rules.
     /// </summary>
     public sealed partial class IncidentDirector
     {
         private readonly List<FireHazard> fires = new List<FireHazard>();
         private float fireOutAt = -1;
 
-        /// <summary>Food shops of the twin with a kitchen, by a word of their name: what could catch fire there.</summary>
-        private static readonly (string word, string en, string ko, bool oil)[] Kitchens =
+        /// <summary>
+        /// The kitchen of a food shop of the twin (what each one cooks with is <see cref="StationKitchens"/>): its main appliance in
+        /// English and Korean and whether it fries in oil; null for a shop without one.
+        /// </summary>
+        public static (string en, string ko, bool oil)? KitchenOf(StationPoints.Point shop)
         {
-            ("닭강정", "deep fryer", "튀김기", true), ("어묵", "fish-cake fryer", "튀김기", true), ("도넛", "doughnut fryer", "튀김기", true), ("도나스", "doughnut fryer", "튀김기", true),
-            ("떡볶이", "gas stove", "가스레인지", false), ("김밥", "gas stove", "가스레인지", false), ("한식", "gas stove", "가스레인지", false), ("명가", "gas stove", "가스레인지", false),
-            ("SUBWAY", "toaster oven", "오븐", false), ("제과", "bakery oven", "오븐", false), ("단팥빵", "bakery oven", "오븐", false), ("떡공방", "rice-cake steamer", "찜기", false),
-        };
-
-        private static (string en, string ko, bool oil)? KitchenOf(StationPoints.Point shop)
-        {
-            foreach (var kitchen in Kitchens) if (shop.Label.Contains(kitchen.word)) return (kitchen.en, kitchen.ko, kitchen.oil);
-            return null;
+            var spec = StationKitchens.Of(shop.Label);
+            return spec == null ? ((string, string, bool)?)null : (spec.English, spec.Korean, spec.Oil);
         }
 
         // ── 원인 ──
@@ -35,7 +33,6 @@ namespace ChooGuard.App.Fps.Emergency
         private IEnumerable<Transition> FireOrigins(Pools pools)
         {
             foreach (var p in pools.Spread(p => p.CarriesPowerBank && Settled(p), 2)) yield return Overheat(p);
-            foreach (var shop in world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s) != null && !world.IsClosed(s.Position, 2)).OrderBy(_ => world.Random.Next()).Take(2)) yield return KitchenFire(shop);
             var exit = world.Points.Of(PointKind.Exit).Where(e => e.Zone == "plaza" && !world.IsClosed(e.Position, 3)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
             if (exit != null) yield return BinFire(exit);
             var counter = world.Points.Of(PointKind.Counter).OrderBy(_ => world.Random.Next()).FirstOrDefault();
@@ -56,20 +53,6 @@ namespace ChooGuard.App.Fps.Emergency
             Levels = new List<string> { "only a faint burning smell and a wisp of white smoke", "white smoke pouring out of the bag", "the bag bursts into small flames", "flames reach the seat or things around it", "a fierce fire with thick black smoke within seconds" },
             Apply = m => StartPowerBankFire(owner, m),
         };
-
-        private Transition KitchenFire(StationPoints.Point shop)
-        {
-            var kitchen = KitchenOf(shop).Value;
-            return new Transition
-            {
-                Key = "kitchen_" + shop.Id, Kind = "kitchen_fire", Origin = true,
-                Description = "The " + kitchen.en + " in the kitchen of the food shop '" + shop.Label + "' (" + Place(shop.Position) + ") catches fire while staff are busy at the counter.",
-                Levels = kitchen.oil
-                    ? new List<string> { "the oil smokes heavily before anyone notices", "the oil in the fryer catches fire", "flames reach the extractor hood", "the fire spreads along the kitchen counter", "a fierce kitchen fire, thick black smoke pours out of the shop" }
-                    : new List<string> { "burning food smokes on the " + kitchen.en, "a small flame on the " + kitchen.en, "flames reach the extractor hood", "the fire spreads along the kitchen counter", "a fierce kitchen fire, thick black smoke pours out of the shop" },
-                Apply = m => Ignite(Floor(shop.Position), shop.Label + " 주방 " + kitchen.ko, shop.Label + " 주방 " + kitchen.ko, m, kitchen.oil ? " 식용유 화재에는 물을 쓰지 말고 K급 소화기를 쓰십시오." : " 가스 밸브부터 잠그게 하십시오."),
-            };
-        }
 
         private Transition BinFire(StationPoints.Point exit) => new Transition
         {
