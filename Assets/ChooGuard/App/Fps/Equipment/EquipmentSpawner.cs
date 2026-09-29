@@ -18,6 +18,9 @@ namespace ChooGuard.App.Fps.Equipment
         /// <summary>Child of an equipment prefab whose renderers stay out of static batches (a lamp whose glow differs per object).</summary>
         public const string LiveChild = "Live";
 
+        /// <summary>The report of the latest spawn (for diagnostics and the performance evidence), or null before the first.</summary>
+        public static Report Last { get; private set; }
+
         /// <summary>Edge of a batching/culling cell in metres (horizontal, vertical).</summary>
         public const float CellSize = 24f, CellHeight = 6f;
 
@@ -26,12 +29,12 @@ namespace ChooGuard.App.Fps.Equipment
         {
             public Transform Root;
             public int Placed, Skipped, Cells, Batched, Unbatched;
-            public float Milliseconds;
+            public float Milliseconds, ParseMilliseconds, PlaceMilliseconds, BatchMilliseconds;
             public readonly SortedDictionary<string, int> PerKind = new SortedDictionary<string, int>(System.StringComparer.Ordinal);
 
             public override string ToString() =>
                 "placed=" + Placed + " skipped=" + Skipped + " cells=" + Cells + " batched=" + Batched + " unbatched=" + Unbatched + " ms=" + Milliseconds.ToString("0") +
-                " [" + string.Join(", ", PerKind) + "]";
+                " (parse " + ParseMilliseconds.ToString("0") + ", place " + PlaceMilliseconds.ToString("0") + ", batch " + BatchMilliseconds.ToString("0") + ") [" + string.Join(", ", PerKind) + "]";
         }
 
         /// <summary>
@@ -50,7 +53,9 @@ namespace ChooGuard.App.Fps.Equipment
             foreach (var file in catalog.Placements)
             {
                 if (file == null) continue;
+                var parsing = Stopwatch.StartNew();
                 var data = JsonUtility.FromJson<EquipmentPlacementFile>(file.text);
+                report.ParseMilliseconds += (float)parsing.Elapsed.TotalMilliseconds;
                 foreach (var item in data.items)
                 {
                     var prefab = catalog.Prefab(item.prefab);
@@ -73,14 +78,18 @@ namespace ChooGuard.App.Fps.Equipment
                     report.Placed++;
                 }
             }
+            report.PlaceMilliseconds = (float)clock.Elapsed.TotalMilliseconds - report.ParseMilliseconds;
+            var batching = Stopwatch.StartNew();
             foreach (var cell in cells.Values)
             {
                 Batch(cell, report);
                 culling.Add(cell);
             }
+            report.BatchMilliseconds = (float)batching.Elapsed.TotalMilliseconds;
             report.Cells = cells.Count;
             report.Milliseconds = (float)clock.Elapsed.TotalMilliseconds;
             Debug.Log("CG_EQUIPMENT " + report);
+            Last = report;
             return report;
         }
 
@@ -89,7 +98,8 @@ namespace ChooGuard.App.Fps.Equipment
             var instance = Object.Instantiate(prefab, item.position, Quaternion.Euler(item.rotation), cell.Root.transform);
             instance.name = item.id;
             var equipment = instance.GetComponent<StationEquipment>() ?? instance.AddComponent<StationEquipment>();
-            equipment.Assign(item.id, item.kind, item.label, item.zone);
+            equipment.Assign(item.id, item.kind, item.label, item.zone, item.data);
+            foreach (var placed in instance.GetComponentsInChildren<IEquipmentPlaced>(true)) placed.OnPlaced();
             var renderers = instance.GetComponentsInChildren<Renderer>(true);
             float draw = equipment.DrawDistance * equipment.DrawDistance;
             cell.Items.Add(new Cell.Item { Equipment = equipment, Renderers = renderers, DrawSquared = draw });
@@ -178,7 +188,7 @@ namespace ChooGuard.App.Fps.Equipment
                     bool show = near && (item.Equipment.transform.position - eye).sqrMagnitude <= item.DrawSquared;
                     if (show == item.Shown) continue;
                     item.Shown = show;
-                    foreach (var renderer in item.Renderers) renderer.enabled = show;
+                    foreach (var renderer in item.Renderers) renderer.enabled = show && !(item.Equipment.KeepOff != null && item.Equipment.KeepOff(renderer));
                 }
             }
         }

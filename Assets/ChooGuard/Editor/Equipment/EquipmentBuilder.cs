@@ -52,7 +52,7 @@ namespace ChooGuard.Editor
         /// <summary>
         /// Saves <paramref name="spec"/> as a prefab under <see cref="PrefabRoot"/>: the root carries
         /// <see cref="StationEquipment"/> with the performance settings, the model hangs below it, small fittings cast no
-        /// shadows and take no reflection probe, materials allow GPU instancing, and a collider exists only when interactable.
+        /// shadows and take no reflection probe, and a collider exists only when interactable.
         /// <paramref name="compose"/> may add further parts (a lamp under <see cref="EquipmentSpawner.LiveChild"/>, a curtain).
         /// </summary>
         public static GameObject SavePrefab(PrefabSpec spec, Action<Transform> compose = null)
@@ -81,8 +81,6 @@ namespace ChooGuard.Editor
                     renderer.receiveShadows = false;
                     renderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
                     renderer.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
-                    foreach (var material in renderer.sharedMaterials)
-                        if (material != null && !material.enableInstancing) { material.enableInstancing = true; EditorUtility.SetDirty(material); }
                 }
                 if (spec.Interactable && root.GetComponentInChildren<Collider>(true) == null)
                 {
