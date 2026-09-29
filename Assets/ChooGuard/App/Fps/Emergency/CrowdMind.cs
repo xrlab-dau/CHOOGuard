@@ -38,6 +38,8 @@ namespace ChooGuard.App.Fps.Emergency
             /// <summary>Raised whenever what the person observes changes; an answer built on an older version is stale.</summary>
             internal int Version;
             internal float JudgedAt = -1000, WaitingSince = -1;
+            /// <summary>Keeps doing their current action because the next step is not decided yet.</summary>
+            public bool Waiting => WaitingSince >= 0;
             /// <summary>What they last saw of each hazard they perceived directly.</summary>
             internal readonly Dictionary<Hazard, string> Seen = new Dictionary<Hazard, string>();
             /// <summary>What they heard rather than saw: the alarm bell, people running, an announcement.</summary>
@@ -229,6 +231,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void Tick()
         {
+            long began = System.Diagnostics.Stopwatch.GetTimestamp();
             float now = Time.time;
             bool usable = Usable;
             for (int i = queue.Count - 1; i >= 0; i--)
@@ -251,6 +254,7 @@ namespace ChooGuard.App.Fps.Emergency
                 Dispatch(now);
             }
             Metrics.Flush();
+            Metrics.Tick((System.Diagnostics.Stopwatch.GetTimestamp() - began) * 1000f / System.Diagnostics.Stopwatch.Frequency);
         }
 
         /// <summary>A question nobody needs the answer to any more: the next round asks a fresh one.</summary>

@@ -30,6 +30,8 @@ namespace ChooGuard.App.Fps.Emergency
         public readonly List<float> RoundTrip = new List<float>();
         /// <summary>Wait between the moment a person needed a routine answer and the answer, game seconds.</summary>
         public readonly List<float> RoutineWait = new List<float>();
+        /// <summary>CPU time of <see cref="CrowdMind.Tick"/> per frame (milliseconds; the first 30,000 frames).</summary>
+        public readonly List<float> TickMs = new List<float>();
 
         private readonly string path;
         private readonly StringBuilder pending = new StringBuilder();
@@ -50,6 +52,11 @@ namespace ChooGuard.App.Fps.Emergency
             ReactionGame.Add(game);
             ReactionReal.Add(real);
             RoundTrip.Add(roundTrip);
+        }
+
+        public void Tick(float milliseconds)
+        {
+            if (TickMs.Count < 30000) TickMs.Add(milliseconds);
         }
 
         /// <summary>Appends one decision to the run log (written in batches, never on the frame that made it).</summary>
@@ -121,6 +128,7 @@ namespace ChooGuard.App.Fps.Emergency
                 ["reaction_real_s"] = Spread(ReactionReal),
                 ["jev_round_trip_s"] = Spread(RoundTrip),
                 ["routine_wait_game_s"] = Spread(RoutineWait),
+                ["mind_tick_ms"] = Spread(TickMs),
             };
             if (jev != null)
             {
@@ -131,6 +139,9 @@ namespace ChooGuard.App.Fps.Emergency
             }
             return summary;
         }
+
+        /// <summary>The summary as one line of JSON text (for logs and play-mode checks).</summary>
+        public string SummaryText(JevClient jev) => Summary(jev).ToString(Formatting.None);
 
         /// <summary>One lane's spend: the last minute's rate, its peak, and the average over the shift so far (input tokens only; JEV's output is free).</summary>
         private static JObject Lane(JevUsage usage, float minutes) => new JObject
