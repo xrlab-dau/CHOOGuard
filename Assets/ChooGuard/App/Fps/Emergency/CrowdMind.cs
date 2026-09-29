@@ -268,7 +268,7 @@ namespace ChooGuard.App.Fps.Emergency
                     if (item.Everyday) { Finish(item); queue.RemoveAt(i); Metrics.Dropped++; }
                     else if (now >= item.ReadyAt)
                     {
-                        if (resolved > 0 && Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began) + applyItemMs * 1.5f > ApplyBudgetMs) continue;
+                        if (resolved > 0 && Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began) + applyItemMs * 1.5f > ApplyBudgetMs * .8f) continue;
                         queue.RemoveAt(i);
                         long started = System.Diagnostics.Stopwatch.GetTimestamp();
                         ResolveLocally(item);
@@ -515,7 +515,7 @@ namespace ChooGuard.App.Fps.Emergency
             while (receivedUrgent.Count > 0 || receivedEveryday.Count > 0)
             {
                 // 다음 답을 적용하면 예산을 넘길 것 같으면 다음 프레임으로 미룬다(프레임마다 하나는 반드시 적용한다).
-                if (applied > 0 && Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began) + applyItemMs * 1.5f > ApplyBudgetMs) break;
+                if (applied > 0 && Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began) + applyItemMs * 1.5f > ApplyBudgetMs * .8f) break;
                 var list = receivedUrgent.Count > 0 ? receivedUrgent : receivedEveryday;
                 var (item, answer) = list[0];
                 list.RemoveAt(0);
