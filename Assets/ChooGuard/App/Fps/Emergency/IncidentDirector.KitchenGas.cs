@@ -61,6 +61,15 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly HashSet<GasLeakHazard> shutByStaff = new HashSet<GasLeakHazard>(), shutReported = new HashSet<GasLeakHazard>();
         private readonly HashSet<FireHazard> cutByStaff = new HashSet<FireHazard>(), cutReported = new HashSet<FireHazard>();
 
+        /// <summary>
+        /// Where something in a shop kitchen is, in the words staff use: the floor and the shop's own name ("2층 본관 환공어묵 주방").
+        /// The station's nearest-landmark description would name the neighbour whose customer spot happens to be closer (the tenants
+        /// stand wall to wall), so it is not used inside a shop.
+        /// </summary>
+        private string KitchenWhere(Kitchen k, Vector3 at) => (world.Points.ZoneAt(at)?.label ?? "역 구내") + " " + k.Label + " 주방";
+
+        private string KitchenPlace(Kitchen k, Vector3 at) => world.Area(at) + ", " + KitchenWhere(k, at);
+
         private Kitchen KitchenAt(string shopId)
         {
             if (!kitchens.TryGetValue(shopId, out var kitchen))
@@ -149,7 +158,7 @@ namespace ChooGuard.App.Fps.Emergency
             return new Transition
             {
                 Key = "fryer_oil_" + fryer.Equipment.Id, Kind = "fryer_oil_fire", Origin = true,
-                Description = "The thermostat of the electric deep fryer in the food shop '" + k.Label + "' (" + Place(fryer.transform.position) + ") fails: the oil keeps heating past its ignition point and catches fire while staff are busy at the counter.",
+                Description = "The thermostat of the electric deep fryer in the food shop '" + k.Label + "' (" + KitchenPlace(k, fryer.transform.position) + ") fails: the oil keeps heating past its ignition point and catches fire while staff are busy at the counter.",
                 Levels = new List<string> { "the oil smokes heavily before anyone notices", "the oil in the fryer tank catches fire", "flames climb to the extractor hood", "burning oil spits and flames fill the hood", "a fierce oil fire, thick black smoke pours out of the shop" },
                 Apply = m => IgniteAppliance(k, fryer, m, k.Label + " 튀김기 기름", k.Label + " 튀김기", true, "전원", " 식용유 화재에는 물을 쓰지 말고 K급 소화기를 쓰십시오. 튀김기 전원부터 끄게 하십시오."),
             };
@@ -161,7 +170,7 @@ namespace ChooGuard.App.Fps.Emergency
             return new Transition
             {
                 Key = "range_fire_" + range.Equipment.Id, Kind = "kitchen_fire", Origin = true,
-                Description = "A pan left on the lit burner of the gas range in the food shop '" + k.Label + "' (" + Place(range.transform.position) + ") boils dry and its grease catches fire while staff are busy at the counter.",
+                Description = "A pan left on the lit burner of the gas range in the food shop '" + k.Label + "' (" + KitchenPlace(k, range.transform.position) + ") boils dry and its grease catches fire while staff are busy at the counter.",
                 Levels = new List<string> { "burnt food smokes on the burner", "a small flame in the pan", "flames reach the extractor hood", "the fire spreads along the kitchen counter", "a fierce kitchen fire, thick black smoke pours out of the shop" },
                 Apply = m => IgniteAppliance(k, range, m, k.Label + " 주방 가스레인지 팬", k.Label + " 주방 가스레인지", false, "가스", " 가스 중간밸브부터 잠그게 하고 물러서서 초기 진화를 시도하십시오."),
             };
@@ -173,7 +182,7 @@ namespace ChooGuard.App.Fps.Emergency
             return new Transition
             {
                 Key = "oven_fire_" + oven.Equipment.Id, Kind = "oven_fire", Origin = true,
-                Description = "Food and grease burn inside the electric oven of the food shop '" + k.Label + "' (" + Place(oven.transform.position) + "); smoke leaks out around the oven door.",
+                Description = "Food and grease burn inside the electric oven of the food shop '" + k.Label + "' (" + KitchenPlace(k, oven.transform.position) + "); smoke leaks out around the oven door.",
                 Levels = new List<string> { "smoke leaks around the oven door", "smoke pours from the oven and a glow shows behind the door", "flames lick out of the oven door", "the fire spreads to the counter beside the oven", "a fierce kitchen fire, thick black smoke pours out of the shop" },
                 Apply = m => IgniteAppliance(k, oven, m, k.Label + " 오븐", k.Label + " 오븐", false, "전원", " 오븐 전원을 끄고 문은 열지 마십시오(열면 불이 커집니다)."),
             };
@@ -185,7 +194,7 @@ namespace ChooGuard.App.Fps.Emergency
             return new Transition
             {
                 Key = "hose_off_" + hose.Equipment.Id, Kind = "gas_hose_off", Origin = true,
-                Description = "The flexible gas hose behind the gas range of the food shop '" + k.Label + "' (" + Place(hose.transform.position) + ") slips off the range's inlet; the fuse cock (퓨즈콕) on the wall may or may not stop the flow.",
+                Description = "The flexible gas hose behind the gas range of the food shop '" + k.Label + "' (" + KitchenPlace(k, hose.transform.position) + ") slips off the range's inlet; the fuse cock (퓨즈콕) on the wall may or may not stop the flow.",
                 Levels = new List<string> { "the fuse cock shuts the flow within seconds, only a brief whiff of gas", "gas leaks slowly from the loose hose", "gas keeps hissing from the loose hose", "a strong hiss, the smell spreads through the shop", "a strong hiss, the smell spreads into the passage and people nearby get headaches" },
                 Apply = m => { hose.Detach(); StartLeak(k, GasSource.Hose, m, hose.Leak.position, hose.Equipment.Id, hose, RangeById(hose.RangeId), hose.ValveId); },
             };
@@ -197,7 +206,7 @@ namespace ChooGuard.App.Fps.Emergency
             return new Transition
             {
                 Key = "gas_cock_" + range.Equipment.Id, Kind = "gas_cock_open", Origin = true,
-                Description = "A burner cock of the gas range in the food shop '" + k.Label + "' (" + Place(range.transform.position) + ") was left slightly open after the flame blew out: unlit gas seeps out, and the shop's leak alarm will notice it before anyone smells it.",
+                Description = "A burner cock of the gas range in the food shop '" + k.Label + "' (" + KitchenPlace(k, range.transform.position) + ") was left slightly open after the flame blew out: unlit gas seeps out, and the shop's leak alarm will notice it before anyone smells it.",
                 Levels = new List<string> { "a trace of gas that only the alarm notices", "a faint smell of gas near the range", "a clear smell of gas in the kitchen", "the smell spreads into the passage in front of the shop", "a strong smell, people nearby get headaches" },
                 Apply = m => StartLeak(k, GasSource.Cock, m, range.Fire.position, range.Equipment.Id + "#cock", null, range, range.ValveId),
             };
@@ -208,7 +217,7 @@ namespace ChooGuard.App.Fps.Emergency
             return new Transition
             {
                 Key = "gas_meter_" + k.Meter.Id, Kind = "gas_meter_leak", Origin = true,
-                Description = "The union where the pipe meets the gas meter of the food shop '" + k.Label + "' (" + Place(k.Meter.transform.position) + ") works loose and gas seeps out; it is upstream of every burner valve, only the main valve at the meter stops it.",
+                Description = "The union where the pipe meets the gas meter of the food shop '" + k.Label + "' (" + KitchenPlace(k, k.Meter.transform.position) + ") works loose and gas seeps out; it is upstream of every burner valve, only the main valve at the meter stops it.",
                 Levels = new List<string> { "a faint smell of gas near the meter", "a clear smell of gas in the shop", "the smell spreads into the passage in front of the shop", "a strong smell, people nearby get headaches", "a hissing leak, the smell spreads across the floor" },
                 Apply = m => StartLeak(k, GasSource.Meter, m, k.Meter.transform.Find("Leak").position, k.Meter.Id, null, null, null),
             };
@@ -219,7 +228,7 @@ namespace ChooGuard.App.Fps.Emergency
         private FireHazard IgniteAppliance(Kitchen k, KitchenAppliancePoint appliance, float magnitude, string source, string subject, bool oil, string feed, string advice)
         {
             spentSources.Add(appliance.Equipment.Id);
-            var fire = Ignite(appliance.Fire.position, source, subject, magnitude, advice);
+            var fire = Ignite(appliance.Fire.position, source, subject, magnitude, advice, where: KitchenWhere(k, appliance.Fire.position));
             fire.Oil = oil;
             fire.Footprint = appliance.Equipment.Kind == KitchenAppliancePoint.FryerKind ? .13f : appliance.Equipment.Kind == KitchenAppliancePoint.RangeKind ? .22f : .35f;
             // 불을 먹이는 것: 전원과 가스. 끊기 전에는 불씨까지만 꺼진다. 소방대도 끊어 준다.
@@ -239,7 +248,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (k.Main != null) stoppers.Add(k.Main);
             var stoppedBy = stoppers.Select(v => v.Equipment.Id).ToList();
             if (source == GasSource.Cock) stoppedBy.Add(range.Equipment.Id);
-            var gas = new GasLeakHazard("gas-" + ++serial, at, k.Label, level, source, stoppedBy) { Where = world.Describe(at) };
+            var gas = new GasLeakHazard("gas-" + ++serial, at, k.Label, level, source, stoppedBy) { Where = KitchenWhere(k, at) };
             gasLeaks.Add(gas);
             var hiss = new GameObject("가스 새는 소리").AddComponent<AudioSource>();
             hiss.transform.SetParent(root, false);
@@ -309,7 +318,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (src.Hiss != null) Destroy(src.Hiss.gameObject);
             log.Add("가스에 불이 붙음 · " + gas.Where);
             if (magnitude < .2f) { log.Add("순간 불꽃이 일었다 꺼짐"); return; }
-            var fire = Ignite(gas.Position, gas.Shop + " 주방 가스", gas.Shop + " 주방", magnitude, " 가스 밸브를 잠그게 하고 불씨가 번지지 않게 주변을 비우십시오.");
+            var fire = Ignite(gas.Position, gas.Shop + " 주방 가스", gas.Shop + " 주방", magnitude, " 가스 밸브를 잠그게 하고 불씨가 번지지 않게 주변을 비우십시오.", where: gas.Where);
             fire.Footprint = .35f;
             fire.SetFeed("가스", Agency.Fire, 20f);
             feedings.Add(new Feeding { Fire = fire, Appliance = gas.Source == GasSource.Cock ? src.Range : null, Valves = gas.StoppedBy.Where(valves.ContainsKey).ToArray() });
