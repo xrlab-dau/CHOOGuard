@@ -128,32 +128,44 @@ namespace ChooGuard.App.Fps.Equipment
             var vertices = source.vertices;
             var normals = source.normals;
             var uvs = source.uv;
-            var merged = new Mesh { name = source.name + " (merged)", indexFormat = IndexFormat.UInt32 };
-            var outVertices = new List<Vector3>(vertices.Length * matrices.Count);
-            var outNormals = new List<Vector3>(vertices.Length * matrices.Count);
-            var outUvs = new List<Vector2>(vertices.Length * matrices.Count);
-            var triangles = new List<int>[source.subMeshCount];
-            for (int s = 0; s < triangles.Length; s++) triangles[s] = new List<int>();
-            for (int m = 0; m < matrices.Count; m++)
+            int per = vertices.Length, count = matrices.Count, subs = source.subMeshCount;
+            var outVertices = new Vector3[per * count];
+            var outNormals = new Vector3[per * count];
+            var outUvs = new Vector2[per * count];
+            var indices = new int[subs][];
+            var triangles = new int[subs][];
+            for (int s = 0; s < subs; s++)
             {
-                int offset = outVertices.Count;
+                indices[s] = source.GetIndices(s);
+                triangles[s] = new int[indices[s].Length * count];
+            }
+            for (int m = 0; m < count; m++)
+            {
+                int offset = m * per;
                 float extra = rodExtra != null ? rodExtra[m] : 0f;
-                for (int v = 0; v < vertices.Length; v++)
+                var matrix = matrices[m];
+                for (int v = 0; v < per; v++)
                 {
                     var p = vertices[v];
                     if (extra > 0f) p.y = p.y > -rodLength ? p.y * (1f + extra / rodLength) : p.y - extra;
-                    outVertices.Add(matrices[m].MultiplyPoint3x4(p));
-                    outNormals.Add(matrices[m].MultiplyVector(normals[v]).normalized);
-                    outUvs.Add(uvs.Length > v ? uvs[v] : Vector2.zero);
+                    outVertices[offset + v] = matrix.MultiplyPoint3x4(p);
+                    outNormals[offset + v] = matrix.MultiplyVector(normals[v]).normalized;
+                    outUvs[offset + v] = uvs.Length > v ? uvs[v] : Vector2.zero;
                 }
-                for (int s = 0; s < triangles.Length; s++)
-                    foreach (int index in source.GetIndices(s)) triangles[s].Add(index + offset);
+                for (int s = 0; s < subs; s++)
+                {
+                    var from = indices[s];
+                    var into = triangles[s];
+                    int at = m * from.Length;
+                    for (int i = 0; i < from.Length; i++) into[at + i] = from[i] + offset;
+                }
             }
-            merged.SetVertices(outVertices);
-            merged.SetNormals(outNormals);
-            merged.SetUVs(0, outUvs);
-            merged.subMeshCount = triangles.Length;
-            for (int s = 0; s < triangles.Length; s++) merged.SetTriangles(triangles[s], s);
+            var merged = new Mesh { name = source.name + " (merged)", indexFormat = IndexFormat.UInt32 };
+            merged.vertices = outVertices;
+            merged.normals = outNormals;
+            merged.uv = outUvs;
+            merged.subMeshCount = subs;
+            for (int s = 0; s < subs; s++) merged.SetTriangles(triangles[s], s);
             merged.RecalculateBounds();
             return merged;
         }

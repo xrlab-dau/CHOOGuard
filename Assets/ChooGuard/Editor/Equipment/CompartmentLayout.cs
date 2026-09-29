@@ -13,13 +13,16 @@ namespace ChooGuard.Editor
     /// through. An opening is found where the boundary between two areas is a short gap (at most 9.5 m) and rays along the boundary meet a wall on each side within
     /// 3-8 m (Building Act enforcement rules art. 14 (2) 4: a shutter seals an opening where a fire door does not fit; the type approval sizes cap a shutter at 8 m x 4 m),
     /// with a ceiling low enough (5.5 m) for the shutter box to sit under it and a wall face beside the opening for the control box. Each shutter gets a smoke and a heat
-    /// detector on both sides (art. 14 (2) 4 다: flame or smoke plus heat) and a keyed control box on the wall (0.8-1.5 m above the floor).
+    /// detector on both sides (art. 14 (2) 4 다: flame or smoke plus heat) and a keyed control box on the wall (0.8-1.5 m above the floor); the opening also holds the double fire
+    /// door that art. 14 (2) 4 가 wants within 3 m of the shutter (<see cref="PlaceDoor"/>: it takes one end, the shutter the rest).
     /// Compartment lines that are open floors more than 9.5 m wide (the hall towards the main building, the atrium edge) get no shutter: they are the station's
     /// large undivided spaces, which the standard leaves to smoke control and performance design.
     /// </summary>
     internal static class CompartmentLayout
     {
         public const float MinWidth = 3f, MaxWidth = 8f, MaxCeiling = 5.5f, MaxGap = 9.5f, ControlHeight = 1.3f, DetectorSide = 1.4f;
+        /// <summary>The fire door of a shutter fills this much of the opening at one end: the double door frame (2.2 m) and a little play against the wall.</summary>
+        public const float DoorBay = 2.3f;
 
         public sealed class Shutter
         {
@@ -28,6 +31,9 @@ namespace ChooGuard.Editor
             /// <summary>Middle of the opening on the floor, the unit vector along it and the one across it (pointing into zone A: the roll box side).</summary>
             public Vector3 Position, Tangent, Normal;
             public float Width, Height;
+            /// <summary>The escape fire door in the end of the opening (floor, middle of the frame) and the ceiling height above the floor there; it faces the same way as the shutter.</summary>
+            public Vector3 DoorPosition;
+            public float DoorCeiling;
             public Vector3 ControlPosition, ControlNormal;
             public readonly List<DetectorLayout.Detector> Detectors = new List<DetectorLayout.Detector>();
         }
@@ -75,8 +81,8 @@ namespace ChooGuard.Editor
                 foreach (var shutter in found.Where(s => s.Level == level).OrderBy(s => Mathf.Round(s.Position.x * 10)).ThenBy(s => Mathf.Round(s.Position.z * 10)))
                     shutter.Id = "fs-" + levelCodes[level] + "-" + (++n).ToString("00");
             }
-            foreach (var shutter in found) AddDetectors(survey, shutter);
-            notes.Add("fire shutters: " + found.Count + " (" + string.Join(", ", found.Select(s => s.Id + " " + s.Width.ToString("0.0") + " m x " + s.Height.ToString("0.0") + " m " + s.ZoneA + "|" + s.ZoneB)) + ")");
+            foreach (var shutter in found) { PlaceDoor(survey, shutter); AddDetectors(survey, shutter); }
+            notes.Add("fire shutters: " + found.Count + " (each with a fire door of " + DoorBay.ToString("0.0") + " m at one end): " + string.Join(", ", found.Select(s => s.Id + " " + s.Width.ToString("0.0") + " m x " + s.Height.ToString("0.0") + " m " + s.ZoneA + "|" + s.ZoneB)));
             return found.OrderBy(s => s.Id, StringComparer.Ordinal).ToList();
         }
 
@@ -101,6 +107,20 @@ namespace ChooGuard.Editor
                 clusters.Add(cluster);
             }
             return clusters;
+        }
+
+        /// <summary>
+        /// Building Act enforcement rules art. 14 (2) 4 가: an automatic fire shutter needs a separate 60-minute fire door within 3 m for people to get out. The door takes the end of the
+        /// opening away from the control box (so its leaves do not hide the box) and the shutter closes the rest of the passage.
+        /// </summary>
+        private static void PlaceDoor(StationCeilings.Result survey, Shutter shutter)
+        {
+            float side = Vector3.Dot(shutter.ControlPosition - shutter.Position, shutter.Tangent) > 0 ? -1f : 1f;
+            shutter.DoorPosition = shutter.Position + shutter.Tangent * (side * (shutter.Width - DoorBay) * .5f);
+            shutter.Position -= shutter.Tangent * (side * DoorBay * .5f);
+            shutter.Width -= DoorBay;
+            var hit = survey.CeilingAt(shutter.DoorPosition.x, shutter.DoorPosition.z, shutter.Position.y);
+            shutter.DoorCeiling = hit != null ? hit.Value.y - shutter.Position.y : shutter.Height;
         }
 
         /// <summary>The opening of one boundary gap: the ray angle (5° steps) whose two hits are walls square to it, the width, the ceiling, the wall beside it for the control box.</summary>

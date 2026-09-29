@@ -11,7 +11,8 @@ namespace ChooGuard.Editor
 {
     /// <summary>
     /// The prefabs and placement entries of the fire compartment equipment (<see cref="CompartmentLayout"/>): automatic fire shutters (fixed head box and rails, the moving
-    /// curtain, a blocking collider and a carving nav-mesh obstacle that switch on while the curtain is low) and their keyed control boxes with three push buttons.
+    /// curtain, a blocking collider and a carving nav-mesh obstacle that switch on while the curtain is low), their keyed control boxes with three push buttons, and the
+    /// double fire door (frame, two swinging leaves, the fixed panel up to the ceiling) that stands at one end of every shutter opening.
     /// </summary>
     internal static class CompartmentBuilder
     {
@@ -21,6 +22,7 @@ namespace ChooGuard.Editor
         {
             BuildShutter();
             BuildControl();
+            BuildDoor();
         }
 
         private static void BuildShutter()
@@ -57,6 +59,82 @@ namespace ChooGuard.Editor
                 obstacle.center = new Vector3(0, 1.3f, 0);
                 obstacle.enabled = false;
             });
+        }
+
+        /// <summary>
+        /// The fire door: the frame and the two leaves of the converted model (hinges as the model's sidecar gives them) and a fixed panel of the frame's paint from the head of the
+        /// frame up to the ceiling, scaled by the door at placement. The sidecar describes OBJ axes; Unity's OBJ import flips X, so the leaf runs from its hinge towards −X here and
+        /// the LEFT leaf (hinge at −X) is the mirrored instance. No collider: people walk through it (<see cref="FireDoorPoint"/>).
+        /// </summary>
+        private static void BuildDoor()
+        {
+            var frameModel = EmergencySceneBuilder.ObjaverseModel("FireDoorFrame");
+            var leafModel = EmergencySceneBuilder.ObjaverseModel("FireDoorLeaf");
+            var paint = frameModel.GetComponentInChildren<MeshRenderer>(true).sharedMaterial;
+            var filler = FillerMesh(FireDoorPoint.FrameWidth, FireDoorPoint.FrameDepth);
+            EquipmentBuilder.SavePrefab(new EquipmentBuilder.PrefabSpec
+            {
+                Name = "FireDoor", Kind = FireDoorPoint.DoorKind, Label = "방화문", DrawDistance = 80f, Interactable = false, Batchable = false,
+            }, root =>
+            {
+                root.gameObject.AddComponent<FireDoorPoint>();
+                var frame = (GameObject)PrefabUtility.InstantiatePrefab(frameModel);
+                frame.name = "Frame";
+                frame.transform.SetParent(root, false);
+                AddLeaf(root, leafModel, "LeafLeft", new Vector3(-FireDoorPoint.HingeX, 0, -FireDoorPoint.HingeZ), -1f);
+                AddLeaf(root, leafModel, "LeafRight", new Vector3(FireDoorPoint.HingeX, 0, -FireDoorPoint.HingeZ), 1f);
+                var panel = new GameObject("Filler");
+                panel.transform.SetParent(root, false);
+                panel.transform.localPosition = new Vector3(0, FireDoorPoint.FrameHeight, 0);
+                panel.AddComponent<MeshFilter>().sharedMesh = filler;
+                panel.AddComponent<MeshRenderer>().sharedMaterial = paint;
+            });
+        }
+
+        private static void AddLeaf(Transform root, GameObject model, string name, Vector3 hinge, float mirror)
+        {
+            var pivot = new GameObject(name);
+            pivot.transform.SetParent(root, false);
+            pivot.transform.localPosition = hinge;
+            pivot.transform.localScale = new Vector3(mirror, 1f, 1f);
+            var leaf = (GameObject)PrefabUtility.InstantiatePrefab(model);
+            leaf.name = "Leaf";
+            leaf.transform.SetParent(pivot.transform, false);
+        }
+
+        /// <summary>A box one metre tall, standing on y = 0, centred on x and z: the fixed panel above the door frame (its height is scaled at placement).</summary>
+        private static Mesh FillerMesh(float width, float depth)
+        {
+            string path = EquipmentBuilder.Root + "/Meshes/FireDoorFiller.asset";
+            EmergencySceneBuilder.EnsureFolder(EquipmentBuilder.Root + "/Meshes");
+            float x = width * .5f, z = depth * .5f;
+            var vertices = new List<Vector3>();
+            var normals = new List<Vector3>();
+            var uvs = new List<Vector2>();
+            var triangles = new List<int>();
+            void Face(Vector3 a, Vector3 b, Vector3 c, Vector3 d, Vector3 normal)
+            {
+                int first = vertices.Count;
+                vertices.AddRange(new[] { a, b, c, d });
+                for (int i = 0; i < 4; i++) normals.Add(normal);
+                uvs.AddRange(new[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0) });
+                triangles.AddRange(new[] { first, first + 1, first + 2, first, first + 2, first + 3 });
+            }
+            Face(new Vector3(-x, 0, z), new Vector3(-x, 1, z), new Vector3(x, 1, z), new Vector3(x, 0, z), Vector3.forward);
+            Face(new Vector3(x, 0, -z), new Vector3(x, 1, -z), new Vector3(-x, 1, -z), new Vector3(-x, 0, -z), Vector3.back);
+            Face(new Vector3(-x, 0, -z), new Vector3(-x, 1, -z), new Vector3(-x, 1, z), new Vector3(-x, 0, z), Vector3.left);
+            Face(new Vector3(x, 0, z), new Vector3(x, 1, z), new Vector3(x, 1, -z), new Vector3(x, 0, -z), Vector3.right);
+            Face(new Vector3(-x, 1, z), new Vector3(-x, 1, -z), new Vector3(x, 1, -z), new Vector3(x, 1, z), Vector3.up);
+            var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+            if (mesh == null) { mesh = new Mesh { name = "FireDoorFiller" }; AssetDatabase.CreateAsset(mesh, path); }
+            mesh.Clear();
+            mesh.SetVertices(vertices);
+            mesh.SetNormals(normals);
+            mesh.SetUVs(0, uvs);
+            mesh.SetTriangles(triangles, 0);
+            mesh.RecalculateBounds();
+            EditorUtility.SetDirty(mesh);
+            return mesh;
         }
 
         /// <summary>
@@ -111,6 +189,11 @@ namespace ChooGuard.Editor
                 {
                     id = "fc-" + s.Id.Substring(3), kind = ShutterControlPoint.ControlKind, prefab = "ShutterControl", zone = s.ZoneA, position = s.ControlPosition,
                     rotation = Quaternion.LookRotation(s.ControlNormal, Vector3.up).eulerAngles, label = "방화셔터 조작함 " + floor + " " + number + "번", data = "shutter=" + s.Id,
+                });
+                items.Add(new EquipmentPlacement
+                {
+                    id = "fd-" + s.Id.Substring(3), kind = FireDoorPoint.DoorKind, prefab = "FireDoor", zone = s.ZoneA, position = s.DoorPosition, rotation = Quaternion.LookRotation(s.Normal, Vector3.up).eulerAngles,
+                    label = "방화문 " + floor + " " + number + "번 (" + ZoneLabel(s.ZoneA) + " · " + ZoneLabel(s.ZoneB) + " 경계)", data = "ceiling=" + F(s.DoorCeiling) + ";shutter=" + s.Id,
                 });
             }
             return items;

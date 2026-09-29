@@ -47,9 +47,14 @@ namespace ChooGuard.App.Fps.Equipment
             var root = new GameObject("설비");
             root.transform.SetParent(parent, false);
             var culling = root.AddComponent<EquipmentCulling>();
+            // 준비 자리: 꺼진 부모 아래에서 만들어 값을 채운 뒤 격자로 옮기면 켜지는 순간 한 번만 (마지막 종류·id 로) 레지스트리에 오른다.
+            var holder = new GameObject("설비 준비");
+            holder.SetActive(false);
+            holder.transform.SetParent(root.transform, false);
             var report = new Report { Root = root.transform };
             var cells = new Dictionary<Vector3Int, Cell>();
             var ids = new HashSet<string>();
+            var needsPlacing = new Dictionary<GameObject, bool>();
             foreach (var file in catalog.Placements)
             {
                 if (file == null) continue;
@@ -72,12 +77,13 @@ namespace ChooGuard.App.Fps.Equipment
                         cellRoot.transform.SetParent(root.transform, false);
                         cells[key] = cell = new Cell { Root = cellRoot };
                     }
-                    Place(prefab, item, cell);
+                    Place(prefab, item, cell, holder.transform, needsPlacing);
                     report.PerKind.TryGetValue(item.kind, out int count);
                     report.PerKind[item.kind] = count + 1;
                     report.Placed++;
                 }
             }
+            if (UnityEngine.Application.isPlaying) Object.Destroy(holder); else Object.DestroyImmediate(holder);
             report.PlaceMilliseconds = (float)clock.Elapsed.TotalMilliseconds - report.ParseMilliseconds;
             var batching = Stopwatch.StartNew();
             foreach (var cell in cells.Values)
@@ -93,13 +99,15 @@ namespace ChooGuard.App.Fps.Equipment
             return report;
         }
 
-        private static void Place(GameObject prefab, EquipmentPlacement item, Cell cell)
+        private static void Place(GameObject prefab, EquipmentPlacement item, Cell cell, Transform holder, Dictionary<GameObject, bool> needsPlacing)
         {
-            var instance = Object.Instantiate(prefab, item.position, Quaternion.Euler(item.rotation), cell.Root.transform);
+            var instance = Object.Instantiate(prefab, item.position, Quaternion.Euler(item.rotation), holder);
             instance.name = item.id;
             var equipment = instance.GetComponent<StationEquipment>() ?? instance.AddComponent<StationEquipment>();
             equipment.Assign(item.id, item.kind, item.label, item.zone, item.data);
-            foreach (var placed in instance.GetComponentsInChildren<IEquipmentPlaced>(true)) placed.OnPlaced();
+            if (!needsPlacing.TryGetValue(prefab, out bool needs)) needsPlacing[prefab] = needs = prefab.GetComponent<IEquipmentPlaced>() != null;
+            if (needs) foreach (var placed in instance.GetComponents<IEquipmentPlaced>()) placed.OnPlaced();
+            instance.transform.SetParent(cell.Root.transform, true);
             var renderers = instance.GetComponentsInChildren<Renderer>(true);
             float draw = equipment.DrawDistance * equipment.DrawDistance;
             cell.Items.Add(new Cell.Item { Equipment = equipment, Renderers = renderers, DrawSquared = draw });
