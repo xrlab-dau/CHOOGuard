@@ -11,7 +11,7 @@ description: FPS 비상상황은 정해진 목록에서 고르지 않는다. 지
 
 - 비상상황 목록·시나리오 ID·사건 대본은 없다. [`IncidentDirector`](../../Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.cs)가 10~16초마다 **지금 역 안에 있는 특정 승객·물건·설비**에서 물리적으로 가능한 원자 전이 후보(최대 12개)를 만든다. JEV는 무엇이 일어날지(또는 아직 아무 일도 없을지)를 Choice로 고르고, 크기를 Score로 정한다.
 - 이미 벌어진 일의 전개(불 확대·연기 확산·경보·쓰러짐·신고·여진 등)도 같은 방식으로 합성한다. ‘화재’·‘의심 물체’는 이 연쇄의 결과로 드러나는 이름이다.
-- 그래서 종류·장소·시각·크기·전개가 근무마다 다르고, 근무당 한 번은 별개 사건이 겹칠 수 있다. 장소는 역 전체다. KTX 객실 안(열차와 함께 움직인다), 에스컬레이터 위, 승강장, 3층, 맞이방 모두 해당한다.
+- 그래서 종류·장소·시각·크기·전개가 근무마다 다르고, 근무당 한 번은 별개 사건이 겹칠 수 있다. 장소는 역 전체다. KTX 객실 안, 에스컬레이터 위, 승강장, 3층, 맞이방 모두 해당한다.
 - JEV는 코드가 만든 후보를 고르고 점수를 매길 뿐 새 사건을 지어내지 않는다([`JevClient`](../../Assets/ChooGuard/App/Fps/Emergency/JevClient.cs)). 키(`TYPESAFE_API_KEY` 또는 `~/.chooguard/typesafe.key`)가 없으면 같은 후보를 로컬 가중치로 고른다. 목록 추첨으로 바뀌는 것이 아니라 JEV 판단만 대신한다.
 - 규범 설계: [DESIGN.md](../../docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/DESIGN.md) §1, [NPC_SCENARIO.md](../../docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/NPC_SCENARIO.md) §7.
 
