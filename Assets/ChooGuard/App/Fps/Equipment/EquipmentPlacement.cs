@@ -9,6 +9,8 @@ namespace ChooGuard.App.Fps.Equipment
     {
         public string id, kind, label, zone, prefab;
         public Vector3 position, rotation;
+        /// <summary>Numbers and words a kind needs at run time, as <c>key=value</c> pairs joined by ';' (a detector's coverage radius and mounting height). Empty when the kind needs none.</summary>
+        public string data = "";
     }
 
     /// <summary>

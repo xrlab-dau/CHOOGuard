@@ -386,7 +386,7 @@ namespace ChooGuard.Editor
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
-        private static Material ParticleMaterial(string name, Texture2D texture, bool additive)
+        public static Material ParticleMaterial(string name, Texture2D texture, bool additive)
         {
             var path = MaterialRoot + "/" + name + ".mat";
             var shader = Shader.Find("Universal Render Pipeline/Particles/Unlit") ?? throw new InvalidOperationException("URP 입자 셰이더가 없습니다.");

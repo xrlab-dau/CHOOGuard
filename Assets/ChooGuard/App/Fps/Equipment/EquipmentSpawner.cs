@@ -18,6 +18,9 @@ namespace ChooGuard.App.Fps.Equipment
         /// <summary>Child of an equipment prefab whose renderers stay out of static batches (a lamp whose glow differs per object).</summary>
         public const string LiveChild = "Live";
 
+        /// <summary>The report of the latest spawn (for diagnostics and the performance evidence), or null before the first.</summary>
+        public static Report Last { get; private set; }
+
         /// <summary>Edge of a batching/culling cell in metres (horizontal, vertical).</summary>
         public const float CellSize = 24f, CellHeight = 6f;
 
@@ -81,6 +84,7 @@ namespace ChooGuard.App.Fps.Equipment
             report.Cells = cells.Count;
             report.Milliseconds = (float)clock.Elapsed.TotalMilliseconds;
             Debug.Log("CG_EQUIPMENT " + report);
+            Last = report;
             return report;
         }
 
@@ -89,7 +93,7 @@ namespace ChooGuard.App.Fps.Equipment
             var instance = Object.Instantiate(prefab, item.position, Quaternion.Euler(item.rotation), cell.Root.transform);
             instance.name = item.id;
             var equipment = instance.GetComponent<StationEquipment>() ?? instance.AddComponent<StationEquipment>();
-            equipment.Assign(item.id, item.kind, item.label, item.zone);
+            equipment.Assign(item.id, item.kind, item.label, item.zone, item.data);
             var renderers = instance.GetComponentsInChildren<Renderer>(true);
             float draw = equipment.DrawDistance * equipment.DrawDistance;
             cell.Items.Add(new Cell.Item { Equipment = equipment, Renderers = renderers, DrawSquared = draw });
