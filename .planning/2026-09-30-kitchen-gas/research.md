@@ -76,7 +76,7 @@ Sketchfab 공개 검색 API 두 번(약 130개 질의) → Objaverse 사본. 미
 | StockPot·SteamerPot·FryPan | “Restaurant Kitchen Set – Part 1” soidev | CC BY | 냄비·찜솥+뚜껑·팬 |
 | Wok | “Stainless Steel Wok” Aullwen | CC BY | 뚜껑 제거 |
 | KExtinguisher (텍스처) | 트윈의 소화기(Poly Haven, CC0)에 K급 스티커 | CC0 파생 | `make_k_label.py`, 폰트 Noto Sans CJK KR(OFL) |
-| GasMeter, GasHose(±Off), GasAlarm, AutoExtinguisher, GasPipe(+Elbow), StainlessTable·Cabinet·Backsplash | 이 저장소에서 Blender 로 제작 | 이 저장소 | 검색에서 쓸 만한 것이 없었음: 계량기는 그래피티 낀 프랑스 길거리 함(`City gas utility box`)·녹슨 장치뿐, 경보기는 방폭 산업용 H2S 검지기뿐, 호스·배관은 결과 없음, 자동확산소화기·K급 소화기는 결과 없음 |
+| GasMeter, GasHose(±Off), GasAlarm, AutoExtinguisher, GasPipe(+Elbow), StainlessTable·Cabinet·Backsplash | 이 저장소에서 Blender 로 제작(`Art/Emergency/Equipment/Models/<Name>/`, 서드파티 폴더 밖) | 프로젝트 제작물(서드파티 아님: NOTICE 에 올리지 않고 여기에 기록). 라벨 글꼴 Noto Sans CJK KR(SIL OFL 1.1)은 NOTICE 의 글꼴 항목 | 검색에서 쓸 만한 것이 없었음: 계량기는 그래피티 낀 프랑스 길거리 함(`City gas utility box`)·녹슨 장치뿐, 경보기는 방폭 산업용 H2S 검지기뿐, 호스·배관은 결과 없음, 자동확산소화기·K급 소화기는 결과 없음 |
 
 기각한 검색 결과(대표): `Electric Fryer 1×6L`(14만 삼각형 탁상형, 통 하나), `Thor 6 Burner Range`(가정용 색), `Street Gas Meter`·`City gas utility box`(야외·낙서), `Gas Stove (longtail·RMrando·Mirey)`(녹슨·가정용·장난감), `Thai Style Steamer`(대바구니만).
 
