@@ -326,7 +326,7 @@ namespace ChooGuard.App.Fps.Emergency
                 if (person.Current == Passenger.Activity.Evacuate || person.Hurt) continue;
                 var d = person.transform.position - position;
                 if (Mathf.Abs(d.y) > 3 || d.sqrMagnitude > 25) continue;
-                var danger = hazard != null && hazard.NeedsSight ? hazard.Position : (Vector3?)null;
+                var danger = hazard != null && hazard.Localized ? hazard.Position : (Vector3?)null;
                 person.Instruct(World.SafeExit(person.transform.position, danger, hazard != null ? hazard.Clearance : 0), true);
                 told++;
             }
@@ -338,7 +338,7 @@ namespace ChooGuard.App.Fps.Emergency
         public int Announce(Vector3? zone = null, float radius = 1e4f, bool stopArrivals = true)
         {
             var hazard = MainHazard;
-            var danger = hazard != null && hazard.NeedsSight ? hazard.Position : (Vector3?)null;
+            var danger = hazard != null && hazard.Localized ? hazard.Position : (Vector3?)null;
             int heard = 0;
             foreach (var person in People.ToArray())
             {

@@ -21,7 +21,9 @@ Audio/Interface/: Kenney (www.kenney.nl).
 Kenney-InterfaceSounds.txt 및 CC0-1.0.txt 참조. https://kenney.nl/assets/interface-sounds
 Models/Rocketbox/: Microsoft Rocketbox Avatar Library, Copyright (c) 2020 Microsoft. MIT License.
 전문은 Models/Rocketbox/LICENSE.md 참조. https://github.com/microsoft/Microsoft-Rocketbox
-사용: Avatars/Adults 12종, Avatars/Professions 7종(Business 2·Fire 2·Police 2·Medical 1) 본체 FBX, all_animations_max_motextr 16개 동작 FBX.
+사용: Avatars/Adults 12종, Avatars/Professions 14종(Business 2·Fire 2·Police 4·Medical 2·Construction 2·Pilot 1·Military 1) 본체 FBX, all_animations_max_motextr 16개 동작 FBX.
+(2026-09-29 출동 부대용으로 Police_Male_03·Police_Male_02·Construction_Male_02·Construction_Male_05·Pilot_Male_01·Medical_Female_03·Military_Male_02 를 같은 방법으로 더함.
+영수증 asset-library/research-public/2026-09-29/responder-assets/rocketbox-receipts.json)
 변환(2026-09-26): 본체 텍스처 TGA를 JPG(색상)·PNG(노멀·불투명)로 바꿨고 FBX는 byte 단위 그대로 복사했다.
 URP 재질·Animator·prefab 은 Editor/CrowdAssetBuilder.cs 가 만든다. 실제 인물·기관 복장 규격의 근거가 아니다.
 CC0 제작자 표시는 자율 표기이며 상표·특허·제3자 권리의 포괄 허락이나 보증이 아니다.
@@ -65,3 +67,26 @@ OBJ·PNG 로 바꾸고 실제 높이로 크기만 맞춤(변환기 asset-library
   Suitcase = "Suitcase" by Moon_Studio, https://sketchfab.com/3d-models/16a80a9f0375413e9f752e493ff24341 (높이 0.60 m)
   Handbag = "Purse" by Jogetsu, https://sketchfab.com/3d-models/1e2b45735eb340588a4adecbb4bf5ef0 (높이 0.34 m)
   MedicalBag = "First Aid Kit" by Shedmon, https://sketchfab.com/3d-models/8b0d64278d504c508d02d33e22ea7f12 (높이 0.26 m)
+
+2026-09-29 출동 부대·장비·차량에서 더한 에셋 (영수증: asset-library/research-public/2026-09-29/responder-assets/receipts.json, 검색 기록 search.json)
+Models/Objaverse/ 추가분 (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/ — 저작자 표시 필요). Sketchfab 원본의 Objaverse 사본을
+blender_convert.py 로 OBJ(사람 모델은 뼈대 포함 FBX)·PNG 로 바꾸고 실제 크기로 맞추고 삼각형 수를 줄임. 차량에는 이 저장소에서 만든
+옆면 표시(아래 Markings)를 차체에 붙였고, 구급차(스타렉스) 원본에 없는 바퀴는 K5 모델의 바퀴를 옮겨 달았다:
+  HazmatSuit = "Hazmat suit Yellow" by TumkaPook, https://sketchfab.com/3d-models/hazmat-suit-yellow-c3b8510cd4644f8b8a51b313ac44cb99
+  Nozzle = "Hohlstrahlrohr" by JannickBremm, https://sketchfab.com/3d-models/hohlstrahlrohr-4241e3e4a02a4c29a52bf65bae5216fa
+  Cot = "Stretcher Model" by atahangokturkguner, https://sketchfab.com/3d-models/stretcher-model-1ffa0069c8e04ce1a18635fbfb987fad
+  Toolbox = "Toolbox" by holgcool, https://sketchfab.com/3d-models/toolbox-9df47cc2d6174d2b86c22cdfa4b423aa
+  Flashlight = "Flashlight" by mar.cos., https://sketchfab.com/3d-models/flashlight-5fa9a65e7b0141ee877ed18f4f42d953
+  WetFloorSign = "Wet Floor Sign" by jimbogies, https://sketchfab.com/3d-models/wet-floor-sign-441ddfb171e347129d88ffdb34c78020 (판면에 한글 표지를 덧댐)
+  EodRobot = "EOD_Inspector_DraftPunk4_XYZschool" by alpamys_seitkhanov, https://sketchfab.com/3d-models/eod-inspector-draftpunk4-xyzschool-39bd28195fd644efaaf7aa1ccb02a209 (로봇 한 대만)
+  EodHelmet = "Motorcycle_helmet" by zakyora, https://sketchfab.com/3d-models/motorcycle-helmet-6c4c23305d8148ef9717799274bdde85
+  TrafficCone = "Traffic cone (Game ready)" by PT34, https://sketchfab.com/3d-models/traffic-cone-game-ready-8cdac192abd044988c314eeb6377a3a0
+  LightBar = "lightbar 1" by Lamar.Hegmann, https://sketchfab.com/3d-models/lightbar-1-cfde7dcc1d2c46d29bbdb72055f2d4ee
+  Ambulance = "Hyundai Starex 2018" by beastblox124, https://sketchfab.com/3d-models/hyundai-starex-2018-0cd483437f464f00b0d892d4cf31e479
+  PoliceCar (및 구급차 바퀴) = "Kia Optima (K5)" by savelliy07, https://sketchfab.com/3d-models/kia-optima-k5-a50e6423aa49488bb1e6936979884748
+  FireEngine = "Fire Engine Low Poly" by afcm.contact, https://sketchfab.com/3d-models/fire-engine-low-poly-0e48ee2c1d06466686b13230f3bc6fab
+  SwatVan = "SWAT Police Van" by Zack_Hawley, https://sketchfab.com/3d-models/swat-police-van-5b9076973cda47e98609640d745bb8ce
+Art/Emergency/Crowd/Markings/*.png, Art/Emergency/Vehicles/Markings/*.png, Art/Emergency/Props/WetFloor_Korean.png: 이 저장소에서 만든 복장·차량·표지 인쇄
+(글꼴 Noto Sans CJK KR, SIL OFL 1.1). 생성기 asset-library/research-public/2026-09-29/responder-assets/make_markings.py. 실제 기관 복제·도색 규격의 근거가 아니다.
+Art/Audio/Announcements/pa_SafetyEvacuation·GasLeak·PowerOutage·WetFloor·FalseAlarm·TrackSafety·ElevatorCheck.wav: 위 MeloTTS-Korean 안내방송과 같은 방식.
+생성기·측정 asset-library/research-public/2026-09-29/pa-lines/make_pa_lines.py·pa_lines_report.json.

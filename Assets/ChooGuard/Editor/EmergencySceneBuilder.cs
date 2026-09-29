@@ -171,12 +171,144 @@ namespace ChooGuard.Editor
             art.Escalator = StationAudio("escalator_loop", false);
             art.Fire = StationAudio("fire_loop", false);
             art.Footsteps = Enumerable.Range(0, 5).Select(i => StationAudio("footstep_concrete_" + i, false)).ToArray();
-            // 안내방송 음성: PaLine 순서. MeloTTS-Korean(MIT)으로 미리 만든 WAV(생성기·문장: asset-library/research-public/2026-09-27/production-pass/audio/make_pa.py·pa_report.json).
-            art.Announcements = Enum.GetNames(typeof(PaLine)).Select(Announcement).ToArray();
+            AssignResponderArt(art);
             EditorUtility.SetDirty(art);
             AssetDatabase.SaveAssets();
             Debug.Log("CG_EMERGENCY_ART hanging=" + art.Hanging.Length + " parts=" + art.Hanging.Sum(h => h.Parts.Length));
             return art;
+        }
+
+        /// <summary>
+        /// Only the parts of EmergencyArt the responders and announcements need (no station scene required): equipment,
+        /// the fire hose material, the vehicle prefabs and the announcement voices.
+        /// </summary>
+        [MenuItem("ChooGuard/Emergency/Build responder art")]
+        public static void BuildResponderArt()
+        {
+            var art = AssetDatabase.LoadAssetAtPath<EmergencyArt>(ArtAssetPath) ?? throw new FileNotFoundException(ArtAssetPath);
+            AssignResponderArt(art);
+            EditorUtility.SetDirty(art);
+            AssetDatabase.SaveAssets();
+            Debug.Log("CG_RESPONDER_ART vehicles=" + new[] { art.FireEngine, art.Ambulance, art.PoliceCar, art.SwatVan }.Count(v => v != null) + " voices=" + art.Announcements.Length);
+        }
+
+        private static void AssignResponderArt(EmergencyArt art)
+        {
+            // 출동 장비(Sketchfab CC BY, Objaverse 사본 → blender_convert.py 로 OBJ: 저작자 표시는 ThirdParty/Licenses/NOTICE.txt).
+            art.NozzleModel = ObjaverseModel("Nozzle");
+            art.CotModel = ObjaverseModel("Cot");
+            art.ToolboxModel = ObjaverseModel("Toolbox");
+            art.FlashlightModel = ObjaverseModel("Flashlight");
+            art.WetFloorSignModel = ObjaverseModel("WetFloorSign");
+            art.EodRobotModel = ObjaverseModel("EodRobot");
+            art.TrafficConeModel = ObjaverseModel("TrafficCone");
+            // 소방 호스: 누런 흰색 방수포(ambientCG Fabric031).
+            art.HoseMaterial = PbrMaterial("FireHose", "Fabric031_1K", new Color(.88f, .85f, .76f), 1f);
+            // 차량: 소방 펌프차는 원래 달린 회전등을, 구급차·순찰차는 지붕 경광등 막대를 깜빡인다.
+            art.FireEngine = VehiclePrefab("FireEngine", false);
+            art.Ambulance = VehiclePrefab("Ambulance", true);
+            art.PoliceCar = VehiclePrefab("PoliceCar", true);
+            art.SwatVan = VehiclePrefab("SwatVan", false);
+            // 안내방송 음성: PaLine 순서. MeloTTS-Korean(MIT)으로 미리 만든 WAV(생성기·문장: asset-library/research-public/2026-09-27/production-pass/audio/make_pa.py,
+            // 2026-09-29 추가분은 .../2026-09-29/pa-lines/make_pa_lines.py·pa_lines_report.json).
+            art.Announcements = Enum.GetNames(typeof(PaLine)).Select(Announcement).ToArray();
+        }
+
+        public const string VehicleRoot = ArtRoot + "/Vehicles";
+
+        /// <summary>
+        /// A parked emergency vehicle: the converted model (nose +Z), a light bar on the roof when the model has none,
+        /// beacon materials renamed Beacon_Red/Beacon_Blue for <see cref="EmergencyVehicle"/>, and a box collider so
+        /// nobody walks through it.
+        /// </summary>
+        private static GameObject VehiclePrefab(string name, bool lightBar)
+        {
+            EnsureFolder(VehicleRoot);
+            var model = ObjaverseModel(name);
+            var root = new GameObject(name);
+            try
+            {
+                var body = (GameObject)PrefabUtility.InstantiatePrefab(model);
+                body.name = "차체";
+                body.transform.SetParent(root.transform, false);
+                var info = JsonUtility.FromJson<ObjaverseInfo>(File.ReadAllText(ObjaverseRoot + "/" + name + "/" + name + ".json"));
+                // 펌프차 모델의 회전등(Rotate_feu)은 붉은 경광등으로 쓴다.
+                MarkBeacons(body, name, info, source => source == "Rotate_feu" ? "Red" : null);
+                var bounds = Bounds(body);
+                if (lightBar)
+                {
+                    var bar = (GameObject)PrefabUtility.InstantiatePrefab(ObjaverseModel("LightBar"));
+                    bar.name = "경광등";
+                    bar.transform.SetParent(root.transform, false);
+                    // 지붕 앞쪽(차 길이의 1/4 지점) 가장 높은 곳에 가로로 얹는다.
+                    float z = bounds.center.z + bounds.extents.z * .25f;
+                    bar.transform.localPosition = new Vector3(0, RoofHeight(body, z, bounds), z);
+                    var barInfo = JsonUtility.FromJson<ObjaverseInfo>(File.ReadAllText(ObjaverseRoot + "/LightBar/LightBar.json"));
+                    MarkBeacons(bar, "LightBar", barInfo, source => null, colour => colour.r > .45f && colour.g < .3f && colour.b < .3f ? "Red" : colour.b > .45f && colour.r < .3f ? "Blue" : null);
+                }
+                var collider = root.AddComponent<BoxCollider>();
+                collider.center = bounds.center - root.transform.position;
+                collider.size = bounds.size;
+                root.AddComponent<EmergencyVehicle>();
+                return PrefabUtility.SaveAsPrefabAsset(root, VehicleRoot + "/" + name + ".prefab");
+            }
+            finally { Object.DestroyImmediate(root); }
+        }
+
+        /// <summary>Swaps the beacon slots of a vehicle part for the shared emissive Beacon_Red / Beacon_Blue materials.</summary>
+        private static void MarkBeacons(GameObject part, string name, ObjaverseInfo info, Func<string, string> bySource, Func<Color, string> byColour = null)
+        {
+            foreach (var renderer in part.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                var materials = renderer.sharedMaterials;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    if (materials[i] == null) continue;
+                    var entry = info.materials.FirstOrDefault(m => name + "_" + m.name == materials[i].name);
+                    if (entry == null) continue;
+                    var colour = entry.baseColor != null && entry.baseColor.Length >= 3 ? new Color(entry.baseColor[0], entry.baseColor[1], entry.baseColor[2]) : Color.white;
+                    var kind = bySource(entry.source) ?? byColour?.Invoke(colour);
+                    if (kind != null) materials[i] = BeaconMaterial(kind);
+                }
+                renderer.sharedMaterials = materials;
+            }
+        }
+
+        private static Material BeaconMaterial(string kind)
+        {
+            var colour = kind == "Red" ? new Color(.85f, .06f, .04f) : new Color(.08f, .2f, .9f);
+            var material = LitMaterial("Beacon_" + kind, colour, .7f, 0);
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", Color.black);
+            material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Bounds Bounds(GameObject go)
+        {
+            var renderers = go.GetComponentsInChildren<Renderer>(true);
+            var bounds = renderers[0].bounds;
+            foreach (var r in renderers) bounds.Encapsulate(r.bounds);
+            return bounds;
+        }
+
+        /// <summary>Roof height at <paramref name="z"/> on the centre line: a ray down from above the model.</summary>
+        private static float RoofHeight(GameObject body, float z, Bounds bounds)
+        {
+            var colliders = new List<MeshCollider>();
+            foreach (var filter in body.GetComponentsInChildren<MeshFilter>(true))
+            {
+                var c = filter.gameObject.AddComponent<MeshCollider>();
+                c.sharedMesh = filter.sharedMesh;
+                colliders.Add(c);
+            }
+            var ray = new Ray(new Vector3(bounds.center.x, bounds.max.y + 1, z), Vector3.down);
+            float best = float.NegativeInfinity;
+            foreach (var c in colliders)
+                if (c.Raycast(ray, out var hit, 5)) best = Mathf.Max(best, hit.point.y);
+            foreach (var c in colliders) Object.DestroyImmediate(c);
+            return float.IsNegativeInfinity(best) ? bounds.max.y : best;
         }
 
         public const string StationAudioRoot = "Assets/ChooGuard/ThirdParty/Audio/Station";
@@ -362,12 +494,12 @@ namespace ChooGuard.Editor
         public const string ObjaverseRoot = "Assets/ChooGuard/ThirdParty/Models/Objaverse";
 
         [Serializable] private sealed class ObjaverseInfo { public string name; public ObjaverseMaterial[] materials; }
-        [Serializable] private sealed class ObjaverseMaterial { public string name, albedo, normal, metallicSmoothness; public float[] baseColor; }
+        [Serializable] private sealed class ObjaverseMaterial { public string name, source, albedo, normal, metallicSmoothness, alphaMode; public float[] baseColor; }
 
         /// <summary>
-        /// A prop converted from an Objaverse GLB (asset-library/.../props/convert_glb.py: OBJ in metres, pivot at the bottom
-        /// centre, real height; PBR maps as PNG with a sidecar JSON). Each OBJ material is remapped to a URP Lit material
-        /// built from those maps (smoothness from 1 − glTF roughness in the map's alpha).
+        /// A prop converted from an Objaverse GLB (asset-library/.../props/convert_glb.py and .../responder-assets/
+        /// blender_convert.py: OBJ in metres, pivot at the bottom centre, real size; PBR maps as PNG with a sidecar JSON).
+        /// Each OBJ material is remapped to a URP Lit material built from those maps (<see cref="JsonMaterial"/>).
         /// </summary>
         private static GameObject ObjaverseModel(string name)
         {
@@ -381,22 +513,37 @@ namespace ChooGuard.Editor
             importer.materialImportMode = ModelImporterMaterialImportMode.ImportStandard;
             importer.isReadable = false;
             foreach (var entry in info.materials)
-            {
-                var material = LitMaterial(name + "_" + entry.name, entry.baseColor != null && entry.baseColor.Length >= 3 ? new Color(entry.baseColor[0], entry.baseColor[1], entry.baseColor[2]) : Color.white, 1f, 0);
-                if (!string.IsNullOrEmpty(entry.albedo)) material.SetTexture("_BaseMap", ImportTexture(folder + entry.albedo, false));
-                if (!string.IsNullOrEmpty(entry.normal)) { material.SetTexture("_BumpMap", ImportTexture(folder + entry.normal, true)); material.EnableKeyword("_NORMALMAP"); }
-                if (!string.IsNullOrEmpty(entry.metallicSmoothness))
-                {
-                    material.SetTexture("_MetallicGlossMap", ImportTexture(folder + entry.metallicSmoothness, false, linear: true));
-                    material.EnableKeyword("_METALLICSPECGLOSSMAP");
-                    material.SetFloat("_Metallic", 1f);
-                }
-                else material.SetFloat("_Smoothness", .35f);
-                EditorUtility.SetDirty(material);
-                importer.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material), entry.name), material);
-            }
+                importer.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material), entry.name), JsonMaterial(name, entry.name));
             importer.SaveAndReimport();
             return AssetDatabase.LoadAssetAtPath<GameObject>(objPath) ?? throw new FileNotFoundException(objPath);
+        }
+
+        /// <summary>
+        /// URP Lit for one material of a converted model's sidecar JSON: base colour or colour map, normal map, metallic in
+        /// R and smoothness (1 − glTF roughness) in A; alpha-tested when the JSON says MASK (printed liveries, decals).
+        /// </summary>
+        public static Material JsonMaterial(string name, string entryName)
+        {
+            string folder = ObjaverseRoot + "/" + name + "/";
+            var info = JsonUtility.FromJson<ObjaverseInfo>(File.ReadAllText(folder + name + ".json"));
+            var entry = info.materials.First(m => m.name == entryName);
+            var material = LitMaterial(name + "_" + entry.name, entry.baseColor != null && entry.baseColor.Length >= 3 ? new Color(entry.baseColor[0], entry.baseColor[1], entry.baseColor[2]) : Color.white, 1f, 0);
+            if (!string.IsNullOrEmpty(entry.albedo)) material.SetTexture("_BaseMap", ImportTexture(folder + entry.albedo, false));
+            if (!string.IsNullOrEmpty(entry.normal)) { material.SetTexture("_BumpMap", ImportTexture(folder + entry.normal, true)); material.EnableKeyword("_NORMALMAP"); }
+            if (!string.IsNullOrEmpty(entry.metallicSmoothness))
+            {
+                material.SetTexture("_MetallicGlossMap", ImportTexture(folder + entry.metallicSmoothness, false, linear: true));
+                material.EnableKeyword("_METALLICSPECGLOSSMAP");
+                material.SetFloat("_Metallic", 1f);
+            }
+            else material.SetFloat("_Smoothness", .35f);
+            bool clip = entry.alphaMode == "MASK";
+            material.SetFloat("_AlphaClip", clip ? 1 : 0);
+            material.SetFloat("_Cutoff", .5f);
+            if (clip) material.EnableKeyword("_ALPHATEST_ON"); else material.DisableKeyword("_ALPHATEST_ON");
+            material.renderQueue = clip ? (int)UnityEngine.Rendering.RenderQueue.AlphaTest : -1;
+            EditorUtility.SetDirty(material);
+            return material;
         }
 
         /// <summary>

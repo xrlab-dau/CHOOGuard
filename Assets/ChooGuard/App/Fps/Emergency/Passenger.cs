@@ -12,7 +12,7 @@ namespace ChooGuard.App.Fps.Emergency
     [DisallowMultipleComponent, RequireComponent(typeof(PersonBody))]
     public sealed class Passenger : MonoBehaviour, IFpsInteraction, IFpsNamed
     {
-        public enum Activity { Walk, Queue, Browse, Sit, Stand, Leave, Toilet, PlatformWait, Board, InTrain, Alight, Meet, Deciding, Watch, MoveAway, Evacuate, Report, TakeCover, Injured }
+        public enum Activity { Walk, Queue, Browse, Sit, Stand, Leave, Toilet, PlatformWait, Board, InTrain, Alight, Meet, Deciding, Watch, MoveAway, Evacuate, Report, TakeCover, Injured, Aggressive, OnTrack }
         public enum Purpose { Depart, Arrive, Greet, Visit }
 
         public PersonBody Body { get; private set; }
@@ -623,16 +623,17 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Perception tick (staggered by the crowd, about twice a second while something is wrong).</summary>
         public void Perceive(float deltaSeconds)
         {
-            if (Hostile) return;
+            if (Hostile || Current == Activity.OnTrack) return;
             if (Current == Activity.Evacuate || Current == Activity.Injured) { ExposeToSmoke(deltaSeconds); return; }
             var eye = transform.position + Vector3.up * (Body.Seat == PersonBody.SeatPhase.None ? 1.6f : 1.2f);
             foreach (var hazard in HazardRegistry.Active)
             {
                 if (!hazard.Active || Noticed.Contains(hazard)) continue;
-                float distance = Vector3.Distance(transform.position, hazard.Position);
-                bool felt = !hazard.NeedsSight;
                 if (hazard is EarthquakeHazard quake && !quake.Shaking) continue;
-                if (!felt && (distance > hazard.NoticeRadius || !HazardRegistry.CanSee(eye, hazard))) continue;
+                var offset = hazard.Position - transform.position;
+                if (offset.magnitude > hazard.NoticeRadius) continue;
+                // 보이는 것은 시야가 트여야 하고, 소리·냄새는 같은 층 가까이에서만 닿는다(역 전체가 겪는 흔들림·정전은 어디서나).
+                if (hazard.NeedsSight ? !HazardRegistry.CanSee(eye, hazard) : !float.IsPositiveInfinity(hazard.NoticeRadius) && Mathf.Abs(offset.y) > 4f) continue;
                 if (hazard.NoticeChance < 1 && !World.Chance(hazard.NoticeChance)) continue;
                 Notice(hazard, false);
             }
@@ -647,20 +648,28 @@ namespace ChooGuard.App.Fps.Emergency
                 return;
             }
             // 위험 반경 안이면 판단을 기다리지 않고 먼저 물러선다(반사 행동).
-            if (Focus != null && Focus.Active && Focus.NeedsSight && Current != Activity.MoveAway && Current != Activity.Evacuate && Current != Activity.Report && Current != Activity.InTrain && Current != Activity.Alight
+            if (Focus != null && Focus.Active && Focus.Localized && Current != Activity.MoveAway && Current != Activity.Evacuate && Current != Activity.Report && Current != Activity.InTrain && Current != Activity.Alight
                 && Vector3.Distance(transform.position, Focus.Position) < Focus.DangerRadius)
                 MoveAway(Focus.DangerRadius + World.Range(6, 12));
         }
 
-        /// <summary>Breathing smoke: coughs, and collapses after a long time in it. Returns the fire whose smoke this is, if any.</summary>
+        /// <summary>
+        /// Breathing smoke, gas or powder: coughs; a long time in fire smoke makes them collapse. Returns the fire whose smoke
+        /// this is, if any (the reflex to leave is for smoke).
+        /// </summary>
         private FireHazard ExposeToSmoke(float deltaSeconds)
         {
             FireHazard smoke = null;
+            bool irritated = false;
             foreach (var hazard in HazardRegistry.Active)
-                if (hazard is FireHazard fire && fire.InSmoke(transform.position)) smoke = fire;
+            {
+                if (!hazard.Irritates(transform.position)) continue;
+                irritated = true;
+                if (hazard is FireHazard fire) smoke = fire;
+            }
             if (smoke != null) SmokeSeconds += deltaSeconds;
             else SmokeSeconds = Mathf.Max(0, SmokeSeconds - deltaSeconds * .25f);
-            Body.SetCough(smoke != null && Current != Activity.Injured && Body.Seat == PersonBody.SeatPhase.None);
+            Body.SetCough(irritated && Current != Activity.Injured && Body.Seat == PersonBody.SeatPhase.None);
             // 연기 속에 오래 머물면 쓰러진다. 90초는 게임 압축 시간이며 의학적 수치가 아니다.
             if (!Hurt && SmokeSeconds > 90) Injure("연기를 오래 들이마셨다", true);
             return smoke;
@@ -669,12 +678,12 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Becomes aware of <paramref name="hazard"/>, directly or because of a cue around them.</summary>
         public void Notice(Hazard hazard, bool indirect, string cue = null)
         {
-            if (Hurt || Hostile || Noticed.Contains(hazard) || Current == Activity.Evacuate) return;
+            if (Hurt || Hostile || Current == Activity.OnTrack || Noticed.Contains(hazard) || Current == Activity.Evacuate) return;
             Noticed.Add(hazard);
             Cue = indirect ? cue : null;
             if (Focus != null && Focus.Active && !Routine(Current)) return;
             Focus = hazard;
-            lookAt = hazard.NeedsSight ? hazard.Position : transform.position + transform.forward;
+            lookAt = hazard.Localized ? hazard.Position : transform.position + transform.forward;
             StartDeciding();
             Crowd.Mind.OnNotice(this, hazard, indirect);
         }
@@ -698,7 +707,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Staff instruction or public announcement to leave through <paramref name="toward"/>.</summary>
         public void Instruct(StationPoints.Point toward, bool direct)
         {
-            if (Hurt || Hostile || Current == Activity.Evacuate) return;
+            if (Hurt || Hostile || Current == Activity.OnTrack || Current == Activity.Evacuate) return;
             Instructed = true;
             exit = toward;
             if (Focus == null && Crowd.MainHazard != null) { Focus = Crowd.MainHazard; Noticed.Add(Focus); }
@@ -764,7 +773,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void GoToExit()
         {
             Current = Activity.Evacuate;
-            var danger = Focus != null && Focus.NeedsSight ? Focus.Position : (Vector3?)null;
+            var danger = Focus != null && Focus.Localized ? Focus.Position : (Vector3?)null;
             if (exit == null || !Instructed || exit.Kind != PointKind.Exit) exit = World.SafeExit(transform.position, danger, Focus != null ? Focus.Clearance : 0);
             Travel(exit.Position, running ? World.Range(2.6f, 3.4f) : walkSpeed * 1.35f);
             // 뛰는 사람은 주변을 놀라게 한다. 조용히 걸어 나가는 사람은 눈에 잘 띄지 않는다.
@@ -789,7 +798,7 @@ namespace ChooGuard.App.Fps.Emergency
             // 직접 전화로 신고하는 중: 통화가 끝나면 물러선다.
             if (phoneCallEnds > 0)
             {
-                if (Focus != null && Focus.NeedsSight) Body.Face(Focus.Position, 120);
+                if (Focus != null && Focus.Localized) Body.Face(Focus.Position, 120);
                 if (Time.time < phoneCallEnds) return;
                 phoneCallEnds = -1;
                 Body.SetPhone(false);
@@ -896,6 +905,43 @@ namespace ChooGuard.App.Fps.Emergency
             WalkTo(destination, Activity.Stand, 1.65f);
         }
 
+        /// <summary>
+        /// Turns aggressive (a disturbance): drops their own plans and ignores everything around them; the incident
+        /// director moves them from now on (<see cref="Activity.Aggressive"/> has no routine of its own).
+        /// </summary>
+        public void TurnAggressive()
+        {
+            Hostile = true;
+            ReleasePlace();
+            if (hidden) { hidden = false; Body.SetVisible(true); }
+            Body.ClearPoses();
+            Current = Activity.Aggressive;
+            if (Body.Seat != PersonBody.SeatPhase.None) Body.BeginStand();
+        }
+
+        /// <summary>Restrained and led out by the police: walks to <paramref name="toward"/> and leaves the station.</summary>
+        public void LedAway(StationPoints.Point toward)
+        {
+            exit = toward;
+            WalkTo(toward.Position, Activity.Leave, Mathf.Min(walkSpeed, 1.1f));
+        }
+
+        /// <summary>Down on the track below a platform (fell or climbed down): no routine until brought back up.</summary>
+        public void Strand()
+        {
+            ReleasePlace();
+            Body.ClearPoses();
+            Current = Activity.OnTrack;
+        }
+
+        /// <summary>Back up on the platform unhurt: a moment to recover, then carries on with the trip.</summary>
+        public void ReturnFromTrack()
+        {
+            if (Hurt) return;
+            Body.ClearPoses();
+            Begin(Activity.Stand, World.Range(4, 8));
+        }
+
         private void AfterWatching()
         {
             Body.SetFilm(false);
@@ -939,6 +985,8 @@ namespace ChooGuard.App.Fps.Emergency
                 case Activity.Evacuate: return "leaving the station";
                 case Activity.Report: return "going to tell station staff";
                 case Activity.TakeCover: return "crouching to protect themselves";
+                case Activity.Aggressive: return "shouting and acting aggressively";
+                case Activity.OnTrack: return "down on the track below the platform";
                 default: return "hurt, on the floor";
             }
         }
@@ -950,6 +998,8 @@ namespace ChooGuard.App.Fps.Emergency
             get
             {
                 if (Hurt) return CarriesAedFor() ? "AED 곁에 두기" : "상태 확인";
+                if (Current == Activity.Aggressive) return "말로 진정시키기";
+                if (Current == Activity.OnTrack) return "움직이지 말라고 안내";
                 return Crowd != null && Crowd.Session.Incidents.PlayerKnowsIncident ? "대피 안내" : "말 걸기";
             }
         }
@@ -970,6 +1020,9 @@ namespace ChooGuard.App.Fps.Emergency
             if (!CanInteract(responder, out feedback)) return false;
             if (Hurt && CarriesAedFor()) { feedback = Crowd.Session.Hands.PlaceAedBeside(this); return true; }
             if (Hurt) { feedback = Crowd.Session.Incidents.CheckInjured(this); return true; }
+            // 난동 승객은 직접 제지하지 않는다: 말은 걸 수 있지만 듣지 않는다(공개 행동요령: 거리를 두고 신고).
+            if (Current == Activity.Aggressive) { feedback = "승객이 소리를 지르며 말을 듣지 않습니다 · 거리를 두고 경찰을 기다리세요"; Crowd.Session.Log.Once("calm-" + Number, "역무원이 난동 승객에게 말로 진정을 권함"); return true; }
+            if (Current == Activity.OnTrack) { feedback = "선로 위 승객에게 움직이지 말고 구조를 기다리라고 안내했습니다"; Crowd.Session.Log.Once("track-" + Number, "역무원이 선로 위 승객에게 움직이지 말라고 안내"); return true; }
             if (Crowd.Session.Incidents.PlayerKnowsIncident)
             {
                 int told = Crowd.InstructAround(transform.position, responder.transform.position);

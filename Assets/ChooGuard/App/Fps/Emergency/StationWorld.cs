@@ -393,6 +393,9 @@ namespace ChooGuard.App.Fps.Emergency
             }
             foreach (var escalator in Escalators)
                 if (escalator.DistanceTo(position) < 1.3f) return escalator.Label;
+            // 승강장 계단은 '승강장 구역' 상자 안에 있어도 선로가 아니다: 옆 에스컬레이터로 부른다.
+            var stairs = StairsAt(position);
+            if (stairs != null) return stairs.label + " 옆 계단";
             var platform = Points.PlatformAt(position);
             if (platform != null)
             {
@@ -437,6 +440,8 @@ namespace ChooGuard.App.Fps.Emergency
             if (Train != null) { var car = Train.CarAt(position); if (car != null) return "inside KTX car " + car.Number; }
             var platform = Points.PlatformAt(position);
             if (platform != null) return "on platform " + platform.label.Replace(" 타는 곳", "");
+            var stairs = StairsAt(position);
+            if (stairs != null) return "on the stairs between platform " + (Points.PlatformAt(stairs.stairsBottom)?.label.Replace(" 타는 곳", "") ?? "?") + " and the 2F concourse";
             switch (Points.ZoneAt(position)?.id)
             {
                 case "hall2f": return "2F waiting hall";
@@ -451,6 +456,27 @@ namespace ChooGuard.App.Fps.Emergency
                 case "tracks": return "track side";
                 default: return "in the station";
             }
+        }
+
+        /// <summary>
+        /// The flight of stairs beside an escalator well that <paramref name="position"/> stands on (navmesh stairs area),
+        /// or null anywhere else.
+        /// </summary>
+        public StationPoints.EscalatorEntry StairsAt(Vector3 position)
+        {
+            if (!NavMesh.SamplePosition(position, out var hit, .4f, 1 << StairsArea) || Mathf.Abs(hit.position.y - position.y) > .3f) return null;
+            StationPoints.EscalatorEntry nearest = null;
+            float best = 6;
+            foreach (var escalator in Escalators)
+            {
+                var entry = escalator.Entry;
+                if (!entry.stairs) continue;
+                var along = entry.stairsBottom - entry.stairsTop;
+                float t = Mathf.Clamp01(Vector3.Dot(position - entry.stairsTop, along) / Mathf.Max(along.sqrMagnitude, 1e-4f));
+                float d = Vector3.Distance(position, entry.stairsTop + along * t);
+                if (d < best) { best = d; nearest = entry; }
+            }
+            return nearest;
         }
     }
 }

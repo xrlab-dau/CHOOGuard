@@ -7,9 +7,10 @@ namespace ChooGuard.App.Fps.Emergency
 {
     /// <summary>
     /// Public-address lines with a pre-rendered voice (JEV voice-002): the three fixed KTX lines and one generic line
-    /// per incident announcement; the feed text carries the exact place.
+    /// per incident announcement; the feed text carries the exact place. New lines are appended so the voice array of
+    /// EmergencyArt keeps its order.
     /// </summary>
-    public enum PaLine { TrainArriving, TrainBoarding, TrainDeparting, Fire, SuspiciousItem, Medical, DoorCheck, Earthquake, EscalatorStopped }
+    public enum PaLine { TrainArriving, TrainBoarding, TrainDeparting, Fire, SuspiciousItem, Medical, DoorCheck, Earthquake, EscalatorStopped, SafetyEvacuation, GasLeak, PowerOutage, WetFloor, FalseAlarm, TrackSafety, ElevatorCheck }
 
     /// <summary>
     /// The station fire bell, the chime and voice of public announcements and the staff radio. The bell, chime and radio

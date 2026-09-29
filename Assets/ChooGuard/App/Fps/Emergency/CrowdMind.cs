@@ -372,12 +372,12 @@ namespace ChooGuard.App.Fps.Emergency
                     answers?.TryGetValue(item.Key, out answer);
                     if (item.Kind == Kind.Routine)
                     {
-                        if (answer != null) item.Answer = Sample(answer, crowd.World.Random);
+                        if (answer != null) item.Answer = answer.Draw(crowd.World.Random);
                         continue;
                     }
                     if (item.Kind == Kind.Route)
                     {
-                        if (answer != null) item.Who.SetRoute(Sample(answer, crowd.World.Random));
+                        if (answer != null) item.Who.SetRoute(answer.Draw(crowd.World.Random));
                         item.Done = true;
                         continue;
                     }
@@ -395,7 +395,7 @@ namespace ChooGuard.App.Fps.Emergency
             string source;
             if (answer != null)
             {
-                string key = Sample(answer, world.Random);
+                string key = answer.Draw(world.Random);
                 foreach (var (option, _) in item.Options) if (option.Key == key) chosen = option;
                 source = "JEV";
                 AnsweredByJev++;
@@ -422,21 +422,6 @@ namespace ChooGuard.App.Fps.Emergency
             if (who == null || who.Hurt) return;
             if (who.Current == Passenger.Activity.Evacuate && chosen != Evacuate && chosen != Run && chosen != Comply && chosen != Follow) return;
             chosen.Run(who, item.Hazard, world);
-        }
-
-        private static string Sample(JevAnswer answer, System.Random random)
-        {
-            if (answer.Probabilities == null || answer.Probabilities.Count == 0) return answer.Choice;
-            float total = 0;
-            foreach (var pair in answer.Probabilities) total += Mathf.Max(0, pair.Value);
-            if (total <= 0) return answer.Choice;
-            float roll = (float)random.NextDouble() * total;
-            foreach (var pair in answer.Probabilities)
-            {
-                roll -= Mathf.Max(0, pair.Value);
-                if (roll <= 0) return pair.Key;
-            }
-            return answer.Choice;
         }
 
         // ── 핵심 순간 선택지와 지역 가중치 ────────────────────────────────────
@@ -469,7 +454,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             var p = item.Who;
             var h = item.Hazard;
-            float distance = h != null && h.NeedsSight ? Vector3.Distance(p.transform.position, h.Position) : 0;
+            float distance = h != null && h.Localized ? Vector3.Distance(p.transform.position, h.Position) : 0;
             bool near = distance < 7;
             bool seated = p.Body.Seat != PersonBody.SeatPhase.None;
             bool aboard = p.Current == Passenger.Activity.InTrain;
@@ -506,6 +491,45 @@ namespace ChooGuard.App.Fps.Emergency
                     list.Add((Watch, .2f));
                     list.Add((Continue, .15f));
                     break;
+                // 선로 위 사람: 뛰어내려 돕지 않는다. 소리쳐 알리고, 역무원을 부르고, 지켜본다.
+                case Kind.Notice when h is TrackFallHazard:
+                    list.Add((Alert, .35f));
+                    list.Add((Report, CanReport(h) ? .3f : 0));
+                    list.Add((Watch, .2f));
+                    list.Add((Film, .05f));
+                    list.Add((Continue, .05f));
+                    break;
+                case Kind.Notice when h is DisturbanceHazard:
+                    list.Add((MoveAway, .35f + (near ? .15f : 0)));
+                    list.Add((Run, .06f + (near ? .1f : 0)));
+                    list.Add((Watch, near ? .06f : .15f));
+                    list.Add((Film, near ? .03f : .08f));
+                    list.Add((Report, CanReport(h) ? .15f : 0));
+                    list.Add((Alert, .08f));
+                    list.Add((Continue, near ? .02f : .08f));
+                    break;
+                case Kind.Notice when h is GasLeakHazard || h is SuspiciousSubstanceHazard:
+                    list.Add((MoveAway, .35f));
+                    list.Add((Evacuate, .15f + (h.Irritates(p.transform.position) ? .2f : 0)));
+                    list.Add((Report, CanReport(h) ? .15f : 0));
+                    list.Add((Alert, .15f));
+                    list.Add((Watch, .05f));
+                    list.Add((Continue, .10f));
+                    break;
+                // 정전: 대개 그 자리에서 기다리거나 휴대전화 불빛으로 둘러보고, 일부는 천천히 밖으로 나간다.
+                case Kind.Notice when h is PowerOutageHazard:
+                    list.Add((Stay, .35f));
+                    list.Add((LookAround, .25f));
+                    list.Add((Continue, .2f));
+                    list.Add((Evacuate, .15f + (p.Instructed ? .2f : 0)));
+                    break;
+                case Kind.Notice when h is WaterLeakHazard || h is FallingObjectHazard:
+                    list.Add((MoveAway, .3f));
+                    list.Add((Watch, .2f));
+                    list.Add((Film, .1f));
+                    list.Add((Report, CanReport(h) ? .15f : 0));
+                    list.Add((Continue, .25f));
+                    break;
                 case Kind.Notice:
                     list.Add((Continue, .40f));
                     list.Add((Watch, .20f));
@@ -519,7 +543,7 @@ namespace ChooGuard.App.Fps.Emergency
                     list.Add((Continue, .20f));
                     break;
                 case Kind.Instruction:
-                    bool sees = h != null && h.NeedsSight && distance < h.NoticeRadius;
+                    bool sees = h != null && h.Localized && distance < h.NoticeRadius;
                     list.Add((Comply, (item.Flag ? .82f : .60f) + (sees ? .1f : 0)));
                     list.Add((Hesitate, item.Flag ? .14f : .25f));
                     list.Add((Ignore, item.Flag ? .04f : .15f));
@@ -557,12 +581,13 @@ namespace ChooGuard.App.Fps.Emergency
         private bool CanReport(Hazard hazard)
         {
             var player = crowd.Player;
-            if (player == null || hazard is EarthquakeHazard) return false;
+            // 역 전체가 함께 겪는 일(흔들림, 정전)은 알릴 거리가 아니다.
+            if (player == null || hazard is EarthquakeHazard || hazard is PowerOutageHazard) return false;
             // 이미 두 사람이 알리러 갔으면 다른 사람들은 누군가 알렸으리라 여긴다.
             int reporting = 0;
             foreach (var person in crowd.People) if (person.Current == Passenger.Activity.Report && person.Focus == hazard) reporting++;
             if (reporting >= 2) return false;
-            if (hazard == null || !hazard.NeedsSight) return true;
+            if (hazard == null || !hazard.Localized) return true;
             return !(crowd.Session.Incidents.PlayerKnowsIncident && Vector3.Distance(player.transform.position, hazard.Position) < 15);
         }
 
@@ -603,7 +628,8 @@ namespace ChooGuard.App.Fps.Emergency
             switch (item.Kind)
             {
                 case Kind.Notice:
-                    text.Append("They now see: '").Append(h.Visible).Append("' about ").Append(Mathf.RoundToInt(Vector3.Distance(p.transform.position, h.Position))).Append(" m away, at ").Append(h.Where).Append(". ");
+                    if (!h.Localized) { text.Append("Around them now: '").Append(h.Visible).Append("'. "); break; }
+                    text.Append(h.NeedsSight ? "They now see: '" : "They now hear or smell: '").Append(h.Visible).Append("' about ").Append(Mathf.RoundToInt(Vector3.Distance(p.transform.position, h.Position))).Append(" m away, at ").Append(h.Where).Append(". ");
                     break;
                 case Kind.Indirect:
                     text.Append("They cannot see the cause but ").Append(p.Cue ?? "people nearby are reacting").Append(" (").Append(crowd.CountNear(p.transform.position, 10, Passenger.Activity.Evacuate)).Append(" leaving within 10 m). ");

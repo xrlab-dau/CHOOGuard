@@ -29,10 +29,14 @@ namespace ChooGuard.App.Fps.Emergency
         public int ExtinguishersUsed { get; private set; }
         public int JevDecisions { get; private set; }
         public int LocalDecisions { get; private set; }
-        /// <summary>Every composition round's outcome (transition, magnitude, who decided). Saved, not shown on the end screen.</summary>
+        /// <summary>
+        /// Every composition round JEV decided (transition, magnitude, the probability it had). Saved, not shown on the end
+        /// screen. Nothing is composed without JEV: rounds it did not answer are only counted (<see cref="DeferredRounds"/>).
+        /// </summary>
         public readonly JArray Compositions = new JArray();
         public int JevCompositions { get; private set; }
-        public int LocalCompositions { get; private set; }
+        /// <summary>Composition rounds put off because JEV did not answer (asked again a few seconds later).</summary>
+        public int DeferredRounds { get; private set; }
 
         private readonly EmergencySession session;
         private readonly HashSet<Extinguisher> used = new HashSet<Extinguisher>();
@@ -45,11 +49,13 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Adds the fact only the first time <paramref name="key"/> is seen.</summary>
         public void Once(string key, string text) { if (once.Add(key)) Add(text); }
 
-        public void Composed(string kind, string key, float magnitude, bool byJev, string detail)
+        public void Composed(string kind, string key, float magnitude, int candidates, string detail)
         {
-            Compositions.Add(new JObject { ["t"] = Math.Round(session.ShiftSeconds, 1), ["kind"] = kind, ["key"] = key, ["magnitude"] = Math.Round(magnitude, 2), ["by"] = byJev ? "jev" : "local", ["detail"] = detail });
-            if (byJev) JevCompositions++; else LocalCompositions++;
+            Compositions.Add(new JObject { ["t"] = Math.Round(session.ShiftSeconds, 1), ["kind"] = kind, ["key"] = key, ["magnitude"] = Math.Round(magnitude, 2), ["candidates"] = candidates, ["by"] = "jev", ["detail"] = detail });
+            JevCompositions++;
         }
+
+        public void Deferred() => DeferredRounds++;
 
         public void Decision(Passenger who, string kind, string choice, string source)
         {
@@ -102,6 +108,7 @@ namespace ChooGuard.App.Fps.Emergency
                     ["left_normally"] = crowd.LeftNormally, ["injured"] = crowd.Injured.Count,
                 },
                 ["decisions"] = new JObject { ["jev"] = JevDecisions, ["local"] = LocalDecisions, ["choices"] = JObject.FromObject(Choices) },
+                ["deferred_rounds"] = DeferredRounds,
                 ["compositions"] = Compositions,
                 ["jev"] = new JObject
                 {
@@ -167,8 +174,8 @@ namespace ChooGuard.App.Fps.Emergency
                 "역 안에 남은 승객  " + crowd.InStation + "명\n" +
                 "부상  " + crowd.Injured.Count + "명\n" +
                 "소화 약제 분사  " + log.SprayedSeconds.ToString("0") + "초 (" + log.ExtinguishersUsed + "대)\n\n" +
-                "<color=#ffffff88>상황 전개 판단  JEV " + log.JevCompositions + " · 규칙 " + log.LocalCompositions + "\n" +
-                "승객 판단  JEV " + log.JevDecisions + " · 규칙 " + log.LocalDecisions + "\n" + session.Jev.Status + "</color>";
+                "<color=#ffffff88>상황 전개 판단  JEV " + log.JevCompositions + (log.DeferredRounds > 0 ? " · 응답 없어 미룸 " + log.DeferredRounds : "") + "\n" +
+                "승객 판단  JEV " + log.JevDecisions + " · 지연 시 규칙 " + log.LocalDecisions + "\n" + session.Jev.Status + "</color>";
 
             FpsUiFactory.Button(panel, font, "다시 근무", new Vector2(0, 0), new Vector2(0, 0), new Vector2(300, 56), () => SceneFlow.StartShift(font, null), 24);
             FpsUiFactory.Button(panel, font, "타이틀로", new Vector2(0, 0), new Vector2(320, 0), new Vector2(300, 56), SceneFlow.ToTitle, 24);

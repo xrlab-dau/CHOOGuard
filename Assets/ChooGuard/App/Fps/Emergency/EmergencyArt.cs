@@ -34,6 +34,21 @@ namespace ChooGuard.App.Fps.Emergency
         public GameObject SuitcaseModel;
         public GameObject HandbagModel;
         public GameObject MedicalBagModel;
+        [Header("출동 장비(Objaverse·Sketchfab CC BY, ThirdParty/Models/Objaverse)")]
+        public GameObject NozzleModel;
+        public GameObject CotModel;
+        public GameObject ToolboxModel;
+        public GameObject FlashlightModel;
+        public GameObject WetFloorSignModel;
+        public GameObject EodRobotModel;
+        public GameObject TrafficConeModel;
+        [Tooltip("소방 호스(방수포 천): 바닥에 깔리는 선.")]
+        public Material HoseMaterial;
+        [Header("출동 차량(경광등 포함 프리팹: 소방 펌프차, 구급차, 순찰차, 경찰특공대 차량)")]
+        public GameObject FireEngine;
+        public GameObject Ambulance;
+        public GameObject PoliceCar;
+        public GameObject SwatVan;
         [Header("지진 때 떨어질 수 있는 매달린 안내판")]
         public HangingItem[] Hanging = Array.Empty<HangingItem>();
         [Header("소리(녹음, ThirdParty/Audio/Station)")]

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
@@ -27,16 +28,48 @@ namespace ChooGuard.App.Fps.Emergency
     public sealed class JevAnswer
     {
         public string Choice;
-        /// <summary>Score questions: the level index JEV chose (0 = lowest).</summary>
+        /// <summary>Score questions: JEV's expected level (0 = lowest).</summary>
         public float Score;
         public float Confidence;
+        /// <summary>Choice: probability per option key. Score: probability per level index ("0", "1", …).</summary>
         public Dictionary<string, float> Probabilities;
+
+        /// <summary>
+        /// One option drawn from JEV's probabilities, so what JEV judges plausible happens in proportion rather than its
+        /// top pick every time. Falls back to the top pick when JEV gave no distribution.
+        /// </summary>
+        public string Draw(System.Random random)
+        {
+            if (Probabilities == null || Probabilities.Count == 0) return Choice;
+            float total = 0;
+            foreach (var pair in Probabilities) total += Mathf.Max(0, pair.Value);
+            if (total <= 0) return Choice;
+            float roll = (float)random.NextDouble() * total;
+            string last = Choice;
+            foreach (var pair in Probabilities)
+            {
+                if (pair.Value <= 0) continue;
+                last = pair.Key;
+                roll -= pair.Value;
+                if (roll <= 0) return pair.Key;
+            }
+            return last;
+        }
+
+        /// <summary>One level (0 = lowest) drawn from JEV's per-level probabilities; the rounded score when it gave none.</summary>
+        public int DrawLevel(System.Random random, int levels)
+        {
+            var drawn = Probabilities != null && Probabilities.Count > 0 ? Draw(random) : null;
+            int level = drawn != null && int.TryParse(drawn, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsed) ? parsed : Mathf.RoundToInt(Score);
+            return Mathf.Clamp(level, 0, Mathf.Max(0, levels - 1));
+        }
     }
 
     /// <summary>
     /// Direct TypeSafe System One client (POST /v1/systemone) with explicit budgets. JEV only ranks candidates the game
-    /// built; control flow and world writes stay in code. When unreachable, callers fall back to deterministic rules.
-    /// The key is read from TYPESAFE_API_KEY or ~/.chooguard/typesafe.key and is never logged or written.
+    /// built; control flow and world writes stay in code. The key comes from <see cref="JevKey"/> (this machine's user)
+    /// and is never logged or written by the client. Composition requests are critical: crowd batches leave them one
+    /// in-flight slot and part of the per-minute budget.
     /// </summary>
     public sealed class JevClient
     {
@@ -45,12 +78,19 @@ namespace ChooGuard.App.Fps.Emergency
         public int MaxRequestsPerRun = 1500;
         public int MaxRequestsPerMinute = 90;
         public int MaxInFlight = 3;
+        /// <summary>Per-minute requests kept free of crowd batches for composition.</summary>
+        public int ReservedPerMinute = 12;
         public float TimeoutSeconds = 8f;
 
+        public JevKeySource Source { get; }
         public bool Available => key != null && !disabled;
+        /// <summary>The server refused the key (401/403): it stays off for this shift.</summary>
+        public bool Rejected => disabled;
         public string Status { get; private set; }
         public int Requests { get; private set; }
         public int Failures { get; private set; }
+        /// <summary>Failed requests since the last answer (0 while JEV answers).</summary>
+        public int FailuresInARow { get; private set; }
         public long InputTokens { get; private set; }
         public long OutputTokens { get; private set; }
         public string LastModel { get; private set; } = "";
@@ -63,42 +103,35 @@ namespace ChooGuard.App.Fps.Emergency
 
         public JevClient(string runLogPath)
         {
-            key = LoadKey();
+            key = JevKey.Load(out var source);
+            Source = source;
             logPath = runLogPath;
-            Status = key == null ? "JEV 키 없음 · 로컬 규칙으로 진행" : "JEV 연결 준비";
+            Status = source == JevKeySource.Off ? "JEV 꺼짐(TYPESAFE_API_KEY=off) · 비상상황을 만들지 않음" :
+                key == null ? "JEV 키 없음 · 비상상황을 만들 수 없음" :
+                JevKey.KnownFor(key) == JevKeyCheck.Rejected ? "JEV 키 거부 · 타이틀의 JEV 연결에서 다시 입력" : "JEV 연결 준비";
+            if (key != null && JevKey.KnownFor(key) == JevKeyCheck.Rejected) disabled = true;
         }
 
-        private static string LoadKey()
+        /// <summary>
+        /// True when a request may be sent now under the per-minute, per-run and in-flight caps. Non-critical (crowd)
+        /// requests leave one in-flight slot and <see cref="ReservedPerMinute"/> of the minute to critical ones.
+        /// </summary>
+        public bool CanSend(bool critical = false)
         {
-            var fromEnvironment = Environment.GetEnvironmentVariable("TYPESAFE_API_KEY");
-            if (!string.IsNullOrWhiteSpace(fromEnvironment)) return Valid(fromEnvironment.Trim());
-            try
-            {
-                var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".chooguard", "typesafe.key");
-                if (File.Exists(file)) return Valid(File.ReadAllText(file).Trim());
-            }
-            catch (Exception) { }
-            return null;
-        }
-
-        private static string Valid(string value) => value.Length >= 20 && value.IndexOfAny(new[] { '\r', '\n', ' ' }) < 0 ? value : null;
-
-        /// <summary>True when a request may be sent now under the per-minute, per-run and in-flight caps.</summary>
-        public bool CanSend()
-        {
-            if (!Available || inFlight >= MaxInFlight || Requests >= MaxRequestsPerRun) return false;
+            if (!Available || Requests >= MaxRequestsPerRun) return false;
+            if (inFlight >= (critical ? MaxInFlight : MaxInFlight - 1)) return false;
             float now = Time.realtimeSinceStartup;
             while (recent.Count > 0 && now - recent.Peek() > 60f) recent.Dequeue();
-            return recent.Count < MaxRequestsPerMinute;
+            return recent.Count < (critical ? MaxRequestsPerMinute : MaxRequestsPerMinute - ReservedPerMinute);
         }
 
         /// <summary>
         /// Sends one request holding several independent questions over the same state. The callback always runs on
         /// the main thread; answers is null when the request failed, timed out or was refused by the caps.
         /// </summary>
-        public IEnumerator Ask(string purpose, object state, IReadOnlyList<JevChoice> questions, Action<Dictionary<string, JevAnswer>> done)
+        public IEnumerator Ask(string purpose, object state, IReadOnlyList<JevChoice> questions, Action<Dictionary<string, JevAnswer>> done, bool critical = false)
         {
-            if (!CanSend() || questions.Count == 0) { done(null); yield break; }
+            if (!CanSend(critical) || questions.Count == 0) { done(null); yield break; }
             inFlight++;
             Requests++;
             recent.Enqueue(Time.realtimeSinceStartup);
@@ -132,14 +165,21 @@ namespace ChooGuard.App.Fps.Emergency
                     try { answers = Parse(request.downloadHandler.text, questions); }
                     catch (Exception) { answers = null; }
                 }
+                bool refused = request.responseCode == 401 || request.responseCode == 403;
                 if (answers == null)
                 {
                     Failures++;
-                    Status = request.responseCode == 401 || request.responseCode == 403 ? "JEV 인증 거부 · 로컬 규칙으로 진행" :
-                        request.responseCode == 429 ? "JEV 요청 한도 · 잠시 로컬 규칙" : "JEV 응답 없음 · 로컬 규칙";
-                    if (request.responseCode == 401 || request.responseCode == 403) disabled = true;
+                    FailuresInARow++;
+                    Status = refused ? "JEV 키 거부 · 타이틀의 JEV 연결에서 다시 입력" :
+                        request.responseCode == 429 ? "JEV 요청 한도 · 잠시 뒤 다시 물음" : "JEV 응답 없음 · 다시 묻는 중";
+                    if (refused) { disabled = true; JevKey.Observed(key, JevKeyCheck.Rejected); }
                 }
-                else Status = "JEV 연결됨 · " + LastModel;
+                else
+                {
+                    FailuresInARow = 0;
+                    Status = "JEV 연결됨 · " + LastModel;
+                    JevKey.Observed(key, JevKeyCheck.Accepted);
+                }
                 Log(purpose, payload, answers, request.responseCode, Time.realtimeSinceStartup - started);
             }
             done(answers);
@@ -157,19 +197,26 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var question in questions)
             {
                 var answer = answersToken[question.Id] as JObject;
+                if (answer == null) continue;
+                var probabilities = new Dictionary<string, float>();
                 if (question.IsScore)
                 {
-                    var score = (float?)answer?["score"];
+                    var score = (float?)answer["score"];
                     // 척도 밖의 값은 받아들이지 않는다.
                     if (score == null || score < 0 || score > question.Levels.Count - 1) continue;
-                    result[question.Id] = new JevAnswer { Score = score.Value, Confidence = (float?)answer["confidence"] ?? 0 };
+                    if (answer["probabilities"] is JObject levels)
+                        foreach (var pair in levels)
+                            if (int.TryParse(pair.Key, NumberStyles.Integer, CultureInfo.InvariantCulture, out int level) && level >= 0 && level < question.Levels.Count)
+                                probabilities[pair.Key] = (float?)pair.Value ?? 0;
+                    result[question.Id] = new JevAnswer { Score = score.Value, Confidence = (float?)answer["confidence"] ?? 0, Probabilities = probabilities };
                     continue;
                 }
-                var choice = (string)answer?["choice"];
+                var choice = (string)answer["choice"];
                 // 후보 밖의 답은 받아들이지 않는다. 게임이 만든 후보만 실행된다.
                 if (choice == null || !question.Criteria.ContainsKey(choice)) continue;
-                var probabilities = new Dictionary<string, float>();
-                if (answer["probabilities"] is JObject p) foreach (var pair in p) probabilities[pair.Key] = (float?)pair.Value ?? 0;
+                if (answer["probabilities"] is JObject p)
+                    foreach (var pair in p)
+                        if (question.Criteria.ContainsKey(pair.Key)) probabilities[pair.Key] = (float?)pair.Value ?? 0;
                 result[question.Id] = new JevAnswer { Choice = choice, Confidence = (float?)answer["confidence"] ?? 0, Probabilities = probabilities };
             }
             return result;
