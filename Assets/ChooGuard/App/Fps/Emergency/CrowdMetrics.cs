@@ -44,8 +44,8 @@ namespace ChooGuard.App.Fps.Emergency
             startedReal = Time.realtimeSinceStartup;
         }
 
-        /// <summary>Seconds of real time since the crowd started judging.</summary>
-        public float Elapsed => Time.realtimeSinceStartup - startedReal;
+        /// <summary>Seconds of real time the crowd has been judging, as of the last frame (the clock restarts when play mode ends, so it is not read later).</summary>
+        public float Elapsed { get; private set; }
 
         public void Reaction(float game, float real, float roundTrip)
         {
@@ -56,6 +56,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void Tick(float milliseconds)
         {
+            Elapsed = Time.realtimeSinceStartup - startedReal;
             if (TickMs.Count < 30000) TickMs.Add(milliseconds);
         }
 

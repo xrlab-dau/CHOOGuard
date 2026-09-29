@@ -17,6 +17,11 @@ namespace ChooGuard.App.Fps.Emergency
         public int Target = 110;
         /// <summary>People who ride each arriving set in (JEV 007: about 110 in the station plus the train).</summary>
         public int RidersPerTrain = 38;
+        [Header("실시간 판단")]
+        [Tooltip("사건 근처에 있는 승객을 JEV 가 다시 판단하는 주기(초). 역 전체가 겪는 일(정전 등)은 이 값의 세 배.")]
+        public float JudgePeriodSeconds = 4f;
+        [Tooltip("이 거리(m, 같은 층) 안에서 알고 있는 사건은 '근처'로 본다.")]
+        public float JudgeNearMeters = 30f;
 
         public EmergencySession Session { get; private set; }
         public StationWorld World { get; private set; }

@@ -22,11 +22,11 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Why a judgement is needed, most urgent first (the value is the priority).</summary>
         public enum Trigger { Quake, AfterQuake, Instruction, Notice, Changed, Blocked, Cue, Ended, Periodic, Routine, Route }
 
-        /// <summary>Seconds between judgements of a person near an active incident.</summary>
-        public float PeriodicSeconds = 4f;
-        /// <summary>A person within this many metres (same storey) of a localized incident they know of counts as near it.</summary>
-        public float NearMeters = 30f;
-        public int UrgentBatch = 8;
+        // 사건 근처 재판단 주기·거리는 CrowdDirector 에서 조정한다(인스펙터).
+        private float PeriodicSeconds => crowd.JudgePeriodSeconds;
+        private float NearMeters => crowd.JudgeNearMeters;
+        /// <summary>Emergency questions per request: one bell or announcement reaches everyone at once, and a request holds about a dozen questions in the time of one.</summary>
+        public int UrgentBatch = 12;
         public int RoutineBatch = 12;
         /// <summary>Requests started per frame at most (building a request is not free).</summary>
         public int SendsPerFrame = 3;
@@ -123,6 +123,8 @@ namespace ChooGuard.App.Fps.Emergency
             catch (Exception) { }
             Metrics = new CrowdMetrics(path);
             InitRoutine();
+            // 근무 첫 요청 프레임에 Tick 이 한 번 133 ms 걸렸다(측정). 첫 JSON 직렬화의 리플렉션 준비로 보여, 적재 중에 한 번 미리 돌린다.
+            Newtonsoft.Json.Linq.JToken.FromObject(new Dictionary<string, object> { ["warm"] = new List<object> { new { what = "x", where = "y" } } }).ToString(Newtonsoft.Json.Formatting.None);
         }
 
         // ── 관측이 바뀌었을 때 ─────────────────────────────────────────────────
