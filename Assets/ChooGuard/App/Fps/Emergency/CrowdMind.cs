@@ -349,6 +349,8 @@ namespace ChooGuard.App.Fps.Emergency
                 var slot = person.Slot;
                 var activity = person.Current;
                 bool moves = activity == Passenger.Activity.Walk || activity == Passenger.Activity.MoveAway || activity == Passenger.Activity.Evacuate || activity == Passenger.Activity.Leave;
+                // 출구 문 앞에 닿은 사람은 역무원 눈에 띄지 않게 될 때까지 서 있는 것이 원래 규칙이다(Passenger.Update): 굳은 것이 아니다.
+                if ((activity == Passenger.Activity.Evacuate || activity == Passenger.Activity.Leave) && (person.Body.Goal - person.transform.position).sqrMagnitude < 9f) moves = false;
                 float pending = 0;
                 if (slot.WaitingSince >= 0 && person.Holding) pending = now - slot.WaitingSince;
                 if (slot.Urgent != null && !slot.Urgent.Done) pending = Mathf.Max(pending, now - slot.Urgent.Raised);
@@ -383,7 +385,8 @@ namespace ChooGuard.App.Fps.Emergency
             Metrics.Record(new Newtonsoft.Json.Linq.JObject
             {
                 ["frozen"] = kind, ["passenger"] = person.Number, ["activity"] = person.Current.ToString(), ["seconds"] = System.Math.Round(seconds, 1),
-                ["at"] = person.Doing, ["trace"] = new Newtonsoft.Json.Linq.JArray(person.Slot.Trace),
+                ["at"] = person.Doing, ["to_goal_m"] = System.Math.Round(Vector3.Distance(person.Body.Goal, person.transform.position), 1),
+                ["seen_by_staff"] = PlayerView.Sees(person.transform.position, 45), ["trace"] = new Newtonsoft.Json.Linq.JArray(person.Slot.Trace),
             });
         }
 

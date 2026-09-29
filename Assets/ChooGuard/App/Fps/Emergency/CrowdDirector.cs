@@ -353,11 +353,30 @@ namespace ChooGuard.App.Fps.Emergency
                 var d = person.transform.position - position;
                 if (Mathf.Abs(d.y) > 3 || d.sqrMagnitude > 25) continue;
                 var danger = hazard != null && hazard.Localized ? hazard.Position : (Vector3?)null;
-                person.Instruct(World.SafeExit(person.transform.position, danger, hazard != null ? hazard.Clearance : 0), true);
+                person.Instruct(SafeExitFor(person.transform.position, danger, hazard != null ? hazard.Clearance : 0), true);
                 told++;
             }
             Session.Log.AddGuided(told);
             return told;
+        }
+
+        private readonly Dictionary<(int, int, int, int, int, int, int), (StationPoints.Point exit, float until)> safeExits = new Dictionary<(int, int, int, int, int, int, int), (StationPoints.Point, float)>();
+
+        /// <summary>
+        /// <see cref="StationWorld.SafeExit"/> (four navmesh path queries) shared by people standing within a few metres of each
+        /// other: one answer per 6 m cell, per danger spot and per excluded exit, kept for 8 s. A whole hall told to leave at
+        /// once used to run hundreds of path queries in one frame.
+        /// </summary>
+        public StationPoints.Point SafeExitFor(Vector3 from, Vector3? avoid, float clearance, StationPoints.Point except = null)
+        {
+            var key = (Mathf.RoundToInt(from.x / 6f), Mathf.RoundToInt(from.y / 3f), Mathf.RoundToInt(from.z / 6f),
+                avoid.HasValue ? Mathf.RoundToInt(avoid.Value.x / 3f) : int.MinValue, avoid.HasValue ? Mathf.RoundToInt(avoid.Value.z / 3f) : 0,
+                Mathf.RoundToInt(clearance), except != null ? except.Id.GetHashCode() : 0);
+            if (safeExits.TryGetValue(key, out var hit) && hit.until > Time.time) return hit.exit;
+            if (safeExits.Count > 400) safeExits.Clear();
+            var exit = World.SafeExit(from, avoid, clearance, except);
+            safeExits[key] = (exit, Time.time + 8f);
+            return exit;
         }
 
         /// <summary>Public announcement: everyone within earshot (the whole station, or near <paramref name="zone"/>) is asked to leave.</summary>
@@ -370,7 +389,7 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 if (person.Current == Passenger.Activity.Evacuate || person.Hurt) continue;
                 if (zone.HasValue && Vector3.Distance(person.transform.position, zone.Value) > radius) continue;
-                person.Instruct(World.SafeExit(person.transform.position, danger, hazard != null ? hazard.Clearance : 0), false);
+                person.Instruct(SafeExitFor(person.transform.position, danger, hazard != null ? hazard.Clearance : 0), false);
                 heard++;
             }
             if (stopArrivals) Arrivals = false;

@@ -230,7 +230,7 @@ namespace ChooGuard.App.Fps.Emergency
         public void Reroute()
         {
             var danger = Focus != null && Focus.Localized ? Focus.Position : (Vector3?)null;
-            exit = World.SafeExit(transform.position, danger, Focus != null ? Focus.Clearance : 0, exit);
+            exit = Crowd.SafeExitFor(transform.position, danger, Focus != null ? Focus.Clearance : 0, exit);
             blockedRaised = false;
             Current = Activity.Evacuate;
             Travel(exit.Position, running ? World.Range(2.6f, 3.4f) : walkSpeed * 1.35f);
@@ -876,7 +876,7 @@ namespace ChooGuard.App.Fps.Emergency
             Current = Activity.Evacuate;
             blockedRaised = false;
             var danger = Focus != null && Focus.Localized ? Focus.Position : (Vector3?)null;
-            if (exit == null || !Instructed || exit.Kind != PointKind.Exit) exit = World.SafeExit(transform.position, danger, Focus != null ? Focus.Clearance : 0);
+            if (exit == null || !Instructed || exit.Kind != PointKind.Exit) exit = Crowd.SafeExitFor(transform.position, danger, Focus != null ? Focus.Clearance : 0);
             Travel(exit.Position, running ? World.Range(2.6f, 3.4f) : walkSpeed * 1.35f);
             // 뛰는 사람은 주변을 놀라게 한다. 조용히 걸어 나가는 사람은 눈에 잘 띄지 않는다.
             if (running) Crowd.Alert(transform.position, 7f, Focus, this, "people nearby are running toward the exits");
