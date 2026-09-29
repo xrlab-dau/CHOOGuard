@@ -143,6 +143,34 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Old two-lane form (critical = urgent crowd lane, otherwise routine); it goes once the crowd uses lanes directly.</summary>
         public bool CanSend(bool critical = false) => CanSend(critical ? JevLane.CrowdUrgent : JevLane.CrowdRoutine);
 
+        /// <summary>
+        /// Warms the first request up while the shift loads: serialises one representative payload (Newtonsoft's reflection and
+        /// JIT, which cost the first request of a new shape ~20 ms on the main thread) and makes one cheap authenticated call
+        /// (GET /v1/models, no model run) so DNS, TLS and the connection are ready before the first burst of requests.
+        /// </summary>
+        public IEnumerator Warm()
+        {
+            if (!Available) yield break;
+            var sample = new JObject
+            {
+                ["model"] = Model,
+                ["state"] = JToken.FromObject(new { place = "warm-up", people = new List<object> { new { what = "x", where = "y", now = true } }, tags = new[] { "a", "b" }, counts = new Dictionary<string, int> { ["a"] = 1 }, korean = "부산역" }),
+                ["questions"] = new JObject
+                {
+                    ["score"] = new JObject { ["type"] = "score", ["instructions"] = "x", ["criteria"] = new JArray("a", "b") },
+                    ["choice"] = new JObject { ["type"] = "choice", ["instructions"] = "x", ["criteria"] = new JObject { ["a"] = "x" } },
+                },
+            };
+            Encoding.UTF8.GetBytes(sample.ToString(Formatting.None));
+            using (var request = UnityWebRequest.Get(JevKey.ModelsEndpoint))
+            {
+                request.SetRequestHeader("Authorization", "Bearer " + key);
+                request.SetRequestHeader("Accept", "application/json");
+                request.timeout = JevKey.TimeoutSeconds;
+                yield return request.SendWebRequest();
+            }
+        }
+
         /// <summary>Old two-lane form of <see cref="Ask(string, object, IReadOnlyList{JevChoice}, Action{Dictionary{string, JevAnswer}}, JevLane)"/>.</summary>
         public IEnumerator Ask(string purpose, object state, IReadOnlyList<JevChoice> questions, Action<Dictionary<string, JevAnswer>> done, bool critical = false) =>
             Ask(purpose, state, questions, done, critical ? JevLane.CrowdUrgent : JevLane.CrowdRoutine);
