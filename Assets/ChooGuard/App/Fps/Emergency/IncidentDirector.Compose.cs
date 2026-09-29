@@ -386,7 +386,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             string detail = "JEV 수준 확률 " + string.Join("/", System.Array.ConvertAll(levelsUsed, p => p.ToString("0.00"))) + (chosen.Rated ? "" : " (같은 종류 후보의 판단)") + " · 초당 " + rate.ToString("0.#####") + " / 후보 " + candidates.Count + "개";
             var fresh = Fresh(chosen.Key);
-            if (fresh == null) { log.Director.Vanish(); return; }
+            if (fresh == null) { log.Director.Vanish(chosen.Key, chosen.Scale != ImminenceScale.Development, false); return; }
             if (fresh.Levels == null) { Execute(fresh, .5f, candidates.Count, detail); return; }
             applying = true;
             var question = new JevChoice
@@ -404,7 +404,7 @@ namespace ChooGuard.App.Fps.Emergency
                 if (answers == null || !answers.TryGetValue("magnitude", out var answer)) { log.Director.Round(false); NoticeSilence(); return; }
                 // 답이 오는 사이 세계가 바뀌었을 수 있다: 그 사람·물건이 아직 후보일 때만 일어난다.
                 var again = Fresh(chosen.Key);
-                if (again == null) { log.Director.Vanish(); return; }
+                if (again == null) { log.Director.Vanish(chosen.Key, chosen.Scale != ImminenceScale.Development, true); return; }
                 int levels = question.Levels.Count, level = answer.DrawLevel(drawRandom, levels);
                 float magnitude = levels > 1 ? level / (float)(levels - 1) : .5f;
                 Execute(again, magnitude, candidates.Count, detail + " · 크기 " + (level + 1) + "/" + levels);

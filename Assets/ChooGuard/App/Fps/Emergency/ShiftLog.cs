@@ -190,6 +190,7 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<float> requestMs = new List<float>();
         private readonly List<float> totalMs = new List<float>();
         private readonly List<float> sliceMs = new List<float>();
+        private readonly JArray vanished = new JArray();
         private float firstNewEmergency = -1;
 
         public DirectorRecord(EmergencySession owner) { session = owner; }
@@ -205,7 +206,12 @@ namespace ChooGuard.App.Fps.Emergency
             Judged++;
         }
 
-        public void Vanish() => Vanished++;
+        /// <summary>A draw that did not happen because its subject was gone (<paramref name="afterMagnitude"/>: JEV's answer for the strength arrived after the subject had changed).</summary>
+        public void Vanish(string key, bool origin, bool afterMagnitude)
+        {
+            Vanished++;
+            vanished.Add(new JObject { ["t"] = Math.Round(session.ShiftSeconds, 1), ["key"] = key, ["origin"] = origin, ["stage"] = afterMagnitude ? "after_magnitude" : "at_draw" });
+        }
 
         public void NewEmergency() { if (firstNewEmergency < 0) firstNewEmergency = session.ShiftSeconds; }
 
@@ -237,7 +243,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             return new JObject
             {
-                ["rate_scale"] = RateScale, ["rounds"] = Rounds, ["unanswered_rounds"] = Unanswered, ["rated_candidates"] = Judged, ["vanished_draws"] = Vanished,
+                ["rate_scale"] = RateScale, ["rounds"] = Rounds, ["unanswered_rounds"] = Unanswered, ["rated_candidates"] = Judged, ["vanished_draws"] = Vanished, ["vanished"] = vanished,
                 ["events"] = events, ["new_emergencies"] = newEmergencies, ["first_new_emergency_at"] = firstNewEmergency < 0 ? null : (JToken)Math.Round(firstNewEmergency, 1),
                 ["levels"] = new JObject { ["calm_origin"] = Counts(0), ["incident_origin"] = Counts(1), ["development"] = Counts(2) },
                 ["heartbeat_ms"] = new JObject { ["heartbeats"] = totalMs.Count, ["requests_built"] = requestMs.Count, ["frame_slices"] = sliceMs.Count, ["per_frame"] = Percentiles(sliceMs), ["enumeration"] = Percentiles(enumerationMs), ["request"] = Percentiles(requestMs), ["total"] = Percentiles(totalMs) },
