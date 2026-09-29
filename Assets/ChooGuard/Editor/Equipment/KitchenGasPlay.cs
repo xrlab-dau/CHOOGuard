@@ -306,6 +306,7 @@ namespace ChooGuard.Editor
                 yield return Stand(centre, forward, 3.2f);
                 yield return Sleep(1.5f);
                 yield return Shot(label + "_2line");
+                yield return MeasureKitchen(label, parts);
                 var meter = parts.FirstOrDefault(e => e.Kind == "gas_meter");
                 if (meter != null)
                 {
@@ -323,6 +324,32 @@ namespace ChooGuard.Editor
             }
             current["result"] = "done";
             Close();
+        }
+
+        /// <summary>
+        /// What the kitchen costs at the view the player has of it: the same view sampled with the shop's kitchen parts on, off and on
+        /// again (the two "on" samples show the noise of the shared editor). Editor Game-view statistics and unscaled frame times.
+        /// </summary>
+        private static IEnumerator MeasureKitchen(string label, List<StationEquipment> parts)
+        {
+            var views = current["views"] as JArray ?? (JArray)(current["views"] = new JArray());
+            foreach (var state in new[] { "on", "off", "on again" })
+            {
+                bool on = state != "off";
+                foreach (var part in parts) part.gameObject.SetActive(on);
+                var sample = new JObject { ["shop"] = label, ["kitchenParts"] = state, ["parts"] = parts.Count };
+                yield return Sleep(3f);
+                var times = new List<float>();
+                for (int i = 0; i < 90; i++) { yield return null; times.Add(Time.unscaledDeltaTime * 1000f); }
+                times.Sort();
+                sample["frameMsMedian"] = Math.Round(times[times.Count / 2], 2);
+                sample["frameMsP95"] = Math.Round(times[(int)(times.Count * .95f)], 2);
+                sample["batches"] = UnityStats.batches;
+                sample["drawCalls"] = UnityStats.drawCalls;
+                sample["setPassCalls"] = UnityStats.setPassCalls;
+                sample["triangles"] = UnityStats.triangles;
+                views.Add(sample);
+            }
         }
 
         // ── 한 시나리오 ─────────────────────────────────────────────────────
