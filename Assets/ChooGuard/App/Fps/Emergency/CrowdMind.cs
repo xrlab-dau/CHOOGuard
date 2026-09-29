@@ -20,7 +20,7 @@ namespace ChooGuard.App.Fps.Emergency
     public sealed partial class CrowdMind
     {
         /// <summary>Why a judgement is needed, most urgent first (the value is the priority).</summary>
-        public enum Trigger { Quake, AfterQuake, Instruction, Notice, Changed, Blocked, Cue, Ended, Periodic, Routine, Route }
+        public enum Trigger { Quake, AfterQuake, Notice, Changed, Blocked, Instruction, Cue, Ended, Periodic, Routine, Route }
 
         // 사건 근처 재판단 주기·거리는 CrowdDirector 에서 조정한다(인스펙터).
         private float PeriodicSeconds => crowd.JudgePeriodSeconds;
@@ -277,8 +277,12 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var person in crowd.People)
             {
                 if (person == null) continue;
-                // 다음 걸음을 기다리며 하던 일을 잇는 시간(가장 긴 것을 잰다).
-                if (person.Slot.WaitingSince >= 0) Metrics.LongestWait = Mathf.Max(Metrics.LongestWait, now - person.Slot.WaitingSince);
+                // 다음 걸음을 기다리며 하던 일을 잇는 시간(가장 긴 것을 잰다). 다른 일(대피·지켜보기)이 이미 맡았으면 더는 기다리는 것이 아니다.
+                if (person.Slot.WaitingSince >= 0)
+                {
+                    if (person.Holding) Metrics.LongestWait = Mathf.Max(Metrics.LongestWait, now - person.Slot.WaitingSince);
+                    else person.Slot.WaitingSince = -1;
+                }
                 if (person.Hurt || person.Hostile) continue;
                 var focus = person.Focus;
                 if (focus == null || !focus.Active) continue;
@@ -346,8 +350,14 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (a.Urgent != b.Urgent) return a.Urgent ? -1 : 1;
             if (a.Trigger != b.Trigger) return a.Trigger < b.Trigger ? -1 : 1;
+            // 같은 계기면 위험에 가까운 사람부터: 예산이 모자랄 때 방송·종소리에도 불 곁 사람이 먼저 판단받는다.
+            float da = DistanceToHazard(a), db = DistanceToHazard(b);
+            if (da != db) return da < db ? -1 : 1;
             return a.Due.CompareTo(b.Due);
         }
+
+        private static float DistanceToHazard(Judgement item) =>
+            item.Hazard != null && item.Hazard.Localized && item.Who != null ? Vector3.Distance(item.Who.transform.position, item.Hazard.Position) : float.MaxValue;
 
         private static JevLane LaneOf(bool urgent) => urgent ? JevLane.CrowdUrgent : JevLane.CrowdRoutine;
 

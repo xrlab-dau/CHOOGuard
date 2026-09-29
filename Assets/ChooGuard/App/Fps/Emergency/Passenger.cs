@@ -175,6 +175,10 @@ namespace ChooGuard.App.Fps.Emergency
             Execute(choice);
         }
 
+        /// <summary>In an everyday activity that waits for the next step to be decided (standing, sitting, in a queue…).</summary>
+        public bool Holding =>
+            Current == Activity.Queue || Current == Activity.Browse || Current == Activity.Stand || Current == Activity.Sit || Current == Activity.Meet || Current == Activity.Toilet || Current == Activity.PlatformWait;
+
         /// <summary>Keeps doing what they were doing for a moment; a walk or ride that has ended leaves them standing where they are.</summary>
         private void Await()
         {
