@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ChooGuard.App.Fps.Equipment;
 using UnityEngine;
 
 namespace ChooGuard.App.Fps.Emergency
@@ -15,6 +16,9 @@ namespace ChooGuard.App.Fps.Emergency
     {
         private void BeginEquipment()
         {
+            // 설비를 먼저 놓는다: 그룹의 Begin 과 원인 목록은 레지스트리에서 실제로 있는 설비를 찾는다.
+            if (art.Equipment != null) EquipmentSpawner.Spawn(art.Equipment, transform);
+            else Debug.LogWarning("[IncidentDirector] EmergencyArt 에 설비 카탈로그가 없습니다. ChooGuard/Emergency/Equipment 메뉴로 설비 배치를 만드세요.");
             BeginFireSafety();
             BeginElectricPlaza();
             BeginKitchenGas();
@@ -25,6 +29,7 @@ namespace ChooGuard.App.Fps.Emergency
             EndFireSafety();
             EndElectricPlaza();
             EndKitchenGas();
+            EquipmentRegistry.Clear();
         }
 
         private void EquipmentTick(float dt)

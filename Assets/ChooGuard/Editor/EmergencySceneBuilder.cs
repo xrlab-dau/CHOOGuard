@@ -499,9 +499,10 @@ namespace ChooGuard.Editor
         /// <summary>
         /// A prop converted from an Objaverse GLB (asset-library/.../props/convert_glb.py and .../responder-assets/
         /// blender_convert.py: OBJ in metres, pivot at the bottom centre, real size; PBR maps as PNG with a sidecar JSON).
-        /// Each OBJ material is remapped to a URP Lit material built from those maps (<see cref="JsonMaterial"/>).
+        /// Each OBJ material is remapped to a URP Lit material built from those maps (<see cref="JsonMaterial"/>). Equipment
+        /// models are imported <paramref name="readable"/>: the shift combines their meshes into static batches at run time.
         /// </summary>
-        private static GameObject ObjaverseModel(string name)
+        public static GameObject ObjaverseModel(string name, bool readable = false)
         {
             string folder = ObjaverseRoot + "/" + name + "/", objPath = folder + name + ".obj";
             var info = JsonUtility.FromJson<ObjaverseInfo>(File.ReadAllText(folder + name + ".json"));
@@ -511,7 +512,7 @@ namespace ChooGuard.Editor
             importer.importCameras = false;
             importer.importLights = false;
             importer.materialImportMode = ModelImporterMaterialImportMode.ImportStandard;
-            importer.isReadable = false;
+            importer.isReadable = readable;
             foreach (var entry in info.materials)
                 importer.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material), entry.name), JsonMaterial(name, entry.name));
             importer.SaveAndReimport();
@@ -714,7 +715,7 @@ namespace ChooGuard.Editor
             return "천장 안내판";
         }
 
-        private static void EnsureFolder(string path)
+        public static void EnsureFolder(string path)
         {
             var parts = path.Split('/');
             var current = parts[0];
