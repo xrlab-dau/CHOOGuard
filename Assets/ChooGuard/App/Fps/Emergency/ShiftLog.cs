@@ -180,6 +180,8 @@ namespace ChooGuard.App.Fps.Emergency
         public int Judged { get; private set; }
         /// <summary>Draws whose subject was no longer eligible (or had changed) when they were applied: nothing happened.</summary>
         public int Vanished { get; private set; }
+        /// <summary>Multiplier on every hazard rate in this shift (1 in play; a calibration run sets it lower, see <see cref="IncidentDirector.RateScaleVariable"/>).</summary>
+        public float RateScale { get; set; } = 1f;
 
         private readonly EmergencySession session;
         private readonly int[,] levels = new int[3, Imminence.LevelCount];
@@ -227,7 +229,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             return new JObject
             {
-                ["rounds"] = Rounds, ["unanswered_rounds"] = Unanswered, ["rated_candidates"] = Judged, ["vanished_draws"] = Vanished,
+                ["rate_scale"] = RateScale, ["rounds"] = Rounds, ["unanswered_rounds"] = Unanswered, ["rated_candidates"] = Judged, ["vanished_draws"] = Vanished,
                 ["events"] = events, ["new_emergencies"] = newEmergencies, ["first_new_emergency_at"] = firstNewEmergency < 0 ? null : (JToken)Math.Round(firstNewEmergency, 1),
                 ["levels"] = new JObject { ["calm_origin"] = Counts(0), ["incident_origin"] = Counts(1), ["development"] = Counts(2) },
                 ["heartbeat_ms"] = new JObject { ["heartbeats"] = totalMs.Count, ["requests_built"] = requestMs.Count, ["enumeration"] = Percentiles(enumerationMs), ["request"] = Percentiles(requestMs), ["total"] = Percentiles(totalMs) },

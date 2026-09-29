@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -15,8 +16,10 @@ namespace ChooGuard.App.Fps.Emergency
     /// </summary>
     public sealed partial class IncidentDirector
     {
-        /// <summary>Multiplies every hazard rate: 1 in play. Calibration runs turn it down to record hazard trajectories without events.</summary>
-        public float RateScale = 1f;
+        /// <summary>Environment variable a calibration run sets to scale every hazard rate (see plan.md, 실시간 판단 디렉터): it records hazard trajectories with almost no events. Unset = 1.</summary>
+        public const string RateScaleVariable = "CHOOGUARD_RATE_SCALE";
+
+        private float rateScale = 1f;
 
         /// <summary>The first seconds of a shift are quiet (the KTX from Seoul comes in and people get off): no hazard is drawn against.</summary>
         private const float QuietSeconds = 30f;
@@ -32,6 +35,8 @@ namespace ChooGuard.App.Fps.Emergency
         /// the director spends a few tenths of a dollar per hour of play (measured in the shift record).
         /// </summary>
         private const float JudgmentLife = 12f;
+        /// <summary>A rating whose description drifted (a walking person's place changed) is renewed at most this often.</summary>
+        private const float RejudgeSeconds = 4f;
         /// <summary>A rating older than this (JEV silent or over budget) stops counting toward the hazard.</summary>
         private const float MaxJudgmentAge = 30f;
         /// <summary>The longest game time one draw covers: time nobody judged is not made up later.</summary>
@@ -49,15 +54,19 @@ namespace ChooGuard.App.Fps.Emergency
             public float Rate;
             public float JudgedAt = -1;
             public int JudgedState;
+            /// <summary>The description changed since the rating (a walking person's place): the rating still counts until the new one arrives.</summary>
+            public bool Stale;
             public bool Seen;
 
             public bool Rated => JudgedAt >= 0;
 
+            /// <summary>The candidate became a different kind of thing (its scale changed): the old rating means nothing.</summary>
             public void Forget()
             {
                 Levels = null;
                 Rate = 0;
                 JudgedAt = -1;
+                Stale = false;
             }
         }
 
@@ -68,13 +77,15 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly Stopwatch stopwatch = new Stopwatch();
         private System.Random drawRandom;
         private float nextBeat, nextWatch, integratedAt, lastEmergencyAt = -1;
-        private int watchHash, stateHash;
+        private int watchHash, stateHash, listedOrigins;
         private bool judging, applying;
 
         private void BeginCompose()
         {
             // 사건 추첨은 세계의 난수와 따로 굴린다: 판단이 몇 번 오갔는지가 승객·열차의 난수 흐름을 바꾸지 않는다.
             drawRandom = new System.Random(world.Seed ^ 0x0d1ce5);
+            if (float.TryParse(System.Environment.GetEnvironmentVariable(RateScaleVariable), NumberStyles.Float, CultureInfo.InvariantCulture, out float scale) && scale >= 0) rateScale = scale;
+            log.Director.RateScale = rateScale;
         }
 
         private void Compose()
@@ -139,7 +150,7 @@ namespace ChooGuard.App.Fps.Emergency
             return list;
         }
 
-        /// <summary>Brings the candidate set in line with the fresh list: new ones appear, ones whose text changed lose their rating, ones no longer possible go.</summary>
+        /// <summary>Brings the candidate set in line with the fresh list: new ones appear, ones whose text changed are marked for a new rating, ones no longer possible go.</summary>
         private void Reconcile(List<Transition> list)
         {
             foreach (var candidate in candidates.Values) candidate.Seen = false;
@@ -147,14 +158,20 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 var scale = !transition.Origin ? ImminenceScale.Development : Stage == Phase.Calm ? ImminenceScale.CalmOrigin : ImminenceScale.IncidentOrigin;
                 if (!candidates.TryGetValue(transition.Key, out var candidate)) candidates[transition.Key] = candidate = new Candidate { Key = transition.Key };
-                else if (candidate.Description != transition.Description || candidate.Scale != scale) candidate.Forget();
+                else if (candidate.Scale != scale) candidate.Forget();
+                else if (candidate.Description != transition.Description) candidate.Stale = true;
                 candidate.Transition = transition;
                 candidate.Description = transition.Description;
                 candidate.Scale = scale;
                 candidate.Seen = true;
             }
             gone.Clear();
-            foreach (var candidate in candidates.Values) if (!candidate.Seen) gone.Add(candidate);
+            listedOrigins = 0;
+            foreach (var candidate in candidates.Values)
+            {
+                if (!candidate.Seen) gone.Add(candidate);
+                else if (candidate.Scale != ImminenceScale.Development) listedOrigins++;
+            }
             foreach (var candidate in gone) candidates.Remove(candidate.Key);
         }
 
@@ -177,17 +194,21 @@ namespace ChooGuard.App.Fps.Emergency
             Integrate(now);
         }
 
+        /// <summary>The rating needs asking for: none yet, made under another situation, the description drifted (not too often) or it is older than <paramref name="life"/>.</summary>
+        private bool Due(Candidate candidate, float now, float life) =>
+            !candidate.Rated || candidate.JudgedState != stateHash || now - candidate.JudgedAt >= life || candidate.Stale && now - candidate.JudgedAt >= RejudgeSeconds;
+
         /// <summary>Asks JEV about every candidate that is new, changed, judged under another situation or old; false when nothing needed asking or JEV cannot be asked now.</summary>
         private bool SendDue(float now, Dictionary<string, object> focus)
         {
             bool needed = false;
             foreach (var candidate in candidates.Values)
-                if (!candidate.Rated || candidate.JudgedState != stateHash || now - candidate.JudgedAt >= JudgmentLife) { needed = true; break; }
+                if (Due(candidate, now, JudgmentLife)) { needed = true; break; }
             if (!needed || !jev.CanSend(JevLane.Director)) return false;
             // 하나라도 물어야 하면 곧 낡을 것도 함께 묻는다(요청 수를 줄인다). 오래 답을 못 받은 것부터.
             var batch = new List<Candidate>();
             foreach (var candidate in candidates.Values)
-                if (!candidate.Rated || candidate.JudgedState != stateHash || now - candidate.JudgedAt >= JudgmentLife * .5f) batch.Add(candidate);
+                if (Due(candidate, now, JudgmentLife * .5f)) batch.Add(candidate);
             batch.Sort((a, b) => a.JudgedAt.CompareTo(b.JudgedAt));
             if (batch.Count > MaxQuestions) batch.RemoveRange(MaxQuestions, batch.Count - MaxQuestions);
             var questions = new List<JevChoice>(batch.Count);
@@ -213,12 +234,13 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 var candidate = batch[i];
                 if (!answers.TryGetValue(candidate.Key, out var answer)) continue;
-                // 답이 오는 사이 그 후보가 사라졌거나 다른 이야기가 되었으면 그 답은 버린다.
-                if (candidate.Description != descriptions[i] || !candidates.TryGetValue(candidate.Key, out var live) || live != candidate) continue;
+                // 답이 오는 사이 그 후보가 사라졌으면 그 답은 버린다. 이야기가 조금 달라졌으면(사람이 걸어 자리가 바뀜) 답은 받고 다시 묻는다.
+                if (!candidates.TryGetValue(candidate.Key, out var live) || live != candidate) continue;
                 candidate.Levels = answer.LevelProbabilities(Imminence.LevelCount);
                 candidate.Rate = Imminence.Rate(candidate.Scale, candidate.Levels);
                 candidate.JudgedAt = askedAt;
                 candidate.JudgedState = askedState;
+                candidate.Stale = candidate.Description != descriptions[i];
                 log.Director.Rated(candidate.Scale, candidate.Levels);
             }
             // 판단하는 사이 상황이 또 바뀌었으면 바로 다시 판단한다.
@@ -246,40 +268,43 @@ namespace ChooGuard.App.Fps.Emergency
             integratedAt = now;
             rates.Clear();
             drawn.Clear();
-            float origin = 0, development = 0;
-            Candidate first = null, second = null, third = null;
+            float origin = 0, development = 0, share = Imminence.OriginShare(listedOrigins);
+            int first = -1, second = -1, third = -1;
             if (now >= QuietSeconds)
                 foreach (var candidate in candidates.Values)
                 {
-                    float rate = candidate.Rated && now - candidate.JudgedAt <= MaxJudgmentAge ? candidate.Rate * RateScale : 0;
+                    if (!candidate.Rated || now - candidate.JudgedAt > MaxJudgmentAge) continue;
+                    bool isOrigin = candidate.Scale != ImminenceScale.Development;
+                    float rate = candidate.Rate * rateScale * (isOrigin ? share : 1f);
                     if (rate <= 0) continue;
                     rates.Add(rate);
                     drawn.Add(candidate);
-                    if (candidate.Scale == ImminenceScale.Development) development += rate; else origin += rate;
-                    if (first == null || rate > first.Rate) { third = second; second = first; first = candidate; }
-                    else if (second == null || rate > second.Rate) { third = second; second = candidate; }
-                    else if (third == null || rate > third.Rate) third = candidate;
+                    if (isOrigin) origin += rate; else development += rate;
+                    int index = rates.Count - 1;
+                    if (first < 0 || rate > rates[first]) { third = second; second = first; first = index; }
+                    else if (second < 0 || rate > rates[second]) { third = second; second = index; }
+                    else if (third < 0 || rate > rates[third]) third = index;
                 }
             if (dt > 0 || now < QuietSeconds) log.Director.Trace(dt, origin, development, candidates.Count, rates.Count, Terms(first, second, third));
             if (applying || dt <= 0) return;
             int pick = CompetingRisks.Draw(rates, dt, drawRandom);
-            if (pick >= 0) Happen(drawn[pick]);
+            if (pick >= 0) Happen(drawn[pick], rates[pick]);
         }
 
-        private string Terms(params Candidate[] top)
+        /// <summary>The highest rates right now as key:events per second, for the record.</summary>
+        private string Terms(params int[] indices)
         {
             var text = new System.Text.StringBuilder();
-            foreach (var candidate in top)
-                if (candidate != null) text.Append(text.Length > 0 ? " " : "").Append(candidate.Key).Append(':').Append((candidate.Rate * RateScale).ToString("0.#####"));
+            foreach (int index in indices)
+                if (index >= 0) text.Append(text.Length > 0 ? " " : "").Append(drawn[index].Key).Append(':').Append(rates[index].ToString("0.#####"));
             return text.ToString();
         }
 
-        /// <summary>The draw picked <paramref name="chosen"/>: check it is still what JEV judged, ask how strongly it plays out, and make it happen.</summary>
-        private void Happen(Candidate chosen)
+        /// <summary>The draw picked <paramref name="chosen"/>: check it is still possible, ask how strongly it plays out, and make it happen.</summary>
+        private void Happen(Candidate chosen, float rate)
         {
-            string judged = chosen.Description;
-            string detail = "JEV 수준 확률 " + string.Join("/", System.Array.ConvertAll(chosen.Levels, p => p.ToString("0.00"))) + " · 초당 " + (chosen.Rate * RateScale).ToString("0.#####") + " / 후보 " + candidates.Count + "개";
-            var fresh = Fresh(chosen.Key, judged);
+            string detail = "JEV 수준 확률 " + string.Join("/", System.Array.ConvertAll(chosen.Levels, p => p.ToString("0.00"))) + " · 초당 " + rate.ToString("0.#####") + " / 후보 " + candidates.Count + "개";
+            var fresh = Fresh(chosen.Key);
             if (fresh == null) { log.Director.Vanish(); return; }
             if (fresh.Levels == null) { Execute(fresh, .5f, candidates.Count, detail); return; }
             applying = true;
@@ -296,8 +321,8 @@ namespace ChooGuard.App.Fps.Emergency
                 if (Stage == Phase.Ended) return;
                 // 크기를 JEV 가 답하지 않으면 이 전이는 일어나지 않는다.
                 if (answers == null || !answers.TryGetValue("magnitude", out var answer)) { log.Director.Round(false); NoticeSilence(); return; }
-                // 답이 오는 사이 세계가 바뀌었을 수 있다: 그 사람·물건이 아직 그대로일 때만 일어난다.
-                var again = Fresh(chosen.Key, judged);
+                // 답이 오는 사이 세계가 바뀌었을 수 있다: 그 사람·물건이 아직 후보일 때만 일어난다.
+                var again = Fresh(chosen.Key);
                 if (again == null) { log.Director.Vanish(); return; }
                 int levels = question.Levels.Count, level = answer.DrawLevel(drawRandom, levels);
                 float magnitude = levels > 1 ? level / (float)(levels - 1) : .5f;
@@ -305,11 +330,14 @@ namespace ChooGuard.App.Fps.Emergency
             }, JevLane.Director));
         }
 
-        /// <summary>The transition for <paramref name="key"/> as the world makes it now, or null when it is no longer possible or no longer the situation JEV judged.</summary>
-        private Transition Fresh(string key, string judged)
+        /// <summary>
+        /// The transition for <paramref name="key"/> as the world makes it now, or null when it is no longer a candidate: a key
+        /// names one concrete person, thing or place, so the subject is the same and still qualifies whenever the key is listed.
+        /// </summary>
+        private Transition Fresh(string key)
         {
             foreach (var transition in Enumerate())
-                if (transition.Key == key) return transition.Description == judged ? transition : null;
+                if (transition.Key == key) return transition;
             return null;
         }
 

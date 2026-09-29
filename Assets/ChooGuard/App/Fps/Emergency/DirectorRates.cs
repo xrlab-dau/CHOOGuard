@@ -34,6 +34,17 @@ namespace ChooGuard.App.Fps.Emergency
             "About to happen: the last conditions for it are already in place at this moment",
         };
 
+        // 진행 중인 사건 곁의 별개 사건: 진행 중인 사건 자체는 이 후보를 더 그럴듯하게 하는 세부가 아니라고 수준마다 못박는다
+        // (그렇게 하지 않으면 큰 불이 있을 때 JEV 가 무관한 후보까지 높게 평가하는 경향이 두드러진다, 보정 기록 참조).
+        private static readonly List<string> IncidentOriginLevels = new List<string>
+        {
+            "Not now: nothing about this person, thing or place points to it and it would be pure coincidence",
+            "Possible but unremarkable: it is unrelated to the emergency in progress, it can happen at a busy station and nothing about this person, thing or place makes it more likely than for any similar one",
+            "Somewhat favoured: one concrete detail of this person, thing or place makes it more likely than for a similar one; the emergency in progress is not such a detail",
+            "Favoured: several concrete details of this person, thing or place point to it; the emergency in progress is not one of them",
+            "About to happen: the last conditions for it are already in place at this moment, whatever else is going on",
+        };
+
         private static readonly List<string> DevelopmentLevels = new List<string>
         {
             "Ruled out: what is happening now makes it impossible, or it has already happened or been dealt with",
@@ -44,17 +55,18 @@ namespace ChooGuard.App.Fps.Emergency
         };
 
         /// <summary>Level texts of <paramref name="scale"/>, lowest first.</summary>
-        public static List<string> Levels(ImminenceScale scale) => scale == ImminenceScale.Development ? DevelopmentLevels : OriginLevels;
+        public static List<string> Levels(ImminenceScale scale) =>
+            scale == ImminenceScale.Development ? DevelopmentLevels : scale == ImminenceScale.IncidentOrigin ? IncidentOriginLevels : OriginLevels;
 
         /// <summary>The question JEV answers for one candidate.</summary>
         public static string Instructions(string description) => "How close is the following to actually happening at this moment, given the situation? " + description;
 
-        // 사건 빈도는 수준마다 4배로 벌어진다(0 수준은 일어나지 않음). 척도별 기준값(초당)은 JEV 의 실제 판단 분포에 맞춰 보정한다
-        // (.planning/2026-09-29-jev-all-emergencies/plan.md '실시간 판단 디렉터').
+        // 사건 빈도는 수준마다 4배로 벌어진다(0 수준은 일어나지 않음). 척도별 기준값(초당, 1 수준 후보 하나의 빈도)은 JEV 의 실제 판단 분포에 맞춰
+        // 보정한다(.planning/2026-09-29-jev-all-emergencies/plan.md '실시간 판단 디렉터').
         private static readonly float[] Multiplier = { 0f, 1f, 4f, 16f, 64f };
-        private const float CalmOriginBase = 0f;
-        private const float IncidentOriginBase = 0f;
-        private const float DevelopmentBase = 0f;
+        private const float CalmOriginBase = 1.7e-4f;
+        private const float IncidentOriginBase = 6.5e-6f;
+        private const float DevelopmentBase = 1.1e-4f;
 
         private static float Base(ImminenceScale scale) =>
             scale == ImminenceScale.CalmOrigin ? CalmOriginBase : scale == ImminenceScale.IncidentOrigin ? IncidentOriginBase : DevelopmentBase;
@@ -66,6 +78,16 @@ namespace ChooGuard.App.Fps.Emergency
             for (int level = 0; level < probabilities.Count && level < Multiplier.Length; level++) expected += probabilities[level] * Multiplier[level];
             return expected * Base(scale);
         }
+
+        /// <summary>How many listed origins the base rates were calibrated on; beyond this the origins share the same station-level budget.</summary>
+        public const int ReferenceOrigins = 32;
+
+        /// <summary>
+        /// How often the station has a new emergency does not depend on how many kinds of equipment and people the game models:
+        /// once more than <see cref="ReferenceOrigins"/> origins are listed, each one's rate is scaled down so the station-level
+        /// hazard stays where it was calibrated (more equipment adds variety, not frequency).
+        /// </summary>
+        public static float OriginShare(int listedOrigins) => listedOrigins > ReferenceOrigins ? ReferenceOrigins / (float)listedOrigins : 1f;
     }
 
     /// <summary>

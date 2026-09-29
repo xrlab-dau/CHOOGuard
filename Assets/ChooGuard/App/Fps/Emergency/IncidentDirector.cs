@@ -316,7 +316,19 @@ namespace ChooGuard.App.Fps.Emergency
         private string Profile(Passenger p) =>
             "passenger #" + p.Number + " (" + (p.Body.Female ? "woman" : "man") + (p.Elderly ? ", elderly" : "") + (p.Luggage == 2 ? ", large suitcase" : p.Luggage == 1 ? ", bag" : "") + ")";
 
-        private string Place(Vector3 position) => world.Area(position) + ", " + world.Describe(position);
+        // 후보 설명은 1 s 마다 다시 만들어진다. 앉거나 서 있는 사람이 대부분이라 같은 자리의 이름(가장 가까운 표지를 찾는 일)을
+        // 반 미터 칸마다 5 s 동안 기억해 둔다.
+        private readonly Dictionary<Vector3Int, string> places = new Dictionary<Vector3Int, string>();
+        private float placesClearedAt;
+
+        /// <summary>The name staff would give a spot in a candidate's description, remembered per half-metre cell for a few seconds.</summary>
+        private string Place(Vector3 position)
+        {
+            if (Time.time - placesClearedAt > 5f) { places.Clear(); placesClearedAt = Time.time; }
+            var cell = new Vector3Int(Mathf.RoundToInt(position.x * 2), Mathf.RoundToInt(position.y), Mathf.RoundToInt(position.z * 2));
+            if (!places.TryGetValue(cell, out var text)) places[cell] = text = world.Area(position) + ", " + world.Describe(position);
+            return text;
+        }
 
         private static bool Settled(Passenger p) =>
             p.Current == Passenger.Activity.Sit || p.Current == Passenger.Activity.Stand || p.Current == Passenger.Activity.PlatformWait || p.Current == Passenger.Activity.InTrain ||
