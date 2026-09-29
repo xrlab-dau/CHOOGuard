@@ -35,7 +35,7 @@ namespace ChooGuard.App.Fps.Emergency
                 default:
                     if (target is ElevatorTrapHazard) return Team.Elevator;
                     if (target is GasLeakHazard) return Team.Gas;
-                    if (target is PowerOutageHazard) return Team.Electric;
+                    if (target is PowerOutageHazard || target is FireHazard { Electric: true }) return Team.Electric;
                     return Team.Facility;
             }
         }

@@ -91,7 +91,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (feedCutBy != agency) return null;
             if (Feed != null)
             {
-                CutFeed(Responder.AgencyName(agency));
+                CutFeed(Electric ? "전기 담당" : Responder.AgencyName(agency));
                 return Electric
                     ? "전기 담당입니다. " + Where + " 전원을 차단했습니다. 점검이 끝날 때까지 다시 넣지 마십시오."
                     : Responder.AgencyName(agency) + "입니다. " + Where + " " + FeedName + "을 차단했습니다.";

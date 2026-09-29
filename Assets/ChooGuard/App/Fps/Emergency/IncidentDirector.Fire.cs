@@ -8,8 +8,9 @@ namespace ChooGuard.App.Fps.Emergency
     /// <summary>
     /// Fire family: what can catch fire right now and how a fire develops. Ignition sources are things that are really
     /// there: a power bank in a passenger's bag (hall, platform, KTX car), the fryer or stove of a food shop, a litter bin at
-    /// a city entrance, the electrics of a ticket window or a shop fridge, the running gear under the KTX set at the
-    /// platform. Detectors, the bell, smoke, rekindling and the office's own 119 call follow common rules.
+    /// a city entrance, the running gear under the KTX set at the platform. Fires in electrical equipment (distribution boards,
+    /// vending machines, charging kiosks) come from IncidentDirector.ElectricPlaza.cs and are the same fire; detectors, the bell,
+    /// smoke, rekindling and the office's own 119 call follow common rules.
     /// </summary>
     public sealed partial class IncidentDirector
     {
@@ -38,10 +39,6 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var shop in world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s) != null && !world.IsClosed(s.Position, 2)).OrderBy(_ => world.Random.Next()).Take(2)) yield return KitchenFire(shop);
             var exit = world.Points.Of(PointKind.Exit).Where(e => e.Zone == "plaza" && !world.IsClosed(e.Position, 3)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
             if (exit != null) yield return BinFire(exit);
-            var counter = world.Points.Of(PointKind.Counter).OrderBy(_ => world.Random.Next()).FirstOrDefault();
-            if (counter != null) yield return ElectricalFire(counter, "the ticket office equipment behind " + counter.Label, "매표창구 안 전기 설비");
-            var store = world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s) == null && !world.IsClosed(s.Position, 2)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
-            if (store != null) yield return ElectricalFire(store, "the refrigerated display case of " + store.Label, "매장 냉장 진열대 배선");
             if (Train != null && Train.AtPlatform && Train.Stage != TrainService.Phase.Opening)
             {
                 var car = Train.Cars.Where(c => c.Entry.reachable).OrderBy(_ => world.Random.Next()).FirstOrDefault();
@@ -83,15 +80,6 @@ namespace ChooGuard.App.Fps.Emergency
                 var fire = Ignite(floor + Vector3.up * .72f, "입구 휴지통 담배꽁초", "휴지통", m, "");
                 Props.LitterBin(fire.View.transform, floor, art);
             },
-        };
-
-        private Transition ElectricalFire(StationPoints.Point at, string what, string ko) => new Transition
-        {
-            Key = "electric_" + at.Id, Kind = "electrical_fire", Origin = true,
-            Description = "An electrical fault in " + what + " (" + Place(at.Position) + ") starts to smoke.",
-            Levels = new List<string> { "a smell of burning plastic", "grey smoke seeping out", "sparks and a small flame", "flames and acrid black smoke", "the wiring burns fiercely with thick toxic smoke" },
-            // 사람들이 서는 자리보다 창구·진열대 쪽(바라보는 방향)으로 조금 들어간 곳이다.
-            Apply = m => Ignite(Floor(at.Position + Quaternion.Euler(0, at.Yaw, 0) * Vector3.forward * .9f), ko + " 합선", ko, m, " 전기 화재입니다. 전원 차단을 요청하고 물을 쓰지 마십시오."),
         };
 
         private Transition Underfloor(TrainService.Car car) => new Transition

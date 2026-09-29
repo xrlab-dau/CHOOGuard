@@ -15,7 +15,10 @@ namespace ChooGuard.Editor
     internal static class ElectricPlazaPrefabs
     {
         /// <summary>Bottom of a small distribution board above the floor (m): operable without tools or sitting down (building-electrical design guidance).</summary>
-        public const float BoardBottom = 1.0f;
+        public const float BoardBottom = BreakerDeckLayout.BoardBottom;
+
+        /// <summary>Where the project's own procedural models live (the breaker deck and lever).</summary>
+        public const string OwnModels = "Assets/ChooGuard/Art/Emergency/Equipment/Models";
 
         public const string Board = "DistributionBoard", VendingDrink = "VendingDrink", VendingSnack = "VendingSnack", ChargingKiosk = "ChargingKiosk",
             LitterBin = "LitterBin", RecyclingBin = "RecyclingBin";
@@ -28,10 +31,11 @@ namespace ChooGuard.Editor
         /// <summary>Saves every prefab of the group and returns nothing: the placements name them by file name.</summary>
         public static void BuildAll()
         {
-            Save(Board, "distribution_board", "분전반", "DistributionBoard", 30f, batchable: false, compose: AddDoor);
-            Save(VendingDrink, "vending_machine", "음료 자동판매기", "VendingDrink", 45f);
-            Save(VendingSnack, "vending_machine", "스낵 자동판매기", "VendingSnack", 45f);
-            Save(ChargingKiosk, "charging_kiosk", "휴대폰 충전 키오스크", "ChargingKiosk", 45f);
+            // 분전반은 문이 열리고 안의 차단기를 겨냥할 수 있다. 자판기·키오스크는 전원을 내리면 화면이 꺼지므로(재질 값을 바꾼다) 정적 배칭에 넣지 않는다.
+            Save(Board, "distribution_board", "분전반", "DistributionBoard", 30f, batchable: false, compose: root => { AddDoor(root); AddBreakers(root); });
+            Save(VendingDrink, "vending_machine", "음료 자동판매기", "VendingDrink", 45f, batchable: false, compose: root => AddLoad(root, false));
+            Save(VendingSnack, "vending_machine", "스낵 자동판매기", "VendingSnack", 45f, batchable: false, compose: root => AddLoad(root, false));
+            Save(ChargingKiosk, "charging_kiosk", "휴대폰 충전 키오스크", "ChargingKiosk", 45f, batchable: false, compose: root => AddLoad(root, true));
             Save(LitterBin, "litter_bin", "휴지통", "StreetBin", 30f);
             Save(RecyclingBin, "recycling_bin", "분리수거함", "RecyclingBin", 30f);
         }
@@ -103,6 +107,60 @@ namespace ChooGuard.Editor
             float open = Mathf.Abs(Mathf.DeltaAngle(0, -info.door.openedDegreesBlender));
             float sign = (Quaternion.Euler(0, open, 0) * centre).z > (Quaternion.Euler(0, -open, 0) * centre).z ? 1 : -1;
             pivot.gameObject.AddComponent<BoardDoor>().OpenDegrees = sign * open;
+            // 겨냥하는 면: 닫힌 분전반은 문짝 하나가 전부이고, 문이 열리면 문짝을 겨냥해 닫는다.
+            var mesh = door.GetComponentInChildren<MeshFilter>();
+            var leaf = mesh.gameObject.AddComponent<BoxCollider>();
+            leaf.center = mesh.sharedMesh.bounds.center;
+            leaf.size = mesh.sharedMesh.bounds.size;
+        }
+
+        /// <summary>
+        /// The breaker deck inside the board: a dead-front plate with eight breakers (the BreakerDeck model), one lever model per
+        /// breaker hinged at <see cref="BreakerDeckLayout.Hinge"/>, a collider over each breaker body that the board unit keeps off
+        /// while the door is shut. The deck plate is checked against the model's own JSON so the two cannot drift apart.
+        /// </summary>
+        private static void AddBreakers(Transform root)
+        {
+            var slots = Newtonsoft.Json.Linq.JObject.Parse(File.ReadAllText(OwnModels + "/BreakerDeck/BreakerDeck.json"))["slots"] as Newtonsoft.Json.Linq.JArray;
+            if (slots == null || slots.Count != BreakerDeckLayout.Slots) throw new InvalidOperationException("BreakerDeck.json 에 차단기 자리가 " + BreakerDeckLayout.Slots + "개 있어야 합니다");
+            for (int s = 0; s < BreakerDeckLayout.Slots; s++)
+            {
+                var hinge = BreakerDeckLayout.Hinge(s);
+                if (Mathf.Abs((float)slots[s][0] - hinge.x) > .001f || Mathf.Abs((float)slots[s][1] - hinge.y) > .001f)
+                    throw new InvalidOperationException("BreakerDeck.json 의 " + s + "번 차단기 자리가 BreakerDeckLayout 과 다릅니다");
+            }
+            var unit = root.gameObject.AddComponent<ElectricBoardUnit>();
+            unit.Door = root.GetComponentInChildren<BoardDoor>();
+            var deck = (GameObject)PrefabUtility.InstantiatePrefab(EmergencySceneBuilder.ObjaverseModel("BreakerDeck", false, OwnModels));
+            deck.name = "Deck";
+            deck.transform.SetParent(root, false);
+            deck.transform.localPosition = new Vector3(0, BoardBottom, 0);
+            var leverModel = EmergencySceneBuilder.ObjaverseModel("BreakerLever", false, OwnModels);
+            unit.Switches = new BreakerSwitch[BreakerDeckLayout.Slots];
+            for (int s = 0; s < BreakerDeckLayout.Slots; s++)
+            {
+                var breaker = new GameObject("Breaker" + s);
+                breaker.transform.SetParent(root, false);
+                breaker.transform.localPosition = BreakerDeckLayout.Hinge(s) + new Vector3(0, BoardBottom, 0);
+                var body = breaker.AddComponent<BoxCollider>();
+                body.size = BreakerDeckLayout.BodySize;
+                // 몸통은 판 앞면에서 걸쇠 축까지(뒤쪽으로) 놓인다.
+                body.center = new Vector3(0, 0, -(BreakerDeckLayout.HingeZ - BreakerDeckLayout.PlateFront) * .5f);
+                var lever = (GameObject)PrefabUtility.InstantiatePrefab(leverModel);
+                lever.name = "Lever";
+                lever.transform.SetParent(breaker.transform, false);
+                var toggle = breaker.AddComponent<BreakerSwitch>();
+                toggle.Slot = s;
+                toggle.Lever = lever.transform;
+                lever.transform.localRotation = Quaternion.Euler(-BreakerDeckLayout.LeverDegrees, 0, 0);
+                unit.Switches[s] = toggle;
+            }
+        }
+
+        /// <summary>A vending machine or kiosk is a load on the network: it carries the label of its breaker and can be switched off by hand.</summary>
+        private static void AddLoad(Transform root, bool kiosk)
+        {
+            root.gameObject.AddComponent<ElectricLoad>().Kiosk = kiosk;
         }
     }
 }
