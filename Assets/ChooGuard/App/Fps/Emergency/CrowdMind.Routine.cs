@@ -160,6 +160,7 @@ namespace ChooGuard.App.Fps.Emergency
             item.Trigger = Trigger.Ended;
             item.Due = Time.time;
             Metrics.Escalations++;
+            who.Slot.Log("waiting for the next step: everyday question escalated");
         }
 
         /// <summary>
@@ -201,6 +202,7 @@ namespace ChooGuard.App.Fps.Emergency
             who.Slot.Routine = null;
             Metrics.FirstAnswers++;
             Metrics.RoutineByJev++;
+            who.Slot.Log("first answer took over from the itinerary: " + chosen.Key);
             crowd.Session.Log.Decision(who, "Routine", chosen.Key, "JEV");
             who.Redirect(chosen);
         }

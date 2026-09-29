@@ -239,17 +239,17 @@ namespace ChooGuard.App.Fps.Emergency
             var slot = who.Slot;
             Finish(item);
             // 답을 기다리는 사이 관측이 바뀌었다: 이 답은 낡았고 새 판단이 이미 줄에 있다.
-            if (slot.Version != item.Version) { Metrics.Stale++; return; }
+            if (slot.Version != item.Version) { slot.Log("answer dropped: something they observe changed since the question"); Metrics.Stale++; return; }
             if (who.Hurt || who.Hostile) { Metrics.Moot++; return; }
             var hazard = item.Hazard;
             // 이미 다 된 일(불이 꺼졌다)에 대한 판단은 더 의미가 없다: 하던 일로 돌아간다.
-            if (hazard != null && !hazard.Active && item.Trigger != Trigger.Instruction) { Metrics.Moot++; who.KeepGoing(); return; }
+            if (hazard != null && !hazard.Active && item.Trigger != Trigger.Instruction) { slot.Log("answer dropped: it is over"); Metrics.Moot++; who.KeepGoing(); return; }
             var options = Options(item);
             // JEV 가 가능성을 준 선택지 중 답이 오는 사이 맞지 않게 된 것(두 사람이 이미 알리러 갔다, 문이 닫혔다)을 센다.
             foreach (var key in item.Offered)
                 if (Odds(answer, key) > 0 && !options.Exists(o => o.Item1.Key == key && o.Item2 > 0)) { Metrics.Revalidated++; break; }
             var chosen = DrawValid(answer, options, item.Offered);
-            if (chosen == null) { Metrics.Moot++; return; }
+            if (chosen == null) { slot.Log("answer dropped: no offered option fits any more"); Metrics.Moot++; return; }
             float game = Time.time - item.Raised, seconds = real - item.RaisedReal, trip = real - item.SentReal;
             Metrics.UrgentByJev++;
             Metrics.Reaction(game, seconds, trip);
@@ -313,6 +313,7 @@ namespace ChooGuard.App.Fps.Emergency
             var slot = who.Slot;
             crowd.Session.Log.Decision(who, item.Trigger.ToString(), chosen.Key, source);
             slot.JudgedAt = Time.time;
+            slot.Log("did " + chosen.Key + " (" + source + ", " + item.Trigger + ")");
             slot.Acts.Add(chosen.Description);
             if (slot.Acts.Count > 3) slot.Acts.RemoveAt(0);
             Metrics.Record(new JObject

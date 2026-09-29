@@ -19,6 +19,8 @@ namespace ChooGuard.App.Fps.Emergency
         public int Raised, Requests, Questions, Answered, Failures, Stale, Superseded, Moot, Dropped, Escalations, Itineraries;
         /// <summary>JEV answers in which an option JEV had given a chance no longer fitted the person's state when the answer arrived.</summary>
         public int Revalidated;
+        /// <summary>Times the watchdog found a person standing still over 20 s in a moving action, or waiting over 20 s for a decision (each is also written to the log with the person's trace).</summary>
+        public int Frozen;
         public int UrgentByJev, UrgentLocally, RoutineByJev, RoutineLocally, FirstAnswers;
         public int MaxQueued;
         /// <summary>Longest a person kept doing their current action while the next step was still being judged (game seconds).</summary>
@@ -34,7 +36,9 @@ namespace ChooGuard.App.Fps.Emergency
         public readonly List<float> RoutineWait = new List<float>();
         /// <summary>CPU time of <see cref="CrowdMind.Tick"/> per frame (milliseconds; the first 30,000 frames).</summary>
         public readonly List<float> TickMs = new List<float>();
-        /// <summary>CPU time of applying one request's answers (milliseconds).</summary>
+        /// <summary>Main-thread milliseconds of the steps that start a request: building the questions, building the state, the client's synchronous part.</summary>
+        public readonly List<float> SendQuestionMs = new List<float>(), SendStateMs = new List<float>(), SendStartMs = new List<float>();
+        /// <summary>Main-thread milliseconds applying received answers in one frame (frames that applied something); applying is time-sliced to <see cref="CrowdMind.ApplyBudgetMs"/> per frame.</summary>
         public readonly List<float> ApplyMs = new List<float>();
 
         private readonly string path;
@@ -70,12 +74,20 @@ namespace ChooGuard.App.Fps.Emergency
                 Record(new JObject { ["spike_ms"] = Math.Round(milliseconds, 1), ["at_real_s"] = Math.Round(Elapsed, 1), ["gc"] = collected, ["requests_started"] = requestsStarted, ["requests_so_far"] = Requests, ["queued"] = queued });
         }
 
-        /// <summary>Applying one request's answers (moving several people at once, path queries included); slow ones are logged.</summary>
-        public void Apply(float milliseconds, int questions)
+        /// <summary>Main-thread steps of starting one request: building the questions, building the state, and the client's synchronous part (serialising, opening the web request). A slow one is logged with its parts.</summary>
+        public void Step(float questions, float state, float start, int asked)
+        {
+            if (SendQuestionMs.Count < 30000) { SendQuestionMs.Add(questions); SendStateMs.Add(state); SendStartMs.Add(start); }
+            if (questions + state + start > 16f)
+                Record(new JObject { ["send_spike_ms"] = Math.Round(questions + state + start, 1), ["questions_ms"] = Math.Round(questions, 1), ["state_ms"] = Math.Round(state, 1), ["client_start_ms"] = Math.Round(start, 1), ["asked"] = asked, ["requests_so_far"] = Requests, ["at_real_s"] = Math.Round(Elapsed, 1) });
+        }
+
+        /// <summary>Applying received answers in one frame (path queries for moving people included); a slow frame is logged.</summary>
+        public void Apply(float milliseconds, int applied)
         {
             if (ApplyMs.Count < 30000) ApplyMs.Add(milliseconds);
             if (milliseconds > 16f)
-                Record(new JObject { ["apply_spike_ms"] = Math.Round(milliseconds, 1), ["at_real_s"] = Math.Round(Elapsed, 1), ["questions"] = questions });
+                Record(new JObject { ["apply_spike_ms"] = Math.Round(milliseconds, 1), ["at_real_s"] = Math.Round(Elapsed, 1), ["applied"] = applied });
         }
 
         /// <summary>Appends one decision to the run log (written in batches, never on the frame that made it).</summary>
@@ -149,7 +161,11 @@ namespace ChooGuard.App.Fps.Emergency
                 ["jev_round_trip_s"] = Spread(RoundTrip),
                 ["routine_wait_game_s"] = Spread(RoutineWait),
                 ["mind_tick_ms"] = Spread(TickMs),
-                ["apply_answers_ms"] = Spread(ApplyMs),
+                ["apply_frame_ms"] = Spread(ApplyMs),
+                ["send_questions_ms"] = Spread(SendQuestionMs),
+                ["send_state_ms"] = Spread(SendStateMs),
+                ["send_client_start_ms"] = Spread(SendStartMs),
+                ["frozen_passengers"] = Frozen,
             };
             if (jev != null)
             {

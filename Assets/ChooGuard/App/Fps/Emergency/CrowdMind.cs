@@ -47,6 +47,18 @@ namespace ChooGuard.App.Fps.Emergency
             internal string Announcement;
             internal bool ToldByStaff, RouteAsked;
             internal readonly List<string> Acts = new List<string>();
+            /// <summary>The last things that happened to this person's judgement (raised, sent, answered, done), to trace a stuck person afterwards.</summary>
+            internal readonly List<string> Trace = new List<string>();
+            internal Vector3 Anchor;
+            internal float AnchorSince = -1;
+            internal Passenger.Activity AnchorActivity;
+            internal bool FrozenReported;
+
+            internal void Log(string what)
+            {
+                Trace.Add(Time.time.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " " + what);
+                if (Trace.Count > 16) Trace.RemoveAt(0);
+            }
 
             internal void Forget()
             {
@@ -57,6 +69,12 @@ namespace ChooGuard.App.Fps.Emergency
                 ToldByStaff = false;
             }
         }
+
+        /// <summary>Applying received answers may use this much of a frame (milliseconds); the rest waits for the next frame, so one frame never moves a whole crowd.</summary>
+        public float ApplyBudgetMs = 1f;
+        private readonly List<(Judgement item, JevAnswer answer)> receivedUrgent = new List<(Judgement, JevAnswer)>();
+        private readonly List<(Judgement item, JevAnswer answer)> receivedEveryday = new List<(Judgement, JevAnswer)>();
+        private float nextWatch;
 
         /// <summary>One thing a person could do next, with where and for how long.</summary>
         public sealed class Choice
@@ -88,7 +106,7 @@ namespace ChooGuard.App.Fps.Emergency
             public bool Urgent;
             public bool Everyday;
             public bool First;
-            public bool Sent, Done, Superseded;
+            public bool Sent, Done, Superseded, Received;
             public float Raised, RaisedReal, Due, NotBefore, ReadyAt, SentReal, AnsweredAt;
             public int Version, Failures, BatchSize;
             public string Key, Answer, Note;
@@ -189,7 +207,7 @@ namespace ChooGuard.App.Fps.Emergency
             float raised = Time.time, raisedReal = Time.realtimeSinceStartup;
             if (pending)
             {
-                if (!old.Sent)
+                if (!old.Sent && !old.Received)
                 {
                     // 아직 보내지 않았다: 같은 판단에 새 사실을 합친다(가장 급한 이유로 묻는다).
                     if (trigger < old.Trigger) old.Trigger = trigger;
@@ -204,6 +222,7 @@ namespace ChooGuard.App.Fps.Emergency
                 raised = old.Raised;
                 raisedReal = old.RaisedReal;
             }
+            slot.Log("raise " + trigger + (hazard != null ? " " + hazard.Label : ""));
             var world = crowd.World;
             var item = new Judgement
             {
@@ -241,7 +260,7 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 var item = queue[i];
                 if (item.Done || item.Who == null || item.Answer != null) { if (!item.Done && item.Who == null) item.Done = true; queue.RemoveAt(i); continue; }
-                if (item.Sent) continue;
+                if (item.Sent || item.Received) continue;
                 if (!usable)
                 {
                     // JEV 없는 근무: 일상 판단은 활동이 끝날 때 지역 규칙이 정하고, 급한 판단은 반응 시간 뒤 지역 규칙이 정한다.
@@ -251,6 +270,8 @@ namespace ChooGuard.App.Fps.Emergency
                 }
                 if (Outdated(item, now)) { Finish(item); queue.RemoveAt(i); Metrics.Stale++; }
             }
+            DrainApply();
+            Watchdog(now);
             if (usable)
             {
                 ScanNearIncident(now);
@@ -313,6 +334,59 @@ namespace ChooGuard.App.Fps.Emergency
             return Mathf.Abs(d.y) < 4f && d.x * d.x + d.z * d.z < reach * reach;
         }
 
+        /// <summary>
+        /// Twice a second: nobody may stand still for over 20 s while their action is one that moves (walking, moving away,
+        /// leaving, evacuating), and nobody may wait over 20 s for a decision. A finding is counted and written with that
+        /// person's own trace (raised, sent, answered, done).
+        /// </summary>
+        private void Watchdog(float now)
+        {
+            if (now < nextWatch) return;
+            nextWatch = now + .5f;
+            foreach (var person in crowd.People)
+            {
+                if (person == null || person.Hurt || person.Hostile) continue;
+                var slot = person.Slot;
+                var activity = person.Current;
+                bool moves = activity == Passenger.Activity.Walk || activity == Passenger.Activity.MoveAway || activity == Passenger.Activity.Evacuate || activity == Passenger.Activity.Leave;
+                float pending = 0;
+                if (slot.WaitingSince >= 0 && person.Holding) pending = now - slot.WaitingSince;
+                if (slot.Urgent != null && !slot.Urgent.Done) pending = Mathf.Max(pending, now - slot.Urgent.Raised);
+                var body = person.Body;
+                if (!moves || body.Riding != null || body.Scripted)
+                {
+                    slot.AnchorSince = -1;
+                }
+                else
+                {
+                    var here = person.transform.position;
+                    if (slot.AnchorSince < 0 || slot.AnchorActivity != activity || (here - slot.Anchor).sqrMagnitude > .25f)
+                    {
+                        slot.Anchor = here;
+                        slot.AnchorSince = now;
+                        slot.AnchorActivity = activity;
+                        slot.FrozenReported = false;
+                    }
+                    else if (now - slot.AnchorSince > 20f && !slot.FrozenReported)
+                    {
+                        slot.FrozenReported = true;
+                        ReportStuck(person, "no_progress", now - slot.AnchorSince);
+                    }
+                }
+                if (pending > 20f && !slot.FrozenReported) { slot.FrozenReported = true; ReportStuck(person, "no_decision", pending); }
+            }
+        }
+
+        private void ReportStuck(Passenger person, string kind, float seconds)
+        {
+            Metrics.Frozen++;
+            Metrics.Record(new Newtonsoft.Json.Linq.JObject
+            {
+                ["frozen"] = kind, ["passenger"] = person.Number, ["activity"] = person.Current.ToString(), ["seconds"] = System.Math.Round(seconds, 1),
+                ["at"] = person.Doing, ["trace"] = new Newtonsoft.Json.Linq.JArray(person.Slot.Trace),
+            });
+        }
+
         // ── 보내기 ──────────────────────────────────────────────────────────
 
         private void Dispatch(float now)
@@ -328,7 +402,7 @@ namespace ChooGuard.App.Fps.Emergency
                 ready.Clear();
                 float real = Time.realtimeSinceStartup;
                 foreach (var item in queue)
-                    if (!item.Sent && !item.Done && item.Who != null && item.Answer == null && real >= item.NotBefore) ready.Add(item);
+                    if (!item.Sent && !item.Received && !item.Done && item.Who != null && item.Answer == null && real >= item.NotBefore) ready.Add(item);
                 if (ready.Count == 0) return;
                 ready.Sort(ByPriority);
                 // 급한 줄이 가득 차 못 보내도 일상 줄에 자리가 있으면 그쪽 첫 질문은 보낸다(예산은 JEV 클라이언트가 지킨다).
@@ -368,6 +442,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void Send(List<Judgement> batch, bool urgent)
         {
+            long began = System.Diagnostics.Stopwatch.GetTimestamp();
             var asked = new List<Judgement>(batch.Count);
             var questions = new List<JevChoice>(batch.Count);
             float real = Time.realtimeSinceStartup;
@@ -379,20 +454,27 @@ namespace ChooGuard.App.Fps.Emergency
                 item.Sent = true;
                 item.SentReal = real;
                 item.BatchSize = batch.Count;
+                item.Who.Slot.Log("sent in a request of " + batch.Count);
                 asked.Add(item);
                 questions.Add(question);
             }
             if (asked.Count == 0) return;
+            long questionsBuilt = System.Diagnostics.Stopwatch.GetTimestamp();
             Metrics.Requests++;
             Metrics.Questions += asked.Count;
             var state = State(asked[0]);
+            long stateBuilt = System.Diagnostics.Stopwatch.GetTimestamp();
+            // 클라이언트의 동기 구간(JSON 직렬화·SendWebRequest 시작)이 여기에 든다. 그 안은 JevClient 소관이라 겉에서 한 덩어리로 잰다.
             crowd.StartCoroutine(Request(urgent, urgent ? "crowd-urgent" : "crowd-routine", state, questions, answers => OnAnswers(asked, answers)));
+            long started = System.Diagnostics.Stopwatch.GetTimestamp();
+            Metrics.Step(Ms(questionsBuilt - began), Ms(stateBuilt - questionsBuilt), Ms(started - stateBuilt), asked.Count);
         }
 
+        private static float Ms(long ticks) => ticks * 1000f / System.Diagnostics.Stopwatch.Frequency;
+
+        /// <summary>JEV's answers arrive: they only queue up here; <see cref="DrainApply"/> applies them within the frame budget.</summary>
         private void OnAnswers(List<Judgement> asked, Dictionary<string, JevAnswer> answers)
         {
-            float real = Time.realtimeSinceStartup;
-            long began = System.Diagnostics.Stopwatch.GetTimestamp();
             foreach (var item in asked)
             {
                 item.Sent = false;
@@ -402,14 +484,42 @@ namespace ChooGuard.App.Fps.Emergency
                 answers?.TryGetValue(item.Key, out answer);
                 // 그 사이 같은 사람에게 더 새로운 관측이 생겨 새 판단이 이 판단을 대신한다: 이 답은 쓰지 않는다.
                 if (item.Superseded) { Finish(item); if (answer != null) Metrics.Stale++; continue; }
-                if (answer == null) { Failed(item); continue; }
+                if (answer == null) { item.Who.Slot.Log("no answer"); Failed(item); continue; }
                 Metrics.Answered++;
                 item.AnsweredAt = Time.time;
-                if (item.Trigger == Trigger.Route) ReceiveRoute(item, answer);
-                else if (item.Everyday) ReceiveRoutine(item, answer);
-                else ApplyUrgent(item, answer, real);
+                item.Received = true;
+                item.Who.Slot.Log("answered after " + (Time.realtimeSinceStartup - item.SentReal).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " s");
+                (item.Everyday ? receivedEveryday : receivedUrgent).Add((item, answer));
             }
-            Metrics.Apply((System.Diagnostics.Stopwatch.GetTimestamp() - began) * 1000f / System.Diagnostics.Stopwatch.Frequency, asked.Count);
+        }
+
+        /// <summary>Applies received answers, urgent ones first, until <see cref="ApplyBudgetMs"/> is used up; at least one per frame so nothing waits forever.</summary>
+        private void DrainApply()
+        {
+            if (receivedUrgent.Count == 0 && receivedEveryday.Count == 0) return;
+            long began = System.Diagnostics.Stopwatch.GetTimestamp();
+            int applied = 0;
+            while (receivedUrgent.Count > 0 || receivedEveryday.Count > 0)
+            {
+                var list = receivedUrgent.Count > 0 ? receivedUrgent : receivedEveryday;
+                var (item, answer) = list[0];
+                list.RemoveAt(0);
+                item.Received = false;
+                applied++;
+                ApplyReceived(item, answer);
+                if (Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began) >= ApplyBudgetMs) break;
+            }
+            Metrics.Apply(Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began), applied);
+        }
+
+        private void ApplyReceived(Judgement item, JevAnswer answer)
+        {
+            if (item.Done) return;
+            if (item.Who == null) { Finish(item); return; }
+            if (item.Superseded) { Finish(item); Metrics.Stale++; return; }
+            if (item.Trigger == Trigger.Route) ReceiveRoute(item, answer);
+            else if (item.Everyday) ReceiveRoutine(item, answer);
+            else ApplyUrgent(item, answer, Time.realtimeSinceStartup);
         }
 
         /// <summary>JEV did not answer this question (timeout, refusal, budget): ask again a moment later, with growing pauses.</summary>

@@ -309,21 +309,30 @@ namespace ChooGuard.App.Fps.Emergency
 
         /// <summary>
         /// People around <paramref name="position"/> pick up on a cue without seeing the cause. A bell (radius of hundreds of
-        /// metres) is heard across the whole station, on every floor; people running or shouting are noticed on the same floor only.
+        /// metres) is heard on every floor of the building: NFTC 203 2.5.1.2 limits the alarm to the fire floor and the four
+        /// above it only for buildings of 11 storeys or more (16 for apartments), so a three-storey station rings everywhere.
+        /// Inside a KTX car it reaches only people near an open door. People running or shouting are noticed on the same floor only.
         /// </summary>
         public void Alert(Vector3 position, float radius, Hazard hazard, Passenger source, string cue)
         {
             if (hazard == null) return;
             float r2 = radius * radius;
             bool stationWide = radius >= 100f;
+            var train = World.Train;
             foreach (var person in People)
             {
                 if (person == source || person.Noticed.Contains(hazard)) continue;
+                if (stationWide && person.Aboard && !HearsThroughDoor(person, train)) continue;
                 var d = person.transform.position - position;
                 if (!stationWide && Mathf.Abs(d.y) > 4) continue;
                 if (d.sqrMagnitude < r2) person.Notice(hazard, true, cue);
             }
         }
+
+        /// <summary>The train's windows and doors shut the bell out: it is heard only within 6 m of a car door that stands open.</summary>
+        private static bool HearsThroughDoor(Passenger person, TrainService train) =>
+            train != null && person.TrainSeat != null && train.DoorsOpen > .9f &&
+            Vector3.Distance(person.transform.position, train.World(person.TrainSeat.Car.DoorInside)) < 6f;
 
         private void OnDestroy()
         {
