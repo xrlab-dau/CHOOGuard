@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace ChooGuard.App.Fps.Hud
 {
-    public enum MarkerKind { Task, Incident, Responder, Exit }
+    public enum MarkerKind { Task, Incident, Responder, Exit, Guidance }
 
     /// <summary>Top-centre heading strip with world markers. North is Unity +Z (station survey convention: +X east, +Z north).</summary>
     public sealed class CompassBar : MonoBehaviour
@@ -86,6 +86,7 @@ namespace ChooGuard.App.Fps.Hud
                 case MarkerKind.Incident: return FpsUiFactory.Danger;
                 case MarkerKind.Responder: return FpsUiFactory.Staff;
                 case MarkerKind.Exit: return new Color(.55f, .95f, .6f, 1);
+                case MarkerKind.Guidance: return new Color(.33f, .95f, .88f, 1);
                 default: return FpsUiFactory.Accent;
             }
         }
@@ -119,7 +120,7 @@ namespace ChooGuard.App.Fps.Hud
                 marker.Icon.color = edge ? Colour(marker.Kind) * new Color(1, 1, 1, .5f) : Colour(marker.Kind);
                 float metres = new Vector2(toward.x, toward.z).magnitude;
                 string floor = Mathf.Abs(toward.y) > 2.5f ? (toward.y > 0 ? " ▲" : " ▼") : "";
-                marker.Distance.text = Mathf.RoundToInt(metres) + "m" + floor;
+                marker.Distance.text = (marker.Kind == MarkerKind.Guidance ? "길 " : "") + Mathf.RoundToInt(metres) + "m" + floor;
             }
         }
     }

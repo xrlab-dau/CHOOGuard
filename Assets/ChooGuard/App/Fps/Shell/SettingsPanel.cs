@@ -8,12 +8,12 @@ namespace ChooGuard.App.Fps.Shell
     public sealed class SettingsPanel : MonoBehaviour
     {
         private Action close;
-        private TMP_Text sensitivityValue, volumeValue;
+        private TMP_Text sensitivityValue, volumeValue, routeValue;
 
         public static SettingsPanel Create(RectTransform parent, TMP_FontAsset font, Action onClose)
         {
             var root = FpsUiFactory.Node(parent, "설정");
-            FpsUiFactory.Place(root, new Vector2(0, .5f), new Vector2(72, 0), new Vector2(520, 420));
+            FpsUiFactory.Place(root, new Vector2(0, .5f), new Vector2(72, 0), new Vector2(520, 480));
             var panel = root.gameObject.AddComponent<SettingsPanel>();
             panel.close = onClose;
             var heading = FpsUiFactory.Text(root, font, "제목", new Vector2(0, 1), Vector2.zero, new Vector2(520, 60), 40, TextAlignmentOptions.BottomLeft);
@@ -32,7 +32,10 @@ namespace ChooGuard.App.Fps.Shell
             FpsUiFactory.Slider(root, "음량", new Vector2(0, 1), new Vector2(0, -224), new Vector2(500, 28), 0f, 1f, GameSettings.MasterVolume,
                 v => { GameSettings.MasterVolume = v; panel.Refresh(); });
 
-            FpsUiFactory.Button(root, font, "돌아가기", new Vector2(0, 1), new Vector2(0, -300), new Vector2(260, 52), () => panel.close?.Invoke(), 22);
+            var routeButton = FpsUiFactory.Button(root, font, "길 안내 표시", new Vector2(0, 1), new Vector2(0, -294), new Vector2(500, 48),
+                () => { GameSettings.ShowRoute = !GameSettings.ShowRoute; panel.Refresh(); }, 20);
+            panel.routeValue = FpsUiFactory.Text(routeButton.transform, font, "상태", new Vector2(1, .5f), new Vector2(-20, 0), new Vector2(100, 34), 18, TextAlignmentOptions.Right);
+            FpsUiFactory.Button(root, font, "돌아가기", new Vector2(0, 1), new Vector2(0, -365), new Vector2(260, 52), () => panel.close?.Invoke(), 22);
             panel.Refresh();
             root.gameObject.SetActive(false);
             return panel;
@@ -45,6 +48,7 @@ namespace ChooGuard.App.Fps.Shell
         {
             if (sensitivityValue != null) sensitivityValue.text = GameSettings.MouseSensitivity.ToString("0.00") + "×";
             if (volumeValue != null) volumeValue.text = Mathf.RoundToInt(GameSettings.MasterVolume * 100) + "%";
+            if (routeValue != null) routeValue.text = GameSettings.ShowRoute ? "켜짐" : "꺼짐";
         }
     }
 }

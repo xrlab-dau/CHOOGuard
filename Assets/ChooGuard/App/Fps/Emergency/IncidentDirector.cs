@@ -31,6 +31,18 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>The station fire bell rings once a detector trips and nobody silences it before the shift ends (JEV 009).</summary>
         public bool AlarmRinging => alarm;
 
+        /// <summary>Only an active incident the player has learned about may become a navigation target.</summary>
+        public bool TryGetKnownGuideTarget(out Hazard target)
+        {
+            target = null;
+            if (!PlayerKnowsIncident || Stage != Phase.Incident) return false;
+            if (Main != null && known.Contains(Main) && Main.Active && !(Main is EarthquakeHazard)) target = Main;
+            if (target != null) return true;
+            foreach (var hazard in known)
+                if (hazard.Active && !(hazard is EarthquakeHazard)) { target = hazard; return true; }
+            return false;
+        }
+
         private EmergencySession session;
         private StationWorld world;
         private CrowdDirector crowd;

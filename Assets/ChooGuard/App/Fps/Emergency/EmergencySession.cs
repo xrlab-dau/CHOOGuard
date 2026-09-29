@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.AI;
 
 namespace ChooGuard.App.Fps.Emergency
 {
@@ -66,6 +67,10 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<BoardOverlay.Column> boardColumns = new List<BoardOverlay.Column>();
         private readonly List<GameHud.Slot> slots = new List<GameHud.Slot>();
         private bool wasPaused;
+        private float nextGuideRefresh;
+        private static int GuideAreaMask => NavMesh.AllAreas & ~(1 << StationWorld.ElevatorArea);
+        private readonly List<Vector3> guideRoute = new List<Vector3>();
+        private WorldRouteGuide worldGuide;
 
         public struct RadioOption
         {
@@ -84,6 +89,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (Current == this) Current = null;
             // 역무원(역 씬)이 근무 씬보다 오래 남으면 끊긴 캔버스로 일시정지 알림이 온다.
             if (Player != null) Player.PauseChanged -= OnPauseChanged;
+            GameSettings.RouteChanged -= OnSettingsChanged;
             World?.Dispose();
             HazardRegistry.Clear();
             Facilities.StationSignals.Clear();
@@ -103,6 +109,7 @@ namespace ChooGuard.App.Fps.Emergency
             EnsureEventSystem();
 
             Hud = GameHud.Create(transform, KoreanFont, Player);
+            worldGuide = WorldRouteGuide.Create(transform);
             Board = BoardOverlay.Create(transform, KoreanFont);
             Map = MapOverlay.Create(transform, KoreanFont, StationMap, StationMapBounds, Player.PlayerCamera != null ? Player.PlayerCamera.transform : Player.transform, StationMapLabel);
             Wheel = RadioWheel.Create(transform, KoreanFont);
@@ -120,6 +127,8 @@ namespace ChooGuard.App.Fps.Emergency
             int seed = NextSeed != 0 ? NextSeed : Seed != 0 ? Seed : Environment.TickCount & 0x7fffffff;
             NextSeed = 0;
             World = new StationWorld(Art, seed, transform);
+            Map.SetLandmarks(World.Points);
+            GameSettings.RouteChanged += OnSettingsChanged;
             Facilities.StationSignals.FireAlarm = false;
             Facilities.StationSignals.DoorOpen = Art.DoorOpen;
             Facilities.StationSignals.DoorClose = Art.DoorClose;
@@ -151,6 +160,7 @@ namespace ChooGuard.App.Fps.Emergency
             Sound = gameObject.AddComponent<StationSound>();
             Sound.Setup(this);
             gameObject.AddComponent<StationSoundscape>().Setup(this);
+            RefreshGuide();
             Log.Add("근무 시작 · 부산역 (시드 " + seed + ", " + Jev.Status + ")");
             Debug.Log("CG_SHIFT_START seed=" + seed + " passengers=" + Crowd.People.Count + " jev=" + Jev.Status);
         }
@@ -215,6 +225,11 @@ namespace ChooGuard.App.Fps.Emergency
         private void Update()
         {
             if (Player == null) return;
+            if (World != null && Time.unscaledTime >= nextGuideRefresh)
+            {
+                nextGuideRefresh = Time.unscaledTime + 2f;
+                RefreshGuide();
+            }
             ShiftSeconds += Time.deltaTime;
             float hours = ShiftStartHour + ShiftSeconds / 3600f;
             int h = Mathf.FloorToInt(hours) % 24, m = Mathf.FloorToInt((hours - Mathf.Floor(hours)) * 60);
@@ -251,6 +266,140 @@ namespace ChooGuard.App.Fps.Emergency
                 if (mouse.leftButton.wasReleasedThisFrame) PrimaryReleased?.Invoke();
             }
             if (keyboard.gKey.wasPressedThisFrame) Drop?.Invoke();
+        }
+
+        private void OnSettingsChanged()
+        {
+            nextGuideRefresh = 0;
+            RefreshGuide();
+        }
+
+        private void RefreshGuide()
+        {
+            if (Map == null || Hud == null || World == null || Incidents == null || Player == null) return;
+            Hud.Compass.RemoveMarker("guide-next");
+            worldGuide?.Clear();
+            if (!GameSettings.ShowRoute)
+            {
+                Map.SetRoute(null, "길 안내 꺼짐 · 설정에서 켤 수 있습니다");
+                return;
+            }
+            if (!Incidents.PlayerKnowsIncident)
+            {
+                Map.SetRoute(null, "사고를 인지하면 이동 안내가 나타납니다");
+                return;
+            }
+            if (!Incidents.TryGetKnownGuideTarget(out var target))
+            {
+                Map.SetRoute(null, "현재 확인된 사고 현장으로 이동할 경로가 없습니다");
+                return;
+            }
+            Vector3 difference = Player.transform.position - target.Position;
+            if (Mathf.Abs(difference.y) < 2.5f && new Vector2(difference.x, difference.z).magnitude <= ApproachRadius(target) + 2f &&
+                GuidePointClear(Player.transform.position))
+            {
+                Map.SetRoute(null, target.Where + " " + target.Label + " 접근 지점에 도착했습니다");
+                return;
+            }
+            if (!TryGuideRoute(Player.transform.position, target, guideRoute))
+            {
+                Map.SetRoute(null, "통행 가능한 현장 접근 경로를 확인하지 못했습니다");
+                return;
+            }
+            Vector3 next = guideRoute[guideRoute.Count - 1];
+            for (int i = 1; i < guideRoute.Count; i++)
+            {
+                if (Vector3.Distance(guideRoute[0], guideRoute[i]) < 4f &&
+                    MapOverlay.Floor(guideRoute[0]) == MapOverlay.Floor(guideRoute[i])) continue;
+                next = guideRoute[i];
+                break;
+            }
+            float remaining = 0;
+            for (int i = 1; i < guideRoute.Count; i++) remaining += Vector3.Distance(guideRoute[i - 1], guideRoute[i]);
+            string floor = MapOverlay.Floor(target.Position) != MapOverlay.Floor(Player.transform.position)
+                ? " · 목적지 " + Map.FloorLabel(target.Position) : "";
+            string transfer = MapOverlay.Floor(next) != MapOverlay.Floor(Player.transform.position)
+                ? " · 다음 " + Map.FloorLabel(next) + " 연결 지점" : "";
+            Map.SetRoute(guideRoute, target.Where + " " + target.Label + " 접근 · 약 " + Mathf.RoundToInt(remaining) + "m" + floor + transfer);
+            Hud.Compass.SetMarker("guide-next", next, MarkerKind.Guidance);
+            worldGuide?.SetRoute(guideRoute);
+        }
+
+        private bool TryGuideRoute(Vector3 origin, Hazard target, List<Vector3> output)
+        {
+            output.Clear();
+            if (!NavMesh.SamplePosition(origin, out var start, 2.5f, GuideAreaMask) ||
+                Mathf.Abs(start.position.y - origin.y) > 2.5f) return false;
+            float radius = ApproachRadius(target);
+            float bestLength = float.PositiveInfinity;
+            var candidateRoute = new List<Vector3>();
+            for (int i = 0; i < 12; i++)
+            {
+                float angle = i * Mathf.PI * 2f / 12f;
+                var candidate = target.Position + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
+                if (!NavMesh.SamplePosition(candidate, out var end, 2.5f, GuideAreaMask) ||
+                    Mathf.Abs(end.position.y - target.Position.y) > 2.5f || !GuidePointClear(end.position)) continue;
+                candidateRoute.Clear();
+                if (!TryGuideLeg(start.position, end.position, candidateRoute))
+                {
+                    candidateRoute.Clear();
+                    var via = World.Via(start.position, end.position, "stairs");
+                    if (via.Count == 0) continue;
+                    var at = start.position;
+                    bool complete = true;
+                    foreach (var stop in via)
+                    {
+                        if (!TryGuideLeg(at, stop, candidateRoute)) { complete = false; break; }
+                        at = stop;
+                    }
+                    if (!complete || !TryGuideLeg(at, end.position, candidateRoute)) continue;
+                }
+                float length = 0;
+                for (int j = 1; j < candidateRoute.Count; j++) length += Vector3.Distance(candidateRoute[j - 1], candidateRoute[j]);
+                if (length >= bestLength) continue;
+                bestLength = length;
+                output.Clear();
+                output.AddRange(candidateRoute);
+            }
+            return output.Count >= 2;
+        }
+
+        private static float ApproachRadius(Hazard target)
+        {
+            float radius = Mathf.Max(5f, target.Clearance + 1f);
+            if (target is FireHazard fire) radius = Mathf.Max(radius, fire.SmokeRadius + 2f);
+            return radius;
+        }
+
+        private bool TryGuideLeg(Vector3 from, Vector3 to, List<Vector3> route)
+        {
+            var path = new NavMeshPath();
+            if (!NavMesh.CalculatePath(from, to, GuideAreaMask, path) || path.status != NavMeshPathStatus.PathComplete || path.corners.Length < 2)
+                return false;
+            var corners = path.corners;
+            for (int i = 1; i < corners.Length; i++)
+            {
+                float length = Vector3.Distance(corners[i - 1], corners[i]);
+                for (float distance = 0; distance <= length; distance += 1.5f)
+                    if (!GuidePointClear(Vector3.Lerp(corners[i - 1], corners[i], length < .001f ? 0 : distance / length))) return false;
+                if (!GuidePointClear(corners[i])) return false;
+            }
+            if (route.Count == 0) route.Add(corners[0]);
+            for (int i = 1; i < corners.Length; i++) route.Add(corners[i]);
+            return true;
+        }
+
+        private bool GuidePointClear(Vector3 position)
+        {
+            if (World.IsClosed(position, .5f)) return false;
+            foreach (var hazard in HazardRegistry.Active)
+            {
+                if (!hazard.Active || hazard is EarthquakeHazard) continue;
+                if (hazard is FireHazard fire && fire.InSmoke(position)) return false;
+                if (Mathf.Abs(position.y - hazard.Position.y) < 3f &&
+                    StationWorld.SegmentDistance(position, hazard.Position, hazard.Position) < hazard.Clearance) return false;
+            }
+            return true;
         }
 
         private void OpenWheel()
