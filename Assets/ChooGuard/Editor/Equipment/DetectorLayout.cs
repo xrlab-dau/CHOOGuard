@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using ChooGuard.App.Fps.Emergency;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace ChooGuard.Editor
 {
     /// <summary>
-    /// Where the ceiling detectors of the station go, by NFTC 203 (자동화재탐지설비, 2026-03-01), from the ceiling cells of
+    /// Where the fire detectors of the station go, by NFTC 203 (자동화재탐지설비, 2026-03-01), from the ceiling cells of
     /// <see cref="StationCeilings"/>. Pure function of the survey: the same twin gives the same detectors.
     /// <list type="bullet">
-    /// <item>Smoke spot detectors (photoelectric): one per 150 m² under 4 m (class 2), one per 75 m² from 4 m to under 20 m (class 1) — tables 2.4.1 and 2.4.3.10.1. Ceilings of 20 m and more get none (2.4.5.1: only flame or analogue beam detectors would do).</item>
-    /// <item>Rooms: N = ceil(area / A) detectors on the grid of a rectangle laid along the room's main axis with cells as square as possible, each moved to the nearest cell of ceiling that is 0.6 m or more from walls and beams (2.4.3.10.5) and carries no lamp; then every floor point is checked to lie within 1.3 times the half diagonal of the detection area of a detector, and more are added where not.</item>
-    /// <item>Corridors and passages (narrow, long): one per 30 m of walking distance, first at half a span from the end (2.4.3.10.2).</item>
-    /// <item>Covered but open-sided spaces (the platforms under the concourse deck, the exit deck): nothing within 5 m of the open side (2.4.5.2 exempts spaces open to the air; 2.1.3's 5 m rule is used by analogy [I]). Outdoors: nothing.</item>
-    /// <item>Escalator slopes need a smoke detector (2.4.2.1): one at the ceiling above the upper landing. Kitchens of food shops: a fixed-temperature spot heat detector, special class, 70 m² under 4 m (2.4.3.4, table 2.4.3.5, 2.4.5.7).</item>
+    /// <item>Smoke spot detectors (photoelectric): one per 150 m² under 4 m (class 2), one per 75 m² from 4 m to under 15 m (class 1) — tables 2.4.1 and 2.4.3.10.1.</item>
+    /// <item>15 m to under 20 m (the atrium of the 2F hall): beam detectors on opposite walls (<see cref="BeamLayout"/>); 20 m and more would need flame or analogue beam detectors (2.4.5.1) and does not occur in the twin.</item>
+    /// <item>Rooms: N = ceil(area / A) on a grid along the room's main axis (or on equal-area pieces of an irregular room), each moved to the nearest spot 0.65 m or more from walls and beams (2.4.3.10.5) and 0.3 m clear of lamp panels; every floor point is then checked to lie within 1.3 times the half diagonal of the detection area of a detector, and detectors are added where not (the audit).</item>
+    /// <item>Corridors and passages (narrow, long): one per 30 m of walking distance (2.4.3.10.2).</item>
+    /// <item>Open platforms, the exit deck and every other space open to the air (canopies and piloti): no detectors — NFTC 203 2.4.5.2 exempts "헛간 등 외부와 기류가 통하는 장소로서 감지기에 따라 화재 발생을 유효하게 감지할 수 없는 장소", and the commentary reads canopies and piloti as such places unless there is a special reason. The enclosed rooms (1F, 2F, 3F, shops, toilets) get detectors.</item>
+    /// <item>Escalator slopes need a smoke detector (2.4.2.1): one at the ceiling above the upper landing where the landing is inside. Toilet rooms (no shower, so 2.4.5.5 does not exempt them): one smoke detector each, near the entrance (2.4.3.10.3). Kitchens of food shops (<see cref="ChooGuard.App.Fps.Emergency.IncidentDirector.KitchenOf"/>): a fixed-temperature spot heat detector, special class, 70 m² under 4 m (2.4.3.4, table 2.4.3.5); smoke detectors are exempt there (2.4.5.7).</item>
     /// </list>
     /// </summary>
     internal static class DetectorLayout
@@ -24,7 +26,7 @@ namespace ChooGuard.Editor
             public Vector3 Ceiling, Normal;
             public float Yaw, Height, Area, Coverage;
             public bool Smoke = true;
-            public string ClassName = "", ZoneId = "", Rule = "";
+            public string ClassName = "", ZoneId = "", Rule = "", Room = "";
             public int Level;
         }
 
@@ -32,55 +34,115 @@ namespace ChooGuard.Editor
         public sealed class RegionReport
         {
             public string Name = "";
-            public int Cells, Components, Placed, Minimum, Uncovered;
+            public int Cells, Components, Placed, Minimum, RegionMinimum, Uncovered;
             public float FloorArea, AreaPerDetector;
         }
 
         private static readonly HashSet<string> Enclosed = new HashSet<string> { "hall2f", "main2f", "southgate", "eastexit", "upper3f", "ground1f" };
-        private const float SmokeArea4 = 150f, SmokeArea20 = 75f, ExposureMetres = 5f, WallClear = .65f, CorridorWalk = 30f, CeilingLimit = 20f, MinComponentCells = 6;
+        private const float SmokeArea4 = 150f, SmokeArea20 = 75f, WallClear = .65f, CorridorWalk = 30f, CeilingLimit = 20f, MinComponentCells = 6;
 
         private static int Level(StationCeilings.Cell c) => c.Floor.y < 3f ? 0 : c.Floor.y < 9.5f ? 1 : 2;
         private static int Band(float h) => h < 4f ? 0 : h < 8f ? 1 : h < 15f ? 2 : 3;
         private static readonly string[] BandNames = { "<4 m", "4-8 m", "8-15 m", "15-20 m" };
         private static readonly string[] LevelNames = { "1F/platform", "2F", "3F" };
 
-        public static List<Detector> Plan(StationCeilings.Result survey, StationPoints points, List<RegionReport> report, List<string> notes)
+        public static List<Detector> Plan(Scene station, StationCeilings.Result survey, StationPoints points, List<RegionReport> report, List<string> notes, out List<BeamLayout.Beam> beams)
         {
             var context = new Context(survey);
-            var open = new HashSet<(int, int, int)>(survey.Open.Select(c => (c.X, c.Z, Level(c))));
-            var accepted = survey.Cells.Where(c => Accept(c, open, points)).ToList();
+            var accepted = survey.Cells.Where(Accept).ToList();
+            foreach (var g in survey.Cells.Where(c => !Enclosed.Contains(c.Zone) && c.Height < CeilingLimit && c.Zone.Length > 0).GroupBy(c => c.Zone).OrderBy(g => g.Key))
+                notes.Add("exempt 2.4.5.2 (open to the air: canopies, piloti, outdoors): zone " + g.Key + " " + g.Count() + " cells");
             var detectors = new List<Detector>();
-            int fragments = 0, fragmentCells = 0;
-            foreach (var group in accepted.GroupBy(c => (level: Level(c), band: Band(c.Height))).OrderBy(g => g.Key.level).ThenBy(g => g.Key.band))
+            var orphans = new List<StationCeilings.Cell>();
+            foreach (var group in accepted.Where(c => Band(c.Height) < 3).GroupBy(c => (level: Level(c), band: Band(c.Height))).OrderBy(g => g.Key.level).ThenBy(g => g.Key.band))
             {
                 var region = new RegionReport { Name = LevelNames[group.Key.level] + " " + BandNames[group.Key.band], Cells = group.Count() };
-                var components = Components(group.ToList());
-                foreach (var component in components)
+                foreach (var component in Components(group.ToList()))
                 {
-                    if (component.Real.Count < MinComponentCells) { fragments++; fragmentCells += component.Real.Count; continue; }
+                    if (component.Real.Count < MinComponentCells || !PlaceComponent(context, component, group.Key.level, group.Key.band, detectors, region, notes)) { orphans.AddRange(component.Real); continue; }
                     region.Components++;
-                    PlaceComponent(context, component, group.Key.level, group.Key.band, detectors, region, notes);
                 }
                 report.Add(region);
             }
-            notes.Add("left out " + fragments + " ceiling fragments of under " + MinComponentCells + " cells each (" + fragmentCells + " cells in all: slivers where two ceilings meet)");
+            var atrium = accepted.Where(c => Band(c.Height) == 3).ToList();
+            beams = BeamLayout.Plan(station, atrium, notes);
+            // 벽 한 쌍을 찾지 못한 광축 자리: 광전식 스포트형 1종도 15 m 이상 20 m 미만에 쓸 수 있다(표 2.4.1). 광축이 닿지 않는 바닥에만 단다.
+            var placedBeams = beams;
+            var beyond = atrium.Where(c => !placedBeams.Exists(b => SegmentDistance(new Vector2(c.Floor.x, c.Floor.z), new Vector2(b.Transmitter.x, b.Transmitter.z), new Vector2(b.Receiver.x, b.Receiver.z)) <= BeamLayout.HalfWidth)).ToList();
+            int beyondCells = beyond.Count;
+            var fallback = new RegionReport { Name = "2F 15-20 m spot fallback (no wall for a beam)", Cells = beyondCells };
+            int before = detectors.Count;
+            foreach (var component in beyondCells > 0 ? Components(beyond) : new List<Component>())
+                if (component.Real.Count >= MinComponentCells && PlaceComponent(context, component, Level(component.Real[0]), 3, detectors, fallback, notes)) fallback.Components++;
+            for (int i = before; i < detectors.Count; i++) detectors[i].Rule += " (fallback: no wall for a beam)";
+            if (beyondCells > 0) { fallback.Placed = detectors.Count - before; fallback.FloorArea = beyondCells; fallback.RegionMinimum = Mathf.CeilToInt(beyondCells / SmokeArea20); fallback.AreaPerDetector = fallback.Placed > 0 ? beyondCells / (float)fallback.Placed : 0; report.Add(fallback); }
+            Audit(context, accepted.Where(c => Band(c.Height) < 3).Concat(beyond).ToList(), detectors, notes);
+            fallback.Uncovered = beyond.Count(c => !Covered(c, detectors));
+            AddToiletDetectors(context, survey, points, detectors, notes);
             AddEscalatorDetectors(context, survey, points, detectors, notes);
             AddKitchenDetectors(context, survey, points, detectors, notes);
+            // 지역별 표: 바닥면적을 담당면적으로 나눈 최소 수와 실제 수(스포트형 연기감지기, 감사·화장실·에스컬레이터 추가분 포함).
+            foreach (var region in report.Where(r => !r.Name.Contains("fallback")))
+            {
+                var cells = accepted.Where(c => Band(c.Height) < 3 && LevelNames[Level(c)] + " " + BandNames[Band(c.Height)] == region.Name).ToList();
+                float area = region.Name.EndsWith("<4 m", StringComparison.Ordinal) ? SmokeArea4 : SmokeArea20;
+                region.FloorArea = cells.Count;
+                region.RegionMinimum = Mathf.CeilToInt(cells.Count / area);
+                region.Placed = detectors.Count(d => d.Smoke && LevelNames[d.Level] + " " + BandNames[Band(d.Height)] == region.Name);
+                region.AreaPerDetector = region.Placed > 0 ? region.FloorArea / region.Placed : 0;
+                region.Uncovered = cells.Count(c => !Covered(c, detectors));
+            }
             return detectors;
         }
 
-        private static bool Accept(StationCeilings.Cell c, HashSet<(int, int, int)> open, StationPoints points)
+        private static float SegmentDistance(Vector2 p, Vector2 a, Vector2 b)
         {
-            if (c.Height >= CeilingLimit) return false;
-            if (Enclosed.Contains(c.Zone)) return true;
-            if (c.Zone != "northdeck" && c.Zone != "tracks") return false;
-            // 승강장은 승강장 띠 위 지상 바닥만, 출구 데크는 덮인 곳만. 열린 쪽에서 5 m 안은 뺀다.
-            if (c.Zone == "tracks" && (Level(c) != 0 || points.PlatformAt(c.Floor, .3f) == null)) return false;
-            int level = Level(c), reach = Mathf.CeilToInt(ExposureMetres);
-            for (int dx = -reach; dx <= reach; dx++)
-                for (int dz = -reach; dz <= reach; dz++)
-                    if (dx * dx + dz * dz <= ExposureMetres * ExposureMetres && open.Contains((c.X + dx, c.Z + dz, level))) return false;
-            return true;
+            var ab = b - a;
+            float t = ab.sqrMagnitude < 1e-6f ? 0 : Mathf.Clamp01(Vector2.Dot(p - a, ab) / ab.sqrMagnitude);
+            return (p - (a + ab * t)).magnitude;
+        }
+
+        private static bool Accept(StationCeilings.Cell c) => c.Height < CeilingLimit && Enclosed.Contains(c.Zone);
+
+        /// <summary>Reach of a detection area as used by the layout: 1.3 times the half diagonal of its square.</summary>
+        private static float ReachOf(float height) => Mathf.Sqrt((height < 4f ? SmokeArea4 : SmokeArea20) / 2f) * 1.3f;
+
+        private static bool Covered(StationCeilings.Cell cell, List<Detector> detectors)
+        {
+            float reach = ReachOf(cell.Height);
+            foreach (var d in detectors)
+            {
+                if (!d.Smoke || d.Level != Level(cell) || Mathf.Abs(d.Ceiling.y - cell.CeilingY) > 8f) continue;
+                if (new Vector2(d.Ceiling.x - cell.Floor.x, d.Ceiling.z - cell.Floor.z).magnitude <= Mathf.Max(reach, d.Coverage)) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Every accepted floor cell — also the slivers and small areas that got no detector of their own — must lie within reach of a
+        /// detector on the same level. A detector goes on the nearest ceiling spot within 0.9 times the reach that keeps the wall and lamp clearances.
+        /// </summary>
+        private static void Audit(Context context, List<StationCeilings.Cell> cells, List<Detector> detectors, List<string> notes)
+        {
+            int added = 0, stuck = 0;
+            foreach (var cell in cells.OrderBy(c => c.X).ThenBy(c => c.Z))
+            {
+                if (Covered(cell, detectors)) continue;
+                StationCeilings.Cell pick = null;
+                // 그 칸이 닿는 거리(reach) 안이면 어느 천장 칸에 달아도 그 칸을 담당한다: 가장 가까운 자리를 고른다.
+                float best = Mathf.Pow(.9f * ReachOf(cell.Height), 2);
+                foreach (var other in cells)
+                {
+                    float d = new Vector2(other.Floor.x - cell.Floor.x, other.Floor.z - cell.Floor.z).sqrMagnitude;
+                    if (d < best && Level(other) == Level(cell) && other.Zone == cell.Zone && Mathf.Abs(other.CeilingY - cell.CeilingY) < 8f && context.Spot(other) != null) { best = d; pick = other; }
+                }
+                if (pick == null) { stuck++; notes.Add("audit: floor cell at " + cell.Floor.ToString("F0") + " has no ceiling spot within reach that keeps the wall and lamp clearances"); continue; }
+                var mount = context.Mount(pick);
+                float area = pick.Height < 4f ? SmokeArea4 : SmokeArea20;
+                detectors.Add(new Detector { Ceiling = mount.point, Normal = mount.normal, Height = pick.Height, Area = area, Coverage = ReachOf(pick.Height), ClassName = pick.Height < 4f ? "광전식 스포트형 2종" : "광전식 스포트형 1종", ZoneId = pick.Zone, Level = Level(pick), Rule = "audit: floor point beyond reach" });
+                added++;
+            }
+            notes.Add("audit added " + added + " detectors; " + stuck + " floor cells without a possible spot");
         }
 
         /// <summary>The survey plus the mounting spot of each ceiling cell: clear of walls and lamp panels (asked for lazily, only for cells a detector may go on).</summary>
@@ -195,7 +257,7 @@ namespace ChooGuard.Editor
 
         // ── 배치 ──
 
-        private static void PlaceComponent(Context context, Component component, int level, int band, List<Detector> detectors, RegionReport region, List<string> notes)
+        private static bool PlaceComponent(Context context, Component component, int level, int band, List<Detector> detectors, RegionReport region, List<string> notes)
         {
             float mount = component.Real.Average(c => c.Height);
             float area = band == 0 ? SmokeArea4 : SmokeArea20;
@@ -204,9 +266,8 @@ namespace ChooGuard.Editor
             float reach = Mathf.Sqrt(area / 2f) * 1.3f;
             context.Register(component);
             var placeable = component.Real.Where(c => Clearance(c, component.Closed) >= 1f).ToList();
-            if (placeable.Count == 0) { notes.Add("no free ceiling for a detector in a component of " + component.Real.Count + " cells at " + component.Real[0].Floor.ToString("F0")); return; }
+            if (placeable.Count == 0) { return false; }
             float floorArea = component.Real.Count;
-            region.FloorArea += floorArea;
 
             // 주축을 따라 놓은 직사각형: u = 주축, v = 그 직각.
             var centre = new Vector2(component.Real.Average(c => c.Floor.x), component.Real.Average(c => c.Floor.z));
@@ -281,8 +342,8 @@ namespace ChooGuard.Editor
                 if (far.cell == null) break;
                 if (context.Spot(far.cell) == null) blocked.Add(far.cell); else placed.Add(far.cell);
             }
+            if (placed.Count == 0) return false;
             region.Minimum += minimum;
-            region.Placed += placed.Count;
             foreach (var cell in placed)
                 detectors.Add(new Detector
                 {
@@ -290,7 +351,7 @@ namespace ChooGuard.Editor
                     ClassName = className, ZoneId = cell.Zone, Level = level,
                     Rule = corridor ? "corridor 30 m" : "area " + area + " m2",
                 });
-            region.AreaPerDetector = region.Placed > 0 ? region.FloorArea / region.Placed : 0;
+            return true;
         }
 
         /// <summary>Columns × rows with columns × rows ≥ n whose cells are as square as possible (NFTC 203 gives the area per detector, not the layout).</summary>
@@ -376,67 +437,92 @@ namespace ChooGuard.Editor
             return (far, farDistance);
         }
 
-        // ── 에스컬레이터·주방 ──
+        // ── 에스컬레이터·화장실·주방 ──
 
+        /// <summary>Nearest ceiling cell to a floor point, on the same floor, within <paramref name="radius"/> metres, that has a mounting spot; only enclosed zones.</summary>
+        private static StationCeilings.Cell Nearest(Context context, StationCeilings.Result survey, Vector3 floorPoint, float radius, float maxHeight)
+        {
+            StationCeilings.Cell pick = null;
+            float best = radius * radius;
+            foreach (var c in survey.Cells)
+            {
+                if (Mathf.Abs(c.Floor.y - floorPoint.y) > .8f || c.Height >= maxHeight || !Enclosed.Contains(c.Zone)) continue;
+                float d = new Vector2(c.Floor.x - floorPoint.x, c.Floor.z - floorPoint.z).sqrMagnitude;
+                if (d < best && context.Spot(c) != null) { best = d; pick = c; }
+            }
+            return pick;
+        }
+
+        private static Detector Smoke(Context context, StationCeilings.Cell cell, string rule)
+        {
+            var mount = context.Mount(cell);
+            float area = cell.Height < 4f ? SmokeArea4 : SmokeArea20;
+            return new Detector { Ceiling = mount.point, Normal = mount.normal, Height = cell.Height, Area = area, Coverage = ReachOf(cell.Height), ClassName = cell.Height < 4f ? "광전식 스포트형 2종" : "광전식 스포트형 1종", ZoneId = cell.Zone, Level = Level(cell), Rule = rule };
+        }
+
+        private static bool SmokeNear(List<Detector> detectors, Vector3 point, float radius) =>
+            detectors.Exists(d => d.Smoke && Mathf.Abs(d.Ceiling.y - point.y) < 1f && new Vector2(d.Ceiling.x - point.x, d.Ceiling.z - point.z).magnitude < radius);
+
+        /// <summary>
+        /// Escalator slopes (2.4.2.1): a smoke detector at the ceiling above the upper landing when a detector is not already within 6 m.
+        /// A landing outside an enclosed zone (a platform under the open canopy) is exempt under 2.4.5.2 and noted.
+        /// </summary>
         private static void AddEscalatorDetectors(Context context, StationCeilings.Result survey, StationPoints points, List<Detector> detectors, List<string> notes)
         {
-            var byPosition = survey.Cells.GroupBy(c => (c.X, c.Z)).ToDictionary(g => g.Key, g => g.ToList());
+            int inside = 0;
             foreach (var escalator in points.Escalators.OrderBy(e => e.id, StringComparer.Ordinal))
             {
                 if (escalator.path == null || escalator.path.Length == 0) continue;
                 var top = escalator.path.OrderByDescending(p => p.y).First();
-                StationCeilings.Cell pick = null;
-                float best = 9f;
-                for (int dx = -3; dx <= 3; dx++)
-                    for (int dz = -3; dz <= 3; dz++)
-                    {
-                        if (!byPosition.TryGetValue((Mathf.FloorToInt(top.x) + dx, Mathf.FloorToInt(top.z) + dz), out var list)) continue;
-                        foreach (var c in list)
-                        {
-                            if (Mathf.Abs(c.Floor.y - top.y) > .8f || context.Spot(c) == null || c.Height >= CeilingLimit || !(Enclosed.Contains(c.Zone) || c.Zone == "northdeck" || c.Zone == "tracks")) continue;
-                            float d = new Vector2(c.Floor.x - top.x, c.Floor.z - top.z).sqrMagnitude;
-                            if (d < best * best) { best = Mathf.Sqrt(d); pick = c; }
-                        }
-                    }
-                if (pick == null) { notes.Add(escalator.id + ": no ceiling over the upper landing"); continue; }
-                var here = context.Mount(pick).point;
-                if (detectors.Exists(d => d.Smoke && Mathf.Abs(d.Ceiling.y - here.y) < 1f && new Vector2(d.Ceiling.x - here.x, d.Ceiling.z - here.z).magnitude < 6f)) continue;
-                detectors.Add(new Detector
+                var pick = Nearest(context, survey, top, 8f, CeilingLimit);
+                if (pick == null)
                 {
-                    Ceiling = here, Normal = context.Mount(pick).normal, Height = pick.Height, Area = pick.Height < 4f ? SmokeArea4 : SmokeArea20, Coverage = Mathf.Sqrt((pick.Height < 4f ? SmokeArea4 : SmokeArea20) / 2f),
-                    ClassName = pick.Height < 4f ? "광전식 스포트형 2종" : "광전식 스포트형 1종", ZoneId = pick.Zone, Level = Level(pick), Rule = "escalator slope 2.4.2.1",
-                });
+                    notes.Add("exempt 2.4.5.2: " + escalator.id + " upper landing " + top.ToString("F0") + " is open to the air (no enclosed ceiling within 8 m)");
+                    continue;
+                }
+                inside++;
+                var at = context.Mount(pick).point;
+                if (SmokeNear(detectors, at, 6f)) continue;
+                detectors.Add(Smoke(context, pick, "escalator slope 2.4.2.1"));
+            }
+            notes.Add("escalator upper landings under a ceiling: " + inside + " of " + points.Escalators.Count);
+        }
+
+        /// <summary>
+        /// Public toilets have no shower, so 2.4.5.5 does not exempt them: one smoke detector in the room near the entrance (2.4.3.10.3),
+        /// unless a detector already hangs within 4 m. A toilet point with no ceiling of an enclosed zone within 3 m is noted.
+        /// </summary>
+        private static void AddToiletDetectors(Context context, StationCeilings.Result survey, StationPoints points, List<Detector> detectors, List<string> notes)
+        {
+            foreach (var toilet in points.Of(PointKind.Toilet).OrderBy(t => t.Id, StringComparer.Ordinal))
+            {
+                var pick = Nearest(context, survey, toilet.Position, 3f, 4.5f);
+                if (pick == null) { notes.Add("toilet '" + toilet.Id + "' at " + toilet.Position.ToString("F0") + ": no ceiling of an enclosed zone within 3 m, no detector"); continue; }
+                var at = context.Mount(pick).point;
+                var existing = detectors.Find(d => d.Smoke && Mathf.Abs(d.Ceiling.y - at.y) < 1f && new Vector2(d.Ceiling.x - at.x, d.Ceiling.z - at.z).magnitude < 4f);
+                if (existing != null) { existing.Room = "toilet"; continue; }
+                var detector = Smoke(context, pick, "toilet 2.4.3.10.3 / 2.4.5.5");
+                detector.Room = "toilet";
+                detectors.Add(detector);
             }
         }
 
+        /// <summary>Kitchens of food shops (<see cref="IncidentDirector.KitchenOf"/>): a fixed-temperature spot heat detector; smoke detectors are exempt there (2.4.5.7).</summary>
         private static void AddKitchenDetectors(Context context, StationCeilings.Result survey, StationPoints points, List<Detector> detectors, List<string> notes)
         {
-            foreach (var shop in points.Of(PointKind.Shop).Where(s => Kitchen(s.Label)).OrderBy(s => s.Id, StringComparer.Ordinal))
+            foreach (var shop in points.Of(PointKind.Shop).Where(s => IncidentDirector.KitchenOf(s) != null).OrderBy(s => s.Id, StringComparer.Ordinal))
             {
                 // 매장 점은 카운터 앞 1.2 m 이다. 주방은 카운터 뒤(매장 안쪽)로 본다.
                 var inside = shop.Position + Quaternion.Euler(0, shop.Yaw, 0) * Vector3.forward * 2.2f;
-                StationCeilings.Cell pick = null;
-                float best = 4f * 4f;
-                foreach (var c in survey.Cells)
-                {
-                    if (Mathf.Abs(c.Floor.y - shop.Position.y) > .8f || c.Height >= 4f) continue;
-                    float d = new Vector2(c.Floor.x - inside.x, c.Floor.z - inside.z).sqrMagnitude;
-                    if (d < best && context.Spot(c) != null) { best = d; pick = c; }
-                }
+                var pick = Nearest(context, survey, new Vector3(inside.x, shop.Position.y, inside.z), 4f, 4f);
                 if (pick == null) { notes.Add("kitchen of '" + shop.Label + "': no low ceiling within 4 m of " + inside.ToString("F0")); continue; }
+                var mount = context.Mount(pick);
                 detectors.Add(new Detector
                 {
-                    Ceiling = context.Mount(pick).point, Normal = context.Mount(pick).normal, Height = pick.Height, Area = 70f, Coverage = Mathf.Sqrt(70f / 2f), Smoke = false,
+                    Ceiling = mount.point, Normal = mount.normal, Height = pick.Height, Area = 70f, Coverage = Mathf.Sqrt(70f / 2f), Smoke = false,
                     ClassName = "정온식 스포트형 특종", ZoneId = pick.Zone, Level = Level(pick), Rule = "kitchen " + shop.Label,
                 });
             }
-        }
-
-        /// <summary>Food shops with a kitchen (same words as IncidentDirector.Kitchens).</summary>
-        private static bool Kitchen(string label)
-        {
-            foreach (var word in new[] { "닭강정", "어묵", "도넛", "도나스", "떡볶이", "김밥", "한식", "명가", "SUBWAY", "제과", "단팥빵", "떡공방" }) if (label.Contains(word)) return true;
-            return false;
         }
     }
 }

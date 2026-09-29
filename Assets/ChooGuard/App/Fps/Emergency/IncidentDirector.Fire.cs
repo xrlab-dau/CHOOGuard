@@ -24,7 +24,8 @@ namespace ChooGuard.App.Fps.Emergency
             ("SUBWAY", "toaster oven", "오븐", false), ("제과", "bakery oven", "오븐", false), ("단팥빵", "bakery oven", "오븐", false), ("떡공방", "rice-cake steamer", "찜기", false),
         };
 
-        private static (string en, string ko, bool oil)? KitchenOf(StationPoints.Point shop)
+        /// <summary>The kitchen of a food-shop point (what could catch fire there), or null when the shop has no kitchen. Public for the equipment builders.</summary>
+        public static (string en, string ko, bool oil)? KitchenOf(StationPoints.Point shop)
         {
             foreach (var kitchen in Kitchens) if (shop.Label.Contains(kitchen.word)) return (kitchen.en, kitchen.ko, kitchen.oil);
             return null;
