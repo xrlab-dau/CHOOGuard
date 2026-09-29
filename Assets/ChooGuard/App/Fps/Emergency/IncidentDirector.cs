@@ -210,24 +210,30 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>
         /// People who could be the subject of a new emergency right now, grouped by zone so each cause draws its instances
         /// from different parts of the station. Picks follow the ranks (see above): the same person stays the pick of a cause
-        /// while they qualify.
+        /// while they qualify. One instance is refilled for every listing (no per-listing allocation besides the picks).
         /// </summary>
         private sealed class Pools
         {
             private readonly IncidentDirector director;
             private readonly Dictionary<string, List<Passenger>> byZone = new Dictionary<string, List<Passenger>>();
+            private readonly List<int> zoneRanks = new List<int>();
+            private readonly List<Passenger> zoneMatches = new List<Passenger>();
             private int slot;
 
-            public Pools(IncidentDirector owner)
+            public Pools(IncidentDirector owner) { director = owner; }
+
+            /// <summary>Starts a listing: sorts everyone who qualifies now into their zone.</summary>
+            public void Refill()
             {
-                director = owner;
-                var train = owner.Train;
-                foreach (var person in owner.crowd.People)
+                slot = 0;
+                foreach (var pool in byZone.Values) pool.Clear();
+                var train = director.Train;
+                foreach (var person in director.crowd.People)
                 {
                     if (person.Hostile || person.Hurt || !person.Body.Visible) continue;
                     if (person.Current == Passenger.Activity.InTrain && (train == null || train.DoorsOpen < .9f || !train.AtPlatform)) continue;
                     if (!Passenger.Routine(person.Current)) continue;
-                    var zone = owner.world.ZoneId(person.transform.position);
+                    var zone = director.world.ZoneId(person.transform.position);
                     if (!byZone.TryGetValue(zone, out var pool)) byZone[zone] = pool = new List<Passenger>();
                     pool.Add(person);
                 }
@@ -237,20 +243,34 @@ namespace ChooGuard.App.Fps.Emergency
             public List<Passenger> Spread(Func<Passenger, bool> filter, int count)
             {
                 int cause = slot++;
-                var picked = new List<Passenger>();
-                foreach (var zone in byZone.Keys.OrderBy(z => Mix(director.Rank(z), cause)))
+                var picked = new List<Passenger>(count);
+                zoneRanks.Clear();
+                zoneMatches.Clear();
+                foreach (var pair in byZone)
                 {
                     Passenger match = null;
                     int best = int.MaxValue;
-                    foreach (var person in byZone[zone])
+                    var people = pair.Value;
+                    for (int i = 0; i < people.Count; i++)
                     {
+                        var person = people[i];
                         // 목록은 여러 프레임에 걸쳐 만들어진다: 그 사이 역을 떠나 사라진 승객은 건너뛴다.
                         if (person == null || !filter(person)) continue;
                         int rank = Mix(director.Rank(person), cause);
                         if (rank < best) { best = rank; match = person; }
                     }
-                    if (match != null) picked.Add(match);
-                    if (picked.Count >= count) break;
+                    if (match == null) continue;
+                    zoneRanks.Add(Mix(director.Rank(pair.Key), cause));
+                    zoneMatches.Add(match);
+                }
+                // 구역 순위가 앞선 구역부터 count 명.
+                for (int n = 0; n < count && zoneMatches.Count > 0; n++)
+                {
+                    int first = 0;
+                    for (int i = 1; i < zoneRanks.Count; i++) if (zoneRanks[i] < zoneRanks[first]) first = i;
+                    picked.Add(zoneMatches[first]);
+                    zoneRanks.RemoveAt(first);
+                    zoneMatches.RemoveAt(first);
                 }
                 return picked;
             }
@@ -287,11 +307,11 @@ namespace ChooGuard.App.Fps.Emergency
         /// Every cause whose preconditions hold anywhere right now, each with one or two concrete instances (JEV 012
         /// every_cause_every_round), appended to <paramref name="list"/> one source (the pools, then each family) per step, so
         /// the real-time loop can spread a listing over frames. The family files list them; which instances they pick follows
-        /// the ranks so the list only changes when the world does.
+        /// the ranks so the list only changes when the world does. <paramref name="pools"/> is refilled by the first step.
         /// </summary>
-        private IEnumerable<bool> OriginSteps(List<Transition> list)
+        private IEnumerable<bool> OriginSteps(List<Transition> list, Pools pools)
         {
-            var pools = new Pools(this);
+            pools.Refill();
             yield return true;
             list.AddRange(FireOrigins(pools));
             yield return true;
@@ -322,32 +342,53 @@ namespace ChooGuard.App.Fps.Emergency
             EquipmentDevelopments(list);
         }
 
-        /// <summary>The same person or place can be the candidate of several causes, but every key names one cause: the first wins.</summary>
-        private static List<Transition> Distinct(List<Transition> list) => list.GroupBy(t => t.Key).Select(g => g.First()).ToList();
-
-        private List<Transition> Origins()
+        /// <summary>The same person or place can be the candidate of several causes, but every key names one cause: the first wins (in place).</summary>
+        private void Distinct(List<Transition> list)
         {
-            var list = new List<Transition>();
-            foreach (var _ in OriginSteps(list)) { }
-            return Distinct(list);
+            seenKeys.Clear();
+            int keep = 0;
+            for (int i = 0; i < list.Count; i++)
+                if (seenKeys.Add(list[i].Key)) list[keep++] = list[i];
+            list.RemoveRange(keep, list.Count - keep);
         }
+
+        private readonly HashSet<string> seenKeys = new HashSet<string>();
+        private Pools listingPools, wholePools;
 
         private string Profile(Passenger p) =>
             "passenger #" + p.Number + " (" + (p.Body.Female ? "woman" : "man") + (p.Elderly ? ", elderly" : "") + (p.Luggage == 2 ? ", large suitcase" : p.Luggage == 1 ? ", bag" : "") + ")";
 
         // 후보 설명은 1 s 마다 다시 만들어진다. 앉거나 서 있는 사람이 대부분이라 같은 자리의 이름(가장 가까운 표지를 찾는 일)을
-        // 반 미터 칸마다 기억해 둔다. 이름이 바뀌는 것은 열차(호차 위치·승강장 문 앞)뿐이라 열차 단계가 바뀔 때 비운다.
-        private readonly Dictionary<Vector3Int, string> places = new Dictionary<Vector3Int, string>();
-        private TrainService.Phase placesTrainStage;
+        // 반 미터 칸마다 기억해 둔다. 이름이 열차에 따라 바뀌는 것은 열차가 서는 승강장과 객차 안뿐이라, 열차 단계가 바뀔 때
+        // 그런 칸의 이름만 다시 짓는다.
+        private struct PlaceName
+        {
+            public string Text;
+            public bool TrainDependent;
+            public int Epoch;
+        }
 
-        /// <summary>The name staff would give a spot in a candidate's description, remembered per half-metre cell until the train changes stage.</summary>
+        private readonly Dictionary<Vector3Int, PlaceName> places = new Dictionary<Vector3Int, PlaceName>();
+        private TrainService.Phase placesTrainStage;
+        private int placesEpoch;
+
+        /// <summary>The name staff would give a spot in a candidate's description, remembered per half-metre cell.</summary>
         private string Place(Vector3 position)
         {
             var stage = Train != null ? Train.Stage : TrainService.Phase.Away;
-            if (stage != placesTrainStage || places.Count > 4000) { places.Clear(); placesTrainStage = stage; }
+            if (stage != placesTrainStage) { placesTrainStage = stage; placesEpoch++; }
+            if (places.Count > 4000) places.Clear();
             var cell = new Vector3Int(Mathf.RoundToInt(position.x * 2), Mathf.RoundToInt(position.y), Mathf.RoundToInt(position.z * 2));
-            if (!places.TryGetValue(cell, out var text)) places[cell] = text = world.Area(position) + ", " + world.Describe(position);
-            return text;
+            if (places.TryGetValue(cell, out var known) && (!known.TrainDependent || known.Epoch == placesEpoch)) return known.Text;
+            var platform = Train != null ? world.Points.PlatformAt(position) : null;
+            known = new PlaceName
+            {
+                Text = world.Area(position) + ", " + world.Describe(position),
+                TrainDependent = Train != null && (platform != null && platform.id == world.Points.Train?.platform || Train.CarAt(position) != null),
+                Epoch = placesEpoch,
+            };
+            places[cell] = known;
+            return known.Text;
         }
 
         private static bool Settled(Passenger p) =>

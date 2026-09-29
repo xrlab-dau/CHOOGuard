@@ -17,7 +17,11 @@ namespace ChooGuard.App.Fps.Emergency
     /// </summary>
     public sealed partial class IncidentDirector
     {
-        /// <summary>Environment variable a calibration run sets to scale every hazard rate (see plan.md, 실시간 판단 디렉터): it records hazard trajectories with almost no events. Unset = 1.</summary>
+        /// <summary>
+        /// Environment variable a calibration run sets to scale every hazard rate (see plan.md, 실시간 판단 디렉터): it records
+        /// hazard trajectories with almost no events. Read only in the editor and in development builds; a shipped player
+        /// always runs at 1.
+        /// </summary>
         public const string RateScaleVariable = "CHOOGUARD_RATE_SCALE";
 
         private float rateScale = 1f;
@@ -49,8 +53,6 @@ namespace ChooGuard.App.Fps.Emergency
             public string Key, Description;
             public Transition Transition;
             public ImminenceScale Scale;
-            /// <summary>The kind of cause or development with its scale: what a not yet rated candidate borrows a rating from.</summary>
-            public string KindKey;
             /// <summary>JEV's probability per imminence level for <see cref="Description"/>; null until rated.</summary>
             public float[] Levels;
             /// <summary>Events per second, from <see cref="Levels"/> and the scale's table.</summary>
@@ -77,26 +79,6 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<Candidate> gone = new List<Candidate>();
         private readonly List<float> rates = new List<float>();
         private readonly List<Candidate> drawn = new List<Candidate>();
-        private readonly List<float[]> usedLevels = new List<float[]>();
-        private readonly Dictionary<string, KindRating> kindRatings = new Dictionary<string, KindRating>();
-
-        /// <summary>
-        /// JEV's newest rating of a candidate of some kind and scale. A candidate JEV has not rated yet (it just appeared and the
-        /// answer is on its way) borrows it: the hazard then does not depend on how quickly JEV answers or how fast game time runs.
-        /// </summary>
-        private readonly struct KindRating
-        {
-            public readonly float[] Levels;
-            public readonly float Rate, At;
-
-            public KindRating(float[] levels, float rate, float at)
-            {
-                Levels = levels;
-                Rate = rate;
-                At = at;
-            }
-        }
-
         private System.Random drawRandom;
         private float nextBeat, nextWatch, integratedAt, lastEmergencyAt = -1;
         private int watchHash, stateHash, listedOrigins;
@@ -105,13 +87,16 @@ namespace ChooGuard.App.Fps.Emergency
         // 목록 만들기는 한 프레임에 원천 하나씩 나누어 한다(후보 목록 전체를 한 프레임에 만들면 수 ms 가 든다).
         private IEnumerator<bool> listing;
         private List<Transition> listed;
-        private float listingMs;
+        private float listingKilobytes;
+        private Cost listingCost;
 
         private void BeginCompose()
         {
             // 사건 추첨은 세계의 난수와 따로 굴린다: 판단이 몇 번 오갔는지가 승객·열차의 난수 흐름을 바꾸지 않는다.
             drawRandom = new System.Random(world.Seed ^ 0x0d1ce5);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (float.TryParse(System.Environment.GetEnvironmentVariable(RateScaleVariable), NumberStyles.Float, CultureInfo.InvariantCulture, out float scale) && scale >= 0) rateScale = scale;
+#endif
             log.Director.RateScale = rateScale;
         }
 
@@ -133,9 +118,12 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 beatWanted = false;
                 nextBeat = now + HeartbeatSeconds;
-                listed = new List<Transition>();
-                listing = ListingSteps(listed).GetEnumerator();
-                listingMs = 0;
+                listed = listed ?? new List<Transition>();
+                listed.Clear();
+                listingPools = listingPools ?? new Pools(this);
+                listing = ListingSteps(listed, listingPools).GetEnumerator();
+                listingCost = default;
+                listingKilobytes = 0;
             }
             if (listing != null) StepListing();
         }
@@ -175,17 +163,18 @@ namespace ChooGuard.App.Fps.Emergency
         /// What could happen next, one source per step: a new emergency while none is going on; otherwise developments of
         /// those that are, and separate new ones.
         /// </summary>
-        private IEnumerable<bool> ListingSteps(List<Transition> into)
+        private IEnumerable<bool> ListingSteps(List<Transition> into, Pools pools)
         {
             if (Stage == Phase.Calm)
             {
-                foreach (var step in OriginSteps(into)) yield return step;
+                foreach (var step in OriginSteps(into, pools)) yield return step;
                 yield break;
             }
             foreach (var step in DevelopmentSteps(into)) yield return step;
             var origins = new List<Transition>();
-            foreach (var step in OriginSteps(origins)) yield return step;
-            foreach (var origin in Distinct(origins))
+            foreach (var step in OriginSteps(origins, pools)) yield return step;
+            Distinct(origins);
+            foreach (var origin in origins)
             {
                 // 이미 있는 종류는 다시 만들지 않고, 지진은 진행 중인 사건 도중에 겹치지 않는다.
                 if (origin.Kind == "quake" || composedKinds.Contains(origin.Kind)) continue;
@@ -194,12 +183,14 @@ namespace ChooGuard.App.Fps.Emergency
             }
         }
 
-        /// <summary>The whole listing at once (a draw checking that its candidate still exists).</summary>
+        /// <summary>The whole listing at once (a draw checking that its candidate still exists); never shares state with a listing in progress.</summary>
         private List<Transition> Enumerate()
         {
+            wholePools = wholePools ?? new Pools(this);
             var list = new List<Transition>();
-            foreach (var _ in ListingSteps(list)) { }
-            return Distinct(list);
+            foreach (var _ in ListingSteps(list, wholePools)) { }
+            Distinct(list);
+            return list;
         }
 
         /// <summary>Brings the candidate set in line with the fresh list: new ones appear, ones whose text changed are marked for a new rating, ones no longer possible go.</summary>
@@ -214,7 +205,6 @@ namespace ChooGuard.App.Fps.Emergency
                 else if (candidate.Description != transition.Description) candidate.Stale = true;
                 candidate.Transition = transition;
                 candidate.Description = transition.Description;
-                if (candidate.KindKey == null || candidate.Scale != scale) candidate.KindKey = transition.Kind + "|" + (int)scale;
                 candidate.Scale = scale;
                 candidate.Seen = true;
             }
@@ -233,29 +223,47 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>One frame's slice of the listing; the frame that completes it also reconciles, builds the state, asks JEV and draws.</summary>
         private void StepListing()
         {
-            long began = Stopwatch.GetTimestamp();
+            var span = DirectorSpan.Begin();
+            long heap = System.GC.GetTotalMemory(false);
             bool more = listing.MoveNext();
-            float step = Elapsed(began);
-            listingMs += step;
-            if (more) { log.Director.Slice(step); return; }
+            var step = span.Stop();
+            listingCost += step;
+            if (more)
+            {
+                listingKilobytes += Allocated(heap);
+                log.Director.Slice(DirectorRecord.SliceKind.Step, step);
+                return;
+            }
             listing = null;
             float now = session.ShiftSeconds;
-            long reconciling = Stopwatch.GetTimestamp();
-            Reconcile(Distinct(listed));
+            var reconciling = DirectorSpan.Begin();
+            Distinct(listed);
+            Reconcile(listed);
             lastFocus = Focus(now, out stateHash);
-            float enumerationMs = listingMs + Elapsed(reconciling);
-            float requestMs = -1;
+            var enumeration = listingCost + reconciling.Stop();
+            Cost? request = null;
             if (!judging && !applying)
             {
-                long asking = Stopwatch.GetTimestamp();
-                if (SendDue(now, lastFocus)) requestMs = Elapsed(asking);
+                var asking = DirectorSpan.Begin();
+                if (SendDue(now, lastFocus)) request = asking.Stop();
             }
             Integrate(now);
-            log.Director.Beat(enumerationMs, requestMs);
-            log.Director.Slice(Elapsed(began));
+            listingKilobytes += Allocated(heap);
+            log.Director.Beat(enumeration, request, listingKilobytes);
+            log.Director.Slice(DirectorRecord.SliceKind.Close, span.Stop());
         }
 
-        private static float Elapsed(long since) => (float)((Stopwatch.GetTimestamp() - since) * 1000.0 / Stopwatch.Frequency);
+        /// <summary>
+        /// Kilobytes allocated since <paramref name="heapBefore"/> (managed heap in use; a collection in between makes it
+        /// read low, never high — 0 at worst).
+        /// </summary>
+        private static float Allocated(long heapBefore) => Mathf.Max(0, System.GC.GetTotalMemory(false) - heapBefore) / 1024f;
+
+        private bool AnyUnrated()
+        {
+            foreach (var candidate in candidates.Values) if (!candidate.Rated) return true;
+            return false;
+        }
 
         /// <summary>The rating needs asking for: none yet, made under another situation, the description drifted (not too often) or it is older than <paramref name="life"/>.</summary>
         private bool Due(Candidate candidate, float now, float life) =>
@@ -289,6 +297,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void Judged(Dictionary<string, JevAnswer> answers, List<Candidate> batch, List<string> descriptions, int askedState, float askedAt)
         {
+            var span = DirectorSpan.Begin();
             judging = false;
             if (Stage == Phase.Ended) return;
             if (answers == null) { log.Director.Round(false); NoticeSilence(); return; }
@@ -304,13 +313,13 @@ namespace ChooGuard.App.Fps.Emergency
                 candidate.JudgedAt = askedAt;
                 candidate.JudgedState = askedState;
                 candidate.Stale = candidate.Description != descriptions[i];
-                kindRatings[candidate.KindKey] = new KindRating(candidate.Levels, candidate.Rate, askedAt);
                 log.Director.Rated(candidate.Scale, candidate.Levels);
             }
             // 판단하는 사이 상황이 또 바뀌었으면 바로 다시 판단하고, 새로 생긴 후보가 있으면 다음 박동을 기다리지 않고 바로 묻는다.
             if (askedState != stateHash) nextBeat = 0;
-            if (!applying && lastFocus != null && candidates.Values.Any(candidate => !candidate.Rated)) SendDue(session.ShiftSeconds, lastFocus);
+            if (!applying && lastFocus != null && AnyUnrated()) SendDue(session.ShiftSeconds, lastFocus);
             Integrate(session.ShiftSeconds);
+            log.Director.Slice(DirectorRecord.SliceKind.Answer, span.Stop());
         }
 
         private void NoticeSilence()
@@ -323,9 +332,11 @@ namespace ChooGuard.App.Fps.Emergency
         // ── 추첨 ────────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Draws against the hazard over the game time since the last step: every rated candidate has its rate for that
-        /// stretch, something happens with probability 1 − exp(−Σrate · time) and which one follows the rates. The first
-        /// <see cref="QuietSeconds"/> of the shift carry no hazard at all.
+        /// Draws against the hazard over the game time since the last step: every candidate with a rating of its own has its
+        /// rate for that stretch (a rating is kept while the new one is on its way, and stops counting after
+        /// <see cref="MaxJudgmentAge"/>; a candidate JEV has not rated yet contributes nothing), something happens with
+        /// probability 1 − exp(−Σrate · time) and which one follows the rates. The first <see cref="QuietSeconds"/> of the
+        /// shift carry no hazard at all.
         /// </summary>
         private void Integrate(float now)
         {
@@ -333,43 +344,28 @@ namespace ChooGuard.App.Fps.Emergency
             integratedAt = now;
             rates.Clear();
             drawn.Clear();
-            usedLevels.Clear();
             float origin = 0, development = 0, share = Imminence.OriginShare(listedOrigins);
-            int first = -1, second = -1, third = -1, borrowed = 0;
+            int first = -1, second = -1, third = -1, valid = 0;
             if (now >= QuietSeconds)
                 foreach (var candidate in candidates.Values)
                 {
-                    float[] levels;
-                    float rate;
-                    if (candidate.Rated)
-                    {
-                        if (now - candidate.JudgedAt > MaxJudgmentAge) continue;
-                        levels = candidate.Levels;
-                        rate = candidate.Rate;
-                    }
-                    else if (kindRatings.TryGetValue(candidate.KindKey, out var kind) && now - kind.At <= MaxJudgmentAge)
-                    {
-                        levels = kind.Levels;
-                        rate = kind.Rate;
-                        borrowed++;
-                    }
-                    else continue;
+                    if (!candidate.Rated || now - candidate.JudgedAt > MaxJudgmentAge) continue;
+                    valid++;
                     bool isOrigin = candidate.Scale != ImminenceScale.Development;
-                    rate *= rateScale * (isOrigin ? share : 1f);
+                    float rate = candidate.Rate * rateScale * (isOrigin ? share : 1f);
                     if (rate <= 0) continue;
                     rates.Add(rate);
                     drawn.Add(candidate);
-                    usedLevels.Add(levels);
                     if (isOrigin) origin += rate; else development += rate;
                     int index = rates.Count - 1;
                     if (first < 0 || rate > rates[first]) { third = second; second = first; first = index; }
                     else if (second < 0 || rate > rates[second]) { third = second; second = index; }
                     else if (third < 0 || rate > rates[third]) third = index;
                 }
-            if (dt > 0 || now < QuietSeconds) log.Director.Trace(dt, origin, development, candidates.Count, rates.Count - borrowed, borrowed, Terms(first, second, third));
+            if (dt > 0 || now < QuietSeconds) log.Director.Trace(dt, origin, development, candidates.Count, valid, Terms(first, second, third));
             if (applying || dt <= 0) return;
             int pick = CompetingRisks.Draw(rates, dt, drawRandom);
-            if (pick >= 0) Happen(drawn[pick], rates[pick], usedLevels[pick]);
+            if (pick >= 0) Happen(drawn[pick], rates[pick]);
         }
 
         /// <summary>The highest rates right now as key:events per second, for the record.</summary>
@@ -382,9 +378,9 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         /// <summary>The draw picked <paramref name="chosen"/>: check it is still possible, ask how strongly it plays out, and make it happen.</summary>
-        private void Happen(Candidate chosen, float rate, float[] levelsUsed)
+        private void Happen(Candidate chosen, float rate)
         {
-            string detail = "JEV 수준 확률 " + string.Join("/", System.Array.ConvertAll(levelsUsed, p => p.ToString("0.00"))) + (chosen.Rated ? "" : " (같은 종류 후보의 판단)") + " · 초당 " + rate.ToString("0.#####") + " / 후보 " + candidates.Count + "개";
+            string detail = "JEV 수준 확률 " + string.Join("/", System.Array.ConvertAll(chosen.Levels, p => p.ToString("0.00"))) + " · 초당 " + rate.ToString("0.#####") + " / 후보 " + candidates.Count + "개";
             var fresh = Fresh(chosen.Key);
             if (fresh == null) { log.Director.Vanish(chosen.Key, chosen.Scale != ImminenceScale.Development, false); return; }
             if (fresh.Levels == null) { Execute(fresh, .5f, candidates.Count, detail); return; }

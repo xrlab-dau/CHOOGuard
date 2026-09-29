@@ -113,6 +113,7 @@ namespace ChooGuard.App.Fps.Emergency
                 ["jev"] = new JObject
                 {
                     ["status"] = session.Jev.Status,
+                    ["main_thread_per_ask"] = AskCost(session.Jev.MainThread),
                     ["usage"] = UsageJson(session.Jev.Usage),
                     ["lanes"] = new JObject
                     {
@@ -124,6 +125,36 @@ namespace ChooGuard.App.Fps.Emergency
                 },
             };
         }
+
+        /// <summary>
+        /// What each JEV request took from the main thread (per Ask; waiting for the pool threads and the network is not
+        /// counted): count, wall-clock percentiles, CPU-time percentiles where the platform measures them, and the same
+        /// without the first <see cref="WarmAsks"/> requests (the first ones of a shift still meet cold code).
+        /// </summary>
+        private static JObject AskCost(IReadOnlyList<Cost> costs)
+        {
+            var wall = new List<float>(costs.Count);
+            var cpu = new List<float>(costs.Count);
+            var steadyWall = new List<float>(costs.Count);
+            var steadyCpu = new List<float>(costs.Count);
+            for (int i = 0; i < costs.Count; i++)
+            {
+                wall.Add(costs[i].WallMs);
+                cpu.Add(costs[i].CpuMs);
+                if (i < WarmAsks) continue;
+                steadyWall.Add(costs[i].WallMs);
+                steadyCpu.Add(costs[i].CpuMs);
+            }
+            return new JObject
+            {
+                ["asks"] = costs.Count,
+                ["wall"] = DirectorRecord.Percentiles(wall),
+                ["cpu"] = DirectorSpan.CpuMeasured ? DirectorRecord.Percentiles(cpu) : null,
+                ["after_first_ten"] = new JObject { ["wall"] = DirectorRecord.Percentiles(steadyWall), ["cpu"] = DirectorSpan.CpuMeasured ? DirectorRecord.Percentiles(steadyCpu) : null },
+            };
+        }
+
+        private const int WarmAsks = 10;
 
         /// <summary>A lane's spend: the shift's totals, the average hourly rate over the shift and the highest minute.</summary>
         private JObject UsageJson(JevUsage usage) => new JObject
@@ -186,10 +217,15 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly EmergencySession session;
         private readonly int[,] levels = new int[3, Imminence.LevelCount];
         private readonly JArray trajectory = new JArray();
-        private readonly List<float> enumerationMs = new List<float>();
-        private readonly List<float> requestMs = new List<float>();
-        private readonly List<float> totalMs = new List<float>();
-        private readonly List<float> sliceMs = new List<float>();
+        private readonly List<float> enumerationMs = new List<float>(), enumerationCpu = new List<float>();
+        private readonly List<float> requestMs = new List<float>(), requestCpu = new List<float>();
+        private readonly List<float> totalMs = new List<float>(), totalCpu = new List<float>();
+        // 한 프레임에 디렉터가 쓴 시간(조각들의 합)과 조각 종류별 시간.
+        private readonly List<float> frameMs = new List<float>(), frameCpu = new List<float>();
+        private readonly List<float>[] sliceMs = { new List<float>(), new List<float>(), new List<float>() };
+        private readonly List<float>[] sliceCpu = { new List<float>(), new List<float>(), new List<float>() };
+        private int sliceFrame = -1;
+        private readonly List<float> allocatedKb = new List<float>();
         private readonly JArray vanished = new JArray();
         private float firstNewEmergency = -1;
 
@@ -217,27 +253,52 @@ namespace ChooGuard.App.Fps.Emergency
 
         /// <summary>
         /// The hazard the draw used over the last <paramref name="dt"/> seconds of game time (events per second): how many
-        /// candidates were listed, how many of them counted with their own rating and how many with the rating of the newest
-        /// candidate of their kind (not rated yet), and the highest terms.
+        /// candidates were listed, how many of them had a valid rating of their own (kept while the new one is on its way,
+        /// dropped after 30 s), and the highest terms.
         /// </summary>
-        public void Trace(float dt, float origin, float development, int candidates, int rated, int borrowed, string top)
+        public void Trace(float dt, float origin, float development, int candidates, int rated, string top)
         {
-            trajectory.Add(new JArray(Math.Round(session.ShiftSeconds, 2), Math.Round(dt, 3), origin, development, candidates, rated, borrowed, top));
+            trajectory.Add(new JArray(Math.Round(session.ShiftSeconds, 2), Math.Round(dt, 3), origin, development, candidates, rated, top));
         }
 
         /// <summary>
-        /// One heartbeat's cost in milliseconds: listing and reconciling candidates and building the state, then (when a
-        /// request was needed, otherwise negative) building and starting it. The listing is spread over frames.
+        /// One heartbeat's cost: listing and reconciling candidates and building the state, then (when a request was needed)
+        /// starting it, and the kilobytes the whole heartbeat allocated. The listing is spread over frames.
         /// </summary>
-        public void Beat(float enumeration, float request)
+        public void Beat(Cost enumeration, Cost? request, float allocatedKilobytes)
         {
-            enumerationMs.Add(enumeration);
-            if (request >= 0) requestMs.Add(request);
-            totalMs.Add(enumeration + Mathf.Max(0, request));
+            enumerationMs.Add(enumeration.WallMs);
+            enumerationCpu.Add(enumeration.CpuMs);
+            var asked = request ?? default;
+            if (request.HasValue)
+            {
+                requestMs.Add(asked.WallMs);
+                requestCpu.Add(asked.CpuMs);
+            }
+            var total = enumeration + asked;
+            totalMs.Add(total.WallMs);
+            totalCpu.Add(total.CpuMs);
+            allocatedKb.Add(allocatedKilobytes);
         }
 
-        /// <summary>What the director took from one frame (a step of the listing, or the closing step that also asks and draws).</summary>
-        public void Slice(float milliseconds) => sliceMs.Add(milliseconds);
+        /// <summary>The kind of frame work the director did: a step of the listing, the closing step (reconcile, state, request, draw) or processing a JEV answer.</summary>
+        public enum SliceKind { Step, Close, Answer }
+
+        /// <summary>What the director took from one frame; slices of the same frame add up to that frame's cost.</summary>
+        public void Slice(SliceKind kind, Cost cost)
+        {
+            sliceMs[(int)kind].Add(cost.WallMs);
+            sliceCpu[(int)kind].Add(cost.CpuMs);
+            if (Time.frameCount == sliceFrame)
+            {
+                frameMs[frameMs.Count - 1] += cost.WallMs;
+                frameCpu[frameCpu.Count - 1] += cost.CpuMs;
+                return;
+            }
+            sliceFrame = Time.frameCount;
+            frameMs.Add(cost.WallMs);
+            frameCpu.Add(cost.CpuMs);
+        }
 
         public JObject ToJson(int events, int newEmergencies)
         {
@@ -246,11 +307,25 @@ namespace ChooGuard.App.Fps.Emergency
                 ["rate_scale"] = RateScale, ["rounds"] = Rounds, ["unanswered_rounds"] = Unanswered, ["rated_candidates"] = Judged, ["vanished_draws"] = Vanished, ["vanished"] = vanished,
                 ["events"] = events, ["new_emergencies"] = newEmergencies, ["first_new_emergency_at"] = firstNewEmergency < 0 ? null : (JToken)Math.Round(firstNewEmergency, 1),
                 ["levels"] = new JObject { ["calm_origin"] = Counts(0), ["incident_origin"] = Counts(1), ["development"] = Counts(2) },
-                ["heartbeat_ms"] = new JObject { ["heartbeats"] = totalMs.Count, ["requests_built"] = requestMs.Count, ["frame_slices"] = sliceMs.Count, ["per_frame"] = Percentiles(sliceMs), ["enumeration"] = Percentiles(enumerationMs), ["request"] = Percentiles(requestMs), ["total"] = Percentiles(totalMs) },
-                ["hazard_columns"] = new JArray("t", "dt", "origin_per_second", "development_per_second", "candidates", "rated", "borrowed", "top_terms"),
+                ["heartbeat_ms"] = new JObject
+                {
+                    ["heartbeats"] = totalMs.Count, ["requests_built"] = requestMs.Count, ["frames_with_director_work"] = frameMs.Count,
+                    ["cpu_measured"] = DirectorSpan.CpuMeasured,
+                    ["per_frame"] = Percentiles(frameMs), ["enumeration"] = Percentiles(enumerationMs), ["request"] = Percentiles(requestMs), ["total"] = Percentiles(totalMs),
+                    ["per_frame_cpu"] = DirectorSpan.CpuMeasured ? Percentiles(frameCpu) : null, ["enumeration_cpu"] = DirectorSpan.CpuMeasured ? Percentiles(enumerationCpu) : null,
+                    ["request_cpu"] = DirectorSpan.CpuMeasured ? Percentiles(requestCpu) : null, ["total_cpu"] = DirectorSpan.CpuMeasured ? Percentiles(totalCpu) : null,
+                    ["by_slice_kind"] = new JObject { ["step"] = SliceStats(SliceKind.Step), ["close"] = SliceStats(SliceKind.Close), ["answer"] = SliceStats(SliceKind.Answer) },
+                },
+                ["gc_kilobytes_per_heartbeat"] = Percentiles(allocatedKb),
+                ["hazard_columns"] = new JArray("t", "dt", "origin_per_second", "development_per_second", "candidates", "rated", "top_terms"),
                 ["hazard"] = trajectory,
             };
         }
+
+        private JObject SliceStats(SliceKind kind) => new JObject
+        {
+            ["count"] = sliceMs[(int)kind].Count, ["wall"] = Percentiles(sliceMs[(int)kind]), ["cpu"] = DirectorSpan.CpuMeasured ? Percentiles(sliceCpu[(int)kind]) : null,
+        };
 
         private JArray Counts(int scale)
         {
@@ -259,7 +334,8 @@ namespace ChooGuard.App.Fps.Emergency
             return counts;
         }
 
-        private static JObject Percentiles(List<float> samples)
+        /// <summary>Median, 95th percentile and maximum of <paramref name="samples"/>.</summary>
+        public static JObject Percentiles(IReadOnlyCollection<float> samples)
         {
             if (samples.Count == 0) return new JObject { ["p50"] = 0, ["p95"] = 0, ["max"] = 0 };
             var sorted = new List<float>(samples);
