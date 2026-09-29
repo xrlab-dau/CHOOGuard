@@ -85,6 +85,7 @@ namespace ChooGuard.App.Fps.Emergency
             root.SetParent(transform, false);
             cameraTransform = session.Player.PlayerCamera.transform;
             BeginFacility();
+            BeginEquipment();
             // 첫 사건의 시각도 정해 두지 않는다. 서울발 KTX 가 들어와 사람들이 내리는 것을 볼 시간 뒤부터 묻는다.
             calmUntil = Time.time + world.Range(60, 100);
             session.RadioProviders.Add(Radio);
@@ -105,6 +106,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             Facilities.StationSignals.CallPointPressed -= CallPoint;
             EndFacility();
+            EndEquipment();
             HazardRegistry.Clear();
         }
 
@@ -147,6 +149,7 @@ namespace ChooGuard.App.Fps.Emergency
             CasualtyTick();
             TrainTick();
             FacilityTick();
+            EquipmentTick(dt);
             UpdateConsequences();
             if (Stage == Phase.Calm && !asking && Time.time > calmUntil && DoorMoment()) nextRound = Time.time;
             if (Time.time > nextRound && !asking && (Stage == Phase.Incident || Time.time > calmUntil)) Round();
@@ -346,6 +349,7 @@ namespace ChooGuard.App.Fps.Emergency
             list.AddRange(SecurityOrigins(pools));
             list.AddRange(TrainOrigins(pools));
             list.AddRange(FacilityOrigins(pools));
+            EquipmentOrigins(pools, list);
             // 같은 사람·장소가 여러 원인의 후보가 되어도 키는 원인마다 다르다.
             return list.GroupBy(t => t.Key).Select(g => g.First()).ToList();
         }
@@ -358,6 +362,7 @@ namespace ChooGuard.App.Fps.Emergency
             list.AddRange(SecurityDevelopments());
             list.AddRange(TrainDevelopments());
             list.AddRange(FacilityDevelopments());
+            EquipmentDevelopments(list);
             // 이미 벌어진 일과 별개로 새 일이 겹칠 수도 있다: 근무당 한 번, 이미 있는 종류는 빼고. 일어날지는 JEV 가 판단한다.
             if (!separateHappened)
             {
@@ -408,6 +413,7 @@ namespace ChooGuard.App.Fps.Emergency
                 else if (hazard.SensedAs != null && distance < hazard.NoticeRadius * .8f) Know(hazard, hazard.SensedAs);
             }
             LookAroundFacility(eye, forward);
+            LookAroundEquipment(eye, forward);
             foreach (var person in crowd.Injured)
                 if (!injuredKnown.Contains(person) && Vector3.Distance(eye, person.transform.position) < 6 && Vector3.Angle(forward, person.transform.position - eye) < 50)
                     CheckInjured(person);
@@ -470,6 +476,7 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var option in SecurityRadio()) yield return option;
             foreach (var option in TrainRadio()) yield return option;
             foreach (var option in FacilityRadio()) yield return option;
+            foreach (var option in EquipmentRadio()) yield return option;
         }
 
         private static EmergencySession.RadioOption Option(string label, Action send) => new EmergencySession.RadioOption { Label = label, Send = send };
@@ -695,6 +702,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void Reported(Hazard hazard)
         {
             FacilityReported(hazard);
+            EquipmentReported(hazard);
             TrainReported(hazard);
         }
 
@@ -702,6 +710,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void Resolved(Hazard hazard)
         {
             FacilityResolved(hazard);
+            EquipmentResolved(hazard);
             TrainResolved(hazard);
         }
 
