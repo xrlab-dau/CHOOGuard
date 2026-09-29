@@ -25,7 +25,7 @@ namespace ChooGuard.Editor
         private static readonly Dictionary<string, Color32> Colours = new Dictionary<string, Color32>
         {
             { "distribution_board", new Color32(255, 40, 40, 255) }, { "vending_machine", new Color32(50, 130, 255, 255) }, { "charging_kiosk", new Color32(40, 230, 90, 255) },
-            { "recycling_bin", new Color32(255, 150, 20, 255) }, { "litter_bin", new Color32(255, 240, 40, 255) }, { "ash_bin", new Color32(255, 60, 255, 255) },
+            { "recycling_bin", new Color32(255, 150, 20, 255) }, { "litter_bin", new Color32(255, 240, 40, 255) },
         };
 
         /// <summary>Height of an item's centre above its floor point (m), where the close-up looks.</summary>
@@ -95,6 +95,8 @@ namespace ChooGuard.Editor
                     if (equipment != null && !chosen.Contains(equipment)) chosen.Add(equipment);
                 }
             }
+            // 승강장·북측 데크의 비품은 전부(가림 규칙이 새로 적용된 곳이라 하나하나 본다).
+            foreach (var equipment in all.Where(e => e.Zone == "tracks" || e.Zone == "northdeck").OrderBy(e => e.Id, StringComparer.Ordinal)) if (!chosen.Contains(equipment)) chosen.Add(equipment);
             return chosen;
         }
 
@@ -142,6 +144,7 @@ namespace ChooGuard.Editor
                     var direction = target - eye;
                     if (Physics.CheckSphere(eye, .25f, ~0, QueryTriggerInteraction.Ignore)) continue;
                     // 카메라에서 항목 가운데로 쏜 광선이 그 항목을 먼저 맞혀야 한다(벽·기둥 뒤에서 본 그림을 빼기 위해).
+                    if (WallSpots.LineBlocked(eye, direction.normalized, direction.magnitude - 1f)) continue;
                     if (!Physics.Raycast(eye, direction.normalized, out var hit, direction.magnitude + .6f, ~0, QueryTriggerInteraction.Ignore) || hit.collider.GetComponentInParent<StationEquipment>() != equipment) continue;
                     camera.transform.position = eye;
                     camera.transform.rotation = Quaternion.LookRotation(direction);

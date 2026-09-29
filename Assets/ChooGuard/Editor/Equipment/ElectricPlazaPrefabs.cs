@@ -18,7 +18,7 @@ namespace ChooGuard.Editor
         public const float BoardBottom = 1.0f;
 
         public const string Board = "DistributionBoard", VendingDrink = "VendingDrink", VendingSnack = "VendingSnack", ChargingKiosk = "ChargingKiosk",
-            LitterBin = "LitterBin", RecyclingBin = "RecyclingBin", AshBin = "AshBin";
+            LitterBin = "LitterBin", RecyclingBin = "RecyclingBin";
 
         [Serializable] private sealed class Emission { public float strength; public float[] color; }
         [Serializable] private sealed class Entry { public string name, albedo; public Emission emission; }
@@ -34,7 +34,6 @@ namespace ChooGuard.Editor
             Save(ChargingKiosk, "charging_kiosk", "휴대폰 충전 키오스크", "ChargingKiosk", 45f);
             Save(LitterBin, "litter_bin", "휴지통", "StreetBin", 30f);
             Save(RecyclingBin, "recycling_bin", "분리수거함", "RecyclingBin", 30f);
-            Save(AshBin, "ash_bin", "담배꽁초 수거함", "AshBin", 30f);
         }
 
         private static void Save(string prefab, string kind, string label, string model, float drawDistance, bool batchable = true, Action<Transform> compose = null)

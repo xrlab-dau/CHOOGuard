@@ -40,5 +40,26 @@ namespace ChooGuard.Editor
             foreach (var collider in added) if (collider != null) UnityEngine.Object.DestroyImmediate(collider);
             added.Clear();
         }
+
+        /// <summary>
+        /// While the returned scope lives, rays also hit the back faces of mesh colliders. The twin's glass panes render two-sided but
+        /// their collider is one-sided, so a ray that comes from the pane's back (a person's line of sight, a scan along a wall)
+        /// would pass through it. Used only for the line-of-sight and glass checks: for the other measures (wall contact, the fan of
+        /// rays that counts an alcove) back faces would count the inside of every closed building mass.
+        /// </summary>
+        public static BackfaceHits Backfaces() => new BackfaceHits(true);
+
+        public readonly struct BackfaceHits : IDisposable
+        {
+            private readonly bool previous;
+
+            public BackfaceHits(bool on)
+            {
+                previous = Physics.queriesHitBackfaces;
+                Physics.queriesHitBackfaces = on;
+            }
+
+            public void Dispose() => Physics.queriesHitBackfaces = previous;
+        }
     }
 }

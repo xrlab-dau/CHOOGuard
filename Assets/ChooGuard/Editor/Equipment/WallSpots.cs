@@ -29,34 +29,61 @@ namespace ChooGuard.Editor
             public float Free;
             /// <summary>How many of nine rays fanned across the room in front (within 6 m, chest height) hit something: high in an alcove, a shop interior or a corridor, low in the open concourse.</summary>
             public int Enclosed;
+            /// <summary>Distance from a point 0.4 m in front of the wall to the nearest glass pane (shop front, window wall, curtain wall) in the half plane in front of the wall (m, capped at <see cref="GlassReach"/>).</summary>
+            public float GlassNearest;
             /// <summary>Name of the collider the wall belongs to (diagnostics and the column/wall distinction).</summary>
             public string Collider;
             /// <summary>The wall is a free-standing column or pier: it ends within a metre to a side.</summary>
             public bool Column => Mathf.Min(FlatPlus, FlatMinus) < 1f && Mathf.Max(FlatPlus, FlatMinus) < 1.6f;
         }
 
-        public const float Reach = 3f, FreeReach = 4f;
+        public const float Reach = 3f, FreeReach = 4f, GlassReach = 2.5f;
         private const float Step = .5f;
 
         /// <summary>Parts of the twin that are not a wall to put equipment against (the train set, doors, glass, escalator housings).</summary>
-        private static bool NotAWall(Collider collider, Transform train, Transform escalators)
+        private static bool NotAWall(RaycastHit hit, Transform train, Transform escalators)
         {
+            var collider = hit.collider;
             if (collider.GetComponentInParent<StationDoor>() != null) return true;
             var t = collider.transform;
             if (train != null && t.IsChildOf(train)) return true;
             if (escalators != null && t.IsChildOf(escalators)) return true;
+            return IsGlass(hit);
+        }
+
+        /// <summary>
+        /// Glass by the object's name or by the material of the very surface that was hit. The station's main shell is one mesh with
+        /// dozens of materials, one of them glazing: only the triangles of that material are glass, the rest of the mesh (pillars, walls)
+        /// is solid. A collider without a mesh hit to tell by (a box) counts as glass only when all its materials are.
+        /// </summary>
+        private static bool IsGlass(RaycastHit hit)
+        {
+            var collider = hit.collider;
             var name = collider.name.ToLowerInvariant();
             if (name.Contains("glass") || name.Contains("window") || name.Contains("유리") || name.Contains("창") || name.Contains("curtain")) return true;
             var renderer = collider.GetComponent<Renderer>();
-            if (renderer != null)
-                foreach (var material in renderer.sharedMaterials)
+            if (renderer == null) return false;
+            var materials = renderer.sharedMaterials;
+            if (materials.Length == 0) return false;
+            if (collider is MeshCollider meshCollider && meshCollider.sharedMesh != null && hit.triangleIndex >= 0)
+            {
+                var mesh = meshCollider.sharedMesh;
+                int first = hit.triangleIndex * 3;
+                for (int i = 0; i < mesh.subMeshCount; i++)
                 {
-                    if (material == null) continue;
-                    var m = material.name.ToLowerInvariant();
-                    if (m.Contains("glass") || m.Contains("유리") || m.Contains("window")) return true;
-                    if (material.HasProperty("_BaseColor") && material.GetColor("_BaseColor").a < .5f) return true;
+                    var sub = mesh.GetSubMesh(i);
+                    if (first >= sub.indexStart && first < sub.indexStart + sub.indexCount) return IsGlassMaterial(materials[Mathf.Min(i, materials.Length - 1)]);
                 }
-            return false;
+            }
+            return materials.All(IsGlassMaterial);
+        }
+
+        private static bool IsGlassMaterial(Material material)
+        {
+            if (material == null) return false;
+            var m = material.name.ToLowerInvariant();
+            if (m.Contains("glass") || m.Contains("유리") || m.Contains("window")) return true;
+            return material.HasProperty("_BaseColor") && material.GetColor("_BaseColor").a < .5f;
         }
 
         /// <summary>What a survey of the walkable floor found: the wall spots and the walkable floor area (m²) of every zone.</summary>
@@ -126,11 +153,12 @@ namespace ChooGuard.Editor
             return survey;
         }
 
-        private static readonly RaycastHit[] Hits = new RaycastHit[8];
+        private static readonly RaycastHit[] Hits = new RaycastHit[32];
 
         /// <summary>
-        /// The nearest hit of a ray. Colliders that lie in one plane (a glass panel over a wall, the temporary colliders next to the
-        /// twin's own) tie within a centimetre; the one whose hierarchy path sorts first wins, so two runs pick the same collider.
+        /// The nearest hit of a ray. Colliders that lie in one plane (a glass pane and the invisible collider behind it, the temporary
+        /// colliders next to the twin's own) tie within a centimetre: a glass pane wins, so glass is never mistaken for the wall it
+        /// stands over; among equals the hierarchy path that sorts first wins, so two runs pick the same collider.
         /// </summary>
         private static bool Cast(Vector3 origin, Vector3 direction, float distance, out RaycastHit best)
         {
@@ -140,12 +168,15 @@ namespace ChooGuard.Editor
             float nearest = float.MaxValue;
             for (int i = 0; i < count; i++) nearest = Mathf.Min(nearest, Hits[i].distance);
             string bestPath = null;
+            bool bestGlass = false;
             for (int i = 0; i < count; i++)
             {
                 if (Hits[i].distance - nearest > .01f) continue;
+                bool glass = IsGlass(Hits[i]);
                 string path = PathOf(Hits[i].collider.transform);
-                if (bestPath != null && string.CompareOrdinal(path, bestPath) >= 0) continue;
+                if (bestPath != null && (bestGlass && !glass || bestGlass == glass && string.CompareOrdinal(path, bestPath) >= 0)) continue;
                 bestPath = path;
+                bestGlass = glass;
                 best = Hits[i];
             }
             return true;
@@ -164,7 +195,7 @@ namespace ChooGuard.Editor
             if (!Cast(floor + Vector3.up * 1f, -inward, 1f, out var hit)) return null;
             if (hit.distance < .1f || Mathf.Abs(hit.normal.y) > .2f) return null;
             var normal = new Vector3(hit.normal.x, 0, hit.normal.z).normalized;
-            if (Vector3.Dot(normal, inward) < .9f || NotAWall(hit.collider, train, escalators)) return null;
+            if (Vector3.Dot(normal, inward) < .9f || NotAWall(hit, train, escalators)) return null;
             var wall = new Vector3(hit.point.x, floor.y, hit.point.z);
             var tangent = Vector3.Cross(Vector3.up, normal);
             var spot = new Spot { Wall = wall, Normal = normal, Tangent = tangent, Zone = zone.id, Collider = hit.collider.name };
@@ -173,7 +204,44 @@ namespace ChooGuard.Editor
             if (spot.FlatPlus + spot.FlatMinus < .4f) return null;
             spot.Free = FreeAhead(wall, normal, tangent);
             spot.Enclosed = Enclosure(wall, normal);
+            spot.GlassNearest = GlassDistance(wall, normal);
             return spot;
+        }
+
+        /// <summary>
+        /// How far the nearest glass lies from a point 0.4 m in front of the wall: rays every 15° across the half plane in front (along
+        /// the wall to either side included) at 1.1 m and 1.8 m height, capped at <see cref="GlassReach"/>. Glass counts from either
+        /// side; a solid front face nearer than the glass hides it, back faces of solid meshes are ignored.
+        /// </summary>
+        private static float GlassDistance(Vector3 wall, Vector3 normal)
+        {
+            using var backfaces = TwinColliders.Backfaces();
+            float nearest = GlassReach;
+            for (int angle = -90; angle <= 90; angle += 15)
+            {
+                var direction = Quaternion.AngleAxis(angle, Vector3.up) * normal;
+                foreach (float h in new[] { 1.1f, 1.8f })
+                {
+                    int count = Physics.RaycastNonAlloc(wall + normal * .4f + Vector3.up * h, direction, Hits, GlassReach, ~0, QueryTriggerInteraction.Ignore);
+                    float solid = GlassReach;
+                    for (int i = 0; i < count; i++)
+                        if (Vector3.Dot(Hits[i].normal, direction) < 0 && !IsGlass(Hits[i])) solid = Mathf.Min(solid, Hits[i].distance);
+                    for (int i = 0; i < count; i++)
+                        if (Hits[i].distance <= solid + .01f && IsGlass(Hits[i])) nearest = Mathf.Min(nearest, Hits[i].distance);
+                }
+            }
+            return nearest;
+        }
+
+        /// <summary>
+        /// A straight look from <paramref name="origin"/> along <paramref name="direction"/> is blocked by any surface of the twin seen
+        /// from either side: its walls and panes render two-sided while their colliders are one-sided, so a look from behind would
+        /// otherwise pass through them.
+        /// </summary>
+        public static bool LineBlocked(Vector3 origin, Vector3 direction, float distance)
+        {
+            using var backfaces = TwinColliders.Backfaces();
+            return Physics.Raycast(origin, direction, distance, ~0, QueryTriggerInteraction.Ignore);
         }
 
         /// <summary>How far the same wall plane continues along <paramref name="direction"/> at 1.0 m and 1.8 m height (a door, a jamb or a shopfront ends it).</summary>
@@ -186,7 +254,7 @@ namespace ChooGuard.Editor
                 {
                     var origin = wall + normal * .4f + direction * s + Vector3.up * h;
                     if (!Cast(origin, -normal, .6f, out var hit)) return reached;
-                    if (Mathf.Abs(hit.distance - .4f) > .06f || Vector3.Dot(hit.normal, normal) < .97f || NotAWall(hit.collider, train, escalators)) return reached;
+                    if (Mathf.Abs(hit.distance - .4f) > .06f || Vector3.Dot(hit.normal, normal) < .97f || NotAWall(hit, train, escalators)) return reached;
                 }
                 reached = s;
             }
@@ -202,11 +270,13 @@ namespace ChooGuard.Editor
             return hits;
         }
 
+        /// <summary>Free floor in front along the normal at body heights and across the item's width; surfaces count from either side (a one-sided wall stands in the way like any other).</summary>
         private static float FreeAhead(Vector3 wall, Vector3 normal, Vector3 tangent)
         {
+            using var backfaces = TwinColliders.Backfaces();
             float free = FreeReach;
             foreach (float h in new[] { .5f, 1.2f, 1.8f })
-                foreach (float side in new[] { -.4f, 0, .4f })
+                foreach (float side in new[] { -.6f, -.3f, 0, .3f, .6f })
                 {
                     var origin = wall + normal * .05f + tangent * side + Vector3.up * h;
                     if (Physics.Raycast(origin, normal, out var hit, FreeReach, ~0, QueryTriggerInteraction.Ignore)) free = Mathf.Min(free, hit.distance);

@@ -44,6 +44,7 @@ namespace ChooGuard.Editor
                 var table = items.GroupBy(i => i.zone).OrderBy(g => g.Key).Select(g => g.Key + " " + string.Join(" ", g.GroupBy(i => i.kind).OrderBy(k => k.Key).Select(k => k.Key + "=" + k.Count())));
                 Debug.Log("CG_ELECTRIC_PLAZA_ZONES\n" + string.Join("\n", table));
                 Debug.Log("CG_ELECTRIC_PLAZA_REJECTED (count, rule)\n" + string.Join("\n", placement.Rejected.Select(r => r.Value + "\t" + r.Key)));
+                Debug.Log("CG_ELECTRIC_PLAZA_UNMET (kind zone placed/quota: top rules)\n" + string.Join("\n", placement.Unmet));
                 string report = Path.Combine(Application.dataPath, "..", ".batch", "w4-clearance.csv");
                 Directory.CreateDirectory(Path.GetDirectoryName(report));
                 File.WriteAllLines(report, new[] { "id,kind,zone,free_m,wall_half_m,enclosed,door_m,landing_m,elevator_m,person_m,tightest_margin_m" }.Concat(placement.Clearances));
