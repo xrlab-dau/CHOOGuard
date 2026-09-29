@@ -228,6 +228,11 @@ namespace ChooGuard.Editor
             yield return StartShift(wait);
             if (wait.TimedOut) { Finish("the first fresh shift did not become ready"); yield break; }
             bool fresh = true;
+            if (config["tour"] is JArray tour && tour.Count > 0)
+            {
+                yield return Tour(tour.Select(t => (string)t).ToList());
+                fresh = false;
+            }
             foreach (var scenario in scenarios)
             {
                 current = new JObject
@@ -267,6 +272,57 @@ namespace ChooGuard.Editor
             yield return Until(() => !SceneFlow.Loading && EmergencySession.Current != old && Ready(EmergencySession.Current), 0, 240, outcome);
             if (outcome.TimedOut) yield break;
             yield return Sleep(Value("settle", 9f));
+        }
+
+        // ── 주방 둘러보기(사진) ─────────────────────────────────────────────
+
+        /// <summary>
+        /// Views of the kitchens as a player sees them, for the shops in <paramref name="labels"/>: from the concourse at the shop's
+        /// customer spot, along the cooking line from inside, at the gas meter and its valves, at the K-class extinguisher.
+        /// </summary>
+        private static IEnumerator Tour(List<string> labels)
+        {
+            current = new JObject
+            {
+                ["name"] = "tour", ["kind"] = "-", ["summary"] = "The kitchens of the food shops seen from the concourse and from inside.", ["result"] = "running",
+                ["checks"] = new JArray(), ["shots"] = new JArray(), ["consoleErrors"] = new JArray(), ["radioSent"] = new JArray(),
+            };
+            currentErrors = (JArray)current["consoleErrors"];
+            currentChecks = (JArray)current["checks"];
+            currentShots = (JArray)current["shots"];
+            phase = "tour";
+            foreach (var label in labels)
+            {
+                var shop = Session.World.Points.Of(PointKind.Shop).FirstOrDefault(p => p.Label == label);
+                var parts = shop == null ? new List<StationEquipment>() : EquipmentRegistry.All.Where(e => e.Text("shop") == shop.Id).ToList();
+                var line = parts.Where(e => e.Kind == KitchenAppliancePoint.FryerKind || e.Kind == KitchenAppliancePoint.RangeKind || e.Kind == KitchenAppliancePoint.OvenKind).ToList();
+                Check(label + " is a shop with a cooking line in the station", line.Count > 0, parts.Count + " kitchen parts");
+                if (line.Count == 0) continue;
+                var centre = line.Aggregate(Vector3.zero, (sum, e) => sum + e.transform.position) / line.Count + Vector3.up * 1f;
+                var forward = line[0].transform.forward;
+                yield return LookFrom(shop.Position, centre);
+                yield return Sleep(1.5f);
+                yield return Shot(label + "_1front");
+                yield return Stand(centre, forward, 3.2f);
+                yield return Sleep(1.5f);
+                yield return Shot(label + "_2line");
+                var meter = parts.FirstOrDefault(e => e.Kind == "gas_meter");
+                if (meter != null)
+                {
+                    yield return Stand(meter.transform.position + Vector3.up * .3f, meter.transform.forward, 1.8f);
+                    yield return Sleep(1.5f);
+                    yield return Shot(label + "_3gas");
+                }
+                var extinguisher = parts.FirstOrDefault(e => e.Kind == KitchenExtinguisherPoint.Kind);
+                if (extinguisher != null)
+                {
+                    yield return Stand(extinguisher.transform.position + Vector3.up * .3f, extinguisher.transform.forward, 1.8f);
+                    yield return Sleep(1.5f);
+                    yield return Shot(label + "_4k");
+                }
+            }
+            current["result"] = "done";
+            Close();
         }
 
         // ── 한 시나리오 ─────────────────────────────────────────────────────
@@ -391,10 +447,17 @@ namespace ChooGuard.Editor
             var position = focus + flat * distance;
             var start = new Vector3(position.x, focus.y + .3f, position.z);
             position.y = Physics.Raycast(start, Vector3.down, out var hit, 5f, ~0, QueryTriggerInteraction.Ignore) ? hit.point.y : focus.y - 1f;
-            var to = focus - (position + Vector3.up * player.EyeHeight);
+            yield return LookFrom(position, focus);
+        }
+
+        /// <summary>The staff member stands with the feet at <paramref name="feet"/> and looks at <paramref name="focus"/>.</summary>
+        private static IEnumerator LookFrom(Vector3 feet, Vector3 focus)
+        {
+            var player = Session.Player;
+            var to = focus - (feet + Vector3.up * player.EyeHeight);
             float yaw = Mathf.Atan2(to.x, to.z) * Mathf.Rad2Deg;
             float pitch = -Mathf.Atan2(to.y, new Vector2(to.x, to.z).magnitude) * Mathf.Rad2Deg;
-            player.RestorePhysicalPose(position, yaw, pitch);
+            player.RestorePhysicalPose(feet, yaw, pitch);
             Physics.SyncTransforms();
             yield return null;
             yield return null;
