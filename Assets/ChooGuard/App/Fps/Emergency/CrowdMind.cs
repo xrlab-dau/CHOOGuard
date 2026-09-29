@@ -234,6 +234,7 @@ namespace ChooGuard.App.Fps.Emergency
         public void Tick()
         {
             long began = System.Diagnostics.Stopwatch.GetTimestamp();
+            int collections = GC.CollectionCount(0), startedBefore = Metrics.Requests;
             float now = Time.time;
             bool usable = Usable;
             for (int i = queue.Count - 1; i >= 0; i--)
@@ -256,7 +257,7 @@ namespace ChooGuard.App.Fps.Emergency
                 Dispatch(now);
             }
             Metrics.Flush();
-            Metrics.Tick((System.Diagnostics.Stopwatch.GetTimestamp() - began) * 1000f / System.Diagnostics.Stopwatch.Frequency);
+            Metrics.Tick((System.Diagnostics.Stopwatch.GetTimestamp() - began) * 1000f / System.Diagnostics.Stopwatch.Frequency, GC.CollectionCount(0) != collections, Metrics.Requests - startedBefore, queue.Count);
         }
 
         /// <summary>A question nobody needs the answer to any more: the next round asks a fresh one.</summary>
@@ -381,6 +382,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void OnAnswers(List<Judgement> asked, Dictionary<string, JevAnswer> answers)
         {
             float real = Time.realtimeSinceStartup;
+            long began = System.Diagnostics.Stopwatch.GetTimestamp();
             foreach (var item in asked)
             {
                 item.Sent = false;
@@ -397,6 +399,7 @@ namespace ChooGuard.App.Fps.Emergency
                 else if (item.Everyday) ReceiveRoutine(item, answer);
                 else ApplyUrgent(item, answer, real);
             }
+            Metrics.Apply((System.Diagnostics.Stopwatch.GetTimestamp() - began) * 1000f / System.Diagnostics.Stopwatch.Frequency, asked.Count);
         }
 
         /// <summary>JEV did not answer this question (timeout, refusal, budget): ask again a moment later, with growing pauses.</summary>

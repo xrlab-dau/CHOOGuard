@@ -63,7 +63,7 @@ namespace ChooGuard.App.Fps.Emergency
         private float until, walkSpeed, nextRepath, reportStarted, stepSeconds, hiddenUntil, phoneCallEnds = -1;
         private Vector3 lookAt;
         private bool pendingStand, running, hidden, prefetched, alightQueued, helping, itinerary, blockedRaised;
-        private float nextPathCheck, stuckSince = -1;
+        private float nextPathCheck, stuckSince = -1, reportAskedAt;
         /// <summary>Gone over to help someone who collapsed or fell (see <see cref="HelpNearby"/>).</summary>
         public bool Helping => helping;
         private int reevaluations, sitTries;
@@ -886,6 +886,7 @@ namespace ChooGuard.App.Fps.Emergency
             Body.ClearPoses();
             Current = Activity.Report;
             reportStarted = Time.time;
+            reportAskedAt = 0;
             nextRepath = 0;
             phoneCallEnds = -1;
             if (Body.Seat != PersonBody.SeatPhase.None) Body.BeginStand();
@@ -916,15 +917,22 @@ namespace ChooGuard.App.Fps.Emergency
                 MoveAway(Focus != null ? Focus.DangerRadius + 10 : 10);
                 return;
             }
-            // 역무원이 너무 멀거나 오래 걸리면 그 자리에서 119·112 에 전화한다(통화 20~40초, 게임 압축 시간).
+            // 역무원이 너무 멀거나 오래 걸린다. JEV 가 있으면 그 자리에서 119·112 에 전화할지 판단하게 하고(계속 걸으면 15 초마다 다시),
+            // 없으면 규칙대로 전화한다(통화 20~40초, 게임 압축 시간).
             if (Time.time - reportStarted > 45 || distance > 90)
             {
-                Body.Stop();
-                Body.SetPhone(true);
-                phoneCallEnds = Time.time + World.Range(20, 40);
-                return;
+                if (!Crowd.Mind.Usable) { PhoneIn(); return; }
+                if (Time.time > reportAskedAt) { reportAskedAt = Time.time + 15f; Crowd.Mind.OnEnded(this); }
             }
             if (Time.time > nextRepath) { nextRepath = Time.time + 1f; Body.GoTo(StationWorld.OnNavMesh(player, 3), walkSpeed * 1.5f); }
+        }
+
+        /// <summary>Stops and phones 119 or 112 from where they stand (the staff member is too far away or taking too long).</summary>
+        public void PhoneIn()
+        {
+            Body.Stop();
+            Body.SetPhone(true);
+            phoneCallEnds = Time.time + World.Range(20, 40);
         }
 
         /// <summary>Goes over to someone who collapsed or fell, crouches beside them for a while.</summary>

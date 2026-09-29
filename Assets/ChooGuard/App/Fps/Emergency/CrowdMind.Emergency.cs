@@ -34,6 +34,7 @@ namespace ChooGuard.App.Fps.Emergency
         private static readonly Option Help = O("help", "Goes over to help the person who is hurt", (p, h, w) => p.HelpNearby(h));
         private static readonly Option Detour = O("detour", "Gives up on going there and picks something else to do instead", (p, h, w) => p.Replan());
         private static readonly Option OtherExit = O("other_exit", "Heads for a different exit because the way to theirs is blocked", (p, h, w) => p.Reroute());
+        private static readonly Option Phone = O("phone_emergency", "Stops and phones 119 or 112 from where they stand instead of walking on to the staff member", (p, h, w) => p.PhoneIn());
 
         private enum Table { Notice, Indirect, Instruction, Reevaluate, Quake, AfterQuake, Blocked }
 
@@ -74,6 +75,15 @@ namespace ChooGuard.App.Fps.Emergency
                 list.Add((StayAboard, .25f));
                 list.Add((Watch, .15f));
                 list.Add((Alert, .08f));
+                return list;
+            }
+            // 역무원에게 알리러 가는 길이 길어졌다: 계속 갈지, 이 자리에서 119·112 에 전화할지.
+            if (p.Current == Passenger.Activity.Report && table == Table.Reevaluate)
+            {
+                list.Add((Continue, .30f));
+                list.Add((Phone, .55f));
+                list.Add((Watch, .10f));
+                list.Add((Evacuate, p.Instructed ? .3f : .05f));
                 return list;
             }
             switch (table)
@@ -234,7 +244,11 @@ namespace ChooGuard.App.Fps.Emergency
             var hazard = item.Hazard;
             // 이미 다 된 일(불이 꺼졌다)에 대한 판단은 더 의미가 없다: 하던 일로 돌아간다.
             if (hazard != null && !hazard.Active && item.Trigger != Trigger.Instruction) { Metrics.Moot++; who.KeepGoing(); return; }
-            var chosen = DrawValid(answer, Options(item), item.Offered);
+            var options = Options(item);
+            // JEV 가 가능성을 준 선택지 중 답이 오는 사이 맞지 않게 된 것(두 사람이 이미 알리러 갔다, 문이 닫혔다)을 센다.
+            foreach (var key in item.Offered)
+                if (Odds(answer, key) > 0 && !options.Exists(o => o.Item1.Key == key && o.Item2 > 0)) { Metrics.Revalidated++; break; }
+            var chosen = DrawValid(answer, options, item.Offered);
             if (chosen == null) { Metrics.Moot++; return; }
             float game = Time.time - item.Raised, seconds = real - item.RaisedReal, trip = real - item.SentReal;
             Metrics.UrgentByJev++;

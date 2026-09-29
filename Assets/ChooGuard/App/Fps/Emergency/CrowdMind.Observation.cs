@@ -126,7 +126,8 @@ namespace ChooGuard.App.Fps.Emergency
                     text.Append("A few seconds have passed. ").Append(seen != null && p.Senses(h) ? "What they last saw of it: '" + seen + "'" + (metres != null ? " (about " + metres + ")" : "") + ", and it is still going on. " : "They know about it only from what they heard or saw others do; it is still going on. ");
                     break;
                 case Trigger.Ended:
-                    text.Append(p.Current == Passenger.Activity.Watch ? "They have watched from where they stand for a while. " : "They have reached the place they were moving to. ");
+                    text.Append(p.Current == Passenger.Activity.Report ? "They have been walking to tell the station staff member for a while and have not reached them yet. " :
+                        p.Current == Passenger.Activity.Watch ? "They have watched from where they stand for a while. " : "They have reached the place they were moving to. ");
                     if (seen != null && p.Senses(h)) text.Append("What they last saw: '").Append(seen).Append("'. ");
                     break;
                 case Trigger.Blocked:

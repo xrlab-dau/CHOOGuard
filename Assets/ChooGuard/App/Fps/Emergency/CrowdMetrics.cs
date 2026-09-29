@@ -17,6 +17,8 @@ namespace ChooGuard.App.Fps.Emergency
     public sealed class CrowdMetrics
     {
         public int Raised, Requests, Questions, Answered, Failures, Stale, Superseded, Moot, Dropped, Escalations, Itineraries;
+        /// <summary>JEV answers in which an option JEV had given a chance no longer fitted the person's state when the answer arrived.</summary>
+        public int Revalidated;
         public int UrgentByJev, UrgentLocally, RoutineByJev, RoutineLocally, FirstAnswers;
         public int MaxQueued;
         /// <summary>Longest a person kept doing their current action while the next step was still being judged (game seconds).</summary>
@@ -32,6 +34,8 @@ namespace ChooGuard.App.Fps.Emergency
         public readonly List<float> RoutineWait = new List<float>();
         /// <summary>CPU time of <see cref="CrowdMind.Tick"/> per frame (milliseconds; the first 30,000 frames).</summary>
         public readonly List<float> TickMs = new List<float>();
+        /// <summary>CPU time of applying one request's answers (milliseconds).</summary>
+        public readonly List<float> ApplyMs = new List<float>();
 
         private readonly string path;
         private readonly StringBuilder pending = new StringBuilder();
@@ -54,10 +58,24 @@ namespace ChooGuard.App.Fps.Emergency
             RoundTrip.Add(roundTrip);
         }
 
-        public void Tick(float milliseconds)
+        /// <summary>
+        /// One frame of <see cref="CrowdMind.Tick"/>. A frame slower than 16 ms is written to the run log with what it did
+        /// (requests started, a garbage collection inside it) so a hitch can be traced to its cause.
+        /// </summary>
+        public void Tick(float milliseconds, bool collected, int requestsStarted, int queued)
         {
             Elapsed = Time.realtimeSinceStartup - startedReal;
             if (TickMs.Count < 30000) TickMs.Add(milliseconds);
+            if (milliseconds > 16f)
+                Record(new JObject { ["spike_ms"] = Math.Round(milliseconds, 1), ["at_real_s"] = Math.Round(Elapsed, 1), ["gc"] = collected, ["requests_started"] = requestsStarted, ["requests_so_far"] = Requests, ["queued"] = queued });
+        }
+
+        /// <summary>Applying one request's answers (moving several people at once, path queries included); slow ones are logged.</summary>
+        public void Apply(float milliseconds, int questions)
+        {
+            if (ApplyMs.Count < 30000) ApplyMs.Add(milliseconds);
+            if (milliseconds > 16f)
+                Record(new JObject { ["apply_spike_ms"] = Math.Round(milliseconds, 1), ["at_real_s"] = Math.Round(Elapsed, 1), ["questions"] = questions });
         }
 
         /// <summary>Appends one decision to the run log (written in batches, never on the frame that made it).</summary>
@@ -113,6 +131,7 @@ namespace ChooGuard.App.Fps.Emergency
                 ["stale_dropped"] = Stale,
                 ["superseded"] = Superseded,
                 ["moot"] = Moot,
+                ["answers_revalidated"] = Revalidated,
                 ["dropped"] = Dropped,
                 ["escalations"] = Escalations,
                 ["itineraries"] = Itineraries,
@@ -130,6 +149,7 @@ namespace ChooGuard.App.Fps.Emergency
                 ["jev_round_trip_s"] = Spread(RoundTrip),
                 ["routine_wait_game_s"] = Spread(RoutineWait),
                 ["mind_tick_ms"] = Spread(TickMs),
+                ["apply_answers_ms"] = Spread(ApplyMs),
             };
             if (jev != null)
             {
