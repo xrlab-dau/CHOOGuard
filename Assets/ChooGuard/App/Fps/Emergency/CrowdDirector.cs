@@ -302,18 +302,30 @@ namespace ChooGuard.App.Fps.Emergency
             return Mathf.Sqrt(nearest);
         }
 
-        /// <summary>People around <paramref name="position"/> pick up on a cue without seeing the cause.</summary>
+        /// <summary>
+        /// People around <paramref name="position"/> pick up on a cue without seeing the cause. A bell (radius of hundreds of
+        /// metres) is heard across the whole station, on every floor; people running or shouting are noticed on the same floor only.
+        /// </summary>
         public void Alert(Vector3 position, float radius, Hazard hazard, Passenger source, string cue)
         {
             if (hazard == null) return;
             float r2 = radius * radius;
+            bool stationWide = radius >= 100f;
             foreach (var person in People)
             {
                 if (person == source || person.Noticed.Contains(hazard)) continue;
                 var d = person.transform.position - position;
-                if (Mathf.Abs(d.y) > 4) continue;
+                if (!stationWide && Mathf.Abs(d.y) > 4) continue;
                 if (d.sqrMagnitude < r2) person.Notice(hazard, true, cue);
             }
+        }
+
+        private void OnDestroy()
+        {
+            // 근무가 끝나면 판단 측정 요약을 기록에 남긴다(승객 판단 기록 crowd-*.jsonl 의 마지막 줄).
+            if (Mind == null) return;
+            Mind.Metrics.Record(new Newtonsoft.Json.Linq.JObject { ["summary"] = Mind.Metrics.Summary(Session != null ? Session.Jev : null) });
+            Mind.Metrics.Flush(true);
         }
 
         /// <summary>Staff tells the people around a passenger which way to leave. Returns how many were told.</summary>

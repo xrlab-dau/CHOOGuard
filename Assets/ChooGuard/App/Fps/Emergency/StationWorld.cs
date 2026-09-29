@@ -282,14 +282,16 @@ namespace ChooGuard.App.Fps.Emergency
 
         /// <summary>
         /// City exit with the shortest walk from <paramref name="from"/> whose path keeps clear of <paramref name="avoid"/>.
-        /// Falls back to the farthest exit from the danger when every path passes near it.
+        /// Falls back to the farthest exit from the danger when every path passes near it. <paramref name="except"/> (an exit
+        /// whose way turned out blocked) is never chosen while another exit exists.
         /// </summary>
-        public StationPoints.Point SafeExit(Vector3 from, Vector3? avoid, float clearance)
+        public StationPoints.Point SafeExit(Vector3 from, Vector3? avoid, float clearance, StationPoints.Point except = null)
         {
             StationPoints.Point best = null, farthest = null;
             float bestLength = float.PositiveInfinity, farthestDistance = -1;
             foreach (var exit in Points.Of(PointKind.Exit))
             {
+                if (exit == except) continue;
                 if (avoid.HasValue)
                 {
                     float away = Vector3.Distance(exit.Position, avoid.Value);
@@ -306,7 +308,7 @@ namespace ChooGuard.App.Fps.Emergency
                 }
                 if (clear && length < bestLength) { bestLength = length; best = exit; }
             }
-            return best ?? farthest ?? Points.Of(PointKind.Exit)[0];
+            return best ?? farthest ?? RandomExit(except);
         }
 
         public static float SegmentDistance(Vector3 point, Vector3 a, Vector3 b)
