@@ -86,12 +86,12 @@ namespace ChooGuard.App.Fps.Emergency
             if (outage == null) yield return PowerCut();
             if (falseAlarm == null && !alarm)
             {
-                var spot = world.Points.Of(PointKind.Wait).Where(w => w.Zone != "plaza" && w.Zone != "skyplaza" && w.Zone != "tracks").OrderBy(_ => world.Random.Next()).FirstOrDefault();
+                var spot = world.Points.Of(PointKind.Wait).Where(w => w.Zone != "plaza" && w.Zone != "skyplaza" && w.Zone != "tracks").OrderBy(w => Rank(w.Id)).FirstOrDefault();
                 if (spot != null) yield return DetectorTrips(spot);
             }
-            var leakAt = world.Points.Of(PointKind.Wait).Where(w => w.Zone != "plaza" && w.Zone != "skyplaza" && !world.IsClosed(w.Position, 3)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
+            var leakAt = world.Points.Of(PointKind.Wait).Where(w => w.Zone != "plaza" && w.Zone != "skyplaza" && !world.IsClosed(w.Position, 3)).OrderBy(w => Rank(w.Id)).FirstOrDefault();
             if (leakAt != null && leaks.Count == 0) yield return PipeBursts(leakAt);
-            var kitchen = world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s)?.ko == "가스레인지" && !gasLeaks.Exists(g => g.Shop == s.Label)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
+            var kitchen = world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s)?.ko == "가스레인지" && !gasLeaks.Exists(g => g.Shop == s.Label)).OrderBy(s => Rank(s.Id)).FirstOrDefault();
             if (kitchen != null) yield return GasSmell(kitchen);
         }
 
@@ -129,7 +129,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private Transition DetectorTrips(StationPoints.Point spot)
         {
-            var cause = DetectorCauses[world.Random.Next(DetectorCauses.Length)];
+            var cause = DetectorCauses[Rank(spot.Id) % DetectorCauses.Length];
             return new Transition
             {
                 Key = "detector_" + spot.Id, Kind = "false_alarm", Origin = true,

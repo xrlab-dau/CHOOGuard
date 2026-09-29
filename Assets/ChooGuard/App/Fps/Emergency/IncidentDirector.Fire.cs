@@ -35,12 +35,12 @@ namespace ChooGuard.App.Fps.Emergency
         private IEnumerable<Transition> FireOrigins(Pools pools)
         {
             foreach (var p in pools.Spread(p => p.CarriesPowerBank && Settled(p), 2)) yield return Overheat(p);
-            foreach (var shop in world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s) != null && !world.IsClosed(s.Position, 2)).OrderBy(_ => world.Random.Next()).Take(2)) yield return KitchenFire(shop);
-            var exit = world.Points.Of(PointKind.Exit).Where(e => e.Zone == "plaza" && !world.IsClosed(e.Position, 3)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
+            foreach (var shop in world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s) != null && !world.IsClosed(s.Position, 2)).OrderBy(s => Rank(s.Id)).Take(2)) yield return KitchenFire(shop);
+            var exit = world.Points.Of(PointKind.Exit).Where(e => e.Zone == "plaza" && !world.IsClosed(e.Position, 3)).OrderBy(e => Rank(e.Id)).FirstOrDefault();
             if (exit != null) yield return BinFire(exit);
-            var counter = world.Points.Of(PointKind.Counter).OrderBy(_ => world.Random.Next()).FirstOrDefault();
+            var counter = world.Points.Of(PointKind.Counter).OrderBy(c => Rank(c.Id)).FirstOrDefault();
             if (counter != null) yield return ElectricalFire(counter, "the ticket office equipment behind " + counter.Label, "매표창구 안 전기 설비");
-            var store = world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s) == null && !world.IsClosed(s.Position, 2)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
+            var store = world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s) == null && !world.IsClosed(s.Position, 2)).OrderBy(s => Rank(s.Id)).FirstOrDefault();
             if (store != null) yield return ElectricalFire(store, "the refrigerated display case of " + store.Label, "매장 냉장 진열대 배선");
             if (Train != null && Train.AtPlatform && Train.Stage != TrainService.Phase.Opening)
             {
