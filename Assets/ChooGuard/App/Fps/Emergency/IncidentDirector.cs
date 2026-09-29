@@ -194,32 +194,7 @@ namespace ChooGuard.App.Fps.Emergency
             public Action<float> Apply;
         }
 
-        // ── 후보의 안정된 순서 ────────────────────────────────────────────────
-        //
-        // 후보 목록은 1 s 마다(그리고 상황이 바뀔 때마다) 다시 만들어지고, 후보마다 JEV 의 판단이 이어진다. 그러려면 같은 사람·물건이
-        // 조건이 맞는 동안 계속 후보여야 한다: 목록이 바뀌는 것은 세계가 바뀔 때(사람이 오가고 조건이 달라질 때)뿐이다. 그래서 후보를
-        // 고르고 세우는 순서는 난수를 새로 굴리지 않고 대상마다 근무당 한 번 정해 둔 순위(Rank)로 정한다. 후보를 만드는 코드는
-        // StationWorld.Random 을 쓰지 않는다(쓰면 후보가 매번 바뀌고, 세계의 난수 흐름이 판단 횟수에 따라 어긋난다).
-
-        private System.Random rankRandom;
-        private readonly Dictionary<string, int> thingRanks = new Dictionary<string, int>();
-        private readonly Dictionary<int, int> personRanks = new Dictionary<int, int>();
-
-        /// <summary>This shift's rank of a place, thing or zone, drawn once from a stream of its own when it is first met.</summary>
-        private int Rank(string id)
-        {
-            if (!thingRanks.TryGetValue(id, out int rank)) thingRanks[id] = rank = rankRandom.Next();
-            return rank;
-        }
-
-        /// <summary>This shift's rank of a passenger, drawn once from a stream of its own when first met.</summary>
-        private int Rank(Passenger person)
-        {
-            if (!personRanks.TryGetValue(person.Number, out int rank)) personRanks[person.Number] = rank = rankRandom.Next();
-            return rank;
-        }
-
-        /// <summary>A rank seen through one cause's slot, so different causes pick different people from the same pool.</summary>
+        /// <summary>A rank (see IncidentDirector.Rank.cs) seen through one cause's slot, so different causes pick different people from the same pool.</summary>
         private static int Mix(int rank, int slot)
         {
             unchecked

@@ -73,8 +73,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void BeginCompose()
         {
-            // 순위와 사건 추첨은 세계의 난수와 따로 굴린다: 판단이 몇 번 오갔는지가 승객·열차의 난수 흐름을 바꾸지 않는다.
-            rankRandom = new System.Random(world.Seed ^ 0x5eed1e);
+            // 사건 추첨은 세계의 난수와 따로 굴린다: 판단이 몇 번 오갔는지가 승객·열차의 난수 흐름을 바꾸지 않는다.
             drawRandom = new System.Random(world.Seed ^ 0x0d1ce5);
         }
 
