@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ChooGuard.App.Fps.Equipment;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -138,13 +139,16 @@ namespace ChooGuard.App.Fps.Emergency
     }
 
     /// <summary>
-    /// A fire detector trips without a fire (dust, cooking fumes, steam or a faulty head). The bell rings everywhere and the
-    /// interlocked doors open until staff confirm there is no fire and the office resets the receiver; a 119 crew that
-    /// was called confirms it, the facility team checks the detector (NFTC 203; research.md).
+    /// A real ceiling detector trips without a fire (the fumes of the food shop's kitchen below it, or a faulty head). The
+    /// bell rings everywhere and the interlocked doors open until staff look at the detector and confirm there is no fire and
+    /// the office resets the receiver; a 119 crew that was called confirms it, the facility team checks the detector
+    /// (NFTC 203; research.md).
     /// </summary>
     public sealed class FalseAlarmHazard : Hazard
     {
         public string Cause { get; }
+        /// <summary>The detector that tripped; its lamp stays lit until the receiver is reset.</summary>
+        public DetectorPoint Detector { get; }
         public bool Checked { get; private set; }
         public bool Cleared { get; private set; }
 
@@ -182,11 +186,13 @@ namespace ChooGuard.App.Fps.Emergency
             return "시설 담당입니다. " + Where + " 감지기 점검했습니다. " + Cause + " 때문에 동작한 것으로 보입니다.";
         }
 
-        public FalseAlarmHazard(string id, Vector3 detector, string cause)
+        public FalseAlarmHazard(string id, DetectorPoint detector, string cause)
         {
             Id = id;
             Kind = HazardKind.FalseAlarm;
-            Position = detector;
+            Detector = detector;
+            // 사람이 서는 자리는 감지기 바로 아래 바닥이다(천장 높이의 감지기는 손이 닿지 않는다).
+            Position = detector.FloorPoint;
             Cause = cause;
             StartedAt = Time.time;
         }

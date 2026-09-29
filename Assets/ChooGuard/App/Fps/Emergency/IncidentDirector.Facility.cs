@@ -35,12 +35,6 @@ namespace ChooGuard.App.Fps.Emergency
         private bool Shaking => quake != null && quake.Shaking;
         private int FallenCount => fallen.Count;
 
-        /// <summary>Why a detector tripped with no fire, in words for JEV and for the facility team.</summary>
-        private static readonly (string en, string ko)[] DetectorCauses =
-        {
-            ("dust from ceiling work", "천장 작업 먼지"), ("cooking fumes drifting from a food shop", "매장 조리 연기"), ("steam from a cleaning machine", "청소 장비 수증기"), ("a faulty detector head", "감지기 고장"),
-        };
-
         private void BeginFacility()
         {
             hanging.AddRange(art.Hanging);
@@ -84,12 +78,7 @@ namespace ChooGuard.App.Fps.Emergency
                 if (elevator.Running && elevator.Inside.Count > 0 && !elevatorTraps.Exists(t => t.Active && t.Elevator == elevator)) yield return ElevatorStops(elevator);
             }
             if (outage == null) yield return PowerCut();
-            if (falseAlarm == null && !alarm)
-            {
-                var spot = world.Points.Of(PointKind.Wait).Where(w => w.Zone != "plaza" && w.Zone != "skyplaza" && w.Zone != "tracks").OrderBy(_ => world.Random.Next()).FirstOrDefault();
-                if (spot != null) yield return DetectorTrips(spot);
-            }
-            var leakAt = world.Points.Of(PointKind.Wait).Where(w => w.Zone != "plaza" && w.Zone != "skyplaza" && !world.IsClosed(w.Position, 3)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
+            var leakAt = world.Points.Of(PointKind.Wait).Where(w => w.Zone != "plaza" && w.Zone != "skyplaza" && !world.IsClosed(w.Position, 3)).OrderBy(w => Rank(w.Id)).FirstOrDefault();
             if (leakAt != null && leaks.Count == 0) yield return PipeBursts(leakAt);
             var kitchen = world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s)?.ko == "가스레인지" && !gasLeaks.Exists(g => g.Shop == s.Label)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
             if (kitchen != null) yield return GasSmell(kitchen);
@@ -126,17 +115,6 @@ namespace ChooGuard.App.Fps.Emergency
             Levels = new List<string> { "the lights flicker and come back within seconds", "part of the lighting goes out for under a minute", "the whole station goes dark on emergency lighting for a minute or two", "a long cut: lights out and escalators and elevators stop", "a long cut: lights out, lifts stop and people are trapped in an elevator" },
             Apply = StartOutage,
         };
-
-        private Transition DetectorTrips(StationPoints.Point spot)
-        {
-            var cause = DetectorCauses[world.Random.Next(DetectorCauses.Length)];
-            return new Transition
-            {
-                Key = "detector_" + spot.Id, Kind = "false_alarm", Origin = true,
-                Description = "A smoke detector above " + Place(spot.Position) + " trips although nothing is burning (" + cause.en + ").",
-                Apply = _ => StartFalseAlarm(spot.Position, cause.ko),
-            };
-        }
 
         private Transition PipeBursts(StationPoints.Point at) => new Transition
         {
@@ -323,26 +301,13 @@ namespace ChooGuard.App.Fps.Emergency
             if (restarted > 0) { escalatorsStopped = world.Escalators.Exists(e => !e.Running); log.Add("정전 뒤 점검한 에스컬레이터 " + restarted + "대 재가동"); }
         }
 
-        private void StartFalseAlarm(Vector3 detector, string cause)
-        {
-            falseAlarm = new FalseAlarmHazard("detector-" + ++serial, detector, cause) { Where = world.Describe(detector) };
-            Register(falseAlarm);
-            alarm = true;
-            // 수신기의 화재 신호: 불이 없어도 비상벨과 연동 문은 똑같이 동작한다.
-            Facilities.StationSignals.FireAlarm = true;
-            crowd.Alert(detector, 400, falseAlarm, null, "the fire alarm bell is ringing across the station");
-            Office("역무실입니다. " + falseAlarm.Where + " 화재감지기 동작. 현장 확인 바랍니다.");
-            Know(falseAlarm, "화재감지기 동작 무전");
-            officeFollowUp = Time.time + 40;
-            log.Add("자동화재탐지설비 동작 · 비상벨 · " + falseAlarm.Where);
-        }
-
         /// <summary>The receiver is reset: the bell stops and the interlocked doors go back to normal.</summary>
         private void ResetReceiver(string how)
         {
             if (!alarm) return;
             alarm = false;
             Facilities.StationSignals.FireAlarm = false;
+            ResetDetectors();
             log.Add("수신기 복구 · 비상벨 멈춤 (" + how + ")");
         }
 
@@ -501,13 +466,6 @@ namespace ChooGuard.App.Fps.Emergency
                     log.Once("fallen-" + board.GetInstanceID(), "역무원이 떨어진 " + board.Item.Label + KoreanText.Object(board.Item.Label) + " 확인");
                     session.SetMarker("fallen-" + board.GetInstanceID(), board.Impact, MarkerKind.Incident, "낙하물");
                 }
-            // 감지기 자리에 가 보면 불이 없다는 것을 안다(비화재보).
-            if (falseAlarm != null && !falseAlarm.Checked && Vector3.Distance(eye, falseAlarm.Position) < 7)
-            {
-                falseAlarm.Check();
-                log.Add("역무원이 감지기 주변 확인 · 불이나 연기 없음 · " + falseAlarm.Where);
-                session.Hud.Toast("불이나 연기가 없습니다 · 비화재보로 보입니다 · 역무실에 보고하세요", 6f);
-            }
         }
 
         private bool FacilityScene(out Vector3 scene)

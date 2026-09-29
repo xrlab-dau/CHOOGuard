@@ -176,19 +176,6 @@ namespace ChooGuard.App.Fps.Emergency
             if (nearest != null) crowd.Alert(nearest.Position, 400, nearest, null, "the fire alarm bell is ringing across the station");
         }
 
-        private void TriggerAlarm(FireHazard fire)
-        {
-            if (alarm) return;
-            alarm = true;
-            // 수신기의 화재 신호: 피난 경로의 자동문과 개집표기가 연동해 열린다(자료 D1·G1, JEV 010).
-            Facilities.StationSignals.FireAlarm = true;
-            log.Add("자동화재탐지설비 동작 · 비상벨 · " + fire.Where);
-            Office("역무실입니다. " + fire.Where + " 화재감지기 동작. 현장 확인 바랍니다.");
-            Know(fire, "화재감지기 동작 무전");
-            crowd.Alert(fire.Position, 400, fire, null, "the fire alarm bell is ringing across the station");
-            if (!calledBy.ContainsKey(Agency.Fire)) officeFollowUp = Time.time + 30;
-        }
-
         private void Rekindle(FireHazard old)
         {
             var fire = new FireHazard("fire-" + ++serial, old.Position, "꺼진 줄 알았던 " + old.Subject, old.Subject, .1f, art, old.Aboard ? Train.Carrier : root) { Where = old.Where, Advice = old.Advice, Aboard = old.Aboard };
@@ -228,8 +215,6 @@ namespace ChooGuard.App.Fps.Emergency
                     var close = NearestPerson(f.Position, 7, p => p.Current != Passenger.Activity.Evacuate && !p.Hurt && !p.Hostile);
                     if (close != null && Ready("overcome"))
                         yield return new Transition { Key = "overcome_" + close.Number, Kind = "overcome", Description = Profile(close) + " who stayed close to the fire at " + f.Where + " is overcome by the smoke", Apply = _ => close.Injure("화재 연기를 가까이서 들이마셨다", true) };
-                    if (!alarm && !f.Aboard && f.Intensity > .25f)
-                        yield return new Transition { Key = "alarm_" + f.Id, Kind = "detector_alarm", Description = "The automatic fire detector above " + f.Where + " triggers the alarm bell", Apply = _ => TriggerAlarm(f) };
                     if (f.Aboard && Ready("car_empties"))
                     {
                         var car = Train.CarAt(f.Position);
@@ -253,7 +238,6 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var fire in fires)
             {
                 if (fire.Extinguished) continue;
-                if (!alarm && !fire.Aboard && fire.Intensity > .55f) TriggerAlarm(fire);
                 // 아무도 신고하지 않으면 결국 승객이 직접 신고한다.
                 if (Time.time - fire.StartedAt > 75 && CountAware(fire) >= 4) CitizenCall(null, fire);
             }
