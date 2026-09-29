@@ -183,6 +183,8 @@ namespace ChooGuard.App.Fps.Emergency
             string name = installation.Kind == "distribution_board" ? "분전반 " + ElectricNetwork.BoardOf(installation).Code : installation.Label + " " + ElectricNetwork.Tag(installation);
             var fire = Ignite(origin, name + " " + (how ?? HowKo(installation)), fault.subject, magnitude, fault.advice, where: world.Describe(t.position) + " " + fault.subject);
             fire.Footprint = fault.footprint;
+            // 불은 설비 안에서 오른다. 불 표지의 충돌체가 분전반 문이나 자판기 앞을 막아 조준을 가로채지 않게 끈다.
+            foreach (var collider in fire.View.GetComponents<Collider>()) collider.enabled = false;
             fire.Installation = installation;
             fire.Electric = true;
             fire.WaterIsDangerous = true;
