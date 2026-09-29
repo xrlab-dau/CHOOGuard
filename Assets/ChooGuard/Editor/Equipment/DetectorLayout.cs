@@ -11,7 +11,7 @@ namespace ChooGuard.Editor
     /// <see cref="StationCeilings"/>. Pure function of the survey: the same twin gives the same detectors.
     /// <list type="bullet">
     /// <item>Smoke spot detectors (photoelectric): one per 150 m² under 4 m (class 2), one per 75 m² from 4 m to under 20 m (class 1) — tables 2.4.1 and 2.4.3.10.1. Ceilings of 20 m and more get none (2.4.5.1: only flame or analogue beam detectors would do).</item>
-    /// <item>Rooms: N = ceil(area / A) detectors on the grid of a rectangle laid along the room's main axis with cells as square as possible, each moved to the nearest cell of ceiling that is 0.6 m or more from walls and beams (2.4.3.10.5) and carries no lamp; then every floor point is checked to lie within the half diagonal of the detection area of a detector, and more are added where not.</item>
+    /// <item>Rooms: N = ceil(area / A) detectors on the grid of a rectangle laid along the room's main axis with cells as square as possible, each moved to the nearest cell of ceiling that is 0.6 m or more from walls and beams (2.4.3.10.5) and carries no lamp; then every floor point is checked to lie within 1.3 times the half diagonal of the detection area of a detector, and more are added where not.</item>
     /// <item>Corridors and passages (narrow, long): one per 30 m of walking distance, first at half a span from the end (2.4.3.10.2).</item>
     /// <item>Covered but open-sided spaces (the platforms under the concourse deck, the exit deck): nothing within 5 m of the open side (2.4.5.2 exempts spaces open to the air; 2.1.3's 5 m rule is used by analogy [I]). Outdoors: nothing.</item>
     /// <item>Escalator slopes need a smoke detector (2.4.2.1): one at the ceiling above the upper landing. Kitchens of food shops: a fixed-temperature spot heat detector, special class, 70 m² under 4 m (2.4.3.4, table 2.4.3.5, 2.4.5.7).</item>
@@ -37,7 +37,7 @@ namespace ChooGuard.Editor
         }
 
         private static readonly HashSet<string> Enclosed = new HashSet<string> { "hall2f", "main2f", "southgate", "eastexit", "upper3f", "ground1f" };
-        private const float SmokeArea4 = 150f, SmokeArea20 = 75f, ExposureMetres = 5f, WallClear = 1.1f, CorridorWalk = 30f, CeilingLimit = 20f, MinComponentCells = 6;
+        private const float SmokeArea4 = 150f, SmokeArea20 = 75f, ExposureMetres = 5f, WallClear = .65f, CorridorWalk = 30f, CeilingLimit = 20f, MinComponentCells = 6;
 
         private static int Level(StationCeilings.Cell c) => c.Floor.y < 3f ? 0 : c.Floor.y < 9.5f ? 1 : 2;
         private static int Band(float h) => h < 4f ? 0 : h < 8f ? 1 : h < 15f ? 2 : 3;
@@ -83,15 +83,40 @@ namespace ChooGuard.Editor
             return true;
         }
 
-        /// <summary>The survey plus the lamp-free mounting spot of each ceiling cell (asked for lazily: only cells a detector may go on).</summary>
+        /// <summary>The survey plus the mounting spot of each ceiling cell: clear of walls and lamp panels (asked for lazily, only for cells a detector may go on).</summary>
         private sealed class Context
         {
             private readonly StationCeilings.Result survey;
             private readonly Dictionary<StationCeilings.Cell, Vector2?> spots = new Dictionary<StationCeilings.Cell, Vector2?>();
+            private readonly Dictionary<StationCeilings.Cell, HashSet<(int x, int z)>> closedOf = new Dictionary<StationCeilings.Cell, HashSet<(int, int)>>();
+            private readonly HashSet<(int x, int z)> anyCeiling;
 
-            public Context(StationCeilings.Result survey) { this.survey = survey; }
+            public Context(StationCeilings.Result survey)
+            {
+                this.survey = survey;
+                anyCeiling = new HashSet<(int, int)>(survey.Cells.Select(c => (c.X, c.Z)));
+            }
 
-            /// <summary>The point inside the cell nearest its centre that is 0.3 m clear of every lamp panel (0.15 m steps), or null when lamps cover the cell.</summary>
+            /// <summary>Tells which area a cell belongs to, so the wall distance of its spot is measured against that area's edge.</summary>
+            public void Register(Component component) { foreach (var cell in component.Real) closedOf[cell] = component.Closed; }
+
+            /// <summary>Distance from a point in the cell to the nearest square outside its area (a wall, a step in the ceiling), metres; 3 when farther.</summary>
+            private float WallDistance(Vector2 point, StationCeilings.Cell cell)
+            {
+                var inside = closedOf.TryGetValue(cell, out var closed) ? closed : anyCeiling;
+                float best = 3f;
+                for (int dx = -3; dx <= 3; dx++)
+                    for (int dz = -3; dz <= 3; dz++)
+                    {
+                        int x = cell.X + dx, z = cell.Z + dz;
+                        if (inside.Contains((x, z))) continue;
+                        float nx = Mathf.Clamp(point.x, x, x + 1), nz = Mathf.Clamp(point.y, z, z + 1);
+                        best = Mathf.Min(best, Mathf.Sqrt((point.x - nx) * (point.x - nx) + (point.y - nz) * (point.y - nz)));
+                    }
+                return best;
+            }
+
+            /// <summary>The point inside the cell nearest its centre that is 0.65 m from every wall and 0.3 m clear of every lamp panel (0.15 m steps), or null.</summary>
             public Vector2? Spot(StationCeilings.Cell cell)
             {
                 if (spots.TryGetValue(cell, out var known)) return known;
@@ -101,18 +126,20 @@ namespace ChooGuard.Editor
                     for (int j = -3; j <= 3; j++)
                     {
                         float d = (i * i + j * j) * .0225f;
-                        if (d >= best || survey.LampNear(cell.Floor.x + i * .15f, cell.Floor.z + j * .15f, cell.CeilingY, .3f)) continue;
+                        var point = new Vector2(cell.Floor.x + i * .15f, cell.Floor.z + j * .15f);
+                        if (d >= best || WallDistance(point, cell) < WallClear || survey.LampNear(point.x, point.y, cell.CeilingY, .3f)) continue;
                         best = d;
-                        found = new Vector2(cell.Floor.x + i * .15f, cell.Floor.z + j * .15f);
+                        found = point;
                     }
                 return spots[cell] = found;
             }
 
-            /// <summary>The ceiling point a detector on this cell is mounted at.</summary>
-            public Vector3 Mount(StationCeilings.Cell cell)
+            /// <summary>The ceiling point a detector on this cell is mounted at (the ceiling's own height and slope at the spot) and the ceiling's downward normal there.</summary>
+            public (Vector3 point, Vector3 normal) Mount(StationCeilings.Cell cell)
             {
                 var spot = Spot(cell) ?? new Vector2(cell.Floor.x, cell.Floor.z);
-                return new Vector3(spot.x, cell.CeilingY, spot.y);
+                var hit = survey.CeilingAt(spot.x, spot.y, cell.Floor.y);
+                return (new Vector3(spot.x, hit?.y ?? cell.CeilingY, spot.y), hit?.normal ?? cell.Normal);
             }
         }
 
@@ -173,8 +200,10 @@ namespace ChooGuard.Editor
             float mount = component.Real.Average(c => c.Height);
             float area = band == 0 ? SmokeArea4 : SmokeArea20;
             string className = band == 0 ? "광전식 스포트형 2종" : "광전식 스포트형 1종";
-            float reach = Mathf.Sqrt(area / 2f);
-            var placeable = component.Real.Where(c => Clearance(c, component.Closed) >= WallClear).ToList();
+            // 조문은 담당면적만 정한다. 불규칙한 구역에서는 바닥 점이 정사각 칸의 반 대각선보다 3할까지 더 멀어도 면적 기준은 지킨다.
+            float reach = Mathf.Sqrt(area / 2f) * 1.3f;
+            context.Register(component);
+            var placeable = component.Real.Where(c => Clearance(c, component.Closed) >= 1f).ToList();
             if (placeable.Count == 0) { notes.Add("no free ceiling for a detector in a component of " + component.Real.Count + " cells at " + component.Real[0].Floor.ToString("F0")); return; }
             float floorArea = component.Real.Count;
             region.FloorArea += floorArea;
@@ -213,8 +242,8 @@ namespace ChooGuard.Editor
                 float side = Mathf.Sqrt(area);
                 if (floorArea >= .75f * length * width)
                 {
-                    // 반듯한 방: 주축을 따라 놓은 격자, 칸 한 변이 √A 이하(칸 넓이 ≤ 담당면적).
-                    int nx = Mathf.Max(1, Mathf.CeilToInt(length / side - .05f)), ny = Mathf.Max(1, Mathf.CeilToInt(width / side - .05f));
+                    // 반듯한 방: 주축을 따라 놓은 격자. 직사각형 넓이 ÷ 담당면적 이상의 칸을 가장 정사각형에 가깝게 나눈다(칸 넓이 ≤ 담당면적).
+                    var (nx, ny) = Grid(length, width, Mathf.Max(minimum, Mathf.CeilToInt(length * width / area - .02f)));
                     for (int i = 0; i < nx; i++)
                         for (int j = 0; j < ny; j++)
                             nodes.Add(centre + u * (u0 + (i + .5f) * length / nx) + v * (v0 + (j + .5f) * width / ny));
@@ -257,11 +286,25 @@ namespace ChooGuard.Editor
             foreach (var cell in placed)
                 detectors.Add(new Detector
                 {
-                    Ceiling = context.Mount(cell), Normal = cell.Normal, Yaw = angle, Height = cell.Height, Area = area, Coverage = reach,
+                    Ceiling = context.Mount(cell).point, Normal = context.Mount(cell).normal, Yaw = angle, Height = cell.Height, Area = area, Coverage = reach,
                     ClassName = className, ZoneId = cell.Zone, Level = level,
                     Rule = corridor ? "corridor 30 m" : "area " + area + " m2",
                 });
             region.AreaPerDetector = region.Placed > 0 ? region.FloorArea / region.Placed : 0;
+        }
+
+        /// <summary>Columns × rows with columns × rows ≥ n whose cells are as square as possible (NFTC 203 gives the area per detector, not the layout).</summary>
+        private static (int, int) Grid(float length, float width, int n)
+        {
+            int bestX = 1, bestY = n;
+            float best = float.MaxValue;
+            for (int nx = 1; nx <= n; nx++)
+            {
+                int ny = Mathf.CeilToInt(n / (float)nx);
+                float score = Mathf.Max(length / nx, width / ny);
+                if (score < best - 1e-4f) { best = score; bestX = nx; bestY = ny; }
+            }
+            return (bestX, bestY);
         }
 
         /// <summary>Centres of <paramref name="k"/> equal-area pieces of the floor (Lloyd's algorithm from a farthest-point start, deterministic).</summary>
@@ -356,11 +399,11 @@ namespace ChooGuard.Editor
                         }
                     }
                 if (pick == null) { notes.Add(escalator.id + ": no ceiling over the upper landing"); continue; }
-                var here = context.Mount(pick);
+                var here = context.Mount(pick).point;
                 if (detectors.Exists(d => d.Smoke && Mathf.Abs(d.Ceiling.y - here.y) < 1f && new Vector2(d.Ceiling.x - here.x, d.Ceiling.z - here.z).magnitude < 6f)) continue;
                 detectors.Add(new Detector
                 {
-                    Ceiling = here, Normal = pick.Normal, Height = pick.Height, Area = pick.Height < 4f ? SmokeArea4 : SmokeArea20, Coverage = Mathf.Sqrt((pick.Height < 4f ? SmokeArea4 : SmokeArea20) / 2f),
+                    Ceiling = here, Normal = context.Mount(pick).normal, Height = pick.Height, Area = pick.Height < 4f ? SmokeArea4 : SmokeArea20, Coverage = Mathf.Sqrt((pick.Height < 4f ? SmokeArea4 : SmokeArea20) / 2f),
                     ClassName = pick.Height < 4f ? "광전식 스포트형 2종" : "광전식 스포트형 1종", ZoneId = pick.Zone, Level = Level(pick), Rule = "escalator slope 2.4.2.1",
                 });
             }
@@ -383,7 +426,7 @@ namespace ChooGuard.Editor
                 if (pick == null) { notes.Add("kitchen of '" + shop.Label + "': no low ceiling within 4 m of " + inside.ToString("F0")); continue; }
                 detectors.Add(new Detector
                 {
-                    Ceiling = context.Mount(pick), Normal = pick.Normal, Height = pick.Height, Area = 70f, Coverage = Mathf.Sqrt(70f / 2f), Smoke = false,
+                    Ceiling = context.Mount(pick).point, Normal = context.Mount(pick).normal, Height = pick.Height, Area = 70f, Coverage = Mathf.Sqrt(70f / 2f), Smoke = false,
                     ClassName = "정온식 스포트형 특종", ZoneId = pick.Zone, Level = Level(pick), Rule = "kitchen " + shop.Label,
                 });
             }

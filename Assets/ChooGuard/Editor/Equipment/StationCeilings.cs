@@ -99,6 +99,8 @@ namespace ChooGuard.Editor
             public List<Cell> Open;
             /// <summary>Whether a lamp panel or LED strip of the ceiling lies within <c>radius</c> metres of (x, z) at that ceiling height.</summary>
             public Func<float, float, float, float, bool> LampNear;
+            /// <summary>Height and downward normal of the lowest ceiling at least <see cref="MinHeight"/> over <c>floorY</c> at (x, z), or null.</summary>
+            public Func<float, float, float, (float y, Vector3 normal)?> CeilingAt;
         }
 
         /// <summary>
@@ -184,10 +186,17 @@ namespace ChooGuard.Editor
             foreach (var cell in cells) cell.Zone = points.ZoneAt(cell.Floor + Vector3.up * .1f)?.id ?? "";
             foreach (var cell in open) cell.Zone = points.ZoneAt(cell.Floor + Vector3.up * .1f)?.id ?? "";
             var lampHits = new List<(float y, int owner, Vector3 normal)>();
+            var ceilingHits = new List<(float y, int owner, Vector3 normal)>();
             return new Result
             {
                 Cells = cells.OrderBy(c => c.X).ThenBy(c => c.Z).ThenBy(c => c.Floor.y).ToList(),
                 Open = open.OrderBy(c => c.X).ThenBy(c => c.Z).ThenBy(c => c.Floor.y).ToList(),
+                CeilingAt = (x, z, floorY) =>
+                {
+                    ceilings.At(x, z, ceilingHits);
+                    int found = ceilingHits.FindIndex(c => c.y >= floorY + MinHeight && c.y <= floorY + MaxHeight);
+                    return found < 0 ? ((float y, Vector3 normal)?)null : (ceilingHits[found].y, ceilingHits[found].normal);
+                },
                 // 조명 면이 천장면 가까이(아래 .35 m, 위 .15 m)에 있고 반경 안 아홉 점 중 한 곳이라도 걸리면 조명 곁이다.
                 LampNear = (x, z, ceilingY, radius) =>
                 {
