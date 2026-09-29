@@ -139,6 +139,7 @@ namespace ChooGuard.Editor
 
         private static void Check(string name, bool ok, string detail = "")
         {
+            detail = detail ?? "";
             Checks.Add(new JObject { ["scenario"] = scenario, ["name"] = name, ["ok"] = ok, ["detail"] = detail });
             Log((ok ? "PASS " : "FAIL ") + scenario + " · " + name + (detail.Length > 0 ? " — " + detail : ""));
             Save();
@@ -257,11 +258,13 @@ namespace ChooGuard.Editor
         private static IEnumerator Press()
         {
             var player = Session.Player;
-            player.StepInput(Vector2.zero, Vector2.zero, false, false, false, Time.deltaTime);
+            // 배속을 올려도 한 걸음의 시간은 짧게 준다(응답자가 긴 프레임은 받지 않는다).
+            float step = Mathf.Min(Time.deltaTime, .03f);
+            player.StepInput(Vector2.zero, Vector2.zero, false, false, false, step);
             yield return null;
-            player.StepInput(Vector2.zero, Vector2.zero, false, true, false, Time.deltaTime);
+            player.StepInput(Vector2.zero, Vector2.zero, false, true, false, step);
             yield return null;
-            player.StepInput(Vector2.zero, Vector2.zero, false, false, false, Time.deltaTime);
+            player.StepInput(Vector2.zero, Vector2.zero, false, false, false, step);
             yield return null;
         }
 
@@ -420,6 +423,9 @@ namespace ChooGuard.Editor
             Check("kiosk offers its power switch", aim.prompt.Contains("전원 스위치 끄기") && aim.name.Contains(ElectricNetwork.Tag(kiosk)), "name='" + aim.name + "' prompt='" + aim.prompt + "'");
             yield return Press();
             Check("switch off darkens the kiosk", load.LocalOff && !ElectricNetwork.Powered(kiosk) && kiosk.State == "전원 차단", "state=" + kiosk.State);
+            var materials = kiosk.GetComponentsInChildren<Renderer>(true).SelectMany(r => r.sharedMaterials).Where(m => m != null).ToList();
+            Check("the kiosk's lit panel material was swapped for a dark one", materials.Any(m => m.name.Contains("꺼짐")) && materials.Where(m => m.name.Contains("꺼짐")).All(m => m.GetColor("_EmissionColor").maxColorComponent < .01f),
+                string.Join(", ", materials.Select(m => m.name + (m.IsKeywordEnabled("_EMISSION") ? "[E " + m.GetColor("_EmissionColor").maxColorComponent.ToString("0.0") + "]" : ""))));
             yield return Shot("kiosk-off");
             yield return Press();
             Check("switch on lights it again", !load.LocalOff && ElectricNetwork.Powered(kiosk), "state=" + kiosk.State);

@@ -142,13 +142,21 @@ namespace ChooGuard.Tests.PlayMode
             return equipment;
         }
 
-        private StationEquipment Machine(string id, Vector3 at, string kind = "vending_machine")
+        private StationEquipment Machine(string id, Vector3 at, string kind = "vending_machine", Material litPanel = null)
         {
             var go = new GameObject(id);
             made.Add(go);
             go.transform.position = at;
             var equipment = go.AddComponent<StationEquipment>();
             equipment.Assign(id, kind, kind == "vending_machine" ? "음료 자동판매기" : "휴대폰 충전 키오스크", "hall2f");
+            if (litPanel != null)
+            {
+                // 화면은 몸통과 한 렌더러의 재질 하나다(충전 키오스크·자판기 모델처럼).
+                var body = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+                made.Add(body);
+                go.AddComponent<MeshFilter>();
+                go.AddComponent<MeshRenderer>().sharedMaterials = new[] { body, litPanel };
+            }
             go.AddComponent<ElectricLoad>();
             return equipment;
         }
@@ -222,6 +230,30 @@ namespace ChooGuard.Tests.PlayMode
 
             Assert.That(ElectricNetwork.Powered(machine), Is.False);
             Assert.That(machine.State, Is.EqualTo("소손"));
+        }
+
+        [Test]
+        public void AMachineWithoutPowerShowsItsLitPanelDarkAndOnlyThatOne()
+        {
+            var panel = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            made.Add(panel);
+            panel.EnableKeyword("_EMISSION");
+            panel.SetColor("_EmissionColor", Color.white);
+            panel.SetColor("_BaseColor", Color.white);
+            Board("a", Vector3.zero);
+            var machine = Machine("m1", new Vector3(1, 0, 0), "charging_kiosk", panel);
+            var renderer = machine.GetComponent<MeshRenderer>();
+            var body = renderer.sharedMaterials[0];
+            ElectricNetwork.Build();
+
+            ElectricNetwork.Switch(ElectricNetwork.CircuitOf(machine), false, "역무원");
+
+            Assert.That(renderer.sharedMaterials[0], Is.SameAs(body), "몸통 재질은 그대로");
+            Assert.That(renderer.sharedMaterials[1].GetColor("_EmissionColor").maxColorComponent, Is.LessThan(.01f), "전원이 없으면 화면이 빛나지 않는다");
+            Assert.That(renderer.sharedMaterials[1].GetColor("_BaseColor").maxColorComponent, Is.LessThan(.2f), "그림도 거의 까맣다");
+
+            ElectricNetwork.Switch(ElectricNetwork.CircuitOf(machine), true, "역무원");
+            Assert.That(renderer.sharedMaterials[1], Is.SameAs(panel), "다시 켜면 원래 화면");
         }
     }
 }
