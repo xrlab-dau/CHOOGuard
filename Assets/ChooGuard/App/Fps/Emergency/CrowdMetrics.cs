@@ -21,6 +21,8 @@ namespace ChooGuard.App.Fps.Emergency
         public int Revalidated;
         /// <summary>Times the watchdog found a person standing still over 20 s in a moving action, or waiting over 20 s for a decision (each is also written to the log with the person's trace).</summary>
         public int Frozen;
+        /// <summary>The first findings of the frozen watchdog in words (who, doing what, where, with the walk's state), for a failing check or a quick look.</summary>
+        public readonly List<string> FrozenFindings = new List<string>();
         public int UrgentByJev, UrgentLocally, RoutineByJev, RoutineLocally, FirstAnswers;
         public int MaxQueued;
         /// <summary>Longest a person kept doing their current action while the next step was still being judged (game seconds).</summary>
@@ -40,6 +42,14 @@ namespace ChooGuard.App.Fps.Emergency
         public readonly List<float> SendQuestionMs = new List<float>(), SendStateMs = new List<float>(), SendStartMs = new List<float>();
         /// <summary>Main-thread milliseconds applying received answers in one frame (frames that applied something); applying is time-sliced to <see cref="CrowdMind.ApplyBudgetMs"/> per frame.</summary>
         public readonly List<float> ApplyMs = new List<float>();
+        /// <summary>Main-thread milliseconds of the path service in one frame (frames that served a request; the queue is worked for about a millisecond at most).</summary>
+        public readonly List<float> PathMs = new List<float>();
+        /// <summary>Everything the crowd costs the main thread in one frame: the judgement tick (answers applied included) plus the path service. The second list counts only frames while a hazard is active.</summary>
+        public readonly List<float> CrowdFrameMs = new List<float>(), CrowdFrameIncidentMs = new List<float>();
+        /// <summary>Path requests served, the longest queue of them, and pairs of places the path service could not join (each pair once).</summary>
+        public int PathRequests, MaxPathQueue, UnreachablePairs;
+        private RouteGraph graph;
+        private float lastTickMs;
 
         private readonly string path;
         private readonly StringBuilder pending = new StringBuilder();
@@ -69,7 +79,7 @@ namespace ChooGuard.App.Fps.Emergency
         public void Tick(float milliseconds, bool collected, int requestsStarted, int queued)
         {
             Elapsed = Time.realtimeSinceStartup - startedReal;
-            if (TickMs.Count < 30000) TickMs.Add(milliseconds);
+            lastTickMs = milliseconds;
             if (milliseconds > 16f)
                 Record(new JObject { ["spike_ms"] = Math.Round(milliseconds, 1), ["at_real_s"] = Math.Round(Elapsed, 1), ["gc"] = collected, ["requests_started"] = requestsStarted, ["requests_so_far"] = Requests, ["queued"] = queued });
         }
@@ -82,12 +92,40 @@ namespace ChooGuard.App.Fps.Emergency
                 Record(new JObject { ["send_spike_ms"] = Math.Round(questions + state + start, 1), ["questions_ms"] = Math.Round(questions, 1), ["state_ms"] = Math.Round(state, 1), ["client_start_ms"] = Math.Round(start, 1), ["asked"] = asked, ["requests_so_far"] = Requests, ["at_real_s"] = Math.Round(Elapsed, 1) });
         }
 
-        /// <summary>Applying received answers in one frame (path queries for moving people included); a slow frame is logged.</summary>
+        /// <summary>Applying received answers in one frame; a slow frame is logged.</summary>
         public void Apply(float milliseconds, int applied)
         {
             if (ApplyMs.Count < 30000) ApplyMs.Add(milliseconds);
             if (milliseconds > 16f)
                 Record(new JObject { ["apply_spike_ms"] = Math.Round(milliseconds, 1), ["at_real_s"] = Math.Round(Elapsed, 1), ["applied"] = applied });
+        }
+
+        /// <summary>One frame of the path service, closing the frame's crowd cost (this frame's tick plus the path work).</summary>
+        public void Frame(float pathMs, int served, int queued, bool incident)
+        {
+            if (served > 0 && PathMs.Count < 30000) PathMs.Add(pathMs);
+            PathRequests += served;
+            MaxPathQueue = Mathf.Max(MaxPathQueue, queued);
+            float total = lastTickMs + pathMs;
+            if (CrowdFrameMs.Count < 30000) CrowdFrameMs.Add(total);
+            if (incident && CrowdFrameIncidentMs.Count < 30000) CrowdFrameIncidentMs.Add(total);
+            if (total > 16f)
+                Record(new JObject { ["crowd_frame_spike_ms"] = Math.Round(total, 1), ["tick_ms"] = Math.Round(lastTickMs, 1), ["path_ms"] = Math.Round(pathMs, 1), ["path_served"] = served, ["at_real_s"] = Math.Round(Elapsed, 1) });
+        }
+
+        /// <summary>Writes what the baked route graph holds when the world opens, and which exits parts of the station cannot reach at all (twin defects, not hidden).</summary>
+        public void Graph(RouteGraph routes)
+        {
+            graph = routes;
+            Record(new JObject { ["route_graph"] = new JObject { ["nodes"] = routes.Nodes.Count, ["edges"] = routes.EdgeCount, ["report"] = routes.Report } });
+            Debug.Log("[CrowdRoutes] " + routes.Nodes.Count + " waypoints, " + routes.EdgeCount + " walks; " + routes.Report);
+        }
+
+        /// <summary>A person's goal, or an exit, that no walk reaches from where they stand: written with both positions.</summary>
+        public void Unreachable(Vector3 from, Vector3 to, string why)
+        {
+            UnreachablePairs++;
+            Record(new JObject { ["unreachable"] = new JObject { ["from"] = new JArray(Math.Round(from.x, 1), Math.Round(from.y, 1), Math.Round(from.z, 1)), ["to"] = new JArray(Math.Round(to.x, 1), Math.Round(to.y, 1), Math.Round(to.z, 1)), ["why"] = why, ["at_real_s"] = Math.Round(Elapsed, 1) } });
         }
 
         /// <summary>Appends one decision to the run log (written in batches, never on the frame that made it).</summary>
@@ -162,6 +200,14 @@ namespace ChooGuard.App.Fps.Emergency
                 ["routine_wait_game_s"] = Spread(RoutineWait),
                 ["mind_tick_ms"] = Spread(TickMs),
                 ["apply_frame_ms"] = Spread(ApplyMs),
+                ["path_frame_ms"] = Spread(PathMs),
+                ["crowd_frame_ms"] = Spread(CrowdFrameMs),
+                ["crowd_frame_incident_ms"] = Spread(CrowdFrameIncidentMs),
+                ["path_requests"] = PathRequests,
+                ["path_queue_max"] = MaxPathQueue,
+                ["unreachable_pairs"] = UnreachablePairs,
+                ["route_searches"] = graph != null ? graph.Searches : 0,
+                ["route_search_hits"] = graph != null ? graph.SearchHits : 0,
                 ["send_questions_ms"] = Spread(SendQuestionMs),
                 ["send_state_ms"] = Spread(SendStateMs),
                 ["send_client_start_ms"] = Spread(SendStartMs),

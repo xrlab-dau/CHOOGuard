@@ -53,6 +53,8 @@ namespace ChooGuard.App.Fps.Emergency
             root = new GameObject("승객").transform;
             root.SetParent(transform, false);
             Mind = new CrowdMind(this, jev);
+            Mind.Metrics.Graph(world.Paths.Graph);
+            world.Paths.Unreachable += Mind.Metrics.Unreachable;
             if (world.Train != null)
             {
                 world.Train.Loading += FillTrain;
@@ -299,7 +301,7 @@ namespace ChooGuard.App.Fps.Emergency
                 if (Mathf.Abs(at.y - spot.y) > 2f) continue;
                 nearest = Mathf.Min(nearest, (at - spot).sqrMagnitude);
                 var body = person.Body;
-                if (body.OnNavMesh && body.Agent.hasPath) nearest = Mathf.Min(nearest, (body.Agent.destination - spot).sqrMagnitude);
+                if (body.EnRoute) nearest = Mathf.Min(nearest, (body.Goal - spot).sqrMagnitude);
             }
             foreach (var claim in claims)
                 if (claim.Until >= Time.time && (claim.Who == null || claim.Who != who) && Mathf.Abs(claim.At.y - spot.y) < 2f)
@@ -338,6 +340,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             // 근무가 끝나면 판단 측정 요약을 기록에 남긴다(승객 판단 기록 crowd-*.jsonl 의 마지막 줄).
             if (Mind == null) return;
+            if (World != null && World.Paths != null) World.Paths.Unreachable -= Mind.Metrics.Unreachable;
             Mind.Metrics.Record(new Newtonsoft.Json.Linq.JObject { ["summary"] = Mind.Metrics.Summary(Session != null ? Session.Jev : null) });
             Mind.Metrics.Flush(true);
         }
@@ -360,24 +363,13 @@ namespace ChooGuard.App.Fps.Emergency
             return told;
         }
 
-        private readonly Dictionary<(int, int, int, int, int, int, int), (StationPoints.Point exit, float until)> safeExits = new Dictionary<(int, int, int, int, int, int, int), (StationPoints.Point, float)>();
-
         /// <summary>
-        /// <see cref="StationWorld.SafeExit"/> (four navmesh path queries) shared by people standing within a few metres of each
-        /// other: one answer per 6 m cell, per danger spot and per excluded exit, kept for 8 s. A whole hall told to leave at
-        /// once used to run hundreds of path queries in one frame.
+        /// <see cref="StationWorld.SafeExit"/> for one person: the exit with the cheapest walk that keeps clear of the danger,
+        /// read from a route tree the people standing at the same waypoint share (a search per waypoint, microseconds), so
+        /// telling a whole hall to leave at once runs no path query at all.
         /// </summary>
-        public StationPoints.Point SafeExitFor(Vector3 from, Vector3? avoid, float clearance, StationPoints.Point except = null)
-        {
-            var key = (Mathf.RoundToInt(from.x / 6f), Mathf.RoundToInt(from.y / 3f), Mathf.RoundToInt(from.z / 6f),
-                avoid.HasValue ? Mathf.RoundToInt(avoid.Value.x / 3f) : int.MinValue, avoid.HasValue ? Mathf.RoundToInt(avoid.Value.z / 3f) : 0,
-                Mathf.RoundToInt(clearance), except != null ? except.Id.GetHashCode() : 0);
-            if (safeExits.TryGetValue(key, out var hit) && hit.until > Time.time) return hit.exit;
-            if (safeExits.Count > 400) safeExits.Clear();
-            var exit = World.SafeExit(from, avoid, clearance, except);
-            safeExits[key] = (exit, Time.time + 8f);
-            return exit;
-        }
+        public StationPoints.Point SafeExitFor(Vector3 from, Vector3? avoid, float clearance, StationPoints.Point except = null) =>
+            World.SafeExit(from, avoid, clearance, except);
 
         /// <summary>Public announcement: everyone within earshot (the whole station, or near <paramref name="zone"/>) is asked to leave.</summary>
         public int Announce(Vector3? zone = null, float radius = 1e4f, bool stopArrivals = true)
@@ -427,6 +419,9 @@ namespace ChooGuard.App.Fps.Emergency
                 }
             }
             Mind.Tick();
+            // 길 안내: 걷는 사람의 길 요청을 프레임당 1 ms 안에서 처리한다(승객 판단의 Tick 과 합쳐 군중 비용으로 잰다).
+            float pathMs = World.Paths.Tick(out int served);
+            Mind.Metrics.Frame(pathMs, served, World.Paths.Queued, HazardRegistry.Active.Count > 0);
         }
     }
 }

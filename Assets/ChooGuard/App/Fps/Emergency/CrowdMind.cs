@@ -74,7 +74,7 @@ namespace ChooGuard.App.Fps.Emergency
         public float ApplyBudgetMs = 1f;
         private readonly List<(Judgement item, JevAnswer answer)> receivedUrgent = new List<(Judgement, JevAnswer)>();
         private readonly List<(Judgement item, JevAnswer answer)> receivedEveryday = new List<(Judgement, JevAnswer)>();
-        private float nextWatch;
+        private float nextWatch, applyItemMs = .1f;
 
         /// <summary>One thing a person could do next, with where and for how long.</summary>
         public sealed class Choice
@@ -256,6 +256,7 @@ namespace ChooGuard.App.Fps.Emergency
             int collections = GC.CollectionCount(0), startedBefore = Metrics.Requests;
             float now = Time.time;
             bool usable = Usable;
+            int resolved = 0;
             for (int i = queue.Count - 1; i >= 0; i--)
             {
                 var item = queue[i];
@@ -263,9 +264,17 @@ namespace ChooGuard.App.Fps.Emergency
                 if (item.Sent || item.Received) continue;
                 if (!usable)
                 {
-                    // JEV 없는 근무: 일상 판단은 활동이 끝날 때 지역 규칙이 정하고, 급한 판단은 반응 시간 뒤 지역 규칙이 정한다.
+                    // JEV 없는 근무: 일상 판단은 활동이 끝날 때 지역 규칙이 정하고, 급한 판단은 반응 시간 뒤 지역 규칙이 정한다. 답을 적용할 때와 같은 예산으로 나눠 한 프레임에 몰지 않는다.
                     if (item.Everyday) { Finish(item); queue.RemoveAt(i); Metrics.Dropped++; }
-                    else if (now >= item.ReadyAt) { queue.RemoveAt(i); ResolveLocally(item); }
+                    else if (now >= item.ReadyAt)
+                    {
+                        if (resolved > 0 && Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began) + applyItemMs * 1.5f > ApplyBudgetMs) continue;
+                        queue.RemoveAt(i);
+                        long started = System.Diagnostics.Stopwatch.GetTimestamp();
+                        ResolveLocally(item);
+                        resolved++;
+                        applyItemMs = Mathf.Lerp(applyItemMs, Mathf.Min(2f, Ms(System.Diagnostics.Stopwatch.GetTimestamp() - started)), .05f);
+                    }
                     continue;
                 }
                 if (Outdated(item, now)) { Finish(item); queue.RemoveAt(i); Metrics.Stale++; }
@@ -349,8 +358,8 @@ namespace ChooGuard.App.Fps.Emergency
                 var slot = person.Slot;
                 var activity = person.Current;
                 bool moves = activity == Passenger.Activity.Walk || activity == Passenger.Activity.MoveAway || activity == Passenger.Activity.Evacuate || activity == Passenger.Activity.Leave;
-                // 출구 문 앞에 닿은 사람은 역무원 눈에 띄지 않게 될 때까지 서 있는 것이 원래 규칙이다(Passenger.Update): 굳은 것이 아니다.
-                if ((activity == Passenger.Activity.Evacuate || activity == Passenger.Activity.Leave) && (person.Body.Goal - person.transform.position).sqrMagnitude < 9f) moves = false;
+                // 목적지 3 m 안에 닿은 사람은 굳은 것이 아니다: 출구 문 앞에서는 역무원 눈에 띄지 않게 될 때까지 서 있는 것이 원래 규칙이다(Passenger.Update).
+                if ((person.Body.Goal - person.transform.position).sqrMagnitude < 9f) moves = false;
                 float pending = 0;
                 if (slot.WaitingSince >= 0 && person.Holding) pending = now - slot.WaitingSince;
                 if (slot.Urgent != null && !slot.Urgent.Done) pending = Mathf.Max(pending, now - slot.Urgent.Raised);
@@ -382,6 +391,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void ReportStuck(Passenger person, string kind, float seconds)
         {
             Metrics.Frozen++;
+            if (Metrics.FrozenFindings.Count < 40) Metrics.FrozenFindings.Add("#" + person.Number + " " + kind + " " + person.Current + " " + System.Math.Round(seconds, 1) + " s: " + person.WalkState());
             Metrics.Record(new Newtonsoft.Json.Linq.JObject
             {
                 ["frozen"] = kind, ["passenger"] = person.Number, ["activity"] = person.Current.ToString(), ["seconds"] = System.Math.Round(seconds, 1),
@@ -496,7 +506,7 @@ namespace ChooGuard.App.Fps.Emergency
             }
         }
 
-        /// <summary>Applies received answers, urgent ones first, until <see cref="ApplyBudgetMs"/> is used up; at least one per frame so nothing waits forever.</summary>
+        /// <summary>Applies received answers, urgent ones first, while the average answer still fits in <see cref="ApplyBudgetMs"/>; at least one per frame so nothing waits forever.</summary>
         private void DrainApply()
         {
             if (receivedUrgent.Count == 0 && receivedEveryday.Count == 0) return;
@@ -504,13 +514,16 @@ namespace ChooGuard.App.Fps.Emergency
             int applied = 0;
             while (receivedUrgent.Count > 0 || receivedEveryday.Count > 0)
             {
+                // 다음 답을 적용하면 예산을 넘길 것 같으면 다음 프레임으로 미룬다(프레임마다 하나는 반드시 적용한다).
+                if (applied > 0 && Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began) + applyItemMs * 1.5f > ApplyBudgetMs) break;
                 var list = receivedUrgent.Count > 0 ? receivedUrgent : receivedEveryday;
                 var (item, answer) = list[0];
                 list.RemoveAt(0);
                 item.Received = false;
-                applied++;
+                long started = System.Diagnostics.Stopwatch.GetTimestamp();
                 ApplyReceived(item, answer);
-                if (Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began) >= ApplyBudgetMs) break;
+                applied++;
+                applyItemMs = Mathf.Lerp(applyItemMs, Mathf.Min(2f, Ms(System.Diagnostics.Stopwatch.GetTimestamp() - started)), .05f);
             }
             Metrics.Apply(Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began), applied);
         }

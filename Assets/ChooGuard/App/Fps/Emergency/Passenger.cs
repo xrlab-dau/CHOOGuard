@@ -107,13 +107,17 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void ApplyRoute()
         {
+            var route = Route;
+            // 층을 바꿀 때 무엇을 탈지: 링크·계단 구역 비용으로 고른다(비용은 1 이상). 대피하는 사람은 엘리베이터를 쓰지 않는다(화재 시 엘리베이터 금지).
+            float escalator = route == "stairs" ? 12 : route == "elevator" ? 6 : 1, elevator = route == "elevator" ? 1 : route == "any" ? 8 : 25;
+            bool leaving = Current == Activity.Evacuate;
+            Body.Profile = leaving ? RouteProfile.Evacuation : new RouteProfile(escalator, elevator);
             var agent = Body.Agent;
             if (!agent.isActiveAndEnabled) return;
-            var route = Route;
-            // 층을 바꿀 때 무엇을 탈지: 링크·계단 구역 비용으로 고른다(비용은 1 이상).
-            agent.SetAreaCost(StationWorld.EscalatorArea, route == "stairs" ? 12 : route == "elevator" ? 6 : 1);
-            agent.SetAreaCost(StationWorld.ElevatorArea, route == "elevator" ? 1 : route == "any" ? 8 : 25);
+            agent.SetAreaCost(StationWorld.EscalatorArea, escalator);
+            agent.SetAreaCost(StationWorld.ElevatorArea, elevator);
             agent.SetAreaCost(StationWorld.StairsArea, route == "stairs" ? 1 : route == "elevator" ? 20 : Luggage == 2 ? 6 : 3);
+            agent.areaMask = leaving ? UnityEngine.AI.NavMesh.AllAreas & ~(1 << StationWorld.ElevatorArea) : UnityEngine.AI.NavMesh.AllAreas;
         }
 
         public void Remember(string what)
@@ -297,6 +301,7 @@ namespace ChooGuard.App.Fps.Emergency
             legs.Add(destination);
             leg = 0;
             legSpeed = speed;
+            Body.Urgent = Current == Activity.Evacuate;
             return Body.GoTo(legs[0], speed);
         }
 
@@ -371,7 +376,7 @@ namespace ChooGuard.App.Fps.Emergency
             switch (Current)
             {
                 case Activity.Walk:
-                    if (!prefetched && OnLastLeg && Body.OnNavMesh && !Body.Agent.pathPending && Body.SecondsLeft() < 12 && afterWalk != Activity.Leave && afterWalk != Activity.PlatformWait)
+                    if (!prefetched && OnLastLeg && Body.OnNavMesh && !Body.Planning && Body.SecondsLeft() < 12 && afterWalk != Activity.Leave && afterWalk != Activity.PlatformWait)
                         Prefetch(Body.SecondsLeft() + stepSeconds);
                     if (Travelled(afterWalk == Activity.Leave ? 1.5f : .5f)) Arrive();
                     break;
@@ -846,6 +851,7 @@ namespace ChooGuard.App.Fps.Emergency
             Interrupt();
             ReleasePlace();
             Body.ClearPoses();
+            Body.Urgent = true;
             var target = World.AwayFrom(transform.position, Focus.Position, distance);
             Current = Activity.MoveAway;
             if (Body.Seat != PersonBody.SeatPhase.None)
@@ -951,6 +957,7 @@ namespace ChooGuard.App.Fps.Emergency
             ReleasePlace();
             Body.ClearPoses();
             helping = true;
+            Body.Urgent = true;
             Focus = hazard;
             // 쓰러진 사람 곁의 빈자리(온 쪽부터 찾는다). 여럿이 도우러 와도 한 점에 겹치지 않는다.
             var target = Crowd.SpotAt(hazard.Position, this, transform.position - hazard.Position);
@@ -1095,10 +1102,10 @@ namespace ChooGuard.App.Fps.Emergency
             nextPathCheck = Time.time + 1f;
             if (HazardRegistry.Active.Count == 0 && World.Closed.Count == 0) { stuckSince = -1; return; }
             var agent = Body.Agent;
-            if (!Body.OnNavMesh || Body.Scripted || Body.Seat != PersonBody.SeatPhase.None || agent.pathPending || agent.isOnOffMeshLink || Body.Riding != null) { stuckSince = -1; stallSince = Time.time; return; }
+            if (!Body.OnNavMesh || Body.Scripted || Body.Seat != PersonBody.SeatPhase.None || Body.Planning || agent.isOnOffMeshLink || Body.Riding != null) { stuckSince = -1; stallSince = Time.time; return; }
             var status = agent.pathStatus;
             bool far = (Body.Goal - transform.position).sqrMagnitude > 9f;
-            bool cut = (status == UnityEngine.AI.NavMeshPathStatus.PathPartial || status == UnityEngine.AI.NavMeshPathStatus.PathInvalid && !agent.isStopped) && far;
+            bool cut = (status == UnityEngine.AI.NavMeshPathStatus.PathPartial || status == UnityEngine.AI.NavMeshPathStatus.PathInvalid && !agent.isStopped || Body.NoRoute) && far;
             // 길이 있어 보여도 6초 넘게 한 걸음도 못 가면(앞이 막힘, 길을 잃고 멈춤) 막힌 것으로 본다.
             var here = transform.position;
             if ((here - stallAt).sqrMagnitude > .25f || !far) { stallAt = here; stallSince = Time.time; }
@@ -1112,13 +1119,23 @@ namespace ChooGuard.App.Fps.Emergency
             blockedRaised = true;
             stuckSince = -1;
             stallSince = Time.time;
+            // 막힌 사람은 판단을 기다리는 동안에도 멈춰 있지 않는다: 길 안내가 선 자리에서 새 길을 준다(어디로 갈지는 판단이 정한다).
+            Body.Replan();
             Crowd.Mind.OnBlocked(this);
         }
 
-        /// <summary>Where the walk stands (navmesh and agent state, current leg), to trace a person who stopped short of where they were going.</summary>
-        public string WalkState() =>
-            "onNavMesh=" + Body.OnNavMesh + " hasPath=" + Body.Agent.hasPath + " status=" + Body.Agent.pathStatus + " stopped=" + Body.Agent.isStopped + " pending=" + Body.Agent.pathPending +
-            " remaining=" + Body.Agent.remainingDistance.ToString("0.0") + " speed=" + Body.Agent.velocity.magnitude.ToString("0.0") + " leg=" + leg + "/" + legs.Count + " seat=" + Body.Seat + " link=" + Body.Agent.isOnOffMeshLink;
+        /// <summary>Where the walk stands (position, navmesh and agent state, route step), to trace a person who stopped short of where they were going.</summary>
+        public string WalkState()
+        {
+            var agent = Body.Agent;
+            string at = Body.OnNavMesh
+                ? " hasPath=" + agent.hasPath + " status=" + agent.pathStatus + " stopped=" + agent.isStopped + " remaining=" + agent.remainingDistance.ToString("0.0") + " speed=" + agent.velocity.magnitude.ToString("0.0") + " link=" + agent.isOnOffMeshLink
+                : "";
+            return "at=" + Where(transform.position) + " (" + World.Area(transform.position) + ") goal=" + Where(Body.Goal) + " onNavMesh=" + Body.OnNavMesh + at + " planning=" + Body.Planning + " noRoute=" + Body.NoRoute +
+                " step=" + Body.Step + "/" + Body.Chain.Count + " leg=" + leg + "/" + legs.Count + " seat=" + Body.Seat + " riding=" + (Body.Riding != null);
+        }
+
+        private static string Where(Vector3 v) => "(" + v.x.ToString("0.0") + ", " + v.y.ToString("0.0") + ", " + v.z.ToString("0.0") + ")";
 
         private System.Collections.IEnumerator AfterStanding(System.Action then)
         {
