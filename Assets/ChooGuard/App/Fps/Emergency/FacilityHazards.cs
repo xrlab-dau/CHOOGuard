@@ -419,7 +419,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (root != null) return;
             foreach (var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
-                if (!light.enabled || light.type == LightType.Directional || light.lightmapBakeType == LightmapBakeType.Baked) continue;
+                if (!light.enabled || light.type == LightType.Directional || light.bakingOutput.lightmapBakeType == LightmapBakeType.Baked) continue;
                 // 사건의 불빛(불꽃)과 엘리베이터 카 조명(비상 전원)은 그대로 둔다.
                 if (light.GetComponentInParent<IncidentDirector>() != null || light.gameObject.name == "카 조명") continue;
                 light.enabled = false;
