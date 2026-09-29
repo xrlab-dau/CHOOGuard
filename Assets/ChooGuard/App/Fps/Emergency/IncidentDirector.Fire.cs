@@ -44,7 +44,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (store != null) yield return ElectricalFire(store, "the refrigerated display case of " + store.Label, "매장 냉장 진열대 배선");
             if (Train != null && Train.AtPlatform && Train.Stage != TrainService.Phase.Opening)
             {
-                var car = Train.Cars.Where(c => c.Entry.reachable).OrderBy(_ => world.Random.Next()).FirstOrDefault();
+                var car = Train.Cars.Where(c => c.Entry.reachable).OrderBy(c => Rank("car" + c.Number)).FirstOrDefault();
                 if (car != null) yield return Underfloor(car);
             }
         }

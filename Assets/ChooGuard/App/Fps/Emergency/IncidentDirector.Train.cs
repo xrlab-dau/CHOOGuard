@@ -19,7 +19,6 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly HashSet<DoorTrapHazard> trapShut = new HashSet<DoorTrapHazard>();
         private readonly List<TrackFallHazard> trackFalls = new List<TrackFallHazard>();
         private bool holdRequested;
-        private int doorMomentService = -1;
 
         private const string TrackHold = "선로에 사람";
 
@@ -43,19 +42,6 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Someone still boarding <paramref name="car"/> within 1.5 m of its door: only they can be caught by it.</summary>
         private Passenger LateBoarder(TrainService.Car car) =>
             crowd.People.FirstOrDefault(p => p.Current == Passenger.Activity.Board && !p.Body.Scripted && !p.HeldAtDoor && p.TrainSeat != null && p.TrainSeat.Car == car && Vector3.Distance(p.transform.position, Train.World(car.DoorOutside)) < 1.5f);
-
-        /// <summary>
-        /// The doors are about to close with someone still stepping up to one (the closing window is only the 12 s warning
-        /// plus 2.6 s of moving doors): the next round is asked now, once per departure, so a door catching them is among
-        /// what JEV can choose. Whether it happens is still JEV's draw.
-        /// </summary>
-        private bool DoorMoment()
-        {
-            if (Train == null || Train.Stage != TrainService.Phase.Closing || doorMomentService == Train.Service) return false;
-            if (!Train.Cars.Any(car => LateBoarder(car) != null)) return false;
-            doorMomentService = Train.Service;
-            return true;
-        }
 
         private Transition DoorTrap(Passenger person, TrainService.Car car) => new Transition
         {

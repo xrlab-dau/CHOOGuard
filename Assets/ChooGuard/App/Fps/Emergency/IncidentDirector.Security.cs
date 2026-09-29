@@ -28,7 +28,7 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var p in pools.Spread(p => p.Luggage == 2 && Settled(p) && p.Current != Passenger.Activity.InTrain, 2)) yield return BagLeft(p);
             foreach (var p in pools.Spread(p => !p.Elderly && p.Current != Passenger.Activity.InTrain && p.Current != Passenger.Activity.Sit && p.Current != Passenger.Activity.Toilet, 2)) yield return Aggression(p);
             if (threat == null) yield return ThreatCall();
-            var seat = world.Points.Of(PointKind.Seat).Where(s => !world.IsClosed(s.Position, 2)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
+            var seat = world.Points.Of(PointKind.Seat).Where(s => !world.IsClosed(s.Position, 2)).OrderBy(s => Rank(s.Id)).FirstOrDefault();
             if (seat != null) yield return Powder(seat);
         }
 

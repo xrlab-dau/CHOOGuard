@@ -87,12 +87,12 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var p in pools.Spread(p => p.Current != Passenger.Activity.Walk, 1)) yield return Medical(p, LowSugar);
             foreach (var p in pools.Spread(p => p.Current == Passenger.Activity.Walk && OnStairs(p), 2)) yield return StairsFall(p);
             int falls = 0, caught = 0;
-            foreach (var escalator in world.Escalators.OrderBy(_ => world.Random.Next()))
+            foreach (var escalator in world.Escalators.OrderBy(e => Rank(e.Entry.id)))
             {
                 if (!escalator.Running) continue;
                 var riders = escalator.Bodies().Where(escalator.Carries).Select(b => b.GetComponent<Passenger>()).Where(p => p != null && !p.Hurt && !p.Hostile).ToList();
                 if (riders.Count == 0) continue;
-                if (falls < 2) { yield return EscalatorFall(riders[world.Random.Next(riders.Count)], escalator); falls++; }
+                if (falls < 2) { yield return EscalatorFall(riders.OrderBy(p => Rank(p)).First(), escalator); falls++; }
                 if (caught < 1) { yield return CombCaught(riders[riders.Count - 1], escalator); caught++; }
                 if (!escalator.Entry.up) continue;
                 foreach (var owner in riders.Where(p => p.Luggage == 2))

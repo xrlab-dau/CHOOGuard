@@ -63,6 +63,30 @@ namespace ChooGuard.App.Fps.Emergency
             int level = drawn != null && int.TryParse(drawn, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsed) ? parsed : Mathf.RoundToInt(Score);
             return Mathf.Clamp(level, 0, Mathf.Max(0, levels - 1));
         }
+
+        /// <summary>
+        /// JEV's probability per level of a Score question with <paramref name="levels"/> levels, normalised to sum to 1
+        /// (all mass on the rounded score when JEV gave no distribution).
+        /// </summary>
+        public float[] LevelProbabilities(int levels)
+        {
+            var result = new float[levels];
+            float total = 0;
+            if (Probabilities != null)
+                foreach (var pair in Probabilities)
+                    if (int.TryParse(pair.Key, NumberStyles.Integer, CultureInfo.InvariantCulture, out int level) && level >= 0 && level < levels && pair.Value > 0)
+                    {
+                        result[level] = pair.Value;
+                        total += pair.Value;
+                    }
+            if (total <= 0)
+            {
+                result[Mathf.Clamp(Mathf.RoundToInt(Score), 0, levels - 1)] = 1;
+                return result;
+            }
+            for (int i = 0; i < levels; i++) result[i] /= total;
+            return result;
+        }
     }
 
     /// <summary>
@@ -76,6 +100,11 @@ namespace ChooGuard.App.Fps.Emergency
     {
         public const string Endpoint = "https://api.typesafe.ai/v1/systemone";
         public const string Model = "jev-latest";
+        /// <summary>Run logs kept on disk: the newest files up to these limits, oldest deleted first when a shift starts.</summary>
+        public const int KeepRunLogs = 30;
+        public const long KeepRunLogBytes = 400L * 1024 * 1024;
+        /// <summary>One shift's log stops growing here (a shift of this size is far beyond a normal one).</summary>
+        public const long MaxRunLogBytes = 64L * 1024 * 1024;
         public float TimeoutSeconds = 8f;
 
         public JevKeySource Source { get; }
@@ -94,12 +123,14 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly JevBudget budget = new JevBudget();
         private bool disabled;
         private readonly string logPath;
+        private long logBytes;
 
         public JevClient(string runLogPath)
         {
             key = JevKey.Load(out var source);
             Source = source;
             logPath = runLogPath;
+            TrimRunLogs(runLogPath);
             Status = source == JevKeySource.Off ? "JEV 꺼짐(TYPESAFE_API_KEY=off) · 비상상황을 만들지 않음" :
                 key == null ? "JEV 키 없음 · 비상상황을 만들 수 없음" :
                 JevKey.KnownFor(key) == JevKeyCheck.Rejected ? "JEV 키 거부 · 타이틀의 JEV 연결에서 다시 입력" : "JEV 연결 준비";
@@ -223,6 +254,28 @@ namespace ChooGuard.App.Fps.Emergency
             return result;
         }
 
+        /// <summary>
+        /// Keeps the run-log folder bounded: the newest <see cref="KeepRunLogs"/> files and at most
+        /// <see cref="KeepRunLogBytes"/> in all; the log of the shift starting now (<paramref name="current"/>) is never touched.
+        /// </summary>
+        private static void TrimRunLogs(string current)
+        {
+            if (string.IsNullOrEmpty(current)) return;
+            try
+            {
+                var files = new DirectoryInfo(Path.GetDirectoryName(current)).GetFiles("jev-*.jsonl");
+                Array.Sort(files, (a, b) => b.LastWriteTimeUtc.CompareTo(a.LastWriteTimeUtc));
+                long bytes = 0;
+                for (int i = 0; i < files.Length; i++)
+                {
+                    bytes += files[i].Length;
+                    if (files[i].FullName == Path.GetFullPath(current)) continue;
+                    if (i >= KeepRunLogs || bytes > KeepRunLogBytes) files[i].Delete();
+                }
+            }
+            catch (Exception) { }
+        }
+
         private void Log(string purpose, JevLane lane, JObject payload, Dictionary<string, JevAnswer> answers, long status, float seconds, long? inputTokens)
         {
             if (string.IsNullOrEmpty(logPath)) return;
@@ -240,7 +293,10 @@ namespace ChooGuard.App.Fps.Emergency
                     ["request"] = payload,
                     ["answers"] = answers == null ? null : JToken.FromObject(answers),
                 };
-                File.AppendAllText(logPath, entry.ToString(Formatting.None) + "\n");
+                if (logBytes >= MaxRunLogBytes) return;
+                var line = entry.ToString(Formatting.None) + "\n";
+                File.AppendAllText(logPath, line);
+                logBytes += line.Length;
             }
             catch (Exception) { }
         }

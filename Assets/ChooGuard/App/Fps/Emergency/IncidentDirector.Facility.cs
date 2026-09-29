@@ -160,7 +160,6 @@ namespace ChooGuard.App.Fps.Emergency
         {
             quake = new EarthquakeHazard("quake-" + ++serial, new Vector3(64, 7, -2), 10 + 18 * magnitude, .45f + .55f * magnitude) { Where = "역 전체" };
             Register(quake);
-            nextRound = Time.time + 3;
             log.Add("지진 · 역사 전체가 흔들리기 시작 (세기 " + quake.Strength.ToString("0.0") + ")");
             Know(quake, "흔들림을 직접 느낌");
             officeFollowUp = Time.time + 150;
