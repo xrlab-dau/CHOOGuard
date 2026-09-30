@@ -20,15 +20,27 @@ namespace ChooGuard.EditorTools
     /// 왜 씬을 읽는가: FireExtinguisherSliceBuilder 에는 단일 배치(FE-003)만 있고 12대 좌표가 없다.
     /// 좌표의 정본은 FpsStation.unity 다.
     ///
-    /// 왜 navmesh 를 직접 올리는가: 씬의 m_NavMeshData 는 0 이고 보행 영역은 실행 중
+    /// 왜 navmesh 와 링크를 직접 올리는가: 씬의 m_NavMeshData 는 0 이고 보행 영역은 실행 중
     /// StationWorld 가 NavMesh.AddNavMeshData 로 올린다. 올리지 않고 재면 12대 전부 도달 불가로 나온다.
+    /// 에스컬레이터·엘리베이터 링크도 구운 자산에 없다 — 세션이 NavMesh.AddLink 로 더한다
+    /// (StationLinks.cs 의 Escalator.Setup·Elevator.Setup). 링크 없이 재면 링크로만 이어지는 곳이 끊겨 보인다.
+    /// StationRouteBuilder.AddLinks 가 세션과 같은 자료(station-points.json)로 같은 링크를 더하므로 그것을 쓰고,
+    /// LinkedWorld 가 끝날 때 링크와 navmesh 를 내린다. 세션 시작 상태의 링크다 —
+    /// 멈춘 에스컬레이터·막힌 진입처럼 실행 중 바뀌는 것은 모델링하지 않는다.
     ///
     /// 기준점·navmesh 경로는 StationNavigationBuilder 의 것을 그대로 쓴다. 여기서 새로 정하면
     /// 같은 세계를 두 기준으로 재게 된다.
+    ///
+    /// 보고서는 git 이 무시하는 artifacts/extinguisher-probe/ 에 실행마다 새 파일로 쓴다. 커밋된
+    /// .planning/2026-09-28-extinguisher-replacement/measure-a.json 은 링크를 더하지 않던 판이 잰 이동 후 기록이고
+    /// 이 도구가 덮어쓰지 않는다. 스키마(v1)는 그대로라 JSON 만으로는 링크 유무를 구분할 수 없다 —
+    /// 경로와 콘솔의 CG_FE_PROBE links= 로 구분한다.
+    ///
+    /// 진입점은 열려 있는 씬의 저장하지 않은 편집을 조용히 버리지 않는다(OpenStation).
     /// </remarks>
     public static class ExtinguisherPlacementProbe
     {
-        private const string OutPath=".planning/2026-09-28-extinguisher-replacement/measure-a.json";
+        private const string OutDir="artifacts/extinguisher-probe";
         private const string UnitPrefix="소화기 · ";
 
         // #242 의 PM 측정과 대조하려면 같은 값을 써야 한다. 설 자리 반경 1.6m, 바닥 탐색 6m.
@@ -38,25 +50,17 @@ namespace ChooGuard.EditorTools
         [MenuItem("ChooGuard/Emergency/소화기 배치 측정 (#242)")]
         public static void Run()
         {
-            var scene=EditorSceneManager.OpenScene(EmergencySceneBuilder.StationScenePath,OpenSceneMode.Single);
-            if(!scene.IsValid()){Debug.LogError("[소화기측정] 씬을 열지 못했습니다 · "+EmergencySceneBuilder.StationScenePath);return;}
+            if(!OpenStation("[소화기측정]",out var scene))return;
 
-            var data=AssetDatabase.LoadAssetAtPath<NavMeshData>(StationNavigationBuilder.NavMeshPath);
-            if(data==null)
-            {
-                Debug.LogError("[소화기측정] navmesh 자산이 없습니다 · "+StationNavigationBuilder.NavMeshPath
-                               +" · 없이 재면 12대 전부 도달 불가로 나오므로 멈춥니다.");
-                return;
-            }
-            var instance=NavMesh.AddNavMeshData(data);
-            if(!instance.valid){Debug.LogError("[소화기측정] navmesh 를 올리지 못했습니다.");return;}
-
+            var started=DateTime.UtcNow;
             var report=new StringBuilder();
             report.Append("{\n  \"schema\": \"chooguard.extinguisher-probe.v1\",\n");
-            report.Append("  \"measuredAt\": \"").Append(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ",CultureInfo.InvariantCulture)).Append("\",\n");
+            report.Append("  \"measuredAt\": \"").Append(started.ToString("yyyy-MM-ddTHH:mm:ssZ",CultureInfo.InvariantCulture)).Append("\",\n");
             report.Append("  \"scene\": \"").Append(EmergencySceneBuilder.StationScenePath).Append("\",\n");
             report.Append("  \"navmesh\": \"").Append(StationNavigationBuilder.NavMeshPath).Append("\",\n");
             report.Append("  \"standRadius\": ").Append(F(StandRadius)).Append(", \"floorDepth\": ").Append(F(FloorDepth)).Append(",\n");
+            var world=LinkedWorld.Open("[소화기측정]");
+            if(world==null)return;
             try
             {
                 var references=Concourse();
@@ -100,35 +104,35 @@ namespace ChooGuard.EditorTools
                       .Append(", \"partialPath\": ").Append(partialPath)
                       .Append(", \"noStandingSpot\": ").Append(noStand).Append("}\n}\n");
 
-                Directory.CreateDirectory(Path.GetDirectoryName(OutPath));
-                File.WriteAllText(OutPath,report.ToString(),new UTF8Encoding(false));
+                Directory.CreateDirectory(OutDir);
+                var outPath=OutDir+"/measure-"+started.ToString("yyyyMMdd'T'HHmmss'Z'",CultureInfo.InvariantCulture)+".json";
+                File.WriteAllText(outPath,report.ToString(),new UTF8Encoding(false));
                 Debug.Log("CG_FE_PROBE units="+units.Count+" reachable="+reachable+" noFloor="+noFloor
-                          +" island="+island+" partial="+partialPath+" noStand="+noStand+" out="+OutPath);
+                          +" island="+island+" partial="+partialPath+" noStand="+noStand
+                          +" links="+world.ValidLinks+"/"+world.LinkCount+" out="+outPath);
             }
             finally
             {
-                // 올린 navmesh 는 반드시 내린다. 남겨 두면 다음 에디터 동작이 이 데이터를 본다.
-                if(instance.valid)instance.Remove();
+                // 올린 링크와 navmesh 는 반드시 내린다. 남겨 두면 다음 에디터 동작이 이 세계를 본다.
+                world.Dispose();
             }
         }
 
         /// <summary>
-        /// 12대의 설 자리와 기준점들을 서로 오갈 수 있는지로 묶어 연결 성분을 보고한다.
+        /// 12대의 설 자리와 기준점을 한 방향이라도 완전 경로가 있는 쌍으로 묶어 약연결 성분을 보고한다.
         /// </summary>
         /// <remarks>
-        /// 왜 필요한가: 2026-09-28 측정에서 PM 의 7/5 분할이 재현되지 않았다(내 결과는 2/9).
-        /// 어긋나는 것이 정확히 다섯 개여서, 내 기준점이 PM 의 것과 다른 성분에 있을 가능성이 크다.
-        /// 성분 구조를 보면 어느 쪽이 실제 맞이방인지 판단할 수 있다. 판정을 고치기 전에 이것을 먼저 본다.
+        /// 왜 필요한가: 2026-09-28 링크 없는 측정에서 PM 의 7/5 분할이 재현되지 않았다(내 결과는 2/9).
+        /// 그때 본 성분 구조는 링크 없는 그래프 위의 것이라 결론으로 쓰지 않는다. 링크를 올린 상태로 다시 재고
+        /// 나서 어느 쪽이 실제 맞이방인지 판단한다. 판정을 고치기 전에 이것을 먼저 본다.
+        /// 같은 성분이라는 이유만으로 양방향 도달이나 특정 기준점에서 유닛까지의 완전 경로를 주장하지 않는다.
         /// </remarks>
         [MenuItem("ChooGuard/Emergency/소화기 보행 성분 진단 (#242)")]
         public static void Components()
         {
-            var scene=EditorSceneManager.OpenScene(EmergencySceneBuilder.StationScenePath,OpenSceneMode.Single);
-            if(!scene.IsValid()){Debug.LogError("[성분진단] 씬을 열지 못했습니다.");return;}
-            var data=AssetDatabase.LoadAssetAtPath<NavMeshData>(StationNavigationBuilder.NavMeshPath);
-            if(data==null){Debug.LogError("[성분진단] navmesh 자산이 없습니다.");return;}
-            var instance=NavMesh.AddNavMeshData(data);
-            if(!instance.valid){Debug.LogError("[성분진단] navmesh 를 올리지 못했습니다.");return;}
+            if(!OpenStation("[성분진단]",out var scene))return;
+            var world=LinkedWorld.Open("[성분진단]");
+            if(world==null)return;
             try
             {
                 var names=new List<string>();
@@ -171,31 +175,29 @@ namespace ChooGuard.EditorTools
                     if(!groups.TryGetValue(root,out var list)){list=new List<string>();groups[root]=list;}
                     list.Add(names[i]+" "+spots[i].ToString("F1"));
                 }
-                Debug.Log("CG_FE_COMPONENTS groups="+groups.Count+" nodes="+spots.Count);
+                Debug.Log("CG_FE_COMPONENTS groups="+groups.Count+" nodes="+spots.Count+" links="+world.ValidLinks+"/"+world.LinkCount);
                 int index=0;
                 foreach(var group in groups.Values)
                     Debug.Log("[성분진단] 성분 "+(++index)+" · "+group.Count+"개 · "+string.Join(" | ",group));
             }
-            finally { if(instance.valid)instance.Remove(); }
+            finally { world.Dispose(); }
         }
 
         /// <summary>
         /// 유닛 하나를 깊게 들여다본다. 아래·위에 무엇이 있는지, 주변 어디에 진짜 바닥과 설 자리가
-        /// 있는지, 그 자리가 벽에 붙어 있는지 — 옮길 후보를 고르기 위한 재료다(#242, FE-005).
+        /// 있는지, 그 자리가 벽에 붙어 있는지 — 옮길 후보를 고르기 위한 재료다(#242). 대상은 FE-005 로 고정돼 있다.
         /// </summary>
         /// <remarks>
         /// 바꾸지 않는다. 후보를 늘어놓기만 한다. 어디로 옮길지는 사람이 본 뒤에 정한다.
+        /// FE-005 의 이동은 #262 에서 씬에 커밋됐다 — 이동을 되풀이하는 도구는 없다.
         /// </remarks>
         [MenuItem("ChooGuard/Emergency/소화기 한 대 정밀 진단 (#242)")]
         public static void Inspect()
         {
             const string Serial="BSN-CONC-FE-005";
-            var scene=EditorSceneManager.OpenScene(EmergencySceneBuilder.StationScenePath,OpenSceneMode.Single);
-            if(!scene.IsValid()){Debug.LogError("[정밀진단] 씬을 열지 못했습니다.");return;}
-            var data=AssetDatabase.LoadAssetAtPath<NavMeshData>(StationNavigationBuilder.NavMeshPath);
-            if(data==null){Debug.LogError("[정밀진단] navmesh 자산이 없습니다.");return;}
-            var instance=NavMesh.AddNavMeshData(data);
-            if(!instance.valid){Debug.LogError("[정밀진단] navmesh 를 올리지 못했습니다.");return;}
+            if(!OpenStation("[정밀진단]",out var scene))return;
+            var world=LinkedWorld.Open("[정밀진단]");
+            if(world==null)return;
             try
             {
                 GameObject unit=null;
@@ -276,118 +278,7 @@ namespace ChooGuard.EditorTools
                     Physics.SyncTransforms();
                 }
             }
-            finally { if(instance.valid)instance.Remove(); }
-        }
-
-        /// <summary>
-        /// FE-005 를 실제 바닥 위 벽면으로 옮긴다(#242). **씬을 저장한다** — 다른 메서드와 달리 읽기 전용이 아니다.
-        /// </summary>
-        /// <remarks>
-        /// 왜 이 자리인가: 원 좌표 `(60, 6.7, -65.57)` 에는 2층 면이 없다. 그 기둥의 면은 y 11.15(3층 슬래브 윗면)와
-        /// y -0.89(바깥 지면)뿐이고 소화기는 그 사이 빈 공간에 매달려 있었다. v3 산정(`index 4`, roomSqm 45)이
-        /// 실재하지 않는 층을 바닥으로 잡은 결과다.
-        ///
-        /// 목표 자리는 반경 5m 후보 중 **이웃 다섯(FE-003·006·009·010·011)과 같은 보행 성분에 드는 유일한 것**이다.
-        /// 벽이 더 가까운 후보가 둘 더 있었으나 각각 고립돼 있어, 옮겨도 갈 수 없는 소화기가 된다.
-        ///
-        /// 이 수정은 #242 를 닫지 않는다. 커버리지는 다시 풀지 않았고 y 6.7 로 산정된 나머지 셋
-        /// (FE-001·007·008)은 그대로다.
-        /// </remarks>
-        [MenuItem("ChooGuard/Emergency/FE-005 를 바닥 위로 옮긴다 (#242)")]
-        public static void Apply()
-        {
-            const string Serial="BSN-CONC-FE-005";
-            // 성분 진단에서 이웃과 같은 성분으로 확인된 설 자리.
-            var chosen=new Vector3(55.12f,7.06f,-64.20f);
-            var scene=EditorSceneManager.OpenScene(EmergencySceneBuilder.StationScenePath,OpenSceneMode.Single);
-            if(!scene.IsValid()){Debug.LogError("[FE005이동] 씬을 열지 못했습니다.");return;}
-            var data=AssetDatabase.LoadAssetAtPath<NavMeshData>(StationNavigationBuilder.NavMeshPath);
-            if(data==null){Debug.LogError("[FE005이동] navmesh 자산이 없습니다.");return;}
-            var instance=NavMesh.AddNavMeshData(data);
-            if(!instance.valid){Debug.LogError("[FE005이동] navmesh 를 올리지 못했습니다.");return;}
-            try
-            {
-                GameObject unit=null;
-                foreach(var candidate in Units(scene))
-                    if(candidate.name.EndsWith(Serial,StringComparison.Ordinal)){unit=candidate;break;}
-                if(unit==null){Debug.LogError("[FE005이동] 유닛을 찾지 못했습니다 · "+Serial);return;}
-
-                if(!NavMesh.SamplePosition(chosen,out var stand,1f,NavMesh.AllAreas))
-                {Debug.LogError("[FE005이동] 목표 설 자리가 보행 영역에 없습니다 · "+chosen.ToString("F2"));return;}
-
-                // 벽을 직접 잰다. 방향을 추정해 두면 벽이 아닌 곳에 붙일 수 있다.
-                // 설 자리에서 쏜다 — 벽 안에서 시작한 레이는 Unity 가 무시한다.
-                var eye=stand.position+Vector3.up*1.1f;
-                RaycastHit wall=default;bool hasWall=false;float best=float.MaxValue;
-                for(int w=0;w<36;w++)
-                {
-                    var direction=new Vector3(Mathf.Cos(w*Mathf.PI*2f/36f),0,Mathf.Sin(w*Mathf.PI*2f/36f));
-                    if(!Physics.Raycast(eye,direction,out var hit,2f,~0,QueryTriggerInteraction.Ignore))continue;
-                    if(hit.distance>=best)continue;
-                    best=hit.distance;wall=hit;hasWall=true;
-                }
-                if(!hasWall){Debug.LogError("[FE005이동] 2m 안에 벽이 없습니다. 소화기는 벽에 붙는 물건이므로 멈춥니다.");return;}
-
-                // 벽면에서 살짝 떼어 놓는다. 벽에 박히면 조준선이 벽을 먼저 문다.
-                var normal=new Vector3(wall.normal.x,0,wall.normal.z);
-                if(normal.sqrMagnitude<.0001f){Debug.LogError("[FE005이동] 벽 법선이 수평이 아닙니다 · "+wall.normal.ToString("F2"));return;}
-                normal.Normalize();
-                var against=new Vector3(wall.point.x,0,wall.point.z)+normal*.08f;
-
-                // 바닥 높이를 그 자리에서 다시 잰다. 목표 y 를 그대로 쓰지 않는다.
-                //
-                // 시작 높이가 중요하다. 처음에 y 12 에서 쏘았더니 3층 슬래브 윗면(y 11.15)을 먼저 맞아
-                // 소화기를 2층 바닥 위 4.15m 공중에 올려 놓았다. 2층 대역 바로 위에서 쏜다.
-                const float BandLow=6.5f,BandHigh=8f;
-                if(!Physics.Raycast(new Vector3(against.x,BandHigh+.5f,against.z),Vector3.down,out var floor,4f,~0,QueryTriggerInteraction.Ignore))
-                {Debug.LogError("[FE005이동] 붙일 자리 아래에 바닥이 없습니다 · "+against.ToString("F2"));return;}
-                if(floor.point.y<BandLow||floor.point.y>BandHigh)
-                {Debug.LogError("[FE005이동] 잡힌 바닥이 2층 대역 밖입니다 · y "+floor.point.y.ToString("F2")
-                                +" (허용 "+BandLow+"~"+BandHigh+") · "+floor.collider.name);return;}
-
-                var before=unit.transform.position;
-                var beforeRotation=unit.transform.rotation;
-                var target=new Vector3(against.x,floor.point.y,against.z);
-                // 판독면이 보이도록 벽을 등지고 선다 — 기존 규약대로 로컬 +Z 가 사람 쪽을 향한다.
-                var facing=Quaternion.LookRotation(normal,Vector3.up);
-                Undo.RecordObject(unit.transform,"FE-005 이동");
-                unit.transform.SetPositionAndRotation(target,facing);
-                Physics.SyncTransforms();
-
-                Debug.Log("[FE005이동] 벽 "+wall.collider.name+" "+best.ToString("F2")+"m · 법선 "+normal.ToString("F2"));
-                Debug.Log("[FE005이동] 위치 "+before.ToString("F3")+" → "+target.ToString("F3")
-                          +" · 이동 "+Vector3.Distance(before,target).ToString("F2")+"m");
-                Debug.Log("[FE005이동] 회전 "+beforeRotation.eulerAngles.ToString("F1")+" → "+facing.eulerAngles.ToString("F1"));
-
-                // 저장 전에 스스로 확인한다. 실패하면 되돌리고 저장하지 않는다.
-                //
-                // 처음 쓴 검사는 "6m 안에 바닥이 있으면 통과" 였고, 그래서 2층 바닥 위 4.15m 에 뜬 소화기를
-                // '바닥 있음' 으로 통과시켰다. 좋은 경우와 나쁜 경우 모두에서 통과하는 단언이었다.
-                // 이제 **발밑에 닿아 있는지**를 본다 — 루트 바로 위에서 쏘아 그만큼만 떨어져 있어야 한다.
-                const float Contact=.05f;
-                var root=unit.transform.position;
-                bool grounded=Physics.Raycast(root+Vector3.up*.5f,Vector3.down,out var check,1f,~0,QueryTriggerInteraction.Ignore)
-                              &&Mathf.Abs(check.distance-.5f)<Contact;
-                bool canStand=NavMesh.SamplePosition(root,out var spot,StandRadius,NavMesh.AllAreas)
-                              &&Mathf.Abs(spot.position.y-root.y)<.5f;
-                if(!grounded||!canStand)
-                {
-                    unit.transform.SetPositionAndRotation(before,beforeRotation);
-                    Debug.LogError("[FE005이동] 접지 "+(grounded?"됨":"안 됨")
-                                   +" · 같은 높이 설 자리 "+(canStand?"있음":"없음")
-                                   +" — 되돌리고 저장하지 않습니다.");
-                    return;
-                }
-                Debug.Log("[FE005이동] 확인 · 접지 "+check.collider.name+" 틈 "
-                          +Mathf.Abs(check.distance-.5f).ToString("F3")+"m"
-                          +" · 설 자리 "+Vector3.Distance(root,spot.position).ToString("F2")+"m"
-                          +" (높이차 "+(spot.position.y-root.y).ToString("+0.00;-0.00")+"m)");
-
-                EditorSceneManager.MarkSceneDirty(scene);
-                if(!EditorSceneManager.SaveScene(scene)){Debug.LogError("[FE005이동] 씬을 저장하지 못했습니다.");return;}
-                Debug.Log("CG_FE005_MOVED from="+before.ToString("F3")+" to="+target.ToString("F3"));
-            }
-            finally { if(instance.valid)instance.Remove(); }
+            finally { world.Dispose(); }
         }
 
         /// <summary>
@@ -401,8 +292,7 @@ namespace ChooGuard.EditorTools
         public static void Frame()
         {
             const string Serial="BSN-CONC-FE-005";
-            var scene=EditorSceneManager.OpenScene(EmergencySceneBuilder.StationScenePath,OpenSceneMode.Single);
-            if(!scene.IsValid()){Debug.LogError("[FE005보기] 씬을 열지 못했습니다.");return;}
+            if(!OpenStation("[FE005보기]",out var scene))return;
             GameObject unit=null;
             foreach(var candidate in Units(scene))
                 if(candidate.name.EndsWith(Serial,StringComparison.Ordinal)){unit=candidate;break;}
@@ -424,6 +314,106 @@ namespace ChooGuard.EditorTools
                       +"(3) 앞에 서면 고유번호·제원표·지시압력계가 읽히는가 (4) 앞에 설 공간이 있는가");
         }
 
+        /// <summary>
+        /// 측정 진입점이 공통으로 여는 씬. 열려 있는 다른 씬의 저장하지 않은 편집을 조용히 버리지 않는다.
+        /// </summary>
+        /// <remarks>
+        /// FpsStation 이 이미 활성 씬이면 다시 열지 않고 메모리의 그 씬을 잰다. 저장하지 않은 변경이 있으면
+        /// 디스크의 씬과 다를 수 있으므로 경고한다.
+        /// 사람이 있으면(에디터) 저장 여부를 묻고 취소하면 멈춘다 — FireExtinguisherSliceBuilder.Prepare 와 같다.
+        /// 사람이 없으면(배치모드) 대화상자의 기본 답에 맡길 수 없으므로, 저장하지 않은 씬이 있으면 열지 않고 멈춘다.
+        /// </remarks>
+        private static bool OpenStation(string tag,out Scene scene)
+        {
+            scene=EditorSceneManager.GetActiveScene();
+            if(scene.isLoaded&&scene.path==EmergencySceneBuilder.StationScenePath)
+            {
+                if(scene.isDirty)Debug.LogWarning(tag+" 저장하지 않은 변경이 있는 씬을 그대로 잽니다 — 디스크의 씬과 다를 수 있습니다.");
+                return true;
+            }
+            if(Application.isBatchMode)
+            {
+                for(int i=0;i<SceneManager.sceneCount;i++)
+                {
+                    var open=SceneManager.GetSceneAt(i);
+                    if(!open.isDirty)continue;
+                    Debug.LogError(tag+" 저장하지 않은 씬이 열려 있어 멈춥니다 · "+(string.IsNullOrEmpty(open.path)?open.name:open.path)
+                                   +" — 배치모드에는 저장 여부를 물을 사람이 없습니다.");
+                    return false;
+                }
+            }
+            else if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            {
+                Debug.LogWarning(tag+" 저장 확인에서 취소했습니다 — 씬을 열지 않고 멈춥니다.");
+                return false;
+            }
+            scene=EditorSceneManager.OpenScene(EmergencySceneBuilder.StationScenePath,OpenSceneMode.Single);
+            if(!scene.IsValid()){Debug.LogError(tag+" 씬을 열지 못했습니다 · "+EmergencySceneBuilder.StationScenePath);return false;}
+            return true;
+        }
+
+        /// <summary>
+        /// 세션이 여는 것과 같은 보행 세계 — 구운 navmesh 와 에스컬레이터·엘리베이터 링크 — 를 Dispose 까지 올려 둔다.
+        /// </summary>
+        /// <remarks>
+        /// 링크는 StationRouteBuilder.AddLinks 를 그대로 쓴다(StationWorld 가 세션에서 더하는 것과 같은 자료·같은 링크).
+        /// 여기서 링크를 새로 정하면 세션과 다른 그래프를 재게 된다. 링크를 더하다 던지면 그때까지 올린 것을 내리고 던진다.
+        /// </remarks>
+        private sealed class LinkedWorld:IDisposable
+        {
+            private NavMeshDataInstance instance;
+            private readonly List<NavMeshLinkInstance> links=new List<NavMeshLinkInstance>();
+
+            /// <summary>AddLinks 가 더하려 한 링크 수.</summary>
+            public int LinkCount=>links.Count;
+
+            /// <summary>그 중 navmesh 에 실제로 붙은 링크 수. LinkCount 보다 작으면 세션과 다른 그래프를 재고 있다.</summary>
+            public int ValidLinks
+            {
+                get
+                {
+                    int valid=0;
+                    foreach(var link in links)if(NavMesh.IsLinkValid(link))valid++;
+                    return valid;
+                }
+            }
+
+            public static LinkedWorld Open(string tag)
+            {
+                var data=AssetDatabase.LoadAssetAtPath<NavMeshData>(StationNavigationBuilder.NavMeshPath);
+                if(data==null)
+                {
+                    Debug.LogError(tag+" navmesh 자산이 없습니다 · "+StationNavigationBuilder.NavMeshPath
+                                   +" · 없이 재면 12대 전부 도달 불가로 나오므로 멈춥니다.");
+                    return null;
+                }
+                var stationData=AssetDatabase.LoadAssetAtPath<TextAsset>(StationNavigationBuilder.PointsPath);
+                if(stationData==null)
+                {
+                    Debug.LogError(tag+" 역 자료가 없습니다 · "+StationNavigationBuilder.PointsPath
+                                   +" · 링크 없이 재면 링크로만 이어지는 곳이 끊겨 보이므로 멈춥니다.");
+                    return null;
+                }
+                var points=ChooGuard.App.Fps.Emergency.StationPoints.Load(stationData);
+                var world=new LinkedWorld();
+                world.instance=NavMesh.AddNavMeshData(data);
+                if(!world.instance.valid){Debug.LogError(tag+" navmesh 를 올리지 못했습니다.");return null;}
+                try{StationRouteBuilder.AddLinks(points,world.links);}
+                catch{world.Dispose();throw;}
+                int valid=world.ValidLinks;
+                if(world.LinkCount==0||valid!=world.LinkCount)
+                    Debug.LogWarning(tag+" 링크 "+valid+"/"+world.LinkCount+" 만 유효합니다 — 세션과 같은 그래프가 아닐 수 있습니다.");
+                return world;
+            }
+
+            public void Dispose()
+            {
+                foreach(var link in links)if(NavMesh.IsLinkValid(link))NavMesh.RemoveLink(link);
+                links.Clear();
+                if(instance.valid)instance.Remove();
+            }
+        }
+
         // 기준점 후보. 어느 것이 큰 성분에 드는지 비교하기 위한 것이므로 넓게 잡는다.
         private static List<KeyValuePair<string,Vector3>> Probes()=>new List<KeyValuePair<string,Vector3>>
         {
@@ -434,11 +424,6 @@ namespace ChooGuard.EditorTools
             new KeyValuePair<string,Vector3>("*southgate",new Vector3(44,7,-50)),
             new KeyValuePair<string,Vector3>("*main2f",new Vector3(-22,7,-5)),
             new KeyValuePair<string,Vector3>("*northdeck",new Vector3(85,7,82)),
-            // FE-005 를 옮길 후보 두 곳(#242). 어느 성분에 드는지 보려고 넣었다 —
-            // 이웃한 FE-011·006 과 같은 성분이면 '이웃과 같은 처지' 가 되고, 혼자면 옮길 값이 없다.
-            new KeyValuePair<string,Vector3>("?cand2",new Vector3(55.12f,7.06f,-64.20f)),
-            new KeyValuePair<string,Vector3>("?cand4",new Vector3(55.04f,7.06f,-67.06f)),
-            new KeyValuePair<string,Vector3>("?cand11",new Vector3(59.58f,7.06f,-58.35f)),
         };
 
         private static Vector3 Body(GameObject unit)
