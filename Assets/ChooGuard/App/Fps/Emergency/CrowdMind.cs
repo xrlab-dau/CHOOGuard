@@ -1,27 +1,88 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace ChooGuard.App.Fps.Emergency
 {
     /// <summary>
-    /// Decisions for people in the station, asked of JEV as typed Choice questions over options the game builds from
-    /// the live world. Everyday decisions (what to do next, how to change floors) are asked ahead of time, while the
-    /// current activity is still running, so nobody freezes waiting for an answer; key moments (noticing something,
-    /// staff instructions, announcements, shaking) are asked when they happen. JEV probabilities are sampled so a crowd
-    /// spreads over plausible choices. Without JEV, or when it is late, local weights decide; those weights are design
+    /// Real-time judgement of the people in the station, asked of JEV as typed Choice questions over options the game builds
+    /// from the live world. Something a person observes (they see, hear or smell a hazard, hear the alarm bell or an
+    /// announcement, are told by staff, find their way blocked, arrive, or finish what they were doing) raises a judgement at
+    /// once; people near an active incident are judged again every few seconds; everyday choices are asked ahead of time at
+    /// low priority. A question holds only what that person could know, and people share a request only when their
+    /// observations are identical. Requests are scheduled by priority inside the crowd's share of JEV's budget. While an
+    /// answer is late, or the budget is spent, the person keeps doing what they were doing; when it arrives it is checked
+    /// against their current state first. Only physical reflexes (stepping back from fire, out of smoke) are decided in code,
+    /// and local weights decide only in runs without JEV (no key, or TYPESAFE_API_KEY=off); those weights are design
     /// heuristics, not measured behaviour data.
     /// </summary>
-    public sealed class CrowdMind
+    public sealed partial class CrowdMind
     {
-        public enum Kind { Notice, Indirect, Instruction, Reevaluate, Quake, AfterQuake, Routine, Route }
+        /// <summary>Why a judgement is needed, most urgent first (the value is the priority).</summary>
+        public enum Trigger { Quake, AfterQuake, Notice, Changed, Blocked, Instruction, Cue, Ended, Periodic, Routine, Route }
 
-        public int AnsweredByJev { get; private set; }
-        public int AnsweredLocally { get; private set; }
-        public int RoutineByJev { get; private set; }
-        public int RoutineLocally { get; private set; }
+        // 사건 근처 재판단 주기·거리는 CrowdDirector 에서 조정한다(인스펙터).
+        private float PeriodicSeconds => crowd.JudgePeriodSeconds;
+        private float NearMeters => crowd.JudgeNearMeters;
+        /// <summary>Emergency questions per request: one bell or announcement reaches everyone at once, and a request holds about a dozen questions in the time of one.</summary>
+        public int UrgentBatch = 12;
+        public int RoutineBatch = 12;
+        /// <summary>Requests started per frame at most (building a request is not free).</summary>
+        public int SendsPerFrame = 3;
+
+        /// <summary>What a person's judgement keeps between requests; owned by the <see cref="Passenger"/>.</summary>
+        public sealed class Slot
+        {
+            internal Judgement Urgent, Routine, Route;
+            /// <summary>Raised whenever what the person observes changes; an answer built on an older version is stale.</summary>
+            internal int Version;
+            internal float JudgedAt = -1000, WaitingSince = -1;
+            /// <summary>Keeps doing their current action because the next step is not decided yet.</summary>
+            public bool Waiting => WaitingSince >= 0;
+            /// <summary>What they last saw of each hazard they perceived directly.</summary>
+            internal readonly Dictionary<Hazard, string> Seen = new Dictionary<Hazard, string>();
+            /// <summary>What they heard rather than saw: the alarm bell, people running, an announcement.</summary>
+            internal readonly List<string> Heard = new List<string>();
+            internal string Announcement;
+            internal bool ToldByStaff, RouteAsked;
+            internal readonly List<string> Acts = new List<string>();
+            /// <summary>The last things that happened to this person's judgement (raised, sent, answered, done), to trace a stuck person afterwards.</summary>
+            internal readonly List<string> Trace = new List<string>();
+            internal Vector3 Anchor;
+            internal float AnchorSince = -1;
+            internal Passenger.Activity AnchorActivity;
+            internal bool FrozenReported;
+            /// <summary>When JEV's silence last sent this person on with their trip; they wait a few seconds again from there.</summary>
+            internal float ContinuedAt = -1000;
+
+            internal void Log(string what)
+            {
+                Trace.Add(Time.time.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " " + what);
+                if (Trace.Count > 16) Trace.RemoveAt(0);
+            }
+
+            internal void Forget()
+            {
+                Seen.Clear();
+                Heard.Clear();
+                Acts.Clear();
+                Announcement = null;
+                ToldByStaff = false;
+            }
+        }
+
+        /// <summary>Applying received answers may use this much of a frame (milliseconds); the rest waits for the next frame, so one frame never moves a whole crowd.</summary>
+        public float ApplyBudgetMs = 1f;
+        private readonly List<(Judgement item, JevAnswer answer)> receivedUrgent = new List<(Judgement, JevAnswer)>();
+        private readonly List<(Judgement item, JevAnswer answer)> receivedEveryday = new List<(Judgement, JevAnswer)>();
+        private float nextWatch, applyItemMs = .1f;
+        /// <summary>Requests in a row that came back without an answer (0 while JEV answers).</summary>
+        private int failuresInARow;
+        /// <summary>Seconds a person waits for a judgement, while JEV is failing, before they carry on with their trip.</summary>
+        public float OutageSeconds = 5f;
+        /// <summary>How the crowd's requests reach JEV: its client (null). A check sets one that never answers before the shift loads, to see the crowd keep going through an outage; nothing then leaves the process.</summary>
+        public static Func<string, object, IReadOnlyList<JevChoice>, Action<Dictionary<string, JevAnswer>>, JevLane, IEnumerator> Transport;
 
         /// <summary>One thing a person could do next, with where and for how long.</summary>
         public sealed class Choice
@@ -31,6 +92,8 @@ namespace ChooGuard.App.Fps.Emergency
             public Passenger.Activity Activity;
             public PointKind Kind;
             public StationPoints.Point Place;
+            /// <summary>Still sensible now (the train may have left since JEV was asked); null when nothing can change.</summary>
+            public Func<bool> Guard;
         }
 
         private sealed class Option
@@ -39,633 +102,461 @@ namespace ChooGuard.App.Fps.Emergency
             public Action<Passenger, Hazard, StationWorld> Run;
         }
 
-        private sealed class Pending
+        /// <summary>One question about one person, from the moment it was needed until it is applied or dropped.</summary>
+        internal sealed class Judgement
         {
             public Passenger Who;
-            public Kind Kind;
+            public Trigger Trigger;
             public Hazard Hazard;
-            public bool Flag;          // Indirect: via others' reaction · Instruction: direct from staff
-            public float Asked, ReadyAt;
-            public bool Sent, Done;
-            public string Key, Answer;
-            public List<(Option option, float weight)> Options;
+            /// <summary>Instruction: staff spoke to them (not an announcement). Notice: perceived directly.</summary>
+            public bool Direct;
+            /// <summary>Emergency lane; everyday questions use it when the person has been waiting for the answer.</summary>
+            public bool Urgent;
+            public bool Everyday;
+            public bool First;
+            public bool Sent, Done, Superseded, Received;
+            public float Raised, RaisedReal, Due, NotBefore, ReadyAt, SentReal, AnsweredAt;
+            public int Version, Failures, BatchSize;
+            public string Key, Answer, Note;
+            public Dictionary<string, float> Odds;
+            public HashSet<string> Offered;
             public List<Choice> Choices;
         }
 
         private readonly CrowdDirector crowd;
         private readonly JevClient jev;
-        private readonly List<Pending> pending = new List<Pending>();
-        private readonly Dictionary<Passenger, Pending> routine = new Dictionary<Passenger, Pending>();
-        private readonly HashSet<Passenger> routeAsked = new HashSet<Passenger>();
-        private float nextFlush;
+        private readonly List<Judgement> queue = new List<Judgement>();
+        private readonly List<Judgement> ready = new List<Judgement>();
+        private float nextScan, nextProbe;
         private int serial;
-        private const int BatchSize = 8;
-        private const float JevPatience = 2.4f;
 
-        // 자주 쓰는 장소 목록(판단 선택지 재료).
-        private readonly List<StationPoints.Point> shops, toilets, exits, meets;
-        private readonly List<string> cafes;
+        public CrowdMetrics Metrics { get; }
+
+        /// <summary>JEV is there to answer (a key that works and is not switched off). Without it local weights decide.</summary>
+        public bool Usable => jev != null && jev.Available;
 
         public CrowdMind(CrowdDirector crowd, JevClient jev)
         {
             this.crowd = crowd;
             this.jev = jev;
-            var points = crowd.World.Points;
-            shops = points.Of(PointKind.Shop).ToList();
-            toilets = points.Of(PointKind.Toilet).ToList();
-            exits = points.Of(PointKind.Exit).ToList();
-            meets = points.Of(PointKind.Meet).ToList();
-            cafes = points.Of(PointKind.Chair).Select(c => ShopOf(c)).Distinct().ToList();
+            var folder = System.IO.Path.Combine(UnityEngine.Application.persistentDataPath, "jev-runs");
+            string path = null;
+            try
+            {
+                System.IO.Directory.CreateDirectory(folder);
+                path = System.IO.Path.Combine(folder, "crowd-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss") + ".jsonl");
+            }
+            catch (Exception) { }
+            Metrics = new CrowdMetrics(path);
+            InitRoutine();
+            // 근무 첫 요청 프레임에 Tick 이 한 번 133 ms 걸렸다(측정). 첫 JSON 직렬화의 리플렉션 준비로 보여, 적재 중에 한 번 미리 돌린다.
+            Newtonsoft.Json.Linq.JToken.FromObject(new Dictionary<string, object> { ["warm"] = new List<object> { new { what = "x", where = "y" } } }).ToString(Newtonsoft.Json.Formatting.None);
         }
 
-        private static string ShopOf(StationPoints.Point chair) => chair.Label.EndsWith(" 의자", StringComparison.Ordinal) ? chair.Label.Substring(0, chair.Label.Length - 3) : chair.Label;
+        // ── 관측이 바뀌었을 때 ─────────────────────────────────────────────────
 
-        // ── 핵심 순간 ────────────────────────────────────────────────────────
-
-        public void OnNotice(Passenger who, Hazard hazard, bool indirect) =>
-            Ask(who, hazard is EarthquakeHazard quake ? (quake.Shaking ? Kind.Quake : Kind.AfterQuake) : indirect ? Kind.Indirect : Kind.Notice, hazard, indirect);
-
-        public void OnInstruction(Passenger who, bool direct) => Ask(who, Kind.Instruction, who.Focus, direct);
-        public void OnReevaluate(Passenger who) => Ask(who, Kind.Reevaluate, who.Focus, false);
-        public void AfterQuake(Passenger who) => Ask(who, Kind.AfterQuake, who.Focus, false);
-
-        private void Ask(Passenger who, Kind kind, Hazard hazard, bool flag)
+        /// <summary>The person registers <paramref name="hazard"/>: they perceive it themselves, or pick up on a cue (bell, running people, announcement).</summary>
+        public void OnNotice(Passenger who, Hazard hazard, bool indirect)
         {
-            // 같은 사람의 이전 질문은 새 상황으로 대체한다(일상 판단은 그대로 둔다).
-            foreach (var old in pending) if (old.Who == who && !old.Done && old.Kind != Kind.Routine && old.Kind != Kind.Route) old.Done = true;
-            var world = crowd.World;
-            var item = new Pending
+            var slot = who.Slot;
+            if (indirect) Hear(slot, hazard, who.Cue); else slot.Seen[hazard] = hazard.Visible;
+            var trigger = hazard is EarthquakeHazard quake ? (quake.Shaking ? Trigger.Quake : Trigger.AfterQuake) : indirect ? Trigger.Cue : Trigger.Notice;
+            Raise(who, trigger, hazard, !indirect);
+        }
+
+        /// <summary>Staff (<paramref name="direct"/>) or a public announcement tells them to leave.</summary>
+        public void OnInstruction(Passenger who, bool direct)
+        {
+            var slot = who.Slot;
+            if (direct) slot.ToldByStaff = true; else slot.Announcement = Announcement(who.Focus) ?? slot.Announcement;
+            Raise(who, Trigger.Instruction, who.Focus, direct);
+        }
+
+        /// <summary>A hazard they perceive has changed since they last looked (it grew, spread, was dealt with).</summary>
+        public void Observe(Passenger who, Hazard hazard)
+        {
+            var seen = who.Slot.Seen;
+            string now = hazard.Visible;
+            if (seen.TryGetValue(hazard, out var before) && before == now) return;
+            seen[hazard] = now;
+            if (before != null) Raise(who, Trigger.Changed, hazard, true, before);
+        }
+
+        /// <summary>The way to where they were heading is blocked.</summary>
+        public void OnBlocked(Passenger who) => Raise(who, Trigger.Blocked, who.Focus, true);
+
+        /// <summary>They reached where they were going in an emergency, or finished watching.</summary>
+        public void OnEnded(Passenger who) => Raise(who, Trigger.Ended, who.Focus, true);
+
+        public void AfterQuake(Passenger who) => Raise(who, Trigger.AfterQuake, who.Focus, false);
+
+        private void Hear(Slot slot, Hazard hazard, string cue)
+        {
+            if (string.IsNullOrEmpty(cue)) return;
+            if (!slot.Heard.Contains(cue)) slot.Heard.Add(cue);
+            if (IsAnnouncement(cue)) slot.Announcement = Announcement(hazard) ?? slot.Announcement;
+        }
+
+        // 방송을 들었다는 단서('an announcement …')는 IncidentDirector 가 문장으로 넘긴다. 방송 내용은 그 사건의 방송 문안이다.
+        private static bool IsAnnouncement(string cue) => cue.StartsWith("an announcement", StringComparison.Ordinal);
+
+        private static string Announcement(Hazard hazard) => hazard != null && hazard.Active ? hazard.Announcement.Text : null;
+
+        private void Raise(Passenger who, Trigger trigger, Hazard hazard, bool direct, string note = null)
+        {
+            if (who == null) return;
+            var slot = who.Slot;
+            var old = slot.Urgent;
+            bool pending = old != null && !old.Done;
+            // 도착·관찰 끝남·주기는 이미 판단이 진행 중이면 그 판단에 맡긴다. 관측이 실제로 바뀐 것만 진행 중 판단을 낡게 만든다.
+            bool soft = trigger == Trigger.Ended || trigger == Trigger.Periodic;
+            if (soft && pending) return;
+            if (!soft) slot.Version++;
+            float raised = Time.time, raisedReal = Time.realtimeSinceStartup;
+            if (pending)
             {
-                Who = who, Kind = kind, Hazard = hazard, Flag = flag,
-                Asked = Time.time,
-                // 사람이 알아차리고 움직이기까지의 반응 시간. JEV 가 없을 때도 같은 지연을 둔다.
-                ReadyAt = Time.time + (kind == Kind.Quake ? world.Range(.2f, .7f) : world.Range(.5f, 1.4f)),
+                if (!old.Sent && !old.Received)
+                {
+                    // 아직 보내지 않았다: 같은 판단에 새 사실을 합친다(가장 급한 이유로 묻는다).
+                    if (trigger < old.Trigger) old.Trigger = trigger;
+                    old.Hazard = hazard ?? old.Hazard;
+                    old.Direct |= direct;
+                    old.Note = note ?? old.Note;
+                    return;
+                }
+                // 이미 보냈다: 그 답은 낡았다. 새 판단은 처음 관측한 시각부터 잰다.
+                old.Superseded = true;
+                Metrics.Superseded++;
+                raised = old.Raised;
+                raisedReal = old.RaisedReal;
+            }
+            slot.Log("raise " + trigger + (hazard != null ? " " + hazard.Label : ""));
+            var world = crowd.World;
+            var item = new Judgement
+            {
+                Who = who, Trigger = trigger, Hazard = hazard, Direct = direct, Urgent = true, Note = note,
+                Raised = raised, RaisedReal = raisedReal, Due = raised,
+                // 사람이 알아차리고 움직이기까지의 반응 시간: JEV 없이 지역 규칙으로 정할 때만 쓴다(JEV 답이 오는 시간이 곧 반응 시간).
+                ReadyAt = Time.time + (trigger == Trigger.Quake ? world.Range(.2f, .7f) : world.Range(.5f, 1.4f)),
                 Key = "p" + who.Number + "_" + (++serial),
             };
-            item.Options = Options(item);
-            pending.Add(item);
+            slot.Urgent = item;
+            queue.Add(item);
+            Metrics.Raised++;
+            Metrics.MaxQueued = Mathf.Max(Metrics.MaxQueued, queue.Count);
         }
 
-        // ── 일상 판단(미리 묻기) ─────────────────────────────────────────────
-
-        /// <summary>Asks what <paramref name="who"/> does after the current activity, about <paramref name="secondsLeft"/> before it ends.</summary>
-        public void Prefetch(Passenger who, float secondsLeft)
+        private void Finish(Judgement item)
         {
-            if (routine.TryGetValue(who, out var old)) old.Done = true;
-            var item = new Pending { Who = who, Kind = Kind.Routine, Asked = Time.time, ReadyAt = Time.time + Mathf.Max(0, secondsLeft - 2), Key = "r" + who.Number + "_" + (++serial), Choices = RoutineOptions(who) };
-            routine[who] = item;
-            pending.Add(item);
-            if (routeAsked.Add(who))
-                pending.Add(new Pending { Who = who, Kind = Kind.Route, Asked = Time.time, ReadyAt = Time.time + 30, Key = "route" + who.Number + "_" + (++serial) });
+            item.Done = true;
+            var slot = item.Who != null ? item.Who.Slot : null;
+            if (slot == null) return;
+            if (slot.Urgent == item) slot.Urgent = null;
+            if (slot.Routine == item) slot.Routine = null;
+            if (slot.Route == item) slot.Route = null;
         }
-
-        /// <summary>The next thing to do: the prefetched JEV answer when it came in time, local weights otherwise. Reserves the place.</summary>
-        public Choice TakeRoutine(Passenger who)
-        {
-            routine.TryGetValue(who, out var item);
-            routine.Remove(who);
-            List<Choice> options;
-            string key;
-            string source;
-            if (item != null && item.Answer != null)
-            {
-                options = item.Choices;
-                key = item.Answer;
-                source = "JEV";
-                RoutineByJev++;
-            }
-            else
-            {
-                if (item != null) item.Done = true;
-                options = item?.Choices ?? RoutineOptions(who);
-                key = SampleLocal(options);
-                source = "local";
-                RoutineLocally++;
-            }
-            if (options.Count == 0) return null;
-            var chosen = options.Find(o => o.Key == key) ?? options[0];
-            if (!Reserve(chosen, who))
-            {
-                chosen = null;
-                foreach (var option in options.OrderByDescending(o => o.Weight))
-                    if (Reserve(option, who)) { chosen = option; break; }
-            }
-            if (chosen != null) crowd.Session.Log.Decision(who, "Routine", chosen.Key, source);
-            return chosen;
-        }
-
-        /// <summary>A local decision now (the chosen place was taken or the option no longer applies).</summary>
-        public Choice Fallback(Passenger who)
-        {
-            var options = RoutineOptions(who);
-            foreach (var option in options.OrderByDescending(o => o.Weight + (float)crowd.World.Random.NextDouble()))
-                if (Reserve(option, who)) return option;
-            return null;
-        }
-
-        private string SampleLocal(List<Choice> options)
-        {
-            float total = 0;
-            foreach (var o in options) total += Mathf.Max(0, o.Weight);
-            float roll = (float)crowd.World.Random.NextDouble() * total;
-            foreach (var o in options)
-            {
-                roll -= Mathf.Max(0, o.Weight);
-                if (roll <= 0) return o.Key;
-            }
-            return options.Count > 0 ? options[0].Key : null;
-        }
-
-        private bool Reserve(Choice choice, Passenger who)
-        {
-            var world = crowd.World;
-            var here = who.transform.position;
-            switch (choice.Kind)
-            {
-                case PointKind.Seat: choice.Place = world.ReserveSeat(here, 90); break;
-                case PointKind.Chair: choice.Place = world.ReserveChair(here, 600, p => choice.Filter == null || ShopOf(p) == choice.Filter); break;
-                case PointKind.Counter: choice.Place = world.ReservePlace(PointKind.Counter); break;
-                case PointKind.Wait: choice.Place = world.ReservePlace(PointKind.Wait, p => choice.Filter == null || p.Zone == choice.Filter); break;
-                case PointKind.PlatformWait:
-                    choice.Place = world.ReservePlace(PointKind.PlatformWait, p => p.Id.StartsWith("pw-" + who.Car + "-", StringComparison.Ordinal)) ?? world.ReservePlace(PointKind.PlatformWait);
-                    break;
-                default: break; // 가게·화장실·출구·마중 지점은 여러 사람이 함께 쓴다(미리 정해 둠).
-            }
-            return choice.Place != null;
-        }
-
-        private List<Choice> RoutineOptions(Passenger p)
-        {
-            var list = new List<Choice>();
-            var world = crowd.World;
-            var train = world.Train;
-            var here = p.transform.position;
-            bool upperFloor = here.y > 10;
-            float toTrain = SecondsToTrain(p);
-            string minutes = Mathf.Max(1, Mathf.RoundToInt(toTrain / 60f)) + " min";
-            void Add(string key, string description, float weight, Passenger.Activity activity, PointKind kind, float seconds, StationPoints.Point place = null, string filter = null, string remember = null)
-            {
-                if (weight <= 0) return;
-                list.Add(new Choice { Key = key, Description = description, Weight = weight, Activity = activity, Kind = kind, Seconds = seconds, Place = place, Filter = filter, Remember = remember });
-            }
-            bool usedToilet = p.Memory.Any(m => m.Contains("toilet"));
-            var toilet = Nearest(toilets, here);
-            switch (p.Trip)
-            {
-                case Passenger.Purpose.Depart when !p.MissedTrain:
-                {
-                    bool boarding = train != null && (train.BoardingOpen || train.Stage == TrainService.Phase.Closing) && train.Service == p.Service;
-                    if (boarding)
-                        Add("board_now", "Go down to platform 5·6 now and board car " + p.Car + " (boarding is open; the train leaves in about " + minutes + ")", toTrain < 120 ? 16 : 6, Passenger.Activity.PlatformWait, PointKind.PlatformWait, 0, remember: "went down to platform 5·6 to board");
-                    else if (toTrain < 420)
-                        Add("platform_early", "Go down to platform 5·6 early and wait by car " + p.Car + "'s door (boarding opens soon; departure in about " + minutes + ")", toTrain < 240 ? 2f : .5f, Passenger.Activity.PlatformWait, PointKind.PlatformWait, 0, remember: "went down to the platform early");
-                    if (!p.HasTicket) Add("ticket", "Queue at a 2F ticket window for the ticket to Seoul", 3, Passenger.Activity.Queue, PointKind.Counter, world.Range(25, 55), remember: "bought a ticket");
-                    if (!boarding || toTrain > 240)
-                    {
-                        Add("sit_hall", "Sit on a waiting-hall bench on 2F until closer to departure", 1.4f, Passenger.Activity.Sit, PointKind.Seat, Mathf.Clamp(toTrain - 150, 40, 300), remember: "sat in the waiting hall");
-                        Add("stand_board", "Stand in the waiting hall watching the departure boards", .6f, Passenger.Activity.Stand, PointKind.Wait, world.Range(30, 90), filter: "hall2f", remember: "watched the departure boards");
-                        AddShops(list, p, here, toTrain > 180 ? .5f : .1f, upperFloor);
-                        AddCafe(list, p, here, toTrain > 300 ? .5f : 0);
-                        if (toilet != null) Add("toilet", "Use the toilets (" + toilet.Label + ")", usedToilet ? .05f : toTrain > 150 ? .35f : .1f, Passenger.Activity.Toilet, PointKind.Toilet, 0, toilet);
-                        Add("phone", "Step aside and make a phone call", .25f, Passenger.Activity.Stand, PointKind.Wait, world.Range(40, 90), filter: world.Points.ZoneAt(here)?.id, remember: "made a phone call");
-                    }
-                    break;
-                }
-                case Passenger.Purpose.Depart:
-                    Add("rebook", "Queue at a ticket window to change to the next train", 2, Passenger.Activity.Queue, PointKind.Counter, world.Range(30, 60), remember: "rebooked for the next train");
-                    AddExits(list, here, .8f, "Give up and leave toward");
-                    Add("sit_hall", "Sit on a waiting-hall bench for a while", .8f, Passenger.Activity.Sit, PointKind.Seat, world.Range(60, 180));
-                    break;
-                case Passenger.Purpose.Arrive:
-                    if (p.Partner != null && !p.Met && p.Partner.Current == Passenger.Activity.Meet)
-                        Add("meet", "Go to the person waiting for them at " + p.Partner.Crowd.World.Describe(p.Partner.transform.position), 6, Passenger.Activity.Meet, PointKind.Meet, 30, NearestMeet(p.Partner.transform.position), remember: "went to meet their family");
-                    AddExits(list, here, 1f, "Leave the station toward");
-                    if (toilet != null) Add("toilet", "Use the toilets (" + toilet.Label + ")", usedToilet ? .02f : .3f, Passenger.Activity.Toilet, PointKind.Toilet, 0, toilet);
-                    AddCafe(list, p, here, .15f);
-                    AddShops(list, p, here, .12f, upperFloor);
-                    break;
-                case Passenger.Purpose.Greet:
-                {
-                    bool soon = train != null && (train.Stage == TrainService.Phase.Away && train.ArrivalAt - Time.time < 240 || train.Stage >= TrainService.Phase.Arriving && train.Stage <= TrainService.Phase.Alighting);
-                    var meet = world.Pick(meets);
-                    if (meet != null) Add("meet_wait", "Wait at " + meet.Label + " for the person arriving from Seoul (" + (train != null ? train.Status() : "") + ")", soon ? 4 : 1.5f, Passenger.Activity.Meet, PointKind.Meet, world.Range(60, 150), meet, remember: "waited at the arrivals exit");
-                    Add("sit_hall", "Sit on a waiting-hall bench until the train comes in", soon ? .3f : .9f, Passenger.Activity.Sit, PointKind.Seat, world.Range(60, 160));
-                    AddCafe(list, p, here, soon ? .1f : .5f);
-                    AddShops(list, p, here, .25f, upperFloor);
-                    if (p.Memory.Count > 4) AddExits(list, here, .3f, "Stop waiting and leave toward");
-                    break;
-                }
-                default:
-                    AddShops(list, p, here, 1f, upperFloor);
-                    AddCafe(list, p, here, .9f);
-                    if (toilet != null) Add("toilet", "Use the toilets (" + toilet.Label + ")", usedToilet ? .02f : .3f, Passenger.Activity.Toilet, PointKind.Toilet, 0, toilet);
-                    AddExits(list, here, .3f + .25f * p.Memory.Count, "Leave the station toward");
-                    break;
-            }
-            if (list.Count == 0) AddExits(list, here, 1, "Leave the station toward");
-            return list;
-        }
-
-        private float SecondsToTrain(Passenger p)
-        {
-            var train = crowd.World.Train;
-            if (train == null) return 900;
-            float seconds = train.SecondsToDeparture();
-            int next = train.NextBoardingService;
-            if (p.Service > next) seconds += TrainService.CycleSeconds * (p.Service - next);
-            return seconds;
-        }
-
-        private void AddShops(List<Choice> list, Passenger p, Vector3 here, float weight, bool upper)
-        {
-            if (weight <= 0 || shops.Count == 0) return;
-            var world = crowd.World;
-            // 가까운 가게 둘과 다른 층 가게 하나.
-            var near = shops.OrderBy(s => Vector3.Distance(s.Position, here) + world.Range(0, 40)).Take(2).ToList();
-            var other = shops.Where(s => Mathf.Abs(s.Position.y - here.y) > 3).OrderBy(_ => world.Random.Next()).FirstOrDefault();
-            if (other != null) near.Add(other);
-            int i = 0;
-            foreach (var shop in near)
-            {
-                string floor = StationFloor(shop.Position);
-                list.Add(new Choice
-                {
-                    Key = "shop_" + i++, Description = "Browse " + shop.Label + " (" + floor + (Mathf.Abs(shop.Position.y - here.y) > 3 ? ", another floor" : "") + ")",
-                    Weight = weight * (Mathf.Abs(shop.Position.y - here.y) > 3 ? .6f : 1), Activity = Passenger.Activity.Browse, Kind = PointKind.Shop, Place = shop,
-                    Seconds = world.Range(25, 80), Remember = "browsed " + shop.Label,
-                });
-            }
-        }
-
-        private void AddCafe(List<Choice> list, Passenger p, Vector3 here, float weight)
-        {
-            if (weight <= 0 || cafes.Count == 0) return;
-            var world = crowd.World;
-            var cafe = cafes[world.Random.Next(cafes.Count)];
-            var sample = world.Points.Of(PointKind.Chair).FirstOrDefault(c => ShopOf(c) == cafe);
-            list.Add(new Choice
-            {
-                Key = "cafe", Description = "Get something at " + cafe + " (" + (sample != null ? StationFloor(sample.Position) : "") + ") and sit at a table",
-                Weight = weight, Activity = Passenger.Activity.Sit, Kind = PointKind.Chair, Filter = cafe, Seconds = world.Range(120, 300), Remember = "sat at " + cafe,
-            });
-        }
-
-        private void AddExits(List<Choice> list, Vector3 here, float weight, string verb)
-        {
-            var world = crowd.World;
-            int i = 0;
-            foreach (var exit in exits.OrderBy(_ => world.Random.Next()).Take(3))
-                list.Add(new Choice { Key = "leave_" + i++, Description = verb + " " + exit.Label, Weight = weight * (exit.Id == "exit-port" ? .4f : 1), Activity = Passenger.Activity.Leave, Kind = PointKind.Exit, Place = exit });
-        }
-
-        private StationPoints.Point NearestMeet(Vector3 position) => Nearest(meets, position);
-
-        private static StationPoints.Point Nearest(List<StationPoints.Point> list, Vector3 position)
-        {
-            StationPoints.Point best = null; float bestDistance = float.PositiveInfinity;
-            foreach (var point in list)
-            {
-                float d = Vector3.Distance(point.Position, position) + Mathf.Abs(point.Position.y - position.y) * 4;
-                if (d < bestDistance) { bestDistance = d; best = point; }
-            }
-            return best;
-        }
-
-        private static string StationFloor(Vector3 position) => position.y < 3.5f ? "1F" : position.y < 10 ? "2F" : "3F";
 
         // ── 주기 ────────────────────────────────────────────────────────────
 
         public void Tick()
         {
+            long began = System.Diagnostics.Stopwatch.GetTimestamp();
+            int collections = GC.CollectionCount(0), startedBefore = Metrics.Requests;
             float now = Time.time;
-            bool jevUsable = jev != null && jev.Available;
-            for (int i = pending.Count - 1; i >= 0; i--)
+            bool usable = Usable;
+            int resolved = 0;
+            for (int i = queue.Count - 1; i >= 0; i--)
             {
-                var item = pending[i];
-                if (item.Done || item.Who == null) { pending.RemoveAt(i); continue; }
-                if (item.Kind == Kind.Routine || item.Kind == Kind.Route)
+                var item = queue[i];
+                if (item.Done || item.Who == null || item.Answer != null) { if (!item.Done && item.Who == null) item.Done = true; queue.RemoveAt(i); continue; }
+                if (item.Sent || item.Received) continue;
+                if (!usable)
                 {
-                    // 일상 판단은 다음 활동을 시작할 때 가져간다. 답이 없으면 그때 지역 규칙으로 정한다.
-                    if (item.Answer != null || (!jevUsable && item.Kind == Kind.Route)) { if (item.Kind == Kind.Route || item.Answer != null) pending.RemoveAt(i); }
-                    else if (item.Kind == Kind.Route && now - item.Asked > 60) pending.RemoveAt(i);
+                    // JEV 없는 근무: 일상 판단은 활동이 끝날 때 지역 규칙이 정하고, 급한 판단은 반응 시간 뒤 지역 규칙이 정한다. 답을 적용할 때와 같은 예산으로 나눠 한 프레임에 몰지 않는다.
+                    if (item.Everyday) { Finish(item); queue.RemoveAt(i); Metrics.Dropped++; }
+                    else if (now >= item.ReadyAt)
+                    {
+                        if (resolved > 0 && Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began) + applyItemMs * 1.5f > ApplyBudgetMs * .8f) continue;
+                        queue.RemoveAt(i);
+                        long started = System.Diagnostics.Stopwatch.GetTimestamp();
+                        ResolveLocally(item);
+                        resolved++;
+                        applyItemMs = Mathf.Lerp(applyItemMs, Mathf.Min(2f, Ms(System.Diagnostics.Stopwatch.GetTimestamp() - started)), .05f);
+                    }
                     continue;
                 }
-                bool timedOut = item.Sent ? now - item.Asked > JevPatience + 1.5f : now - item.Asked > JevPatience;
-                if (now >= item.ReadyAt && (!jevUsable || timedOut)) Resolve(item, null);
+                if (Outdated(item, now)) { Finish(item); queue.RemoveAt(i); Metrics.Stale++; }
             }
-            if (!jevUsable || now < nextFlush || !jev.CanSend(JevLane.CrowdRoutine)) return;
-            // 핵심 순간을 먼저, 남는 자리에 일상 판단을 싣는다.
-            var batch = new List<Pending>(BatchSize);
-            foreach (var item in pending) if (!item.Sent && !item.Done && item.Kind != Kind.Routine && item.Kind != Kind.Route) { batch.Add(item); if (batch.Count == BatchSize) break; }
-            foreach (var item in pending) if (batch.Count < BatchSize && !item.Sent && !item.Done && (item.Kind == Kind.Routine || item.Kind == Kind.Route)) batch.Add(item);
-            if (batch.Count == 0) return;
-            nextFlush = now + .35f;
-            foreach (var item in batch) item.Sent = true;
+            DrainApply();
+            Watchdog(now);
+            if (usable)
+            {
+                ScanNearIncident(now);
+                Dispatch(now);
+            }
+            Metrics.Flush();
+            Metrics.Tick((System.Diagnostics.Stopwatch.GetTimestamp() - began) * 1000f / System.Diagnostics.Stopwatch.Frequency, GC.CollectionCount(0) != collections, Metrics.Requests - startedBefore, queue.Count);
+        }
+
+        /// <summary>A question nobody needs the answer to any more: the next round asks a fresh one.</summary>
+        private bool Outdated(Judgement item, float now)
+        {
+            if (item.Trigger == Trigger.Periodic) return now - item.Raised > PeriodicSeconds * 2f;
+            // 일상 판단은 활동이 끝나면 어차피 급한 판단으로 올라간다. 그 전에 오래 묵은 것은 다음 활동에서 다시 묻는다.
+            if (item.Everyday && !item.Urgent) return now - item.Due > 90f;
+            return false;
+        }
+
+        /// <summary>People near an incident they know of are judged again every <see cref="PeriodicSeconds"/>.</summary>
+        private void ScanNearIncident(float now)
+        {
+            if (now < nextScan) return;
+            nextScan = now + .5f;
+            foreach (var person in crowd.People)
+            {
+                if (person == null) continue;
+                // 다음 걸음을 기다리며 하던 일을 잇는 시간(가장 긴 것을 잰다). 다른 일(대피·지켜보기)이 이미 맡았으면 더는 기다리는 것이 아니다.
+                if (person.Slot.WaitingSince >= 0)
+                {
+                    if (person.Holding) Metrics.LongestWait = Mathf.Max(Metrics.LongestWait, now - person.Slot.WaitingSince);
+                    else person.Slot.WaitingSince = -1;
+                }
+                if (person.Hurt || person.Hostile) continue;
+                var focus = person.Focus;
+                if (focus == null || !focus.Active) continue;
+                switch (person.Current)
+                {
+                    case Passenger.Activity.Evacuate:
+                    case Passenger.Activity.Injured:
+                    case Passenger.Activity.OnTrack:
+                    case Passenger.Activity.Aggressive:
+                    case Passenger.Activity.Report:
+                    case Passenger.Activity.TakeCover:
+                        continue;
+                }
+                var slot = person.Slot;
+                if (slot.Urgent != null && !slot.Urgent.Done) continue;
+                // 역 전체가 겪는 일(정전 등)은 곁에서 벌어지는 일보다 느리게 다시 묻는다.
+                float interval = PeriodicSeconds * (focus.Localized ? 1f : 3f);
+                if (now - slot.JudgedAt < interval || !Near(person, focus)) continue;
+                Raise(person, Trigger.Periodic, focus, true);
+            }
+        }
+
+        private bool Near(Passenger person, Hazard hazard)
+        {
+            if (!hazard.Localized) return true;
+            var d = person.transform.position - hazard.Position;
+            float reach = Mathf.Max(NearMeters, hazard.NoticeRadius);
+            return Mathf.Abs(d.y) < 4f && d.x * d.x + d.z * d.z < reach * reach;
+        }
+
+        /// <summary>
+        /// Twice a second: nobody may stand still for over 20 s while their action is one that moves (walking, moving away,
+        /// leaving, evacuating), and nobody may wait over 20 s for a decision. A finding is counted and written with that
+        /// person's own trace (raised, sent, answered, done).
+        /// </summary>
+        private void Watchdog(float now)
+        {
+            if (now < nextWatch) return;
+            nextWatch = now + .5f;
+            foreach (var person in crowd.People)
+            {
+                if (person == null || person.Hurt || person.Hostile) continue;
+                var slot = person.Slot;
+                var activity = person.Current;
+                bool moves = activity == Passenger.Activity.Walk || activity == Passenger.Activity.MoveAway || activity == Passenger.Activity.Evacuate || activity == Passenger.Activity.Leave;
+                // 목적지 3 m 안에 닿은 사람은 굳은 것이 아니다: 출구 문 앞에서는 역무원 눈에 띄지 않게 될 때까지 서 있는 것이 원래 규칙이다(Passenger.Update).
+                if ((person.Body.Goal - person.transform.position).sqrMagnitude < 9f) moves = false;
+                float pending = 0;
+                if (slot.WaitingSince >= 0 && person.Holding) pending = now - Mathf.Max(slot.WaitingSince, slot.ContinuedAt);
+                // JEV 가 답하지 않아 여정을 잇는 사람은 걷는 동안 기다리는 사람이 아니다.
+                if (slot.Urgent != null && !slot.Urgent.Done && !(slot.ContinuedAt > slot.Urgent.Raised && !person.Idle)) pending = Mathf.Max(pending, now - Mathf.Max(slot.Urgent.Raised, slot.ContinuedAt));
+                ContinueStill(person, now);
+                var body = person.Body;
+                if (!moves || body.Riding != null || body.Scripted)
+                {
+                    slot.AnchorSince = -1;
+                }
+                else
+                {
+                    var here = person.transform.position;
+                    if (slot.AnchorSince < 0 || slot.AnchorActivity != activity || (here - slot.Anchor).sqrMagnitude > .25f)
+                    {
+                        slot.Anchor = here;
+                        slot.AnchorSince = now;
+                        slot.AnchorActivity = activity;
+                        slot.FrozenReported = false;
+                    }
+                    else if (now - slot.AnchorSince > 20f && !slot.FrozenReported)
+                    {
+                        slot.FrozenReported = true;
+                        ReportStuck(person, "no_progress", now - slot.AnchorSince);
+                    }
+                }
+                if (pending > 20f && !slot.FrozenReported) { slot.FrozenReported = true; ReportStuck(person, "no_decision", pending); }
+            }
+        }
+
+        private void ReportStuck(Passenger person, string kind, float seconds)
+        {
+            Metrics.Frozen++;
+            if (Metrics.FrozenFindings.Count < 40) Metrics.FrozenFindings.Add("#" + person.Number + " " + kind + " " + person.Current + " " + System.Math.Round(seconds, 1) + " s: " + person.WalkState());
+            Metrics.Record(new Newtonsoft.Json.Linq.JObject
+            {
+                ["frozen"] = kind, ["passenger"] = person.Number, ["activity"] = person.Current.ToString(), ["seconds"] = System.Math.Round(seconds, 1),
+                ["at"] = person.Doing, ["to_goal_m"] = System.Math.Round(Vector3.Distance(person.Body.Goal, person.transform.position), 1),
+                ["seen_by_staff"] = PlayerView.Sees(person.transform.position, 45), ["walk"] = person.WalkState(), ["trace"] = new Newtonsoft.Json.Linq.JArray(person.Slot.Trace),
+            });
+        }
+
+        // ── 보내기 ──────────────────────────────────────────────────────────
+
+        private void Dispatch(float now)
+        {
+            // 접속이 계속 실패하면 다시 물음을 줄여, 서버가 돌아오기 전에 요청이 쌓여 쏟아지지 않게 한다.
+            if (failuresInARow >= 3)
+            {
+                if (Time.realtimeSinceStartup < nextProbe) return;
+                nextProbe = Time.realtimeSinceStartup + 2f;
+            }
+            for (int sends = 0; sends < SendsPerFrame; sends++)
+            {
+                ready.Clear();
+                float real = Time.realtimeSinceStartup;
+                foreach (var item in queue)
+                    if (!item.Sent && !item.Received && !item.Done && item.Who != null && item.Answer == null && real >= item.NotBefore) ready.Add(item);
+                if (ready.Count == 0) return;
+                ready.Sort(ByPriority);
+                // 급한 줄이 가득 차 못 보내도 일상 줄에 자리가 있으면 그쪽 첫 질문은 보낸다(예산은 JEV 클라이언트가 지킨다).
+                bool urgentOpen = CanSend(true), routineOpen = CanSend(false);
+                Judgement first = null;
+                foreach (var candidate in ready)
+                    if (candidate.Urgent ? urgentOpen : routineOpen) { first = candidate; break; }
+                if (first == null) return;
+                int capacity = first.Urgent ? UrgentBatch : RoutineBatch;
+                var batch = new List<Judgement>(capacity) { first };
+                string signature = Signature(first);
+                for (int i = 1; i < ready.Count && batch.Count < capacity; i++)
+                    if (ready[i].Urgent == first.Urgent && Signature(ready[i]) == signature) batch.Add(ready[i]);
+                Send(batch, first.Urgent);
+            }
+        }
+
+        private static int ByPriority(Judgement a, Judgement b)
+        {
+            if (a.Urgent != b.Urgent) return a.Urgent ? -1 : 1;
+            if (a.Trigger != b.Trigger) return a.Trigger < b.Trigger ? -1 : 1;
+            // 같은 계기면 위험에 가까운 사람부터: 예산이 모자랄 때 방송·종소리에도 불 곁 사람이 먼저 판단받는다.
+            float da = DistanceToHazard(a), db = DistanceToHazard(b);
+            if (da != db) return da < db ? -1 : 1;
+            return a.Due.CompareTo(b.Due);
+        }
+
+        private static float DistanceToHazard(Judgement item) =>
+            item.Hazard != null && item.Hazard.Localized && item.Who != null ? Vector3.Distance(item.Who.transform.position, item.Hazard.Position) : float.MaxValue;
+
+        private static JevLane LaneOf(bool urgent) => urgent ? JevLane.CrowdUrgent : JevLane.CrowdRoutine;
+
+        private bool CanSend(bool urgent) => jev.CanSend(LaneOf(urgent));
+
+        private IEnumerator Request(bool urgent, string purpose, object state, IReadOnlyList<JevChoice> questions, Action<Dictionary<string, JevAnswer>> done) =>
+            Transport != null ? Transport(purpose, state, questions, done, LaneOf(urgent)) : jev.Ask(purpose, state, questions, done, LaneOf(urgent));
+
+        private void Send(List<Judgement> batch, bool urgent)
+        {
+            long began = System.Diagnostics.Stopwatch.GetTimestamp();
+            var asked = new List<Judgement>(batch.Count);
             var questions = new List<JevChoice>(batch.Count);
-            foreach (var item in batch) questions.Add(Question(item));
-            crowd.StartCoroutine(jev.Ask("crowd", crowd.Session.Incidents.PublicState(), questions, answers =>
+            float real = Time.realtimeSinceStartup;
+            foreach (var item in batch)
             {
-                foreach (var item in batch)
-                {
-                    if (item.Done || item.Who == null) continue;
-                    JevAnswer answer = null;
-                    answers?.TryGetValue(item.Key, out answer);
-                    if (item.Kind == Kind.Routine)
-                    {
-                        if (answer != null) item.Answer = answer.Draw(crowd.World.Random);
-                        continue;
-                    }
-                    if (item.Kind == Kind.Route)
-                    {
-                        if (answer != null) item.Who.SetRoute(answer.Draw(crowd.World.Random));
-                        item.Done = true;
-                        continue;
-                    }
-                    if (answer == null) { item.Sent = false; item.Asked = Mathf.Min(item.Asked, Time.time - JevPatience); continue; }
-                    Resolve(item, answer);
-                }
-            }, JevLane.CrowdRoutine));
+                var question = Question(item);
+                if (question == null) { Finish(item); Metrics.Dropped++; continue; }
+                item.Version = item.Who.Slot.Version;
+                item.Sent = true;
+                item.SentReal = real;
+                item.BatchSize = batch.Count;
+                item.Who.Slot.Log("sent in a request of " + batch.Count);
+                asked.Add(item);
+                questions.Add(question);
+            }
+            if (asked.Count == 0) return;
+            long questionsBuilt = System.Diagnostics.Stopwatch.GetTimestamp();
+            Metrics.Requests++;
+            Metrics.Questions += asked.Count;
+            var state = State(asked[0]);
+            long stateBuilt = System.Diagnostics.Stopwatch.GetTimestamp();
+            // 클라이언트의 동기 구간(JSON 직렬화·SendWebRequest 시작)이 여기에 든다. 그 안은 JevClient 소관이라 겉에서 한 덩어리로 잰다.
+            crowd.StartCoroutine(Request(urgent, urgent ? "crowd-urgent" : "crowd-routine", state, questions, answers => OnAnswers(asked, answers)));
+            long started = System.Diagnostics.Stopwatch.GetTimestamp();
+            Metrics.Step(Ms(questionsBuilt - began), Ms(stateBuilt - questionsBuilt), Ms(started - stateBuilt), asked.Count);
         }
 
-        private void Resolve(Pending item, JevAnswer answer)
+        private static float Ms(long ticks) => ticks * 1000f / System.Diagnostics.Stopwatch.Frequency;
+
+        /// <summary>JEV's answers arrive: they only queue up here; <see cref="DrainApply"/> applies them within the frame budget.</summary>
+        private void OnAnswers(List<Judgement> asked, Dictionary<string, JevAnswer> answers)
         {
-            item.Done = true;
-            var world = crowd.World;
-            Option chosen = null;
-            string source;
-            if (answer != null)
+            failuresInARow = answers == null ? failuresInARow + 1 : 0;
+            foreach (var item in asked)
             {
-                string key = answer.Draw(world.Random);
-                foreach (var (option, _) in item.Options) if (option.Key == key) chosen = option;
-                source = "JEV";
-                AnsweredByJev++;
+                item.Sent = false;
+                if (item.Done) continue;
+                if (item.Who == null) { Finish(item); continue; }
+                JevAnswer answer = null;
+                answers?.TryGetValue(item.Key, out answer);
+                // 그 사이 같은 사람에게 더 새로운 관측이 생겨 새 판단이 이 판단을 대신한다: 이 답은 쓰지 않는다.
+                if (item.Superseded) { Finish(item); if (answer != null) Metrics.Stale++; continue; }
+                if (answer == null) { item.Who.Slot.Log("no answer"); Failed(item); continue; }
+                Metrics.Answered++;
+                item.AnsweredAt = Time.time;
+                item.Received = true;
+                item.Who.Slot.Log("answered after " + (Time.realtimeSinceStartup - item.SentReal).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " s");
+                (item.Everyday ? receivedEveryday : receivedUrgent).Add((item, answer));
             }
-            else
-            {
-                float total = 0;
-                foreach (var (_, weight) in item.Options) total += Mathf.Max(0, weight);
-                float roll = (float)world.Random.NextDouble() * total;
-                foreach (var (option, weight) in item.Options)
-                {
-                    roll -= Mathf.Max(0, weight);
-                    if (roll <= 0) { chosen = option; break; }
-                }
-                source = "local";
-                AnsweredLocally++;
-            }
-            if (chosen == null) chosen = item.Options[0].option;
-            // 같은 묶음에서 여럿이 동시에 '알리러 간다'를 고를 수 있다. 실행 순간에 다시 확인한다.
-            if (chosen == Report && !CanReport(item.Hazard)) chosen = Watch;
-            crowd.Session.Log.Decision(item.Who, item.Kind.ToString(), chosen.Key, source);
-            // 답을 기다리는 사이 다쳤거나 연기를 피해 이미 대피하기 시작한 사람에게 뒤늦은 '구경'·'계속'을 덮어쓰지 않는다.
-            var who = item.Who;
-            if (who == null || who.Hurt) return;
-            if (who.Current == Passenger.Activity.Evacuate && chosen != Evacuate && chosen != Run && chosen != Comply && chosen != Follow) return;
-            chosen.Run(who, item.Hazard, world);
         }
 
-        // ── 핵심 순간 선택지와 지역 가중치 ────────────────────────────────────
-
-        private static Option O(string key, string description, Action<Passenger, Hazard, StationWorld> run) =>
-            new Option { Key = key, Description = description, Run = run };
-
-        private static readonly Option Continue = O("continue", "Carries on with what they were doing", (p, h, w) => p.KeepGoing());
-        private static readonly Option Watch = O("watch", "Stops at a distance and keeps watching", (p, h, w) => p.Watch(w.Range(12, 25), false));
-        private static readonly Option Film = O("film", "Takes out a phone and films it", (p, h, w) => p.Watch(w.Range(12, 25), true));
-        private static readonly Option MoveAway = O("move_away", "Moves a safe distance away and waits there", (p, h, w) => p.MoveAway((h?.DangerRadius ?? 0) + w.Range(9, 16)));
-        private static readonly Option Evacuate = O("evacuate", "Leaves the station calmly through an exit", (p, h, w) => p.Evacuate(false));
-        private static readonly Option Run = O("run", "Runs for an exit", (p, h, w) => p.Evacuate(true));
-        private static readonly Option Report = O("report_staff", "Goes to tell the station staff member on duty", (p, h, w) => p.ReportToStaff());
-        private static readonly Option Alert = O("alert_others", "Warns the people nearby", (p, h, w) => p.AlertOthers());
-        private static readonly Option Cover = O("take_cover", "Crouches and protects their head", (p, h, w) => p.TakeCover(w.Range(2, 5)));
-        private static readonly Option Freeze = O("freeze", "Freezes in place, unsure what to do", (p, h, w) => p.Freeze(w.Range(2, 4)));
-        private static readonly Option HoldOn = O("hold_on", "Stays seated, holding on", (p, h, w) => p.Freeze(w.Range(2, 5)));
-        private static readonly Option Stay = O("stay", "Stays put and waits for information", (p, h, w) => p.Watch(w.Range(20, 45), false));
-        private static readonly Option Follow = O("follow_crowd", "Follows the people who are leaving", (p, h, w) => p.Evacuate(false));
-        private static readonly Option LookAround = O("look_around", "Stops and looks around to see what is going on", (p, h, w) => p.Watch(w.Range(5, 10), false));
-        private static readonly Option Comply = O("comply", "Follows the instruction and leaves through the indicated exit", (p, h, w) => p.Evacuate(false));
-        private static readonly Option Hesitate = O("hesitate", "Hesitates and looks around before deciding", (p, h, w) => p.Watch(w.Range(5, 12), false));
-        private static readonly Option Ignore = O("ignore", "Ignores the instruction for now", (p, h, w) => p.KeepGoing());
-        private static readonly Option StepOff = O("get_off", "Gets off the train onto the platform", (p, h, w) => p.MoveAway(8));
-        private static readonly Option StayAboard = O("stay_aboard", "Stays in their seat for now", (p, h, w) => p.KeepGoing());
-        private static readonly Option Help = O("help", "Goes over to help the person who is hurt", (p, h, w) => p.HelpNearby(h));
-
-        private List<(Option, float)> Options(Pending item)
+        /// <summary>Applies received answers, urgent ones first, while the average answer still fits in <see cref="ApplyBudgetMs"/>; at least one per frame so nothing waits forever.</summary>
+        private void DrainApply()
         {
-            var p = item.Who;
-            var h = item.Hazard;
-            float distance = h != null && h.Localized ? Vector3.Distance(p.transform.position, h.Position) : 0;
-            bool near = distance < 7;
-            bool seated = p.Body.Seat != PersonBody.SeatPhase.None;
-            bool aboard = p.Current == Passenger.Activity.InTrain;
-            int leaving = crowd.CountNear(p.transform.position, 10, Passenger.Activity.Evacuate);
-            var list = new List<(Option, float)>();
-            if (aboard && item.Kind != Kind.Quake)
+            if (receivedUrgent.Count == 0 && receivedEveryday.Count == 0) return;
+            long began = System.Diagnostics.Stopwatch.GetTimestamp();
+            int applied = 0;
+            while (receivedUrgent.Count > 0 || receivedEveryday.Count > 0)
             {
-                bool doorsOpen = crowd.World.Train != null && crowd.World.Train.DoorsOpen > .9f;
-                list.Add((StepOff, doorsOpen ? .55f + (near ? .3f : 0) : 0));
-                list.Add((StayAboard, .25f));
-                list.Add((Watch, .15f));
-                list.Add((Alert, .08f));
-                return list;
+                // 다음 답을 적용하면 예산을 넘길 것 같으면 다음 프레임으로 미룬다(프레임마다 하나는 반드시 적용한다).
+                if (applied > 0 && Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began) + applyItemMs * 1.5f > ApplyBudgetMs * .8f) break;
+                var list = receivedUrgent.Count > 0 ? receivedUrgent : receivedEveryday;
+                var (item, answer) = list[0];
+                list.RemoveAt(0);
+                item.Received = false;
+                long started = System.Diagnostics.Stopwatch.GetTimestamp();
+                ApplyReceived(item, answer);
+                applied++;
+                applyItemMs = Mathf.Lerp(applyItemMs, Mathf.Min(2f, Ms(System.Diagnostics.Stopwatch.GetTimestamp() - started)), .05f);
             }
-            switch (item.Kind)
-            {
-                case Kind.Notice when h is FireHazard fire:
-                {
-                    float big = Mathf.Clamp01(fire.Intensity);
-                    bool smoky = fire.InSmoke(p.transform.position);
-                    list.Add((Continue, .08f - .06f * big));
-                    list.Add((Watch, near ? .06f : .14f));
-                    list.Add((Film, near ? .03f : .08f));
-                    list.Add((MoveAway, .26f + (near ? .15f : 0)));
-                    list.Add((Evacuate, .18f + .2f * big + (smoky ? .3f : 0) + (near ? .1f : 0)));
-                    list.Add((Run, .04f + .08f * big));
-                    list.Add((Report, CanReport(h) ? .12f : 0));
-                    list.Add((Alert, .10f));
-                    break;
-                }
-                case Kind.Notice when h is CollapseHazard:
-                    list.Add((Help, near ? .35f : .15f));
-                    list.Add((Report, CanReport(h) ? .3f : 0));
-                    list.Add((Watch, .2f));
-                    list.Add((Continue, .15f));
-                    break;
-                // 선로 위 사람: 뛰어내려 돕지 않는다. 소리쳐 알리고, 역무원을 부르고, 지켜본다.
-                case Kind.Notice when h is TrackFallHazard:
-                    list.Add((Alert, .35f));
-                    list.Add((Report, CanReport(h) ? .3f : 0));
-                    list.Add((Watch, .2f));
-                    list.Add((Film, .05f));
-                    list.Add((Continue, .05f));
-                    break;
-                case Kind.Notice when h is DisturbanceHazard:
-                    list.Add((MoveAway, .35f + (near ? .15f : 0)));
-                    list.Add((Run, .06f + (near ? .1f : 0)));
-                    list.Add((Watch, near ? .06f : .15f));
-                    list.Add((Film, near ? .03f : .08f));
-                    list.Add((Report, CanReport(h) ? .15f : 0));
-                    list.Add((Alert, .08f));
-                    list.Add((Continue, near ? .02f : .08f));
-                    break;
-                case Kind.Notice when h is GasLeakHazard || h is SuspiciousSubstanceHazard:
-                    list.Add((MoveAway, .35f));
-                    list.Add((Evacuate, .15f + (h.Irritates(p.transform.position) ? .2f : 0)));
-                    list.Add((Report, CanReport(h) ? .15f : 0));
-                    list.Add((Alert, .15f));
-                    list.Add((Watch, .05f));
-                    list.Add((Continue, .10f));
-                    break;
-                // 정전: 대개 그 자리에서 기다리거나 휴대전화 불빛으로 둘러보고, 일부는 천천히 밖으로 나간다.
-                case Kind.Notice when h is PowerOutageHazard:
-                    list.Add((Stay, .35f));
-                    list.Add((LookAround, .25f));
-                    list.Add((Continue, .2f));
-                    list.Add((Evacuate, .15f + (p.Instructed ? .2f : 0)));
-                    break;
-                case Kind.Notice when h is WaterLeakHazard || h is FallingObjectHazard:
-                    list.Add((MoveAway, .3f));
-                    list.Add((Watch, .2f));
-                    list.Add((Film, .1f));
-                    list.Add((Report, CanReport(h) ? .15f : 0));
-                    list.Add((Continue, .25f));
-                    break;
-                case Kind.Notice:
-                    list.Add((Continue, .40f));
-                    list.Add((Watch, .20f));
-                    list.Add((MoveAway, .15f));
-                    list.Add((Report, CanReport(h) ? .15f : 0));
-                    list.Add((Alert, .10f));
-                    break;
-                case Kind.Indirect:
-                    list.Add((Follow, .45f + (leaving >= 3 ? .2f : 0)));
-                    list.Add((LookAround, .35f));
-                    list.Add((Continue, .20f));
-                    break;
-                case Kind.Instruction:
-                    bool sees = h != null && h.Localized && distance < h.NoticeRadius;
-                    list.Add((Comply, (item.Flag ? .82f : .60f) + (sees ? .1f : 0)));
-                    list.Add((Hesitate, item.Flag ? .14f : .25f));
-                    list.Add((Ignore, item.Flag ? .04f : .15f));
-                    break;
-                case Kind.Reevaluate when h is FireHazard fire:
-                    bool inSmoke = fire.InSmoke(p.transform.position);
-                    list.Add((Evacuate, .45f + (inSmoke ? .3f : 0) + (p.Instructed ? .3f : 0)));
-                    list.Add((MoveAway, .30f));
-                    list.Add((Watch, .15f));
-                    list.Add((Continue, .10f));
-                    break;
-                case Kind.Reevaluate:
-                    list.Add((Continue, p.Instructed ? .1f : .35f));
-                    list.Add((Watch, .20f));
-                    list.Add((MoveAway, .25f));
-                    list.Add((Evacuate, p.Instructed ? .5f : .05f));
-                    list.Add((Report, CanReport(h) ? .20f : 0));
-                    break;
-                case Kind.Quake:
-                    list.Add((Cover, seated ? .35f : .50f));
-                    list.Add((seated ? HoldOn : Freeze, seated ? .45f : .30f));
-                    list.Add((Run, .20f));
-                    break;
-                case Kind.AfterQuake:
-                    bool debris = crowd.World.IsClosed(p.transform.position, 8);
-                    list.Add((Continue, .25f));
-                    list.Add((Stay, .40f));
-                    list.Add((Evacuate, .35f + (debris ? .2f : 0) + (p.Instructed ? .3f : 0)));
-                    break;
-            }
-            return list;
+            Metrics.Apply(Ms(System.Diagnostics.Stopwatch.GetTimestamp() - began), applied);
         }
 
-        /// <summary>Telling staff makes sense unless the staff member is visibly already dealing with it.</summary>
-        private bool CanReport(Hazard hazard)
+        private void ApplyReceived(Judgement item, JevAnswer answer)
         {
-            var player = crowd.Player;
-            // 역 전체가 함께 겪는 일(흔들림, 정전)은 알릴 거리가 아니다.
-            if (player == null || hazard is EarthquakeHazard || hazard is PowerOutageHazard) return false;
-            // 이미 두 사람이 알리러 갔으면 다른 사람들은 누군가 알렸으리라 여긴다.
-            int reporting = 0;
-            foreach (var person in crowd.People) if (person.Current == Passenger.Activity.Report && person.Focus == hazard) reporting++;
-            if (reporting >= 2) return false;
-            if (hazard == null || !hazard.Localized) return true;
-            return !(crowd.Session.Incidents.PlayerKnowsIncident && Vector3.Distance(player.transform.position, hazard.Position) < 15);
+            if (item.Done) return;
+            if (item.Who == null) { Finish(item); return; }
+            if (item.Superseded) { Finish(item); Metrics.Stale++; return; }
+            if (item.Trigger == Trigger.Route) ReceiveRoute(item, answer);
+            else if (item.Everyday) ReceiveRoutine(item, answer);
+            else ApplyUrgent(item, answer, Time.realtimeSinceStartup);
         }
 
-        private string Profile(Passenger p)
+        /// <summary>JEV did not answer this question (timeout, refusal, budget): ask again a moment later, with growing pauses.</summary>
+        private void Failed(Judgement item)
         {
-            var text = new StringBuilder(160);
-            text.Append("Passenger #").Append(p.Number).Append(" (").Append(p.Body.Female ? "woman" : "man");
-            if (p.Elderly) text.Append(", elderly");
-            text.Append(p.Luggage == 2 ? ", with a large suitcase" : p.Luggage == 1 ? ", with a bag" : "").Append(")");
-            return text.ToString();
-        }
-
-        private JevChoice Question(Pending item)
-        {
-            var p = item.Who;
-            var h = item.Hazard;
-            var text = new StringBuilder(480);
-            if (item.Kind == Kind.Route)
-            {
-                text.Append(Profile(p)).Append(" moves between floors and down to the platforms of Busan Station (escalators beside stairs, a few elevators). How do they usually change floors?");
-                var route = new JevChoice { Id = item.Key, Instructions = text.ToString() };
-                route.Criteria["escalator"] = "Rides the escalators";
-                route.Criteria["stairs"] = "Walks the stairs";
-                route.Criteria["elevator"] = "Waits for an elevator";
-                return route;
-            }
-            if (item.Kind == Kind.Routine)
-            {
-                text.Append(Profile(p)).Append(". Trip: ").Append(Trip(p)).Append(". Train: ").Append(crowd.World.Train != null ? crowd.World.Train.Status() : "none").Append(". ");
-                text.Append("Now: ").Append(p.Doing).Append(". ");
-                if (p.Memory.Count > 0) text.Append("Earlier: ").Append(string.Join("; ", p.Memory)).Append(". ");
-                text.Append("Clock ").Append(crowd.Session.Clock(crowd.Session.ShiftSeconds)).Append(". Choose what this person does next, as an ordinary traveller at Busan Station would.");
-                var q = new JevChoice { Id = item.Key, Instructions = text.ToString() };
-                foreach (var choice in item.Choices) q.Criteria[choice.Key] = choice.Description;
-                return q;
-            }
-            text.Append(Profile(p)).Append(", currently ").Append(p.Doing).Append(". ");
-            switch (item.Kind)
-            {
-                case Kind.Notice:
-                    if (!h.Localized) { text.Append("Around them now: '").Append(h.Visible).Append("'. "); break; }
-                    text.Append(h.NeedsSight ? "They now see: '" : "They now hear or smell: '").Append(h.Visible).Append("' about ").Append(Mathf.RoundToInt(Vector3.Distance(p.transform.position, h.Position))).Append(" m away, at ").Append(h.Where).Append(". ");
-                    break;
-                case Kind.Indirect:
-                    text.Append("They cannot see the cause but ").Append(p.Cue ?? "people nearby are reacting").Append(" (").Append(crowd.CountNear(p.transform.position, 10, Passenger.Activity.Evacuate)).Append(" leaving within 10 m). ");
-                    break;
-                case Kind.Instruction:
-                    text.Append(item.Flag ? "A station staff member is telling them directly to leave through an exit. " : "A public announcement asks everyone to leave the area. ");
-                    break;
-                case Kind.Reevaluate:
-                    text.Append("They have been watching '").Append(h?.Visible ?? "the situation").Append("' for a while; it is ").Append(h != null && h.Active ? "still ongoing" : "over").Append(". ");
-                    break;
-                case Kind.Quake:
-                    text.Append("The whole station starts shaking strongly. ");
-                    break;
-                case Kind.AfterQuake:
-                    text.Append("The shaking has just stopped. ").Append(crowd.World.IsClosed(p.transform.position, 8) ? "Something fell from the ceiling close to them. " : "");
-                    break;
-            }
-            text.Append("People within 10 m: ").Append(crowd.CountNear(p.transform.position, 10, null)).Append(", of them leaving: ").Append(crowd.CountNear(p.transform.position, 10, Passenger.Activity.Evacuate)).Append(". ");
-            text.Append(p.Instructed ? "They were already told to leave. " : "");
-            text.Append("Choose what this person does next, as an ordinary member of the public would.");
-            var question = new JevChoice { Id = item.Key, Instructions = text.ToString() };
-            foreach (var (option, weight) in item.Options)
-                if (weight > 0) question.Criteria[option.Key] = option.Description;
-            return question;
-        }
-
-        private string Trip(Passenger p)
-        {
-            switch (p.Trip)
-            {
-                case Passenger.Purpose.Depart:
-                    return p.MissedTrain ? "missed the KTX to Seoul" : "taking the KTX to Seoul from platform 5·6, car " + p.Car + (p.HasTicket ? "" : ", no ticket yet") + ", leaves in about " + Mathf.Max(1, Mathf.RoundToInt(SecondsToTrain(p) / 60f)) + " min";
-                case Passenger.Purpose.Arrive: return p.Partner != null && !p.Met ? "just arrived from Seoul; family is waiting in the station" : "arrived from Seoul, heading into the city";
-                case Passenger.Purpose.Greet: return p.Met ? "met the person they came for" : "came to meet someone arriving on the KTX from Seoul";
-                default: return "visiting the station's shops and cafes";
-            }
+            Metrics.Failures++;
+            item.Failures++;
+            item.NotBefore = Time.realtimeSinceStartup + Mathf.Min(8f, 1f * (1 << Mathf.Min(item.Failures - 1, 3)));
+            // 곧 다시 물을 것들(주기·습관)은 몇 번 실패하면 접는다. 관측에 대한 판단은 답이 올 때까지 묻는다.
+            if ((item.Trigger == Trigger.Periodic || item.Trigger == Trigger.Route) && item.Failures >= 3) { Finish(item); Metrics.Dropped++; }
         }
     }
 }

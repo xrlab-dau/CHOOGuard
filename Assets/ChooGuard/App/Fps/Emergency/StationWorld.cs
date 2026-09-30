@@ -13,6 +13,8 @@ namespace ChooGuard.App.Fps.Emergency
     public sealed class StationWorld : IDisposable
     {
         public const int EscalatorArea = 3, ElevatorArea = 4, StairsArea = 5;
+        /// <summary>The baked route graph, a TextAsset under Resources (see <see cref="RouteGraph"/>).</summary>
+        public const string RoutesResource = "StationRoutes";
 
         public StationPoints Points { get; }
         public System.Random Random { get; }
@@ -23,6 +25,8 @@ namespace ChooGuard.App.Fps.Emergency
 
         /// <summary>Closed-off discs (cordons, fires, fallen objects). People do not choose places inside them.</summary>
         public readonly List<(Vector3 centre, float radius, string label)> Closed = new List<(Vector3, float, string)>();
+        /// <summary>Finds the way for every walking person: a waypoint graph over the navmesh and a time-sliced path queue.</summary>
+        public PathService Paths { get; }
 
         private NavMeshDataInstance navmesh;
         private readonly GameObject links;
@@ -38,32 +42,37 @@ namespace ChooGuard.App.Fps.Emergency
             Random = new System.Random(seed);
             Points = StationPoints.Load(art.StationData);
             navmesh = NavMesh.AddNavMeshData(art.WorldNavMesh);
-            // 방송 한 번에 역 안 백여 명이 동시에 출구까지 긴 길을 다시 찾는다. 기본 예산(프레임당 100회)으로는 수십 초 밀린다.
-            NavMesh.pathfindingIterationsPerFrame = 1000;
-            if (parent == null) return;
-            links = new GameObject("승강 설비");
-            links.transform.SetParent(parent, false);
-            foreach (var entry in Points.Escalators)
+            if (parent != null)
             {
-                var go = new GameObject(entry.label);
-                go.transform.SetParent(links.transform, false);
-                var escalator = go.AddComponent<Escalator>();
-                escalator.Setup(entry);
-                escalator.AddStopButtons();
-                Escalators.Add(escalator);
+                links = new GameObject("승강 설비");
+                links.transform.SetParent(parent, false);
+                foreach (var entry in Points.Escalators)
+                {
+                    var go = new GameObject(entry.label);
+                    go.transform.SetParent(links.transform, false);
+                    var escalator = go.AddComponent<Escalator>();
+                    escalator.Setup(entry);
+                    escalator.AddStopButtons();
+                    Escalators.Add(escalator);
+                }
+                foreach (var entry in Points.Elevators)
+                {
+                    var go = new GameObject(entry.label);
+                    go.transform.SetParent(links.transform, false);
+                    var elevator = go.AddComponent<Elevator>();
+                    elevator.Setup(entry);
+                    Elevators.Add(elevator);
+                }
             }
-            foreach (var entry in Points.Elevators)
-            {
-                var go = new GameObject(entry.label);
-                go.transform.SetParent(links.transform, false);
-                var elevator = go.AddComponent<Elevator>();
-                elevator.Setup(entry);
-                Elevators.Add(elevator);
-            }
+            // 길 안내: navmesh 와 함께 구워 둔 경로 그래프(에디터 ChooGuard/Emergency/Bake route graph)를 읽는다. 에스컬레이터 변은 위에서 만든 에스컬레이터에 묶인다.
+            var routes = Resources.Load<TextAsset>(RoutesResource) ?? throw new ArgumentException("경로 그래프(Resources/" + RoutesResource + ".json)가 없습니다: 에디터 메뉴 ChooGuard/Emergency/Bake route graph 로 만드세요.");
+            Paths = new PathService(this, RouteGraph.Load(routes, Escalators));
+            PersonBody.Paths = Paths;
         }
 
         public void Dispose()
         {
+            if (PersonBody.Paths == Paths) PersonBody.Paths = null;
             if (links != null) UnityEngine.Object.Destroy(links);
             if (navmesh.valid) navmesh.Remove();
         }
@@ -281,33 +290,13 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         /// <summary>
-        /// City exit with the shortest walk from <paramref name="from"/> whose path keeps clear of <paramref name="avoid"/>.
-        /// Falls back to the farthest exit from the danger when every path passes near it.
+        /// The exit with the cheapest walk from <paramref name="from"/> that keeps clear of every active hazard and of
+        /// <paramref name="avoid"/> (within <paramref name="clearance"/>); when every walk passes near the danger the exit
+        /// farthest from it. <paramref name="except"/> (an exit whose way turned out blocked) is never chosen while another exit
+        /// exists. Answered from the shared route trees of <see cref="PathService"/>, not by path queries of its own.
         /// </summary>
-        public StationPoints.Point SafeExit(Vector3 from, Vector3? avoid, float clearance)
-        {
-            StationPoints.Point best = null, farthest = null;
-            float bestLength = float.PositiveInfinity, farthestDistance = -1;
-            foreach (var exit in Points.Of(PointKind.Exit))
-            {
-                if (avoid.HasValue)
-                {
-                    float away = Vector3.Distance(exit.Position, avoid.Value);
-                    if (away > farthestDistance) { farthestDistance = away; farthest = exit; }
-                }
-                if (!NavMesh.CalculatePath(from, exit.Position, NavMesh.AllAreas, scratch) || scratch.status != NavMeshPathStatus.PathComplete) continue;
-                float length = 0;
-                bool clear = true;
-                int count = scratch.GetCornersNonAlloc(corners);
-                for (int i = 1; i < count; i++)
-                {
-                    length += Vector3.Distance(corners[i - 1], corners[i]);
-                    if (avoid.HasValue && Mathf.Abs(corners[i].y - avoid.Value.y) < 3 && SegmentDistance(avoid.Value, corners[i - 1], corners[i]) < clearance) clear = false;
-                }
-                if (clear && length < bestLength) { bestLength = length; best = exit; }
-            }
-            return best ?? farthest ?? Points.Of(PointKind.Exit)[0];
-        }
+        public StationPoints.Point SafeExit(Vector3 from, Vector3? avoid, float clearance, StationPoints.Point except = null) =>
+            Paths.SafeExit(from, avoid, clearance, except);
 
         public static float SegmentDistance(Vector3 point, Vector3 a, Vector3 b)
         {

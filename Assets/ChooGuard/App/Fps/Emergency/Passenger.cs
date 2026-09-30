@@ -5,8 +5,9 @@ namespace ChooGuard.App.Fps.Emergency
 {
     /// <summary>
     /// One person in the station with a trip of their own: catching the KTX to Seoul, arriving on it, meeting someone,
-    /// or just visiting the shops. What to do next is decided through <see cref="CrowdMind"/> (JEV when connected,
-    /// asked ahead of time so nobody stops to wait; local rules otherwise). Movement uses the whole-station navmesh with
+    /// or just visiting the shops. What they do is judged by <see cref="CrowdMind"/> in real time (JEV when connected, local
+    /// rules only in runs without it). A judgement never stops them: they keep doing what they were doing until the answer
+    /// arrives. Only physical reflexes are decided here. Movement uses the whole-station navmesh with
     /// escalator and elevator rides; inside the train the body walks the aisle in the train's own frame.
     /// </summary>
     [DisallowMultipleComponent, RequireComponent(typeof(PersonBody))]
@@ -48,6 +49,10 @@ namespace ChooGuard.App.Fps.Emergency
         public bool MissedTrain { get; private set; }
         public string Cue { get; private set; }
         public readonly HashSet<Hazard> Noticed = new HashSet<Hazard>();
+        /// <summary>What this person's judgement keeps between requests (what they observed, what is being asked).</summary>
+        public readonly CrowdMind.Slot Slot = new CrowdMind.Slot();
+        // Noticed 중 직접 보고 듣고 맡은 것(나머지는 종소리·방송·남들의 반응으로만 안다).
+        private readonly HashSet<Hazard> sensed = new HashSet<Hazard>();
 
         /// <summary>Where the passenger is right now in plain words, for JEV context and the Tab board.</summary>
         public string Doing => Describe(Current == Activity.Deciding ? before : Current) + " (" + Crowd.World.Area(transform.position) + ")";
@@ -57,10 +62,18 @@ namespace ChooGuard.App.Fps.Emergency
         private CrowdMind.Choice choice;
         private float until, walkSpeed, nextRepath, reportStarted, stepSeconds, hiddenUntil, phoneCallEnds = -1;
         private Vector3 lookAt;
-        private bool pendingStand, running, hidden, prefetched, alightQueued, helping;
+        private bool pendingStand, running, hidden, prefetched, alightQueued, helping, itinerary, blockedRaised;
+        private float nextPathCheck, stuckSince = -1, reportAskedAt, stallSince;
+        private Vector3 stallAt;
         /// <summary>Gone over to help someone who collapsed or fell (see <see cref="HelpNearby"/>).</summary>
         public bool Helping => helping;
         private int reevaluations, sitTries;
+
+        /// <summary>True when they perceived <paramref name="hazard"/> themselves (rather than only hearing of it).</summary>
+        public bool Senses(Hazard hazard) => sensed.Contains(hazard);
+
+        /// <summary>Walking the trip's purpose itinerary right after spawning; JEV's first answer replaces it.</summary>
+        public bool OnItinerary => itinerary && Current == Activity.Walk;
         private StationWorld World => Crowd.World;
         private TrainService Train => Crowd.World.Train;
 
@@ -94,13 +107,17 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void ApplyRoute()
         {
+            var route = Route;
+            // 층을 바꿀 때 무엇을 탈지: 링크·계단 구역 비용으로 고른다(비용은 1 이상). 대피하는 사람은 엘리베이터를 쓰지 않는다(화재 시 엘리베이터 금지).
+            float escalator = route == "stairs" ? 12 : route == "elevator" ? 6 : 1, elevator = route == "elevator" ? 1 : route == "any" ? 8 : 25;
+            bool leaving = Current == Activity.Evacuate;
+            Body.Profile = leaving ? RouteProfile.Evacuation : new RouteProfile(escalator, elevator);
             var agent = Body.Agent;
             if (!agent.isActiveAndEnabled) return;
-            var route = Route;
-            // 층을 바꿀 때 무엇을 탈지: 링크·계단 구역 비용으로 고른다(비용은 1 이상).
-            agent.SetAreaCost(StationWorld.EscalatorArea, route == "stairs" ? 12 : route == "elevator" ? 6 : 1);
-            agent.SetAreaCost(StationWorld.ElevatorArea, route == "elevator" ? 1 : route == "any" ? 8 : 25);
+            agent.SetAreaCost(StationWorld.EscalatorArea, escalator);
+            agent.SetAreaCost(StationWorld.ElevatorArea, elevator);
             agent.SetAreaCost(StationWorld.StairsArea, route == "stairs" ? 1 : route == "elevator" ? 20 : Luggage == 2 ? 6 : 3);
+            agent.areaMask = leaving ? UnityEngine.AI.NavMesh.AllAreas & ~(1 << StationWorld.ElevatorArea) : UnityEngine.AI.NavMesh.AllAreas;
         }
 
         public void Remember(string what)
@@ -123,10 +140,8 @@ namespace ChooGuard.App.Fps.Emergency
                     Begin(Activity.Sit, seconds);
                     return;
                 case Activity.Walk:
-                    // 막 들어온 사람: 다음 할 일을 먼저 묻고(보통 0.3초 안에 답) 잠깐 둘러본 뒤 움직인다.
-                    Prefetch(1.2f);
-                    Begin(Activity.Stand, 1.2f);
-                    prefetched = true;
+                    // 막 들어온 사람: 일정대로 걷는다. JEV 의 첫 답이 오면 그 답이 일정을 대신한다.
+                    BeginTrip();
                     return;
                 default:
                     Begin(activity, seconds);
@@ -156,10 +171,95 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void Decide()
         {
+            // 다음 걸음이 아직 정해지지 않았으면 하던 일을 잇고, 답이 오면 그때 옮겨 간다.
+            if (!Crowd.Mind.Ready(this)) { Await(); return; }
             ReleasePlace();
             prefetched = false;
-            choice = Crowd.Mind.TakeRoutine(this);
+            itinerary = false;
+            if (!Crowd.Mind.TryTakeRoutine(this, out choice)) { Await(); return; }
             Execute(choice);
+        }
+
+        /// <summary>In an everyday activity that waits for the next step to be decided (standing, sitting, in a queue…).</summary>
+        public bool Holding =>
+            Current == Activity.Queue || Current == Activity.Browse || Current == Activity.Stand || Current == Activity.Sit || Current == Activity.Meet || Current == Activity.Toilet || Current == Activity.PlatformWait;
+
+        /// <summary>Standing, sitting or watching with nothing on the way: waiting for something to tell them what to do (toilet stalls, where they are out of sight, excluded).</summary>
+        public bool Idle => Holding && Current != Activity.Toilet || Current == Activity.Deciding || Current == Activity.Watch;
+
+        /// <summary>
+        /// JEV is not answering: sets off on the purpose of the trip (the itinerary a person walks who has no answer yet), standing up
+        /// first when seated. The question they were waiting on stays asked; its answer, if it comes, is judged against where they are then.
+        /// </summary>
+        public void ContinueItinerary()
+        {
+            if (Hurt || Hostile || Body.Scripted || Body.Seat != PersonBody.SeatPhase.None && Body.Seat != PersonBody.SeatPhase.Seated) return;
+            var next = Crowd.Mind.Itinerary(this);
+            if (next == null) return;
+            ReleasePlace();
+            choice = next;
+            if (Body.Seat == PersonBody.SeatPhase.None) { Execute(next); return; }
+            Current = Activity.Deciding;
+            Body.BeginStand();
+            StartCoroutine(AfterStanding(() => Execute(next)));
+        }
+
+        /// <summary>Keeps doing what they were doing for a moment; a walk or ride that has ended leaves them standing where they are.</summary>
+        private void Await()
+        {
+            until = Time.time + .75f;
+            switch (Current)
+            {
+                case Activity.Queue:
+                case Activity.Browse:
+                case Activity.Stand:
+                case Activity.Sit:
+                case Activity.Meet:
+                case Activity.Toilet:
+                case Activity.PlatformWait:
+                    return;
+            }
+            Current = Activity.Stand;
+        }
+
+        /// <summary>Right after spawning there is no current action: the first step of the trip's purpose, until JEV's first answer replaces it.</summary>
+        private void BeginTrip()
+        {
+            ReleasePlace();
+            choice = Crowd.Mind.Itinerary(this);
+            Execute(choice);
+            Crowd.Mind.AskFirst(this);
+            itinerary = true;
+        }
+
+        /// <summary>Drops the itinerary walk for the step JEV chose (its first answer arrived while they were still on the way).</summary>
+        public void Redirect(CrowdMind.Choice next)
+        {
+            ReleasePlace();
+            choice = next;
+            Execute(next);
+        }
+
+        /// <summary>Gives up on where they were heading (the way is blocked) and stands ready to be told what to do instead.</summary>
+        public void Replan()
+        {
+            if (Body.Seat != PersonBody.SeatPhase.None || Body.Scripted || Current == Activity.InTrain) return;
+            Body.Stop();
+            ReleasePlace();
+            itinerary = false;
+            Current = Activity.Stand;
+            until = Time.time;
+        }
+
+        /// <summary>The way to their exit is blocked: heads for a different exit.</summary>
+        public void Reroute()
+        {
+            var danger = Focus != null && Focus.Localized ? Focus.Position : (Vector3?)null;
+            exit = Crowd.SafeExitFor(transform.position, danger, Focus != null ? Focus.Clearance : 0, exit);
+            blockedRaised = false;
+            stallSince = Time.time;
+            Current = Activity.Evacuate;
+            Travel(exit.Position, running ? World.Range(2.6f, 3.4f) : walkSpeed * 1.35f);
         }
 
         private void Execute(CrowdMind.Choice next)
@@ -175,7 +275,7 @@ namespace ChooGuard.App.Fps.Emergency
                     return;
                 case Activity.PlatformWait:
                     place = next.Place;
-                    if (place == null) { Execute(Crowd.Mind.Fallback(this)); return; }
+                    if (place == null) { Await(); return; }
                     WalkTo(place.Position, Activity.PlatformWait, walkSpeed);
                     return;
                 case Activity.Meet:
@@ -185,7 +285,7 @@ namespace ChooGuard.App.Fps.Emergency
                 case Activity.Stand:
                 case Activity.Sit:
                     place = next.Place;
-                    if (place == null) { Execute(Crowd.Mind.Fallback(this)); return; }
+                    if (place == null) { Await(); return; }
                     // 여럿이 쓰는 곳(만남 장소·화장실 앞·가게 앞)은 저마다 빈자리에 선다(한 점에 겹쳐 서면 서로 밀려 튄다).
                     var target = next.Activity == Activity.Meet || next.Activity == Activity.Toilet || next.Activity == Activity.Browse ? Crowd.SpotAt(place.Position, this) : place.Position;
                     WalkTo(target, next.Activity, walkSpeed);
@@ -202,6 +302,9 @@ namespace ChooGuard.App.Fps.Emergency
             afterWalk = then;
             Current = Activity.Walk;
             prefetched = false;
+            itinerary = false;
+            blockedRaised = false;
+            stallSince = Time.time;
             if (!Travel(destination, speed)) { Current = then; until = Time.time + 2; }
         }
 
@@ -218,6 +321,7 @@ namespace ChooGuard.App.Fps.Emergency
             legs.Add(destination);
             leg = 0;
             legSpeed = speed;
+            Body.Urgent = Current == Activity.Evacuate;
             return Body.GoTo(legs[0], speed);
         }
 
@@ -288,10 +392,11 @@ namespace ChooGuard.App.Fps.Emergency
         private void Update()
         {
             if (Crowd == null) return;
+            if (Current == Activity.Walk || Current == Activity.Evacuate || Current == Activity.MoveAway) CheckRoute();
             switch (Current)
             {
                 case Activity.Walk:
-                    if (!prefetched && OnLastLeg && Body.OnNavMesh && !Body.Agent.pathPending && Body.SecondsLeft() < 12 && afterWalk != Activity.Leave && afterWalk != Activity.PlatformWait)
+                    if (!prefetched && OnLastLeg && Body.OnNavMesh && !Body.Planning && Body.SecondsLeft() < 12 && afterWalk != Activity.Leave && afterWalk != Activity.PlatformWait)
                         Prefetch(Body.SecondsLeft() + stepSeconds);
                     if (Travelled(afterWalk == Activity.Leave ? 1.5f : .5f)) Arrive();
                     break;
@@ -307,7 +412,12 @@ namespace ChooGuard.App.Fps.Emergency
                     break;
                 case Activity.Sit:
                     if (!prefetched && until - Time.time < 14) Prefetch(until - Time.time + 3);
-                    if (Time.time > until && Body.Seat == PersonBody.SeatPhase.Seated) Body.BeginStand();
+                    if (Time.time > until && Body.Seat == PersonBody.SeatPhase.Seated)
+                    {
+                        // 다음 걸음이 정해지기 전에는 일어서지 않고 앉은 채 잇는다.
+                        if (Crowd.Mind.Ready(this)) Body.BeginStand();
+                        else until = Time.time + .75f;
+                    }
                     if (Body.Seat == PersonBody.SeatPhase.None && Time.time > until) Decide();
                     break;
                 case Activity.Toilet:
@@ -331,6 +441,8 @@ namespace ChooGuard.App.Fps.Emergency
                     until = Time.time + World.Range(15, 40);
                     if (helping && Focus != null) { lookAt = Focus.Position; Body.SetCrouch(true); }
                     else Body.SetFilm(World.Chance(.35f));
+                    // 물러선 곳에 닿았다: JEV 가 있으면 곧바로 다음을 판단한다(없으면 지켜본 뒤 규칙이 다시 정한다).
+                    if (Crowd.Mind.Usable) Crowd.Mind.OnEnded(this);
                     break;
                 case Activity.Evacuate:
                     if (pendingStand) { if (Body.Seat == PersonBody.SeatPhase.None && !Body.Scripted) { pendingStand = false; GoToExit(); } break; }
@@ -438,7 +550,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             var car = Train.CarNumber(Car) ?? Train.Cars[0];
             TrainSeat = Train.FreeSeat(car, World.Random);
-            if (TrainSeat == null) { Remember("found the train full"); Decide(); return; }
+            if (TrainSeat == null) { Remember("found the train full"); Current = Activity.Stand; Await(); return; }
             TrainSeat.Taken = this;
             ReleasePlace();
             Body.ClearPoses();
@@ -628,23 +740,24 @@ namespace ChooGuard.App.Fps.Emergency
             var eye = transform.position + Vector3.up * (Body.Seat == PersonBody.SeatPhase.None ? 1.6f : 1.2f);
             foreach (var hazard in HazardRegistry.Active)
             {
-                if (!hazard.Active || Noticed.Contains(hazard)) continue;
+                if (!hazard.Active) continue;
                 if (hazard is EarthquakeHazard quake && !quake.Shaking) continue;
                 var offset = hazard.Position - transform.position;
                 if (offset.magnitude > hazard.NoticeRadius) continue;
                 // 보이는 것은 시야가 트여야 하고, 소리·냄새는 같은 층 가까이에서만 닿는다(역 전체가 겪는 흔들림·정전은 어디서나).
                 if (hazard.NeedsSight ? !HazardRegistry.CanSee(eye, hazard) : !float.IsPositiveInfinity(hazard.NoticeRadius) && Mathf.Abs(offset.y) > 4f) continue;
+                // 이미 직접 알고 있는 것은 눈에 띄게 달라졌을 때만 다시 판단한다(커졌다, 번졌다, 수습됐다).
+                if (Noticed.Contains(hazard) && sensed.Contains(hazard)) { Crowd.Mind.Observe(this, hazard); continue; }
                 if (hazard.NoticeChance < 1 && !World.Chance(hazard.NoticeChance)) continue;
                 Notice(hazard, false);
             }
             var smoke = ExposeToSmoke(deltaSeconds);
-            // 짙은 연기 속에서는 판단을 기다리지 않고 연기를 피해 가까운 안전한 출구로 나간다(반사 행동).
-            // 좁은 승강장처럼 옆으로 물러설 곳이 없는 데서도 출구 쪽 길은 있다.
-            if (smoke != null && !Hurt && Current != Activity.Report && Current != Activity.Alight && Current != Activity.Board)
+            // 짙은 연기에 기침이 나면 판단을 기다리지 않고 연기 밖으로 물러선다(반사 행동). 역을 떠날지는 JEV 가 판단한다.
+            if (smoke != null && !Hurt && Current != Activity.Report && Current != Activity.Alight && Current != Activity.Board && Current != Activity.MoveAway)
             {
-                if (!Noticed.Contains(smoke)) Notice(smoke, false);
+                if (!Noticed.Contains(smoke) || !sensed.Contains(smoke)) Notice(smoke, false);
                 Focus = smoke;
-                Evacuate(false);
+                MoveAway(smoke.SmokeRadius + World.Range(4, 8));
                 return;
             }
             // 위험 반경 안이면 판단을 기다리지 않고 먼저 물러선다(반사 행동).
@@ -675,17 +788,31 @@ namespace ChooGuard.App.Fps.Emergency
             return smoke;
         }
 
-        /// <summary>Becomes aware of <paramref name="hazard"/>, directly or because of a cue around them.</summary>
+        /// <summary>Becomes aware of <paramref name="hazard"/>, directly or because of a cue around them. Never stops them: the judgement decides what they do.</summary>
         public void Notice(Hazard hazard, bool indirect, string cue = null)
         {
-            if (Hurt || Hostile || Current == Activity.OnTrack || Noticed.Contains(hazard) || Current == Activity.Evacuate) return;
+            if (Hurt || Hostile || Current == Activity.OnTrack || Current == Activity.Evacuate) return;
+            // 종소리로만 알던 것을 직접 본 순간은 새 관측이다. 같은 방식으로 이미 알고 있는 것은 아니다.
+            if (Noticed.Contains(hazard) && (indirect || sensed.Contains(hazard))) return;
+            if (!KnowsIncident()) Slot.Forget();
             Noticed.Add(hazard);
-            Cue = indirect ? cue : null;
-            if (Focus != null && Focus.Active && !Routine(Current)) return;
-            Focus = hazard;
-            lookAt = hazard.Localized ? hazard.Position : transform.position + transform.forward;
-            StartDeciding();
+            if (indirect) { sensed.Remove(hazard); Cue = cue; }
+            else { sensed.Add(hazard); Cue = null; }
+            // 눈길은 가장 가까운 사건으로 간다(이미 다른 사건에 마음이 가 있어도 더 가까운 것이 생기면 옮겨 간다).
+            if (Focus == null || !Focus.Active || hazard.Localized && (!Focus.Localized || Vector3.Distance(transform.position, hazard.Position) < Vector3.Distance(transform.position, Focus.Position)))
+            {
+                Focus = hazard;
+                lookAt = hazard.Localized ? hazard.Position : transform.position + transform.forward;
+            }
+            if (hidden) { hidden = false; Body.SetVisible(true); }
             Crowd.Mind.OnNotice(this, hazard, indirect);
+        }
+
+        /// <summary>Knows of some incident that is still going on.</summary>
+        private bool KnowsIncident()
+        {
+            foreach (var hazard in Noticed) if (hazard.Active) return true;
+            return false;
         }
 
         /// <summary>True for everyday activities an alarming observation interrupts.</summary>
@@ -693,15 +820,10 @@ namespace ChooGuard.App.Fps.Emergency
             activity == Activity.Walk || activity == Activity.Sit || activity == Activity.Stand || activity == Activity.Queue || activity == Activity.Browse ||
             activity == Activity.PlatformWait || activity == Activity.Meet || activity == Activity.InTrain || activity == Activity.Toilet;
 
-        private void StartDeciding()
+        /// <summary>Remembers the everyday activity an emergency reaction breaks off, so carrying on can pick it up again.</summary>
+        private void Interrupt()
         {
-            if (Current == Activity.InTrain || Current == Activity.Alight || Current == Activity.Board) return;
-            if (Current != Activity.Deciding) before = Current;
-            if (hidden) { hidden = false; Body.SetVisible(true); }
-            if ((Current == Activity.Sit) && Body.Seat != PersonBody.SeatPhase.None) { Current = Activity.Deciding; return; }
-            Body.Stop();
-            Body.ClearPoses();
-            Current = Activity.Deciding;
+            if (Routine(Current)) before = Current;
         }
 
         /// <summary>Staff instruction or public announcement to leave through <paramref name="toward"/>.</summary>
@@ -710,7 +832,12 @@ namespace ChooGuard.App.Fps.Emergency
             if (Hurt || Hostile || Current == Activity.OnTrack || Current == Activity.Evacuate) return;
             Instructed = true;
             exit = toward;
-            if (Focus == null && Crowd.MainHazard != null) { Focus = Crowd.MainHazard; Noticed.Add(Focus); }
+            if (Focus == null && Crowd.MainHazard != null)
+            {
+                if (!KnowsIncident()) Slot.Forget();
+                Focus = Crowd.MainHazard;
+                Noticed.Add(Focus);
+            }
             Crowd.Mind.OnInstruction(this, direct);
         }
 
@@ -731,6 +858,7 @@ namespace ChooGuard.App.Fps.Emergency
         public void Watch(float seconds, bool film)
         {
             if (Current == Activity.InTrain) return;
+            Interrupt();
             Current = Activity.Watch;
             until = Time.time + seconds;
             if (Body.Seat == PersonBody.SeatPhase.None && !Body.Scripted) { Body.Stop(); Body.SetFilm(film); }
@@ -740,8 +868,10 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (Focus == null) { KeepGoing(); return; }
             if (Current == Activity.InTrain) { BeginAlight(true); return; }
+            Interrupt();
             ReleasePlace();
             Body.ClearPoses();
+            Body.Urgent = true;
             var target = World.AwayFrom(transform.position, Focus.Position, distance);
             Current = Activity.MoveAway;
             if (Body.Seat != PersonBody.SeatPhase.None)
@@ -773,8 +903,10 @@ namespace ChooGuard.App.Fps.Emergency
         private void GoToExit()
         {
             Current = Activity.Evacuate;
+            blockedRaised = false;
+            stallSince = Time.time;
             var danger = Focus != null && Focus.Localized ? Focus.Position : (Vector3?)null;
-            if (exit == null || !Instructed || exit.Kind != PointKind.Exit) exit = World.SafeExit(transform.position, danger, Focus != null ? Focus.Clearance : 0);
+            if (exit == null || !Instructed || exit.Kind != PointKind.Exit) exit = Crowd.SafeExitFor(transform.position, danger, Focus != null ? Focus.Clearance : 0);
             Travel(exit.Position, running ? World.Range(2.6f, 3.4f) : walkSpeed * 1.35f);
             // 뛰는 사람은 주변을 놀라게 한다. 조용히 걸어 나가는 사람은 눈에 잘 띄지 않는다.
             if (running) Crowd.Alert(transform.position, 7f, Focus, this, "people nearby are running toward the exits");
@@ -783,10 +915,12 @@ namespace ChooGuard.App.Fps.Emergency
         public void ReportToStaff()
         {
             if (Crowd.Player == null || Current == Activity.InTrain) { Evacuate(false); return; }
+            Interrupt();
             ReleasePlace();
             Body.ClearPoses();
             Current = Activity.Report;
             reportStarted = Time.time;
+            reportAskedAt = 0;
             nextRepath = 0;
             phoneCallEnds = -1;
             if (Body.Seat != PersonBody.SeatPhase.None) Body.BeginStand();
@@ -817,24 +951,33 @@ namespace ChooGuard.App.Fps.Emergency
                 MoveAway(Focus != null ? Focus.DangerRadius + 10 : 10);
                 return;
             }
-            // 역무원이 너무 멀거나 오래 걸리면 그 자리에서 119·112 에 전화한다(통화 20~40초, 게임 압축 시간).
+            // 역무원이 너무 멀거나 오래 걸린다. JEV 가 있으면 그 자리에서 119·112 에 전화할지 판단하게 하고(계속 걸으면 15 초마다 다시),
+            // 없으면 규칙대로 전화한다(통화 20~40초, 게임 압축 시간).
             if (Time.time - reportStarted > 45 || distance > 90)
             {
-                Body.Stop();
-                Body.SetPhone(true);
-                phoneCallEnds = Time.time + World.Range(20, 40);
-                return;
+                if (!Crowd.Mind.Usable) { PhoneIn(); return; }
+                if (Time.time > reportAskedAt) { reportAskedAt = Time.time + 15f; Crowd.Mind.OnEnded(this); }
             }
             if (Time.time > nextRepath) { nextRepath = Time.time + 1f; Body.GoTo(StationWorld.OnNavMesh(player, 3), walkSpeed * 1.5f); }
+        }
+
+        /// <summary>Stops and phones 119 or 112 from where they stand (the staff member is too far away or taking too long).</summary>
+        public void PhoneIn()
+        {
+            Body.Stop();
+            Body.SetPhone(true);
+            phoneCallEnds = Time.time + World.Range(20, 40);
         }
 
         /// <summary>Goes over to someone who collapsed or fell, crouches beside them for a while.</summary>
         public void HelpNearby(Hazard hazard)
         {
             if (hazard == null || Current == Activity.InTrain) { KeepGoing(); return; }
+            Interrupt();
             ReleasePlace();
             Body.ClearPoses();
             helping = true;
+            Body.Urgent = true;
             Focus = hazard;
             // 쓰러진 사람 곁의 빈자리(온 쪽부터 찾는다). 여럿이 도우러 와도 한 점에 겹치지 않는다.
             var target = Crowd.SpotAt(hazard.Position, this, transform.position - hazard.Position);
@@ -853,6 +996,7 @@ namespace ChooGuard.App.Fps.Emergency
         public void TakeCover(float seconds)
         {
             if (Current == Activity.InTrain) return;
+            Interrupt();
             Current = Activity.TakeCover;
             until = Time.time + seconds;
             if (Body.Seat == PersonBody.SeatPhase.None && !Body.Scripted) { Body.Stop(); Body.SetCrouch(true); }
@@ -861,6 +1005,7 @@ namespace ChooGuard.App.Fps.Emergency
         public void Freeze(float seconds)
         {
             if (Current == Activity.InTrain) return;
+            Interrupt();
             Current = Activity.TakeCover;
             until = Time.time + seconds;
             if (Body.Seat == PersonBody.SeatPhase.None && !Body.Scripted) { Body.Stop(); Body.SetIdle(2); }
@@ -946,16 +1091,71 @@ namespace ChooGuard.App.Fps.Emergency
         {
             Body.SetFilm(false);
             if (helping) { helping = false; Body.SetCrouch(false); }
-            if (Focus != null && Focus.Active && reevaluations < 2)
+            if (Focus != null && Focus.Active)
             {
-                reevaluations++;
-                before = Current;
-                Current = Activity.Deciding;
-                Crowd.Mind.OnReevaluate(this);
-                return;
+                if (Crowd.Mind.Usable)
+                {
+                    // 지켜보는 동안에도 JEV 가 판단한다: 다음 답이 올 때까지 계속 지켜본다.
+                    until = Time.time + 5f;
+                    Crowd.Mind.OnEnded(this);
+                    return;
+                }
+                if (reevaluations < 2)
+                {
+                    reevaluations++;
+                    before = Current;
+                    Current = Activity.Deciding;
+                    Crowd.Mind.OnEnded(this);
+                    return;
+                }
             }
             KeepGoing();
         }
+
+        /// <summary>
+        /// About once a second, only while something is wrong in the station: is the way to where they are heading cut (a
+        /// cordon, the fire or debris took the path)? Raises one judgement per walk.
+        /// </summary>
+        private void CheckRoute()
+        {
+            if (blockedRaised || Time.time < nextPathCheck || Hurt || Hostile) return;
+            nextPathCheck = Time.time + 1f;
+            if (HazardRegistry.Active.Count == 0 && World.Closed.Count == 0) { stuckSince = -1; return; }
+            var agent = Body.Agent;
+            if (!Body.OnNavMesh || Body.Scripted || Body.Seat != PersonBody.SeatPhase.None || Body.Planning || agent.isOnOffMeshLink || Body.Riding != null) { stuckSince = -1; stallSince = Time.time; return; }
+            var status = agent.pathStatus;
+            bool far = (Body.Goal - transform.position).sqrMagnitude > 9f;
+            bool cut = (status == UnityEngine.AI.NavMeshPathStatus.PathPartial || status == UnityEngine.AI.NavMeshPathStatus.PathInvalid && !agent.isStopped || Body.NoRoute) && far;
+            // 길이 있어 보여도 6초 넘게 한 걸음도 못 가면(앞이 막힘, 길을 잃고 멈춤) 막힌 것으로 본다.
+            var here = transform.position;
+            if ((here - stallAt).sqrMagnitude > .25f || !far) { stallAt = here; stallSince = Time.time; }
+            bool stalled = far && Time.time - stallSince > 6f;
+            if (!cut && !stalled) { stuckSince = -1; return; }
+            if (!stalled)
+            {
+                if (stuckSince < 0) { stuckSince = Time.time; return; }
+                if (Time.time - stuckSince < 1.5f) return;
+            }
+            blockedRaised = true;
+            stuckSince = -1;
+            stallSince = Time.time;
+            // 막힌 사람은 판단을 기다리는 동안에도 멈춰 있지 않는다: 길 안내가 선 자리에서 새 길을 준다(어디로 갈지는 판단이 정한다).
+            Body.Replan();
+            Crowd.Mind.OnBlocked(this);
+        }
+
+        /// <summary>Where the walk stands (position, navmesh and agent state, route step), to trace a person who stopped short of where they were going.</summary>
+        public string WalkState()
+        {
+            var agent = Body.Agent;
+            string at = Body.OnNavMesh
+                ? " hasPath=" + agent.hasPath + " status=" + agent.pathStatus + " stopped=" + agent.isStopped + " remaining=" + agent.remainingDistance.ToString("0.0") + " speed=" + agent.velocity.magnitude.ToString("0.0") + " link=" + agent.isOnOffMeshLink
+                : "";
+            return "at=" + Where(transform.position) + " (" + World.Area(transform.position) + ") goal=" + Where(Body.Goal) + " onNavMesh=" + Body.OnNavMesh + at + " planning=" + Body.Planning + " noRoute=" + Body.NoRoute +
+                " step=" + Body.Step + "/" + Body.Chain.Count + " leg=" + leg + "/" + legs.Count + " seat=" + Body.Seat + " riding=" + (Body.Riding != null);
+        }
+
+        private static string Where(Vector3 v) => "(" + v.x.ToString("0.0") + ", " + v.y.ToString("0.0") + ", " + v.z.ToString("0.0") + ")";
 
         private System.Collections.IEnumerator AfterStanding(System.Action then)
         {

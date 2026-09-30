@@ -72,12 +72,37 @@ namespace ChooGuard.App.Fps.Emergency
         {
             Agent = GetComponent<NavMeshAgent>();
             Agent.autoTraverseOffMeshLink = false;
+            // 길은 PathService 가 SetPath 로 준다: 에이전트가 스스로(비동기 길찾기 줄에) 길을 다시 묻지 않는다.
+            Agent.autoRepath = false;
             if (Animator == null) Animator = GetComponentInChildren<Animator>();
             if (Animator != null) { Animator.applyRootMotion = false; Animator.cullingMode = AnimatorCullingMode.CullUpdateTransforms; }
             GetComponentsInChildren(true, renderers);
         }
 
         public bool OnNavMesh => Agent.isActiveAndEnabled && Agent.isOnNavMesh;
+
+        /// <summary>The service that finds this body's routes (set while a station world is open).</summary>
+        internal static PathService Paths;
+
+        /// <summary>How this person weighs the links of a route; set by whoever decides how they change floors.</summary>
+        public RouteProfile Profile = RouteProfile.Default;
+        /// <summary>Its requests to the path service are served before the everyday ones (evacuating, moving away from danger).</summary>
+        public bool Urgent;
+
+        // 길 안내가 이 몸에 준 여정: 목적지까지 거치는 노드 사슬과, 지금 걷는 구간이 향하는 곳(Step == Chain.Count 이면 목적지 자신).
+        internal readonly List<RouteGraph.Node> Chain = new List<RouteGraph.Node>();
+        internal int Step, Attempts;
+        internal bool Queued, Fresh;
+        internal RouteGraph.Node SkipStart;
+        /// <summary>The path service found no way to the goal; the body stands where it is.</summary>
+        public bool NoRoute { get; private set; }
+
+        /// <summary>A route or a leg is being asked for (the body has no path yet, or is about to get a new one).</summary>
+        public bool Planning => Queued || Fresh;
+        /// <summary>Has somewhere to go and is on its way: a route asked for or a path in hand.</summary>
+        public bool EnRoute => hasGoal && !goalPending && (Planning || OnNavMesh && Agent.hasPath);
+        internal bool WantsRoute => hasGoal && !goalPending && !Scripted && Seat == SeatPhase.None && OnNavMesh;
+        internal Vector3 Target => Step < Chain.Count ? Chain[Step].Position : goal;
 
         public bool GoTo(Vector3 destination, float speed)
         {
@@ -86,12 +111,47 @@ namespace ChooGuard.App.Fps.Emergency
             hasGoal = true;
             goalPending = false;
             sidestep = Vector3.zero;
+            Forget();
             if (Seat != SeatPhase.None || Scripted) return false;
             // 막 일어선 순간이나 길 구멍에서 빠져나오는 중처럼 아직 길 위가 아니면, 길 위에 서는 대로 이어서 간다.
             if (!OnNavMesh) { goalPending = true; return false; }
             Agent.speed = speed;
             Agent.isStopped = false;
-            return Agent.SetDestination(destination);
+            if ((destination - transform.position).sqrMagnitude < .09f) { Agent.ResetPath(); return true; }
+            Replan();
+            return true;
+        }
+
+        /// <summary>Asks the path service for a fresh route to the goal from where the body stands; the old path is followed until the new one arrives.</summary>
+        public void Replan() => Replan(false);
+
+        internal void Replan(bool retry)
+        {
+            if (!hasGoal) return;
+            Chain.Clear();
+            Step = 0;
+            Fresh = true;
+            NoRoute = false;
+            if (!retry) { Attempts = 0; SkipStart = null; }
+            Paths?.Enqueue(this);
+        }
+
+        private void Forget()
+        {
+            Chain.Clear();
+            Step = 0;
+            Attempts = 0;
+            Fresh = false;
+            NoRoute = false;
+            SkipStart = null;
+        }
+
+        /// <summary>The path service cannot walk the body to its goal: it stops, and <see cref="NoRoute"/> tells the owner.</summary>
+        internal void GiveUp()
+        {
+            Forget();
+            NoRoute = true;
+            if (OnNavMesh) Agent.ResetPath();
         }
 
         public void Stop()
@@ -99,6 +159,7 @@ namespace ChooGuard.App.Fps.Emergency
             hasGoal = false;
             goalPending = false;
             sidestep = Vector3.zero;
+            Forget();
             if (OnNavMesh && !Scripted) { Agent.isStopped = true; Agent.ResetPath(); }
         }
 
@@ -127,38 +188,114 @@ namespace ChooGuard.App.Fps.Emergency
             goalPending = false;
             Agent.speed = WalkSpeed;
             Agent.isStopped = false;
-            Agent.SetDestination(goal);
+            Replan();
         }
 
         private float lostSince = -1;
         private int lostRetries;
+        private Vector3 lostFrom;
 
         /// <summary>
-        /// Somewhere to go but no path and not waiting for one (the request was dropped while many people replanned at once,
-        /// or the start polygon was carved away): asks again a few times. Standing at a partial path's end also lands here,
-        /// so it gives up after three tries instead of moving the body.
+        /// Somewhere to go but no path and no route on its way. The path service hands paths out with <c>SetPath</c>, and an agent can
+        /// drop one a frame later: standing in a pocket of navmesh its polygon does not lead out of (a sliver between a bench and a wall,
+        /// found for people who stood up from a seat) it takes the path, marks it invalid and never moves (measured: hasPath false, path
+        /// invalid or pending, for the rest of the shift). After a second the way is asked for again; when that fails too the body walks
+        /// out of the pocket along the way the path service found (<see cref="Extricate"/>) and takes its path from there. Standing at a
+        /// partial path's end lands here as well, so after a few tries it gives up instead of moving the body.
         /// </summary>
         private void WatchLostPath()
         {
-            bool lost = hasGoal && !goalPending && !Scripted && Seat == SeatPhase.None && OnNavMesh && !Agent.pathPending && !Agent.hasPath && !Agent.isStopped
+            bool lost = hasGoal && !goalPending && !Scripted && Seat == SeatPhase.None && OnNavMesh && !Planning && !NoRoute && !Agent.hasPath && !Agent.isStopped
                 && (goal - transform.position).sqrMagnitude > 4f;
-            if (!lost) { lostSince = -1; if (Agent.hasPath) lostRetries = 0; return; }
+            if (!lost)
+            {
+                lostSince = -1;
+                if (lostRetries > 0 && (transform.position - lostFrom).sqrMagnitude > 4f) lostRetries = 0;
+                return;
+            }
             if (lostSince < 0) { lostSince = Time.time; return; }
-            if (Time.time - lostSince < 1.5f) return;
+            if (Time.time - lostSince < 1f) return;
             lostSince = -1;
-            if (++lostRetries > 3) { hasGoal = false; lostRetries = 0; return; }
-            Agent.SetDestination(goal);
+            if (lostRetries == 0) lostFrom = transform.position;
+            if (++lostRetries > 4) { hasGoal = false; lostRetries = 0; return; }
+            if (lostRetries == 1 || !Extricate()) Replan();
+        }
+
+        // NavMeshPath 는 MonoBehaviour 의 정적 초기화에서 만들 수 없다(첫 쓸 때 만든다).
+        private static NavMeshPath wayOut;
+        private static readonly Vector3[] wayOutCorners = new Vector3[16];
+
+        /// <summary>
+        /// Walks the body, scripted with the agent off, to the first corner of the way ahead that is at least two metres off, then puts
+        /// the agent back on the mesh there and plans again. For an agent the crowd solver cannot move (its polygon leads nowhere, or it
+        /// is pinned against a corner): the path service's path starts on the floor the rest of the station is on, so its first corners are
+        /// on that floor too.
+        /// </summary>
+        internal bool Extricate()
+        {
+            if (!hasGoal || !OnNavMesh || Scripted || Seat != SeatPhase.None || traversal != null) return false;
+            wayOut ??= new NavMeshPath();
+            if (!Agent.CalculatePath(Target, wayOut) || wayOut.status == NavMeshPathStatus.PathInvalid) return false;
+            int count = wayOut.GetCornersNonAlloc(wayOutCorners);
+            int pick = -1;
+            for (int i = 1; i < count && pick < 0; i++) if ((wayOutCorners[i] - transform.position).sqrMagnitude >= 4f) pick = i;
+            if (pick < 0 && count > 1) pick = count - 1;
+            if (pick < 0) return false;
+            Agent.ResetPath();
+            Agent.enabled = false;
+            Scripted = true;
+            traversal = StartCoroutine(WalkOut(wayOutCorners[pick]));
+            return true;
+        }
+
+        private IEnumerator WalkOut(Vector3 to)
+        {
+            yield return WalkLine(to, Mathf.Max(WalkSpeed, 1.2f));
+            traversal = null;
+            Scripted = false;
+            scriptedSpeed = 0;
+            Agent.enabled = true;
+            Agent.Warp(StationWorld.OnNavMesh(transform.position, 1f));
+            if (hasGoal) Replan();
+        }
+
+        private const float WaypointReach = 5f;
+
+        /// <summary>Near the stop its leg leads to, the body asks for the leg after it (before it arrives, so it does not slow down there).</summary>
+        private void FollowRoute()
+        {
+            if (Step >= Chain.Count || Planning || !WantsRoute) return;
+            var d = Chain[Step].Position - transform.position;
+            if (Mathf.Abs(d.y) > 1.6f || d.x * d.x + d.z * d.z > WaypointReach * WaypointReach) return;
+            Step++;
+            Paths?.Enqueue(this);
+        }
+
+        private float nextStaleCheck;
+
+        /// <summary>A path the navmesh changed under (a fire's carved hole grew over it, a door locked) gets planned again, at most every two seconds.</summary>
+        private void WatchStale()
+        {
+            if (Time.time < nextStaleCheck || !WantsRoute || Planning || !Agent.hasPath) return;
+            nextStaleCheck = Time.time + .5f;
+            if (Agent.pathStatus != NavMeshPathStatus.PathInvalid && !Agent.isPathStale) return;
+            nextStaleCheck = Time.time + 2f;
+            Replan();
         }
 
         public bool Arrived(float tolerance = .45f) =>
-            Seat == SeatPhase.None && !Scripted && OnNavMesh && !Agent.pathPending && !Agent.isOnOffMeshLink && (!Agent.hasPath || Agent.remainingDistance <= tolerance);
+            Seat == SeatPhase.None && !Scripted && OnNavMesh && !Planning && !Agent.pathPending && Step >= Chain.Count && !Agent.isOnOffMeshLink && (!Agent.hasPath || Agent.remainingDistance <= tolerance);
 
-        /// <summary>Straight-line estimate of the walking time left on the current path (seconds), or 0.</summary>
+        /// <summary>Straight-line estimate of the walking time left to the goal (seconds), or 0.</summary>
         public float SecondsLeft()
         {
-            if (!OnNavMesh || !Agent.hasPath) return 0;
+            if (!OnNavMesh || Planning || !Agent.hasPath) return 0;
             float remaining = Agent.remainingDistance;
             if (float.IsInfinity(remaining)) remaining = Vector3.Distance(transform.position, Agent.destination) * 1.4f;
+            // 이 구간 뒤로 남은 경유지와 목적지까지는 직선 거리로 어림한다.
+            var at = Agent.destination;
+            for (int i = Step + 1; i < Chain.Count; i++) { remaining += Vector3.Distance(at, Chain[i].Position) * 1.3f; at = Chain[i].Position; }
+            if (Step < Chain.Count) remaining += Vector3.Distance(at, goal) * 1.3f;
             return remaining / Mathf.Max(.3f, Agent.speed);
         }
 
@@ -218,13 +355,27 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 링크(에스컬레이터·엘리베이터) ──────────────────────────────────────
 
+        private Vector3 linkStart;
+
         private void BeginLink(OffMeshLinkData data)
         {
             var link = data.owner as IStationLink;
             Riding = link;
             Scripted = true;
+            linkStart = data.startPos;
             Agent.updatePosition = false;
             traversal = StartCoroutine(RunLink(link, data));
+        }
+
+        /// <summary>
+        /// A rider waiting at the foot of a link keeps their agent there (others queue behind it); once they are on their way
+        /// the agent is switched off. Left standing at the foot for the whole ride, it kept everyone behind it out of the link:
+        /// one escalator held back the evacuees of a floor for the half minute each rider took.
+        /// </summary>
+        private void ReleaseLinkFoot()
+        {
+            if (!Agent.isActiveAndEnabled || (transform.position - linkStart).sqrMagnitude < 2.25f) return;
+            Agent.enabled = false;
         }
 
         private IEnumerator RunLink(IStationLink link, OffMeshLinkData data)
@@ -235,14 +386,13 @@ namespace ChooGuard.App.Fps.Emergency
             Riding = null;
             Scripted = false;
             scriptedSpeed = 0;
-            // 링크 끝으로 옮긴 뒤 원래 경로를 이어서 간다. 위치 갱신을 다시 켜는 순간 몸은 에이전트 자리로 옮겨지므로, 몸이 선 곳과
-            // 에이전트가 다르면(링크가 도중에 풀려 에이전트가 아직 링크 시작점에 있는 경우 등) 에이전트를 몸으로 옮기고 같은 곳으로
-            // 다시 길을 찾는다. 그러지 않으면 몸이 링크 시작점으로 되돌아간다.
-            if (Agent.isActiveAndEnabled && Agent.isOnOffMeshLink) Agent.CompleteOffMeshLink();
-            if (Agent.isActiveAndEnabled && (Agent.nextPosition - transform.position).sqrMagnitude > .0025f && Agent.Warp(StationWorld.OnNavMesh(transform.position, 1f)) && hasGoal)
-                Agent.SetDestination(goal);
+            // 링크 끝에서 몸이 선 자리에 에이전트를 세우고, 남은 길은 길 안내가 그 자리에서 새로 찾는다(몸이 에이전트보다 앞서 있다).
+            if (!Agent.enabled) Agent.enabled = true;
+            else if (Agent.isOnOffMeshLink) Agent.CompleteOffMeshLink();
             Agent.updatePosition = true;
-            if (Agent.isActiveAndEnabled && Agent.isOnNavMesh && Agent.hasPath) Agent.isStopped = false;
+            Agent.Warp(StationWorld.OnNavMesh(transform.position, 1.5f));
+            if (Agent.isOnNavMesh) Agent.isStopped = false;
+            if (hasGoal) { if (Agent.isOnNavMesh) Replan(); else goalPending = true; }
         }
 
         /// <summary>Moves in a straight line at <paramref name="speed"/> with the walk animation (link rides call this).</summary>
@@ -504,6 +654,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void Update()
         {
             if (!Scripted && Seat == SeatPhase.None && Agent.isActiveAndEnabled && Agent.isOnOffMeshLink && traversal == null) BeginLink(Agent.currentOffMeshLinkData);
+            if (Riding != null) ReleaseLinkFoot();
             if (Seat != SeatPhase.None) { UpdateSeat(); return; }
             if (!ReferenceEquals(supported, null))
             {
@@ -516,6 +667,8 @@ namespace ChooGuard.App.Fps.Emergency
             ResumeGoal();
             WatchLostPath();
             WatchStuck();
+            FollowRoute();
+            WatchStale();
             if (Animator == null) return;
             Drive(Scripted ? scriptedSpeed : sidestep != Vector3.zero ? SidestepSpeed : OnNavMesh && !Agent.isStopped ? Agent.velocity.magnitude : 0, true);
         }
@@ -556,7 +709,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         // 막힌 몸의 옆걸음: 순간이동하지 않고 비켜설 곳까지 걸은 뒤 원래 가려던 곳으로 다시 길을 찾는다.
         private const float SidestepSpeed = .9f;
-        private Vector3 sidestep, sidestepGoal;
+        private Vector3 sidestep;
 
         private void StepAside()
         {
@@ -568,7 +721,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (sidestep.sqrMagnitude > 1e-4f) return;
             sidestep = Vector3.zero;
             Agent.isStopped = false;
-            Agent.SetDestination(sidestepGoal);
+            Replan();
         }
 
         private float stuckSince = -1;
@@ -582,15 +735,15 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         private void WatchStuck()
         {
-            bool trying = !Scripted && OnNavMesh && Agent.hasPath && !Agent.isStopped && !Agent.pathPending && !Agent.isOnOffMeshLink
+            bool trying = !Scripted && OnNavMesh && Agent.hasPath && !Agent.isStopped && !Planning && !Agent.isOnOffMeshLink
                 && Agent.remainingDistance > Agent.stoppingDistance + .5f && Agent.desiredVelocity.sqrMagnitude > .09f;
             if (!trying) { stuckSince = -1; stuckStage = 0; return; }
             // 3초에 30cm 도 못 가면 막힌 것이다(가장자리에 부딪혀 떨리는 경우도 포함).
             if (stuckSince < 0 || (transform.position - stuckFrom).sqrMagnitude > .09f) { stuckSince = Time.time; stuckFrom = transform.position; stuckStage = 0; return; }
             if (Time.time - stuckSince < 3f) return;
             stuckSince = Time.time;
-            var destination = Agent.destination;
-            if (stuckStage++ == 0) { Agent.ResetPath(); Agent.SetDestination(destination); return; }
+            if (stuckStage++ == 0) { Replan(); return; }
+            if (stuckStage > 2 && Extricate()) { stuckStage = 0; return; }
             var ahead = Agent.steeringTarget - transform.position; ahead.y = 0;
             var direction = ahead.sqrMagnitude > .01f ? ahead.normalized : transform.forward;
             foreach (var turn in new[] { 0f, 60f, -60f, 120f, -120f, 180f })
@@ -600,7 +753,6 @@ namespace ChooGuard.App.Fps.Emergency
                 if (Vector3.Distance(hit.position, transform.position) < .2f) continue;
                 sidestep = hit.position - transform.position;
                 sidestep.y = 0;
-                sidestepGoal = destination;
                 Agent.isStopped = true;
                 return;
             }
