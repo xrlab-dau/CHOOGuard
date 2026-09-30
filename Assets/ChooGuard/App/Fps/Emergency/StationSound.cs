@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ChooGuard.App.Fps.Equipment;
 using ChooGuard.App.Fps.Hud;
 using UnityEngine;
 
@@ -16,7 +17,8 @@ namespace ChooGuard.App.Fps.Emergency
     /// The station fire bell, the chime and voice of public announcements and the staff radio. The bell, chime and radio
     /// tones are synthesised at start; announcement voices are pre-rendered clips (EmergencyArt.Announcements).
     /// District sounders sit on every storey within 25 m of every spot (NFTC 203 2.5.1.3) and a building under 11
-    /// storeys rings everywhere at once (2.5.1.2), so the bell is heard alike wherever the staff member is. It rings
+    /// storeys rings everywhere at once (2.5.1.2): the bell is the real bells on the walls (<see cref="AlarmBellSounder"/>,
+    /// 3D, the nearest few audible), so it is louder and directional near one and a chorus from afar. It rings
     /// from the moment a detector trips until the shift ends (JEV 009). Radio lines get the talk-permit beep (own
     /// transmission) or a squelch burst (incoming) and stay text (JEV voice-002). The station speakers and the radio on
     /// the staff member's body are separate devices, so their queues are separate: a radio beep never waits for or cuts
@@ -24,13 +26,14 @@ namespace ChooGuard.App.Fps.Emergency
     /// </summary>
     public sealed class StationSound : MonoBehaviour
     {
-        private const float BellVolume = .3f, ChimeVolume = .55f, RadioVolume = .35f, VoiceVolume = .85f;
+        private const float BellVolume = .22f, ChimeVolume = .55f, RadioVolume = .35f, VoiceVolume = .85f;
         private const int MaxQueued = 2;
 
         private IncidentDirector incidents;
         private FirstPersonResponder player;
         private RadioFeed radio;
-        private AudioSource bell, speaker, handset;
+        private AlarmBellSounder bells;
+        private AudioSource speaker, handset;
         private AudioClip chime, squelch, talkPermit;
         private AudioClip[] voices;
         private readonly Queue<(AudioClip Clip, float Volume)> announcements = new Queue<(AudioClip, float)>();
@@ -46,14 +49,13 @@ namespace ChooGuard.App.Fps.Emergency
             player = session.Player;
             radio = session.Hud.Radio;
             int rate = AudioSettings.outputSampleRate > 0 ? AudioSettings.outputSampleRate : 48000;
-            bell = Source("비상벨", BellVolume);
-            bell.clip = Clip("비상벨", Bell(rate), rate);
-            bell.loop = true;
+            bells = gameObject.AddComponent<AlarmBellSounder>();
+            bells.Setup(Clip("비상벨", Bell(rate), rate), BellVolume, player.PlayerCamera.transform);
             speaker = Source("안내방송", 1);
             handset = Source("무전기", 1);
             // 안내방송 음성과 차임에는 공간 울림이 이미 들어 있고 무전기는 몸에 단 소리라 역 잔향을 더하지 않는다.
             speaker.reverbZoneMix = handset.reverbZoneMix = 0;
-            speaker.priority = handset.priority = bell.priority = 0;
+            speaker.priority = handset.priority = 0;
             chime = Clip("안내방송 차임", Chime(rate), rate);
             squelch = Clip("무전 수신", Squelch(rate), rate);
             talkPermit = Clip("무전 송신", TalkPermit(rate), rate);
@@ -84,9 +86,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void Update()
         {
             if (player == null || player.IsPaused) return;
-            bool ring = incidents != null && incidents.AlarmRinging;
-            if (ring && !bell.isPlaying) bell.Play();
-            else if (!ring && bell.isPlaying) bell.Stop();
+            bells.Ring(incidents != null && incidents.AlarmRinging);
             if (announcements.Count > 0 && Time.time >= speakerBusyUntil)
             {
                 var (clip, volume) = announcements.Dequeue();

@@ -55,6 +55,7 @@ namespace ChooGuard.App.Fps.Emergency
             BindSprinklers();
             BindShutters();
             BindCameras();
+            BindReceiver();
         }
 
         partial void EndFireSafety() => UnbindShutters();
@@ -149,6 +150,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         partial void FireSafetyTick(float dt)
         {
+            ShowReceiver();
             if (Stage != Phase.Incident || Time.time < nextDetectorCheck) return;
             nextDetectorCheck = Time.time + .25f;
             foreach (var fire in fires)

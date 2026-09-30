@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using ChooGuard.App.Fps;
 using ChooGuard.App.Fps.Equipment;
@@ -159,7 +160,9 @@ namespace ChooGuard.Tests.PlayMode
             var root = new GameObject("방화문 시험");
             made.Add(root);
             root.AddComponent<StationEquipment>().Assign("fd-test", FireDoorPoint.DoorKind, "방화문 시험", "hall2f", data);
-            foreach (var name in new[] { "LeafLeft", "LeafRight", "Filler" }) new GameObject(name).transform.SetParent(root.transform, false);
+            var transomPart = new GameObject("Transom", typeof(MeshFilter), typeof(MeshRenderer));
+            transomPart.transform.SetParent(root.transform, false);
+            foreach (var name in new[] { "LeafLeft", "LeafRight" }) new GameObject(name).transform.SetParent(root.transform, false);
             var door = root.AddComponent<FireDoorPoint>();
             door.OnPlaced();
             Time.timeScale = 20f;
@@ -196,14 +199,82 @@ namespace ChooGuard.Tests.PlayMode
         }
 
         [Test]
-        public void TheFixedPanelAboveTheDoorFrameReachesTheCeilingOnlyWhereThereIsCeilingAboveIt()
+        public void TheTransomFillsTheOpeningFromTheFrameHeadUpToTheCeilingOnlyWhereThereIsCeilingAboveIt()
         {
             var high = MakeDoor("ceiling=3.4");
-            var filler = high.transform.Find("Filler");
-            Assert.That(filler.gameObject.activeSelf, Is.True);
-            Assert.That(filler.localScale.y, Is.EqualTo(3.4f - FireDoorPoint.FrameHeight).Within(.001f));
+            var part = high.transform.Find("Transom");
+            var mesh = part.GetComponent<MeshFilter>().sharedMesh;
+            Assert.That(part.gameObject.activeSelf, Is.True);
+            Assert.That(mesh.subMeshCount, Is.EqualTo(2), "steel frame and plaster infill");
+            Assert.That(mesh.bounds.min.y, Is.EqualTo(FireDoorPoint.FrameHeight).Within(.001f));
+            Assert.That(mesh.bounds.max.y, Is.EqualTo(3.4f).Within(.001f));
+            Assert.That(mesh.bounds.size.x, Is.EqualTo(FireDoorPoint.FrameWidth).Within(.001f));
             var low = MakeDoor("ceiling=2.1");
-            Assert.That(low.transform.Find("Filler").gameObject.activeSelf, Is.False);
+            Assert.That(low.transform.Find("Transom").gameObject.activeSelf, Is.False, "no room above the frame, no transom");
+        }
+
+        // ── 경종과 수신기 ──
+
+        private StationEquipment MakeBell(string id, Vector3 at)
+        {
+            var go = new GameObject(id);
+            made.Add(go);
+            go.transform.position = at;
+            var equipment = go.AddComponent<StationEquipment>();
+            equipment.Assign(id, AlarmBellSounder.BellKind, "경종 시험", "hall2f");
+            return equipment;
+        }
+
+        private AlarmBellSounder MakeSounder(Transform ear)
+        {
+            var go = new GameObject("경종 소리 시험");
+            made.Add(go);
+            var sounder = go.AddComponent<AlarmBellSounder>();
+            var clip = AudioClip.Create("경종 시험", 4800, 1, 48000, false);
+            made.Add(clip);
+            sounder.Setup(clip, .2f, ear);
+            return sounder;
+        }
+
+        [UnityTest]
+        public IEnumerator TheBellVoicesStayOnTheNearestBellsAndFollowTheListenerWithoutRestartingTheOnesThatStay()
+        {
+            var ear = new GameObject("귀").transform;
+            made.Add(ear.gameObject);
+            // 종 열 개가 10 m 간격으로 줄지어 있다.
+            var bells = Enumerable.Range(0, 10).Select(i => MakeBell("bell-test-" + i, new Vector3(i * 10f, 2.4f, 0))).ToList();
+            var sounder = MakeSounder(ear);
+            Assert.That(sounder.Heard.All(b => b == null), Is.True, "울리기 전에는 소리를 내는 종이 없다");
+            ear.position = new Vector3(0, 1.7f, 0);
+            sounder.Ring(true);
+            yield return null;
+            yield return Until(() => sounder.Heard.Count(b => b != null) == AlarmBellSounder.Voices);
+            var first = sounder.Heard.Where(b => b != null).Select(b => b.Id).OrderBy(id => id).ToList();
+            Assert.That(first, Is.EqualTo(Enumerable.Range(0, AlarmBellSounder.Voices).Select(i => "bell-test-" + i).OrderBy(id => id).ToList()), "듣는 사람에게 가장 가까운 여섯 개");
+            int keptVoice = System.Array.IndexOf(sounder.Heard.ToArray(), bells[3]);
+            ear.position = new Vector3(32f, 1.7f, 0);
+            yield return Until(() => sounder.Heard.Contains(bells[6]));
+            var second = sounder.Heard.Where(b => b != null).Select(b => b.Id).OrderBy(id => id).ToList();
+            Assert.That(second, Is.EqualTo(Enumerable.Range(1, AlarmBellSounder.Voices).Select(i => "bell-test-" + i).OrderBy(id => id).ToList()), "걸음을 옮기면 멀어진 종의 목소리가 새로 가까워진 종으로 옮겨 간다");
+            Assert.That(sounder.Heard[keptVoice], Is.SameAs(bells[3]), "계속 가까운 종은 같은 목소리를 지킨다(다시 울리지 않는다)");
+            sounder.Ring(false);
+            Assert.That(sounder.Heard.All(b => b == null), Is.True, "경보가 멈추면 모든 목소리가 멈춘다");
+        }
+
+        [Test]
+        public void TheReceiverScreenReadsNormalOrTheFireZonesAndIgnoresAnUnchangedPicture()
+        {
+            var go = new GameObject("수신기 시험");
+            made.Add(go);
+            go.AddComponent<StationEquipment>().Assign("rx-test", AlarmPanelPoint.PanelKind, "수신기 시험", "hall2f");
+            var panel = go.AddComponent<AlarmPanelPoint>();
+            panel.Show(AlarmPanelPoint.Tone.Fire, new[] { "감지 2층 4구역", "유수 2층 3방호구역" });
+            Assert.That(panel.Shown, Does.Contain("화재").And.Contain("감지 2층 4구역").And.Contain("유수 2층 3방호구역"));
+            Assert.That(panel.Signal, Is.EqualTo(AlarmPanelPoint.Tone.Fire));
+            panel.Show(AlarmPanelPoint.Tone.Normal, new string[0]);
+            Assert.That(panel.Shown, Does.Contain("정상").And.Not.Contain("2층"), "복구하면 구역 표시가 사라진다");
+            panel.Show(AlarmPanelPoint.Tone.Supervisory, Enumerable.Range(1, 9).Select(i => i + "번 구역").ToList());
+            Assert.That(panel.Shown.Split('\n').Length, Is.EqualTo(6), "제목과 다섯 줄까지만 화면에 담는다");
         }
 
         // ── 스프링클러 헤드 ──

@@ -40,6 +40,8 @@ namespace ChooGuard.Editor
             var sprinklers = SprinklerLayout.Plan(survey, points, walls, detectors.Select(d => d.Ceiling).ToList(), sprinklerNotes);
             var surveillanceNotes = new List<string>();
             var surveillance = SurveillanceLayout.Plan(survey, points, walls, detectors.Select(d => d.Ceiling).Concat(sprinklers.Heads.Select(h => h.Ceiling)).ToList(), shutters, surveillanceNotes);
+            var alarmNotes = new List<string>();
+            var alarm = AlarmLayout.Plan(survey, points, walls, alarmNotes);
 
             BuildDetectorPrefab("SmokeDetector", DetectorPoint.SmokeKind, "연기감지기", false);
             BuildDetectorPrefab("HeatDetector", DetectorPoint.HeatKind, "열감지기", false);
@@ -47,6 +49,7 @@ namespace ChooGuard.Editor
             SprinklerBuilder.BuildPrefabs();
             CompartmentBuilder.BuildPrefabs();
             SurveillanceBuilder.BuildPrefabs();
+            AlarmBuilder.BuildPrefabs();
             EquipmentBuilder.WritePlacements(Group,
                 "Spot-type smoke and heat detectors placed by NFTC 203 on the ceilings of the twin (FireSafetyBuilder, DetectorLayout). Positions are ceiling points; rotation follows the ceiling.", items);
             EquipmentBuilder.WritePlacements(SprinklerBuilder.Group,
@@ -55,6 +58,8 @@ namespace ChooGuard.Editor
                 "Automatic fire shutters at the openings of the station's fire compartment lines, with their keyed control boxes (CompartmentLayout). Their smoke and heat detectors are in FireSafety.json and name the shutter in 'shutter='.", CompartmentBuilder.Items(shutters, detectorIds, points));
             EquipmentBuilder.WritePlacements(SurveillanceBuilder.Group,
                 "CCTV cameras (ceiling domes and wall-mounted fixed cameras) and public-address speakers (ceiling speakers and horns) placed by SurveillanceLayout.", SurveillanceBuilder.Items(surveillance));
+            EquipmentBuilder.WritePlacements(AlarmBuilder.Group,
+                "Fire bells (district sounders, no spot of a floor farther than 25 m) on the walls and columns of the twin and the receiver in the station office (AlarmLayout).", AlarmBuilder.Items(alarm));
 
             var log = new List<string> { "CG_FIRESAFETY placements=" + items.Count + " smoke=" + items.Count(i => i.kind == DetectorPoint.SmokeKind) + " heat=" + items.Count(i => i.kind == DetectorPoint.HeatKind) + " beam pairs=" + beams.Count };
             foreach (var region in regions)
@@ -67,6 +72,7 @@ namespace ChooGuard.Editor
             log.AddRange(SprinklerBuilder.Log(sprinklers, sprinklerNotes));
             foreach (var note in compartmentNotes) log.Add("  compartment " + note);
             foreach (var note in surveillanceNotes) log.Add("  surveillance " + note);
+            foreach (var note in alarmNotes) log.Add("  alarm " + note);
             Debug.Log(string.Join("\n", log));
         }
 

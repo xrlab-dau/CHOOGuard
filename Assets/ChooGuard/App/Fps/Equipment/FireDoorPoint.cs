@@ -8,7 +8,7 @@ namespace ChooGuard.App.Fps.Equipment
     /// end of its opening. The door stands closed on its closer (the 60-minute door of art. 14 (2) 1 is kept shut); a person coming up to it, from either side, pushes the leaves
     /// open and the closer swings them shut again a moment after the last person has gone through. The leaves swing away from the push bar (the model's +Z face), towards −Z,
     /// on the hinges of the model. No collider and no nav-mesh block: people walk through it as through any door, which is what a fire door beside a lowered shutter is for.
-    /// The clear height above the frame (the wall filler up to the ceiling) comes from the placement entry (<c>ceiling</c> in metres above the floor).
+    /// The transom above the frame (<see cref="FireDoorTransom"/>: steel frame with plaster infill up to the ceiling) is built for the ceiling height of the placement entry (<c>ceiling</c> in metres above the floor).
     /// </summary>
     [RequireComponent(typeof(StationEquipment))]
     public sealed class FireDoorPoint : MonoBehaviour, IEquipmentPlaced
@@ -21,7 +21,7 @@ namespace ChooGuard.App.Fps.Equipment
         public const float OpenSpeed = 160f, CloseSpeed = 32f;
         /// <summary>How far in front of and behind the door plane a person opens it, metres, and how long the closer waits after the last person left.</summary>
         public const float Reach = 2.2f, Hold = 1.2f;
-        /// <summary>Height of the frame model; the filler panel above it reaches to <c>ceiling</c>.</summary>
+        /// <summary>Height of the frame model; the transom above it reaches to <c>ceiling</c>.</summary>
         public const float FrameHeight = 2.1f;
         /// <summary>The frame model's outer width and depth, and where its leaves hinge (from the middle of the frame, back face) - the sidecar JSON of FireDoorFrame.</summary>
         public const float FrameWidth = 2.1986f, FrameDepth = .131f, HingeX = 1.0691f, HingeZ = .0655f;
@@ -32,6 +32,7 @@ namespace ChooGuard.App.Fps.Equipment
         public bool Closed => Angle < .5f;
 
         private Transform left, right;
+        private Mesh transom;
         private float target, nextSense, closeAt;
         private readonly Collider[] hits = new Collider[24];
 
@@ -40,15 +41,19 @@ namespace ChooGuard.App.Fps.Equipment
             Equipment = GetComponent<StationEquipment>();
             left = transform.Find("LeafLeft");
             right = transform.Find("LeafRight");
-            var filler = transform.Find("Filler");
-            float ceiling = Equipment.Number("ceiling", FrameHeight);
+            var filler = transform.Find("Transom");
+            transom = FireDoorTransom.Build(Equipment.Number("ceiling", FrameHeight));
             if (filler != null)
             {
-                bool any = ceiling > FrameHeight + .02f;
-                filler.gameObject.SetActive(any);
-                if (any) filler.localScale = new Vector3(1f, ceiling - FrameHeight, 1f);
+                filler.GetComponent<MeshFilter>().sharedMesh = transom;
+                filler.gameObject.SetActive(transom != null);
             }
             Apply();
+        }
+
+        private void OnDestroy()
+        {
+            if (transom != null) Destroy(transom);
         }
 
         private void Update()
