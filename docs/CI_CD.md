@@ -11,10 +11,11 @@
 | `unity.yml` | Unity 경로를 바꾼 같은 저장소 PR(Windows·macOS), develop·main push·`v*` 태그·매일 03:00 KST(Windows·macOS·Linux), 수동 | Unity lane gate → EditMode + PlayMode (OS별) → Players (macOS, Windows, Linux) → Player smoke (OS별) → Draft release, **Unity tests** | 첫 녹색 실행 후 필수 |
 | `security.yml` | PR, push, 매주 월 04:00 KST | CodeQL(Actions·C#·JS·Python), Dependency review | 정보 |
 | `scorecard.yml` | develop push, 매주, 규칙 변경 | Scorecard analysis → scorecard.dev 게시 | 정보 |
-| `pr-labels.yml` | 같은 저장소 PR | 경로 라벨(`.github/labeler.yml`) | — |
 | Dependabot | 매주 월 09:00 KST, 7일 쿨다운 | Actions 핀, `.github/requirements/*.txt` | — |
 
 필수 체크는 `Protected branches · main + develop` 규칙에 걸려 있다. 필수 잡은 경로 필터 없이 모든 변경에 결과를 낸다. 건너뛴 워크플로는 결과가 없어 PR을 막기 때문이다.
+
+경로 라벨은 수동으로 붙인다. 대형 PR에서 GitHub diff API가 시간 초과로 실패하던 자동 라벨 검사는 제거했다. 라벨은 머지 조건이 아니다.
 
 ## 정책 게이트 (`.github/scripts/ci_policy.py`)
 
@@ -113,7 +114,7 @@ Unity는 로그 첫머리에 `-serial`·`-password`를 포함한 명령줄 전�
 ## 공급망·권한
 
 - 모든 action은 커밋 SHA로 고정한다(태그는 주석). 같은 저장소 action은 `.github`만 받은 체크아웃에서 `./.github/actions/...`로 쓴다. GitHub의 self-repository 문법(`uses: $/...`)은 action을 쓰려고 저장소 전체 압축본(에셋 약 4 GB)을 내려받는다. 첫 실행에서 모든 러너가 이 다운로드의 100초 제한에 걸려 실패했다(run 36393274297). 그래서 zizmor의 `self-repository` 검사는 `.github/zizmor.yml`에서 끈다. 내려받는 도구(actionlint, gitleaks)는 SHA-256을 확인한다. 파이썬 의존성은 해시로 잠근다. Dependabot이 매주 올리되 공개 7일 뒤의 버전만 받는다.
-- 워크플로 기본 권한은 `permissions: {}`이고 잡마다 필요한 권한만 준다. 쓰기 권한은 라벨러(`pull-requests`), 보안 결과 업로드(`security-events`), 릴리스(`contents`, `id-token`, `attestations`)뿐이다.
+- 워크플로 기본 권한은 `permissions: {}`이고 잡마다 필요한 권한만 준다. 쓰기 권한은 보안 결과 업로드(`security-events`), 릴리스(`contents`, `id-token`, `attestations`)뿐이다.
 - `pull_request_target`은 쓰지 않는다. 공개 저장소는 2026-11-02부터 기본 차단된다. 체크아웃은 모두 `persist-credentials: false`다.
 - 리눅스 잡은 `harden-runner`(audit)로 외부 통신을 기록한다.
 - 저장소 보안 설정은 조직의 코드 보안 구성 **"CHOOGuard public repository"**(이 저장소에만 연결)에 있다. 의존성 그래프, Dependabot 알림·보안 업데이트, 비밀 스캔과 푸시 보호, 비공개 취약점 신고(`.github/SECURITY.md`)를 켠다. CodeQL은 고급 워크플로(`security.yml`)로 돌기 때문에 **기본 설정은 꺼 둔다**. 조직의 "GitHub recommended" 구성은 CodeQL 기본 설정을 켜서 고급 워크플로의 결과 업로드를 막으므로 연결하지 않는다.
