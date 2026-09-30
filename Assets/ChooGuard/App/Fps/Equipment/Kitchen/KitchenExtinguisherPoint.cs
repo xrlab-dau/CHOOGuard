@@ -8,7 +8,9 @@ namespace ChooGuard.App.Fps.Equipment
     /// added for a restaurant kitchen is K-class; 2.1.1.6: no higher than 1.5 m). It is the same tool as the twin's
     /// extinguishers (the staff member lifts it off the wall, pulls the pin and sprays) with wet chemical in it: only that
     /// cools cooking oil and seals it, powder knocks the flames down and they return, water makes it worse
-    /// (<see cref="FireHazard.SuppressWith"/>). Placement data: <c>shop</c>.
+    /// (<see cref="FireHazard.SuppressWith"/>). Placement data: <c>shop</c>, <c>top</c> (height of its top above the floor, m),
+    /// <c>front</c> (the unit vector, world x,z, from the shop's back wall toward its open front: the layout's own frame of the
+    /// room, which the kitchen photo tour needs to find the concourse).
     /// </summary>
     [RequireComponent(typeof(StationEquipment))]
     public sealed class KitchenExtinguisherPoint : MonoBehaviour

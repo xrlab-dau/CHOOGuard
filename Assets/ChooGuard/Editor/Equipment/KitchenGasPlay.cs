@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -310,11 +311,40 @@ namespace ChooGuard.Editor
             return box;
         }
 
+        /// <summary>Distance from <paramref name="from"/> along <paramref name="direction"/> to the first solid that is not part of <paramref name="piece"/> (or <paramref name="max"/>).</summary>
+        private static float FreeAhead(Vector3 from, Vector3 direction, float max, Component piece)
+        {
+            float free = max;
+            foreach (var hit in Physics.RaycastAll(from, direction, max, ~0, QueryTriggerInteraction.Ignore))
+                if (!hit.collider.transform.IsChildOf(piece.transform) && hit.distance < free) free = hit.distance;
+            return free;
+        }
+
+        /// <summary>
+        /// The line of sight from <paramref name="eye"/> to <paramref name="target"/> is open: the shop's glass front (the twin's
+        /// "Kit_Colliders", which blocks bodies but not eyes) and people do not count, walls, columns and furniture do.
+        /// </summary>
+        private static bool Sees(Vector3 eye, Vector3 target, Component piece)
+        {
+            var toward = target - eye;
+            float distance = toward.magnitude;
+            foreach (var hit in Physics.RaycastAll(eye, toward / distance, distance - .05f, ~0, QueryTriggerInteraction.Ignore))
+            {
+                var collider = hit.collider;
+                if (collider.transform.IsChildOf(piece.transform) || collider.name == "Kit_Colliders" || collider.GetComponentInParent<Passenger>() != null) continue;
+                return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// One photograph of every kind of kitchen and gas equipment from inside its shop (the staff member stands in the kitchen in
-        /// front of it) and from the concourse (outside the open front of the shop, looking in; the camera narrows its field of view
-        /// so a hose or a leak alarm is legible at that distance), plus a wide view from the concourse per shop. The shop's front is
-        /// found from the shop point: its yaw is the direction the customer faces, toward the counter and the back wall.
+        /// front of it, no closer to the opposite wall than fits) and from the concourse (outside the open front of the shop, on the
+        /// far side of the room from the wall the piece hangs on, so the view runs diagonally through the glass; the first spot with
+        /// an open line of sight is used, and the camera narrows its field of view so a hose or a leak alarm is legible at that
+        /// distance), plus a wide view from the concourse per shop. A piece no spot on the concourse sees (the leak alarm under the
+        /// ceiling behind the lintel of the glass front) is listed under <c>hiddenFromConcourse</c>. The shop's open-front direction
+        /// is the <c>front</c> data of its K-class extinguisher (from the layout).
         /// </summary>
         private static IEnumerator Tour()
         {
@@ -326,6 +356,8 @@ namespace ChooGuard.Editor
             currentErrors = (JArray)current["consoleErrors"];
             currentChecks = (JArray)current["checks"];
             currentShots = (JArray)current["shots"];
+            var hidden = new JArray();
+            current["hiddenFromConcourse"] = hidden;
             phase = "catalog";
             var camera = Session.Player.PlayerCamera;
             float fov = camera.fieldOfView;
@@ -339,36 +371,52 @@ namespace ChooGuard.Editor
                 if (piece == null || anchor == null) continue;
                 var box = BoundsOf(piece);
                 var inward = new Vector3(anchor.transform.forward.x, 0, anchor.transform.forward.z).normalized;
-                var front = -new Vector3(Mathf.Sin(shop.Yaw * Mathf.Deg2Rad), 0, Mathf.Cos(shop.Yaw * Mathf.Deg2Rad));
-                Check(device.Key + ": the kitchen lies toward the shop front (shop point faces the counter)", Vector3.Dot(box.center - shop.Position, front) > 0, "shop yaw " + shop.Yaw);
+                var frontData = anchor.Text("front").Split(',');
+                var front = new Vector3(float.Parse(frontData[0], CultureInfo.InvariantCulture), 0, float.Parse(frontData[1], CultureInfo.InvariantCulture)).normalized;
+                Check(device.Key + ": the shop front direction is across the wall the kitchen stands on", Mathf.Abs(Vector3.Dot(front, inward)) < .05f, "front " + front + " inward " + inward);
 
-                // 안에서: 설비 앞에 서서 가까이.
+                // 안에서: 설비 앞에 서서 가까이(맞은편 벽에 파묻히지 않게).
                 float close = Mathf.Clamp(box.size.magnitude * 1.6f, 1.4f, 3.2f);
+                close = Mathf.Min(close, Mathf.Max(1.1f, FreeAhead(box.center, inward, close + .6f, piece) - .5f));
                 yield return Stand(box.center, inward, close);
                 yield return Sleep(1.2f);
                 yield return Shot("catalog_" + device.Key + "_inside");
 
-                // 통로에서: 가게 열린 앞쪽 밖. 방 안 높은 곳에서 앞쪽으로 쏘아 유리 앞면까지의 거리를 잰다.
+                // 통로에서: 유리 앞면까지의 거리는 방 안 높은 곳에서 앞쪽으로 쏘아 잰다.
                 var origin = box.center + inward * 1.4f;
                 origin.y = shop.Position.y + 2.4f;
-                float frontAt = Physics.Raycast(origin, front, out var hit, 16f, ~0, QueryTriggerInteraction.Ignore) ? hit.distance : 7f;
-                var outside = origin + front * (frontAt + 2.6f);
-                var ground = Physics.Raycast(outside + Vector3.up * .5f, Vector3.down, out var floor, 4f, ~0, QueryTriggerInteraction.Ignore) ? floor.point : new Vector3(outside.x, shop.Position.y, outside.z);
-                float distance = Vector3.Distance(ground + Vector3.up * Session.Player.EyeHeight, box.center);
-                camera.fieldOfView = Mathf.Clamp(2f * Mathf.Atan(Mathf.Max(box.size.x, box.size.y, box.size.z) * 1.6f / 2f / distance) * Mathf.Rad2Deg, 8f, camera.fieldOfView);
-                yield return LookFrom(ground, box.center);
-                yield return Sleep(1.2f);
-                yield return Shot("catalog_" + device.Key + "_concourse");
-                camera.fieldOfView = fov;
-                current["frontPlane_" + device.Key] = Math.Round(frontAt, 2);
-
-                if (wide.Add(device.Shop))
+                float frontAt = Physics.Raycast(origin, front, out var frontHit, 16f, ~0, QueryTriggerInteraction.Ignore) ? frontHit.distance : 7f;
+                Vector3? spot = null;
+                foreach (float beyond in new[] { 2.6f, 3.6f, 4.6f })
                 {
-                    var line = EquipmentRegistry.All.Where(e => e.Text("shop") == shop.Id && (e.Kind == KitchenAppliancePoint.FryerKind || e.Kind == KitchenAppliancePoint.RangeKind || e.Kind == KitchenAppliancePoint.OvenKind)).ToList();
-                    var centre = line.Aggregate(Vector3.zero, (sum, e) => sum + e.transform.position) / line.Count + Vector3.up;
-                    yield return LookFrom(ground, centre);
+                    foreach (float lateral in new[] { 2.4f, 1.6f, 3.2f, .9f })
+                    {
+                        var at = new Vector3(box.center.x, 0, box.center.z) + inward * lateral + front * (frontAt + beyond);
+                        var feet = Physics.Raycast(new Vector3(at.x, shop.Position.y + 1.5f, at.z), Vector3.down, out var floor, 4f, ~0, QueryTriggerInteraction.Ignore) ? floor.point : new Vector3(at.x, shop.Position.y, at.z);
+                        if (!Sees(feet + Vector3.up * Session.Player.EyeHeight, box.center, piece)) continue;
+                        spot = feet;
+                        break;
+                    }
+                    if (spot != null) break;
+                }
+                if (spot == null) { hidden.Add(device.Key); }
+                else
+                {
+                    var ground = spot.Value;
+                    float distance = Vector3.Distance(ground + Vector3.up * Session.Player.EyeHeight, box.center);
+                    camera.fieldOfView = Mathf.Clamp(2f * Mathf.Atan(Mathf.Max(box.size.x, box.size.y, box.size.z) * 1.6f / 2f / distance) * Mathf.Rad2Deg, 8f, camera.fieldOfView);
+                    yield return LookFrom(ground, box.center);
                     yield return Sleep(1.2f);
-                    yield return Shot("catalog_shop_" + device.Shop + "_concourse_wide");
+                    yield return Shot("catalog_" + device.Key + "_concourse");
+                    camera.fieldOfView = fov;
+                    if (wide.Add(device.Shop))
+                    {
+                        var line = EquipmentRegistry.All.Where(e => e.Text("shop") == shop.Id && (e.Kind == KitchenAppliancePoint.FryerKind || e.Kind == KitchenAppliancePoint.RangeKind || e.Kind == KitchenAppliancePoint.OvenKind)).ToList();
+                        var centre = line.Aggregate(Vector3.zero, (sum, e) => sum + e.transform.position) / line.Count + Vector3.up;
+                        yield return LookFrom(ground, centre);
+                        yield return Sleep(1.2f);
+                        yield return Shot("catalog_shop_" + device.Shop + "_concourse_wide");
+                    }
                 }
             }
             camera.fieldOfView = fov;

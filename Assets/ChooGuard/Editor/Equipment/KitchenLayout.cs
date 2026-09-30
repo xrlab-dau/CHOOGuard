@@ -231,7 +231,7 @@ namespace ChooGuard.Editor
             }
             float sk = kSide ?? start - .4f;
             float kBottom = KExtinguisherBottom;
-            Add(Next("kext"), KitchenExtinguisherPoint.Kind, "K급 소화기(주방용)", KPrefab, wall.P(sk, .14f, kBottom), Face(), "top=" + Num(kBottom + KExtinguisherHeight));
+            Add(Next("kext"), KitchenExtinguisherPoint.Kind, "K급 소화기(주방용)", KPrefab, wall.P(sk, .14f, kBottom), Face(), "top=" + Num(kBottom + KExtinguisherHeight) + ";front=" + Num(room.V.x) + "," + Num(room.V.y));
             plan.KExtinguisherTop = kBottom + KExtinguisherHeight;
             if (spec.Gas)
             {
