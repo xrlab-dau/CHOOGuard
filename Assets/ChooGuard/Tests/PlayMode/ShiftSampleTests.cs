@@ -42,6 +42,19 @@ namespace ChooGuard.Tests.PlayMode
     /// </remarks>
     public sealed class ShiftSampleTests
     {
+        /// <summary>지금 살아 있는 위험 중 Label 에 <paramref name="what"/> 가 든 것이 있는가.</summary>
+        /// <remarks>
+        /// 종류를 타입으로 묻지 않고 Label 로 본다. 하드룰 1 이 '종류를 닫힌 목록으로 가정하지 말라' 고
+        /// 하므로, 시험도 <c>is FireHazard</c> 대신 공통 정보(Label)로 판단한다.
+        /// </remarks>
+        private static bool Present(string what)
+        {
+            if (string.IsNullOrEmpty(what)) return true;
+            foreach (var hazard in HazardRegistry.Active)
+                if (hazard != null && hazard.Label != null && hazard.Label.Contains(what)) return true;
+            return false;
+        }
+
         private static int Number(string name, int fallback)
         {
             var raw = Environment.GetEnvironmentVariable(name);
@@ -57,6 +70,18 @@ namespace ChooGuard.Tests.PlayMode
             float realCap = Mathf.Max(60, Number("CG_SHIFT_REALCAP", 1800));
             int seed = Number("CG_SHIFT_SEED", 0);
             var outFolder = Environment.GetEnvironmentVariable("CG_SHIFT_OUT");
+            // 특정 사건이 난 회차만 모으고 싶을 때. Hazard.Label 에 이 문자열이 들어가면 채택한다.
+            // 예: CG_SHIFT_REQUIRE=화재
+            //
+            // 사건을 만들지 않고 **고른다.** 세계가 여전히 합성하므로 하드룰을 건드리지 않고,
+            // 불 확대·연기 확산·경보 같은 전개 후보도 정상적으로 생긴다. 밖에서 FireHazard 를
+            // 직접 만들면 IncidentDirector 의 fires 목록에 들어가지 않아 전개가 아예 없다.
+            //
+            // 대가: 표본이 **선택 편향**을 갖는다. 화재가 난 근무만 모으면 화재가 안 난 근무의
+            // 분포를 잃는다. 분포를 보려면 이 값을 비우고 돌린다.
+            var require = Environment.GetEnvironmentVariable("CG_SHIFT_REQUIRE");
+            float seek = Mathf.Max(30, Number("CG_SHIFT_SEEK", 300));       // 그 사건을 기다리는 게임 시간
+            int maxAttempts = Mathf.Max(1, Number("CG_SHIFT_ATTEMPTS", 8)); // 회차당 재시도 상한
 
             Debug.Log("CG_HARNESS count=" + count + " seconds=" + gameSeconds + " scale=" + scale
                       + " realCap=" + realCap + " seed=" + seed
@@ -66,9 +91,14 @@ namespace ChooGuard.Tests.PlayMode
                                  + "JEV 가 답하는 비율이 실제보다 낮게 나온다. 비율을 보려면 CG_SHIFT_SCALE=1 로 둘 것.");
 
             var summary = new StringBuilder("[\n");
+            int attemptsSpent = 0;
             for (int shift = 0; shift < count; shift++)
             {
-                if (seed != 0) EmergencySession.NextSeed = seed + shift;
+                int attempt = 0;
+                bool accepted = string.IsNullOrEmpty(require);
+            retry:
+                // 시드를 회차·시도마다 다르게 준다. 같은 시드로 다시 돌리면 같은 근무가 나온다.
+                if (seed != 0) EmergencySession.NextSeed = seed + shift * maxAttempts + attempt;
                 // 두 씬을 순서대로 올린다. StationEmergency 를 단독으로 열면 세션이 FpsStation 의
                 // 역무원을 찾지 못한다. 평소에는 SceneFlow.EnsureSessionForDirectStationPlay 가
                 // 이 Additive 로드를 대신하지만 [RuntimeInitializeOnLoadMethod] 라 PlayMode 시작 때
@@ -91,6 +121,33 @@ namespace ChooGuard.Tests.PlayMode
                 float startedReal = Time.realtimeSinceStartup;
                 float startedShift = session.ShiftSeconds;
                 Time.timeScale = scale;
+                // ① 요구한 사건이 날 때까지 기다린다. 요구가 없으면 이 구간을 건너뛴다.
+                if (!accepted)
+                {
+                    attemptsSpent++;
+                    try
+                    {
+                        while (session.ShiftSeconds - startedShift < seek
+                               && Time.realtimeSinceStartup - startedReal < realCap
+                               && !Present(require))
+                            yield return null;
+                    }
+                    finally { Time.timeScale = 1f; }
+                    accepted = Present(require);
+                    Debug.Log("CG_SEEK shift=" + shift + " attempt=" + attempt
+                              + " require=" + require + " found=" + accepted
+                              + " game=" + (session.ShiftSeconds - startedShift).ToString("0") + "s");
+                    if (!accepted)
+                    {
+                        attempt++;
+                        // 상한에 걸리면 포기하고 그 회차는 요구 없이 그대로 쓴다 — 버리면 아무 표본도 안 남는다.
+                        if (attempt < maxAttempts) goto retry;
+                        Debug.LogWarning("CG_SEEK shift=" + shift + " 시도 " + maxAttempts
+                                         + "회 안에 '" + require + "' 가 나지 않았다. 이 회차는 요구 없이 기록한다.");
+                    }
+                    Time.timeScale = scale;
+                }
+                // ② 남은 시간을 채운다.
                 try
                 {
                     while (session.ShiftSeconds - startedShift < gameSeconds
@@ -113,6 +170,9 @@ namespace ChooGuard.Tests.PlayMode
                     + ",\"failures\":" + (jev == null ? -1 : jev.Failures)
                     + ",\"inputTokens\":" + (jev == null ? -1 : jev.InputTokens)
                     + ",\"outputTokens\":" + (jev == null ? -1 : jev.OutputTokens)
+                    + ",\"require\":\"" + (require ?? "") + "\""
+                    + ",\"attempts\":" + (attempt + 1)
+                    + ",\"accepted\":" + (accepted ? "true" : "false")
                     + ",\"model\":\"" + (jev == null ? "" : jev.LastModel) + "\"}";
                 Debug.Log("CG_SHIFT " + line);
                 summary.Append("  ").Append(line).Append(shift < count - 1 ? ",\n" : "\n");

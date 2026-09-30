@@ -45,6 +45,40 @@ CG_SHIFT_OUT="D:\cg-data" \
 
 시험은 `[Explicit]` 이라 `-testFilter` 로 직접 지정해야 돈다. 일반 회귀에는 섞이지 않는다.
 
+## 1-1. 특정 사건만 모으고 싶을 때 (예: 화재)
+
+사건을 **만들지 않고 고른다.** 근무를 돌려 그 사건이 나면 채택하고, 안 나면 시드를 바꿔 다시 돈다.
+세계가 여전히 합성하므로 하드룰을 건드리지 않고, 불 확대·연기 확산·경보 같은 **전개 후보도 정상적으로 생긴다.**
+
+```
+CG_SHIFT_COUNT=10 CG_SHIFT_SECONDS=1200 CG_SHIFT_SCALE=1 CG_SHIFT_SEED=2000 CG_SHIFT_REQUIRE=화재 CG_SHIFT_SEEK=300 CG_SHIFT_ATTEMPTS=8 CG_SHIFT_OUT="D:\cg-data" Unity.exe -batchmode -runTests ... (나머지는 위와 같음)
+```
+
+| 환경변수 | 뜻 | 기본 |
+|---|---|---|
+| `CG_SHIFT_REQUIRE` | `Hazard.Label` 에 이 문자열이 들면 채택. 비우면 요구 없음 | 없음 |
+| `CG_SHIFT_SEEK` | 그 사건을 기다리는 게임 시간(초) | 300 |
+| `CG_SHIFT_ATTEMPTS` | 회차당 재시도 상한 | 8 |
+
+쓸 수 있는 값은 `Hazard.Label` 이 내는 것이다 — `화재` · `의심 물체` · `지진` · `출입문 끼임`,
+그리고 쓰러짐은 사유별로 라벨이 달라지므로 실행 로그에서 확인해 쓴다.
+**종류를 타입으로 묻지 않고 Label 로 보는 이유**: 하드룰 1 이 종류를 닫힌 목록으로 가정하지 말라고 한다.
+
+### 대가 — 선택 편향
+
+화재가 난 근무만 모으면 **화재가 안 난 근무의 분포를 잃는다.** 피할 수 없으므로 숨기지 않고 기록한다.
+요약 JSON 에 회차마다 이렇게 남는다.
+
+```json
+{"shift":0,"seed":2000,"require":"화재","attempts":3,"accepted":true, ...}
+```
+
+`attempts` 로 '화재는 몇 회당 한 번 나는가' 를 역산할 수 있다. **분포 자체를 볼 때는
+`CG_SHIFT_REQUIRE` 를 비우고 돌린다.**
+
+상한 안에 그 사건이 나지 않으면 그 회차를 버리지 않고 `accepted:false` 로 기록한다 —
+버리면 아무 표본도 안 남는다.
+
 ## 2. 나오는 것
 
 **정본은 JSONL 이다.** 시험 요약이 아니라 이쪽을 학습에 쓴다.
