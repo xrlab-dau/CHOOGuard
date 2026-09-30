@@ -57,6 +57,15 @@ namespace ChooGuard.Editor
             AlarmPrefab = "GasAlarm", AutoPrefab = "AutoExtinguisher", KPrefab = "KExtinguisher", PipePrefab = "GasPipe", DropPrefab = "GasPipeDrop",
             ElbowDownPrefab = "GasPipeElbowDown", ElbowUpPrefab = "GasPipeElbowUp";
 
+        /// <summary>
+        /// Plans the kitchen of the shop in <paramref name="room"/> with that shop's own kitchen (<see cref="StationKitchens"/>, by the
+        /// room's label). EditMode tests call this: their assembly may not reference the game assembly that holds the kitchen table.
+        /// </summary>
+        public static KitchenPlan PlanShop(KitchenRoom room) => Plan(room, StationKitchens.Of(room.Label));
+
+        /// <summary>Whether the shop cooks with gas: then its kitchen has a meter, valves, fuse cocks and a leak alarm.</summary>
+        public static bool CooksWithGas(string shopLabel) => StationKitchens.Of(shopLabel)?.Gas == true;
+
         /// <summary>Plans the kitchen of the shop in <paramref name="room"/>; throws when no arrangement fits.</summary>
         public static KitchenPlan Plan(KitchenRoom room, StationKitchens.Spec spec)
         {

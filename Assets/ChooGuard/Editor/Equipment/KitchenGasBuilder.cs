@@ -51,6 +51,9 @@ namespace ChooGuard.Editor
             Debug.Log("CG_KITCHEN_GAS parts=" + items.Count + " shops=" + report.Count);
         }
 
+        /// <summary><see cref="Audit"/> with the shop's own kitchen (by the plan's room label), for tests outside the game assembly.</summary>
+        public static void AuditShop(KitchenPlan plan) => Audit(plan, StationKitchens.Of(plan.Room.Label));
+
         /// <summary>The standards' distances as built, or throws.</summary>
         public static void Audit(KitchenPlan plan, StationKitchens.Spec spec)
         {

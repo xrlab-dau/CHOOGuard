@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using ChooGuard.App.Fps.Equipment;
 using ChooGuard.Editor;
 using NUnit.Framework;
 using UnityEngine;
@@ -63,10 +62,9 @@ namespace ChooGuard.Tests.EditMode
         public void EveryFoodShopGetsAKitchenThatKeepsTheStandardsDistances([ValueSource(nameof(Shops))] Shop shop, [Values(0f, 37f, 200f)] float turn)
         {
             var room = Room(shop, turn);
-            var spec = StationKitchens.Of(room.Label);
-            var plan = KitchenLayout.Plan(room, spec);
+            var plan = KitchenLayout.PlanShop(room);
 
-            KitchenGasBuilder.Audit(plan, spec);   // 계량기 ≥2 m·1.6~2 m, 경보기 8 m 안·천장 0.3 m 이내, K급 소화기 ≤1.5 m: 어기면 던진다
+            KitchenGasBuilder.AuditShop(plan);   // 계량기 ≥2 m·1.6~2 m, 경보기 8 m 안·천장 0.3 m 이내, K급 소화기 ≤1.5 m: 어기면 던진다
             foreach (var part in plan.Parts)
             {
                 var at = ToRoom(room, part.Position);
@@ -78,7 +76,7 @@ namespace ChooGuard.Tests.EditMode
         [Test]
         public void EveryCookingStationHasAHoodAndAnAutomaticExtinguisherAndEveryRangeItsGasFittings([ValueSource(nameof(Shops))] Shop shop)
         {
-            var plan = KitchenLayout.Plan(Room(shop, 0), StationKitchens.Of(shop.Label));
+            var plan = KitchenLayout.PlanShop(Room(shop, 0));
             var ids = new HashSet<string>(plan.Parts.Select(p => p.Id));
             string Data(KitchenPart part, string key) => part.Data.Split(';').Select(p => p.Split('=')).Where(p => p[0] == key).Select(p => p[1]).FirstOrDefault() ?? "";
             foreach (var appliance in plan.Parts.Where(p => p.Kind == "kitchen_fryer" || p.Kind == "gas_range"))
@@ -92,15 +90,15 @@ namespace ChooGuard.Tests.EditMode
                 Assert.That(plan.Parts.Any(p => p.Kind == "fuse_cock" && Data(p, "range") == range.Id), range.Id + " 의 퓨즈콕이 없음");
             }
             Assert.That(plan.Parts.Count(p => p.Kind == "kitchen_k_extinguisher"), Is.EqualTo(1));
-            Assert.That(plan.Parts.Count(p => p.Kind == "gas_alarm"), Is.EqualTo(StationKitchens.Of(shop.Label).Gas ? 1 : 0));
-            Assert.That(plan.Parts.Count(p => p.Kind == "gas_meter"), Is.EqualTo(StationKitchens.Of(shop.Label).Gas ? 1 : 0));
+            Assert.That(plan.Parts.Count(p => p.Kind == "gas_alarm"), Is.EqualTo(KitchenLayout.CooksWithGas(shop.Label) ? 1 : 0));
+            Assert.That(plan.Parts.Count(p => p.Kind == "gas_meter"), Is.EqualTo(KitchenLayout.CooksWithGas(shop.Label) ? 1 : 0));
         }
 
         [Test]
         public void TheKitchenDoesNotStandOnTheShopsFurnitureOrOnTheCustomer([ValueSource(nameof(Shops))] Shop shop, [Values(0f, 37f)] float turn)
         {
             var room = Room(shop, turn);
-            var plan = KitchenLayout.Plan(room, StationKitchens.Of(room.Label));
+            var plan = KitchenLayout.PlanShop(room);
             var floorStanding = new[] { "kitchen_fryer", "gas_range", "kitchen_oven", "kitchen_table", "kitchen_counter" };
             foreach (var part in plan.Parts.Where(p => floorStanding.Contains(p.Kind)))
             {
@@ -114,8 +112,8 @@ namespace ChooGuard.Tests.EditMode
         [Test]
         public void TheLayoutIsTheSameEveryTime([ValueSource(nameof(Shops))] Shop shop)
         {
-            var first = KitchenLayout.Plan(Room(shop, 0), StationKitchens.Of(shop.Label));
-            var second = KitchenLayout.Plan(Room(shop, 0), StationKitchens.Of(shop.Label));
+            var first = KitchenLayout.PlanShop(Room(shop, 0));
+            var second = KitchenLayout.PlanShop(Room(shop, 0));
             CollectionAssert.AreEqual(first.Parts.Select(p => p.Id + p.Position + p.Euler + p.Data), second.Parts.Select(p => p.Id + p.Position + p.Euler + p.Data));
         }
     }
