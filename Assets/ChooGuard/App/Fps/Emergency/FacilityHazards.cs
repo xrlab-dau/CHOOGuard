@@ -368,6 +368,9 @@ namespace ChooGuard.App.Fps.Emergency
         }
     }
 
+    /// <summary>Where a shop's gas leak comes from.</summary>
+    public enum GasSource { Hose, Cock, Meter }
+
     /// <summary>
     /// An automatic fire shutter whose control fails: it comes down by itself although nothing burns (the 2019 Gimhae school accident began with a switch turned to manual: twelve
     /// shutters dropped, one on a pupil's neck). People are cut off from the passage, and where the obstacle sensor is dead someone can be caught under the curtain. The staff
@@ -433,15 +436,21 @@ namespace ChooGuard.App.Fps.Emergency
     }
 
     /// <summary>
-    /// A gas smell from a food shop's kitchen (a loose hose, a valve left open). It is smelt before anything is seen. No
-    /// flames or switches near it, shut the valve, ventilate, keep people away; 119 and the city gas company come
-    /// (research.md). <see cref="Level"/>: how strong and how far it spreads.
+    /// A gas leak in a food shop's kitchen, from a real fitting: the flexible hose that slipped off a range, a burner cock left
+    /// open, or the union of the meter. It is smelt before anything is seen (and the shop's leak alarm sounds once the gas
+    /// has risen to it). No flames or switches near it, shut the valve, ventilate, keep people away; 119 and the city gas
+    /// company come (research.md). <see cref="Level"/>: how strong and how far it spreads; <see cref="StoppedBy"/>: what
+    /// stops it (the range's intermediate valve, the main valve at the meter, the burner cock; a leak at the meter is
+    /// upstream of every intermediate valve, so only the main valve stops that one).
     /// </summary>
     public sealed class GasLeakHazard : Hazard
     {
         public string Shop { get; }
+        public GasSource Source { get; }
         public int Level { get; private set; }
         public bool Shut { get; private set; }
+        /// <summary>Ids of the valves and of the range whose cock stops the leak when closed.</summary>
+        public IReadOnlyList<string> StoppedBy { get; }
 
         public override string Label => "가스 냄새";
         public override float NoticeRadius => Shut ? 0 : 6 + 5 * Level;
@@ -463,7 +472,7 @@ namespace ChooGuard.App.Fps.Emergency
         public override bool Involves(Agency agency) => agency == Agency.Fire || agency == Agency.Facility;
         public override string ToldByPassenger => Where + " 쪽에서 가스 냄새가 심하게 나요!";
         public override string ReportLine => "역무실, " + Where + " " + Shop + " 쪽에서 가스 냄새가 납니다." + (Level >= 3 ? " 냄새가 짙습니다." : "");
-        public override string OfficeReply => "역무실 수신. 119와 도시가스사에 신고하겠습니다. 불씨와 전기 스위치를 쓰지 말게 하고 주변 승객을 떨어뜨리십시오. 매장에 가스 중간밸브를 잠그도록 전해 주십시오.";
+        public override string OfficeReply => "역무실 수신. 119와 도시가스사에 신고하겠습니다. 불씨와 전기 스위치를 쓰지 말게 하고 주변 승객을 떨어뜨리십시오. 가스 중간밸브를 잠가 누출을 막고 환기해 주십시오.";
         public override PaRequest Announcement => new PaRequest("가스 누출 안내방송 요청", PaLine.GasLeak,
             "안내 말씀 드립니다. " + Where + " 부근에서 가스 냄새가 나고 있습니다. 라이터나 전기 스위치를 사용하지 마시고 직원의 안내에 따라 해당 구역에서 대피해 주십시오.", PaScope.EvacuateArea, 40);
         public override string State => Shut ? "밸브 잠금" : Cordoned ? "통제 중" : "누출 중";
@@ -481,13 +490,15 @@ namespace ChooGuard.App.Fps.Emergency
                 : "소방대입니다. " + Shop + " 가스 중간밸브 잠그고 환기 중입니다. 누출은 멈췄습니다.";
         }
 
-        public GasLeakHazard(string id, Vector3 shop, string name, int level)
+        public GasLeakHazard(string id, Vector3 source, string name, int level, GasSource kind, IReadOnlyList<string> stoppedBy)
         {
             Id = id;
             Kind = HazardKind.GasLeak;
-            Position = shop;
+            Position = source;
             Shop = name;
             Level = Mathf.Clamp(level, 0, 4);
+            Source = kind;
+            StoppedBy = stoppedBy;
             StartedAt = Time.time;
         }
 

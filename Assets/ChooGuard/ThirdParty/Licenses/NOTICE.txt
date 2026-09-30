@@ -118,3 +118,16 @@ PipeRun, PipeHanger, ShutterBox: 이 저장소에서 만든 모델(무료 원본
 Art/Emergency/Equipment/{Sprinklers,Compartments,Surveillance}.json: 이 저장소의 빌더(SprinklerBuilder·CompartmentBuilder·SurveillanceBuilder, NFTC 103·건축물의 피난·방화구조 등의 기준에 관한 규칙 제14조·NFTC 202 배치)가 트윈에서 계산한 배치 데이터.
 Art/Emergency/Equipment/Alarm.json: 이 저장소의 AlarmBuilder(AlarmLayout, NFTC 203 2.5.1.3 지구음향장치 배치)가 트윈에서 계산한 경종·수신기 배치 데이터 (경종·수신기 모델은 위 w3-firesafety 감지 설비 블록의 AlarmBell·AlarmPanel).
 방화문 상부 인방(FireDoorTransom)의 강재 프레임은 이 저장소에서 코드로 만든 메시(외부 자산 없음), 회반죽 면은 트윈의 기존 재질 Soffit_Plaster. 수신기 화면 재질 AlarmPanelDisplay 는 이 저장소에서 만든 어두운 표시면(AlarmPanel 모델에 구워진 영어 부팅 화면 대신 한국어 글자를 그림).
+
+2026-09-30 주방·가스 설비에서 더한 에셋 (영수증·검색 기록: asset-library/research-public/2026-09-30/kitchen-gas-assets/receipts.json·search*.json)
+Models/Objaverse/ 추가분 (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/ — 저작자 표시 필요). Sketchfab 원본의 Objaverse 사본(allenai/objaverse)을
+blender_convert.py 로 OBJ·PNG 로 바꾸고 실제 크기로 맞추고 삼각형 수를 줄였다(냄비·팬·밸브의 텍스처는 512 px 로 줄임). 스테인리스 재질이 없는 것(후드·오븐)에는 금속 재질을 입혔다:
+  KitchenFryer = "Deep fryer" by FractDesign, https://sketchfab.com/3d-models/deep-fryer-1c89c6ba3e5d4148b84f32f13fa00eb1 (바구니·튀김을 빼고 기름 표면을 더함)
+  GasRange = "Gas Stove" by topfrank2013, https://sketchfab.com/3d-models/gas-stove-9a4b89d7ff5c482dae835df596fdcc2f
+  RangeHood = "Range Hood (Kitchen Hood)" by govindu94, https://sketchfab.com/3d-models/range-hood-kitchen-hood-e846cb48e88446808af55976ff76b1da (폭·높이를 늘림)
+  DeckOven = "30" Stainless Steel Double Electric Wall Oven" by allenbranch, https://sketchfab.com/3d-models/30-stainless-steel-double-electric-wall-oven-595fe97c65964c0da9cf80dbaffeb3b6 (비율을 늘림)
+  BallValve·BallValveLever = "Ball valve" by Kostroman, https://sketchfab.com/3d-models/ball-valve-4e3ad853ade140eba4f6f88830718ab3 (몸통·손잡이 분리)
+  StockPot·SteamerPot·FryPan = "Restaurant Kitchen Set - Part 1" by soidev, https://sketchfab.com/3d-models/restaurant-kitchen-set-part-1-129dd2f84879477ea261b422d21491f4 (냄비·찜솥과 뚜껑·팬만)
+  Wok = "Stainless Steel Wok" by Aullwen, https://sketchfab.com/3d-models/stainless-steel-wok-ad73e31b3f4543de9a6f42d9ff3e3f1c (뚜껑 제거)
+Art/Emergency/Equipment/Textures/KExtinguisher_body_diff.jpg: 트윈 소화기(Poly Haven `korean_fire_extinguisher_01`, CC0)의 몸체 텍스처에서 앞면 스티커만 K급(주방화재용) 스티커로 바꾼 파생물.
+스티커 글꼴 Noto Sans CJK KR(SIL OFL 1.1). 생성기 asset-library/research-public/2026-09-30/kitchen-gas-assets/make_k_label.py.
