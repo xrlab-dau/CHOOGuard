@@ -184,6 +184,26 @@ namespace ChooGuard.App.Fps.Emergency
         public bool Holding =>
             Current == Activity.Queue || Current == Activity.Browse || Current == Activity.Stand || Current == Activity.Sit || Current == Activity.Meet || Current == Activity.Toilet || Current == Activity.PlatformWait;
 
+        /// <summary>Standing, sitting or watching with nothing on the way: waiting for something to tell them what to do (toilet stalls, where they are out of sight, excluded).</summary>
+        public bool Idle => Holding && Current != Activity.Toilet || Current == Activity.Deciding || Current == Activity.Watch;
+
+        /// <summary>
+        /// JEV is not answering: sets off on the purpose of the trip (the itinerary a person walks who has no answer yet), standing up
+        /// first when seated. The question they were waiting on stays asked; its answer, if it comes, is judged against where they are then.
+        /// </summary>
+        public void ContinueItinerary()
+        {
+            if (Hurt || Hostile || Body.Scripted || Body.Seat != PersonBody.SeatPhase.None && Body.Seat != PersonBody.SeatPhase.Seated) return;
+            var next = Crowd.Mind.Itinerary(this);
+            if (next == null) return;
+            ReleasePlace();
+            choice = next;
+            if (Body.Seat == PersonBody.SeatPhase.None) { Execute(next); return; }
+            Current = Activity.Deciding;
+            Body.BeginStand();
+            StartCoroutine(AfterStanding(() => Execute(next)));
+        }
+
         /// <summary>Keeps doing what they were doing for a moment; a walk or ride that has ended leaves them standing where they are.</summary>
         private void Await()
         {

@@ -19,6 +19,8 @@ namespace ChooGuard.App.Fps.Emergency
         public int Raised, Requests, Questions, Answered, Failures, Stale, Superseded, Moot, Dropped, Escalations, Itineraries;
         /// <summary>JEV answers in which an option JEV had given a chance no longer fitted the person's state when the answer arrived.</summary>
         public int Revalidated;
+        /// <summary>People sent on with the purpose of their trip because JEV was not answering.</summary>
+        public int Continued;
         /// <summary>Times the watchdog found a person standing still over 20 s in a moving action, or waiting over 20 s for a decision (each is also written to the log with the person's trace).</summary>
         public int Frozen;
         /// <summary>The first findings of the frozen watchdog in words (who, doing what, where, with the walk's state), for a failing check or a quick look.</summary>
@@ -212,6 +214,7 @@ namespace ChooGuard.App.Fps.Emergency
                 ["send_state_ms"] = Spread(SendStateMs),
                 ["send_client_start_ms"] = Spread(SendStartMs),
                 ["frozen_passengers"] = Frozen,
+                ["continued_trips"] = Continued,
             };
             if (jev != null)
             {

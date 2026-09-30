@@ -53,6 +53,8 @@ namespace ChooGuard.App.Fps.Emergency
             internal float AnchorSince = -1;
             internal Passenger.Activity AnchorActivity;
             internal bool FrozenReported;
+            /// <summary>When JEV's silence last sent this person on with their trip; they wait a few seconds again from there.</summary>
+            internal float ContinuedAt = -1000;
 
             internal void Log(string what)
             {
@@ -75,6 +77,12 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<(Judgement item, JevAnswer answer)> receivedUrgent = new List<(Judgement, JevAnswer)>();
         private readonly List<(Judgement item, JevAnswer answer)> receivedEveryday = new List<(Judgement, JevAnswer)>();
         private float nextWatch, applyItemMs = .1f;
+        /// <summary>Requests in a row that came back without an answer (0 while JEV answers).</summary>
+        private int failuresInARow;
+        /// <summary>Seconds a person waits for a judgement, while JEV is failing, before they carry on with their trip.</summary>
+        public float OutageSeconds = 5f;
+        /// <summary>How a request reaches JEV: its client (null). A check swaps in one that never answers, to see the crowd keep going through an outage.</summary>
+        public Func<string, object, IReadOnlyList<JevChoice>, Action<Dictionary<string, JevAnswer>>, JevLane, IEnumerator> Transport;
 
         /// <summary>One thing a person could do next, with where and for how long.</summary>
         public sealed class Choice
@@ -361,8 +369,10 @@ namespace ChooGuard.App.Fps.Emergency
                 // 목적지 3 m 안에 닿은 사람은 굳은 것이 아니다: 출구 문 앞에서는 역무원 눈에 띄지 않게 될 때까지 서 있는 것이 원래 규칙이다(Passenger.Update).
                 if ((person.Body.Goal - person.transform.position).sqrMagnitude < 9f) moves = false;
                 float pending = 0;
-                if (slot.WaitingSince >= 0 && person.Holding) pending = now - slot.WaitingSince;
-                if (slot.Urgent != null && !slot.Urgent.Done) pending = Mathf.Max(pending, now - slot.Urgent.Raised);
+                if (slot.WaitingSince >= 0 && person.Holding) pending = now - Mathf.Max(slot.WaitingSince, slot.ContinuedAt);
+                // JEV 가 답하지 않아 여정을 잇는 사람은 걷는 동안 기다리는 사람이 아니다.
+                if (slot.Urgent != null && !slot.Urgent.Done && !(slot.ContinuedAt > slot.Urgent.Raised && !person.Idle)) pending = Mathf.Max(pending, now - Mathf.Max(slot.Urgent.Raised, slot.ContinuedAt));
+                ContinueStill(person, now);
                 var body = person.Body;
                 if (!moves || body.Riding != null || body.Scripted)
                 {
@@ -405,7 +415,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void Dispatch(float now)
         {
             // 접속이 계속 실패하면 다시 물음을 줄여, 서버가 돌아오기 전에 요청이 쌓여 쏟아지지 않게 한다.
-            if (jev.FailuresInARow >= 3)
+            if (failuresInARow >= 3)
             {
                 if (Time.realtimeSinceStartup < nextProbe) return;
                 nextProbe = Time.realtimeSinceStartup + 2f;
@@ -451,7 +461,7 @@ namespace ChooGuard.App.Fps.Emergency
         private bool CanSend(bool urgent) => jev.CanSend(LaneOf(urgent));
 
         private IEnumerator Request(bool urgent, string purpose, object state, IReadOnlyList<JevChoice> questions, Action<Dictionary<string, JevAnswer>> done) =>
-            jev.Ask(purpose, state, questions, done, LaneOf(urgent));
+            Transport != null ? Transport(purpose, state, questions, done, LaneOf(urgent)) : jev.Ask(purpose, state, questions, done, LaneOf(urgent));
 
         private void Send(List<Judgement> batch, bool urgent)
         {
@@ -488,6 +498,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>JEV's answers arrive: they only queue up here; <see cref="DrainApply"/> applies them within the frame budget.</summary>
         private void OnAnswers(List<Judgement> asked, Dictionary<string, JevAnswer> answers)
         {
+            failuresInARow = answers == null ? failuresInARow + 1 : 0;
             foreach (var item in asked)
             {
                 item.Sent = false;

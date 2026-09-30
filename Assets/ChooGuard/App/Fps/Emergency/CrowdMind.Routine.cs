@@ -68,6 +68,8 @@ namespace ChooGuard.App.Fps.Emergency
         public bool Ready(Passenger who)
         {
             var slot = who.Slot;
+            // JEV 가 답하지 않는다: 여정을 잇는다(Outage).
+            if (Outage(who)) return true;
             // 관측에 대한 판단이 진행 중이면 새 일을 시작하지 않는다: 답이 올 때까지 하던 일을 잇는다.
             if (slot.Urgent != null && !slot.Urgent.Done) return false;
             if (!Usable) return true;
@@ -88,6 +90,17 @@ namespace ChooGuard.App.Fps.Emergency
             choice = null;
             if (!Ready(who)) return false;
             var slot = who.Slot;
+            if (Outage(who))
+            {
+                // 지역 규칙이 아니라 여정 목적 동선으로 걷는다. 묻던 질문은 그대로 두어 답이 오면 다음 걸음에 쓴다.
+                slot.ContinuedAt = Time.time;
+                slot.WaitingSince = -1;
+                choice = Itinerary(who);
+                Metrics.Continued++;
+                slot.Log("JEV is not answering: the trip goes on (" + (choice != null ? choice.Key : "leaves") + ")");
+                if (choice != null) crowd.Session.Log.Decision(who, "Routine", choice.Key, "itinerary");
+                return true;
+            }
             var item = slot.Routine;
             slot.Routine = null;
             if (slot.WaitingSince >= 0)
@@ -122,6 +135,36 @@ namespace ChooGuard.App.Fps.Emergency
             }
             if (choice != null) crowd.Session.Log.Decision(who, "Routine", choice.Key, source);
             return true;
+        }
+
+        /// <summary>
+        /// JEV is failing (its requests come back without an answer) and this person has waited <see cref="OutageSeconds"/> for a
+        /// judgement: they carry on with the purpose of their trip until it answers again. That is the walk the spawn rule gives someone
+        /// who has no answer yet; local weights stay for runs without JEV.
+        /// </summary>
+        private bool Outage(Passenger who)
+        {
+            if (failuresInARow == 0 || !Usable) return false;
+            var slot = who.Slot;
+            float since = float.PositiveInfinity;
+            if (slot.WaitingSince >= 0) since = slot.WaitingSince;
+            if (slot.Urgent != null && !slot.Urgent.Done) since = Mathf.Min(since, slot.Urgent.Raised);
+            return !float.IsPositiveInfinity(since) && Time.time - Mathf.Max(since, slot.ContinuedAt) > OutageSeconds;
+        }
+
+        /// <summary>
+        /// A person waiting for an answer that is not coming. Someone standing or watching (nothing calls <c>Decide</c> for them) sets
+        /// off on their itinerary; someone already walking is already on their trip and simply is not waiting any more.
+        /// </summary>
+        private void ContinueStill(Passenger person, float now)
+        {
+            var slot = person.Slot;
+            if (slot.Urgent == null || slot.Urgent.Done || !Outage(person)) return;
+            slot.ContinuedAt = now;
+            if (!person.Idle) return;
+            Metrics.Continued++;
+            slot.Log("JEV is not answering: the trip goes on");
+            person.ContinueItinerary();
         }
 
         /// <summary>The answer still leads somewhere: JEV gave some option that fits the world now.</summary>
