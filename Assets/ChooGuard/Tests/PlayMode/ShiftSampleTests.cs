@@ -42,6 +42,27 @@ namespace ChooGuard.Tests.PlayMode
     /// </remarks>
     public sealed class ShiftSampleTests
     {
+        /// <summary>수집 중에는 소리를 끈다. 제품 코드는 고치지 않고 런타임에만 끈다.</summary>
+        /// <remarks>
+        /// 소리는 JEV 판단에 들어가지 않는다 — PublicState 에 음향이 없다. 데이터에 기여하지 않으면서
+        /// 배치모드에서 CPU 와 오디오 장치를 쓰고, 근무를 여러 번 돌릴 때 그만큼 느려진다.
+        ///
+        /// 끄는 것은 이 시험이 돌 때뿐이다. 실제 플레이에는 영향이 없다.
+        /// </remarks>
+        private static void Silence(EmergencySession session)
+        {
+            int off = 0;
+            if (session != null && session.Sound != null) { session.Sound.enabled = false; off++; }
+            foreach (var soundscape in UnityEngine.Object.FindObjectsByType<StationSoundscape>(FindObjectsSortMode.None))
+                if (soundscape != null) { soundscape.enabled = false; off++; }
+            // 이미 울리고 있는 것까지 멈춘다. 컴포넌트만 끄면 재생 중인 소스는 계속 난다.
+            foreach (var source in UnityEngine.Object.FindObjectsByType<AudioSource>(FindObjectsSortMode.None))
+                if (source != null && source.isPlaying) { source.Stop(); off++; }
+            AudioListener.volume = 0f;
+            AudioListener.pause = true;
+            Debug.Log("CG_SILENCE 끈 것 " + off + "개 · AudioListener 음소거·정지");
+        }
+
         /// <summary>지금 살아 있는 위험 중 Label 에 <paramref name="what"/> 가 든 것이 있는가.</summary>
         /// <remarks>
         /// 종류를 타입으로 묻지 않고 Label 로 본다. 하드룰 1 이 '종류를 닫힌 목록으로 가정하지 말라' 고
@@ -116,6 +137,7 @@ namespace ChooGuard.Tests.PlayMode
                 while (session.Incidents == null && Time.realtimeSinceStartup < bootDeadline) yield return null;
                 Assert.IsNotNull(session.Incidents, "근무가 부팅되지 않았습니다 (회차 " + shift + ").");
 
+                Silence(session);
                 var jev = session.Jev;
                 var log = session.Log;
                 float startedReal = Time.realtimeSinceStartup;
