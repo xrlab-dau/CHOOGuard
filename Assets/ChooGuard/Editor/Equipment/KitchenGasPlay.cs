@@ -27,6 +27,10 @@ namespace ChooGuard.Editor
     /// records named checks (expected / observed), console errors and the timeline it produced; screenshots are taken at the
     /// moments that matter; the scenarios named in the config's <c>finish</c> list go on to the radio and the handover (the others
     /// stop after the staff part: force_all covers the whole response of every kind). Results are written after every scenario.
+    /// Config JSON (a file the edit snippet names): <c>out</c> (result JSON path, required), <c>shots</c> (screenshot folder),
+    /// <c>seed</c>, <c>timescale</c> (default 4), <c>magnitude</c> (default 0.5), <c>scenarioGameSeconds</c> (default 500),
+    /// <c>settle</c> (game seconds a new shift settles, default 9), <c>names</c> (scenario names to run, default all),
+    /// <c>finish</c> (scenario names that go on to radio and handover), <c>catalog</c> (true: photograph every kind of equipment first).
     /// </summary>
     [InitializeOnLoad]
     public static class KitchenGasPlay
