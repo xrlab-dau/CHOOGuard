@@ -11,10 +11,11 @@
 | `unity.yml` | Unity 경로를 바꾼 같은 저장소 PR(Windows·macOS), develop·main push·`v*` 태그·매일 03:00 KST(Windows·macOS·Linux), 수동 | Unity lane gate → EditMode + PlayMode (OS별) → Players (macOS, Windows, Linux) → Player smoke (OS별) → Draft release, **Unity tests** | 첫 녹색 실행 후 필수 |
 | `security.yml` | PR, push, 매주 월 04:00 KST | CodeQL(Actions·C#·JS·Python), Dependency review | 정보 |
 | `scorecard.yml` | develop push, 매주, 규칙 변경 | Scorecard analysis → scorecard.dev 게시 | 정보 |
-| `pr-labels.yml` | 같은 저장소 PR | 경로 라벨(`.github/labeler.yml`) | — |
 | Dependabot | 매주 월 09:00 KST, 7일 쿨다운 | Actions 핀, `.github/requirements/*.txt` | — |
 
 필수 체크는 `Protected branches · main + develop` 규칙에 걸려 있다. 필수 잡은 경로 필터 없이 모든 변경에 결과를 낸다. 건너뛴 워크플로는 결과가 없어 PR을 막기 때문이다.
+
+경로 라벨은 수동으로 붙인다. 대형 PR에서 GitHub diff API가 시간 초과로 실패하던 자동 라벨 검사는 제거했다. 라벨은 머지 조건이 아니다.
 
 ## 정책 게이트 (`.github/scripts/ci_policy.py`)
 
@@ -86,7 +87,7 @@ gh variable set UNITY_CI_ENABLED --body true -R xrlab-dau/CHOOGuard
 - 빌드 경계 시험: `CSBOOT0101`의 38건(Windows 37건. Windows 호스트용 NOT_RUN 오라클은 macOS·Linux에서만 돈다)은 모든 EditMode 실행에서 돈다. `unity_ci.sh`가 에디터 시작 전에 프로젝트 밖 스크래치(`-cgFixtureRoot`)와 실제 심볼릭 링크 넷(`-cgBuildLinkFixture`: `target/`을 가리키는 root·parent·leaf 링크와 끊긴 링크)을 만든다. 시험이 이 경로로 만든 문자열을 BuildBaseline이 기록한 정규화 경로와 비교하므로, Windows에는 `cygpath -w`로 바꾼 네이티브 경로를 준다. 모의 시험이라 빌드는 하지 않는다. 37건은 1초 안에 끝나고, NOT_RUN 오라클 1건만 영수증에 소스 트리 해시(에셋 3.5 GB)를 넣느라 46–68초 걸린다. EditMode 건너뜀은 2건(열린 Untitled 씬이 필요한 시험)이고 Windows는 3건이다. 이 수가 크게 늘면 인자가 에디터에 닿지 않은 것이다.
 - Bootstrap 실제 빌드: CS-BOOT.01.01의 `ChooGuard.Editor.Bootstrap.BuildBaseline.Build`를 시험 잡이 같은 활성화 안에서 실행한다. 검증기 통과, Bootstrap 씬 Development 플레이어, 출력 해시가 든 영수증까지가 한 번이다(run 36446374412: macOS 10분·출력 304개, Windows 5분·출력 306개). BuildBaseline은 macOS 호스트에서 StandaloneOSX, Windows 호스트에서 StandaloneWindows64만 빌드하고 Linux 대상은 없다. 영수증은 결과 산출물의 `bootstrap-build-receipt.json`이며 저장소에 커밋하지 않는다. Library 캐시를 저장하는 develop push에서는 돌지 않아 캐시에 빌드 부산물이 섞이지 않는다.
 - 빌드: macOS 러너 한 대가 Windows·Linux Mono 빌드 모듈을 함께 설치하고, 활성화 한 번과 임포트 한 번으로 세 플레이어를 만든다. 진입점은 메뉴와 같은 `ChooGuard.Editor.PlayerBuild.BuildAll`이다. 이 메서드는 실패해도 0으로 끝나므로 대상별 `CG_PLAYER_BUILD target=… result=Succeeded` 표식과 출력물로 판정한다. 산출물은 `player-macos`·`player-windows`·`player-linux`(zip, 30일)다.
-- 스모크: 각 OS 러너가 자기 플레이어를 `-batchmode -nographics -soak -soak-shifts 1 -soak-minutes 0.5`로 실행한다. 역사를 불러오고, 새 비상 세션의 군중이 생기고, 플레이한 뒤 타이틀로 돌아와 보고서를 쓰는 전 과정이다. `soak_verdict.py`가 판정한다. 보고서 없음(크래시·멈춤), 근무 누락, 예외, 군중이 생기지 않은 세션은 실패이고, 로그 오류는 경고다. 플레이어는 Unity 라이선스가 필요 없어 세 OS가 동시에 돈다.
+- 스모크: 각 OS 러너가 자기 플레이어를 `-batchmode -nographics -soak -soak-shifts 1 -soak-minutes 0.5`로 실행한다. 역사를 불러오고, 새 비상 세션의 군중이 생기고, 플레이한 뒤 타이틀로 돌아와 보고서를 쓰는 전 과정이다. `soak_verdict.py`가 판정한다. 보고서 없음(크래시·멈춤), 근무 누락, 예외, 군중이 생기지 않은 세션은 실패이고, 로그 오류는 경고다. 플레이어는 Unity 라이선스가 필요 없어 세 OS가 동시에 돈다. 러너에는 JEV 키가 없으므로(키는 PC마다 사용자 것이고 저장소 시크릿으로 두지 않는다) 스모크 근무에서는 비상상황이 만들어지지 않는다. 2026-09-29부터 비상상황은 JEV만 만든다(`.planning/2026-09-29-jev-all-emergencies/plan.md`).
 - Library 캐시: Windows·macOS 시험 잡만 복원한다. 저장은 develop push에서만 한다(PR은 develop 캐시를 읽기만 한다). Linux와 빌드는 10 GB 캐시 한도를 지키려고 캐시 없이 새로 임포트한다.
 
 ### 로그와 비밀값
@@ -113,7 +114,7 @@ Unity는 로그 첫머리에 `-serial`·`-password`를 포함한 명령줄 전�
 ## 공급망·권한
 
 - 모든 action은 커밋 SHA로 고정한다(태그는 주석). 같은 저장소 action은 `.github`만 받은 체크아웃에서 `./.github/actions/...`로 쓴다. GitHub의 self-repository 문법(`uses: $/...`)은 action을 쓰려고 저장소 전체 압축본(에셋 약 4 GB)을 내려받는다. 첫 실행에서 모든 러너가 이 다운로드의 100초 제한에 걸려 실패했다(run 36393274297). 그래서 zizmor의 `self-repository` 검사는 `.github/zizmor.yml`에서 끈다. 내려받는 도구(actionlint, gitleaks)는 SHA-256을 확인한다. 파이썬 의존성은 해시로 잠근다. Dependabot이 매주 올리되 공개 7일 뒤의 버전만 받는다.
-- 워크플로 기본 권한은 `permissions: {}`이고 잡마다 필요한 권한만 준다. 쓰기 권한은 라벨러(`pull-requests`), 보안 결과 업로드(`security-events`), 릴리스(`contents`, `id-token`, `attestations`)뿐이다.
+- 워크플로 기본 권한은 `permissions: {}`이고 잡마다 필요한 권한만 준다. 쓰기 권한은 보안 결과 업로드(`security-events`), 릴리스(`contents`, `id-token`, `attestations`)뿐이다.
 - `pull_request_target`은 쓰지 않는다. 공개 저장소는 2026-11-02부터 기본 차단된다. 체크아웃은 모두 `persist-credentials: false`다.
 - 리눅스 잡은 `harden-runner`(audit)로 외부 통신을 기록한다.
 - 저장소 보안 설정은 조직의 코드 보안 구성 **"CHOOGuard public repository"**(이 저장소에만 연결)에 있다. 의존성 그래프, Dependabot 알림·보안 업데이트, 비밀 스캔과 푸시 보호, 비공개 취약점 신고(`.github/SECURITY.md`)를 켠다. CodeQL은 고급 워크플로(`security.yml`)로 돌기 때문에 **기본 설정은 꺼 둔다**. 조직의 "GitHub recommended" 구성은 CodeQL 기본 설정을 켜서 고급 워크플로의 결과 업로드를 막으므로 연결하지 않는다.

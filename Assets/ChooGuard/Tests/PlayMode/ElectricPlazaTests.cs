@@ -1,0 +1,287 @@
+using System.Collections.Generic;
+using System.Linq;
+using ChooGuard.App.Fps.Emergency;
+using ChooGuard.App.Fps.Equipment;
+using NUnit.Framework;
+using UnityEngine;
+
+namespace ChooGuard.Tests.PlayMode
+{
+    // 전기 설비의 소비자 관점 규칙: 통전된 불은 전원을 끊어야 꺼지고, 전기 담당은 끊은 뒤 점검하며, 분전반의 차단기는 자기 층 기계만 끊고, 메인은 전부 끊고, 탄 분전반은 되살아나지 않는다.
+    public sealed class ElectricPlazaTests
+    {
+        private EmergencyArt art;
+        private GameObject parent;
+        private readonly List<Object> made = new List<Object>();
+
+        [SetUp]
+        public void SetUp()
+        {
+            art = ScriptableObject.CreateInstance<EmergencyArt>();
+            parent = new GameObject("시험 사건");
+            EquipmentRegistry.Clear();
+            ElectricNetwork.Clear();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            foreach (var item in made) if (item != null) Object.DestroyImmediate(item);
+            made.Clear();
+            Object.DestroyImmediate(parent);
+            Object.DestroyImmediate(art);
+            HazardRegistry.Clear();
+            EquipmentRegistry.Clear();
+            ElectricNetwork.Clear();
+        }
+
+        private FireHazard LiveFire(float intensity = .5f)
+        {
+            var fire = new FireHazard("live", Vector3.zero, "시험 자판기", "자판기", intensity, art, parent.transform) { Electric = true, WaterIsDangerous = true };
+            fire.SetFeed("전원", Agency.Facility, 25f);
+            return fire;
+        }
+
+        [Test]
+        public void ALiveElectricalFireIsBeatenDownToEmbersButOnlyGoesOutOnceTheFeedIsCut()
+        {
+            var fire = LiveFire();
+
+            fire.Suppress(1f, 60f);
+            Assert.That(fire.Extinguished, Is.False, "전기가 통하는 동안 불은 다시 붙는다");
+            Assert.That(fire.Intensity, Is.EqualTo(FireHazard.LiveEmbers).Within(.001f));
+
+            Assert.That(fire.CutFeed("역무원"), Is.True);
+            Assert.That(fire.CutBy, Is.EqualTo("역무원"));
+            fire.Suppress(1f, 5f);
+            Assert.That(fire.Extinguished, Is.True, "차단한 불은 소화기로 꺼진다");
+        }
+
+        [Test]
+        public void AFireThatIsAlreadyBelowTheEmbersNeverGrowsBackWhenSprayed()
+        {
+            var fire = LiveFire(.05f);
+
+            fire.Suppress(1f, 30f);
+
+            Assert.That(fire.Intensity, Is.EqualTo(.05f).Within(.001f), "불씨보다 작은 불을 분사가 키우면 안 된다");
+            Assert.That(fire.Extinguished, Is.False);
+        }
+
+        [Test]
+        public void WaterOnALiveElectricalFireRaisesTheShockSignalOnlyOnceInAWhile()
+        {
+            var fire = LiveFire();
+            int shocks = 0;
+            fire.WetWhileLive += _ => shocks++;
+
+            fire.Suppress(1f, .02f, true);
+            fire.Suppress(1f, .02f, true);
+            Assert.That(shocks, Is.EqualTo(1), "호스를 든 채 매 프레임 감전 신호를 내면 안 된다");
+
+            fire.CutFeed("역무원");
+            var after = 0;
+            fire.WetWhileLive += _ => after++;
+            fire.Suppress(1f, .02f, true);
+            Assert.That(after, Is.EqualTo(0), "전원이 끊긴 뒤의 방수는 감전이 아니다");
+        }
+
+        [Test]
+        public void TheElectricianCutsTheFeedThenInspectsAndNobodyElseIsSentToDoIt()
+        {
+            var fire = LiveFire();
+
+            Assert.That(fire.Involves(Agency.Facility), Is.True);
+            Assert.That(fire.Dispatch, Does.Contain(Agency.Facility));
+            Assert.That(fire.WorkSeconds(Agency.Fire), Is.EqualTo(0), "소방대는 전원을 끊으러 오지 않는다");
+            Assert.That(fire.Resolve(Agency.Fire), Is.Null);
+            Assert.That(fire.Active, Is.True, "소방대가 부르는 조치가 불을 없애면 안 된다");
+
+            Assert.That(fire.WorkSeconds(Agency.Facility), Is.EqualTo(25));
+            Assert.That(fire.Resolve(Agency.Facility), Does.Contain("차단"));
+            Assert.That(fire.Feed, Is.Null);
+            Assert.That(fire.CutBy, Is.EqualTo("전기 담당"));
+            Assert.That(fire.Involves(Agency.Facility), Is.False, "끊은 뒤에는 시설 담당을 다시 부르지 않는다");
+            Assert.That(fire.Active, Is.True, "전원을 끊어도 불은 그대로 타고 있다");
+
+            Assert.That(fire.WorkSeconds(Agency.Facility), Is.GreaterThan(0), "끊은 뒤 점검이 남아 있다");
+            Assert.That(fire.Resolve(Agency.Facility), Does.Contain("확인"));
+            Assert.That(fire.Inspected, Is.True);
+            Assert.That(fire.WorkSeconds(Agency.Facility), Is.EqualTo(0));
+            Assert.That(fire.Resolve(Agency.Facility), Is.Null, "점검은 한 번이다");
+        }
+
+        [Test]
+        public void ACoolingFireOfAnotherKindIsNotAffectedByTheFeedRules()
+        {
+            var plain = new FireHazard("bag", Vector3.zero, "시험", "가방", .5f, art, parent.transform);
+
+            plain.Suppress(1f, 60f);
+
+            Assert.That(plain.Extinguished, Is.True);
+            Assert.That(plain.Involves(Agency.Facility), Is.False);
+            Assert.That(plain.Dispatch.ToList(), Is.EqualTo(new List<Agency> { Agency.Fire }));
+        }
+
+        // ── 분전반과 기계 ──
+
+        private StationEquipment Board(string id, Vector3 at)
+        {
+            var go = new GameObject(id);
+            made.Add(go);
+            go.transform.position = at;
+            var equipment = go.AddComponent<StationEquipment>();
+            equipment.Assign(id, "distribution_board", "분전반 LP-" + id, "hall2f");
+            var unit = go.AddComponent<ElectricBoardUnit>();
+            unit.Switches = Enumerable.Range(0, BreakerDeckLayout.Slots).Select(s =>
+            {
+                var breaker = new GameObject("Breaker" + s);
+                breaker.transform.SetParent(go.transform, false);
+                return breaker.AddComponent<BreakerSwitch>();
+            }).ToArray();
+            return equipment;
+        }
+
+        private StationEquipment Machine(string id, Vector3 at, string kind = "vending_machine", Material litPanel = null)
+        {
+            var go = new GameObject(id);
+            made.Add(go);
+            go.transform.position = at;
+            var equipment = go.AddComponent<StationEquipment>();
+            equipment.Assign(id, kind, kind == "vending_machine" ? "음료 자동판매기" : "휴대폰 충전 키오스크", "hall2f");
+            if (litPanel != null)
+            {
+                // 화면은 몸통과 한 렌더러의 재질 하나다(충전 키오스크·자판기 모델처럼).
+                var body = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+                made.Add(body);
+                go.AddComponent<MeshFilter>();
+                go.AddComponent<MeshRenderer>().sharedMaterials = new[] { body, litPanel };
+            }
+            go.AddComponent<ElectricLoad>();
+            return equipment;
+        }
+
+        [Test]
+        public void AMachineHangsOnTheNearestBoardOfItsOwnFloorAndTheLastTwoBranchesStayForLighting()
+        {
+            var near = Board("a", new Vector3(0, 7, 0));
+            var far = Board("b", new Vector3(30, 7, 0));
+            var otherFloor = Board("c", new Vector3(1, 0, 0));
+            var machines = Enumerable.Range(0, 7).Select(i => Machine("m" + i, new Vector3(2 + i * .1f, 7, 0))).ToList();
+
+            ElectricNetwork.Build();
+
+            Assert.That(ElectricNetwork.CircuitOf(machines[0]).Board.Equipment, Is.SameAs(near), "같은 층에서 가장 가까운 분전반");
+            Assert.That(machines.Take(5).All(m => ElectricNetwork.CircuitOf(m).Board.Equipment == near), Is.True);
+            Assert.That(ElectricNetwork.CircuitOf(machines[5]).Board.Equipment, Is.SameAs(far), "가지가 남지 않으면 다음 분전반, 다른 층 분전반은 아니다");
+            Assert.That(ElectricNetwork.BoardOf(near).Branches.Count(c => c.Load != null), Is.EqualTo(ElectricNetwork.Branches - 2), "마지막 두 가지는 조명·콘센트 몫");
+            Assert.That(ElectricNetwork.BoardOf(near).Branches.Where(c => c.Load == null).All(c => !c.Operable), Is.True, "조명·콘센트 회로는 역무원이 만지지 않는다");
+            Assert.That(ElectricNetwork.BoardOf(otherFloor).Branches.All(c => c.Load == null), Is.True);
+        }
+
+        [Test]
+        public void ABranchBreakerCutsOnlyItsMachineAndTheMainCutsEveryMachineOnTheBoard()
+        {
+            Board("a", Vector3.zero);
+            var first = Machine("m1", new Vector3(1, 0, 0));
+            var second = Machine("m2", new Vector3(2, 0, 0));
+            ElectricNetwork.Build();
+            var circuit = ElectricNetwork.CircuitOf(first);
+            var main = circuit.Board.Main;
+
+            Assert.That(ElectricNetwork.Switch(circuit, false, "역무원"), Is.True);
+            Assert.That(ElectricNetwork.Powered(first), Is.False);
+            Assert.That(ElectricNetwork.Powered(second), Is.True, "다른 기계는 그대로");
+            Assert.That(first.State, Is.EqualTo("전원 차단"));
+            Assert.That(ElectricNetwork.Switch(circuit, false, "역무원"), Is.False, "이미 내려간 차단기는 바뀌지 않는다");
+
+            ElectricNetwork.Switch(circuit, true, "역무원");
+            Assert.That(ElectricNetwork.Powered(first), Is.True);
+            Assert.That(first.State, Is.EqualTo("정상"));
+
+            ElectricNetwork.Switch(main, false, "역무원");
+            Assert.That(ElectricNetwork.Powered(first) || ElectricNetwork.Powered(second), Is.False, "메인은 분전반 전체");
+        }
+
+        [Test]
+        public void ABurntBoardTakesItsMachinesWithItAndCannotBeSwitchedBackOn()
+        {
+            Board("a", Vector3.zero);
+            var machine = Machine("m1", new Vector3(1, 0, 0));
+            ElectricNetwork.Build();
+            var board = ElectricNetwork.CircuitOf(machine).Board;
+
+            board.Damaged = true;
+            ElectricNetwork.Switch(board.Main, false, "화재로 소손");
+
+            Assert.That(ElectricNetwork.Powered(machine), Is.False);
+            Assert.That(ElectricNetwork.Switch(board.Main, true, "역무원"), Is.False, "소손된 분전반은 올려지지 않는다");
+            Assert.That(board.Main.On, Is.False);
+        }
+
+        [Test]
+        public void ABurntMachineStaysDeadEvenWhenItsBreakerIsOn()
+        {
+            Board("a", Vector3.zero);
+            var machine = Machine("m1", new Vector3(1, 0, 0), "charging_kiosk");
+            ElectricNetwork.Build();
+
+            machine.GetComponent<ElectricLoad>().Burn();
+
+            Assert.That(ElectricNetwork.Powered(machine), Is.False);
+            Assert.That(machine.State, Is.EqualTo("소손"));
+        }
+
+        [Test]
+        public void AMachineWithoutPowerShowsItsLitPanelDarkAndOnlyThatOne()
+        {
+            var panel = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            made.Add(panel);
+            // 실제 에셋의 화면 재질은 재생 중 _EMISSION 키워드가 꺼져 읽힌다: 방출 색만으로 화면을 찾아야 한다.
+            panel.SetColor("_EmissionColor", Color.white);
+            panel.SetColor("_BaseColor", Color.white);
+            Board("a", Vector3.zero);
+            var machine = Machine("m1", new Vector3(1, 0, 0), "charging_kiosk", panel);
+            var renderer = machine.GetComponent<MeshRenderer>();
+            var body = renderer.sharedMaterials[0];
+            ElectricNetwork.Build();
+
+            ElectricNetwork.Switch(ElectricNetwork.CircuitOf(machine), false, "역무원");
+
+            Assert.That(renderer.sharedMaterials[0], Is.SameAs(body), "몸통 재질은 그대로");
+            Assert.That(renderer.sharedMaterials[1].GetColor("_EmissionColor").maxColorComponent, Is.LessThan(.01f), "전원이 없으면 화면이 빛나지 않는다");
+            Assert.That(renderer.sharedMaterials[1].GetColor("_BaseColor").maxColorComponent, Is.LessThan(.2f), "그림도 거의 까맣다");
+
+            ElectricNetwork.Switch(ElectricNetwork.CircuitOf(machine), true, "역무원");
+            Assert.That(renderer.sharedMaterials[1], Is.SameAs(panel), "다시 켜면 원래 화면");
+        }
+
+        [Test]
+        public void TheRealChargingKioskPrefabGoesDarkWhenItsBreakerGoesDown()
+        {
+#if UNITY_EDITOR
+            // 실제 프리팹으로 본다: 화면 재질이 어떤 키워드 상태로 읽히든 꺼지면 어두운 재질로 바뀌어야 한다(처음에는 화면을 하나도 찾지 못했다).
+            var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ChooGuard/Art/Emergency/Equipment/Prefabs/ChargingKiosk.prefab");
+            Assert.That(prefab, Is.Not.Null);
+            Board("a", Vector3.zero);
+            var go = Object.Instantiate(prefab, new Vector3(1, 0, 0), Quaternion.identity);
+            made.Add(go);
+            var kiosk = go.GetComponent<StationEquipment>();
+            kiosk.Assign("k1", "charging_kiosk", "휴대폰 충전 키오스크", "hall2f");
+            ElectricNetwork.Build();
+            var renderer = go.GetComponentInChildren<Renderer>();
+            var lit = renderer.sharedMaterials.ToArray();
+
+            ElectricNetwork.Switch(ElectricNetwork.CircuitOf(kiosk), false, "역무원");
+            var dark = renderer.sharedMaterials.Where(m => m.name.EndsWith("(꺼짐)")).ToList();
+
+            Assert.That(dark.Count, Is.EqualTo(1), "화면 재질 하나만 어두운 재질로 바뀐다: " + string.Join(", ", renderer.sharedMaterials.Select(m => m.name)));
+            Assert.That(dark[0].GetColor("_EmissionColor").maxColorComponent, Is.LessThan(.01f));
+            Assert.That(renderer.sharedMaterials.Count(m => lit.Contains(m)), Is.EqualTo(lit.Length - 1), "나머지 재질은 그대로");
+
+            ElectricNetwork.Switch(ElectricNetwork.CircuitOf(kiosk), true, "역무원");
+            Assert.That(renderer.sharedMaterials, Is.EqualTo(lit), "다시 켜면 원래 재질");
+#endif
+        }
+    }
+}

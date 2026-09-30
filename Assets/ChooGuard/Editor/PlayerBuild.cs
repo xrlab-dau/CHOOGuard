@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Build.Player;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
@@ -39,6 +41,44 @@ namespace ChooGuard.Editor
             BuildMac();
             BuildWindows();
             BuildLinux();
+        }
+
+        /// <summary>
+        /// Compiles the scripts the macOS release player contains — without the Editor-only assemblies, with the player's API
+        /// surface (so an Editor-only member such as <c>Light.lightmapBakeType</c> fails here as it does in a build) — and no
+        /// scenes, shaders or player: about a minute instead of a full build. Every compiler error is logged as
+        /// <c>CG_PLAYER_COMPILE_ERROR</c>; the editor exits with code 1 when there is one (run it in batch mode:
+        /// <c>unity-batch.sh &lt;clone&gt; method ChooGuard.Editor.PlayerBuild.CompilePlayerScriptsMac</c>). The output stays under
+        /// Library/, never Assets/.
+        /// </summary>
+        public static void CompilePlayerScriptsMac() => CompilePlayerScripts(BuildTarget.StandaloneOSX);
+
+        private static void CompilePlayerScripts(BuildTarget target)
+        {
+            var errors = new List<string>();
+            void Capture(string condition, string stackTrace, LogType type)
+            {
+                if (type == LogType.Error || type == LogType.Exception) errors.Add(condition);
+            }
+            var output = Path.Combine("Library", "PlayerScriptCompile", target.ToString());
+            Directory.CreateDirectory(output);
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            ScriptCompilationResult result;
+            Application.logMessageReceived += Capture;
+            try
+            {
+                result = PlayerBuildInterface.CompilePlayerScripts(new ScriptCompilationSettings { group = BuildPipeline.GetBuildTargetGroup(target), target = target, options = ScriptCompilationOptions.None }, output);
+            }
+            finally
+            {
+                Application.logMessageReceived -= Capture;
+            }
+            int assemblies = result.assemblies?.Count() ?? 0;
+            bool passed = errors.Count == 0 && assemblies > 0;
+            Debug.Log("CG_PLAYER_COMPILE target=" + target + " result=" + (passed ? "Passed" : "Failed") + " assemblies=" + assemblies + " errors=" + errors.Count + " seconds=" + watch.Elapsed.TotalSeconds.ToString("F0"));
+            foreach (var error in errors.Distinct())
+                Debug.LogError("CG_PLAYER_COMPILE_ERROR " + error);
+            if (!passed) EditorApplication.Exit(1);
         }
 
         private static void Build(BuildTarget target, string output, BuildOptions options)

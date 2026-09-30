@@ -76,9 +76,12 @@ jobs:
           elif [[ $EVENT == pull_request && $PR_REPO != "$REPO" ]]; then
             reason="pull requests from forks receive no licence secrets"
           elif [[ $EVENT == pull_request ]]; then
-            files=$(gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" --jq '.[].filename')
-            # The files API stops at 3000 entries; a change that large is treated as touching Unity.
-            if grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 3000 )); then
+            # The files API stops at 3000 entries, and GitHub refuses to list the files of a diff it cannot generate in
+            # time (HTTP 422 "this diff is taking too long to generate"); either way the change is treated as touching Unity.
+            if ! files=$(gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" --jq '.[].filename'); then
+              echo "::notice title=Unity lane gate::GitHub could not list the pull request's files; treating it as touching Unity"
+              tests=$pr
+            elif grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 3000 )); then
               tests=$pr
             else
               reason="the pull request does not touch the Unity project or its test inputs"
@@ -89,8 +92,10 @@ jobs:
             if [[ $BEFORE =~ ^0+$ ]]; then
               tests=$all build=true
             else
-              files=$(gh api "repos/$REPO/compare/$BEFORE...$AFTER" --jq '.files[].filename')
-              if grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 300 )); then
+              if ! files=$(gh api "repos/$REPO/compare/$BEFORE...$AFTER" --jq '.files[].filename'); then
+                echo "::notice title=Unity lane gate::GitHub could not compare the push; treating it as touching Unity"
+                tests=$all build=true
+              elif grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 300 )); then
                 tests=$all build=true
               else
                 reason="the push does not touch the Unity project or its test inputs"

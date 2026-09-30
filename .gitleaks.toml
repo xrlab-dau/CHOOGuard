@@ -1,0 +1,12 @@
+# gitleaks 설정: 기본 규칙 전부에 생성물 한 곳만 뺀다.
+# graphify-out/ 은 저장소 자신에서 만든 코드 그래프(경로·내용 해시·AST 이름)다. 이름에 key·api 가 든 파일의 sha256
+# 해시와 커밋 해시가 generic-api-key·*-access-token 규칙에 걸려 그래프를 갱신할 때마다 오탐이 난다. 그래프가 가리키는
+# 원본 파일은 제자리에서 그대로 검사되므로 여기서 빼도 비밀이 숨지 않는다.
+title = "CHOOGuard"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "generated code graph (graphify-out): content hashes and commit ids of files that are scanned where they live"
+paths = ['''(^|/)graphify-out/''']

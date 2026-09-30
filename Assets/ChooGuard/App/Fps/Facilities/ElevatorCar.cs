@@ -205,7 +205,7 @@ namespace ChooGuard.App.Fps.Facilities
         public bool CanCall(StationDoor door, out string reason)
         {
             reason = null;
-            if (!Running) { reason = "운행 정지 (지진 감지)"; return false; }
+            if (!Running) { reason = "운행 정지 (지진·정전·고장)"; return false; }
             int i = IndexOf(door);
             if (i < 0) { reason = ""; return false; }
             if (DoorsOpenAt(i)) { reason = "문 열림 · 들어가서 층 버튼을 누르세요"; return false; }
@@ -251,8 +251,11 @@ namespace ChooGuard.App.Fps.Facilities
             if (Now == State.Open) closeSoon = true;
         }
 
-        /// <summary>Earthquake or power loss: the car stops where it is and takes no calls; a moving car stays between floors.</summary>
+        /// <summary>Earthquake, power loss or a fault: the car stops where it is and takes no calls; a moving car stays between floors.</summary>
         public void Stop() => Running = false;
+
+        /// <summary>Back in service: a car stopped between floors carries on to its floor and opens there.</summary>
+        public void Resume() => Running = true;
 
         /// <summary>A passenger boards at <paramref name="from"/> for <paramref name="to"/>: a standing place near the back, or null when full.</summary>
         public Rider Board(PersonBody body, int from, int to)
