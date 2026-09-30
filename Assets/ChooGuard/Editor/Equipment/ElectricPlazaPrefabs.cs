@@ -65,9 +65,9 @@ namespace ChooGuard.Editor
                     var color = entry.emission.color != null && entry.emission.color.Length >= 3 ? new Color(entry.emission.color[0], entry.emission.color[1], entry.emission.color[2]) : Color.white;
                     material.EnableKeyword("_EMISSION");
                     material.SetColor("_EmissionColor", color * entry.emission.strength * 1.5f);
-                    // 화면·조명 판은 밑그림 그대로 빛난다.
+                    // 화면·조명 판은 밑그림 그대로 빛난다. 실시간 방출 플래그가 없으면 URP 가 재질을 검증할 때 _EMISSION 키워드를 도로 끈다.
                     if (!string.IsNullOrEmpty(entry.albedo)) material.SetTexture("_EmissionMap", material.GetTexture("_BaseMap"));
-                    material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+                    material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
                     EditorUtility.SetDirty(material);
                 }
             AssetDatabase.SaveAssets();

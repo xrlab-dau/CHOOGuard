@@ -44,7 +44,7 @@ namespace ChooGuard.App.Fps.Equipment
                 bool any = false;
                 for (int i = 0; i < on.Length; i++)
                 {
-                    // 화면·조명 판은 방출 색이 있는 재질이다. 키워드(_EMISSION)는 보지 않는다: 재생 중 에셋의 키워드가 꺼져 읽히는 일이 있어 그것으로 찾으면 하나도 못 찾았다.
+                    // 화면·조명 판은 방출 색이 있는 재질이다.
                     if (on[i] == null || !on[i].HasProperty(EmissionColour) || on[i].GetColor(EmissionColour).maxColorComponent <= .01f) continue;
                     off[i] = Dark(on[i]);
                     any = true;
