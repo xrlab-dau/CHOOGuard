@@ -7,6 +7,9 @@ using System.IO;
 using System.Text;
 using ChooGuard.App.Fps;
 using ChooGuard.App.Fps.Emergency;
+using ChooGuard.App.Fps.Shell;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.AI;
@@ -24,14 +27,18 @@ namespace ChooGuard.Tests.PlayMode
     ///   CG_SHIFT_COUNT     회차 수 (기본 1)
     ///   CG_SHIFT_SECONDS   회차당 게임 시간 초 (기본 1200 = 20분)
     ///   CG_SHIFT_SCALE     시간 압축 배수 (기본 1 — 아래 경고를 읽을 것)
-    ///   CG_SHIFT_REALCAP   회차당 실시간 상한 초 (기본 1800)
-    ///   CG_SHIFT_SEED      첫 회차 시드 (기본 0 = 매번 무작위). 지정하면 회차마다 +1
-    ///   CG_SHIFT_OUT       요약 JSON 을 쓸 폴더 (기본: 쓰지 않음)
-    ///   CG_SHIFT_ZONES     순찰을 허용할 구역 id, 쉼표 구분 (기본: 역사 실내 5구역)
+    ///   CG_SHIFT_REALCAP   회차당(재시도가 있으면 시도당) 실시간 상한 초 (기본 1800). 이 시험의 유일한 실시간 제한이다 -
+    ///                      Unity 기본 180초 제한은 [Timeout(int.MaxValue)] 로 풀어 두었다
+    ///   CG_SHIFT_SEED      기준 시드 (기본 0 = 매번 무작위). 세션(세계) 시드는 시드 + 회차 * CG_SHIFT_ATTEMPTS + 시도 번호,
+    ///                      역무원 정책 시드는 시드 + 회차다. 요약의 seed 는 세션이 실제로 쓴 값(World.Seed)이다
+    ///   CG_SHIFT_OUT       요약 JSON 과 JSONL 사본을 쓸 폴더 (기본: 쓰지 않음)
+    ///   CG_SHIFT_ZONES     순찰을 허용할 구역 id, 쉼표 구분 (기본: hall2f,main2f,eastexit)
+    ///   CG_SHIFT_REQUIRE · CG_SHIFT_SEEK · CG_SHIFT_ATTEMPTS   특정 사건이 난 회차 고르기 (본문 주석 참고)
+    ///   CG_SHIFT_FILM · CG_SHIFT_FILM_EVERY_MS   근무를 그림으로 남기기 (기본: 끔)
     ///
     /// **시간 압축 경고.** 2026-09-30 에 8배속으로 재 보니 요청 156건 중 155건이 군중 판단이었고
     /// 사건 합성은 25번 중 1번만 JEV 가 정했다(당시에는 나머지를 로컬 규칙이 대신했다 - 지금은
-    /// 그 대체가 금지되어, 같은 상황이면 사건이 아예 나지 않는다). JevClient 의 분당 90건
+    /// 그 대체가 금지되어, 같은 상황이면 사건이 아예 나지 않는다). JevBudget 의 분당 요청 수·시간당 비용
     /// 상한은 **실시간** 기준인데 게임을 8배로 돌리면 같은 실시간에 8배의 질의가 몰려 상한에 걸린다.
     /// **측정 방법이 측정 대상을 왜곡한다.** 비율을 보려면 CG_SHIFT_SCALE=1 로 둔다.
     /// 압축은 '총량이 얼마나 쌓이는가' 만 볼 때 쓴다.
@@ -40,25 +47,30 @@ namespace ChooGuard.Tests.PlayMode
     /// 필요하면 이 사실을 감안해 회차를 길게 잡거나, 군중 질의를 줄이는 쪽을 따로 다뤄야 한다.
     ///
     /// 실제 데이터의 정본은 이 시험의 요약이 아니라 JevClient 가 남기는 JSONL 이다:
-    ///   &lt;persistentDataPath&gt;/jev-runs/jev-&lt;UTC&gt;.jsonl
-    /// 한 줄에 at·purpose·http·seconds·model·request(state·questions)·answers 가 모두 들어 있다.
+    ///   &lt;persistentDataPath&gt;/jev-runs/jev-&lt;UTC&gt;.jsonl   (세션마다 한 파일)
+    /// 한 줄에 at·purpose·lane·http·seconds·model·input_tokens·request·answers 가 들어 있다.
+    ///
+    /// **jev-runs 폴더 전체를 세지 않는다.** 폴더에는 이전 실행의 기록이 남아 있고 JevClient 는 세션을 열 때마다
+    /// 오래된 파일을 지운다. 그래서 세션의 JevClient.LogFile 하나만 읽고, 시도가 끝나는 즉시
+    /// CG_SHIFT_OUT 으로 복사한다. **쓸 수 있는 줄은 http==200 이고 answers 가 비어 있지 않은 줄뿐이다** -
+    /// 401·429·시간초과도 줄로 남으므로 줄 수(jevLogLines)가 아니라 answeredLines 로 본다.
     ///
     /// [Explicit] 로 둔다. 일반 회귀에 섞이면 매 실행마다 JEV 를 호출해 과금된다.
     /// </remarks>
     public sealed class ShiftSampleTests
     {
         /// <summary>
-        /// <summary>
         /// 역무원 행동 정책. 인지 전에는 역사 안을 순찰하고, 인지한 뒤에는 행동할 때마다 먼저 무전한다.
         /// </summary>
         /// <remarks>
-        /// 왜 필요한가: 하네스가 플레이어를 조작하지 않으면 JEV 가 보는 staff 상태가 근무 내내
-        /// <c>reported=0 · public_announcement=False · cordons=0</c> 으로 고정된다. 대응 뒤의
+        /// 왜 필요한가: 하네스가 플레이어를 조작하지 않으면 JEV 가 보는 staff_response 가 근무 내내
+        /// <c>staff_member_knows_of_an_emergency=false · station_office_informed=false ·
+        /// station_announcement_made=false · area_cordoned_off=false</c> 로 고정된다. 대응 뒤의
         /// 전개를 한 건도 배우지 못한다.
         ///
         /// **무전이 곧 상태 변화다.** Hud.Radio.Push 로 글자만 띄우면 JEV 입력은 한 글자도 안 바뀐다
-        /// (PublicState 가 보내는 staff 는 reported·public_announcement·cordons·fire_alarm_ringing·
-        /// train_hold_requested 다섯뿐). 그래서 RadioProviders 에 등록된 **실제 선택지**를 실행한다.
+        /// (Focus 의 staff_response 는 인지·역무실 보고·안내방송·통제·화재경보·열차 정차·출동 기관이다).
+        /// 그래서 RadioProviders 에 등록된 **실제 선택지**를 실행한다.
         /// IncidentDirector.Radio() 자체는 private 이지만 공개 리스트에 델리게이트로 담겨 있어
         /// 제품 코드를 고칠 필요가 없다.
         ///
@@ -412,27 +424,23 @@ namespace ChooGuard.Tests.PlayMode
             }
 
             /// <summary>요약 JSON 조각. 이 회차에 역무원이 실제로 무엇을 했는지 남긴다.</summary>
-            public string Json()
+            public JObject Summary()
             {
-                var text = new StringBuilder("{\"patrolPoints\":").Append(patrol.Count)
-                    .Append(",\"arrivals\":").Append(Arrivals)
-                    .Append(",\"unstucks\":").Append(Unstucks)
-                    .Append(",\"walkedMetres\":").Append(Mathf.RoundToInt(walked))
-                    .Append(",\"laps\":").Append(Laps)
-                    .Append(",\"recoveries\":").Append(Recoveries)
-                    .Append(",\"partialPaths\":").Append(Partial)
-                    .Append(",\"invalidPaths\":").Append(Invalid)
-                    .Append(",\"noops\":").Append(Noops)
-                    .Append(",\"radio\":{");
-                bool first = true;
-                foreach (var pair in Radioed)
+                var radio = new JObject();
+                foreach (var pair in Radioed) radio[pair.Key] = pair.Value;
+                return new JObject
                 {
-                    if (!first) text.Append(',');
-                    first = false;
-                    text.Append('"').Append(pair.Key.Replace("\\", "\\\\").Replace("\"", "\\\""))
-                        .Append("\":").Append(pair.Value);
-                }
-                return text.Append("}}").ToString();
+                    ["patrolPoints"] = patrol.Count,
+                    ["arrivals"] = Arrivals,
+                    ["unstucks"] = Unstucks,
+                    ["walkedMetres"] = Mathf.RoundToInt(walked),
+                    ["laps"] = Laps,
+                    ["recoveries"] = Recoveries,
+                    ["partialPaths"] = Partial,
+                    ["invalidPaths"] = Invalid,
+                    ["noops"] = Noops,
+                    ["radio"] = radio,
+                };
             }
         }
 
@@ -458,6 +466,7 @@ namespace ChooGuard.Tests.PlayMode
             private readonly RenderTexture target;
             private readonly Texture2D shot;
             private float since;
+            private bool closed;
             public int Frames { get; private set; }
 
             public Recorder(string folder, float interval)
@@ -496,50 +505,88 @@ namespace ChooGuard.Tests.PlayMode
 
             public void Close()
             {
+                if (closed) return;
+                closed = true;
                 if (shot != null) UnityEngine.Object.DestroyImmediate(shot);
                 if (target != null) { target.Release(); UnityEngine.Object.DestroyImmediate(target); }
             }
         }
 
         /// <summary>
-        /// JEV 키가 있는지만 본다. 키 값도, 키 파일 경로도 출력하지 않는다.
+        /// 쓸 수 있는 JEV 키가 없으면 그 이유를, 있으면 null 을 돌려준다. 키 값도, 키 파일 경로도 담지 않는다.
         /// </summary>
         /// <remarks>
-        /// 하드룰이 정한 자리를 그대로 본다 - 환경변수 <c>TYPESAFE_API_KEY</c>(값이 off 면 꺼진 것),
-        /// 없으면 사용자 폴더의 <c>.chooguard/typesafe.key</c>. JevClient 의 공개 멤버를 쓰지 않는 이유는
-        /// 그 API 가 지금 바뀌는 중이고, 이 확인은 세션이 만들어지기 **전에** 해야 하기 때문이다.
+        /// 게임이 키를 고르는 <see cref="JevKey.Load"/> 를 그대로 부른다. 환경변수가 공백이 아니면 그것만 본다
+        /// (값이 off 면 꺼진 것이고, 키 형식이 아니면 키 파일로 넘어가지 않고 키가 없는 것이다).
+        /// 환경변수가 비어 있으면 사용자 폴더의 키 파일을 본다. 따로 만든 검사는 게임과 어긋나서 무효 키로도
+        /// 통과한 뒤 한 회차(최대 20분)를 돌리고서야 실패했다. 서버가 그 키를 받아 줄지는 요청을 보내 봐야
+        /// 알며, 회차 요약의 answeredLines 가 그것을 말해 준다.
         /// </remarks>
-        private static bool KeyPresent()
+        private static string KeyProblem()
         {
-            var fromEnvironment = Environment.GetEnvironmentVariable("TYPESAFE_API_KEY");
-            if (!string.IsNullOrEmpty(fromEnvironment))
-                return !string.Equals(fromEnvironment.Trim(), "off", StringComparison.OrdinalIgnoreCase);
-            var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var stored = new FileInfo(Path.Combine(home, ".chooguard", "typesafe.key"));
-            return stored.Exists && stored.Length > 0;
+            if (JevKey.Load(out var source) != null) return null;
+            if (source == JevKeySource.Off)
+                return "TYPESAFE_API_KEY=off 입니다. JEV 를 끄면 비상상황이 만들어지지 않아 수집할 것이 없습니다.";
+            if (JevKey.VariableUnusable)
+                return "TYPESAFE_API_KEY 가 키 형식이 아닙니다(JevKey.Plausible). 환경변수가 있으면 키 파일은 보지 않습니다.";
+            return "JEV 키가 없거나 키 파일이 키 형식이 아닙니다(JevKey.Plausible). 키가 없으면 비상상황이 만들어지지 않아 수집할 것이 없습니다. "
+                 + "TYPESAFE_API_KEY 를 설정하거나 타이틀의 'JEV 연결' 에서 키를 저장하세요.";
         }
 
-        /// <summary>jev-runs 에 쌓인 JSONL 줄 수. 이 시험이 세는 유일한 양이다.</summary>
-        private static int LoggedLines()
+        private static long LogLength(string path) => File.Exists(path) ? new FileInfo(path).Length : 0;
+
+        /// <summary>한 세션의 JSONL 에서 읽어 센 것.</summary>
+        private sealed class RunLog
         {
-            var folder = Path.Combine(UnityEngine.Application.persistentDataPath, "jev-runs");
-            if (!Directory.Exists(folder)) return 0;
-            int total = 0;
-            foreach (var path in Directory.GetFiles(folder, "*.jsonl"))
+            /// <summary>시작 위치 뒤의 완결된 줄 전부(원문 그대로).</summary>
+            public string Text = "";
+            public int Lines, Answered, Malformed;
+            /// <summary>답한 줄을 purpose 별로.</summary>
+            public readonly SortedDictionary<string, int> AnsweredBy = new SortedDictionary<string, int>(StringComparer.Ordinal);
+        }
+
+        /// <summary>
+        /// 한 세션의 기록 파일에서 <paramref name="from"/> 바이트 뒤의 완결된 줄을 읽는다. 답한 줄(http 200 이고
+        /// answers 가 비어 있지 않음)만 <see cref="RunLog.Answered"/> 로 센다.
+        /// </summary>
+        private static RunLog ReadRunLog(string path, long from)
+        {
+            var result = new RunLog();
+            if (!File.Exists(path)) return result;
+            string text;
+            // 클라이언트가 같은 파일에 붙여 쓰는 중일 수 있어 공유로 연다.
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
             {
-                // 클라이언트가 쓰는 중일 수 있다. 못 읽은 파일을 조용히 0으로 치면 줄 수가
-                // 어긋나므로 삼키지 않고 드러낸다.
-                try
-                {
-                    foreach (var line in File.ReadLines(path))
-                        if (line.Length > 0) total++;
-                }
-                catch (IOException problem)
-                {
-                    Debug.LogWarning("CG_HARNESS JSONL 을 읽지 못했습니다: " + problem.Message);
-                }
+                stream.Seek(from, SeekOrigin.Begin);
+                using (var reader = new StreamReader(stream, new UTF8Encoding(false))) text = reader.ReadToEnd();
             }
-            return total;
+            // 끝이 '\n' 으로 닫히지 않은 조각은 쓰는 중인 줄이다. 완결된 줄만 취한다.
+            int end = text.LastIndexOf('\n');
+            result.Text = end < 0 ? "" : text.Substring(0, end + 1);
+            foreach (var line in result.Text.Split('\n'))
+            {
+                if (line.Length == 0) continue;
+                result.Lines++;
+                JObject entry;
+                try { entry = JObject.Parse(line); }
+                catch (JsonException) { result.Malformed++; continue; }
+                if ((long?)entry["http"] != 200 || !(entry["answers"] is JObject answers) || answers.Count == 0) continue;
+                result.Answered++;
+                var purpose = (string)entry["purpose"] ?? "";
+                result.AnsweredBy[purpose] = result.AnsweredBy.TryGetValue(purpose, out var had) ? had + 1 : 1;
+            }
+            if (result.Malformed > 0)
+                Debug.LogWarning("CG_HARNESS JSONL 에서 읽지 못한 줄이 " + result.Malformed + "개 있습니다. 답한 줄로 세지 않았습니다.");
+            return result;
+        }
+
+        /// <summary>회차 요약을 한 회차당 한 줄인 JSON 배열로 쓴다. 매 회차 끝에 전체를 다시 쓰므로 언제나 유효한 JSON 이다.</summary>
+        private static void WriteSummary(string path, JArray shifts)
+        {
+            var text = new StringBuilder("[\n");
+            for (int i = 0; i < shifts.Count; i++)
+                text.Append("  ").Append(shifts[i].ToString(Formatting.None)).Append(i < shifts.Count - 1 ? ",\n" : "\n");
+            File.WriteAllText(path, text.Append("]\n").ToString(), new UTF8Encoding(false));
         }
 
         private static void Silence(EmergencySession session)
@@ -575,13 +622,82 @@ namespace ChooGuard.Tests.PlayMode
             return int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value) ? value : fallback;
         }
 
-        [UnityTest, Explicit("JEV 를 실제로 호출하고 과금된다. -testFilter 로 직접 지정해 돌릴 것.")]
+        // ── 시험이 바꾸는 전역 상태 ─────────────────────────────────────────────
+        // 근무는 시간 배율·음소거·로그 판정·다음 시드·씬을 바꾼다. 시험이 중간에 실패해도 그대로 남으면 같은
+        // 플레이 세션의 뒤 시험이 오염된다. SetUp 이 원래 값을 받아 두고 UnityTearDown 이 성공·실패·예외 어느
+        // 쪽이든 되돌린다(iterator 의 finally 에서는 씬을 내릴 수 없다 - finally 안에서는 yield 를 못 쓴다).
+        private float timeScaleBefore, volumeBefore;
+        private bool pausedBefore, ignoreFailingBefore;
+        private int nextSeedBefore;
+        private Recorder recorder;
+        // 이번 시도에서 본 것. 시도마다 비운다.
+        private readonly HashSet<Hazard> hazardsSeen = new HashSet<Hazard>();
+        private bool playerKnew;
+        private int errorLogs;
+
+        [SetUp]
+        public void SaveGlobals()
+        {
+            timeScaleBefore = Time.timeScale;
+            volumeBefore = AudioListener.volume;
+            pausedBefore = AudioListener.pause;
+            ignoreFailingBefore = LogAssert.ignoreFailingMessages;
+            nextSeedBefore = EmergencySession.NextSeed;
+            recorder = null;
+            UnityEngine.Application.logMessageReceived += CountError;
+        }
+
+        // 먼저 요약·사본을 남기고 끝에서 오류 수로 실패시킨다. 측정 기록을 잃거나 런타임 오류를 성공으로 숨기지 않는다.
+        private void CountError(string condition, string stackTrace, LogType type)
+        {
+            if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert) errorLogs++;
+        }
+
+        [UnityTearDown]
+        public IEnumerator RestoreGlobals()
+        {
+            UnityEngine.Application.logMessageReceived -= CountError;
+            if (recorder != null) { recorder.Close(); recorder = null; }
+            // 로그 판정은 씬을 내리기 전에 되돌린다. 내리다 난 오류는 다른 시험과 똑같이 실패로 드러나야 한다.
+            LogAssert.ignoreFailingMessages = ignoreFailingBefore;
+            AudioListener.volume = volumeBefore;
+            AudioListener.pause = pausedBefore;
+            EmergencySession.NextSeed = nextSeedBefore;
+
+            var emergency = SceneManager.GetSceneByName(SceneFlow.EmergencyScene);
+            var station = SceneManager.GetSceneByName(SceneFlow.StationScene);
+            if (emergency.isLoaded || station.isLoaded)
+            {
+                // 근무 씬(역무원·열차를 쓰는 쪽)을 먼저 내리고 한 프레임 뒤 역 씬을 내린다(다른 근무 시험과 같은 순서).
+                SceneManager.SetActiveScene(SceneManager.CreateScene("ShiftSampleScratch"));
+                if (emergency.isLoaded) yield return SceneManager.UnloadSceneAsync(emergency);
+                yield return null;
+                if (station.isLoaded) yield return SceneManager.UnloadSceneAsync(station);
+            }
+            // 근무 세션이 내려가며 Time.timeScale 을 1 로 돌려놓으므로 씬을 다 내린 뒤에 원래 값을 되돌린다.
+            Time.timeScale = timeScaleBefore;
+        }
+
+        /// <summary>한 프레임의 일. 역무원이 움직이고, 찍고, 본 것을 센다. JEV 가 키를 거부했으면 false - 더 돌려도 모이는 것이 없다.</summary>
+        private bool Tick(EmergencySession session, StaffPolicy staff)
+        {
+            float dt = Time.deltaTime;
+            staff.Step(dt);
+            if (recorder != null) recorder.Step(session, dt);
+            foreach (var hazard in HazardRegistry.Active)
+                if (hazard != null) hazardsSeen.Add(hazard);
+            if (session.Incidents != null && session.Incidents.PlayerKnowsIncident) playerKnew = true;
+            return !session.Jev.Rejected;
+        }
+
+        // Unity 테스트 프레임워크 1.6.0 은 [Timeout] 이 없으면 180초 뒤 UnityTestTimeoutException 으로 끝낸다
+        // (UnityWorkItem.k_DefaultTimeout). 1배속 20분 근무가 3분에 끊기므로 틀을 풀고, 실시간 상한은
+        // 회차마다 CG_SHIFT_REALCAP 이 맡는다(재시도가 있으면 시도마다).
+        [UnityTest, Explicit("JEV 를 실제로 호출하고 과금된다. -testFilter 로 직접 지정해 돌릴 것."), Timeout(int.MaxValue)]
         public IEnumerator 근무를_돌려_JEV_판단을_모은다()
         {
             int count = Mathf.Max(1, Number("CG_SHIFT_COUNT", 1));
-            // 근무 첫 30초는 조용하고 첫 사건은 평균 약 3분 뒤에 난다. 이후 별개의 새 사건은
-            // 드물어 15~20분 근무에 1~2건이다. 그래서 기본을 20분으로 둔다. 240초짜리 스모크는
-            // 사건을 한 건도 못 보고 끝날 수 있다 - 짧게 돌릴 때는 아래 경고가 뜬다.
+            // 사건 시각·종류·개수는 그 순간의 세계와 JEV 판단으로 정해진다. 긴 근무도 사건 발생을 보장하지 않는다.
             float gameSeconds = Mathf.Max(60, Number("CG_SHIFT_SECONDS", 1200));
             float scale = Mathf.Clamp(Number("CG_SHIFT_SCALE", 1), 1, 20);
             float realCap = Mathf.Max(60, Number("CG_SHIFT_REALCAP", 1800));
@@ -620,13 +736,12 @@ namespace ChooGuard.Tests.PlayMode
             // 키가 없으면 비상상황이 **아예 만들어지지 않는다**. 예전에는 로컬 가중치가 대신 골랐지만
             // 개정된 하드룰이 그 대체를 금지했다. 그래서 키 없이 돌리면 조용한 근무만 쌓이는데,
             // 그것을 '학습 데이터' 라고 부르면 거짓이 된다. 모으기 전에 끊는다.
-            bool key = KeyPresent();
-            Debug.Log("CG_HARNESS JEV 키 " + (key ? "있음" : "없음"));
-            Assert.IsTrue(key, "JEV 키가 없습니다. 키가 없으면 비상상황이 만들어지지 않아 수집할 것이 없습니다. "
-                             + "TYPESAFE_API_KEY 를 설정하거나 타이틀의 'JEV 연결' 에서 키를 저장하세요.");
+            var keyProblem = KeyProblem();
+            Debug.Log("CG_HARNESS JEV 키 " + (keyProblem == null ? "있음" : "없음"));
+            Assert.IsTrue(keyProblem == null, keyProblem);
 
             Debug.Log("CG_HARNESS count=" + count + " seconds=" + gameSeconds + " scale=" + scale
-                      + " realCap=" + realCap + " seed=" + seed
+                      + " realCap=" + realCap + " seed=" + seed + " attempts<=" + maxAttempts
                       + " out=" + (string.IsNullOrEmpty(outFolder) ? "(없음)" : outFolder)
                       + " zones=" + zones);
             if (scale > 1)
@@ -634,134 +749,201 @@ namespace ChooGuard.Tests.PlayMode
                                  + " 그리고 상황이 바뀌는 즉시 판단하는데 분당 요청 상한은 실시간 기준이라"
                                  + " 압축할수록 더 많은 판단이 상한에 걸려 버려진다. 수집용으로는 CG_SHIFT_SCALE=1 로 둘 것.");
             if (gameSeconds < 300)
-                Debug.LogWarning("CG_HARNESS 근무가 " + gameSeconds + "초뿐이다. 첫 사건은 평균 약 3분 뒤에 나므로"
-                                 + " 사건을 한 건도 못 보고 끝날 수 있다. 수집용으로는 1200초 이상을 쓸 것.");
+                Debug.LogWarning("CG_HARNESS 근무가 " + gameSeconds + "초뿐이다."
+                                 + " 사건 발생은 보장되지 않으며 짧은 실행은 긴 근무 분포의 증거가 아니다.");
 
-            var summary = new StringBuilder("[\n");
-            int attemptsSpent = 0;
+            // 요약과 JSONL 사본. 쓸 수 없는 폴더면 20분을 돌리기 전에 여기서 실패한다.
+            // JevClient 는 세션을 열 때마다 오래된 jev-*.jsonl 을 지우므로(JevClient.KeepRunLogs), 사본은
+            // 시도가 끝나는 즉시 떠 둔다 - 백업을 끝에 몰아서 하면 앞 회차는 그 사이 지워질 수 있다.
+            string stamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture);
+            string summaryPath = null, copies = null;
+            if (!string.IsNullOrEmpty(outFolder))
+            {
+                Directory.CreateDirectory(outFolder);
+                summaryPath = Path.Combine(outFolder, "shifts-" + stamp + ".json");
+                copies = Path.Combine(outFolder, "jev-" + stamp);
+                Directory.CreateDirectory(copies);
+            }
+            else
+                Debug.LogWarning("CG_HARNESS CG_SHIFT_OUT 이 없어 JSONL 사본을 뜨지 않는다. 기록은 jev-runs 에만 남고,"
+                                 + " 세션이 " + JevClient.KeepRunLogs + "개를 넘으면 오래된 파일부터 지워진다.");
+
+            var shifts = new JArray();
+            var undrained = new List<int>();
+            int totalErrorLogs = 0;
             for (int shift = 0; shift < count; shift++)
             {
-                int attempt = 0;
                 bool accepted = string.IsNullOrEmpty(require);
-            retry:
-                // 시드를 회차·시도마다 다르게 준다. 같은 시드로 다시 돌리면 같은 근무가 나온다.
-                if (seed != 0) EmergencySession.NextSeed = seed + shift * maxAttempts + attempt;
-                // 두 씬을 순서대로 올린다. StationEmergency 를 단독으로 열면 세션이 FpsStation 의
-                // 역무원을 찾지 못한다. 평소에는 SceneFlow.EnsureSessionForDirectStationPlay 가
-                // 이 Additive 로드를 대신하지만 [RuntimeInitializeOnLoadMethod] 라 PlayMode 시작 때
-                // 한 번만 돌고, 시험 러너가 이미 시작한 뒤라 다시 불리지 않는다.
-                yield return SceneManager.LoadSceneAsync("FpsStation", LoadSceneMode.Single);
-                yield return null;
-                yield return SceneManager.LoadSceneAsync("StationEmergency", LoadSceneMode.Additive);
-                yield return null;
-                // 측정이지 판정이 아니다. 근무 중 오류 로그로 시험을 실패시키면 무엇이 쌓였는지조차 못 본다.
-                LogAssert.ignoreFailingMessages = true;
-
-                var session = UnityEngine.Object.FindFirstObjectByType<EmergencySession>();
-                Assert.IsNotNull(session, "EmergencySession 을 찾지 못했습니다 (회차 " + shift + ").");
-                float bootDeadline = Time.realtimeSinceStartup + 60f;
-                while (session.Incidents == null && Time.realtimeSinceStartup < bootDeadline) yield return null;
-                Assert.IsNotNull(session.Incidents, "근무가 부팅되지 않았습니다 (회차 " + shift + ").");
-
-                Silence(session);
-                // 역무원을 외부 입력으로 돌린다. 이 시점 이후 사람 입력은 무시된다.
-                // seed=0 은 '매번 무작위' 다. 전에는 shift+1 을 줘서 독립 실행끼리 순찰 순서와
-                // 아무것도 안 함 동전이 비트 단위로 같았다 - 문서가 약속한 다양성이 없었다.
-                int staffSeed = seed != 0 ? seed + shift : Environment.TickCount + shift * 7919;
-                Debug.Log("CG_POLICY 역무원 시드 " + staffSeed);
-                var staff = new StaffPolicy(session, zones, staffSeed);
-                var recorder = string.IsNullOrEmpty(film) ? null
-                    : new Recorder(Path.Combine(film, "shift" + shift), filmEvery);
-                var jev = session.Jev;
-                // 요약 카운터(Rounds·JevRounds·JevCompositions·Requests…)에 기대지 않는다.
-                // 고정 주기가 사라지면서 그 중 여럿이 없어졌고, 애초에 이 시험의 정본은 JSONL 이다.
-                // 줄 수는 클라이언트가 실제로 쓴 것만 세므로 API 가 어떻게 바뀌어도 맞는다.
-                int startedLines = LoggedLines();
-                float startedReal = Time.realtimeSinceStartup;
-                float startedShift = session.ShiftSeconds;
-                Time.timeScale = scale;
-                // ① 요구한 사건이 날 때까지 기다린다. 요구가 없으면 이 구간을 건너뛴다.
-                if (!accepted)
+                int attempts = 0;
+                bool discard;
+                do
                 {
-                    attemptsSpent++;
-                    try
+                    int attempt = attempts++;
+                    discard = false;
+                    errorLogs = 0;
+                    // 씬 부팅을 포함해 기록을 먼저 보존하고, 모든 시도의 오류를 끝에서 실패로 드러낸다.
+                    LogAssert.ignoreFailingMessages = true;
+                    // 시드를 회차·시도마다 다르게 준다. 같은 시드로 다시 돌리면 같은 근무가 나온다.
+                    // 지정하지 않으면(0) 앞 시험이 남긴 NextSeed 를 쓰지 않도록 비운다 - 그래야 세션이 무작위로 정한다.
+                    EmergencySession.NextSeed = seed != 0 ? seed + shift * maxAttempts + attempt : 0;
+                    // 두 씬을 순서대로 올린다. StationEmergency 를 단독으로 열면 세션이 FpsStation 의
+                    // 역무원을 찾지 못한다. 평소에는 SceneFlow.EnsureSessionForDirectStationPlay 가
+                    // 이 Additive 로드를 대신하지만 [RuntimeInitializeOnLoadMethod] 라 PlayMode 시작 때
+                    // 한 번만 돌고, 시험 러너가 이미 시작한 뒤라 다시 불리지 않는다.
+                    yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
+                    yield return null;
+                    yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+                    yield return null;
+
+                    var session = UnityEngine.Object.FindFirstObjectByType<EmergencySession>();
+                    Assert.IsNotNull(session, "EmergencySession 을 찾지 못했습니다 (회차 " + shift + ").");
+                    float bootDeadline = Time.realtimeSinceStartup + 60f;
+                    while (session.Incidents == null && Time.realtimeSinceStartup < bootDeadline) yield return null;
+                    Assert.IsNotNull(session.Incidents, "근무가 부팅되지 않았습니다 (회차 " + shift + ").");
+                    var jev = session.Jev;
+                    Assert.IsNotNull(jev, "JEV 클라이언트가 없습니다 (회차 " + shift + ").");
+
+                    Silence(session);
+                    // 역무원을 외부 입력으로 돌린다. 이 시점 이후 사람 입력은 무시된다.
+                    // seed=0 은 '매번 무작위' 다. 전에는 shift+1 을 줘서 독립 실행끼리 순찰 순서와
+                    // 아무것도 안 함 동전이 비트 단위로 같았다 - 문서가 약속한 다양성이 없었다.
+                    int staffSeed = seed != 0 ? seed + shift : Environment.TickCount + shift * 7919;
+                    Debug.Log("CG_POLICY 역무원 시드 " + staffSeed);
+                    var staff = new StaffPolicy(session, zones, staffSeed);
+                    if (!string.IsNullOrEmpty(film))
+                        recorder = new Recorder(Path.Combine(film, "shift" + shift + "-attempt" + attempt), filmEvery);
+                    hazardsSeen.Clear();
+                    playerKnew = false;
+                    // 이 세션의 기록 파일 하나만 본다. jev-runs 폴더 전체를 세면 이전 실행의 기록이 섞이고,
+                    // JevClient 가 오래된 파일을 지우는 만큼 줄 수가 줄어든다. 파일은 세션마다 새로 생기므로
+                    // 이미 있다면 그 길이 뒤부터가 이 세션의 것이다(첫 요청은 근무 26초 뒤라 지금은 비어 있다).
+                    string runLog = jev.LogFile;
+                    Assert.IsFalse(string.IsNullOrEmpty(runLog), "JevClient 가 기록 파일을 열지 않았습니다 (회차 " + shift + ").");
+                    long runLogStart = LogLength(runLog);
+                    float startedReal = Time.realtimeSinceStartup;
+                    float startedShift = session.ShiftSeconds;
+                    Time.timeScale = scale;
+                    // ① 요구한 사건이 날 때까지 기다린다. 요구가 없으면 이 구간을 건너뛴다.
+                    if (!accepted)
                     {
                         while (session.ShiftSeconds - startedShift < seek
                                && Time.realtimeSinceStartup - startedReal < realCap
-                               && !Present(require))
-                        {
-                            staff.Step(Time.deltaTime);
-                            if (recorder != null) recorder.Step(session, Time.deltaTime);
+                               && !Present(require)
+                               && Tick(session, staff))
                             yield return null;
-                        }
-                    }
-                    finally { Time.timeScale = 1f; }
-                    accepted = Present(require);
-                    Debug.Log("CG_SEEK shift=" + shift + " attempt=" + attempt
-                              + " require=" + require + " found=" + accepted
-                              + " game=" + (session.ShiftSeconds - startedShift).ToString("0") + "s");
-                    if (!accepted)
-                    {
-                        attempt++;
+                        accepted = Present(require);
+                        Debug.Log("CG_SEEK shift=" + shift + " attempt=" + attempt
+                                  + " require=" + require + " found=" + accepted
+                                  + " game=" + (session.ShiftSeconds - startedShift).ToString("0") + "s");
+                        // 키를 거부당한 세션은 다시 열어도 같다 - 재시도하지 않는다.
+                        if (!accepted && attempts < maxAttempts && !jev.Rejected) discard = true;
                         // 상한에 걸리면 포기하고 그 회차는 요구 없이 그대로 쓴다 — 버리면 아무 표본도 안 남는다.
-                        if (attempt < maxAttempts) goto retry;
-                        Debug.LogWarning("CG_SEEK shift=" + shift + " 시도 " + maxAttempts
-                                         + "회 안에 '" + require + "' 가 나지 않았다. 이 회차는 요구 없이 기록한다.");
+                        else if (!accepted)
+                            Debug.LogWarning("CG_SEEK shift=" + shift + " 시도 " + attempts
+                                             + "회 안에 '" + require + "' 가 나지 않았다. 이 회차는 요구 없이 기록한다.");
                     }
-                    Time.timeScale = scale;
-                }
-                // ② 남은 시간을 채운다.
-                try
-                {
-                    while (session.ShiftSeconds - startedShift < gameSeconds
-                           && Time.realtimeSinceStartup - startedReal < realCap)
-                    {
-                        staff.Step(Time.deltaTime);
-                        if (recorder != null) recorder.Step(session, Time.deltaTime);
-                        yield return null;
-                    }
-                }
-                finally { Time.timeScale = 1f; }
+                    // ② 남은 시간을 채운다. 버릴 시도는 채우지 않는다.
+                    if (!discard)
+                        while (session.ShiftSeconds - startedShift < gameSeconds
+                               && Time.realtimeSinceStartup - startedReal < realCap
+                               && Tick(session, staff))
+                            yield return null;
 
-                if (recorder != null)
-                {
-                    Debug.Log("CG_FILM shift=" + shift + " 프레임 " + recorder.Frames + "장");
-                    recorder.Close();
-                }
-                int logged = LoggedLines() - startedLines;
-                float realSpent = Time.realtimeSinceStartup - startedReal;
-                float gameSpent = session.ShiftSeconds - startedShift;
-                string line = "{\"shift\":" + shift
-                    + ",\"seed\":" + (seed != 0 ? seed + shift : 0)
-                    + ",\"gameSeconds\":" + gameSpent.ToString("0", CultureInfo.InvariantCulture)
-                    + ",\"realSeconds\":" + realSpent.ToString("0", CultureInfo.InvariantCulture)
-                    + ",\"jevLogLines\":" + logged
-                    + ",\"keyPresent\":" + (key ? "true" : "false")
-                    + ",\"require\":\"" + (require ?? "") + "\""
-                    + ",\"attempts\":" + (attempt + 1)
-                    + ",\"accepted\":" + (accepted ? "true" : "false")
-                    + ",\"model\":\"" + (jev == null ? "" : jev.LastModel) + "\""
-                    + ",\"staff\":" + staff.Json() + "}";
-                Debug.Log("CG_SHIFT " + line);
-                summary.Append("  ").Append(line).Append(shift < count - 1 ? ",\n" : "\n");
-                // '라운드가 돌았나' 는 이제 물을 수 없다 - 고정 주기가 없다. 대신 JEV 가 실제로
-                // 불렸는지를 묻는다. 한 건도 안 불렸다면 키·네트워크·예산 중 하나가 막힌 것이고,
-                // 그 근무의 요약은 수집물로 쓸 수 없다.
-                Assert.Greater(logged, 0, "JEV 질의가 한 건도 기록되지 않았습니다 (회차 " + shift
-                                          + "). 키·네트워크·분당 예산을 확인하세요.");
+                    float realSpent = Time.realtimeSinceStartup - startedReal;
+                    float gameSpent = session.ShiftSeconds - startedShift;
+                    if (recorder != null)
+                    {
+                        Debug.Log("CG_FILM shift=" + shift + " attempt=" + attempt + " 프레임 " + recorder.Frames + "장");
+                        recorder.Close();
+                        recorder = null;
+                    }
+                    // 끝났다. 디렉터는 게임 시간(ShiftSeconds)으로 묻는 만큼 시간을 멈추면 새로 묻지 않는다.
+                    // 클라이언트는 줄을 풀 스레드에서 비동기로 쓰므로 기다리지 않고 읽으면 마지막 요청들이 빠진다.
+                    // 기다림은 추측한 초가 아니라 JevClient.PendingRequests(받아들여졌지만 답과 기록이 아직 끝나지 않은
+                    // 요청 수)가 0 이 될 때까지다. 요청 제한시간 + 3초를 넘으면 남은 수를 요약에 남기고 넘어간다.
+                    Time.timeScale = 0f;
+                    float drainUntil = Time.realtimeSinceStartup + jev.TimeoutSeconds + 3f;
+                    while (jev.PendingRequests > 0 && Time.realtimeSinceStartup < drainUntil) yield return null;
+                    int pending = jev.PendingRequests;
+                    long requests = jev.Usage.Requests;
+                    if (pending > 0)
+                        Debug.LogWarning("CG_FLUSH shift=" + shift + " attempt=" + attempt + " 요청 " + pending
+                                         + "건이 끝나지 않은 채 기다림을 끝냈다. 이 요청들의 기록은 JSONL 에 없을 수 있다.");
+                    var log = ReadRunLog(runLog, runLogStart);
+                    if (pending > 0) undrained.Add(shift);
+                    totalErrorLogs += errorLogs;
+
+                    string copyName = "jev-shift-" + shift.ToString("00", CultureInfo.InvariantCulture);
+                    string copyRelative = null;
+                    if (copies != null)
+                    {
+                        // 버린 시도(요구한 사건이 안 난 회차)는 표본이 아니다. 섞이지 않게 따로 둔다.
+                        copyRelative = discard
+                            ? Path.Combine("discarded", copyName + "-attempt-" + attempt + ".jsonl")
+                            : copyName + ".jsonl";
+                        var target = Path.Combine(copies, copyRelative);
+                        Directory.CreateDirectory(Path.GetDirectoryName(target));
+                        File.WriteAllText(target, log.Text, new UTF8Encoding(false));
+                    }
+                    if (discard)
+                    {
+                        Debug.Log("CG_ATTEMPT_DISCARDED shift=" + shift + " attempt=" + attempt + " seed=" + session.World.Seed
+                                  + " answered=" + log.Answered + "/" + log.Lines);
+                        continue;   // do-while 의 조건(discard)으로 간다: 같은 회차를 새 세션으로 다시 연다
+                    }
+
+                    var answeredBy = new JObject();
+                    foreach (var pair in log.AnsweredBy) answeredBy[pair.Key] = pair.Value;
+                    var line = new JObject
+                    {
+                        ["shift"] = shift,
+                        // 세션이 실제로 쓴 시드. 지정하지 않았으면(0) 세션이 무작위로 정한 값이다.
+                        ["seed"] = session.World.Seed,
+                        ["staffSeed"] = staffSeed,
+                        ["gameSeconds"] = Mathf.RoundToInt(gameSpent),
+                        ["realSeconds"] = Mathf.RoundToInt(realSpent),
+                        // 받아들여진 요청 수. 기록된 줄(jevLogLines) + 끝나지 않은 요청(pendingRequests) 보다 크면
+                        // 그 차이는 기록 파일이 상한(JevClient.MaxRunLogBytes)에 걸려 버려진 줄이다.
+                        ["requests"] = requests,
+                        ["jevLogLines"] = log.Lines,
+                        // 수집물로 쓸 수 있는 줄: http==200 이고 answers 가 비어 있지 않다. 401·429·시간초과는 줄로 남아도 여기에 안 든다.
+                        ["answeredLines"] = log.Answered,
+                        ["answeredByPurpose"] = answeredBy,
+                        ["malformedLines"] = log.Malformed,
+                        // 기다림이 끝났을 때 요청이 더 남아 있었다면 drained=false 다 - 이 회차의 사본은 완전하지 않다.
+                        ["drained"] = pending == 0,
+                        ["pendingRequests"] = pending,
+                        ["jevRejected"] = jev.Rejected,
+                        ["keyPresent"] = true,
+                        ["require"] = require ?? "",
+                        ["attempts"] = attempts,
+                        ["accepted"] = accepted,
+                        ["model"] = jev.LastModel ?? "",
+                        // 이 회차에 실제로 무슨 일이 있었는지의 서술. 특정 사건이 나야 한다는 기준이 아니다.
+                        ["hazardsSeen"] = hazardsSeen.Count,
+                        ["playerKnew"] = playerKnew,
+                        ["errorLogs"] = errorLogs,
+                        ["staff"] = staff.Summary(),
+                    };
+                    if (copyRelative != null) line["jsonl"] = Path.Combine("jev-" + stamp, copyRelative).Replace('\\', '/');
+                    Debug.Log("CG_SHIFT " + line.ToString(Formatting.None));
+                    shifts.Add(line);
+                    // 회차가 끝날 때마다 다시 쓴다: 뒤 회차에서 멈춰도 앞 회차 요약이 남는다.
+                    if (summaryPath != null) WriteSummary(summaryPath, shifts);
+                    // '라운드가 돌았나' 는 물을 수 없다 - 고정 주기가 없다. 대신 JEV 가 실제로 **답했는지** 를 묻는다.
+                    // 줄이 있어도 401(키 거부)·429(한도)·시간초과면 답이 없다. 그런 근무는 수집물로 쓸 수 없다.
+                    Assert.Greater(log.Answered, 0, "JEV 가 답한 요청(http 200 + answers)이 한 건도 없습니다 (회차 " + shift
+                                                    + "). 기록된 줄 " + log.Lines + "개 · 받아들여진 요청 " + requests
+                                                    + "건 · 상태 '" + jev.Status + "'. 키·네트워크·분당 예산을 확인하세요.");
+                } while (discard);
             }
-            summary.Append("]\n");
 
             Debug.Log("CG_HARNESS_LOGS " + Path.Combine(UnityEngine.Application.persistentDataPath, "jev-runs"));
-            if (string.IsNullOrEmpty(outFolder)) yield break;
-            try
-            {
-                Directory.CreateDirectory(outFolder);
-                var path = Path.Combine(outFolder, "shifts-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss") + ".json");
-                File.WriteAllText(path, summary.ToString(), new UTF8Encoding(false));
-                Debug.Log("CG_HARNESS_OUT " + path);
-            }
-            catch (Exception error) { Debug.LogError("CG_HARNESS_OUT 실패 · " + error.Message); }
+            if (summaryPath != null) Debug.Log("CG_HARNESS_OUT " + summaryPath + " · " + copies);
+            // 모은 것은 모두 썼다. 그래도 요청이 끝나지 않은 채 사본을 뜬 회차가 있으면 성공이라 부르지 않는다.
+            Assert.That(undrained, Is.Empty, "요청이 끝나기 전에 기다림을 끝낸 회차가 있습니다(요약의 drained=false): "
+                                              + string.Join(",", undrained) + ". 그 회차의 JSONL 사본은 완전하지 않을 수 있습니다.");
+            Assert.That(totalErrorLogs, Is.Zero, "근무 중 런타임 오류가 기록됐습니다. 요약의 errorLogs와 Unity 로그를 확인하세요.");
         }
     }
 }

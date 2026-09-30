@@ -8,33 +8,30 @@
     추첨은 코드가 한다(수준 -> 초당 위험률 -> 경쟁 위험). 모델은 **수준 매기기만** 대신한다.
 
 무엇이 진짜 질문인가
-    "수준을 맞힐 수 있나" 는 질문이 아니다. 임박도는 대부분 **무엇인가(kind)** 로 정해진다 -
-    주방 가스 누출과 승강기 갇힘은 상태와 무관하게 기본 임박도가 다르다.
-    그래서 이 스크립트의 기준선은 전역 평균이 아니라 **종류별 평균**이다.
+    단순히 "수준을 맞힐 수 있나"가 아니라, 종류만 본 기준선에 현재 Focus 상태를 더했을 때
+    기록된 JEV 판단을 더 잘 재현하는지 묻는다. 종류가 상태와 무관하게 임박도를 결정한다고
+    가정하지 않으며, 비교 기준선은 전역 평균보다 엄격한 **종류별 평균**으로 둔다.
 
-        종류별 평균을 못 넘으면, 상태 특징(사람 수·이미 난 사건·역무원 대응)이
-        판단에 아무 값어치가 없다는 뜻이다.
+        종류별 평균을 못 넘으면, 이 표본과 모델이 기록된 상태에서
+        추가 예측력을 찾지 못했다는 뜻이다. 상태의 무가치·대응의 인과 효과를 입증하지는 않는다.
 
     이 기준선을 두지 않으면 MAE 가 낮게 나오는 것을 보고 "잘 배웠다" 고 오해한다.
 
 세 가지로 잰다
     1. **수준 오차(MAE)** - 평균 몇 단계 틀리는가.
-    2. **요청 안 순위 상관(Spearman)** - 같은 순간 후보들 중 어느 것이 더 임박한지 순서를
-       맞히는가. 추첨이 위험률 *비율* 로 도므로 절대값보다 이쪽이 실질적이다.
+    2. **요청 안 수준 순위 상관(Spearman)** - 같은 요청에서 JEV 수준의 순서를 맞히는가.
+       scale 별 위험률은 다르므로 이것만으로 실제 사건 추첨 순위를 재현했다고 하지 않는다.
     3. **최상위 일치** - 그 요청에서 가장 임박한 후보를 맞히는가.
 
-읽을 때 조심할 것 — 시간을 대신 재는 특징
-    `peopleTotal` · `visibleOldest` · `hour` 는 근무가 흐르면 함께 변한다. 역무원 대응도
-    근무 후반에 몰리므로, 모델이 '대응했으니 임박도가 낮다' 가 아니라 '근무 후반이니 낮다'
-    를 배우고도 같은 점수가 나올 수 있다. 기여도 상위에 이 셋이 올라오면 **대응 효과로
-    해석하지 말고**, 대응이 이른 시각에 일어난 근무를 따로 모아 다시 재야 한다.
-    (합성 데이터로 시험할 때 `peopleTotal` 이 기여도 2위로 올라온 것이 이 경우였다.)
+읽을 때 조심할 것
+    `hour` · `lastNewEmergency` 와 대응은 근무 진행에 함께 변한다. 예측력이 좋아져도
+    대응 때문에 임박도가 변했다고 해석하지 않는다. 현재 Focus 에 없는 사람 수나
+    사건 경과 초를 0으로 지어내지 않는다.
 
 아직 못 재는 것
     **시간 보정** - 모델 수준으로 돌렸을 때 첫 사건까지 걸리는 시간 분포가 JEV 로 돌린 것과
-    같은지. 이게 최종 판정이지만, 수준을 위험률로 바꾸는 표(`Imminence.Rate`)가 #259 에 있고
-    아직 develop 에 없다. 머지된 뒤 네 번째 지표로 붙인다. **그때까지 이 모델을 제품에
-    넣지 않는다** - 순위가 맞아도 시간 분포가 어긋나면 게임 경험이 달라진다.
+    같은지. `Imminence.Rate` 의 scale 별 변환과 경쟁 위험을 재현해 별도로 검증해야 한다.
+    **이 워커는 연구용이다. 제품의 실시간 JEV 판단을 대체하지 않는다.**
 
 실행
     python workers/learning/train_imminence.py --labels workers/learning/labels
@@ -48,6 +45,8 @@ import glob
 import json
 import os
 import sys
+
+from label_causes import LABEL_SCHEMA
 
 try:
     import numpy as np
@@ -70,7 +69,10 @@ def read(folder):
             for line in handle:
                 line = line.strip()
                 if line:
-                    rows.append(json.loads(line))
+                    row = json.loads(line)
+                    if row.get("schema") != LABEL_SCHEMA or row.get("purpose") != "judge" or not row.get("scale"):
+                        sys.exit("현재 judge 라벨이 아닙니다: %s · 최신 label_causes.py 로 다시 펼치세요." % path)
+                    rows.append(row)
     return rows, files
 
 
@@ -81,18 +83,23 @@ def features(row):
         "kind": row.get("kind") or "미상",
         "levelCount": len(row.get("levels") or []),
         # 지금 역 상태
-        "peopleTotal": int(row.get("people_total") or 0),
-        "visibleCount": int(row.get("visible_count") or 0),
-        "visibleOldest": float(row.get("visible_oldest_seconds") or 0),
-        "agencies": int(row.get("agencies_on_scene") or 0),
-        # 역무원 대응. 이 값들이 임박도를 낮추는지가 이 실험의 핵심 질문이다.
-        "reported": int(row.get("staff_reported") or 0),
-        "announced": bool(row.get("staff_announced")),
-        "cordons": int(row.get("staff_cordons") or 0),
-        "alarm": bool(row.get("staff_alarm")),
-        "trainHold": bool(row.get("staff_train_hold")),
+        "scale": row["scale"],
+        "describedEmergencyCount": row["described_emergency_count"],
+        "load": row["load"],
+        "lastNewEmergency": row["last_new_emergency"],
+        "agencies": row["agencies_on_scene"],
+        "agenciesEnRoute": row["agencies_on_the_way"],
+        "knows": row["staff_knows"],
+        "reported": row["staff_reported"],
+        "announced": row["staff_announced"],
+        "cordoned": row["staff_cordoned"],
+        "alarm": row["staff_alarm"],
+        "trainHold": row["staff_train_hold"],
         "train": row.get("train") or "미상",
     }
+    for kind in row["emergency_kinds"]:
+        name = "emergency:" + kind
+        bag[name] = bag.get(name, 0) + 1
     clock = (row.get("clock") or "").split(":")
     bag["hour"] = int(clock[0]) if clock and clock[0].isdigit() else -1
     # key 는 개체 번호(overheat_23)라 다음 근무에서 전부 미지 라벨이 된다.
@@ -121,27 +128,31 @@ class PerKindMean:
 
 
 def within_request(rows, y_true, y_pred):
-    """같은 요청(같은 source + at) 안에서 순위를 맞히는가."""
+    """같은 요청의 수준 순위. 예측 동점은 균등 추첨의 기대 적중률로 센다."""
     groups = collections.defaultdict(list)
     for i, row in enumerate(rows):
-        groups[(row.get("source"), row.get("at"))].append(i)
-    rhos, hits, counted = [], 0, 0
+        groups[(row["source"], row["at"])].append(i)
+    rhos, hits, counted = [], 0.0, 0
     for indices in groups.values():
         if len(indices) < 2:
-            continue      # 후보가 하나뿐이면 순위를 논할 수 없다
+            continue
         truth = y_true[indices]
         guess = y_pred[indices]
-        if np.ptp(truth) == 0 or np.ptp(guess) == 0:
-            continue      # 전부 같은 값이면 상관이 정의되지 않는다
-        rho = spearmanr(truth, guess).correlation
-        if not np.isnan(rho):
-            rhos.append(rho)
+        winners = guess == np.max(guess)
+        hits += float(np.mean(truth[winners] == np.max(truth)))
         counted += 1
-        if indices[int(np.argmax(guess))] == indices[int(np.argmax(truth))]:
-            hits += 1
-    return (float(np.mean(rhos)) if rhos else float("nan"),
-            (hits / counted) if counted else float("nan"),
+        if np.ptp(truth) != 0 and np.ptp(guess) != 0:
+            rho = spearmanr(truth, guess).correlation
+            if np.isfinite(rho):
+                rhos.append(rho)
+    return (float(np.mean(rhos)) if rhos else None,
+            hits / counted if counted else None,
             counted)
+
+
+def mean_available(values):
+    finite = [value for value in values if value is not None]
+    return float(np.mean(finite)) if finite else None
 
 
 def main():
@@ -199,12 +210,11 @@ def main():
             rho.append(r)
             hit.append(h)
         results[name] = {"mae": float(np.mean(mae)),
-                         "spearman": float(np.nanmean(rho)),
-                         "top1": float(np.nanmean(hit))}
-        # 상수 예측(전체평균)은 순위를 매기지 않으므로 상관·일치가 정의되지 않는다.
-        # nan 을 그대로 찍으면 '실패했다' 로 읽히므로 '해당 없음' 으로 구분해 쓴다.
+                         "spearman": mean_available(rho),
+                         "top1": mean_available(hit)}
+        # 상수 예측의 상관은 정의되지 않지만 최상위 기대 적중률은 계산할 수 있다.
         def show(value):
-            return "  해당없음" if value != value else "%9.3f" % value
+            return "  해당없음" if value is None else "%9.3f" % value
         print("\n%-22s MAE %.3f · 요청내 순위상관 %s · 최상위 일치 %s"
               % (name, results[name]["mae"], show(results[name]["spearman"]), show(results[name]["top1"])))
 
@@ -213,10 +223,9 @@ def main():
     gain = base["mae"] - results[best]["mae"]
     print("\n가장 나은 모델: %s · 종류별평균 대비 MAE %+.3f" % (best, -gain))
     if gain <= 0.02:
-        print("→ 종류별 평균을 의미 있게 넘지 못했습니다. **상태 특징이 임박도를 설명하지 못합니다.**")
-        print("  종류만으로 충분하다는 뜻이거나, 대응이 일어난 표본이 너무 적다는 뜻입니다.")
+        print("→ 종류별 평균을 의미 있게 넘지 못했습니다. 이 표본과 모델의 상태 특징에서 추가 예측력을 찾지 못했습니다.")
     else:
-        print("→ 종류별 평균을 넘었습니다. 상태가 임박도를 바꾼다는 근거입니다.")
+        print("→ 종류별 평균을 넘었습니다. 이 표본에서 상태가 추가 예측력을 줬지만 대응 효과의 인과 증거는 아닙니다.")
 
     train, test = list(splitter.split(x, y, group))[-1]
     tree = DecisionTreeRegressor(max_depth=args.depth, random_state=0).fit(x[train], y[train])
@@ -240,8 +249,8 @@ def main():
             "levelShare": top,
             "results": results,
             "features": [{"name": n, "importance": float(w)} for n, w in ranked if w > 0],
-            "note": "시간 보정(첫 사건까지의 분포)은 Imminence.Rate 가 develop 에 들어온 뒤 붙인다.",
-        }, handle, ensure_ascii=False, indent=2)
+            "note": "수준 재현 연구용. scale 별 위험률·경쟁 위험·시간 분포를 검증하지 않았으며 제품 JEV 판단을 대체하지 않는다.",
+        }, handle, ensure_ascii=False, indent=2, allow_nan=False)
     print("\n기록: %s" % path)
 
 

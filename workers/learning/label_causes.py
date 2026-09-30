@@ -8,14 +8,13 @@
     이 스크립트는 JSONL 에서 그 판단만 꺼내 **후보 하나를 한 줄로** 펼친다.
     임박도 모델이 바로 먹을 수 있는 모양이다.
 
-    요청 하나(judge) = 후보 29~31개 = 표본 29~31개.
-    'Choice 로 하나를 고르던' 시절과 달리 후보마다 라벨이 붙으므로 표본이 수십 배다.
+    요청마다 그 순간 가능한 후보 수가 다르다. 답을 받은 후보마다 독립된 라벨이 붙는다.
 
 무엇을 하지 않는가
     * **모델을 학습하지 않는다.** 여기서는 라벨만 만든다. 학습은 그다음이다.
     * **사건을 만들지 않는다.** 이미 기록된 판단을 읽을 뿐이다.
-    * **후보 키를 특징으로 쓰지 않는다.** 키에는 `overheat_23` 처럼 그 근무에만 있는 개체
-      번호가 붙는다. kind(번호를 뗀 것)와 설명·상태를 특징으로 쓰고, 키는 추적용으로만 남긴다.
+    * **후보 키를 특징으로 쓰지 않는다.** 개체 ID 를 파싱하지 않고 로그의
+      question_metadata 에 있는 실제 Transition.Kind·임박도 scale 을 쓴다.
 
 라벨의 모양
     Score 질문의 답은 `Score`(기대 수준, 0이 가장 낮음)와 `Probabilities`(키가 수준 색인
@@ -33,14 +32,12 @@ import datetime
 import glob
 import json
 import os
-import re
 import sys
 
 DEFAULT_LOGS = os.path.join(
     os.path.expanduser("~"), "AppData", "LocalLow", "DefaultCompany", "CHOOGuard", "jev-runs")
 
-# overheat_23 -> overheat. 개체 번호는 그 근무에만 있으므로 특징으로 쓰면 안 된다.
-SUFFIX = re.compile(r"_\d+$")
+LABEL_SCHEMA = "chooguard.imminence-labels.v2"
 
 
 def read(folder):
@@ -86,26 +83,27 @@ def level_vector(answer, count):
 
 
 def state_features(state):
-    """지금 판단에 쓰인 상태. JEV 에게 실제로 보낸 것만 담는다."""
-    people = state.get("people_by_area") or {}
-    visible = state.get("visible_situation") or []
-    staff = state.get("staff") or {}
+    """실제로 judge 에 보낸 Focus 상태만 쓴다. 옛 PublicState 는 섞지 않는다."""
+    if "emergencies_in_progress" not in state or "staff_response" not in state:
+        raise ValueError("judge 상태가 현재 Focus 형식이 아닙니다. 최신 수집기로 다시 수집하세요.")
+    emergencies = state["emergencies_in_progress"]
+    staff = state["staff_response"]
     return {
-        "clock": state.get("clock"),
-        "train": state.get("train"),
-        "people_total": int(sum(people.values())) if people else 0,
-        "people_by_area": people,
-        # 이미 벌어진 일. 임박도가 이것에 어떻게 반응하는지가 배울 것의 핵심이다.
-        "visible_count": len(visible),
-        "visible_kinds": [v.get("what") for v in visible if isinstance(v, dict)],
-        "visible_oldest_seconds": max([v.get("seconds", 0) for v in visible], default=0),
-        "agencies_on_scene": len(state.get("agencies_on_scene") or []),
-        # 역무원 대응. 하네스의 행동 정책이 이 값들을 실제로 움직이게 해 둔 이유가 이것이다.
-        "staff_reported": int(staff.get("reported", 0)),
-        "staff_announced": bool(staff.get("public_announcement")),
-        "staff_cordons": int(staff.get("cordons", 0)),
-        "staff_alarm": bool(staff.get("fire_alarm_ringing")),
-        "staff_train_hold": bool(staff.get("train_hold_requested")),
+        "clock": state["clock"],
+        "train": state["train"],
+        "load": state["load"],
+        "last_new_emergency": state["last_new_emergency"],
+        # Focus 가 설명한 사건들(최대 6개)이다. 역 전체 건수·사람 수를 추정하지 않는다.
+        "described_emergency_count": len(emergencies),
+        "emergency_kinds": [event["what"] for event in emergencies],
+        "agencies_on_scene": len(staff["agencies_on_scene"]),
+        "agencies_on_the_way": len(staff["agencies_on_the_way"]),
+        "staff_knows": bool(staff["staff_member_knows_of_an_emergency"]),
+        "staff_reported": bool(staff["station_office_informed"]),
+        "staff_announced": bool(staff["station_announcement_made"]),
+        "staff_cordoned": bool(staff["area_cordoned_off"]),
+        "staff_alarm": bool(staff["fire_alarm_ringing"]),
+        "staff_train_hold": bool(staff["train_held_at_platform"]),
     }
 
 
@@ -120,12 +118,15 @@ def flatten(rows, purposes):
         if purpose not in purposes:
             continue
         request = record.get("request") or {}
+        metadata = record.get("question_metadata") or {}
         state = request.get("state") or {}
         questions = request.get("questions") or {}
         answers = record.get("answers") or {}
         shared = state_features(state)
         for key, question in questions.items():
             answer = answers.get(key)
+            if record.get("http") != 200:
+                continue
             if not answer:
                 continue
             # 수준은 `criteria` 에 **배열**로 들어간다. C# 필드 이름(Levels)이 아니다 -
@@ -143,13 +144,20 @@ def flatten(rows, purposes):
             if vector is None:
                 no_levels += 1
                 continue
+            context = metadata.get(key) or {}
+            if not context.get("kind") or not context.get("scale"):
+                raise ValueError(
+                    "%s · %s: 후보 kind/scale 기록이 없습니다. 키에서 종류를 추정하지 않고 최신 수집기로 다시 수집해야 합니다."
+                    % (source, key))
             row = {
+                "schema": LABEL_SCHEMA,
                 "at": record.get("at"),
                 "source": source,
                 "purpose": purpose,
                 "lane": record.get("lane"),
                 "key": key,                       # 추적용. 특징으로 쓰지 말 것
-                "kind": SUFFIX.sub("", key),      # 이쪽이 특징이다
+                "kind": context["kind"],
+                "scale": context["scale"],
                 "description": question.get("instructions"),
                 "levels": levels,
                 "score": float(answer.get("Score") or 0),
@@ -165,15 +173,18 @@ def main():
     parser = argparse.ArgumentParser(description="JEV 임박도 판단을 후보 단위로 펼친다")
     parser.add_argument("--logs", default=DEFAULT_LOGS, help="jev-runs 폴더")
     parser.add_argument("--out", default=os.path.join("workers", "learning", "labels"))
-    parser.add_argument("--purpose", default="judge,magnitude",
-                        help="펼칠 purpose, 쉼표 구분 (기본 judge,magnitude)")
+    parser.add_argument("--purpose", default="judge", choices=["judge"],
+                        help="임박도 judge 만 펼친다. 전개 크기 magnitude 는 다른 라벨이다.")
     args = parser.parse_args()
 
     rows, files = read(args.logs)
     purposes = {p.strip() for p in args.purpose.split(",") if p.strip()}
     print("JSONL %d개 · 레코드 %d건" % (len(files), len(rows)))
 
-    samples, seen, no_levels = flatten(rows, purposes)
+    try:
+        samples, seen, no_levels = flatten(rows, purposes)
+    except (KeyError, ValueError) as error:
+        sys.exit("임박도 기록 형식 오류: %s" % error)
     print("목적별:", dict(seen))
     if no_levels:
         print("수준이 없는 질문 %d개를 건너뛰었습니다 (Choice 질문)." % no_levels)
@@ -203,7 +214,7 @@ def main():
         print("  경고: 한 수준이 95%% 를 넘습니다. 이대로는 배울 것이 거의 없습니다.")
 
     # 대응이 실제로 일어난 표본이 있는지. 없으면 대응 뒤의 전개를 배울 수 없다.
-    responded = sum(1 for r in samples if r["staff_reported"] or r["staff_cordons"] or r["staff_announced"])
+    responded = sum(1 for r in samples if r["staff_reported"] or r["staff_cordoned"] or r["staff_announced"])
     print("역무원이 대응한 뒤의 표본: %d건 (%.1f%%)" % (responded, 100.0 * responded / len(samples)))
     if responded == 0:
         print("  경고: 대응 뒤 표본이 0건입니다. 하네스의 행동 정책이 돌았는지 확인하세요.")

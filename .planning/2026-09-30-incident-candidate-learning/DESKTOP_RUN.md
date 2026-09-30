@@ -1,6 +1,8 @@
-# 데스크톱에서 학습 데이터 모으기
+# #259 전 수집 기록 — 보관용
 
-노트북에서는 실험하지 않는다. 이 문서대로 하면 다른 PC 에서 JEV 판단 기록을 모을 수 있다.
+이 문서의 실행 방식·요약·예산은 #259 전 형식이다. 아래 노트북 실측의 역사적 근거만 보존한다.
+현재 실행 지시는 [DESKTOP_SETUP.md](../../workers/learning/DESKTOP_SETUP.md), 현재 라벨·평가는
+[학습 워커 README](../../workers/learning/README.md)를 따른다. 옛 `compose`·로컬 대체 기록을 현재 JEV 합성의 증거로 쓰지 않는다.
 
 ## 0. 준비물
 
@@ -21,92 +23,6 @@
 조건: 20자 이상, 안에 공백·줄바꿈 없음. 끝의 줄바꿈 하나는 코드가 다듬는다.
 확인은 `GET https://api.typesafe.ai/v1/models` 로 한다(HTTP 200 이면 유효, 추론 과금 없음).
 
-## 1. 돌리기
-
-에디터를 **닫은 채로** 배치모드로 실행한다. 같은 프로젝트를 두 인스턴스가 못 연다.
-
-```
-CG_SHIFT_COUNT=5 CG_SHIFT_SECONDS=1200 CG_SHIFT_SCALE=1 CG_SHIFT_SEED=1000 \
-CG_SHIFT_OUT="D:\cg-data" \
-"<Unity>/Editor/Unity.exe" -batchmode -runTests \
-  -projectPath "<저장소>" -testPlatform PlayMode \
-  -testFilter "ChooGuard.Tests.PlayMode.ShiftSampleTests" \
-  -testResults "D:\cg-data\shift.xml" -logFile "D:\cg-data\shift.log"
-```
-
-| 환경변수 | 뜻 | 기본 |
-|---|---|---|
-| `CG_SHIFT_COUNT` | 회차 수 | 1 |
-| `CG_SHIFT_SECONDS` | 회차당 게임 시간(초) | 600 |
-| `CG_SHIFT_SCALE` | 시간 압축 배수 | 1 |
-| `CG_SHIFT_REALCAP` | 회차당 실시간 상한(초) | 1800 |
-| `CG_SHIFT_SEED` | 첫 회차 시드(0=무작위). 회차마다 +1 | 0 |
-| `CG_SHIFT_OUT` | 회차 요약 JSON 을 쓸 폴더 | 안 씀 |
-
-시험은 `[Explicit]` 이라 `-testFilter` 로 직접 지정해야 돈다. 일반 회귀에는 섞이지 않는다.
-
-## 1-1. 특정 사건만 모으고 싶을 때 (예: 화재)
-
-사건을 **만들지 않고 고른다.** 근무를 돌려 그 사건이 나면 채택하고, 안 나면 시드를 바꿔 다시 돈다.
-세계가 여전히 합성하므로 하드룰을 건드리지 않고, 불 확대·연기 확산·경보 같은 **전개 후보도 정상적으로 생긴다.**
-
-```
-CG_SHIFT_COUNT=10 CG_SHIFT_SECONDS=1200 CG_SHIFT_SCALE=1 CG_SHIFT_SEED=2000 CG_SHIFT_REQUIRE=화재 CG_SHIFT_SEEK=300 CG_SHIFT_ATTEMPTS=8 CG_SHIFT_OUT="D:\cg-data" Unity.exe -batchmode -runTests ... (나머지는 위와 같음)
-```
-
-| 환경변수 | 뜻 | 기본 |
-|---|---|---|
-| `CG_SHIFT_REQUIRE` | `Hazard.Label` 에 이 문자열이 들면 채택. 비우면 요구 없음 | 없음 |
-| `CG_SHIFT_SEEK` | 그 사건을 기다리는 게임 시간(초) | 300 |
-| `CG_SHIFT_ATTEMPTS` | 회차당 재시도 상한 | 8 |
-
-쓸 수 있는 값은 `Hazard.Label` 이 내는 것이다 — `화재` · `의심 물체` · `지진` · `출입문 끼임`,
-그리고 쓰러짐은 사유별로 라벨이 달라지므로 실행 로그에서 확인해 쓴다.
-**종류를 타입으로 묻지 않고 Label 로 보는 이유**: 하드룰 1 이 종류를 닫힌 목록으로 가정하지 말라고 한다.
-
-### 대가 — 선택 편향
-
-화재가 난 근무만 모으면 **화재가 안 난 근무의 분포를 잃는다.** 피할 수 없으므로 숨기지 않고 기록한다.
-요약 JSON 에 회차마다 이렇게 남는다.
-
-```json
-{"shift":0,"seed":2000,"require":"화재","attempts":3,"accepted":true, ...}
-```
-
-`attempts` 로 '화재는 몇 회당 한 번 나는가' 를 역산할 수 있다. **분포 자체를 볼 때는
-`CG_SHIFT_REQUIRE` 를 비우고 돌린다.**
-
-상한 안에 그 사건이 나지 않으면 그 회차를 버리지 않고 `accepted:false` 로 기록한다 —
-버리면 아무 표본도 안 남는다.
-
-## 2. 나오는 것
-
-**정본은 JSONL 이다.** 시험 요약이 아니라 이쪽을 학습에 쓴다.
-
-```
-Windows: %USERPROFILE%\AppData\LocalLow\DefaultCompany\CHOOGuard\jev-runs\jev-<UTC>.jsonl
-```
-
-한 줄이 요청 하나다.
-
-```json
-{"at":"2026-09-30T06:31:02.1234567Z","purpose":"compose","http":200,"seconds":0.83,
- "model":"jev-1.13.0",
- "request":{"model":"jev-latest","state":{...},"questions":{"what_happens":{"type":"choice",
-   "instructions":"...","criteria":{"overheat_37":"The power bank in the bag of ...", ...}}}},
- "answers":{"what_happens":{"Choice":"overheat_37","Score":0,"Confidence":0.72,
-   "Probabilities":{"overheat_37":0.41, ...}}}}
-```
-
-`purpose` 로 갈린다.
-
-| `purpose` | 무엇 |
-|---|---|
-| `compose` | 사건 합성 — 무엇이 일어날지 고르기 |
-| `compose-magnitude` | 크기 점수 |
-| `crowd` | 승객 일상 행동 판단 |
-
-회차 요약(`CG_SHIFT_OUT`)은 회차당 한 줄로 `rounds·jevRounds·byJev·byLocal·requests·inputTokens` 등을 담는다.
 
 ## 3. 먼저 읽을 것 — 노트북에서 1회 측정한 결과
 
