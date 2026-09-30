@@ -52,6 +52,9 @@ pip install -r workers/learning/requirements-core.txt
 
 ## 2. 수집 — 근무를 돌린다
 
+> 데스크톱에서 1배속 20분 근무를 돌릴 거면 **[DESKTOP_SETUP.md](DESKTOP_SETUP.md)** 를 쓴다.
+> 확인·검증 단계까지 짜여 있어 Claude Code 에게 그대로 줄 수 있다. 아래는 명령 요약이다.
+
 에디터를 **닫은 채로** 배치모드로 실행한다. 같은 프로젝트를 두 인스턴스가 못 연다.
 
 ```sh
