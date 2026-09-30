@@ -97,6 +97,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void Serve(PersonBody body)
         {
             body.Queued = false;
+            // 지금 걷지 못하는 몸(타는 중·앉는 중·발밑 길이 잠깐 없음)의 요청은 버린다: 걸을 수 있게 되면 몸이 다시 묻는다(PersonBody.ResumeDroppedRequest).
             if (!body.WantsRoute) return;
             if (body.Fresh) Plan(body);
             Lead(body);

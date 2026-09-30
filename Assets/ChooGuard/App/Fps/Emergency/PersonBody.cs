@@ -193,6 +193,17 @@ namespace ChooGuard.App.Fps.Emergency
             Replan();
         }
 
+        /// <summary>
+        /// The path service drops a request it comes to while the body cannot walk (riding a link, sitting down, the floor under it off
+        /// the navmesh for a moment). A body that asked for a fresh route is then left waiting for one nobody plans: <see cref="Planning"/>
+        /// stays true, so <see cref="WatchLostPath"/> leaves it alone and it stands (CI 2026-09-30: an evacuee stood 20 s). The request is
+        /// queued again as soon as the body can walk.
+        /// </summary>
+        private void ResumeDroppedRequest()
+        {
+            if (Fresh && !Queued && WantsRoute) Paths?.Enqueue(this);
+        }
+
         private float lostSince = -1;
         private int lostRetries;
         private Vector3 lostFrom;
@@ -668,6 +679,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (sidestep != Vector3.zero) { if (!Scripted && OnNavMesh) StepAside(); else sidestep = Vector3.zero; }
             WatchStranded();
             ResumeGoal();
+            ResumeDroppedRequest();
             WatchLostPath();
             WatchStuck();
             FollowRoute();
