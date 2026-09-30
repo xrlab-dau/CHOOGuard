@@ -187,7 +187,8 @@ namespace ChooGuard.App.Fps.Emergency
             return new Transition
             {
                 Key = "kiosk_fire_" + kiosk.Id, Kind = "kiosk_fire", Origin = true,
-                Description = "A phone with a damaged battery, charging in one of the lockers of the phone-charging kiosk " + ElectricNetwork.Tag(kiosk) + " (" + PlaceOf(kiosk) + "), goes into thermal runaway. " +
+                // 이미 망가진 배터리가 들어 있다고 전제하지 않는다: 그런 상태는 세계에 없으므로 JEV 가 '구체적 근거'로 읽어 다른 원인보다 몇 배 높게 판단한다(2026-09-30 측정).
+                Description = "The charger electronics of the phone-charging kiosk " + ElectricNetwork.Tag(kiosk) + " (" + PlaceOf(kiosk) + ") or a phone charging in one of its lockers overheats: a failing charger module, a worn cable, a faulty battery. It starts to smoke. " +
                     phones + " of its 8 lockers hold a charging phone. It is fed from " + (circuit != null ? "breaker " + circuit.Label : "the floor's sockets") + ". " + CrowdNote(kiosk.transform.position),
                 Levels = KioskLevels.ToList(),
                 Apply = m => { if (Still(StillIgnitable(kiosk), kiosk.Label + " " + kiosk.Id)) StartEquipmentFire(kiosk, m, null); },
