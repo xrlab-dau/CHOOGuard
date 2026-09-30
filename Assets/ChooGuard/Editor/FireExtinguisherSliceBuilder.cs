@@ -448,10 +448,19 @@ namespace ChooGuard.EditorTools
 
             // 점검표 부착 지점. 판독면과 같은 +Z 쪽이되 판들 아래에 둬서 고유번호·제원표를 가리지 않는다.
             // 치수를 아는 것은 생성기이므로 여기서 잡는다 — 세션이 런타임에 계산하면 계층이 뒤집힌다.
+            //
+            // 높이는 관측 지점과 **같은 규약**으로 잡는다. 원래는 여기만 루트 기준 raw 미터(.26f)를 썼는데,
+            // 위 Point() 의 0.42·0.55·0.88 은 메시 높이의 비율이라 같은 계열로 읽히면서 뜻이 달랐다.
+            // 소화기는 bounds.center 가 루트 위 1.10m 에 오도록 올라가므로 0.26m 는 아랫단보다 51cm 아래,
+            // 즉 발치 허공이었다 — 12대 전부 그랬고 어느 소화기에도 점검표가 붙은 적이 없었다(2026-09-28 실측).
+            // 회전만 고치고 높이는 검증하지 않은 탓이다. 픽셀이 바뀐 것을 '그려진다' 로 읽었지
+            // '제자리에 그려진다' 는 확인하지 않았다.
+            const float tagHeightFraction=.22f;   // 본체 관측(0.42) 아래, 제원표·고유번호(0.55) 를 가리지 않는 높이
             var anchor=new GameObject("점검표 부착 지점");
             Undo.RegisterCreatedObjectUndo(anchor,"점검표 부착 지점 생성");
             anchor.transform.SetParent(root.transform,false);
-            anchor.transform.localPosition=new Vector3(0,.26f,faceZ);
+            float tagLocalY=bounds.min.y+bounds.size.y*tagHeightFraction-root.transform.position.y;
+            anchor.transform.localPosition=new Vector3(0,tagLocalY,faceZ);
             // 앞면이 바깥을 보게 돌려 둔다. Quad 는 한쪽 면만 그리고 보이는 면이 -Z 쪽이므로,
             // 회전 없이 붙이면 보이는 면이 본체 안쪽을 향해 화면에서 완전히 사라진다.
             // 2026-09-25 실측: 렌더러가 켜져 있고 isVisible 이 True 인데도 부착 전후 프레임의
