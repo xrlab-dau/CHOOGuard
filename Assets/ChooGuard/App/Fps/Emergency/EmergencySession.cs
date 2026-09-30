@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
-using UnityEngine.AI;
 
 namespace ChooGuard.App.Fps.Emergency
 {
@@ -61,6 +60,16 @@ namespace ChooGuard.App.Fps.Emergency
         public string SituationText = "평시 근무 · 부산역 순회";
         public Color SituationColour = Color.white;
 
+        /// <summary>What the route guidance shows now (<see cref="RefreshGuide"/> sets it every couple of seconds and when the setting changes).</summary>
+        public enum GuideState { Off, Unaware, NoTarget, Arrived, Blocked, Guiding }
+        public GuideState GuideStatus { get; private set; } = GuideState.Unaware;
+        /// <summary>The line the map shows under its title for <see cref="GuideStatus"/>.</summary>
+        public string GuideMessage { get; private set; } = "";
+        /// <summary>The hazard being guided to while <see cref="GuideStatus"/> is <see cref="GuideState.Guiding"/>, <see cref="GuideState.Arrived"/> or <see cref="GuideState.Blocked"/>.</summary>
+        public Hazard GuideTarget { get; private set; }
+        /// <summary>The floor points of the route shown (empty unless guiding).</summary>
+        public IReadOnlyList<Vector3> GuidePath => guideRoute;
+
         public event Action Primary, PrimaryReleased, Drop;
 
         private readonly List<RadioOption> wheelOptions = new List<RadioOption>();
@@ -68,9 +77,9 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<GameHud.Slot> slots = new List<GameHud.Slot>();
         private bool wasPaused;
         private float nextGuideRefresh;
-        private static int GuideAreaMask => NavMesh.AllAreas & ~(1 << StationWorld.ElevatorArea);
         private readonly List<Vector3> guideRoute = new List<Vector3>();
         private WorldRouteGuide worldGuide;
+        private GuideRoute guide;
 
         public struct RadioOption
         {
@@ -275,38 +284,25 @@ namespace ChooGuard.App.Fps.Emergency
             RefreshGuide();
         }
 
-        private void RefreshGuide()
+        /// <summary>
+        /// Recomputes what the map, the compass and the floor marks show for the route to the incident now. It uses only what the player knows
+        /// (<see cref="IncidentDirector.GiveKnownObstructions"/>) and the baked station (<see cref="GuideRoute"/>), so an unseen hazard or closure
+        /// changes nothing on screen, and it never draws from the world's random numbers.
+        /// </summary>
+        public void RefreshGuide()
         {
             if (Map == null || Hud == null || World == null || Incidents == null || Player == null) return;
-            Hud.Compass.RemoveMarker("guide-next");
-            worldGuide?.Clear();
-            if (!GameSettings.ShowRoute)
-            {
-                Map.SetRoute(null, "길 안내 꺼짐 · 설정에서 켤 수 있습니다");
-                return;
-            }
-            if (!Incidents.PlayerKnowsIncident)
-            {
-                Map.SetRoute(null, "사고를 인지하면 이동 안내가 나타납니다");
-                return;
-            }
-            if (!Incidents.TryGetKnownGuideTarget(out var target))
-            {
-                Map.SetRoute(null, "현재 확인된 사고 현장으로 이동할 경로가 없습니다");
-                return;
-            }
-            Vector3 difference = Player.transform.position - target.Position;
-            if (Mathf.Abs(difference.y) < 2.5f && new Vector2(difference.x, difference.z).magnitude <= ApproachRadius(target) + 2f &&
-                GuidePointClear(Player.transform.position))
-            {
-                Map.SetRoute(null, target.Where + " " + target.Label + " 접근 지점에 도착했습니다");
-                return;
-            }
-            if (!TryGuideRoute(Player.transform.position, target, guideRoute))
-            {
-                Map.SetRoute(null, "통행 가능한 현장 접근 경로를 확인하지 못했습니다");
-                return;
-            }
+            GuideTarget = null;
+            guideRoute.Clear();
+            if (!GameSettings.ShowRoute) { ShowGuide(GuideState.Off, "길 안내 꺼짐 · 설정에서 켤 수 있습니다"); return; }
+            if (!Incidents.PlayerKnowsIncident) { ShowGuide(GuideState.Unaware, "사고를 인지하면 이동 안내가 나타납니다"); return; }
+            if (!Incidents.TryGetKnownGuideTarget(out var target)) { ShowGuide(GuideState.NoTarget, "이동해서 확인할 사고 현장이 없습니다 · 역 전체에 걸친 상황이거나 이미 정리되었습니다"); return; }
+            GuideTarget = target;
+            guide ??= new GuideRoute(World);
+            Incidents.GiveKnownObstructions(guide);
+            var outcome = guide.Plan(Player.transform.position, target, guideRoute);
+            if (outcome == GuideRoute.Outcome.Arrived) { ShowGuide(GuideState.Arrived, target.Where + " " + target.Label + " 접근 지점에 도착했습니다"); return; }
+            if (outcome == GuideRoute.Outcome.NoRoute) { ShowGuide(GuideState.Blocked, "알고 있는 정보로는 통행 가능한 현장 접근 경로를 확인하지 못했습니다"); return; }
             Vector3 next = guideRoute[guideRoute.Count - 1];
             for (int i = 1; i < guideRoute.Count; i++)
             {
@@ -317,90 +313,26 @@ namespace ChooGuard.App.Fps.Emergency
             }
             float remaining = 0;
             for (int i = 1; i < guideRoute.Count; i++) remaining += Vector3.Distance(guideRoute[i - 1], guideRoute[i]);
-            string floor = MapOverlay.Floor(target.Position) != MapOverlay.Floor(Player.transform.position)
-                ? " · 목적지 " + Map.FloorLabel(target.Position) : "";
+            string floor = MapOverlay.Floor(target.Scene) != MapOverlay.Floor(Player.transform.position)
+                ? " · 목적지 " + Map.FloorLabel(target.Scene) : "";
             string transfer = MapOverlay.Floor(next) != MapOverlay.Floor(Player.transform.position)
                 ? " · 다음 " + Map.FloorLabel(next) + " 연결 지점" : "";
-            Map.SetRoute(guideRoute, target.Where + " " + target.Label + " 접근 · 약 " + Mathf.RoundToInt(remaining) + "m" + floor + transfer);
+            GuideStatus = GuideState.Guiding;
+            GuideMessage = target.Where + " " + target.Label + " 접근 · 약 " + Mathf.RoundToInt(remaining) + "m" + floor + transfer;
+            Map.SetRoute(guideRoute, GuideMessage);
+            // 나침반 표식은 지우지 않고 제자리에서 옮긴다(2초마다 UI 오브젝트를 만들고 부수지 않는다).
             Hud.Compass.SetMarker("guide-next", next, MarkerKind.Guidance);
             worldGuide?.SetRoute(guideRoute);
         }
 
-        private bool TryGuideRoute(Vector3 origin, Hazard target, List<Vector3> output)
+        /// <summary>No route to show: the map says why, the compass mark and the floor marks go.</summary>
+        private void ShowGuide(GuideState state, string message)
         {
-            output.Clear();
-            if (!NavMesh.SamplePosition(origin, out var start, 2.5f, GuideAreaMask) ||
-                Mathf.Abs(start.position.y - origin.y) > 2.5f) return false;
-            float radius = ApproachRadius(target);
-            float bestLength = float.PositiveInfinity;
-            var candidateRoute = new List<Vector3>();
-            for (int i = 0; i < 12; i++)
-            {
-                float angle = i * Mathf.PI * 2f / 12f;
-                var candidate = target.Position + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
-                if (!NavMesh.SamplePosition(candidate, out var end, 2.5f, GuideAreaMask) ||
-                    Mathf.Abs(end.position.y - target.Position.y) > 2.5f || !GuidePointClear(end.position)) continue;
-                candidateRoute.Clear();
-                if (!TryGuideLeg(start.position, end.position, candidateRoute))
-                {
-                    candidateRoute.Clear();
-                    var via = World.Via(start.position, end.position, "stairs");
-                    if (via.Count == 0) continue;
-                    var at = start.position;
-                    bool complete = true;
-                    foreach (var stop in via)
-                    {
-                        if (!TryGuideLeg(at, stop, candidateRoute)) { complete = false; break; }
-                        at = stop;
-                    }
-                    if (!complete || !TryGuideLeg(at, end.position, candidateRoute)) continue;
-                }
-                float length = 0;
-                for (int j = 1; j < candidateRoute.Count; j++) length += Vector3.Distance(candidateRoute[j - 1], candidateRoute[j]);
-                if (length >= bestLength) continue;
-                bestLength = length;
-                output.Clear();
-                output.AddRange(candidateRoute);
-            }
-            return output.Count >= 2;
-        }
-
-        private static float ApproachRadius(Hazard target)
-        {
-            float radius = Mathf.Max(5f, target.Clearance + 1f);
-            if (target is FireHazard fire) radius = Mathf.Max(radius, fire.SmokeRadius + 2f);
-            return radius;
-        }
-
-        private bool TryGuideLeg(Vector3 from, Vector3 to, List<Vector3> route)
-        {
-            var path = new NavMeshPath();
-            if (!NavMesh.CalculatePath(from, to, GuideAreaMask, path) || path.status != NavMeshPathStatus.PathComplete || path.corners.Length < 2)
-                return false;
-            var corners = path.corners;
-            for (int i = 1; i < corners.Length; i++)
-            {
-                float length = Vector3.Distance(corners[i - 1], corners[i]);
-                for (float distance = 0; distance <= length; distance += 1.5f)
-                    if (!GuidePointClear(Vector3.Lerp(corners[i - 1], corners[i], length < .001f ? 0 : distance / length))) return false;
-                if (!GuidePointClear(corners[i])) return false;
-            }
-            if (route.Count == 0) route.Add(corners[0]);
-            for (int i = 1; i < corners.Length; i++) route.Add(corners[i]);
-            return true;
-        }
-
-        private bool GuidePointClear(Vector3 position)
-        {
-            if (World.IsClosed(position, .5f)) return false;
-            foreach (var hazard in HazardRegistry.Active)
-            {
-                if (!hazard.Active || hazard is EarthquakeHazard) continue;
-                if (hazard is FireHazard fire && fire.InSmoke(position)) return false;
-                if (Mathf.Abs(position.y - hazard.Position.y) < 3f &&
-                    StationWorld.SegmentDistance(position, hazard.Position, hazard.Position) < hazard.Clearance) return false;
-            }
-            return true;
+            GuideStatus = state;
+            GuideMessage = message;
+            Hud.Compass.RemoveMarker("guide-next");
+            worldGuide?.Clear();
+            Map.SetRoute(null, message);
         }
 
         private void OpenWheel()

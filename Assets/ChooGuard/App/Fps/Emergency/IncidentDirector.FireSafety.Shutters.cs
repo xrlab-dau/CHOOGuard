@@ -20,6 +20,7 @@ namespace ChooGuard.App.Fps.Emergency
         private ShutterFaultHazard shutterFault;
 
         private const string ShutterClosure = "방화셔터";
+        private const float ShutterClosureRadius = 3.5f;
 
         private void BindShutters()
         {
@@ -56,7 +57,7 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var shutter in shutters)
             {
                 bool blocking = shutter.Blocking;
-                if (blocking && shutterClosed.Add(shutter)) world.Closed.Add((shutter.transform.position, 3.5f, ShutterClosure));
+                if (blocking && shutterClosed.Add(shutter)) world.Closed.Add((shutter.transform.position, ShutterClosureRadius, ShutterClosure));
                 else if (!blocking && shutterClosed.Remove(shutter))
                 {
                     var at = shutter.transform.position;
@@ -167,6 +168,13 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         // ── 역무원이 아는 것 ──
+
+        /// <summary>The closed passages of lowered shutters the staff member has seen (guidance only knows those).</summary>
+        private void AddSeenShutters(List<GuideRoute.Closure> into)
+        {
+            foreach (var shutter in shutters)
+                if (shutterSeen.Contains(shutter) && shutterClosed.Contains(shutter)) into.Add(new GuideRoute.Closure(shutter.transform.position, ShutterClosureRadius, null));
+        }
 
         private void LookAroundShutters(Vector3 eye, Vector3 forward)
         {

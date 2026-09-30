@@ -34,16 +34,36 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>The station fire bell rings once a detector or call point trips; a real fire keeps it ringing to the end (JEV 009).</summary>
         public bool AlarmRinging => alarm;
 
-        /// <summary>Only an active incident the player has learned about may become a navigation target.</summary>
+        /// <summary>
+        /// The hazard guidance leads to: an active one the player has learned about that has a place to go to (<see cref="Hazard.Localized"/>; a station-wide
+        /// shake, a power cut or a phoned threat has none), the main one first, else the first registered. No kind is listed.
+        /// </summary>
         public bool TryGetKnownGuideTarget(out Hazard target)
         {
             target = null;
             if (!PlayerKnowsIncident || Stage != Phase.Incident) return false;
-            if (Main != null && known.Contains(Main) && Main.Active && !(Main is EarthquakeHazard)) target = Main;
-            if (target != null) return true;
-            foreach (var hazard in known)
-                if (hazard.Active && !(hazard is EarthquakeHazard)) { target = hazard; return true; }
+            if (Main != null && GuideTarget(Main)) { target = Main; return true; }
+            foreach (var hazard in all)
+                if (GuideTarget(hazard)) { target = hazard; return true; }
             return false;
+        }
+
+        private bool GuideTarget(Hazard hazard) => hazard.Active && hazard.Localized && known.Contains(hazard);
+
+        /// <summary>
+        /// Hands the guidance planner what the player knows stands in the way, and nothing else: the hazards they have learned of, the cordons they put up,
+        /// the lowered fire shutters they have seen and the escalators they had closed. What is in the world but not yet found (a registered hazard, a
+        /// closed-off disc, a stopped escalator) never reaches the planner.
+        /// </summary>
+        public void GiveKnownObstructions(GuideRoute guide)
+        {
+            guide.Hazards.Clear();
+            guide.Closures.Clear();
+            guide.Escalators.Clear();
+            foreach (var hazard in all) if (known.Contains(hazard)) guide.Hazards.Add(hazard);
+            foreach (var cordon in staffCordons) guide.Closures.Add(new GuideRoute.Closure(cordon.centre, cordon.radius, cordon.hazard));
+            AddSeenShutters(guide.Closures);
+            foreach (var escalator in closedEscalators) guide.Escalators.Add(escalator);
         }
 
         private EmergencySession session;
@@ -68,6 +88,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         // 역무원
         private readonly HashSet<Hazard> known = new HashSet<Hazard>();
+        private readonly List<(Vector3 centre, float radius, Hazard hazard)> staffCordons = new List<(Vector3, float, Hazard)>();
         private readonly HashSet<Hazard> reported = new HashSet<Hazard>();
         private readonly HashSet<Hazard> reportedDone = new HashSet<Hazard>();
         private readonly HashSet<Passenger> injuredKnown = new HashSet<Passenger>();
@@ -117,33 +138,6 @@ namespace ChooGuard.App.Fps.Emergency
             EndFacility();
             EndEquipment();
             HazardRegistry.Clear();
-        }
-
-        // ── 공개 상태 (JEV 에 보내는 관측 사실) ─────────────────────────────────
-
-        public object PublicState()
-        {
-            var visible = new List<object>();
-            foreach (var hazard in HazardRegistry.Active)
-                visible.Add(new { what = hazard.Label, where = hazard.Where, now = hazard.Visible, seconds = Mathf.RoundToInt(Time.time - hazard.StartedAt) });
-            var teams = new List<string>();
-            foreach (var responder in responders) if (responder.Lead && responder.OnScene) teams.Add(Responder.AgencyName(responder.Agency));
-            var areas = new Dictionary<string, int>();
-            foreach (var person in crowd.People)
-            {
-                var area = world.Area(person.transform.position);
-                areas[area] = areas.TryGetValue(area, out var n) ? n + 1 : 1;
-            }
-            return new
-            {
-                place = "KORAIL Busan Station (terminus of the Gyeongbu line): 2F concourse over the tracks, 3F shops and restaurants, 1F, station square, platforms 1–11; weekday afternoon",
-                clock = session.Clock(session.ShiftSeconds),
-                train = Train != null ? Train.Status() : "none",
-                people_by_area = areas,
-                visible_situation = visible,
-                staff = new { reported = reported.Count, public_announcement = announced, cordons = all.Count(h => h.Cordoned), fire_alarm_ringing = alarm, train_hold_requested = holdRequested },
-                agencies_on_scene = teams,
-            };
         }
 
         // ── 주기 ────────────────────────────────────────────────────────────
@@ -767,6 +761,7 @@ namespace ChooGuard.App.Fps.Emergency
                 if (d.magnitude < radius + 1 && !person.Hostile && !person.Hurt) person.Instruct(world.SafeExit(person.transform.position, centre, radius + 4), true);
             }
             Cordons.Place(root, centre, radius, "통제선 · " + label, art, world, this);
+            staffCordons.Add((centre, radius, hazard));
             if (hazard != null) hazard.Cordoned = true;
             log.Add(label + " 주변 통제선 설치 (반경 " + radius.ToString("0") + "m) · " + world.Describe(centre));
             return "통제선을 설치했습니다 · 주변 사람들을 바깥으로 안내했습니다";
