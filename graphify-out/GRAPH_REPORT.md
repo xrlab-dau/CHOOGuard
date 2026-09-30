@@ -1,29 +1,29 @@
 # Graph Report - cg-pr-integration  (2026-10-01)
 
 ## Corpus Check
-- 7185 files · ~73,902,845 words
+- 7197 files · ~73,919,229 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 19826 file(s) not represented in the graph (top: .meta 9586, .asset 3793, .mat 1719)
+- Unclassified: 19827 file(s) not represented in the graph (top: .meta 9587, .asset 3793, .mat 1719)
 
 ## Summary
-- 27620 nodes · 51867 edges · 1753 communities (1435 shown, 318 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 1715 edges (avg confidence: 0.83)
+- 27809 nodes · 52195 edges · 1759 communities (1445 shown, 314 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 1736 edges (avg confidence: 0.83)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `edd67654`
+- Built from commit: `67040806`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - CHOOGuard Work Graph (JSON-LD)
-- PRD 온톨로지 스키마
-- IMPLEMENTATION_STORIES.md
+- CHOOGuard PRD Ontology (JSON-LD)
+- SHORT_TERM_PLAN.md
 - CHOOGuard_Clean_Start_v3/IMPLEMENTATION_SPEC.md
 - MvpAgencyDispatchController
-- NewPlanTests
+- StaffPolicy
 - IncidentDirector
-- Batch
+- .P
 - StationDoor
 - PRD v11 자산 출처
 - MvpAgencyDispatchController
@@ -31,27 +31,27 @@
 - MajibangBuilder
 - DocumentTests
 - REQUIREMENTS.md
-- SHORT_TERM_PLAN.md
+- IMPLEMENTATION_STORIES.md
 - MvpAgencyDispatchController
-- GLOBAL_CONTRACT.md
+- STORIES.md
 - MajibangBuilder
 - Passenger
-- unityeditor
+- RemoveRoots
 - MvpTeamTaskController
 - StationEquipment
 - material-ref-source_LibRender2_BaseRenderer.cs
-- WorldEntityAnchor
+- CSWORLD0101Tests
 - SourceOverrides
 - HallFitoutBuilder
 - CSOPS0202Tests
 - JevLane
 - TrainService
-- CS-PLAY.02 선택·요청 수락기준
+- v3/specs/02-wire-and-ports.md
 - MvpFacilityResources
 - CHOOGuard 작업 온톨로지 어휘
 - OperationsSession
 - StaffHands
-- STORIES.md
+- GLOBAL_CONTRACT.md
 - StaticPlanTests
 - CommandPreviewPresenter
 - MvpTrainingDirector
@@ -59,10 +59,10 @@
 - MvpJevForecastClient
 - TargetResult
 - CHOOGuard_Clean_Start_v3/epics/CS-MODES.md
-- ElectricPlazaTests
+- ElectricLoad
 - Builder
 - CS-MODES.03.03: 현장 선택·상황 설정을 native 프리팹으로 연결한다
-- prepare_agency_routes.py
+- active_plan.py
 - Agency
 - CHOOGuard_Clean_Start_v3/epics/CS-SCRIPT.md
 - MvpWorkspace
@@ -76,7 +76,7 @@
 - CS-WORLD.02.03: 관측기반 복원과 독립 치수 잔차를 비교한다
 - 월드 투영·층별 마커
 - CS-LAB.02.02: 정확 재개와 처음부터 재계산을 구분한다
-- Fixture
+- ReceiptKey
 - SqliteProvider
 - FirstPersonResponder
 - KitchenGasPlay
@@ -103,7 +103,7 @@
 - Vector2
 - Vector2
 - JObject
-- ContentReference
+- StableId
 - CSBOOT0202Tests
 - Vector3
 - Team
@@ -116,7 +116,7 @@
 - CS-PLAY.02 · 팀·업무 선택과 명령 미리보기
 - Vector2
 - StationLookBuilder
-- RuleClause
+- CSPACK0201Tests
 - CommandReceipt 스키마
 - 규칙 카탈로그 스키마
 - CommandReceipt 스키마 v3
@@ -136,13 +136,13 @@
 - EscalatorStopButton
 - CS-SCRIPT.04.01: 같은 ScriptIR에서 JSON·Markdown 초안을 출력한다
 - Clean Start ActivityInterval 스키마
-- CHOOGuard_Clean_Start_v3/epics/CS-SHIP.md
+- CS-SHIP.03 · 새 현장·기관·사건 확장과 운영 인계
 - v3 ActivityInterval 스키마
 - Unity 매니페스트 내장 모듈
 - Unity 패키지 의존성 목록
 - StationSurvey
 - FpsGazeTracker
-- KitchenRoom
+- KitchenLayoutTests
 - Clean Start SessionProjection 스키마
 - v3 SessionProjection 스키마
 - 작업 항목 상태 필드
@@ -170,19 +170,19 @@
 - A. KORAIL/KTX 정비·작업자
 - Vector3
 - ShiftLog
-- Transform
-- PauseMenu
+- AutoExtinguisherPoint
+- MonoBehaviour
 - MvpSourceCoverage
 - 명령 영수증 스키마
 - Clean Start BranchRequest 스키마
 - v3 BranchRequest 스키마
 - Unity 공용 타입 참조
 - MvpOpenWorldCamera
-- StableId
+- SupportRequest
 - FPS 역사 씬 빌더 A
 - 아키텍처 문서 장 목차
 - 출처 목록 스키마
-- RadioChannel
+- PaLine
 - .BuildUnder
 - FPS 역사 씬 빌더 B
 - 건물 높이 해석기
@@ -222,7 +222,7 @@
 - Unity packages-lock 모듈
 - Jev 프록시 스크립트
 - 에스컬레이터 탑승 물리
-- active_plan.py
+- distil_crowd.py
 - MvpWorldSurfaceBuilder
 - ConvertExtensionsCfg
 - 예측 결과 스키마 필드
@@ -251,7 +251,7 @@
 - 철도차량 정비 매뉴얼 조사
 - 스냅샷 질의 스키마
 - 관측 사실 스키마
-- CS-PACK.02.01.md
+- CrowdDirector
 - 메시 배치 프리미티브
 - EarthquakeHazard
 - MapOverlay
@@ -297,7 +297,7 @@
 - 박스 메시 빌드
 - 복원 시설 검증 매니페스트
 - 콘텐츠 오류 코드
-- .Capture
+- BootstrapValidationReport
 - MvpFloorBuilder
 - InputContext
 - StationFacilitiesTests
@@ -324,7 +324,7 @@
 - TitleScreen
 - CSBOOT0101Tests
 - CSPLAY0102Tests
-- .ObserveScene
+- .DamagedSceneReference_IsRejected
 - DECISIONS_AND_DEVELOPMENT_STRUCTURE.md
 - 1. 역질의 결정 원장
 - 대응 인력 모델 생성
@@ -332,7 +332,7 @@
 - EmergencySceneBuilder
 - RuleIR 스키마
 - JEV 모델 능력 조사
-- EquipmentRegistryTests
+- StationRouteBuilder
 - 래스터 메타데이터
 - SupportHands
 - StationSound
@@ -383,7 +383,7 @@
 - 원격 범위 취득 영수증
 - JEV 예측 뷰 UI
 - MvpStationView
-- TrainDoorControl
+- 데스크톱 수집 절차 — 1배속 20분 근무
 - EscalatorGate
 - schema.sql
 - 워커 자격 스키마
@@ -531,7 +531,7 @@
 - 역사 실내 빌더
 - 영상 역사 개구부 통합
 - OpenBVE 함수 스크립트
-- MonoBehaviour
+- Extinguisher
 - FPS 소스 에셋 임포터
 - KTX 텍셀 깊이 수리
 - 엔티티 참조 스키마
@@ -543,7 +543,7 @@
 - 엔티티 리비전 상태
 - preview 만료 readSet
 - 워커 시도 식별 스키마
-- 저장소 설계 테스트
+- StorageDesign
 - 비평 맵 스키마
 - 게이트 정책 스키마
 - 대상 결과 스키마 (복제)
@@ -551,20 +551,20 @@
 - 엔티티 리비전 상태 (복제)
 - preview 만료 readSet (복제)
 - 워커 시도 식별 (복제)
-- 전기 설비·광장/대합실 비품 (2026-09-30)
+- .Render
 - 행위자 관점 지식 스키마
 - 토큰 사용량 스키마
 - KTX 텍셀 깊이 수리 (복제)
-- ElectricBoardUnit
+- MvpJevForecastClient
 - 풀트윈 진행 기록
 - 열차 성능·제동 파라미터
 - 아트리움 지붕 빌더
 - 외피 풋프린트 생성
 - 1인칭 상호작용 HUD
-- 재고 스냅샷 작업유형
+- MvpFacilityResources
 - CS-BOOT.01.01 구현 계획
 - IFpsInteraction
-- 라우팅 입력 이벤트
+- JevClient
 - RouteGraph
 - 전체 설계도 인덱스
 - 이벤트 큐 해시 스냅샷
@@ -636,8 +636,8 @@
 - RocketboxImportRules
 - HUD 절차 스프라이트
 - 역사 월드 텍스트
-- ElevatorTrapHazard
-- 부트스트랩 PlayMode 시험
+- .Trap
+- .ObserveScene
 - 시뮬레이션 계산 모델 선정
 - 기관 행동 기록 스키마
 - 실행 의도 요청 스키마
@@ -765,7 +765,7 @@
 - Unity 적응형 성능 모듈
 - Unity 2D 물리·타일맵 모듈
 - Unity 지형 물리 모듈
-- ElectricLoad
+- .Clear
 - 등록 씬 캡처 도구
 - 셸 지오메트리 추출
 - 누락 머티리얼 채우기
@@ -778,7 +778,7 @@
 - ElectricPlazaPlacement
 - MvpAgencyDispatchView
 - HazardKind
-- .ConfigurePipeline
+- .HasOwnedUrpReferences
 - 개구부·월드 확장 계획
 - 선로 구조물 생성
 - 사이트 스키마 정의
@@ -786,11 +786,11 @@
 - 다기관 운영 커널 명세
 - RTS 운영 작업공간 명세
 - 코어 상태 리비전 스키마
-- CS-PLAY.07.01: 동일 코어의 표·타임라인 연구 비교군을 만든다
+- RuleClause
 - 커밋 지문 시퀀스 스키마
 - 지문 시퀀스 상태 스키마
 - json
-- CS-SIM.04.02: 수렴·독립 관측·화재 QoI 오차를 평가한다
+- CS-SCRIPT.03.01: native 대본 편집과 의미·서식 diff를 만든다
 - 불확도 참조 리비전 스키마
 - 시뮬레이션 계산 모델 초판
 - 비평 후 제품 개요
@@ -822,11 +822,11 @@
 - Cutaway Render Tool
 - Observed Surface Import
 - Reused Prefab Placement
-- ShutterButton
+- IntPtr
 - Queue
 - Escalator Motion Wiring
 - MvpAgencyDispatchView
-- Coupler
+- RuleExpression
 - .Plan
 - WaterLeakHazard
 - EmergencyForceAll
@@ -835,12 +835,12 @@
 - DotRecast Detour README
 - DotRecast Recast README
 - Train Brake System Types
-- PaLine
+- PowerOutageHazard
 - Success Metrics & User Research
 - Architecture Verification Record
 - Clause Refs Array Schema
 - Worker Capability Schema
-- KoreanText
+- .Register
 - CS-OPS.01 Run State Machine
 - CS-OPS.02 SQLite Outbox Storage
 - CS-OPS.03 Agency Authority Handoff
@@ -917,11 +917,11 @@
 - Services23F4 재개 요약
 - ShopInteriors3 재개 요약
 - 부산역 튜토리얼 HUD·UI/UX 레퍼런스 조사
-- .Run
+- SuspiciousItemHazard
 - 소스 프로필 분석 도구
 - SQLFixtureTests
 - 조명 기구 빌더
-- .Site
+- CS-PACK.03.01.md
 - 대합실 보행 가능성 분석
 - 높이 히스토그램 측정
 - 실내 설비 메시 추출
@@ -979,7 +979,7 @@
 - 지하철·몰 접합부 증거
 - FBX 내보내기 축 설정
 - 역·지하철 환승 보행 증거
-- RuleActivationReason
+- RuleActivationDecision
 - 1층 천장 높이 측정
 - 한국 표지판 스타일
 - Public1F 진행 기록
@@ -996,7 +996,7 @@
 - SouthGate 재개 요약
 - 자산 재사용 우선 규칙
 - 내비 경사로 추가
-- LevelIsolate.cs
+- LevelIsolate
 - 게임 뷰·플레이어 다듬기
 - 역 실내 프로브
 - worker.py
@@ -1017,7 +1017,7 @@
 - 체크포인트·A/B 분기 재현성
 - 데이터·온톨로지 로컬 저장
 - 이벤트 스키마 공통 필드
-- Vector3
+- Agency
 - Checkpoint 스키마
 - CommandIntent 스키마
 - CommitBatch 스키마
@@ -1034,12 +1034,12 @@
 - 스키마 배열 항목 정의
 - ScriptIR 스키마
 - SimulationJob 스키마
-- MvpStationZones
+- SprinklerBuilder
 - test_ci_policy.py
-- PlayerBuild
+- CS-LAB.03.01.md
 - CRITIQUE_TO_REQUIREMENTS.md
 - 15. AI-native 데이터·온톨로지·추적성 계약
-- unity_results.py
+- KitchenRoom
 - 운영안·대본 자동화
 - 문제·타겟 타당성 조사
 - RTS 운영 시뮬레이션 상호작용
@@ -1102,8 +1102,8 @@
 - 실제 자산 배치
 - SourceStationSections
 - 역사 실내 프로브 샘플링
-- MvpWorldPresentation
-- CHOOGuard_Story_Plan_v4/ONTOLOGY.md
+- CSWORLD0102Tests
+- prepare_world_layers.py
 - macOS GUI 입력 프로브
 - 거리 오차 통계
 - 래스터 창 오프셋
@@ -1133,7 +1133,7 @@
 - 두 사용자 모드 여정
 - RTS 운영 시뮬레이션 상호작용
 - build_restored_facilities.py
-- BranchRequest
+- .RoutineOptions
 - 매뉴얼 규칙화 지식 파이프라인
 - 다중 엔진 시간·불확도 계약
 - 14. 플레이 로그 기반 운영안·대본 자동화
@@ -1156,6 +1156,7 @@
 - 반증 가능한 타당성 검증
 - 단계
 - 두 사용자 모드 여정
+- AlarmPanelPoint
 - 비평 반영·재작업 정책
 - 비기능·보안·시간 예산
 - Batch
@@ -1180,7 +1181,7 @@
 - Unity AndroidJNI 모듈 의존성
 - Unity 파티클 모듈 의존성
 - FPS 벤치마크 조사 결과
-- 2026-09-29 모든 비상상황을 JEV 판단으로 · PC마다 JEV 키 · 출동 부대 모델
+- 주방·가스 설비 (2026-09-30)
 - 플러그인 확장 설정 파서
 - 월드 초안 작업 계획
 - 메인 소스 캡처 도구
@@ -1299,10 +1300,11 @@
 - Signage Lane Progress
 - Pedestrian Component Verification
 - unityengine
+- MvpTeamNavigation
 - ImminenceScale
 - 2026-09-28 맵 오브젝트 상호작용
 - v2_check_plan.py
-- SceneViewLook.cs
+- SceneViewLook
 - CHOOGuard_Clean_Start_v3/epics/CS-BOOT.md
 - Build Guides Manifest
 - Product Boundary and Quality
@@ -1428,7 +1430,7 @@
 - 건물 높이 원천 근거
 - 부산 재난 대응 시각 자료
 - 부산 해안 월드셋
-- E. 안전관리체계·교육·시각자료의 제도적 맥락
+- WorldEntityAnchor
 - CHOOGuard 문맥 인덱스
 - C4 아키텍처 구조
 - 아키텍처 비평 결론
@@ -1594,10 +1596,10 @@
 - PathService
 - KitchenGasBuilder
 - ElectricPlazaPrefabs
-- 프로덕션 게임 벤치마크·OSS 이식·자체평가
+- MvpAgencyDispatchView
 - 19. AAA급 제품 검수와 반증·재작업 루프
 - 13. 제품 아키텍처·Unity 실행·배포
-- .Main
+- GasValvePoint
 - CS-SIM.03.02: 현지 접근시간·운행 범위를 독립 자료와 비교한다
 - FireDoorPoint
 - CrowdMetrics
@@ -1612,45 +1614,45 @@
 - List
 - .Main
 - .Main
-- .StrideStaysOutOfThePose
+- .CreateAnchor
 - 10. 시간 제어·스냅샷·분기·운영안 비교
-- CHOOGuard 철도 현장 시각자료 조사
+- SessionProjection
 - CI/CD 구축 — 2026-09-28
-- .KCount
-- AutoExtinguisherPoint
+- .Measure
+- FpsInteractable
 - NavWalkTest
 - CI/CD 운영 문서
 - ReservationCancellationStatus
-- Data
+- SiUnit
 - CHOOGuard_Story_Plan_v4/START_HERE.md
-- ElectricPlazaViews
-- FpsPromptPipelineTests
-- SoakVerdictTests
+- EquipmentCatalog
+- InspectionPoint
+- soak_verdict.py
 - Electric-plaza behaviour research (Korea) — 2026-09-30
 - EmergencyVehicle
-- EquipmentCatalog
-- 신규 구축 명세 v3 · 적대적 비평·수정·재검수 기록
-- K03 · 영속 명령·자원·예약·취소
+- StockSnapshot
+- Trigger
+- Resume digest for RegTech4 (killed by the session interruption at ~14:17, 2026-09-25, ~2 min after spawn)
 - VideoFloorOne
 - .Prepare
-- K12 · 단계별 증거·성능·품질 gate
-- .InvalidValues_AndDuplicateDemands_AreRejected
+- OpenRaCountdown
+- ActiveReservation
 - 07. 다기관 운영 모델과 상태 체계
 - .BakedGraph_SitsOnTheNavmeshAndJoinsEveryPlaceToAnExitWithoutTheElevator
 - ReservationPlanResult
 - 13. 제품 아키텍처·Unity 실행·배포
-- .Plan
+- WorldProjectionBinding
 - NativeDesignChecks
-- VerdictTests
+- D. 비상대응·응급처치·시민 보호
 - 20. 비기능 요구와 운영 경계
 - 03. 타겟·권한·첫 실증의 진입 조건
 - 12. 다중 엔진 결합·시간·불확도 계약
 - 17. 자료 확보·무료 우선 자산·증거 연결
-- CHOOGuard 클린 스타트 에픽·구현 명세 v3
-- Full digital twin round — no undeveloped space behind doors, openings or edges
-- K01 · 새 Unity 빌드와 assembly 경계
-- K06 · Unity 네이티브 화면·입력·통합
-- ActiveReservation
+- .KSignSide
+- MvpTeamNavigationBuilder.cs
+- Agency
+- .BindExisting
+- DetailedInteractionController.cs
 - RestoreAuditMeshes.cs
 - 10. 시간 제어·스냅샷·분기·운영안 비교
 - .Main
@@ -1659,19 +1661,25 @@
 - SeatPhase
 - LinkUnderground
 - .Flush
-- .BuildWorldHubs
+- CHOOGuard_Clean_Start_v3/START_HERE.md
 - VerifyMainSource
 - 19. AAA급 제품 검수와 반증·재작업 루프
 - .KCount
 - CompareTests
 - .KCount
 - 06. 현실 기반 철도 오픈월드 구축
-- .OnLog
-- WorldPacket
-- Findings
-- PrepareNavStatic.cs
+- K05 · 계산 워커 IPC·시간·교환·물리 범위
+- EntityVisualProjection
+- FixtureKind
+- PrepareNavStatic
+- 진행
+- AlignSceneCamera.cs
+- SceneSnapshot
 - unity_ci.sh
+- ViewInteriorConcourse.cs
+- StationSpawnPick
 - pull_request_template.md
+- .OnLog
 
 ## God Nodes (most connected - your core abstractions)
 1. `CHOOGuard Work Graph (JSON-LD)` - 1067 edges
@@ -1683,13 +1691,13 @@
 7. `MajibangBuilder` - 225 edges
 8. `MvpAgencyDispatchController` - 156 edges
 9. `PersonBody` - 132 edges
-10. `Hazard` - 128 edges
+10. `Hazard` - 129 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `대기 — 링크를 올린 재측정 (Unity 실행 전에는 값을 적지 않는다)` --references--> `CrowdDirector`  [INFERRED]
   .planning/2026-09-28-extinguisher-replacement/findings.md → Assets/ChooGuard/App/Fps/Emergency/CrowdDirector.cs
-- `실제 OSS 코드 이식` --references--> `Activity`  [INFERRED]
-  docs/CHOOGuard_Story_Plan_v5/PRODUCTION_GAME_BENCHMARK.md → Assets/ChooGuard/App/Fps/Emergency/Passenger.cs
+- `시간 압축을 쓰지 않는다` --references--> `JevBudget`  [INFERRED]
+  workers/learning/README.md → Assets/ChooGuard/App/Fps/Emergency/JevBudget.cs
 - `07.1 핵심 객체` --references--> `Team`  [INFERRED]
   docs/CHOOGuard_Architecture_v1/basis/PRD_v11.md → Assets/ChooGuard/App/Fps/Emergency/ResponderTeams.cs
 - `07.1 핵심 객체` --references--> `Team`  [INFERRED]
@@ -1714,39 +1722,43 @@
 - **Epic Cluster: CS-WORLD** — docs_chooguard_story_plan_v4_ontology_work_graph_ac_cs_world_03_01_n, docs_chooguard_story_plan_v4_ontology_work_graph_ac_cs_world_02_02_n, docs_chooguard_story_plan_v4_ontology_work_graph_dep_cs_world_04_02_0, docs_chooguard_story_plan_v4_ontology_work_graph_out_cs_world_02_02, docs_chooguard_story_plan_v4_ontology_work_graph_dep_cs_world_02_03_1, docs_chooguard_story_plan_v4_ontology_work_graph_cs_world_01_02, docs_chooguard_story_plan_v4_ontology_work_graph_dep_cs_world_01_01_0, docs_chooguard_story_plan_v4_ontology_work_graph_dep_cs_world_04_02_1, docs_chooguard_story_plan_v4_ontology_work_graph_ac_cs_world_02_02_p, docs_chooguard_story_plan_v4_ontology_work_graph_dep_cs_world_02_03_2, docs_chooguard_story_plan_v4_ontology_work_graph_ac_cs_world_03_02_n, docs_chooguard_story_plan_v4_ontology_work_graph_out_cs_world_01_01 [EXTRACTED 0.95]
 - **CHOOGuard Core Product Invariants & Baseline** — docs_chooguard_clean_start_v3_product_baseline_2_핵심_여정, target_asset_tutorialdirector, docs_chooguard_story_plan_v4_global_contract_영속성_물리_검수, docs_chooguard_story_plan_v4_global_contract_수정_협업_경계, docs_chooguard_story_plan_v4_global_contract_일정과_변경, docs_chooguard_clean_start_v3_product_baseline_chooguard_새_구축_제품_기준, docs_chooguard_story_plan_v4_global_contract_읽기_정본, docs_chooguard_clean_start_v3_product_baseline_5_새로운_공간_기준, docs_chooguard_story_plan_v4_global_contract, docs_chooguard_clean_start_v3_product_baseline_4_unity_화면_입력 [INFERRED 0.85]
 
-## Communities (1753 total, 318 thin omitted)
+## Communities (1759 total, 314 thin omitted)
 
 ### Community 0 - "CHOOGuard Work Graph (JSON-LD)"
 Cohesion: 0.01
-Nodes (354): 가상 행동은 현실관측으로 기록되지 않고 실제 갱신 revision을 추적한다, CHOOGuard Work Graph (JSON-LD), AC-CS-PACK.04.01-N: AC-CS-PACK.04.01-N, AC-CS-PACK.04.01-P: AC-CS-PACK.04.01-P, AC-CS-PACK.04.02-N: AC-CS-PACK.04.02-N, AC-CS-PACK.04.02-P: AC-CS-PACK.04.02-P, AC-CS-PLAY.03.01-N: AC-CS-PLAY.03.01-N, AC-CS-PLAY.03.01-P: AC-CS-PLAY.03.01-P (+346 more)
+Nodes (328): 수치수렴·독립 비교·적용범위를 기록하고 VFX를 물리량으로 사용하지 않는다, 가상 행동은 현실관측으로 기록되지 않고 실제 갱신 revision을 추적한다, 비교군은 연구 조건으로만 기록하고 제품 모드는 두 개로 유지하며 조건별 차이·오염·도움·검수 가림 여부를 보존한다, CHOOGuard Work Graph (JSON-LD), AC-CS-BOOT.02.03-N: AC-CS-BOOT.02.03-N, AC-CS-BOOT.02.03-P: AC-CS-BOOT.02.03-P, AC-CS-PACK.04.01-N: AC-CS-PACK.04.01-N, AC-CS-PACK.04.01-P: AC-CS-PACK.04.01-P (+320 more)
 
-### Community 1 - "PRD 온톨로지 스키마"
+### Community 1 - "CHOOGuard PRD Ontology (JSON-LD)"
 Cohesion: 0.01
-Nodes (175): CHOOGuard PRD Ontology (JSON-LD), AcceptanceTest, AcquisitionReceipt, AdoptionEvidence, Agency, approvedBy, ApprovedRule, AuthorityScope (+167 more)
+Nodes (191): CHOOGuard PRD Ontology (JSON-LD), AcceptanceTest, AcquisitionReceipt, AdoptionEvidence, Agency, approvedBy, ApprovedRule, 독립 평가 집합과 사전 종료 규칙을 사용하고 유리한 seed만 선택하지 않는다 (+183 more)
 
-### Community 2 - "IMPLEMENTATION_STORIES.md"
-Cohesion: 0.02
-Nodes (169): 선택 이유와 두 실행의 근거가 출력되고 로그 요약만으로 완료되지 않는다, 대상과 가용행동을 보여주며 구성원·승무원 중복을 숨기지 않는다, 자원 중복이 없고 실패한 예약은 소유 부분만 해제한다, 승인된 범위의 durable event를 복원하고 부족분은 누락으로 표시한다, 색만으로 의미를 전달하지 않고 한국어 용어와 원 의미를 연결한다, 고정 불변식, 단계의 읽기와 실행, 신규 구현 공통 계약 v3 (+161 more)
+### Community 2 - "SHORT_TERM_PLAN.md"
+Cohesion: 0.03
+Nodes (112): 선택 이유와 두 실행의 근거가 출력되고 로그 요약만으로 완료되지 않는다, 자원 중복이 없고 실패한 예약은 소유 부분만 해제한다, 승인된 범위의 durable event를 복원하고 부족분은 누락으로 표시한다, K03 · 영속 명령·자원·예약·취소, native 저장 baseline, Submit 알고리즘, 원자성의 경계, 자원 생명주기 (+104 more)
 
 ### Community 3 - "CHOOGuard_Clean_Start_v3/IMPLEMENTATION_SPEC.md"
 Cohesion: 0.03
-Nodes (150): 고정 불변식, 단계의 읽기와 실행, 신규 구현 공통 계약 v3, CHOOGuard 클린 스타트 에픽·구현 명세 v3, CS-LAB.01 · 이벤트 재생·완전 checkpoint, 구현 절차, 새 구현 경로, 선행 산출물과 소비 단계 (+142 more)
+Nodes (166): 고정 불변식, 단계의 읽기와 실행, 신규 구현 공통 계약 v3, CHOOGuard 클린 스타트 에픽·구현 명세 v3, CS-LAB.01 · 이벤트 재생·완전 checkpoint, 구현 절차, 새 구현 경로, 선행 산출물과 소비 단계 (+158 more)
 
 ### Community 4 - "MvpAgencyDispatchController"
-Cohesion: 0.03
-Nodes (61): MvpAgencyDispatchBuilder, GameObject, MenuItem, TextAsset, MvpAgencyDispatchView, Button, Image, RectTransform (+53 more)
+Cohesion: 0.05
+Nodes (40): Connector, Member, MissionSnapshot, MvpAgencyDispatchController, Agencies, ContextKind, FacilityResources, HasContextSelection (+32 more)
+
+### Community 5 - "StaffPolicy"
+Cohesion: 0.06
+Nodes (29): Recorder, Frames, RunLog, ShiftSampleTests, StaffPolicy, AudioSource, Dictionary, HashSet (+21 more)
 
 ### Community 6 - "IncidentDirector"
-Cohesion: 0.01
-Nodes (130): DirectorSpan, CpuMeasured, DllImport, Escalator, Condition, IncidentDirector, Casualties, Dictionary (+122 more)
+Cohesion: 0.02
+Nodes (113): Usable, DirectorSpan, CpuMeasured, DllImport, Condition, IncidentDirector, Casualties, Dictionary (+105 more)
 
-### Community 7 - "Batch"
-Cohesion: 0.05
-Nodes (35): Batch, Collision, Indices, Mat, Parent, TriangleCount, Uvs, VertexCount (+27 more)
+### Community 7 - ".P"
+Cohesion: 0.07
+Nodes (15): Batch, Collision, Indices, Mat, Parent, TriangleCount, Uvs, VertexCount (+7 more)
 
 ### Community 8 - "StationDoor"
-Cohesion: 0.04
-Nodes (44): Component, DoorKind, Elevator, Sliding, Swing, DoorUse, Public, Staff (+36 more)
+Cohesion: 0.05
+Nodes (37): DoorKind, Elevator, Sliding, Swing, DoorUse, Public, Staff, Tenant (+29 more)
 
 ### Community 9 - "PRD v11 자산 출처"
 Cohesion: 0.02
@@ -1754,63 +1766,59 @@ Nodes (123): AST-AMB-BOX · Ambulance Box Truck Rigged Interior Exterior, AST-AM
 
 ### Community 10 - "MvpAgencyDispatchController"
 Cohesion: 0.04
-Nodes (40): Mission, PickVolume, Connector, Member, MissionSnapshot, MvpAgencyDispatchController, Agencies, ContextKind (+32 more)
+Nodes (44): Agency, Connector, PickVolume, Agency, RouteData, Agency, Connector, Member (+36 more)
 
 ### Community 11 - "PersonBody"
-Cohesion: 0.05
-Nodes (38): PersonBody, Agent, EnRoute, Goal, Home, Kneeling, LocalPosition, LocalRotation (+30 more)
+Cohesion: 0.04
+Nodes (44): PersonBody, Agent, EnRoute, Goal, Home, Kneeling, LocalPosition, LocalRotation (+36 more)
 
 ### Community 12 - "MajibangBuilder"
 Cohesion: 0.06
 Nodes (36): Action, back, Batch, Bounds, BoxCollider, c, Camera, child (+28 more)
 
 ### Community 13 - "DocumentTests"
-Cohesion: 0.10
-Nodes (12): DocumentTests, ex(), load(), input_match(), Any, Design-contract validator, not a simulation or a Unity runtime adapter., Selected cross-field invariants. File existence and real model correctness are…, Contract comparison only; not actual worker dispatch or result publication. (+4 more)
+Cohesion: 0.06
+Nodes (13): DocumentTests, ex(), load(), input_match(), Any, Design-contract validator, not a simulation or a Unity runtime adapter., Selected cross-field invariants. File existence and real model correctness are…, Contract comparison only; not actual worker dispatch or result publication. (+5 more)
 
 ### Community 14 - "REQUIREMENTS.md"
 Cohesion: 0.04
-Nodes (116): CS-OPS.01 · 신규 run·단일 writer·명령 상태머신, 구현 절차, 새 구현 경로, 선행 산출물과 소비 단계, 실제 시험 매체, 연결과 인계, 정확한 인수 oracle · 아직 미실행, 필수 상세 명세 (+108 more)
+Nodes (115): CS-OPS.01 · 신규 run·단일 writer·명령 상태머신, 구현 절차, 새 구현 경로, 선행 산출물과 소비 단계, 실제 시험 매체, 연결과 인계, 정확한 인수 oracle · 아직 미실행, 필수 상세 명세 (+107 more)
 
-### Community 15 - "SHORT_TERM_PLAN.md"
-Cohesion: 0.05
-Nodes (81): 실제 sim/wall ratio를 표시하고 물리 dt를 숨겨 바꾸지 않는다, 실제 정확도·실패·복구성·비용과 반려 이유를 ADR로 남긴다, 과도상태·경계 변경·보존량·오차 누적·OOD를 검사한다, 보류/검증 계산으로 전환하고 정상 예측으로 출력하지 않는다, ID/시간/단위/버전과 보존량이 일치하고 동일 양 이중 갱신이 없다, AC-CS-SIM.01.01-N: AC-CS-SIM.01.01-N, AC-CS-SIM.01.01-P: AC-CS-SIM.01.01-P, AC-CS-SIM.01.02-N: AC-CS-SIM.01.02-N (+73 more)
+### Community 15 - "IMPLEMENTATION_STORIES.md"
+Cohesion: 0.03
+Nodes (105): 실제 sim/wall ratio를 표시하고 물리 dt를 숨겨 바꾸지 않는다, 실제 정확도·실패·복구성·비용과 반려 이유를 ADR로 남긴다, 과도상태·경계 변경·보존량·오차 누적·OOD를 검사한다, 보류/검증 계산으로 전환하고 정상 예측으로 출력하지 않는다, ID/시간/단위/버전과 보존량이 일치하고 동일 양 이중 갱신이 없다, 고정 불변식, 단계의 읽기와 실행, 신규 구현 공통 계약 v3 (+97 more)
 
 ### Community 16 - "MvpAgencyDispatchController"
-Cohesion: 0.03
-Nodes (72): Agency, Agency, Connector, Member, Mission, MissionSnapshot, MvpAgencyDispatchController, Agencies (+64 more)
+Cohesion: 0.04
+Nodes (42): Connector, Member, MissionSnapshot, MvpAgencyDispatchController, Agencies, ContextKind, FacilityResources, HasContextSelection (+34 more)
 
-### Community 17 - "GLOBAL_CONTRACT.md"
-Cohesion: 0.05
-Nodes (70): 정확 경로·입력·겹침을 확인하고 VR/기존 이슈/타인작업을 무단 확장·중단하지 않는다, 공통 실행 계약 · 클린 스타트 스토리 v4, 단기 목표와 비목표, 데이터와 시간, 보안·프라이버시, 수정·협업 경계, 영속성·물리·검수, 일정과 변경 (+62 more)
+### Community 17 - "STORIES.md"
+Cohesion: 0.06
+Nodes (62): 정확 경로·입력·겹침을 확인하고 VR/기존 이슈/타인작업을 무단 확장·중단하지 않는다, AC-CS-BOOT.01.01-N: AC-CS-BOOT.01.01-N, AC-CS-BOOT.01.01-P: AC-CS-BOOT.01.01-P, AC-CS-BOOT.01.02-N: AC-CS-BOOT.01.02-N, AC-CS-BOOT.01.02-P: AC-CS-BOOT.01.02-P, AC-CS-BOOT.02.01-N: AC-CS-BOOT.02.01-N, AC-CS-BOOT.02.01-P: AC-CS-BOOT.02.01-P, AC-CS-BOOT.02.02-N: AC-CS-BOOT.02.02-N (+54 more)
 
 ### Community 18 - "MajibangBuilder"
 Cohesion: 0.06
 Nodes (35): Action, back, Bounds, BoxCollider, c, Camera, child, Collider (+27 more)
 
 ### Community 19 - "Passenger"
-Cohesion: 0.02
-Nodes (89): 지켜야 할 것, CrowdDirector, Arrivals, Evacuated, InStation, LeftNormally, MainHazard, Mind (+81 more)
-
-### Community 20 - "unityeditor"
-Cohesion: 0.07
-Nodes (13): RemoveRoots, SceneSnapshot, ChooGuard.Tests.EditMode, ChooGuard.World, ChooGuard.Editor, system_linq, unityeditor, unityeditor_build_player (+5 more)
+Cohesion: 0.03
+Nodes (54): Activity, Passenger, Aboard, Body, Car, CarriesPowerBank, Crowd, Cue (+46 more)
 
 ### Community 21 - "MvpTeamTaskController"
-Cohesion: 0.07
-Nodes (19): MvpSpatialMetrics, Vector3, Job, MvpTeamTaskController, Dictionary, Func, HashSet, Queue (+11 more)
+Cohesion: 0.09
+Nodes (15): Job, MvpTeamTaskController, Dictionary, Func, HashSet, Queue, Vector2, Job (+7 more)
 
 ### Community 22 - "StationEquipment"
 Cohesion: 0.03
-Nodes (65): advice, Board, Circuit, Collider, Func, IEnumerable, List, Pools (+57 more)
+Nodes (65): advice, Collider, Func, IEnumerable, List, Pools, Transition, Vector3 (+57 more)
 
 ### Community 23 - "material-ref-source_LibRender2_BaseRenderer.cs"
-Cohesion: 0.04
-Nodes (78): LibRender2, TrainManager.Car, TrainEditor2.Views, TrainEditor, Train.OpenBve, Formats.OpenBve, OpenBveApi.Trains, OpenBveApi.FunctionScripting (+70 more)
+Cohesion: 0.03
+Nodes (89): CarSection, CarSound, LibRender2, TrainManager.Car, TrainEditor2.Views, TrainEditor, Train.OpenBve, Formats.OpenBve (+81 more)
 
-### Community 24 - "WorldEntityAnchor"
-Cohesion: 0.04
-Nodes (57): FixtureBuilder, BoxCollider, Collider, GameObject, MenuItem, Scene, Transform, Vector3 (+49 more)
+### Community 24 - "CSWORLD0101Tests"
+Cohesion: 0.13
+Nodes (12): CSWORLD0101Tests, Anchors, ArgumentException, ArgumentOutOfRangeException, BoxCollider, InvalidOperationException, Renderer, Scene (+4 more)
 
 ### Community 25 - "SourceOverrides"
 Cohesion: 0.08
@@ -1821,24 +1829,24 @@ Cohesion: 0.06
 Nodes (41): Buf, Empty, Action, Bloom, Collider, ColorAdjustments, GameObject, Light (+33 more)
 
 ### Community 27 - "CSOPS0202Tests"
-Cohesion: 0.39
+Cohesion: 0.37
 Nodes (4): CSOPS0202Tests, NotSupportedException, Test, TestCase
 
 ### Community 28 - "JevLane"
-Cohesion: 0.08
-Nodes (29): Trigger, AfterQuake, Blocked, Changed, Cue, Ended, Instruction, Notice (+21 more)
+Cohesion: 0.07
+Nodes (34): JevBudget, JevLane, CrowdRoutine, CrowdUrgent, Director, JevUsage, Dollars, LaneAccount (+26 more)
 
 ### Community 29 - "TrainService"
-Cohesion: 0.05
-Nodes (42): Car, Seat, Car, CrewOpen, DoorInside, DoorOutside, InnerDoor, Seat (+34 more)
+Cohesion: 0.04
+Nodes (49): Car, Seat, CarEntry, TrainDoorControl, DisplayName, InteractionPrompt, Car, FirstPersonResponder (+41 more)
 
-### Community 30 - "CS-PLAY.02 선택·요청 수락기준"
-Cohesion: 0.09
-Nodes (29): 필요 능력·가용 후보·부족 조합·예상 대기를 설명한다, 기관별 승인/요청/거부를 미리 표시하고 일부 실패를 전체 성공으로 표시하지 않는다, AC-CS-PLAY.02.01-N: AC-CS-PLAY.02.01-N, AC-CS-PLAY.02.01-P: AC-CS-PLAY.02.01-P, AC-CS-PLAY.02.02-N: AC-CS-PLAY.02.02-N, AC-CS-PLAY.02.02-P: AC-CS-PLAY.02.02-P, CS-PLAY.02.01: 팀/차량과 업무 선택을 같은 SelectionSet에 연결한다, CS-PLAY.02.02: 대상별 조건을 보여주고 확인한 요청만 제출한다 (+21 more)
+### Community 30 - "v3/specs/02-wire-and-ports.md"
+Cohesion: 0.02
+Nodes (170): 대상과 가용행동을 보여주며 구성원·승무원 중복을 숨기지 않는다, 필요 능력·가용 후보·부족 조합·예상 대기를 설명한다, 기관별 승인/요청/거부를 미리 표시하고 일부 실패를 전체 성공으로 표시하지 않는다, 색만으로 의미를 전달하지 않고 한국어 용어와 원 의미를 연결한다, K02 · 타입·직렬화·비동기 API 계약, wire/semantic 검증의 분리, 공통 규칙, 요청·오류 (+162 more)
 
 ### Community 31 - "MvpFacilityResources"
-Cohesion: 0.03
-Nodes (68): Bin, Definition, MvpFacilityResources, ConfigHash, Ready, Reservations, Revision, RunRevision (+60 more)
+Cohesion: 0.06
+Nodes (32): MvpFacilityResourcesBinder, MenuItem, TextAsset, Bin, MvpFacilityResourcesBinder, MenuItem, TextAsset, Bin (+24 more)
 
 ### Community 32 - "CHOOGuard 작업 온톨로지 어휘"
 Cohesion: 0.06
@@ -1849,15 +1857,15 @@ Cohesion: 0.06
 Nodes (51): DrainResult, FailedCommand, Failure, ProcessedCommands, State, Status, DrainStatus, Closed (+43 more)
 
 ### Community 34 - "StaffHands"
-Cohesion: 0.07
-Nodes (26): Cordons, PinPulled, FallingBoard, Impact, Landed, StaffHands, Aed, Held (+18 more)
+Cohesion: 0.06
+Nodes (34): Cordons, PinPulled, FallingBoard, Impact, Landed, HydrantHose, DisplayName, InteractionPrompt (+26 more)
 
-### Community 35 - "STORIES.md"
+### Community 35 - "GLOBAL_CONTRACT.md"
 Cohesion: 0.11
-Nodes (33): UI·렌더·물리·LLM 시간을 나누고 수치모델/인원을 몰래 줄이지 않는다, 동일조건과 원시로그를 보존하고 무한 문서 수정으로 PASS를 만들지 않는다, AC-CS-PROOF.02.01-N: AC-CS-PROOF.02.01-N, AC-CS-PROOF.02.01-P: AC-CS-PROOF.02.01-P, CS-PROOF.02.01: 첫 native 요청·저장·재열기 수직구간을 검수한다, dep:CS-PROOF.02.01:0: dep:CS-PROOF.02.01:0, dep:CS-PROOF.02.01:1: dep:CS-PROOF.02.01:1, dep:CS-PROOF.02.01:2: dep:CS-PROOF.02.01:2 (+25 more)
+Nodes (31): UI·렌더·물리·LLM 시간을 나누고 수치모델/인원을 몰래 줄이지 않는다, 동일조건과 원시로그를 보존하고 무한 문서 수정으로 PASS를 만들지 않는다, 공통 실행 계약 · 클린 스타트 스토리 v4, 단기 목표와 비목표, 데이터와 시간, 보안·프라이버시, 수정·협업 경계, 영속성·물리·검수 (+23 more)
 
 ### Community 36 - "StaticPlanTests"
-Cohesion: 0.05
+Cohesion: 0.06
 Nodes (34): ReceiptTests, StaticPlanTests, active_plan_exists(), main(), Read-only CLI. Run from this package; never executes product work., active(), ancestors(), candidate_order() (+26 more)
 
 ### Community 37 - "CommandPreviewPresenter"
@@ -1873,8 +1881,8 @@ Cohesion: 0.08
 Nodes (29): Authority, MvpWorkspace, HasPendingTeamOrders, SelectedCohort, SelectedTeamId, TeamState, OperationNotice, TeamOrder (+21 more)
 
 ### Community 40 - "MvpJevForecastClient"
-Cohesion: 0.05
-Nodes (42): Comparison, Forecast, Mission, MvpJevForecastClient, BrierSum, Comparisons, Current, Revision (+34 more)
+Cohesion: 0.09
+Nodes (22): Comparison, Forecast, Mission, MvpJevForecastClient, BrierSum, Comparisons, Current, Revision (+14 more)
 
 ### Community 41 - "TargetResult"
 Cohesion: 0.06
@@ -1884,29 +1892,29 @@ Nodes (51): CommandCheckResult, CanProceed, CurrentRevision, ReadSet, Reasons, S
 Cohesion: 0.04
 Nodes (77): CS-MODES.01 · 한 개의 근거 기반 교육 과정, CS-MODES.02 · 제약 기반 랜덤 상황, CS-MODES.03 · 현장 재사용·모드 연결·다음 판단 지점, CS-MODES · 매뉴얼 교육과 제약 기반 랜덤 실험, 구현 절차, 구현 절차, 구현 절차, 새 구현 경로 (+69 more)
 
-### Community 43 - "ElectricPlazaTests"
-Cohesion: 0.09
-Nodes (26): Circuit, Board, All, Code, Name, Circuit, Label, ElectricNetwork (+18 more)
+### Community 43 - "ElectricLoad"
+Cohesion: 0.04
+Nodes (48): Board, Circuit, Circuit, ElectricBoardUnit, DisplayName, InteractionPrompt, Board, Collider (+40 more)
 
 ### Community 44 - "Builder"
 Cohesion: 0.18
-Nodes (8): Builder, BoxCollider, Collider, Dictionary, JArray, JObject, Light, Renderer
+Nodes (7): Builder, BoxCollider, Collider, Dictionary, JArray, Light, Renderer
 
 ### Community 45 - "CS-MODES.03.03: 현장 선택·상황 설정을 native 프리팹으로 연결한다"
 Cohesion: 0.07
 Nodes (43): 의미 있는 상태·결과가 동일 허용오차 안이고 안내가 능력·물리를 변경하지 않는다, 원본을 변경하지 않고 새 운영안을 만들며 참조·권한·개정·가정의 유효성을 확인하고 변경분만 입력할 수 있다, 중간 계산과 이벤트를 생략하지 않고 미래 정보 누출·timestep 임의 확대 없이 순차 실행과 동등한 상태를 만들며 미완계산은 대기로 표시한다, AC-CS-MODES.03.01-N: AC-CS-MODES.03.01-N, AC-CS-MODES.03.01-P: AC-CS-MODES.03.01-P, AC-CS-MODES.03.02-N: AC-CS-MODES.03.02-N, AC-CS-MODES.03.02-P: AC-CS-MODES.03.02-P, AC-CS-MODES.03.03-N: AC-CS-MODES.03.03-N (+35 more)
 
-### Community 46 - "prepare_agency_routes.py"
-Cohesion: 0.04
-Nodes (55): finish(), dist(), nearest(), point(), polygon(), Source-node directed roads; stdlib Dijkstra, no geometric intersection joins., heapq, Element envelope (+47 more)
+### Community 46 - "active_plan.py"
+Cohesion: 0.03
+Nodes (74): finish(), point(), polygon(), brief(), existing_path(), fields(), main(), Single-story plan inspection and one derived Markdown view; never executes work. (+66 more)
 
 ### Community 47 - "Agency"
 Cohesion: 0.01
-Nodes (148): FallingObjectHazard, Announcement, Board, Command, Cordonable, CordonRadius, DangerRadius, Dispatch (+140 more)
+Nodes (169): ElevatorTrapHazard, Announcement, Clearance, Command, DangerRadius, Dispatch, Handover, Label (+161 more)
 
 ### Community 48 - "CHOOGuard_Clean_Start_v3/epics/CS-SCRIPT.md"
-Cohesion: 0.04
-Nodes (94): CS-SCRIPT.01 · 허용 근거 조회와 규칙/설명 후보, 구현 절차, 새 구현 경로, 선행 산출물과 소비 단계, 실제 시험 매체, 연결과 인계, 정확한 인수 oracle · 아직 미실행, 필수 상세 명세 (+86 more)
+Cohesion: 0.05
+Nodes (69): CS-SCRIPT.01 · 허용 근거 조회와 규칙/설명 후보, 구현 절차, 새 구현 경로, 선행 산출물과 소비 단계, 실제 시험 매체, 연결과 인계, 정확한 인수 oracle · 아직 미실행, 필수 상세 명세 (+61 more)
 
 ### Community 49 - "MvpWorkspace"
 Cohesion: 0.07
@@ -1934,11 +1942,11 @@ Nodes (23): 이동 상태 소유자가 하나이며 화면 인물과 운영 경�
 
 ### Community 55 - "Escalator"
 Cohesion: 0.06
-Nodes (27): Elevator, Car, Label, Running, Waiting, Escalator, Closed, End (+19 more)
+Nodes (26): Elevator, Car, Label, Running, Waiting, Escalator, Closed, End (+18 more)
 
 ### Community 56 - "CS-LAB.01.02: 이벤트 재생과 worker 복원능력 검사를 연결한다"
-Cohesion: 0.13
-Nodes (23): 지원 adapter 상태를 복원하고 미지원은 재계산/새 초기화로 명시한다, AC-CS-LAB.01.01-N: AC-CS-LAB.01.01-N, AC-CS-LAB.01.01-P: AC-CS-LAB.01.01-P, AC-CS-LAB.01.02-N: AC-CS-LAB.01.02-N, AC-CS-LAB.01.02-P: AC-CS-LAB.01.02-P, CS-LAB.01.01: 공통 cut의 코어·메시지·예약·난수 checkpoint를 저장한다, CS-LAB.01.02: 이벤트 재생과 worker 복원능력 검사를 연결한다, dep:CS-LAB.01.01:0: dep:CS-LAB.01.01:0 (+15 more)
+Cohesion: 0.12
+Nodes (24): 지원 adapter 상태를 복원하고 미지원은 재계산/새 초기화로 명시한다, AC-CS-LAB.01.01-N: AC-CS-LAB.01.01-N, AC-CS-LAB.01.01-P: AC-CS-LAB.01.01-P, AC-CS-LAB.01.02-N: AC-CS-LAB.01.02-N, AC-CS-LAB.01.02-P: AC-CS-LAB.01.02-P, CS-LAB.01: CS-LAB.01, CS-LAB.01.01: 공통 cut의 코어·메시지·예약·난수 checkpoint를 저장한다, CS-LAB.01.02: 이벤트 재생과 worker 복원능력 검사를 연결한다 (+16 more)
 
 ### Community 57 - "CS-WORLD.02.03: 관측기반 복원과 독립 치수 잔차를 비교한다"
 Cohesion: 0.10
@@ -1952,21 +1960,21 @@ Nodes (23): 벽·경로·예약·물리 영역과 사건 결과가 변하지 않
 Cohesion: 0.14
 Nodes (22): 부모 hash/sequence를 기록하고 A의 로그/판단 이유를 덮지 않는다, 새 입력·session·결과를 만들고 버튼 replay를 새 실험으로 표시하지 않는다, AC-CS-LAB.02.01-N: AC-CS-LAB.02.01-N, AC-CS-LAB.02.01-P: AC-CS-LAB.02.01-P, AC-CS-LAB.02.02-N: AC-CS-LAB.02.02-N, AC-CS-LAB.02.02-P: AC-CS-LAB.02.02-P, CS-LAB.02.01: 불변 parent에서 새 run으로 분기한다, CS-LAB.02.02: 정확 재개와 처음부터 재계산을 구분한다 (+14 more)
 
-### Community 60 - "Fixture"
-Cohesion: 0.12
-Nodes (16): BackfaceHits, TwinColliders, Count, List, MeshCollider, CSPLAY0202Tests, Fixture, Preview (+8 more)
+### Community 60 - "ReceiptKey"
+Cohesion: 0.04
+Nodes (50): CommandReceipt, CommitId, Fingerprint, Key, Sequence, Status, TargetResults, PreviewResult (+42 more)
 
 ### Community 61 - "SqliteProvider"
-Cohesion: 0.05
-Nodes (40): IOutboxClock, UtcNow, DateTimeOffset, Glibc, MacOS, NativeBinary, Linux, Mac (+32 more)
+Cohesion: 0.06
+Nodes (37): CommitReceipt, CommitId, DispatchableJobs, IntentReceipt, Revision, RunId, IOutboxClock, UtcNow (+29 more)
 
 ### Community 62 - "FirstPersonResponder"
-Cohesion: 0.04
-Nodes (40): CharacterController, JObject, VideoReferenceView, FpsInteractable, DisplayName, InteractionCount, InteractionPrompt, UnityEvent (+32 more)
+Cohesion: 0.06
+Nodes (31): CharacterController, JObject, VideoReferenceView, IFpsInteraction, InteractionPrompt, SetUp, FirstPersonResponder, CurrentPrompt (+23 more)
 
 ### Community 63 - "KitchenGasPlay"
 Cohesion: 0.11
-Nodes (19): Component, Device, KitchenGasPlay, Session, Scenario, Wait, BindingFlags, Bounds (+11 more)
+Nodes (18): Component, Device, KitchenGasPlay, Session, Scenario, Wait, BindingFlags, Bounds (+10 more)
 
 ### Community 64 - "아키텍처 문서"
 Cohesion: 0.14
@@ -1974,47 +1982,43 @@ Nodes (21): 00. 문서 계약과 핵심 결정, 01. 제품 경계·이해관계�
 
 ### Community 65 - "CS-OPS.07.01.md"
 Cohesion: 0.15
-Nodes (20): 동일인의 구간은 합집합으로 계산하고 회의는 실제 참여자별로 합산하며 무인계산·회신대기를 인시에 더하지 않고 누락·추정·도움을 보존한다, AC-CS-OPS.07.01-N: AC-CS-OPS.07.01-N, AC-CS-OPS.07.01-P: AC-CS-OPS.07.01-P, AC-CS-OPS.07.02-N: AC-CS-OPS.07.02-N, AC-CS-OPS.07.02-P: AC-CS-OPS.07.02-P, CS-OPS.07.01: 동의 기반 활동구간과 개발자 도움을 기록한다, CS-OPS.07.02: 총인시를 합집합과 검열구간 기준으로 집계한다, dep:CS-OPS.07.01:0: dep:CS-OPS.07.01:0 (+12 more)
+Nodes (21): 동일인의 구간은 합집합으로 계산하고 회의는 실제 참여자별로 합산하며 무인계산·회신대기를 인시에 더하지 않고 누락·추정·도움을 보존한다, AC-CS-OPS.07.01-N: AC-CS-OPS.07.01-N, AC-CS-OPS.07.01-P: AC-CS-OPS.07.01-P, AC-CS-OPS.07.02-N: AC-CS-OPS.07.02-N, AC-CS-OPS.07.02-P: AC-CS-OPS.07.02-P, CS-OPS.07: CS-OPS.07, CS-OPS.07.01: 동의 기반 활동구간과 개발자 도움을 기록한다, CS-OPS.07.02: 총인시를 합집합과 검열구간 기준으로 집계한다 (+13 more)
 
 ### Community 66 - "TwoAgencyFixture"
-Cohesion: 0.08
-Nodes (30): Agency, Assignment, Case, CSPACK0103Tests, Entity, Frame, Integrity, Loaded (+22 more)
+Cohesion: 0.07
+Nodes (38): Agency, Assignment, Case, CSPACK0103Tests, Entity, Frame, Integrity, Loaded (+30 more)
 
 ### Community 67 - "준비된 자산 임포트"
 Cohesion: 0.06
 Nodes (40): PreparedAssetSetup, IconRoot, AudioClip, Font, GameObject, Material, MenuItem, Mesh (+32 more)
 
 ### Community 68 - "OutboxDeliveryAck"
-Cohesion: 0.05
-Nodes (46): OutboxDispatcher, CancellationToken, Task, TimeSpan, OutboxDelivery, Identity, LeaseExpiresAt, OutboxRef (+38 more)
+Cohesion: 0.06
+Nodes (42): OutboxDispatcher, CancellationToken, Task, TimeSpan, OutboxDelivery, Identity, LeaseExpiresAt, OutboxRef (+34 more)
 
 ### Community 69 - "ChooGuard.App.Mvp"
-Cohesion: 0.06
-Nodes (24): CHOOGuard.UX.NativePreview.Editor, ChooGuard.Editor.Assets, ChooGuard.Presentation.Input, CHOOGuard.UX.NativePreview, ChooGuard.Tests.PlayMode.Stories, ChooGuard.Editor.Bootstrap, ChooGuard.App.Mvp, system_reflection (+16 more)
+Cohesion: 0.07
+Nodes (22): CHOOGuard.UX.NativePreview.Editor, ChooGuard.Presentation.Selection, ChooGuard.Presentation.Input, CHOOGuard.UX.NativePreview, ChooGuard.Presentation.Commands, ChooGuard.Editor.Bootstrap, ChooGuard.App.Mvp, tmpro (+14 more)
 
 ### Community 70 - "FireShutterPoint"
 Cohesion: 0.04
-Nodes (47): ShutterFaultHazard, Announcement, Caught, Clearance, Command, DangerRadius, Freed, Handover (+39 more)
+Nodes (50): ShutterFaultHazard, Announcement, Caught, Clearance, Command, DangerRadius, Freed, Handover (+42 more)
 
 ### Community 71 - "CS-LAB.04.02: 안전한 캐시와 전체 재실행 대조를 구현한다"
 Cohesion: 0.14
 Nodes (21): dirty 파생물·승인을 표시하고 영향 범위를 입증 못하면 확대 재계산하며 원본 로그를 보존하고 전체 재실행 대비 지정 결과의 동등성을 검사한다, AC-CS-LAB.04.01-N: AC-CS-LAB.04.01-N, AC-CS-LAB.04.01-P: AC-CS-LAB.04.01-P, AC-CS-LAB.04.02-N: AC-CS-LAB.04.02-N, AC-CS-LAB.04.02-P: AC-CS-LAB.04.02-P, CS-LAB.04: CS-LAB.04, CS-LAB.04.01: 의미 변경의 영향과 자격 만료를 계산한다, CS-LAB.04.02: 안전한 캐시와 전체 재실행 대조를 구현한다 (+13 more)
 
 ### Community 72 - "MajibangBuilder"
-Cohesion: 0.06
-Nodes (35): Action, back, Batch, BoxCollider, Camera, child, Collider, Color (+27 more)
+Cohesion: 0.04
+Nodes (59): Action, back, Bounds, BoxCollider, c, Camera, child, Component (+51 more)
 
 ### Community 73 - "ComparisonReport"
-Cohesion: 0.04
-Nodes (45): CommitReceipt, CommitId, DispatchableJobs, IntentReceipt, Revision, RunId, ComparisonReport, BasisRef (+37 more)
+Cohesion: 0.12
+Nodes (16): ComparisonReport, BasisRef, CommonQoiIds, ComparisonId, MetricsRef, RunRefs, SelectedPlanRef, SelectionReason (+8 more)
 
 ### Community 74 - "OpenBVE 렌더 옵션"
 Cohesion: 0.03
 Nodes (48): AbstractShader, Background, BaseOptions, CameraProperties, Cube, DisplayedTimetable, ErrorCode, FileSystem (+40 more)
-
-### Community 75 - "JObject"
-Cohesion: 0.21
-Nodes (6): badge, badgeInk, board, glyph, ink, JObject
 
 ### Community 76 - "보행자 힘 모델 C++"
 Cohesion: 0.06
@@ -2025,8 +2029,8 @@ Cohesion: 0.04
 Nodes (45): EmergencySession, Board, Crowd, Current, Hands, Hud, Incidents, Jev (+37 more)
 
 ### Community 78 - "TutorialSession"
-Cohesion: 0.07
-Nodes (30): Checkpoint, TutorialSession, AuditFindings, Finished, LastReason, MisjudgementCount, RoleBoundaryViolations, Runner (+22 more)
+Cohesion: 0.06
+Nodes (37): Checkpoint, TutorialSession, AuditFindings, Finished, LastReason, MisjudgementCount, RoleBoundaryViolations, Runner (+29 more)
 
 ### Community 79 - "모듈 의존 경계 명세"
 Cohesion: 0.14
@@ -2052,12 +2056,12 @@ Nodes (17): KLayout, KOpening, a, b, inward, JToken, List, ring (+9 more)
 Cohesion: 0.10
 Nodes (16): KRun, a, b, inward, List, ring, t0, t1 (+8 more)
 
-### Community 87 - "ContentReference"
-Cohesion: 0.05
-Nodes (48): CommitBatch, EventsRef, ExpectedRevision, OutboxRef, ProjectionRef, Receipt, ReservationsRef, RunId (+40 more)
+### Community 87 - "StableId"
+Cohesion: 0.04
+Nodes (68): StableId, IsValid, Value, BranchKind, EXACT_FORK, REEXECUTE_FROM_ORIGIN, BranchRequest, CheckpointRef (+60 more)
 
 ### Community 88 - "CSBOOT0202Tests"
-Cohesion: 0.10
+Cohesion: 0.09
 Nodes (27): UtcTimestamp, Value, DateTimeOffset, EvidenceRecord, ClaimScope, EvidenceId, ExecutedAt, ExecutorId (+19 more)
 
 ### Community 89 - "Vector3"
@@ -2065,16 +2069,16 @@ Cohesion: 0.12
 Nodes (5): Batch, TriangleCount, VertexCount, Dictionary, Vector3
 
 ### Community 90 - "Team"
-Cohesion: 0.07
-Nodes (27): Vector3, World, Renderer, Responder, FirstPersonResponder, Team, BombSquad, Crew (+19 more)
+Cohesion: 0.03
+Nodes (39): Vector3, Column, Vector3, World, PlaceName, Column, Renderer, Responder (+31 more)
 
 ### Community 91 - "ProcedureRunner"
 Cohesion: 0.07
-Nodes (33): Step, Decision, Definition, ProcedureRunner, Basis, Completed, DefinitionHash, Id (+25 more)
+Nodes (31): Step, Decision, Definition, ProcedureRunner, Basis, Completed, DefinitionHash, Id (+23 more)
 
 ### Community 92 - "CommandIntent"
-Cohesion: 0.03
-Nodes (78): MvpBackendProbe, Dictionary, Reason, MvpOperationsPort, Revision, TargetIds, Teams, MvpTeamView (+70 more)
+Cohesion: 0.08
+Nodes (30): MvpBackendProbe, Dictionary, Reason, MvpOperationsPort, Revision, TargetIds, Teams, MvpTeamView (+22 more)
 
 ### Community 93 - "MvpOfficialStationRenderOptimizer"
 Cohesion: 0.09
@@ -2086,7 +2090,7 @@ Nodes (34): MvpPhysicsResult, Cursor, Decision, Definition, Edge, EdgeView, MvpP
 
 ### Community 95 - "InputContextRouter"
 Cohesion: 0.07
-Nodes (26): InputContextRouter, ActiveModal, BackgroundAllowed, CapturedPointerCount, KeyboardOwner, RuntimeActions, SelectedText, TextOwnsKeyboard (+18 more)
+Nodes (27): InputContextRouter, ActiveModal, BackgroundAllowed, CapturedPointerCount, KeyboardOwner, RuntimeActions, SelectedText, TextOwnsKeyboard (+19 more)
 
 ### Community 96 - "CS-OPS.02 · SQLite 저장·원자 예약·outbox"
 Cohesion: 0.04
@@ -2098,15 +2102,15 @@ Nodes (49): CS-PLAY.02 · 팀·업무 선택과 명령 미리보기, CS-PLAY.03 
 
 ### Community 98 - "Vector2"
 Cohesion: 0.11
-Nodes (14): a, b, inward, JToken, List, ring, t0, t1 (+6 more)
+Nodes (16): a, auto, b, cap, inward, JToken, List, ring (+8 more)
 
 ### Community 99 - "StationLookBuilder"
 Cohesion: 0.07
 Nodes (35): Name, StationLookBuilder, Action, Bloom, ColorAdjustments, Light, List, Material (+27 more)
 
-### Community 100 - "RuleClause"
-Cohesion: 0.04
-Nodes (63): RuleCatalog, Clauses, IReadOnlyList, ContractGuard, RuleActivationDecision, Clause, ExceptionTruth, GuardTruth (+55 more)
+### Community 100 - "CSPACK0201Tests"
+Cohesion: 0.18
+Nodes (11): RuleCatalog, Clauses, IReadOnlyList, IEnumerable, CSPACK0201Tests, ArgumentException, ArgumentNullException, ArgumentOutOfRangeException (+3 more)
 
 ### Community 101 - "CommandReceipt 스키마"
 Cohesion: 0.05
@@ -2121,8 +2125,8 @@ Cohesion: 0.05
 Nodes (47): additionalProperties, type, pattern, type, $id, pattern, type, additionalProperties (+39 more)
 
 ### Community 104 - "Checkpoint"
-Cohesion: 0.04
-Nodes (54): SimTick, Microseconds, Checkpoint, CheckpointId, ContentLockRef, CoreStateRef, CutSequence, EventQueueRef (+46 more)
+Cohesion: 0.03
+Nodes (66): SimTick, Microseconds, Checkpoint, CheckpointId, ContentLockRef, CoreStateRef, CutSequence, EventQueueRef (+58 more)
 
 ### Community 105 - "CSBOOT0201Tests"
 Cohesion: 0.12
@@ -2130,7 +2134,7 @@ Nodes (17): CSBOOT0201Tests, ProjectRoot, Definition, Layout, Module, Snapshot, 
 
 ### Community 106 - "ContractRegressionTests"
 Cohesion: 0.08
-Nodes (9): ContractRegressionTests, Tests for the PRD's machine-readable contracts, not the product runtime., ids(), load_bundle(), Any, Validate PRD declarations; this never runs or approves the simulator., validate(), checked_edges() (+1 more)
+Nodes (15): ContractRegressionTests, ids(), load_bundle(), Any, validate(), checked_edges(), need(), 개념 (+7 more)
 
 ### Community 107 - "자격 판정 스키마"
 Cohesion: 0.04
@@ -2141,7 +2145,7 @@ Cohesion: 0.05
 Nodes (46): additionalProperties, items, maxItems, minItems, type, $id, pattern, type (+38 more)
 
 ### Community 109 - "AdversarialPlan"
-Cohesion: 0.07
+Cohesion: 0.08
 Nodes (16): AdversarialPlan, check_files(), cycle_errors(), load(), r(), main(), path_key(), phase_graph() (+8 more)
 
 ### Community 110 - "check"
@@ -2169,24 +2173,24 @@ Cohesion: 0.05
 Nodes (45): additionalProperties, items, minItems, type, minLength, type, pattern, type (+37 more)
 
 ### Community 116 - ".Label"
-Cohesion: 0.09
-Nodes (35): AspectRatioFitter, FpsUiFactory, Action, Button, Canvas, CanvasScaler, Color, GameObject (+27 more)
+Cohesion: 0.08
+Nodes (38): AspectRatioFitter, FpsUiFactory, Action, Button, Canvas, CanvasScaler, Color, GameObject (+30 more)
 
 ### Community 117 - "EscalatorStopButton"
-Cohesion: 0.17
-Nodes (11): EscalatorStopButton, DisplayName, InteractionPrompt, SecondaryPrompt, Collider, Color, FirstPersonResponder, Material (+3 more)
+Cohesion: 0.10
+Nodes (18): EscalatorStopButton, DisplayName, InteractionPrompt, SecondaryPrompt, Collider, Color, FirstPersonResponder, Material (+10 more)
 
 ### Community 118 - "CS-SCRIPT.04.01: 같은 ScriptIR에서 JSON·Markdown 초안을 출력한다"
 Cohesion: 0.10
-Nodes (30): 지원 형식과 수동 reconciliation 한계를 표시하고 의미변경은 운영안에 연결해 관련 승인을 무효화하며 출력후 수작업과 수정량을 기록한다, AC-CS-SCRIPT.04.01-N: AC-CS-SCRIPT.04.01-N, AC-CS-SCRIPT.04.01-P: AC-CS-SCRIPT.04.01-P, AC-CS-SCRIPT.04.02-N: AC-CS-SCRIPT.04.02-N, AC-CS-SCRIPT.04.02-P: AC-CS-SCRIPT.04.02-P, AC-CS-SCRIPT.04.03-N: AC-CS-SCRIPT.04.03-N, AC-CS-SCRIPT.04.03-P: AC-CS-SCRIPT.04.03-P, CS-SCRIPT.04: CS-SCRIPT.04 (+22 more)
+Nodes (29): 지원 형식과 수동 reconciliation 한계를 표시하고 의미변경은 운영안에 연결해 관련 승인을 무효화하며 출력후 수작업과 수정량을 기록한다, AC-CS-SCRIPT.04.01-N: AC-CS-SCRIPT.04.01-N, AC-CS-SCRIPT.04.01-P: AC-CS-SCRIPT.04.01-P, AC-CS-SCRIPT.04.02-N: AC-CS-SCRIPT.04.02-N, AC-CS-SCRIPT.04.02-P: AC-CS-SCRIPT.04.02-P, AC-CS-SCRIPT.04.03-N: AC-CS-SCRIPT.04.03-N, AC-CS-SCRIPT.04.03-P: AC-CS-SCRIPT.04.03-P, CS-SCRIPT.04.01: 같은 ScriptIR에서 JSON·Markdown 초안을 출력한다 (+21 more)
 
 ### Community 119 - "Clean Start ActivityInterval 스키마"
 Cohesion: 0.05
 Nodes (43): additionalProperties, type, pattern, type, enum, enum, additionalProperties, properties (+35 more)
 
-### Community 120 - "CHOOGuard_Clean_Start_v3/epics/CS-SHIP.md"
-Cohesion: 0.05
-Nodes (69): CS-SHIP.01 · 오프라인 제품 묶음·업데이트, CS-SHIP.02 · 백업·스키마 갱신·장애 복구, CS-SHIP.03 · 새 현장·기관·사건 확장과 운영 인계, CS-SHIP · 로컬 배포·복구·현장 확장, 구현 절차, 구현 절차, 구현 절차, 새 구현 경로 (+61 more)
+### Community 120 - "CS-SHIP.03 · 새 현장·기관·사건 확장과 운영 인계"
+Cohesion: 0.25
+Nodes (8): CS-SHIP.03 · 새 현장·기관·사건 확장과 운영 인계, 구현 절차, 새 구현 경로, 선행 산출물과 소비 단계, 실제 시험 매체, 연결과 인계, 정확한 인수 oracle · 아직 미실행, 필수 상세 명세
 
 ### Community 121 - "v3 ActivityInterval 스키마"
 Cohesion: 0.05
@@ -2201,16 +2205,16 @@ Cohesion: 0.05
 Nodes (44): dependencies, com.github-glitchenzo.nugetforunity, com.unity.inputsystem, com.unity.modules.accessibility, com.unity.modules.adaptiveperformance, com.unity.modules.ai, com.unity.modules.androidjni, com.unity.modules.animation (+36 more)
 
 ### Community 124 - "StationSurvey"
-Cohesion: 0.08
-Nodes (34): DoorEntry, ElevatorEntry, ElevatorStop, PlatformEntry, SeatEntry, Lane, MeshEscalator, StationSurvey (+26 more)
+Cohesion: 0.09
+Nodes (32): DoorEntry, ElevatorStop, PlatformEntry, SeatEntry, Lane, MeshEscalator, StationSurvey, Ktx (+24 more)
 
 ### Community 125 - "FpsGazeTracker"
-Cohesion: 0.15
-Nodes (10): FirstPersonResponder, FpsGazeTracker, CurrentCollider, CurrentDwellSeconds, GazeSnapshot, Collider, Dictionary, FirstPersonResponder (+2 more)
-
-### Community 126 - "KitchenRoom"
 Cohesion: 0.09
-Nodes (24): Area, KitchenRoom, Obstacle, List, Rect, Vector2, Vector3, KitchenRooms (+16 more)
+Nodes (18): FirstPersonResponder, FirstPersonResponder, FpsGazeTracker, CurrentCollider, CurrentDwellSeconds, GazeSnapshot, Collider, Dictionary (+10 more)
+
+### Community 126 - "KitchenLayoutTests"
+Cohesion: 0.22
+Nodes (9): Area, KitchenLayoutTests, Shop, Kind, Rect, Test, Vector2, Vector3 (+1 more)
 
 ### Community 127 - "Clean Start SessionProjection 스키마"
 Cohesion: 0.05
@@ -2229,20 +2233,20 @@ Cohesion: 0.09
 Nodes (20): StationWorld, Paths, Points, Seed, Train, centre, Dictionary, EscalatorEntry (+12 more)
 
 ### Community 131 - "FirstPersonResponder"
-Cohesion: 0.08
+Cohesion: 0.07
 Nodes (25): FirstPersonResponder, CurrentInteraction, CurrentPrompt, CurrentSecondaryPrompt, CurrentTargetCollider, ExternalInputMode, HasFocus, HasTarget (+17 more)
 
 ### Community 132 - "CS-WORLD.04.02: 정차·도킹·문과 차량 좌표계를 연결한다"
-Cohesion: 0.13
-Nodes (21): 바닥 없는 진입을 막고 원래 논리 상태를 유지한다, AC-CS-WORLD.04.01-N: AC-CS-WORLD.04.01-N, AC-CS-WORLD.04.01-P: AC-CS-WORLD.04.01-P, AC-CS-WORLD.04.02-N: AC-CS-WORLD.04.02-N, AC-CS-WORLD.04.02-P: AC-CS-WORLD.04.02-P, CS-WORLD.04.01: 구역 준비상태에 따라 진입과 additive 로딩을 제어한다, CS-WORLD.04.02: 정차·도킹·문과 차량 좌표계를 연결한다, dep:CS-WORLD.04.01:0: dep:CS-WORLD.04.01:0 (+13 more)
+Cohesion: 0.12
+Nodes (22): 바닥 없는 진입을 막고 원래 논리 상태를 유지한다, AC-CS-WORLD.04.01-N: AC-CS-WORLD.04.01-N, AC-CS-WORLD.04.01-P: AC-CS-WORLD.04.01-P, AC-CS-WORLD.04.02-N: AC-CS-WORLD.04.02-N, AC-CS-WORLD.04.02-P: AC-CS-WORLD.04.02-P, CS-WORLD.04: CS-WORLD.04, CS-WORLD.04.01: 구역 준비상태에 따라 진입과 additive 로딩을 제어한다, CS-WORLD.04.02: 정차·도킹·문과 차량 좌표계를 연결한다 (+14 more)
 
 ### Community 133 - "WorldSet 매니페스트 설정"
 Cohesion: 0.05
 Nodes (41): acceptance, appliedOperations, budget, lighting, palette, seed, blender, architecturalSides (+33 more)
 
 ### Community 134 - "ElevatorCar"
-Cohesion: 0.05
-Nodes (30): State, BoxCollider, Transform, Vector3, ElevatorCar, Full, Id, Label (+22 more)
+Cohesion: 0.06
+Nodes (26): State, ElevatorCar, Full, Id, Label, Now, Player, Running (+18 more)
 
 ### Community 135 - "MvpEvidenceBuildingBuilder"
 Cohesion: 0.12
@@ -2253,12 +2257,12 @@ Cohesion: 0.06
 Nodes (42): items, minItems, type, items, minItems, type, minLength, type (+34 more)
 
 ### Community 137 - "acquire_busan_gba_height.py"
-Cohesion: 0.05
-Nodes (31): fetch_chunk(), Acquire only the exact Busan ZIP member with strict HTTP ranges and CRC., Remote, request(), Bounded public GBA ZIP central-directory probe; never downloads full archive., Remote, fetch(), main() (+23 more)
+Cohesion: 0.06
+Nodes (26): fetch_chunk(), Acquire only the exact Busan ZIP member with strict HTTP ranges and CRC., Remote, request(), Bounded public GBA ZIP central-directory probe; never downloads full archive., Remote, fetch(), main() (+18 more)
 
 ### Community 138 - "KitchenAppliancePoint"
-Cohesion: 0.04
-Nodes (43): Usable, GasLeakSource, Kitchen, AudioSource, Func, IEnumerable, Pools, Transition (+35 more)
+Cohesion: 0.13
+Nodes (14): KitchenAppliancePoint, AutoId, DisplayName, Equipment, Fire, Gas, HoodId, HoseId (+6 more)
 
 ### Community 139 - "MVP 역사 씬 빌더"
 Cohesion: 0.12
@@ -2293,44 +2297,44 @@ Cohesion: 0.07
 Nodes (21): AbstractCar, CabHandles, DriverBody, CarBase, Dictionary, Plugin, TrainBase, AvailablePowerSupplies (+13 more)
 
 ### Community 147 - "FireHazard"
-Cohesion: 0.03
-Nodes (67): FireHazard, CutBy, Electric, Feed, FeedCutBy, FeedFloor, FeedName, FeedNote (+59 more)
+Cohesion: 0.04
+Nodes (50): FireHazard, CutBy, Electric, Feed, FeedCutBy, FeedFloor, FeedName, FeedNote (+42 more)
 
 ### Community 148 - "Unity 패키지 잠금 모듈"
 Cohesion: 0.06
 Nodes (40): dependencies, depth, source, version, dependencies, depth, source, version (+32 more)
 
 ### Community 149 - "MvpHazardFieldView"
-Cohesion: 0.08
-Nodes (23): MvpHazardFieldView, Height, OverlayVisible, SampledIncidentTime, Width, Button, GameObject, Image (+15 more)
+Cohesion: 0.09
+Nodes (20): MvpHazardFieldView, Height, OverlayVisible, SampledIncidentTime, Width, Button, GameObject, Image (+12 more)
 
 ### Community 150 - "IntegratedInputPlayModeTests"
 Cohesion: 0.13
 Nodes (20): IntegratedInputPlayModeTests, Canvas, EventSystem, GameObject, IEnumerator, Image, InputActionAsset, InputSystemUIInputModule (+12 more)
 
 ### Community 151 - "A. KORAIL/KTX 정비·작업자"
-Cohesion: 0.06
-Nodes (31): 3. 자료 목록 — 25개 고유 묶음, A. KORAIL/KTX 정비·작업자, B. 청소·정리·이동 지원·역무 소품, C. 비상훈련 — 시민 보호·협업, D. 공식 VR/360·박물관·정부 사진 아카이브, E. 해외 철도 — 국내 절차와 분리, R01. 코레일TV — 「국내 최대 규모」 KTX 정비 과정을 소개합니다!, R02. 코레일TV / 레일리즘 — KTX 정비하는 데 로봇까지? 코레일의 첨단시설 자랑 (+23 more)
+Cohesion: 0.05
+Nodes (38): 1. 범위와 읽는 법, 2. 우선 열람할 자료, 3. 자료 목록 — 25개 고유 묶음, 4. 직접 본 이미지에서만 말할 수 있는 것, 5. 게임 행동 레퍼런스로 읽는 방법 — 제안이지 개발계획 아님, 6. 제외·보류 및 증거 공백, 7. 조사 품질 자체평가, A. KORAIL/KTX 정비·작업자 (+30 more)
 
 ### Community 152 - "Vector3"
 Cohesion: 0.10
 Nodes (6): Batch, TriangleCount, VertexCount, Dictionary, Random, Vector3
 
 ### Community 153 - "ShiftLog"
-Cohesion: 0.04
-Nodes (37): Cost, Column, Column, Column, Column, Column, Column, DirectorRecord (+29 more)
+Cohesion: 0.05
+Nodes (29): Cost, DirectorRecord, Judged, RateScale, Rounds, Unanswered, Vanished, Entry (+21 more)
 
-### Community 154 - "Transform"
-Cohesion: 0.19
-Nodes (15): Particles, Props, Bounds, BoxCollider, Color, GameObject, Material, Mesh (+7 more)
+### Community 154 - "AutoExtinguisherPoint"
+Cohesion: 0.10
+Nodes (26): Particles, Props, Bounds, BoxCollider, Color, GameObject, Material, Mesh (+18 more)
 
-### Community 155 - "PauseMenu"
-Cohesion: 0.09
-Nodes (16): GameSettings, MasterVolume, MouseSensitivity, FirstPersonResponder, PauseMenu, BriefingDone, ContinueButton, Suppressed (+8 more)
+### Community 155 - "MonoBehaviour"
+Cohesion: 0.07
+Nodes (21): ShiftResult, AutomatedRunBanner, GameSettings, MasterVolume, MouseSensitivity, FirstPersonResponder, PauseMenu, BriefingDone (+13 more)
 
 ### Community 156 - "MvpSourceCoverage"
-Cohesion: 0.16
-Nodes (15): Contract, MvpSourceCoverage, Active, RegistrationHash, SourceHash, Point, Contract, Dictionary (+7 more)
+Cohesion: 0.15
+Nodes (16): Contract, MvpSourceCoverage, Active, RegistrationHash, SourceHash, Point, Contract, Dictionary (+8 more)
 
 ### Community 157 - "명령 영수증 스키마"
 Cohesion: 0.05
@@ -2349,12 +2353,12 @@ Cohesion: 0.13
 Nodes (16): Action, GameObject, HashSet, List, Material, Mesh, MeshCollider, MeshFilter (+8 more)
 
 ### Community 161 - "MvpOpenWorldCamera"
-Cohesion: 0.10
-Nodes (22): FloorSurface, MvpCameraSurfaceProfile, HasTerrain, Ray, Transform, Vector3, MvpOpenWorldCamera, FollowedTarget (+14 more)
+Cohesion: 0.07
+Nodes (26): FloorSurface, MvpCameraSurfaceProfile, HasTerrain, Ray, Transform, Vector3, MvpOpenWorldCamera, FollowedTarget (+18 more)
 
-### Community 162 - "StableId"
-Cohesion: 0.04
-Nodes (51): NamedIdentity, DisplayName, Id, SiValue, Unit, Value, StableId, IsValid (+43 more)
+### Community 162 - "SupportRequest"
+Cohesion: 0.08
+Nodes (32): AuthoritySnapshot, Grants, RunId, TargetAgencies, TeamAgencies, SupportDecision, Allowed, Denial (+24 more)
 
 ### Community 163 - "FPS 역사 씬 빌더 A"
 Cohesion: 0.10
@@ -2368,12 +2372,12 @@ Nodes (37): 04. 현실 공간·무료 자산·디지털 트윈 제작 파이프�
 Cohesion: 0.06
 Nodes (36): additionalProperties, const, type, pattern, type, minLength, type, additionalProperties (+28 more)
 
-### Community 166 - "RadioChannel"
-Cohesion: 0.11
-Nodes (18): Line, RadioChannel, Announcement, Colleague, Control, Fire, Medical, Office (+10 more)
+### Community 166 - "PaLine"
+Cohesion: 0.06
+Nodes (35): PaLine, DoorCheck, Earthquake, ElevatorCheck, EscalatorStopped, FalseAlarm, Fire, GasLeak (+27 more)
 
 ### Community 167 - ".BuildUnder"
-Cohesion: 0.11
+Cohesion: 0.10
 Nodes (24): Data, Site, Feature, Limits, Data, Batch, Data, Feature (+16 more)
 
 ### Community 168 - "FPS 역사 씬 빌더 B"
@@ -2385,8 +2389,8 @@ Cohesion: 0.12
 Nodes (19): MvpBuildingHeightResolver, Resolution, Batch, CoverageReceipt, HeightReceipt, Limits, MvpCityBuilder, Point (+11 more)
 
 ### Community 170 - "audit_ver13_components.py"
-Cohesion: 0.08
-Nodes (34): Box, children(), classify(), name(), Point, record(), Ref, Transform (+26 more)
+Cohesion: 0.10
+Nodes (27): Box, children(), classify(), name(), Point, record(), Ref, Transform (+19 more)
 
 ### Community 171 - "StationNavigationBuilder"
 Cohesion: 0.10
@@ -2397,8 +2401,8 @@ Cohesion: 0.13
 Nodes (14): AuditTerminal, IsOpen, LastReport, FirstPersonResponder, Func, FpsAuditTerminalTests, BoxCollider, GameObject (+6 more)
 
 ### Community 173 - "MvpInteriorBuilder"
-Cohesion: 0.24
-Nodes (12): HubProp, MvpInteriorBuilder, Color, List, Material, MenuItem, Mesh, MeshFilter (+4 more)
+Cohesion: 0.10
+Nodes (26): MvpInteriorHubView, Camera, Renderer, HubProp, MvpInteriorBuilder, WorldPacket, Color, List (+18 more)
 
 ### Community 174 - "FPS 게임플레이 시각 레퍼런스"
 Cohesion: 0.06
@@ -2417,12 +2421,12 @@ Cohesion: 0.07
 Nodes (34): dependencies, depth, source, url, version, dependencies, depth, source (+26 more)
 
 ### Community 178 - "StationPoints"
-Cohesion: 0.04
-Nodes (62): ZoneEntry, ElevatorEntry, CarEntry, File, Point, PointKind, Chair, Counter (+54 more)
+Cohesion: 0.06
+Nodes (40): ZoneEntry, PlatformEntry, ElevatorEntry, EscalatorEntry, ElevatorEntry, File, Point, PointKind (+32 more)
 
 ### Community 179 - "MvpPhysicsBridge"
-Cohesion: 0.11
-Nodes (10): MvpPhysicsBridge, Diagnostic, Failed, InFlight, LastResult, Ready, Request, ConcurrentQueue (+2 more)
+Cohesion: 0.10
+Nodes (13): MvpHazardFieldFrame, MvpPhysicsBridge, Diagnostic, Failed, InFlight, LastResult, Ready, Request (+5 more)
 
 ### Community 180 - "MvpCityBuilder"
 Cohesion: 0.12
@@ -2465,8 +2469,8 @@ Cohesion: 0.06
 Nodes (33): CS-WORLD.01 · 처음부터 만드는 2공간·문 fixture, CS-WORLD.02 · 첫 철도 공간과 무료 시각자산 제작, CS-WORLD.03 · 운영 객체·월드마커·층별 보기, CS-WORLD.04 · 구역 준비·로딩·차량 프레임 연결, CS-WORLD · 현실 기반 철도 운영 공간, 구현 절차, 구현 절차, 구현 절차 (+25 more)
 
 ### Community 190 - "CS-BOOT.03.01.md"
-Cohesion: 0.11
-Nodes (24): 필수 입력/guard/상태가 빠지지 않고 미구현 파일을 실행 가능한 것으로 제시하지 않는다, AC-CS-BOOT.03.01-N: AC-CS-BOOT.03.01-N, AC-CS-BOOT.03.01-P: AC-CS-BOOT.03.01-P, AC-CS-BOOT.03.02-N: AC-CS-BOOT.03.02-N, AC-CS-BOOT.03.02-P: AC-CS-BOOT.03.02-P, CS-BOOT.03: CS-BOOT.03, CS-BOOT.03.01: EditMode·PlayMode 실행기의 실패 전파를 만든다, CS-BOOT.03.02: PC Player 빌드와 실행 영수증을 생성한다 (+16 more)
+Cohesion: 0.10
+Nodes (31): 기존 요구 중 변경한 것, 유지하는 것, 이번 실제 작업, 이전 문서와의 관계, 제거한 시작 조건, 초기화 전제에 따른 설계 정정, 현재 결정, 필수 입력/guard/상태가 빠지지 않고 미구현 파일을 실행 가능한 것으로 제시하지 않는다 (+23 more)
 
 ### Community 191 - "CS-LAB 에픽 명세 사본 2"
 Cohesion: 0.06
@@ -2528,13 +2532,13 @@ Nodes (29): ref_node_crypto, ref_node_fs, ref_node_http, ref_node_https, ref_nod
 Cohesion: 0.07
 Nodes (21): EscalatorRide, Direction, HorizontalOnly, Speed, WorldVelocity, RideDirection, Down, Up (+13 more)
 
-### Community 206 - "active_plan.py"
-Cohesion: 0.11
-Nodes (25): argparse, Read one new task. Does not grant execution authority or run Unity., brief(), existing_path(), fields(), main(), Single-story plan inspection and one derived Markdown view; never executes work., Exactly the required keys, plus any of the documented optional keys. (+17 more)
+### Community 206 - "distil_crowd.py"
+Cohesion: 0.04
+Nodes (69): argparse, datetime, Read one new task. Does not grant execution authority or run Unity., 무엇이 언제 도는가, glob, scipy_stats, sklearn_feature_extraction, sklearn_impute (+61 more)
 
 ### Community 207 - "MvpWorldSurfaceBuilder"
 Cohesion: 0.11
-Nodes (21): Building, Heightfield, Layer, ModelSpec, MvpWorldSurfaceBuilder, Point, Prop, TextureSpec (+13 more)
+Nodes (21): MvpMeshPersistence, Mesh, Building, Heightfield, ModelSpec, MvpWorldSurfaceBuilder, Point, Prop (+13 more)
 
 ### Community 208 - "ConvertExtensionsCfg"
 Cohesion: 0.08
@@ -2553,8 +2557,8 @@ Cohesion: 0.08
 Nodes (25): ActionReceipt, ActionVerb, ActorActionIntent, CollisionDetectionMode, DetailedInteractionController, ActiveIntent, ActivePrompt, ActorId (+17 more)
 
 ### Community 212 - ".CreateBootstrapAssets"
-Cohesion: 0.12
-Nodes (16): BootstrapProject, NormalizationFile, NormalizationManifest, Canvas, CanvasScaler, EventSystem, InputActionAsset, InputActionReference (+8 more)
+Cohesion: 0.13
+Nodes (15): BootstrapProject, NormalizationFile, NormalizationManifest, Canvas, CanvasScaler, EventSystem, InputActionAsset, InputActionReference (+7 more)
 
 ### Community 213 - "자율 AI 에이전트 설계"
 Cohesion: 0.07
@@ -2566,15 +2570,15 @@ Nodes (20): Backup, CoverageReceipt, MeshReadback, MvpOfficialStationBinder, Rec
 
 ### Community 215 - "MvpWorldSurfaceBuilder"
 Cohesion: 0.10
-Nodes (23): MvpMeshPersistence, Mesh, Data, Building, Heightfield, ModelSpec, MvpWorldSurfaceBuilder, Point (+15 more)
+Nodes (22): Data, Data, Building, Heightfield, ModelSpec, MvpWorldSurfaceBuilder, Point, Prop (+14 more)
 
 ### Community 216 - "FPS·물리 선행자료 조사"
 Cohesion: 0.07
 Nodes (29): 10. 결론과 남은 불확실성, 11. 추가 조사: 철도 시뮬레이터의 차량·제동·문 상태 코드, 1. 핵심 발견, 2. Unity 유지와 Unreal/Godot 전환의 연구상 비교, 3. 구체 후보 12개 + 정비 상태 모델 보조 후보, 4. 물리 계층: 무엇을 사실적으로 만들 수 있고 무엇은 별개인가, 5. My Summer Car에서 가져올 것은 자산보다 작업 모델, 6. PUBG·서든어택·배틀로얄에서 가져올 원리 (+21 more)
 
 ### Community 217 - "CHOOGuard — 새 구축 제품 기준"
-Cohesion: 0.06
-Nodes (31): 10. 자료·에셋, 11. 사용자 가치와 도입 검증, 12. 제외와 변경 경계, 1. 누구의 어떤 문제를 해결하는가, 2. 핵심 여정, 3. 정확히 두 모드, 4. Unity 화면·입력, 5. 새로운 공간 기준 (+23 more)
+Cohesion: 0.15
+Nodes (13): 10. 자료·에셋, 11. 사용자 가치와 도입 검증, 12. 제외와 변경 경계, 1. 누구의 어떤 문제를 해결하는가, 2. 핵심 여정, 3. 정확히 두 모드, 4. Unity 화면·입력, 5. 새로운 공간 기준 (+5 more)
 
 ### Community 218 - "행위자 요청 기한 스키마"
 Cohesion: 0.07
@@ -2585,16 +2589,16 @@ Cohesion: 0.07
 Nodes (28): 1. 실제 최근 작업을 관찰한다, 2. 세 조건으로 형성적 비교를 한다, 3. 시간·품질·추가 가치를 나눠 판정한다, 4. 실제 훈련 적용은 별도로 검토한다, 검증할 사용 상황, 검토 결론, 결합 시험이 필수다, 경쟁이 없는 아이디어는 아니다 (+20 more)
 
 ### Community 220 - "MvpSourceCoverage"
-Cohesion: 0.11
-Nodes (23): Feature, Feature, Polygon, Feature, Point, Feature, Contract, MvpSourceCoverage (+15 more)
+Cohesion: 0.12
+Nodes (22): Feature, Feature, Polygon, Feature, Layer, Point, Feature, MvpSourceCoverage (+14 more)
 
 ### Community 221 - "GameHud"
-Cohesion: 0.11
-Nodes (16): GameHud, Compass, Font, Radio, Slot, SlotView, Canvas, Color (+8 more)
+Cohesion: 0.10
+Nodes (17): GameHud, Compass, Font, Radio, Root, Slot, SlotView, Canvas (+9 more)
 
 ### Community 222 - "SoakRun"
-Cohesion: 0.11
-Nodes (12): ShaderWarmup, Action, IEnumerator, RuntimeInitializeOnLoadMethod, Report, Shift, SoakRun, IEnumerator (+4 more)
+Cohesion: 0.07
+Nodes (19): LoadingScreen, SceneFlow, Loading, IEnumerator, Image, RuntimeInitializeOnLoadMethod, TMP_Text, ShaderWarmup (+11 more)
 
 ### Community 223 - "ContentValidationResult"
 Cohesion: 0.10
@@ -2609,8 +2613,8 @@ Cohesion: 0.12
 Nodes (19): FireExtinguisherSliceBuilder, Placement, Bounds, BoxCollider, GameObject, InspectionPoint, IReadOnlyList, Material (+11 more)
 
 ### Community 226 - "MvpWorldSurfaceBuilder"
-Cohesion: 0.11
-Nodes (23): MaterialSpec, Building, Heightfield, MaterialSpec, ModelSpec, MvpWorldSurfaceBuilder, Point, Prop (+15 more)
+Cohesion: 0.09
+Nodes (31): Data, MaterialSpec, Building, Heightfield, Layer, Building, Data, Heightfield (+23 more)
 
 ### Community 227 - "Agora 월드 모델 조사"
 Cohesion: 0.07
@@ -2629,8 +2633,8 @@ Cohesion: 0.09
 Nodes (27): ContentRevisionRef, Id, Revision, ScenarioSpec, Id, Revision, Site, 09.1 생성 입력 (+19 more)
 
 ### Community 231 - "상세 조작·직무별 튜토리얼 정밀 설계"
-Cohesion: 0.07
-Nodes (28): SiUnit, CubicMetre, Kelvin, Kilogram, Metre, MetresPerSecond, Pascal, Second (+20 more)
+Cohesion: 0.13
+Nodes (15): 10. OSS/도구의 구체 적용과 비적용, 11. 현 코드 이행 순서와 호출군, 12. 구현 수용 장면: 결과·실패·경합, 1. 범위와 확인한 출발점, 2. 공유 사실·관측·행동의 분리, 4. 절차 그래프와 증거 판정, 5.1 정비: 차내 부품 검사·교체와 정비확인 인계, 5.2 청소: 객실/역사 구역 정리·오염 제거·비품 복구 (+7 more)
 
 ### Community 232 - "철도차량 정비 매뉴얼 조사"
 Cohesion: 0.07
@@ -2644,9 +2648,9 @@ Nodes (27): $ref, description, pattern, type, enum, $ref, basisSnapshotId, expir
 Cohesion: 0.07
 Nodes (27): observation, $ref, additionalProperties, allOf, properties, required, type, description (+19 more)
 
-### Community 235 - "CS-PACK.02.01.md"
-Cohesion: 0.14
-Nodes (24): 정확 source locator·판본·적용성 없이는 승인 규칙으로 활성화하지 않는다, 공학적 불가능을 무시하지 않고 허용 재량만 권한·사유와 기록한다, 영향 결과를 stale로 표시하고 원시 과거 실행은 당시 버전으로 유지한다, AC-CS-PACK.02.01-N: AC-CS-PACK.02.01-N, AC-CS-PACK.02.01-P: AC-CS-PACK.02.01-P, AC-CS-PACK.02.02-N: AC-CS-PACK.02.02-N, AC-CS-PACK.02.02-P: AC-CS-PACK.02.02-P, CS-PACK.02: CS-PACK.02 (+16 more)
+### Community 235 - "CrowdDirector"
+Cohesion: 0.06
+Nodes (27): CrowdDirector, Arrivals, Evacuated, InStation, LeftNormally, MainHazard, Mind, PeopleRoot (+19 more)
 
 ### Community 236 - "메시 배치 프리미티브"
 Cohesion: 0.18
@@ -2674,7 +2678,7 @@ Nodes (14): ApplyRealMaterials, Material, Mesh, MeshCollider, MeshFilter, MeshRe
 
 ### Community 242 - "OperationMessages.cs"
 Cohesion: 0.06
-Nodes (30): ViewScope, AGENCY_KNOWLEDGE, AUTHOR_ANALYSIS, chooguard_application_gameplay, chooguard_contracts_gameplay, chooguard_tests_editmode_stories_csplay0201tests, ChooGuard.Persistence, ChooGuard.Tests.EditMode.Stories (+22 more)
+Nodes (24): ViewScope, AGENCY_KNOWLEDGE, AUTHOR_ANALYSIS, chooguard_tests_editmode_stories_csplay0201tests, ChooGuard.Persistence, ChooGuard.Tests.EditMode.Stories, ChooGuard.World, ChooGuard.Contracts (+16 more)
 
 ### Community 243 - "CollapseHazard"
 Cohesion: 0.07
@@ -2701,8 +2705,8 @@ Cohesion: 0.08
 Nodes (25): CS-LAB.02 · 원본 불변 분기·재실행, CS-LAB.03 · 동일조건·불확도·비지배 비교, CS-LAB.04 · 변경 영향·캐시·부분 재실행, CS-LAB · 저장된 운영안의 분기·비교 실험, 구현 절차, 구현 절차, 구현 절차, 새 구현 경로 (+17 more)
 
 ### Community 249 - "ActivityInterval"
-Cohesion: 0.09
-Nodes (23): MonotonicTimestamp, Microseconds, ActivityCategory, ATTENDED_WAIT, AUTHORING, EXPORT_REWORK, EXTERNAL_REPLY_WAIT, REVIEW (+15 more)
+Cohesion: 0.06
+Nodes (35): MonotonicTimestamp, Microseconds, NamedIdentity, DisplayName, Id, SiValue, Unit, Value (+27 more)
 
 ### Community 250 - "CS-PROOF.02 · 종단 작동·장애·성능 검수"
 Cohesion: 0.08
@@ -2789,20 +2793,20 @@ Cohesion: 0.08
 Nodes (24): 00.1 무엇을 바꾸고 무엇을 유지하는가, 00.2 문서의 권한과 증거 상태, 00.3 정본과 최소 문맥, 00. 개정의 목적·정본·읽기 순서, 01.1 클라이언트 요구와 최신 사용자 결정, 01.2 해결할 문제, 01.3 제품 정의, 01.4 검증할 가치와 실패할 수 있는 조건 (+16 more)
 
 ### Community 271 - "CHOOGuard 제품 요구사항 정의서 v11"
-Cohesion: 0.25
-Nodes (8): 02.1 보존하는 제품 결정, 02.2 v10에서 달라진 기준, 02. 사용자 요구 보존과 비평의 변경 계약, 21. 미확인 입력·책임·영향 범위, 22. 최종 인계·완료 정의, CHOOGuard 제품 요구사항 정의서 v11, 부록 A. 문서와 원문 탐색, 부록 B. 본문 인용 원문 바로가기
+Cohesion: 0.19
+Nodes (13): 00.1 무엇을 바꾸고 무엇을 유지하는가, 00.2 문서의 권한과 증거 상태, 00.3 정본과 최소 문맥, 00. 개정의 목적·정본·읽기 순서, 02.1 보존하는 제품 결정, 02.2 v10에서 달라진 기준, 02. 사용자 요구 보존과 비평의 변경 계약, 21. 미확인 입력·책임·영향 범위 (+5 more)
 
 ### Community 272 - "사실 레코드 스키마"
 Cohesion: 0.08
 Nodes (24): fact, additionalProperties, allOf, properties, required, type, $ref, description (+16 more)
 
 ### Community 273 - "EmergencyArt"
-Cohesion: 0.06
-Nodes (34): CrowdCatalog, GameObject, EmergencyArt, HangingItem, HangingPart, TrainDoorPatch, AudioClip, GameObject (+26 more)
+Cohesion: 0.12
+Nodes (20): CrowdCatalog, GameObject, EmergencyArt, HangingItem, HangingPart, TrainDoorPatch, AudioClip, GameObject (+12 more)
 
 ### Community 274 - "DetectorPoint"
-Cohesion: 0.05
-Nodes (37): FalseAlarmHazard, Announcement, Cause, Checked, Clearance, Cleared, Command, DangerRadius (+29 more)
+Cohesion: 0.06
+Nodes (25): List, Pools, Transition, List, Transition, List, Transition, Vector3 (+17 more)
 
 ### Community 275 - "구현 실행 계획"
 Cohesion: 0.09
@@ -2828,21 +2832,21 @@ Nodes (21): blenderVersion, centralOnlyRevision, mode, noUnityOrAssetsEdits, oth
 Cohesion: 0.09
 Nodes (22): ContentErrorCode, DuplicateId, DuplicateProperty, EmptyInput, InvalidId, InvalidJson, InvalidRevision, InvalidString (+14 more)
 
-### Community 281 - ".Capture"
-Cohesion: 0.15
-Nodes (11): BootstrapSnapshot, BootstrapValidationReport, Errors, IsValid, BootstrapValidator, IReadOnlyList, RenderPipelineGlobalSettings, UniversalRendererData (+3 more)
+### Community 281 - "BootstrapValidationReport"
+Cohesion: 0.50
+Nodes (4): BootstrapValidationReport, Errors, IsValid, IReadOnlyList
 
 ### Community 282 - "MvpFloorBuilder"
 Cohesion: 0.19
 Nodes (12): MvpFloorBuilder, Point, GameObject, List, Material, MenuItem, MeshFilter, MeshRenderer (+4 more)
 
 ### Community 283 - "InputContext"
-Cohesion: 0.19
-Nodes (9): Vector2, InputContext, Hud, Modal, None, Text, World, ScrollRect (+1 more)
+Cohesion: 0.12
+Nodes (20): RoutedInput, Kind, Owner, Value, RoutedInputKind, Cancel, Move, Pause (+12 more)
 
 ### Community 284 - "StationFacilitiesTests"
-Cohesion: 0.17
-Nodes (12): EscalatorEntry, StationFacilitiesTests, BoxCollider, Escalator, GameObject, IEnumerator, List, NavMeshObstacle (+4 more)
+Cohesion: 0.19
+Nodes (11): EscalatorEntry, StationFacilitiesTests, BoxCollider, GameObject, IEnumerator, List, NavMeshObstacle, Test (+3 more)
 
 ### Community 285 - "현장 번들 배열 스키마"
 Cohesion: 0.11
@@ -2893,8 +2897,8 @@ Cohesion: 0.10
 Nodes (20): additionalProperties, maximum, minimum, type, anyOf, $id, properties, afterRevision (+12 more)
 
 ### Community 297 - "OSS·도구 적용 정밀설계"
-Cohesion: 0.10
-Nodes (20): 10. SQLite·JSON: 이미 있는 저장/직렬화 재사용, 13. 제거·cutover와 권리 메타데이터, 14. 근거 링크, 1. 적용 원칙과 확인 수준, 2. 설계 착수 시점의 구성: 재사용한 기반, 3. 최소 채택 매트릭스, 5.1 현재 경로 재사용, 5.2 선택한 책임 분리 (+12 more)
+Cohesion: 0.12
+Nodes (17): 10. SQLite·JSON: 이미 있는 저장/직렬화 재사용, 13. 제거·cutover와 권리 메타데이터, 14. 근거 링크, 1. 적용 원칙과 확인 수준, 2. 설계 착수 시점의 구성: 재사용한 기반, 3. 최소 채택 매트릭스, 4. FPS·세부 조작: 기존 코드에 붙이는 범위, 6. GOAP를 지금 설치하지 않는 이유 (+9 more)
 
 ### Community 298 - "Unity 애니메이션 모듈 의존성"
 Cohesion: 0.10
@@ -2913,32 +2917,28 @@ Cohesion: 0.14
 Nodes (11): MeshFilter, MeshRenderer, Transform, SceneObjectInventory, Entry points, Files written/edited, Last 10 tool results, Last reasoning (newest last) (+3 more)
 
 ### Community 303 - "AedCabinet"
-Cohesion: 0.13
+Cohesion: 0.12
 Nodes (14): AedCabinet, DisplayName, InteractionPrompt, Stored, Unit, AedUnit, DisplayName, Held (+6 more)
 
 ### Community 304 - "CrowdMind"
-Cohesion: 0.03
-Nodes (63): answer, Choice, Metrics, NearMeters, PeriodicSeconds, Judgement, Option, Slot (+55 more)
+Cohesion: 0.05
+Nodes (34): answer, Metrics, NearMeters, PeriodicSeconds, Judgement, Option, Slot, Waiting (+26 more)
 
 ### Community 305 - "TitleScreen"
 Cohesion: 0.06
-Nodes (32): JevKey, FileExists, FilePath, VariableUnusable, JevKeyCheck, Accepted, Checking, Rejected (+24 more)
+Nodes (33): JevKey, FileExists, FilePath, VariableUnusable, JevKeyCheck, Accepted, Checking, Rejected (+25 more)
 
 ### Community 306 - "CSBOOT0101Tests"
-Cohesion: 0.21
-Nodes (7): CSBOOT0101Tests, ProjectRoot, ArgumentException, BuildResult, Func, IOException, TestCase
+Cohesion: 0.14
+Nodes (10): BootstrapSnapshot, CSBOOT0101Tests, ProjectRoot, ArgumentException, BuildResult, Func, InvalidOperationException, IOException (+2 more)
 
 ### Community 307 - "CSPLAY0102Tests"
-Cohesion: 0.16
+Cohesion: 0.15
 Nodes (9): CSPLAY0102Tests, EventSystem, GameObject, InputActionAsset, InputSystemUIInputModule, SetUp, TearDown, Test (+1 more)
 
-### Community 308 - ".ObserveScene"
-Cohesion: 0.10
-Nodes (19): Canvas, EventSystem, InputSystemUIInputModule, Scene, StandaloneInputModule, Action, Canvas, CanvasScaler (+11 more)
-
-### Community 309 - "DECISIONS_AND_DEVELOPMENT_STRUCTURE.md"
-Cohesion: 0.18
-Nodes (4): 금지, 하드룰 — 비상상황은 JEV가 합성한다 (2026-09-26 사용자 정정, 2026-09-29·09-30 재확인), 현재 동작, 부산역·KTX 현장 대응 FPS 제안
+### Community 308 - ".DamagedSceneReference_IsRejected"
+Cohesion: 0.14
+Nodes (13): Action, Canvas, CanvasScaler, EventSystem, GraphicRaycaster, InputActionAsset, InputSystemUIInputModule, MonoBehaviour (+5 more)
 
 ### Community 310 - "1. 역질의 결정 원장"
 Cohesion: 0.09
@@ -2949,8 +2949,8 @@ Cohesion: 0.24
 Nodes (17): assign(), beam(), box(), collection(), crew(), bind(), ellipsoid(), limb() (+9 more)
 
 ### Community 312 - "Activity"
-Cohesion: 0.10
-Nodes (20): Activity, Aggressive, Alight, Board, Browse, Deciding, Evacuate, Injured (+12 more)
+Cohesion: 0.05
+Nodes (38): Activity, Aggressive, Alight, Board, Browse, Deciding, Evacuate, Injured (+30 more)
 
 ### Community 313 - "EmergencySceneBuilder"
 Cohesion: 0.07
@@ -2964,17 +2964,17 @@ Nodes (18): additionalProperties, $id, properties, reviewStatus, ruleId, ruleTyp
 Cohesion: 0.11
 Nodes (19): 10. 1차 출처 목록, 11. 최종 판단의 경계, 1. 결론: 대화 모델 대체가 아니라, 제한된 행동정책의 유력 후보, 2. 판본과 확인 수준, 3.1 공통 요청, 3.2 한 요청의 여러 질문: 공유 상태 + 독립 평가, 3.3 확률 보정과 confidence의 한계, 3. 입력·질문·출력의 정확한 의미 (+11 more)
 
-### Community 316 - "EquipmentRegistryTests"
-Cohesion: 0.16
-Nodes (11): EquipmentRegistryTests, Camera, Collider, GameObject, IEnumerator, List, Object, Renderer (+3 more)
+### Community 316 - "StationRouteBuilder"
+Cohesion: 0.10
+Nodes (23): Draft, StationRouteBuilder, from, List, MenuItem, NavMeshLinkInstance, NavMeshPath, to (+15 more)
 
 ### Community 317 - "래스터 메타데이터"
 Cohesion: 0.11
 Nodes (18): rasterMetadata, clipBounds, count, crs, dtype, epoch, epsg, height (+10 more)
 
 ### Community 318 - "SupportHands"
-Cohesion: 0.10
-Nodes (15): SupportHands, Animator, HumanBodyBones, AutomatedRunBanner, AvatarIKGoal, 2026-09-27 프로덕션 수준 끌어올리기, 2. 소리 (2026-09-27), 3. 동작·소품 (2026-09-27) (+7 more)
+Cohesion: 0.12
+Nodes (13): SupportHands, Animator, HumanBodyBones, AvatarIKGoal, 2026-09-27 프로덕션 수준 끌어올리기, 2. 소리 (2026-09-27), 3. 동작·소품 (2026-09-27), 5. 검수 (2026-09-27) (+5 more)
 
 ### Community 319 - "StationSound"
 Cohesion: 0.11
@@ -3033,32 +3033,32 @@ Cohesion: 0.19
 Nodes (8): BuildMaterialMap, JObject, JToken, Material, MeshRenderer, Texture, Texture2D, Transform
 
 ### Community 333 - "Hazard"
-Cohesion: 0.03
-Nodes (58): DoorTrapHazard, Announcement, BoardState, Clearance, Command, DangerRadius, Freed, Handover (+50 more)
+Cohesion: 0.02
+Nodes (68): 금지, 지켜야 할 것, 하드룰 — 비상상황은 JEV가 합성한다 (2026-09-26 사용자 정정, 2026-09-29·09-30 재확인), 현재 동작, DoorTrapHazard, Announcement, BoardState, Clearance (+60 more)
 
 ### Community 334 - ".Build"
-Cohesion: 0.04
-Nodes (55): AlarmBuilder, List, Material, MeshRenderer, CompartmentBuilder, BoxCollider, Command, Detector (+47 more)
+Cohesion: 0.05
+Nodes (43): AlarmBuilder, List, Material, MeshRenderer, CompartmentBuilder, BoxCollider, Command, Detector (+35 more)
 
 ### Community 335 - "감사 결과 터미널 뷰"
 Cohesion: 0.15
 Nodes (11): AuditReport, Clean, Count, IReadOnlyList, AuditTerminalView, Body, IsVisible, Subtitle (+3 more)
 
 ### Community 336 - "SprinklerLayout"
-Cohesion: 0.12
-Nodes (25): LeakSource, Head, Pipe, Result, Head, Lattice, Line, Node (+17 more)
+Cohesion: 0.13
+Nodes (23): Head, Result, Head, Lattice, Line, Node, Report, Result (+15 more)
 
 ### Community 337 - "FPS 환승 경로 빌더"
 Cohesion: 0.15
 Nodes (15): FpsAuthoredTransferBuilder, Manifest, PathSpec, Waypoint, Point, Collider, List, Material (+7 more)
 
 ### Community 338 - "INTERFACES.md"
-Cohesion: 0.24
-Nodes (14): 1. 경계별 호출, 2. 명령 지문과 재전송, 3. 로컬 worker protocol v1, 4. 큰 수치 payload와 좌표, 5. worker capability와 profile, 6. SiteBundle과 ModelLock, 7. 데이터베이스 트랜잭션 경계, 8. 계약 검사와 제품 검사 구분 (+6 more)
+Cohesion: 0.53
+Nodes (9): 1. 경계별 호출, 2. 명령 지문과 재전송, 3. 로컬 worker protocol v1, 4. 큰 수치 payload와 좌표, 5. worker capability와 profile, 6. SiteBundle과 ModelLock, 7. 데이터베이스 트랜잭션 경계, 8. 계약 검사와 제품 검사 구분 (+1 more)
 
 ### Community 339 - "CS-BOOT.02 · assembly 경계와 신규 공개 계약"
 Cohesion: 0.12
-Nodes (16): CS-BOOT.02 · assembly 경계와 신규 공개 계약, CS-BOOT.03 · 새 테스트·빌드 실행 경로, 구현 절차, 구현 절차, 새 구현 경로, 새 구현 경로, 선행 산출물과 소비 단계, 선행 산출물과 소비 단계 (+8 more)
+Nodes (17): CS-BOOT.02 · assembly 경계와 신규 공개 계약, CS-BOOT.03 · 새 테스트·빌드 실행 경로, CS-BOOT · 새 Unity 제품의 부팅·입력·빌드 기반, 구현 절차, 구현 절차, 새 구현 경로, 새 구현 경로, 선행 산출물과 소비 단계 (+9 more)
 
 ### Community 340 - "조건 참조 스키마"
 Cohesion: 0.15
@@ -3165,20 +3165,20 @@ Cohesion: 0.20
 Nodes (8): MvpJevForecastView, Button, GameObject, Image, RectTransform, TextMeshProUGUI, TMP_Text, Transform
 
 ### Community 366 - "MvpStationView"
-Cohesion: 0.05
-Nodes (35): MvpTeamNavigation, LastReason, TextAsset, Vector3, MvpCivilianBinder, AnimationClip, GameObject, Material (+27 more)
+Cohesion: 0.07
+Nodes (24): MvpSpatialMetrics, Vector3, TMP_InputField, CrowdVisual, MvpStationView, CrowdVisualCount, AnimationClip, AnimationMixerPlayable (+16 more)
 
-### Community 367 - "TrainDoorControl"
-Cohesion: 0.13
-Nodes (13): TrainDoorControl, DisplayName, InteractionPrompt, TrainInnerDoorControl, DisplayName, InteractionPrompt, Bounds, Car (+5 more)
+### Community 367 - "데스크톱 수집 절차 — 1배속 20분 근무"
+Cohesion: 0.05
+Nodes (36): route(), Choice, Activity, Func, Point, 2. JEV가 제공하는 것과 제공하지 않는 것, 0. 준비물, #259 전 수집 기록 — 보관용 (+28 more)
 
 ### Community 368 - "EscalatorGate"
-Cohesion: 0.12
-Nodes (18): EscalatorGate, Escalator, Shut, Flap, GateMode, Both, Entry, Exit (+10 more)
+Cohesion: 0.11
+Nodes (19): EscalatorGate, Escalator, Shut, Flap, GateMode, Both, Entry, Exit (+11 more)
 
 ### Community 369 - "schema.sql"
-Cohesion: 0.11
-Nodes (28): Plan, Scenario, Site, Agency, Report, Task, artifact, checkpoint (+20 more)
+Cohesion: 0.18
+Nodes (20): Site, artifact, checkpoint, checkpoint_worker, content_revision, human_effort, ledger, outbox (+12 more)
 
 ### Community 370 - "워커 자격 스키마"
 Cohesion: 0.13
@@ -3760,9 +3760,9 @@ Nodes (9): Aperture, List, Mesh, MeshFilter, Vector3, SourceMesh, VideoStationIn
 Cohesion: 0.17
 Nodes (9): AnimationScript, Instructions, AbstractTrain, HostInterface, Vector3, FunctionScript, LastResult, Maximum (+1 more)
 
-### Community 515 - "MonoBehaviour"
-Cohesion: 0.06
-Nodes (30): ExtinguishAgent, Powder, Water, WetChemical, ShiftResult, Extinguisher, Agent, DisplayName (+22 more)
+### Community 515 - "Extinguisher"
+Cohesion: 0.11
+Nodes (16): ExtinguishAgent, Powder, Water, WetChemical, Extinguisher, Agent, DisplayName, Held (+8 more)
 
 ### Community 516 - "FPS 소스 에셋 임포터"
 Cohesion: 0.21
@@ -3808,6 +3808,10 @@ Nodes (13): maximum, minimum, type, properties, previewExpiresAtRevision, readSe
 Cohesion: 0.15
 Nodes (13): pattern, type, pattern, type, properties, attemptId, inputDigest, runId (+5 more)
 
+### Community 527 - "StorageDesign"
+Cohesion: 0.07
+Nodes (14): dataclasses, Run SQL-design invariants on temporary disk DB; NOT Unity/provider/power-loss…, StorageDesign, Unity test verdicts: the results XML and the editor exit code must agree., VerdictTests, escape(), evaluate(), main() (+6 more)
+
 ### Community 528 - "비평 맵 스키마"
 Cohesion: 0.15
 Nodes (12): additionalProperties, const, minItems, type, properties, claimsResolvedByDocument, critiques, schemaVersion (+4 more)
@@ -3836,9 +3840,9 @@ Nodes (13): maximum, minimum, type, properties, previewExpiresAtRevision, readSe
 Cohesion: 0.15
 Nodes (13): pattern, type, pattern, type, properties, attemptId, inputDigest, runId (+5 more)
 
-### Community 535 - "전기 설비·광장/대합실 비품 (2026-09-30)"
-Cohesion: 0.29
-Nodes (7): ElectricPlazaBuilder, 검증 (macOS 에디터, 게이트웨이, 콘솔 오류 0), 남은 한계, 어디에 놓았나 (조사와 규칙), 원인과 전개, 전기 설비·광장/대합실 비품 (2026-09-30), 직원 조작 (`Equipment/ElectricPlaza/*`, `IncidentDirector.ElectricPlaza.cs`)
+### Community 535 - ".Render"
+Cohesion: 0.11
+Nodes (16): Scene, EquipmentPlacementFile, ElectricPlazaBuilder, MenuItem, NavMeshData, TextAsset, EquipmentBuilder, IEnumerable (+8 more)
 
 ### Community 536 - "행위자 관점 지식 스키마"
 Cohesion: 0.15
@@ -3852,9 +3856,9 @@ Nodes (13): usage, maximum, minimum, type, maximum, minimum, type, inputTokens (
 Cohesion: 0.17
 Nodes (12): Entry, Histogram, KtxOpaqueTexelDepthSupport, Manifest, Receipt, Collider, Entry, Histogram (+4 more)
 
-### Community 539 - "ElectricBoardUnit"
-Cohesion: 0.15
-Nodes (9): BoardDoor, IsOpen, ElectricBoardUnit, DisplayName, InteractionPrompt, Board, Collider, FirstPersonResponder (+1 more)
+### Community 539 - "MvpJevForecastClient"
+Cohesion: 0.11
+Nodes (20): Comparison, Comparison, Forecast, Mission, MvpJevForecastClient, BrierSum, Comparisons, Current (+12 more)
 
 ### Community 540 - "풀트윈 진행 기록"
 Cohesion: 0.15
@@ -3876,21 +3880,21 @@ Nodes (6): Color32, List, MeshFilter, Transform, Vector3, ShellFootprint
 Cohesion: 0.21
 Nodes (7): FirstPersonInteractionHud, GameObject, Image, RectTransform, TMP_FontAsset, TMP_Text, Vector2
 
-### Community 545 - "재고 스냅샷 작업유형"
-Cohesion: 0.17
-Nodes (12): StockSnapshot, AgencyId, AgencyLabel, Available, Capacity, Committed, Consumed, Label (+4 more)
+### Community 545 - "MvpFacilityResources"
+Cohesion: 0.06
+Nodes (35): Bin, Definition, MvpFacilityResources, ConfigHash, Ready, Reservations, Revision, RunRevision (+27 more)
 
 ### Community 546 - "CS-BOOT.01.01 구현 계획"
-Cohesion: 0.12
-Nodes (13): CS-BOOT.01.01 구현 계획, 독립 검수와 역사 증거, 미수용 상태와 종료, 반환된 BuildReport의 부분 산출물, 빌드 출력 경계, 소스 해시 수집 범위, 실행 단계의 현재 상태, 유지한 구현 계약 (+5 more)
+Cohesion: 0.13
+Nodes (12): CS-BOOT.01.01 구현 계획, 독립 검수와 역사 증거, 미수용 상태와 종료, 반환된 BuildReport의 부분 산출물, 빌드 출력 경계, 소스 해시 수집 범위, 실행 단계의 현재 상태, 유지한 구현 계약 (+4 more)
 
 ### Community 547 - "IFpsInteraction"
-Cohesion: 0.09
-Nodes (22): HazardMarker, DisplayName, InteractionPrompt, FirstPersonResponder, Func, ElevatorButton, DisplayName, InteractionPrompt (+14 more)
+Cohesion: 0.07
+Nodes (29): TrainInnerDoorControl, DisplayName, InteractionPrompt, Bounds, InnerDoor, Material, MeshRenderer, Vector3 (+21 more)
 
-### Community 548 - "라우팅 입력 이벤트"
-Cohesion: 0.17
-Nodes (12): RoutedInput, Kind, Owner, Value, RoutedInputKind, Cancel, Move, Pause (+4 more)
+### Community 548 - "JevClient"
+Cohesion: 0.12
+Nodes (23): JevChoice, IsScore, JevClient, Available, FailuresInARow, LastModel, LogFile, MainThread (+15 more)
 
 ### Community 549 - "RouteGraph"
 Cohesion: 0.09
@@ -4001,16 +4005,16 @@ Cohesion: 0.18
 Nodes (11): meanAbsoluteDifferenceM, meanSignedDifferenceM, medianAbsoluteDifferenceM, pairs, meanAbsoluteDifferenceM, meanSignedDifferenceM, medianAbsoluteDifferenceM, pairs (+3 more)
 
 ### Community 577 - "ElectricPlazaPlayCheck"
-Cohesion: 0.14
-Nodes (20): Wait, ElectricPlazaPlayCheck, Session, Wait, Action, BindingFlags, Collider, Func (+12 more)
+Cohesion: 0.11
+Nodes (21): Wait, ElectricPlazaPlayCheck, Session, Wait, Action, BindingFlags, Collider, Func (+13 more)
 
 ### Community 578 - "에셋 반입 결과"
 Cohesion: 0.18
 Nodes (11): AssetIntakeResult, Issues, Receipt, SafeImportApproved, Status, AssetIntakeStatus, NOT_ACQUIRED, QUALIFICATION_INCOMPLETE (+3 more)
 
 ### Community 579 - "Random"
-Cohesion: 0.11
-Nodes (13): ApplyScoutAssetsToScene, Material, Mesh, MeshFilter, MeshRenderer, Texture2D, Random, KitchenSound (+5 more)
+Cohesion: 0.13
+Nodes (12): ApplyScoutAssetsToScene, Material, Mesh, MeshFilter, MeshRenderer, Texture2D, Random, KitchenSound (+4 more)
 
 ### Community 580 - "작업 메모 페이로드"
 Cohesion: 0.18
@@ -4061,8 +4065,8 @@ Cohesion: 0.18
 Nodes (11): 1. 조사 범위와 핵심 결론, 2. 조직과 역할을 혼합하지 않는 읽기 기준, 3. 열람 수준 표기, 5. 사진·도해·영상 원장, 6. 튜토리얼 행동 / 본게임 대응 / 공개 공백 매트릭스, 7.1 이번 조사에서 실제로 확보한 수준, 7.2 전체성과 현행성을 보완할 정상 획득 경로, 7. 매뉴얼을 ‘전부’ 확보할 수 있는가 (+3 more)
 
 ### Community 592 - "StationWalls"
-Cohesion: 0.13
-Nodes (22): AlarmLayout, Bell, Panel, Result, Cell, List, Vector3, Hit (+14 more)
+Cohesion: 0.09
+Nodes (32): Shutter, AlarmLayout, Bell, Panel, Result, Cell, List, Vector3 (+24 more)
 
 ### Community 593 - "15. AI-native 데이터·온톨로지·추적성 계약"
 Cohesion: 0.33
@@ -4113,7 +4117,7 @@ Cohesion: 0.18
 Nodes (11): ceiling_panel, cross_band_spacing, cross_band_width, floor_thickness, panel_seam_heights, rail_height, tactile_width, tile_grid (+3 more)
 
 ### Community 605 - "TrainDatFormats"
-Cohesion: 0.18
+Cohesion: 0.20
 Nodes (10): TrainDatFormats, BVE1200000, BVE1210000, BVE1220000, BVE2000000, BVE2060000, MissingHeader, openBVE (+2 more)
 
 ### Community 606 - "공식 역사 픽 바인더"
@@ -4121,8 +4125,8 @@ Cohesion: 0.27
 Nodes (10): Geometry, MvpOfficialStationPickBinder, Receipt, Source, MenuItem, MeshCollider, MeshFilter, TextAsset (+2 more)
 
 ### Community 608 - "구현 결과 (2026-09-26)"
-Cohesion: 0.17
-Nodes (12): 2026-09-26 역 전체 NPC·열차·JEV 사건 합성, JEV 판정 (jev-1.13.0, authority 0), 검증, 구현 결과 (2026-09-26), 구현 순서, 남은 것, 대응·기관·방송, 사건 합성 (+4 more)
+Cohesion: 0.18
+Nodes (11): 2026-09-26 역 전체 NPC·열차·JEV 사건 합성, JEV 판정 (jev-1.13.0, authority 0), 구현 결과 (2026-09-26), 구현 순서, 남은 것, 대응·기관·방송, 사건 합성, 사용자 요구 (MVP 전달 뒤) (+3 more)
 
 ### Community 609 - "소품 메시 빌더"
 Cohesion: 0.27
@@ -4168,13 +4172,13 @@ Nodes (7): HudSprites, Diamond, Disc, Ring, Vignette, Func, Sprite
 Cohesion: 0.31
 Nodes (5): StationWorldText, Font, Material, MeshRenderer, TextMesh
 
-### Community 620 - "ElevatorTrapHazard"
-Cohesion: 0.07
-Nodes (24): ElevatorTrapHazard, Announcement, Clearance, Command, DangerRadius, Dispatch, Elevator, Handover (+16 more)
+### Community 620 - ".Trap"
+Cohesion: 0.26
+Nodes (4): Elevator, Pools, SphereCollider, Transition
 
-### Community 621 - "부트스트랩 PlayMode 시험"
-Cohesion: 0.20
-Nodes (9): Camera, CSBOOT0101PlayModeTests, Canvas, EventSystem, IEnumerator, InputActionAsset, InputSystemUIInputModule, StandaloneInputModule (+1 more)
+### Community 621 - ".ObserveScene"
+Cohesion: 0.12
+Nodes (16): BootstrapValidator, Canvas, EventSystem, InputSystemUIInputModule, Scene, StandaloneInputModule, Camera, CSBOOT0101PlayModeTests (+8 more)
 
 ### Community 622 - "시뮬레이션 계산 모델 선정"
 Cohesion: 0.20
@@ -4265,8 +4269,8 @@ Cohesion: 0.14
 Nodes (14): AC-CS-MODES.01.01-N · NEGATIVE · NOT_RUN, AC-CS-MODES.01.01-P · POSITIVE · NOT_RUN, CS-MODES.01.01 · 매뉴얼 근거가 있는 튜토리얼 목표를 구성한다, 구현 순서, 단계별 선행 산출물, 반려·재분할 조건, 사용자 또는 후행 작업이 받는 결과, 시험 벡터 (+6 more)
 
 ### Community 644 - "CHOOGuard_Clean_Start_v3/epics/CS-PACK.md"
-Cohesion: 0.06
-Nodes (60): CS-PACK.01 · 새 공간·기관·시간·데이터 식별자, CS-PACK.02 · 기관 매뉴얼을 검수 가능한 규칙으로 구성, CS-PACK.04 · 실제 현장 입력·현실 관측 갱신, CS-PACK · 현장·기관 매뉴얼·자료 패키지 제작, 구현 절차, 구현 절차, 구현 절차, 새 구현 경로 (+52 more)
+Cohesion: 0.07
+Nodes (53): CS-PACK.01 · 새 공간·기관·시간·데이터 식별자, CS-PACK.02 · 기관 매뉴얼을 검수 가능한 규칙으로 구성, CS-PACK · 현장·기관 매뉴얼·자료 패키지 제작, 구현 절차, 구현 절차, 새 구현 경로, 새 구현 경로, 선행 산출물과 소비 단계 (+45 more)
 
 ### Community 645 - "랜덤 사건 그래프 생성"
 Cohesion: 0.14
@@ -4680,9 +4684,9 @@ Nodes (10): dependencies, depth, source, version, dependencies, depth, source, v
 Cohesion: 0.20
 Nodes (10): dependencies, depth, source, version, dependencies, depth, source, version (+2 more)
 
-### Community 749 - "ElectricLoad"
-Cohesion: 0.13
-Nodes (13): ElectricLoad, Burnt, DisplayName, Equipment, InteractionPrompt, LocalOff, OnFire, Dictionary (+5 more)
+### Community 749 - ".Clear"
+Cohesion: 0.09
+Nodes (17): CrowdEvacuationTests, Action, IEnumerator, SetUp, TearDown, Timeout, UnityTest, CrowdOutageTests (+9 more)
 
 ### Community 750 - "등록 씬 캡처 도구"
 Cohesion: 0.33
@@ -4725,16 +4729,16 @@ Cohesion: 0.16
 Nodes (14): EquipmentPlacement, Vector3, ElectricPlazaPlacement, Placed, Rule, Bounds, Dictionary, Func (+6 more)
 
 ### Community 760 - "MvpAgencyDispatchView"
-Cohesion: 0.24
-Nodes (9): MvpAgencyDispatchView, Button, GameObject, Image, RectTransform, TextMeshProUGUI, TMP_Text, Transform (+1 more)
+Cohesion: 0.11
+Nodes (18): MvpAgencyDispatchView, Button, GameObject, Image, RectTransform, TextMeshProUGUI, TMP_Text, Transform (+10 more)
 
 ### Community 761 - "HazardKind"
 Cohesion: 0.12
 Nodes (17): HazardKind, BombThreat, Collapse, Disturbance, DoorTrap, Earthquake, ElevatorTrap, FallingObject (+9 more)
 
-### Community 762 - ".ConfigurePipeline"
-Cohesion: 0.21
-Nodes (9): RenderPipelineGlobalSettings, UniversalRendererData, UniversalRenderPipeline, UniversalRenderPipelineAsset, VolumeProfile, Object, RenderPipelineGlobalSettings, NormalizationManifest (+1 more)
+### Community 762 - ".HasOwnedUrpReferences"
+Cohesion: 0.15
+Nodes (13): RenderPipelineGlobalSettings, UniversalRendererData, UniversalRenderPipeline, UniversalRenderPipelineAsset, VolumeProfile, RenderPipelineGlobalSettings, UniversalRendererData, UniversalRenderPipeline (+5 more)
 
 ### Community 763 - "개구부·월드 확장 계획"
 Cohesion: 0.25
@@ -4764,9 +4768,9 @@ Nodes (9): CS-PLAY.05 · 접근성·재배정·텍스트와 반복 조작 효율
 Cohesion: 0.22
 Nodes (9): additionalProperties, properties, required, type, coreStateRef, revision, maximum, minimum (+1 more)
 
-### Community 770 - "CS-PLAY.07.01: 동일 코어의 표·타임라인 연구 비교군을 만든다"
-Cohesion: 0.16
-Nodes (16): 비교군은 연구 조건으로만 기록하고 제품 모드는 두 개로 유지하며 조건별 차이·오염·도움·검수 가림 여부를 보존한다, AC-CS-PLAY.07.01-N: AC-CS-PLAY.07.01-N, AC-CS-PLAY.07.01-P: AC-CS-PLAY.07.01-P, CS-PLAY.07.01: 동일 코어의 표·타임라인 연구 비교군을 만든다, dep:CS-PLAY.07.01:0: dep:CS-PLAY.07.01:0, dep:CS-PLAY.07.01:1: dep:CS-PLAY.07.01:1, dep:CS-PLAY.07.01:2: dep:CS-PLAY.07.01:2, dep:CS-PLAY.07.01:3: dep:CS-PLAY.07.01:3 (+8 more)
+### Community 770 - "RuleClause"
+Cohesion: 0.06
+Nodes (31): RuleClause, ActivationEnd, ActivationStart, ClauseLocator, EffectText, Guard, Id, Kind (+23 more)
 
 ### Community 771 - "커밋 지문 시퀀스 스키마"
 Cohesion: 0.22
@@ -4778,11 +4782,11 @@ Nodes (9): pattern, type, properties, fingerprint, sequence, status, minimum, ty
 
 ### Community 773 - "json"
 Cohesion: 0.04
-Nodes (66): addon_utils, array, Clip verified GBA raster and describe unknown OSM footprints; never edit OSM., layername(), matname(), walk(), layername(), matname() (+58 more)
+Nodes (68): addon_utils, array, dist(), nearest(), Source-node directed roads; stdlib Dijkstra, no geometric intersection joins., Clip verified GBA raster and describe unknown OSM footprints; never edit OSM., layername(), matname() (+60 more)
 
-### Community 774 - "CS-SIM.04.02: 수렴·독립 관측·화재 QoI 오차를 평가한다"
-Cohesion: 0.14
-Nodes (20): 수치수렴·독립 비교·적용범위를 기록하고 VFX를 물리량으로 사용하지 않는다, AC-CS-SIM.04.01-N: AC-CS-SIM.04.01-N, AC-CS-SIM.04.01-P: AC-CS-SIM.04.01-P, AC-CS-SIM.04.02-N: AC-CS-SIM.04.02-N, AC-CS-SIM.04.02-P: AC-CS-SIM.04.02-P, CS-SIM.04: CS-SIM.04, CS-SIM.04.01: FDS batch 입력·경계 이력·출력 파일을 결속한다, CS-SIM.04.02: 수렴·독립 관측·화재 QoI 오차를 평가한다 (+12 more)
+### Community 774 - "CS-SCRIPT.03.01: native 대본 편집과 의미·서식 diff를 만든다"
+Cohesion: 0.11
+Nodes (26): 정확한 이벤트/쪽/규칙판본/검수 결과를 보여주며 잘못된 ref를 거부한다, 관련 승인을 stale로 만들고 시뮬레이션 승인과 현장 승인을 구분한다, AC-CS-SCRIPT.03.01-N: AC-CS-SCRIPT.03.01-N, AC-CS-SCRIPT.03.01-P: AC-CS-SCRIPT.03.01-P, AC-CS-SCRIPT.03.02-N: AC-CS-SCRIPT.03.02-N, AC-CS-SCRIPT.03.02-P: AC-CS-SCRIPT.03.02-P, CS-SCRIPT.03.01: native 대본 편집과 의미·서식 diff를 만든다, CS-SCRIPT.03.02: 검토 주체·범위·revision과 승인 만료를 연결한다 (+18 more)
 
 ### Community 775 - "불확도 참조 리비전 스키마"
 Cohesion: 0.22
@@ -4865,8 +4869,8 @@ Cohesion: 0.22
 Nodes (9): executed, failed, notRun, passed, testResult, additionalProperties, properties, required (+1 more)
 
 ### Community 795 - ".Level"
-Cohesion: 0.26
-Nodes (12): Camera, Result, Speaker, SurveillanceLayout, Cell, Context, List, Shutter (+4 more)
+Cohesion: 0.28
+Nodes (11): Camera, Result, Speaker, SurveillanceLayout, Cell, Context, List, Shutter (+3 more)
 
 ### Community 796 - "PRD v11 Handoff Contract"
 Cohesion: 0.22
@@ -4908,25 +4912,25 @@ Nodes (7): Material, Mesh, MeshCollider, MeshFilter, MeshRenderer, Texture2D, Im
 Cohesion: 0.36
 Nodes (5): Bounds, GameObject, Renderer, Vector3, PlaceReusedPrefabs
 
-### Community 806 - "ShutterButton"
+### Community 806 - "IntPtr"
 Cohesion: 0.15
-Nodes (11): ShutterButton, Control, DisplayName, InteractionPrompt, SecondaryPrompt, Command, FirstPersonResponder, ShutterControlPoint (+3 more)
+Nodes (15): Glibc, MacOS, NativeBinary, Linux, Mac, Windows, DllImport, Unity Cloud(Build Automation)를 쓰지 않는 이유 (+7 more)
 
 ### Community 807 - "Queue"
-Cohesion: 0.12
-Nodes (13): ConcoursePartitions, List, HashSet, List, ExtinguisherPlacementV2, Dictionary, MeshRenderer, Stand (+5 more)
+Cohesion: 0.09
+Nodes (17): ConcoursePartitions, List, HashSet, List, ExtinguisherPlacementV2, Dictionary, MeshRenderer, Stand (+9 more)
 
 ### Community 808 - "Escalator Motion Wiring"
 Cohesion: 0.29
 Nodes (6): BoxCollider, Component, Material, MeshFilter, MeshRenderer, WireEscalatorMotion
 
 ### Community 809 - "MvpAgencyDispatchView"
-Cohesion: 0.24
+Cohesion: 0.23
 Nodes (9): MvpAgencyDispatchView, Button, GameObject, Image, RectTransform, TextMeshProUGUI, TMP_Text, Transform (+1 more)
 
-### Community 810 - "Coupler"
-Cohesion: 0.15
-Nodes (10): CarSection, CarSound, AbstractCoupler, CanUncouple, CarBase, UnifiedObject, Vector3, Coupler (+2 more)
+### Community 810 - "RuleExpression"
+Cohesion: 0.09
+Nodes (20): ContractGuard, RuleExpression, Children, ConstantValue, Depth, FactId, Kind, NodeCount (+12 more)
 
 ### Community 811 - ".Plan"
 Cohesion: 0.31
@@ -4934,7 +4938,7 @@ Nodes (9): Beam, BeamLayout, Bounds, Cell, List, Scene, Vector2, Vector3 (+1 mor
 
 ### Community 812 - "WaterLeakHazard"
 Cohesion: 0.05
-Nodes (36): StationLighting, Dark, WaterLeakHazard, Announcement, Clearance, Command, Cordonable, CordonRadius (+28 more)
+Nodes (38): LeakSource, Pipe, StationLighting, Dark, WaterLeakHazard, Announcement, Clearance, Command (+30 more)
 
 ### Community 813 - "EmergencyForceAll"
 Cohesion: 0.13
@@ -4960,9 +4964,9 @@ Nodes (7): 📹 Demo Video, 📚 Documentation & Links, DotRecast, 🚀 Features
 Cohesion: 0.25
 Nodes (8): BrakeSystemType, EletropneumaticBrakeType, LocoBrakeTypes, Brake, LocoBrakeTypes, AutomaticAirBrake, NotchedAirBrake, NotFitted
 
-### Community 819 - "PaLine"
-Cohesion: 0.12
-Nodes (17): PaLine, DoorCheck, Earthquake, ElevatorCheck, EscalatorStopped, FalseAlarm, Fire, GasLeak (+9 more)
+### Community 819 - "PowerOutageHazard"
+Cohesion: 0.08
+Nodes (19): PowerOutageHazard, Announcement, Command, DangerRadius, Handover, HasScene, Label, Level (+11 more)
 
 ### Community 820 - "Success Metrics & User Research"
 Cohesion: 0.25
@@ -4979,6 +4983,10 @@ Nodes (8): items, maxItems, minItems, type, items, pattern, type, clauseRefs
 ### Community 823 - "Worker Capability Schema"
 Cohesion: 0.25
 Nodes (7): additionalProperties, allOf, $id, required, $schema, title, type
+
+### Community 824 - ".Register"
+Cohesion: 0.03
+Nodes (38): Escalator, KoreanText, Pools, Transition, Pools, Transition, Action, Dictionary (+30 more)
 
 ### Community 825 - "CS-OPS.01 Run State Machine"
 Cohesion: 0.25
@@ -5284,9 +5292,9 @@ Nodes (7): Files written/edited, Last 12 tool results, Last reasoning (newest la
 Cohesion: 0.29
 Nodes (7): 1. 레퍼런스에서 실제로 확인한 HUD 문법, 2. 공개 Unity 코드/OSS 후보, 3. 미확인·접근 제한과 후속 결정 경계, 4. 새로 열람한 출처 장부, HUD 요소별 배치·조건 가설, 부산역 튜토리얼 HUD·UI/UX 레퍼런스 조사, 요약
 
-### Community 901 - ".Run"
-Cohesion: 0.15
-Nodes (10): LoadingScreen, SceneFlow, Loading, IEnumerator, Image, RuntimeInitializeOnLoadMethod, Texture, TMP_FontAsset (+2 more)
+### Community 901 - "SuspiciousItemHazard"
+Cohesion: 0.08
+Nodes (24): SuspiciousItemHazard, Announcement, BoardState, CitizenCalls, Clearance, Command, Cordonable, DangerRadius (+16 more)
 
 ### Community 902 - "소스 프로필 분석 도구"
 Cohesion: 0.38
@@ -5296,9 +5304,9 @@ Nodes (4): AnalyzeSourceProfile, GameObject, MeshFilter, MeshRenderer
 Cohesion: 0.29
 Nodes (6): BuildLuminaires, Light, Material, Mesh, MeshFilter, MeshRenderer
 
-### Community 905 - ".Site"
-Cohesion: 0.27
-Nodes (10): Shutter, CompartmentLayout, Shutter, Cell, Detector, Dictionary, List, Result (+2 more)
+### Community 905 - "CS-PACK.03.01.md"
+Cohesion: 0.14
+Nodes (23): 확인 범위·hash·대상·다음 행동을 보존하고 URL을 원본 보유로 계산하지 않는다, 과거 해시와 대조하고 다른 역 자료/실행파일/단위 오류를 탐지한다, 실제 포함물·제한·단위·참조·성능을 검사하고 이름/외형으로 능력·정원을 생성하지 않으며 유료팩을 필수 선행으로 넣지 않는다, AC-CS-PACK.03.01-N: AC-CS-PACK.03.01-N, AC-CS-PACK.03.01-P: AC-CS-PACK.03.01-P, AC-CS-PACK.03.02-N: AC-CS-PACK.03.02-N, AC-CS-PACK.03.02-P: AC-CS-PACK.03.02-P, CS-PACK.03: CS-PACK.03 (+15 more)
 
 ### Community 907 - "높이 히스토그램 측정"
 Cohesion: 0.43
@@ -5333,8 +5341,8 @@ Cohesion: 0.29
 Nodes (7): NodeKind, Array, Boolean, Null, Number, Object, String
 
 ### Community 915 - "nunit_framework"
-Cohesion: 0.10
-Nodes (15): ChooGuard.EditorTools, ChooGuard.App.Fps, ChooGuard.Tests.PlayMode, ChooGuard.App.Fps.Tutorial, ChooGuard.App.Fps.Work, ChooGuard.App.Fps.Shell, nunit_framework, system_collections (+7 more)
+Cohesion: 0.08
+Nodes (23): CrowdLocomotionClipTests, AnimationClip, TestCase, ChooGuard.EditorTools, ChooGuard.Tests.EditMode, ChooGuard.App.Fps, ChooGuard.Tests.PlayMode, ChooGuard.App.Fps.Tutorial (+15 more)
 
 ### Community 916 - "ResponderTeamBuilder"
 Cohesion: 0.05
@@ -5520,9 +5528,9 @@ Nodes (7): export, blender_axes, fbx_axes, origin, pending_geometry, root_transf
 Cohesion: 0.29
 Nodes (6): Actual Busan Station ↔ Metro Transfer Walk Evidence, Errors encountered, Evidence standard, Goal, Phases, Scope
 
-### Community 963 - "RuleActivationReason"
-Cohesion: 0.22
-Nodes (9): RuleActivationReason, ACTIVE, EXCEPTION_NOT_FALSE, GUARD_NOT_TRUE, INVALID_APPROVAL, OUTSIDE_ACTIVATION_INTERVAL, REJECTED, UNKNOWN_KIND (+1 more)
+### Community 963 - "RuleActivationDecision"
+Cohesion: 0.13
+Nodes (15): RuleActivationDecision, Clause, ExceptionTruth, GuardTruth, IsActive, Reason, RuleActivationReason, ACTIVE (+7 more)
 
 ### Community 964 - "1층 천장 높이 측정"
 Cohesion: 0.29
@@ -5588,8 +5596,8 @@ Nodes (5): 금지, 기록 의무, 반드시 뒤지는 곳, 순서 (건너뛸 수
 Cohesion: 0.33
 Nodes (5): AddNavRamps, BoxCollider, Material, MeshRenderer, OffMeshLink
 
-### Community 980 - "LevelIsolate.cs"
-Cohesion: 0.38
+### Community 980 - "LevelIsolate"
+Cohesion: 0.47
 Nodes (3): GameObject, Transform, LevelIsolate
 
 ### Community 981 - "게임 뷰·플레이어 다듬기"
@@ -5601,8 +5609,8 @@ Cohesion: 0.47
 Nodes (4): MeshCollider, MeshRenderer, Sample, StationInteriorProbe
 
 ### Community 983 - "worker.py"
-Cohesion: 0.05
-Nodes (40): emit(), polygons(), pts(), Derive visual-only city surfaces from immutable OSM, in source metres., raw_height(), xy(), base64, contextlib (+32 more)
+Cohesion: 0.06
+Nodes (31): nearest(), residual(), transform(), base64, 11.1 배포안, 11.2 지원 범위를 넘는 계산을 만들지 않기, 11. Windows 배포와 과학 모델의 적용 한계, fdsreader (+23 more)
 
 ### Community 984 - "서브메시 아틀라스"
 Cohesion: 0.40
@@ -5626,7 +5634,7 @@ Nodes (6): AtcModes, AtsModes, DoorMode, PassAlarmType, Device, ReadhesionDevice
 
 ### Community 990 - "FireSafetyEquipmentTests"
 Cohesion: 0.11
-Nodes (17): FireSafetyEquipmentTests, BindingFlags, BoxCollider, Collider, Func, IEnumerator, List, Mesh (+9 more)
+Nodes (16): FireSafetyEquipmentTests, BindingFlags, BoxCollider, Func, IEnumerator, List, Mesh, MeshFilter (+8 more)
 
 ### Community 991 - "CS-BOOT.01.01 검수 인계"
 Cohesion: 0.33
@@ -5668,9 +5676,9 @@ Nodes (5): 10. 데이터·온톨로지·로컬 저장 설계, blob commit, SQLit
 Cohesion: 0.33
 Nodes (6): pattern, type, properties, causationId, schemaVersion, const
 
-### Community 1001 - "Vector3"
-Cohesion: 0.29
-Nodes (6): Action, Func, IEnumerator, IList, OffMeshLinkData, Vector3
+### Community 1001 - "Agency"
+Cohesion: 0.13
+Nodes (21): Agency, Mission, RouteData, List, OpenRaCountdown, Queue, Member, Mission (+13 more)
 
 ### Community 1002 - "Checkpoint 스키마"
 Cohesion: 0.33
@@ -5736,29 +5744,29 @@ Nodes (5): additionalProperties, $id, required, $schema, type
 Cohesion: 0.33
 Nodes (5): additionalProperties, $id, required, $schema, type
 
-### Community 1018 - "MvpStationZones"
-Cohesion: 0.41
-Nodes (6): MvpStationZones, Zone, List, Rect, Vector2, Zone
+### Community 1018 - "SprinklerBuilder"
+Cohesion: 0.14
+Nodes (12): SprinklerBuilder, MeshRoot, IEnumerable, List, Material, Mesh, MeshFilter, MeshRenderer (+4 more)
 
 ### Community 1019 - "test_ci_policy.py"
 Cohesion: 0.09
-Nodes (13): ChangeScopedTests, DynamicFontTests, font(), GitPlumbingTests, GraphFreshnessTests, paths_of(), Policy gate rules and the git plumbing they depend on (temporary repositories…, ReportingTests (+5 more)
+Nodes (14): contextlib, ChangeScopedTests, DynamicFontTests, font(), GitPlumbingTests, GraphFreshnessTests, paths_of(), Policy gate rules and the git plumbing they depend on (temporary repositories… (+6 more)
 
-### Community 1020 - "PlayerBuild"
-Cohesion: 0.31
-Nodes (5): PlayerBuild, BuildTarget, MenuItem, BuildOptions, 검증 (2026-09-30)
+### Community 1020 - "CS-LAB.03.01.md"
+Cohesion: 0.15
+Nodes (22): 외생 혁신은 결속하고 사용자 조치에 따른 내생 결과는 재계산한다, 제약위반을 먼저 분리하고 우열 불명/비지배안을 표시한다, AC-CS-LAB.03.01-N: AC-CS-LAB.03.01-N, AC-CS-LAB.03.01-P: AC-CS-LAB.03.01-P, AC-CS-LAB.03.02-N: AC-CS-LAB.03.02-N, AC-CS-LAB.03.02-P: AC-CS-LAB.03.02-P, CS-LAB.03.01: 같은 비교 basis와 외생 혁신을 결속한다, CS-LAB.03.02: 제약·불확도·비지배 결과와 우열 불명을 표시한다 (+14 more)
 
 ### Community 1021 - "CRITIQUE_TO_REQUIREMENTS.md"
 Cohesion: 0.04
-Nodes (95): 외생 혁신은 결속하고 사용자 조치에 따른 내생 결과는 재계산한다, 제약위반을 먼저 분리하고 우열 불명/비지배안을 표시한다, 독립 평가 집합과 사전 종료 규칙을 사용하고 유리한 seed만 선택하지 않는다, 동작 성공만으로 현장용 자격을 부여하지 않고 해당 gate만 보류한다, 실행 전 승인 계약과 독립 split 없으면 합격하지 않는다, 초기 구축·검수·출력 수정·도움까지 포함한 측정과 미완료를 분리하고 사전 계획 없이 생성속도만으로 절감·학습효과를 승인하지 않는다, 장소·시기·범위·모델·규칙·불확도·승인주체·한계를 포함한다, 기억·문서·관찰 근거, 역할 중복, 사용 빈도·현재 도구·승인 경로의 미확인을 기록하고 가상 페르소나를 실측값으로 쓰지 않는다 (+87 more)
+Nodes (86): 초기 구축·검수·출력 수정·도움까지 포함한 측정과 미완료를 분리하고 사전 계획 없이 생성속도만으로 절감·학습효과를 승인하지 않는다, 최소수집·익명화·보관·반출 정책을 적용하고 승인 없는 결제/공유를 하지 않는다, 같은 gate를 재적용하고 새 조건에 기존 정확도를 자동 상속하지 않는다, 기억·문서·관찰 근거, 역할 중복, 사용 빈도·현재 도구·승인 경로의 미확인을 기록하고 가상 페르소나를 실측값으로 쓰지 않는다, 실증만 미승인으로 두고 필수 입력·담당 역할·대체경로·막힌 주장을 반환하며 독립 코어 개발을 전역 중단하지 않는다, 첫 구축과 정상 반복 비용을 모두 보여주고 순절감이 양수가 아니거나 재사용 빈도가 없으면 회수 성공·총시간 절감을 주장하지 않는다, 전체 시도를 분모로 제시하고 조건부 완수시간과 실패를 분리하며 사후 임계값 변경·좋은 사용자만 선택을 금지하고 근거 부족은 INCONCLUSIVE로 반환한다, 허용된 기능을 유지하고 미지원 계산을 표시하며 승인 없는 업로드·외부 실행 없이 실패·비용·복구 기록을 남긴다 (+78 more)
 
 ### Community 1022 - "15. AI-native 데이터·온톨로지·추적성 계약"
 Cohesion: 0.33
 Nodes (6): 15.1 개념 계층, 15.2 식별자·버전, 15.3 공통 이벤트 필드, 15.4 원문→행동→대본 추적, 15.5 첨부 계약의 범위, 15. AI-native 데이터·온톨로지·추적성 계약
 
-### Community 1023 - "unity_results.py"
-Cohesion: 0.39
-Nodes (8): dataclasses, escape(), evaluate(), main(), ModeResult, parse_spec(), Verdict and job summary for Unity Test Framework runs (NUnit 3 XML). Usage:…, render()
+### Community 1023 - "KitchenRoom"
+Cohesion: 0.15
+Nodes (15): KitchenLayout, KitchenPart, KitchenPlan, Wall, RightAlong, List, Rect, Spec (+7 more)
 
 ### Community 1024 - "운영안·대본 자동화"
 Cohesion: 0.33
@@ -5921,8 +5929,8 @@ Cohesion: 0.33
 Nodes (6): dependencies, depth, hash, source, version, com.github-glitchenzo.nugetforunity
 
 ### Community 1064 - "system"
-Cohesion: 0.07
-Nodes (9): StationSpawnPick, newtonsoft_json, newtonsoft_json_linq, system, system_collections_generic, system_globalization, system_io, system_runtime_compilerservices (+1 more)
+Cohesion: 0.06
+Nodes (12): ChooGuard.Editor, newtonsoft_json, newtonsoft_json_linq, system, system_collections_generic, system_globalization, system_io, system_text (+4 more)
 
 ### Community 1065 - "오픈월드 CLI 작업 인계"
 Cohesion: 0.33
@@ -6004,13 +6012,13 @@ Nodes (3): MeshFilter, Vector3, SourceStationSections
 Cohesion: 0.60
 Nodes (3): MeshRenderer, Sample, StationInteriorProbeV2
 
-### Community 1086 - "MvpWorldPresentation"
-Cohesion: 0.32
-Nodes (4): MvpWorldPresentation, Camera, UniversalRenderPipelineAsset, RenderPipelineAsset
+### Community 1086 - "CSWORLD0102Tests"
+Cohesion: 0.20
+Nodes (11): CSWORLD0102Tests, ArgumentException, ArgumentNullException, ArgumentOutOfRangeException, BoxCollider, InvalidOperationException, Renderer, Scene (+3 more)
 
-### Community 1087 - "CHOOGuard_Story_Plan_v4/ONTOLOGY.md"
-Cohesion: 0.58
-Nodes (8): 개념, 관계의 정확한 의미, 기술 계층, 목적, 상태와 open/closed world, 실행 계획 온톨로지, 예시, 왜 최신 방법과 오래된 표준을 함께 쓰나
+### Community 1087 - "prepare_world_layers.py"
+Cohesion: 0.13
+Nodes (16): emit(), polygons(), pts(), Derive visual-only city surfaces from immutable OSM, in source metres., raw_height(), xy(), jupedsim, pil (+8 more)
 
 ### Community 1089 - "거리 오차 통계"
 Cohesion: 0.40
@@ -6120,9 +6128,9 @@ Nodes (5): 05.1 조작 원칙, 05.2 핵심 화면, 05.3 게임성의 원천, 05.
 Cohesion: 0.36
 Nodes (9): beam(), box(), depot(), facade_box(), group(), mesh(), prism(), Source-metre, evidence-constrained facade drafts. Never writes Assets or Unity… (+1 more)
 
-### Community 1117 - "BranchRequest"
-Cohesion: 0.20
-Nodes (10): BranchKind, EXACT_FORK, REEXECUTE_FROM_ORIGIN, BranchRequest, CheckpointRef, IntentId, NewPlanRef, NewRunId (+2 more)
+### Community 1117 - ".RoutineOptions"
+Cohesion: 0.28
+Nodes (4): Choice, List, Point, Vector3
 
 ### Community 1118 - "매뉴얼 규칙화 지식 파이프라인"
 Cohesion: 0.40
@@ -6212,6 +6220,10 @@ Nodes (9): A. 측정부터 — 아무것도 바꾸지 않는다, B. 5대의 새 
 Cohesion: 0.40
 Nodes (5): 04.1 공통 규칙, 04.2 TUTORIAL: 실제 훈련·매뉴얼 기반 교육, 04.3 RANDOM_OPERATIONS_LAB: 조건부 랜덤 운영실험, 04.4 완료 경험, 04. 두 사용자 모드와 핵심 여정
 
+### Community 1140 - "AlarmPanelPoint"
+Cohesion: 0.12
+Nodes (16): AlarmPanelPoint, Equipment, Shown, Signal, Tone, Fire, Normal, Supervisory (+8 more)
+
 ### Community 1141 - "비평 반영·재작업 정책"
 Cohesion: 0.40
 Nodes (5): 19.1 C01–C12를 검증 가능한 요구로 전환, 19.2 AAA는 선언이 아니라 범위별 품질 목표, 19.3 재작업과 중단, 19.4 판정 규칙, 19. 비평 반영표와 수용·재작업 정책
@@ -6221,7 +6233,7 @@ Cohesion: 0.40
 Nodes (5): 20.1 측정할 성능 목표, 20.2 접근성과 비게임 사용자, 20.3 데이터·외부 서비스 정책, 20.4 유지보수와 도입, 20. 비기능·보안·접근성·시간 예산
 
 ### Community 1143 - "Batch"
-Cohesion: 0.13
+Cohesion: 0.15
 Nodes (5): Random, Vector3, Vector4, LeafBuild, Batch
 
 ### Community 1144 - "contentLockRef 스키마 필드"
@@ -6308,9 +6320,9 @@ Nodes (5): dependencies, depth, source, version, com.unity.modules.particlesyste
 Cohesion: 0.40
 Nodes (4): Evidence limits, Findings, Source pass 1, Synthesis
 
-### Community 1165 - "2026-09-29 모든 비상상황을 JEV 판단으로 · PC마다 JEV 키 · 출동 부대 모델"
-Cohesion: 0.11
-Nodes (18): 2026-09-29 모든 비상상황을 JEV 판단으로 · PC마다 JEV 키 · 출동 부대 모델, CI·벤치마크, JEV 판정 (`jev-emergency-scope-012`, jev-1.13.0, authority 0), PC마다 JEV 키, 검증 (2026-09-29, macOS 에디터 재생, 실제 JEV 서버), 검증 (2026-09-30, macOS 에디터), 구현, 남은 한계 (+10 more)
+### Community 1165 - "주방·가스 설비 (2026-09-30)"
+Cohesion: 0.33
+Nodes (6): 검증 (2026-09-30, macOS 에디터), 남은 한계, 놓은 것 (전체 220 부품, 점포마다 4~35개), 원인·전개·직원 동작 (`IncidentDirector.KitchenGas.cs`), 주방·가스 설비 (2026-09-30), 트윈에서 확인한 것
 
 ### Community 1166 - "플러그인 확장 설정 파서"
 Cohesion: 0.40
@@ -6345,8 +6357,8 @@ Cohesion: 0.40
 Nodes (4): Diagnosis so far (Main, diag in `.planning/2026-09-27-openings-extension/diag/`), Lanes, Naturalness round - floating / wall-less / unreal elements the user flagged (2026-09-26 01:10-01:40 KST), Rules (as the previous rounds)
 
 ### Community 1176 - "DisturbanceHazard"
-Cohesion: 0.04
-Nodes (48): SuspiciousItemHazard, Announcement, BoardState, CitizenCalls, Clearance, Command, Cordonable, DangerRadius (+40 more)
+Cohesion: 0.07
+Nodes (24): IEnumerator, DisturbanceHazard, Announcement, BoardState, CitizenCalls, Clearance, Command, DangerRadius (+16 more)
 
 ### Community 1180 - "매뉴얼 컴파일·두 모드"
 Cohesion: 0.50
@@ -6758,11 +6770,15 @@ Nodes (3): Bounded pedestrian component verification, Contact force source audit
 
 ### Community 1283 - "unityengine"
 Cohesion: 0.04
-Nodes (19): AlignSceneCamera, ViewInteriorConcourse, Agency, Crew, Facility, Fire, Medical, Police (+11 more)
+Nodes (11): ChooGuard.App.Fps.Equipment, ChooGuard.App.Fps.Facilities, ChooGuard.Circulation, ChooGuard.App.Fps.Emergency, ChooGuard.App.Fps.Hud, system_diagnostics, system_linq, unityeditor_animations (+3 more)
+
+### Community 1284 - "MvpTeamNavigation"
+Cohesion: 0.13
+Nodes (14): MvpTeamNavigation, LastReason, TextAsset, Vector3, MvpTeamNavigationBuilder, MenuItem, MeshFilter, TextAsset (+6 more)
 
 ### Community 1285 - "ImminenceScale"
-Cohesion: 0.10
-Nodes (17): CompetingRisks, Imminence, ImminenceScale, CalmOrigin, Development, IncidentOrigin, IReadOnlyList, List (+9 more)
+Cohesion: 0.11
+Nodes (12): CompetingRisks, Imminence, ImminenceScale, CalmOrigin, Development, IncidentOrigin, IReadOnlyList, List (+4 more)
 
 ### Community 1286 - "2026-09-28 맵 오브젝트 상호작용"
 Cohesion: 0.25
@@ -7188,13 +7204,13 @@ Nodes (3): 12. 안전·보안·자격·검증 증거, privacy와 불변 로그, 
 Cohesion: 0.67
 Nodes (3): 14. 성능·테스트·독립 검증 전략, 반드시 넣을 반증 시험, 시험 계층
 
-### Community 1414 - "E. 안전관리체계·교육·시각자료의 제도적 맥락"
-Cohesion: 0.22
-Nodes (9): E01. 철도안전관리체계 프로그램 — 한국철도공사 2017 승인 구판, E02. 비상대응계획 시행지침/시행세칙 공개 경로 — 버전 경고 자료군, E03. 철도안전법·철도 비상대응계획 수립 지침 — 법령 메타데이터, E04. 현장근무자를 위한 서비스 매뉴얼 영상 — 코레일유통, E05. 2022 재난대응 안전한국훈련 영상 — 코레일 훈련 자료, E06. 2025 철도 화재 대피 홍보영상 자료군 — 국토부/보도 확인, E07. 고속철도차량 청소 품질 향상 시범청소 시연회 보도, E08. 직원 교육포털 — 정상 획득 경계 (+1 more)
+### Community 1414 - "WorldEntityAnchor"
+Cohesion: 0.14
+Nodes (15): WorldEntityAnchor, EntityId, FrameId, ProjectedDoorOpen, ProjectedRevision, ProjectedVisible, QualificationLabel, Representation (+7 more)
 
 ### Community 1669 - "WallSpots"
-Cohesion: 0.16
-Nodes (14): Spot, Column, Survey, WallSpots, Collider, Dictionary, List, Material (+6 more)
+Cohesion: 0.11
+Nodes (20): BackfaceHits, TwinColliders, Count, List, MeshCollider, Spot, Column, Survey (+12 more)
 
 ### Community 1670 - ".Spawn"
 Cohesion: 0.15
@@ -7209,16 +7225,16 @@ Cohesion: 0.15
 Nodes (13): PathService, Abandoned, Graph, Queued, Served, centre, Dictionary, HashSet (+5 more)
 
 ### Community 1673 - "KitchenGasBuilder"
-Cohesion: 0.07
-Nodes (31): Entry, Spec, Gas, StationKitchens, IReadOnlyList, Entry, KitchenGasBuilder, Sidecar (+23 more)
+Cohesion: 0.11
+Nodes (21): Entry, Spec, Gas, StationKitchens, IReadOnlyList, Entry, KitchenGasBuilder, Sidecar (+13 more)
 
 ### Community 1674 - "ElectricPlazaPrefabs"
-Cohesion: 0.15
-Nodes (14): BreakerDeckLayout, Vector3, DoorInfo, ElectricPlazaPrefabs, Emission, Entry, Action, BoxCollider (+6 more)
+Cohesion: 0.12
+Nodes (16): BoardDoor, IsOpen, BreakerDeckLayout, Vector3, DoorInfo, ElectricPlazaPrefabs, Emission, Entry (+8 more)
 
-### Community 1675 - "프로덕션 게임 벤치마크·OSS 이식·자체평가"
-Cohesion: 0.22
-Nodes (8): Jev 내부 산술, 게임별 적용 판단, 실제 OSS 코드 이식, 요소별 결과, 자체평가, 증거 색인, 판단과 조사 범위, 프로덕션 게임 벤치마크·OSS 이식·자체평가
+### Community 1675 - "MvpAgencyDispatchView"
+Cohesion: 0.17
+Nodes (12): MvpAgencyDispatchBuilder, GameObject, MenuItem, TextAsset, MvpAgencyDispatchView, Button, Image, RectTransform (+4 more)
 
 ### Community 1676 - "19. AAA급 제품 검수와 반증·재작업 루프"
 Cohesion: 0.33
@@ -7228,13 +7244,13 @@ Nodes (6): 19.1 내부 제품 품질 기준, 19.2 자동·수동·외부 검수 
 Cohesion: 0.33
 Nodes (6): 13.1 구성 경계, 13.2 Unity 기준선과 자산 입고, 13.3 로딩·LOD·성능 독립성, 13.4 버전·설치·내보내기, 13.5 실제 도입 환경과 비용 경계, 13. 제품 아키텍처·Unity 실행·배포
 
-### Community 1678 - ".Main"
-Cohesion: 0.43
-Nodes (4): Dictionary, MeshRenderer, Stand, StationReach
+### Community 1678 - "GasValvePoint"
+Cohesion: 0.15
+Nodes (10): GasValvePoint, Closed, DisplayName, Equipment, Feeds, InteractionPrompt, Main, Shop (+2 more)
 
 ### Community 1679 - "CS-SIM.03.02: 현지 접근시간·운행 범위를 독립 자료와 비교한다"
 Cohesion: 0.15
-Nodes (19): 순간이동·숨은 우회 등을 검출/제거하고 탈선 동역학을 계산했다고 주장하지 않는다, AC-CS-SIM.03.01-N: AC-CS-SIM.03.01-N, AC-CS-SIM.03.01-P: AC-CS-SIM.03.01-P, AC-CS-SIM.03.02-N: AC-CS-SIM.03.02-N, AC-CS-SIM.03.02-P: AC-CS-SIM.03.02-P, CS-SIM.03: CS-SIM.03, CS-SIM.03.01: 접근교통·차량·승무원 어댑터를 연결한다, CS-SIM.03.02: 현지 접근시간·운행 범위를 독립 자료와 비교한다 (+11 more)
+Nodes (18): 순간이동·숨은 우회 등을 검출/제거하고 탈선 동역학을 계산했다고 주장하지 않는다, AC-CS-SIM.03.01-N: AC-CS-SIM.03.01-N, AC-CS-SIM.03.01-P: AC-CS-SIM.03.01-P, AC-CS-SIM.03.02-N: AC-CS-SIM.03.02-N, AC-CS-SIM.03.02-P: AC-CS-SIM.03.02-P, CS-SIM.03.01: 접근교통·차량·승무원 어댑터를 연결한다, CS-SIM.03.02: 현지 접근시간·운행 범위를 독립 자료와 비교한다, dep:CS-SIM.03.01:0: dep:CS-SIM.03.01:0 (+10 more)
 
 ### Community 1680 - "FireDoorPoint"
 Cohesion: 0.10
@@ -7257,8 +7273,8 @@ Cohesion: 0.40
 Nodes (5): 07.1 핵심 객체, 07.2 상태와 메시지 수명, 07.3 세 가지 메시지를 넘는 22개 운영 원인, 07.4 제약·재량·위반, 07. 다기관 운영 모델과 상태 체계
 
 ### Community 1685 - "CS-PACK.03 · 무료 원본 입고와 파일 신뢰경계"
-Cohesion: 0.25
-Nodes (8): CS-PACK.03 · 무료 원본 입고와 파일 신뢰경계, 구현 절차, 새 구현 경로, 선행 산출물과 소비 단계, 실제 시험 매체, 연결과 인계, 정확한 인수 oracle · 아직 미실행, 필수 상세 명세
+Cohesion: 0.12
+Nodes (16): CS-PACK.03 · 무료 원본 입고와 파일 신뢰경계, CS-PACK.04 · 실제 현장 입력·현실 관측 갱신, 구현 절차, 구현 절차, 새 구현 경로, 새 구현 경로, 선행 산출물과 소비 단계, 선행 산출물과 소비 단계 (+8 more)
 
 ### Community 1686 - "03. 사용자·권한·제품 범위"
 Cohesion: 0.40
@@ -7269,8 +7285,8 @@ Cohesion: 0.16
 Nodes (11): GasAlarmPoint, DisplayName, Equipment, InteractionPrompt, Shop, Sounding, AudioSource, FirstPersonResponder (+3 more)
 
 ### Community 1688 - "ReservationRequest"
-Cohesion: 0.12
-Nodes (13): ReservationDemand, Quantity, ResourceId, Unit, ReservationRequest, Demands, End, OwnerTaskId (+5 more)
+Cohesion: 0.08
+Nodes (21): ReservationDemand, Quantity, ResourceId, Unit, ReservationRequest, Demands, End, OwnerTaskId (+13 more)
 
 ### Community 1689 - "07. 다기관 운영 모델과 상태 체계"
 Cohesion: 0.40
@@ -7284,49 +7300,57 @@ Nodes (5): IEnumerable, List, Pools, RadioOption, Transition
 Cohesion: 0.50
 Nodes (3): MeshRenderer, Transform, LevelMasks
 
-### Community 1693 - ".StrideStaysOutOfThePose"
-Cohesion: 0.50
-Nodes (3): CrowdLocomotionClipTests, AnimationClip, TestCase
+### Community 1693 - ".CreateAnchor"
+Cohesion: 0.23
+Nodes (8): FixtureBuilder, BoxCollider, Collider, GameObject, MenuItem, Scene, Transform, Vector3
 
 ### Community 1694 - "10. 시간 제어·스냅샷·분기·운영안 비교"
 Cohesion: 0.50
 Nodes (4): 10.1 시간 의미, 10.2 스냅샷 범위, 10.3 비교 설계, 10. 시간 제어·스냅샷·분기·운영안 비교
 
-### Community 1695 - "CHOOGuard 철도 현장 시각자료 조사"
-Cohesion: 0.25
-Nodes (7): 1. 범위와 읽는 법, 2. 우선 열람할 자료, 4. 직접 본 이미지에서만 말할 수 있는 것, 5. 게임 행동 레퍼런스로 읽는 방법 — 제안이지 개발계획 아님, 6. 제외·보류 및 증거 공백, 7. 조사 품질 자체평가, CHOOGuard 철도 현장 시각자료 조사
+### Community 1695 - "SessionProjection"
+Cohesion: 0.13
+Nodes (15): ProjectionQuery, AfterRevision, AgencyId, RequesterId, RunId, ViewScope, SessionProjection, AgencyId (+7 more)
 
 ### Community 1696 - "CI/CD 구축 — 2026-09-28"
-Cohesion: 0.08
-Nodes (22): project(), Files written/edited, Last 12 tool results, Last reasoning (newest last), Messages received, Messages sent, Resume digest for RegTech4 (killed by the session interruption at ~14:17, 2026-09-25, ~2 min after spawn), Steps (tool: intent | head) (+14 more)
+Cohesion: 0.11
+Nodes (18): PlayerBuild, BuildTarget, MenuItem, BuildOptions, CI/CD 구축 — 2026-09-28, PR #249 (Adrianaline, develop 동기화 영수증), Windows 시험 + 첫 빌드·스모크 (run 36406455457, `5efe9b93`), 기준선 (2026-09-28) (+10 more)
 
-### Community 1698 - "AutoExtinguisherPoint"
-Cohesion: 0.14
-Nodes (11): AutoExtinguisherPoint, Discharged, Discharging, Equipment, Nozzle, Over, Shop, Material (+3 more)
+### Community 1697 - ".Measure"
+Cohesion: 0.20
+Nodes (10): Obstacle, Rect, KitchenRooms, Bounds, MeshFilter, Point, Rect, Renderer (+2 more)
+
+### Community 1698 - "FpsInteractable"
+Cohesion: 0.17
+Nodes (9): FpsInteractable, DisplayName, InteractionCount, InteractionPrompt, UnityEvent, IFpsNamed, DisplayName, IFpsSecondaryInteraction (+1 more)
 
 ### Community 1700 - "CI/CD 운영 문서"
-Cohesion: 0.10
-Nodes (18): CI/CD 운영 문서, Unity Cloud(Build Automation)를 쓰지 않는 이유, Unity 레인 (`unity.yml`), Windows·macOS 팀원 개발 환경, 공급망·권한, 도구 시험 (`tools.yml`), 로그와 비밀값, 로컬에서 같은 검사 돌리기 (+10 more)
+Cohesion: 0.13
+Nodes (13): CI/CD 운영 문서, Windows·macOS 팀원 개발 환경, 공급망·권한, 도구 시험 (`tools.yml`), 로컬에서 같은 검사 돌리기, 릴리스, 알려진 제약, 정책 게이트 (`.github/scripts/ci_policy.py`) (+5 more)
 
 ### Community 1701 - "ReservationCancellationStatus"
 Cohesion: 0.29
 Nodes (7): ReservationCancellationStatus, AlreadyInactive, Invalid, NotFound, OwnerMismatch, Ready, VersionMismatch
 
-### Community 1702 - "Data"
-Cohesion: 0.57
-Nodes (7): Data, Building, Heightfield, Layer, Data, Data, Prop
+### Community 1702 - "SiUnit"
+Cohesion: 0.15
+Nodes (13): SiUnit, CubicMetre, Kelvin, Kilogram, Metre, MetresPerSecond, Pascal, Second (+5 more)
 
 ### Community 1703 - "CHOOGuard_Story_Plan_v4/START_HERE.md"
-Cohesion: 0.71
-Nodes (6): CHOOGuard · 실행 스토리·단기 계획 v4, 다음 작업·병렬 확인, 어떤 것이 정본인가, 이번에 실행하지 않은 것, 지금 시작할 한 작업, 최소 읽기
+Cohesion: 0.26
+Nodes (12): K12 · 단계별 증거·성능·품질 gate, 결정 보류 기록, 기술 반복 검수, 런타임 성능 목표 (제안 설계값, 측정값 아님), 정량 정확도, 주장별 증거, CHOOGuard · 실행 스토리·단기 계획 v4, 다음 작업·병렬 확인 (+4 more)
 
-### Community 1704 - "ElectricPlazaViews"
-Cohesion: 0.30
-Nodes (7): ElectricPlazaViews, Camera, Color32, Dictionary, List, RenderTexture, Texture2D
+### Community 1704 - "EquipmentCatalog"
+Cohesion: 0.18
+Nodes (11): EquipmentCatalog, Dictionary, GameObject, TextAsset, ElectricPlazaViews, Camera, Color32, Dictionary (+3 more)
 
-### Community 1705 - "FpsPromptPipelineTests"
-Cohesion: 0.12
-Nodes (14): InspectionPoint, Collider, FirstPersonResponder, BoxCollider, InspectionPoint, Vector3, FpsPromptPipelineTests, BoxCollider (+6 more)
+### Community 1705 - "InspectionPoint"
+Cohesion: 0.22
+Nodes (7): InspectionPoint, Collider, BoxCollider, InspectionPoint, Vector3, BoxCollider, InspectionPoint
+
+### Community 1706 - "soak_verdict.py"
+Cohesion: 0.21
+Nodes (7): evaluate(), main(), Verdict for a player smoke run in the soak mode…, render(), Player smoke verdicts from the soak report., run(), SoakVerdictTests
 
 ### Community 1707 - "Electric-plaza behaviour research (Korea) — 2026-09-30"
 Cohesion: 0.14
@@ -7336,33 +7360,33 @@ Nodes (13): 1. Electrical-fire causes and where they start, 2. Vending machines 
 Cohesion: 0.22
 Nodes (9): EmergencyVehicle, Bounds, Color, Light, List, Material, Renderer, Colour (+1 more)
 
-### Community 1709 - "EquipmentCatalog"
-Cohesion: 0.40
-Nodes (4): EquipmentCatalog, Dictionary, GameObject, TextAsset
+### Community 1709 - "StockSnapshot"
+Cohesion: 0.15
+Nodes (13): StockSnapshot, AgencyId, AgencyLabel, Available, Capacity, Committed, Consumed, Label (+5 more)
 
-### Community 1710 - "신규 구축 명세 v3 · 적대적 비평·수정·재검수 기록"
-Cohesion: 0.33
-Nodes (6): AAA 요구에 대한 판정 방식, 반복 이력, 신규 구축 명세 v3 · 적대적 비평·수정·재검수 기록, 요약, 이번 실행 환경과 제한, 주요 결함과 반영 위치
+### Community 1710 - "Trigger"
+Cohesion: 0.17
+Nodes (12): Trigger, AfterQuake, Blocked, Changed, Cue, Ended, Instruction, Notice (+4 more)
 
-### Community 1711 - "K03 · 영속 명령·자원·예약·취소"
-Cohesion: 0.33
-Nodes (6): K03 · 영속 명령·자원·예약·취소, native 저장 baseline, Submit 알고리즘, 원자성의 경계, 자원 생명주기, 장애 시험
+### Community 1711 - "Resume digest for RegTech4 (killed by the session interruption at ~14:17, 2026-09-25, ~2 min after spawn)"
+Cohesion: 0.20
+Nodes (9): project(), Files written/edited, Last 12 tool results, Last reasoning (newest last), Messages received, Messages sent, Resume digest for RegTech4 (killed by the session interruption at ~14:17, 2026-09-25, ~2 min after spawn), Steps (tool: intent | head) (+1 more)
 
 ### Community 1712 - "VideoFloorOne"
-Cohesion: 0.26
-Nodes (7): Batch, List, Vector2, Vector3, MeshData, VideoFloorOne, MeshData
+Cohesion: 0.19
+Nodes (8): Batch, JObject, List, Vector2, Vector3, MeshData, VideoFloorOne, MeshData
 
 ### Community 1713 - ".Prepare"
 Cohesion: 0.29
 Nodes (5): Color, GameObject, Material, Texture2D, Transform
 
-### Community 1714 - "K12 · 단계별 증거·성능·품질 gate"
-Cohesion: 0.33
-Nodes (6): K12 · 단계별 증거·성능·품질 gate, 결정 보류 기록, 기술 반복 검수, 런타임 성능 목표 (제안 설계값, 측정값 아님), 정량 정확도, 주장별 증거
+### Community 1714 - "OpenRaCountdown"
+Cohesion: 0.28
+Nodes (5): OpenRaCountdown, Complete, RemainingSeconds, TotalSeconds, ChooGuard.App.Mvp.ThirdParty
 
-### Community 1715 - ".InvalidValues_AndDuplicateDemands_AreRejected"
-Cohesion: 0.21
-Nodes (9): ReservationCancellation, OwnerTaskId, ReservationId, Version, ReservationCancellationResult, Request, Status, ArgumentException (+1 more)
+### Community 1715 - "ActiveReservation"
+Cohesion: 0.10
+Nodes (25): ActiveReservation, Demands, End, IsActive, OwnerTaskId, ReservationId, Start, Version (+17 more)
 
 ### Community 1716 - "07. 다기관 운영 모델과 상태 체계"
 Cohesion: 0.40
@@ -7380,9 +7404,13 @@ Nodes (11): ReservationPlanResult, Code, LockOrder, ProposedReservations, Status
 Cohesion: 0.40
 Nodes (5): 13.1 구성 경계, 13.2 Unity 기준선과 자산 입고, 13.3 로딩·LOD·성능 독립성, 13.4 버전·설치·내보내기, 13. 제품 아키텍처·Unity 실행·배포
 
-### Community 1720 - ".Plan"
-Cohesion: 0.29
-Nodes (8): Boundary, ReservationPlanner, ReservationResource, Capacity, ResourceId, Unit, Dictionary, IReadOnlyList
+### Community 1720 - "WorldProjectionBinding"
+Cohesion: 0.22
+Nodes (6): SetUp, WorldProjectionBinding, AuthorityId, EntityId, FrameId, RunId
+
+### Community 1722 - "D. 비상대응·응급처치·시민 보호"
+Cohesion: 0.22
+Nodes (9): D01. 사고발생시 국민행동요령 — 코레일/행정안전부 자료군, D02. 지진 발생시 상황·장소별 행동요령 — 행정안전부, D03. 국민행동요령: 호우 — 기상청, D04. 전력분야 정전시 행동요령 — 행정안전부 모바일 안내, D05. 2025년 한국 심폐소생술 가이드라인 — 질병관리청·대한심폐소생협회, D06. 2024 소방안전교육 영상교재: 화재응급처치편 — 소방청, D07. 테러대비 행동요령 — 대테러센터, D08. 철도특별사법경찰 범죄신고 안내 — 공식 경로 확인 (+1 more)
 
 ### Community 1723 - "20. 비기능 요구와 운영 경계"
 Cohesion: 0.40
@@ -7400,25 +7428,25 @@ Nodes (5): 12.1 하나의 물리량에는 하나의 소유자, 12.2 이벤트와
 Cohesion: 0.40
 Nodes (5): 17.1 실제 작성 입력을 먼저 확보, 17.2 무료 기본 입고 선택, 17.3 철도 원본·공개훈련의 사용 범위, 17.4 취득→입고→의미 결속, 17. 자료 확보·무료 우선 자산·증거 연결
 
-### Community 1727 - "CHOOGuard 클린 스타트 에픽·구현 명세 v3"
-Cohesion: 0.40
-Nodes (5): CHOOGuard 클린 스타트 에픽·구현 명세 v3, 수용 구분, 시작과 병행, 에픽, 이번에 보완한 경계
+### Community 1727 - ".KSignSide"
+Cohesion: 0.39
+Nodes (5): badge, badgeInk, board, glyph, ink
 
-### Community 1728 - "Full digital twin round — no undeveloped space behind doors, openings or edges"
-Cohesion: 0.22
-Nodes (8): Coordination (the hub tool is no longer available), Definition of done, Full digital twin round — no undeveloped space behind doors, openings or edges, Interruption safety (the session was cut twice; every lane restarts from files), Lanes (respawned 2026-09-26 after the session interruption; the first spawn only left scratch files), Outcome (2026-09-25 20:20), Rules, Storage (user directive 2026-09-25 19:05: local disk is short -> Unity Cloud)
+### Community 1728 - "MvpTeamNavigationBuilder.cs"
+Cohesion: 0.29
+Nodes (6): dotrecast_core, dotrecast_core_numerics, dotrecast_detour, dotrecast_detour_io, dotrecast_recast, dotrecast_recast_geom
 
-### Community 1729 - "K01 · 새 Unity 빌드와 assembly 경계"
-Cohesion: 0.40
-Nodes (5): K01 · 새 Unity 빌드와 assembly 경계, 시험 실행 계약, 재현 가능한 환경, 최초 부팅의 순환 제거, 컴파일 구조
+### Community 1729 - "Agency"
+Cohesion: 0.33
+Nodes (6): Agency, Crew, Facility, Fire, Medical, Police
 
-### Community 1730 - "K06 · Unity 네이티브 화면·입력·통합"
-Cohesion: 0.40
-Nodes (5): K06 · Unity 네이티브 화면·입력·통합, scale과 scene, 입력 소유권, 화면 생산자, 화면 인수 조건
+### Community 1730 - ".BindExisting"
+Cohesion: 0.33
+Nodes (5): MvpCivilianBinder, AnimationClip, GameObject, Material, MenuItem
 
-### Community 1731 - "ActiveReservation"
-Cohesion: 0.25
-Nodes (8): ActiveReservation, Demands, End, IsActive, OwnerTaskId, ReservationId, Start, Version
+### Community 1731 - "DetailedInteractionController.cs"
+Cohesion: 0.47
+Nodes (3): chooguard_application_gameplay, chooguard_contracts_gameplay, ChooGuard.App.Fps.Runtime
 
 ### Community 1733 - "10. 시간 제어·스냅샷·분기·운영안 비교"
 Cohesion: 0.50
@@ -7433,8 +7461,8 @@ Cohesion: 0.50
 Nodes (3): #262 검토 결론, 지금 알려진 것, 진행
 
 ### Community 1736 - "FacilityInspectable"
-Cohesion: 0.08
-Nodes (21): FacilityInspectable, AttachedTag, RecordedSerial, RepairOrderIssued, ShouldBeUnfit, Verdict, InspectionSnapshot, InspectionVerdict (+13 more)
+Cohesion: 0.11
+Nodes (15): FacilityInspectable, AttachedTag, RecordedSerial, RepairOrderIssued, ShouldBeUnfit, Verdict, InspectionSnapshot, InspectionVerdict (+7 more)
 
 ### Community 1737 - "SeatPhase"
 Cohesion: 0.29
@@ -7444,6 +7472,10 @@ Nodes (7): SeatPhase, Lowering, None, Rising, Seated, Settling, Stepping
 Cohesion: 0.40
 Nodes (4): Mesh, MeshCollider, MeshFilter, MeshRenderer
 
+### Community 1740 - "CHOOGuard_Clean_Start_v3/START_HERE.md"
+Cohesion: 0.80
+Nodes (5): CHOOGuard · 검수 개정 v3 · 빈 저장소에서 새 구축, 검수 증거의 범위, 문서·합성 설계 검사, 읽기, 처음 개발할 것
+
 ### Community 1742 - "19. AAA급 제품 검수와 반증·재작업 루프"
 Cohesion: 0.33
 Nodes (6): 19.1 내부 제품 품질 기준, 19.2 자동·수동·외부 검수 분리, 19.3 치명적 반려 조건, 19.4 재작업 절차, 19.5 부정·변이·메타모픽 시험, 19. AAA급 제품 검수와 반증·재작업 루프
@@ -7452,29 +7484,45 @@ Nodes (6): 19.1 내부 제품 품질 기준, 19.2 자동·수동·외부 검수 
 Cohesion: 0.40
 Nodes (5): 06.1 공간 설계, 06.2 네 가지 표현, 06.3 자료에서 Unity까지, 06.4 기술 결정과 품질, 06. 현실 기반 철도 오픈월드 구축
 
+### Community 1747 - "K05 · 계산 워커 IPC·시간·교환·물리 범위"
+Cohesion: 0.33
+Nodes (6): coordinator 한계, K05 · 계산 워커 IPC·시간·교환·물리 범위, local protocol v1, 계산 상태와 취소, 추가 경계 계약, 현상별 결정
+
+### Community 1748 - "EntityVisualProjection"
+Cohesion: 0.40
+Nodes (5): EntityVisualProjection, DoorOpen, EntityId, Revision, Visible
+
+### Community 1749 - "FixtureKind"
+Cohesion: 0.50
+Nodes (4): FixtureKind, Aed, CallPoint, Hydrant
+
+### Community 1751 - "진행"
+Cohesion: 0.50
+Nodes (3): B 에서 드러난 제약 (C 설계에 반영해야 함), 남은 판정, 진행
+
 ### Community 1754 - "unity_ci.sh"
 Cohesion: 0.83
 Nodes (3): editor(), unity_ci.sh script, usage()
 
 ## Knowledge Gaps
-- **11345 isolated node(s):** `Forecast`, `Current`, `Status`, `Revision`, `ScoredCount` (+11340 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 14414 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **318 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **11376 isolated node(s):** `Forecast`, `Current`, `Status`, `Revision`, `ScoredCount` (+11371 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 14496 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **314 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `CHOOGuard 제품 요구사항 정의서 v11` connect `CHOOGuard 제품 요구사항 정의서 v11` to `RTS 운영 시뮬레이션 상호작용`, `현실 기반 철도 오픈월드`, `매뉴얼 규칙화 파이프라인`, `시간 제어·분기 비교`, `단계별 개발 실증 계획`, `13. 제품 아키텍처·Unity 실행·배포`, `07. 다기관 운영 모델과 상태 체계`, `대본 자동화 운영안 사본`, `온톨로지·추적성 계약 사본`, `03. 타겟·권한·첫 실증의 진입 조건`, `12. 다중 엔진 결합·시간·불확도 계약`, `17. 자료 확보·무료 우선 자산·증거 연결`, `Success Metrics (Copy B)`, `랜덤 시나리오 생성`, `두 사용자 모드 여정`, `비평 반영·재작업 정책`, `비기능·보안·시간 예산`, `CRITIQUE_TO_REQUIREMENTS.md`, `시뮬레이션 계산 모델 선정 (사본)`?**
-  _High betweenness centrality (0.281) - this node is a cross-community bridge._
+  _High betweenness centrality (0.262) - this node is a cross-community bridge._
 - **Why does `Team` connect `Team` to `unityengine`, `PRD 문제·제품 정의`, `07. 다기관 운영 모델과 상태 체계`, `Responder`, `07. 다기관 운영 모델과 상태 체계`, `07. 다기관 운영 모델과 상태 체계`?**
-  _High betweenness centrality (0.176) - this node is a cross-community bridge._
+  _High betweenness centrality (0.168) - this node is a cross-community bridge._
 - **Why does `07. 다기관 운영 모델과 상태 체계` connect `07. 다기관 운영 모델과 상태 체계` to `CHOOGuard 제품 요구사항 정의서 v11`?**
-  _High betweenness centrality (0.165) - this node is a cross-community bridge._
+  _High betweenness centrality (0.153) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `IncidentDirector` (e.g. with `지켜야 할 것` and `현재 동작`) actually correct?**
   _`IncidentDirector` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Forecast`, `Current`, `Status` to the rest of the system?**
-  _11345 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _11376 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `CHOOGuard Work Graph (JSON-LD)` be split into smaller, more focused modules?**
-  _Cohesion score 0.007663739653164636 - nodes in this community are weakly interconnected._
-- **Should `PRD 온톨로지 스키마` be split into smaller, more focused modules?**
-  _Cohesion score 0.011428571428571429 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.008329609437840736 - nodes in this community are weakly interconnected._
+- **Should `CHOOGuard PRD Ontology (JSON-LD)` be split into smaller, more focused modules?**
+  _Cohesion score 0.011388169257340241 - nodes in this community are weakly interconnected._

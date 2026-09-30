@@ -34,6 +34,9 @@ blob 없이 전체 이력만 받은 체크아웃에서 돈다. 파일 내용은 
 
 변경분 규칙은 PR이면 머지 커밋과 그 첫 부모, push면 `before..after`를 비교한다. 과거 커밋에 이미 들어간 위반(예: 무시 규칙이 생기기 전 올라간 연구 자료)은 그 파일을 다시 건드릴 때만 걸린다. 같은 잡에서 스크립트 시험, actionlint(+shellcheck), zizmor, 변경분 gitleaks도 돈다.
 
+gitleaks 오탐은 확인한 `커밋:파일:규칙:줄` 지문만 `.gitleaksignore`에 기록한다. #259 squash 뒤에는 같은 보정 기록의
+사건 전이 키(`worsens_…`)가 새 SHA로 잡혀 #263에서 정확한 두 지문을 추가했다. 키·보안 검사나 증거 디렉터리 전체를 제외하지 않는다.
+
 ## 도구 시험 (`tools.yml`)
 
 - `docs/*/tests` 전 묶음을 pytest로 돌리고, v5 계획 검증기 `validate`와 `render --check`를 실행한다(#245 회귀).

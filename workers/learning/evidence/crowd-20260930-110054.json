@@ -1,0 +1,125 @@
+{
+  "at": "2026-09-30T11:00:54.453969+00:00",
+  "rows": 743,
+  "shifts": 5,
+  "classes": {
+    "platform_early": 200,
+    "cafe": 92,
+    "leave": 279,
+    "shop": 64,
+    "ticket": 54,
+    "meet_wait": 22,
+    "meet": 15,
+    "rebook": 8,
+    "sit_hall": 6,
+    "toilet": 3
+  },
+  "baseline": 0.3847690730093487,
+  "models": {
+    "최다클래스(기준선)": {
+      "mean": 0.3847690730093487,
+      "folds": [
+        0.33587786259541985,
+        0.4214876033057851,
+        0.3884297520661157,
+        0.39669421487603307,
+        0.3813559322033898
+      ]
+    },
+    "결정나무": {
+      "mean": 0.8804138967867076,
+      "folds": [
+        0.7519083969465649,
+        0.9173553719008265,
+        0.9256198347107438,
+        0.9173553719008265,
+        0.8898305084745762
+      ]
+    },
+    "로지스틱": {
+      "mean": 0.8695522605107522,
+      "folds": [
+        0.6641221374045801,
+        0.9173553719008265,
+        0.9421487603305785,
+        0.9173553719008265,
+        0.9067796610169492
+      ]
+    }
+  },
+  "features": [
+    {
+      "name": "여정=arrived from Seoul, heading into the cit",
+      "importance": 0.3835669824806002
+    },
+    {
+      "name": "출발까지분",
+      "importance": 0.23889165477347765
+    },
+    {
+      "name": "선택지수",
+      "importance": 0.10676091007177808
+    },
+    {
+      "name": "여정=visiting the station's shops and cafes",
+      "importance": 0.06759699715617536
+    },
+    {
+      "name": "여정=came to meet someone arriving on the KTX",
+      "importance": 0.03689577589452603
+    },
+    {
+      "name": "열차상태=서울발 KTX 도착 · 하차 중",
+      "importance": 0.032693735828422194
+    },
+    {
+      "name": "여정=just arrived from Seoul; family is waiti",
+      "importance": 0.02612133136635351
+    },
+    {
+      "name": "역전체인원",
+      "importance": 0.021575190296534458
+    },
+    {
+      "name": "현재구역=1F",
+      "importance": 0.019835960077050702
+    },
+    {
+      "name": "현재행동=walking",
+      "importance": 0.016670429660937843
+    },
+    {
+      "name": "구역인원",
+      "importance": 0.014490573121409592
+    },
+    {
+      "name": "현재행동=sitting on a bench",
+      "importance": 0.011649946344961831
+    },
+    {
+      "name": "현재행동=sitting at a cafe table",
+      "importance": 0.007134493194775987
+    },
+    {
+      "name": "현재행동=standing and waiting",
+      "importance": 0.006174026432145325
+    },
+    {
+      "name": "현재행동=at the toilets",
+      "importance": 0.004959245686642224
+    },
+    {
+      "name": "현재구역=2F waiting hall",
+      "importance": 0.0037549413839133173
+    },
+    {
+      "name": "현재행동=browsing at a shop",
+      "importance": 0.001227806230295493
+    }
+  ],
+  "skipped": {
+    "route": 580,
+    "compose": 5,
+    "선택지1개": 6
+  }
+}
