@@ -47,11 +47,11 @@
 | 반월당닭강정 | 전기 튀김기 2대 | 전기 | |
 | 크리스피크림도넛 | 전기 튀김기 2대 | 전기 | |
 | 국제시장도나스 | 전기 튀김기 | 전기 | |
-| 비엔씨제과 | 스테인리스 오븐 2대 | 전기 | |
+| 비엔씨제과 | 스테인리스 오븐(계획 2대, 배치 1대) | 전기 | 라인이 들어갈 자리가 모자라면 빌더가 라인 끝 설비부터 뺀다 |
 | 국제시장단팥빵 | 오븐 | 전기 | |
 | SUBWAY | 오븐 | 전기 | |
 
-기존 `Kitchens` 표(이름 낱말 → 튀김기·가스레인지·오븐·찜기)를 대체하고, 화구 있는 6곳만 가스 원인의 후보가 된다.
+기존 `Kitchens` 표(이름 낱말 → 튀김기·가스레인지·오븐·찜기)를 대체하고, 화구 있는 6곳만 가스 원인의 후보가 된다. 배치 실측(전체 220 부품): 튀김기 6·가스레인지 7·오븐 3·후드 13·자동확산소화기 16·K급 소화기 12·계량기 6·경보기 6·중간밸브+메인밸브 13·퓨즈콕 7·호스 7.
 
 ## 4. 배치 설계 — 옆벽 주방 (결정적 빌더가 벽 메시에서 계산)
 
@@ -77,6 +77,19 @@ Sketchfab 공개 검색 API 두 번(약 130개 질의) → Objaverse 사본. 미
 | Wok | “Stainless Steel Wok” Aullwen | CC BY | 뚜껑 제거 |
 | KExtinguisher (텍스처) | 트윈의 소화기(Poly Haven, CC0)에 K급 스티커 | CC0 파생 | `make_k_label.py`, 폰트 Noto Sans CJK KR(OFL) |
 | GasMeter, GasHose(±Off), GasAlarm, AutoExtinguisher, GasPipe(+Elbow), StainlessTable·Cabinet·Backsplash | 이 저장소에서 Blender 로 제작(`Art/Emergency/Equipment/Models/<Name>/`, 서드파티 폴더 밖) | 프로젝트 제작물(서드파티 아님: NOTICE 에 올리지 않고 여기에 기록). 라벨 글꼴 Noto Sans CJK KR(SIL OFL 1.1)은 NOTICE 의 글꼴 항목 | 검색에서 쓸 만한 것이 없었음: 계량기는 그래피티 낀 프랑스 길거리 함(`City gas utility box`)·녹슨 장치뿐, 경보기는 방폭 산업용 H2S 검지기뿐, 호스·배관은 결과 없음, 자동확산소화기·K급 소화기는 결과 없음 |
+
+예산(OBJ 삼각형 · 텍스처 파일 합, 2026-09-30 측정). 자작 14종 22.9k 삼각형, 외부 10종 37.2k. 점포마다 부품 4~35개(배치 실측, 전체 220개)이고 레인지(14.0k)가 가장 무겁다. 자작 기록: `asset-library/research-public/2026-09-30/kitchen-gas-assets/project-made.json`(파일별 해시·삼각형·텍스처). 냄비 셋과 밸브 둘은 원본 세트의 같은 1024² 텍스처를 모델마다 하나씩 들고 있어 22.6 MB 였고, 아주 작은 물건이라 512² 로 줄여 4.8 MB 가 되었다(Pillow LANCZOS).
+
+| 자작(삼각형 · 텍스처) | | 외부(삼각형 · 텍스처) | |
+|---|---|---|---|
+| GasMeter | 3,850 · 74 KiB (1024) | GasRange | 14,000 · 1.9 MiB (1024) |
+| AutoExtinguisher | 2,152 · 39 KiB (1024) | RangeHood | 7,876 · 1 KiB |
+| GasHose / GasHoseOff | 2,736 / 2,776 · 1 KiB | BallValve / BallValveLever | 5,000 / 1,800 · 0.85 MiB / 0.85 MiB (512) |
+| FuseCock | 1,702 · 15 KiB (384) | KitchenFryer | 2,876 · 2 KiB |
+| GasAlarm | 1,418 · 35 KiB (640) | DeckOven | 1,474 |
+| GasPipe / Drop | 1,124 · 13 KiB (1024) | StockPot / SteamerPot / FryPan | 708 / 1,424 / 624 · 1.0 MiB 씩 (512) |
+| GasPipe 엘보 ×3 | 1,004 씩 · 1 KiB | Wok | 1,416 |
+| StainlessTable / Cabinet / Backsplash | 1,576 / 1,072 / 388 · 1 KiB | | |
 
 기각한 검색 결과(대표): `Electric Fryer 1×6L`(14만 삼각형 탁상형, 통 하나), `Thor 6 Burner Range`(가정용 색), `Street Gas Meter`·`City gas utility box`(야외·낙서), `Gas Stove (longtail·RMrando·Mirey)`(녹슨·가정용·장난감), `Thai Style Steamer`(대바구니만).
 

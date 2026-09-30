@@ -145,8 +145,11 @@ namespace ChooGuard.Editor
             if (material == null) { material = new Material(Shader.Find("Universal Render Pipeline/Lit")); AssetDatabase.CreateAsset(material, path); }
             material.SetColor("_BaseColor", colour * .5f);
             material.SetFloat("_Smoothness", .6f);
-            material.EnableKeyword("_EMISSION");
-            material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+            // URP Lit derives the _EMISSION keyword from these flags whenever an editor validates the material, so they are set to what it
+            // would set itself (a glowing lamp is realtime-emissive, an unlit one is black) and the asset stays the same after that.
+            bool glows = intensity > 0f;
+            material.globalIlluminationFlags = glows ? MaterialGlobalIlluminationFlags.RealtimeEmissive : MaterialGlobalIlluminationFlags.EmissiveIsBlack;
+            if (glows) material.EnableKeyword("_EMISSION"); else material.DisableKeyword("_EMISSION");
             material.SetColor("_EmissionColor", colour * intensity);
             EditorUtility.SetDirty(material);
             return material;
