@@ -195,7 +195,7 @@ namespace ChooGuard.Editor
             originalKey = Environment.GetEnvironmentVariable(JevVariable);
             Environment.SetEnvironmentVariable(JevVariable, "off");
             envSwitched = true;
-            var names = config["scenarios"] is JArray list ? list.Select(s => (string)s).ToList() : new List<string> { "board", "plug", "kiosk", "fire", "boardfire", "developments", "electrician" };
+            var names = config["scenarios"] is JArray list ? list.Select(s => (string)s).ToList() : new List<string> { "board", "plug", "kiosk", "fire", "boardfire", "developments", "bin", "binbattery", "electrician", "perf" };
             foreach (var name in names)
             {
                 scenario = name;
@@ -210,6 +210,9 @@ namespace ChooGuard.Editor
                     case "boardfire": yield return BoardFire(); break;
                     case "electrician": yield return Electrician(); break;
                     case "developments": yield return Developments(); break;
+                    case "bin": yield return Bin(); break;
+                    case "binbattery": yield return BinBattery(); break;
+                    case "perf": yield return Perf(); break;
                     default: Check("known scenario", false, name); break;
                 }
             }
@@ -625,6 +628,79 @@ namespace ChooGuard.Editor
                 Check("the wet machine burns", shorted != null && shorted.Source.Contains("누수"), shorted != null ? shorted.Source : "no fire");
             }
             yield return Sleep(1f);
+        }
+
+        /// <summary>A cigarette butt in a real litter bin: the fire burns at the bin's mouth, the primitive stand-in is gone, a plain extinguisher puts it out (nothing feeds it), the bin reads burnt afterwards.</summary>
+        private static IEnumerator Bin()
+        {
+            var wait = new Wait();
+            object chosen = null;
+            yield return Force("bin_fire", .5f, wait, c => chosen = c);
+            if (chosen == null) { Check("bin_fire offered", false, "not offered"); yield break; }
+            Check("description names a placed litter bin", Describe(chosen).Contains("litter bin bin-"), Describe(chosen));
+            var fire = Fires().LastOrDefault(f => f.Installation != null);
+            if (fire == null) { Check("fire started", false); yield break; }
+            KnowAll();
+            var bin = fire.Installation;
+            var mouth = bin.transform.position + bin.transform.forward * .22f + Vector3.up * .85f;
+            float apart = Vector3.Distance(fire.View.transform.position, mouth);
+            Check("burns at the mouth of the placed bin", bin.Kind == "litter_bin" && apart < .05f, bin.Id + " apart=" + apart.ToString("0.000") + " m, where='" + fire.Where + "'");
+            Check("no runtime primitive under the fire", fire.View.GetComponentsInChildren<Transform>(true).All(t => t.name != "휴지통"));
+            Check("nothing feeds it and it is no electrical fire", fire.Feed == null && !fire.Electric && !fire.Involves(Agency.Facility));
+            Check("bin reads on fire", bin.State == "화재", bin.State);
+            var t = bin.transform;
+            LookAt(t.position + t.forward * 2.4f + Vector3.up * 1.6f, mouth);
+            yield return Sleep(1.5f);
+            yield return Shot("fire-bin-origin");
+            fire.Suppress(1f, 30f);
+            Check("a plain extinguisher puts it out", fire.Extinguished);
+            yield return Sleep(1f);
+            Check("bin reads burnt afterwards", bin.State == "소손", bin.State);
+        }
+
+        /// <summary>A battery in a recycling station: the fire burns at its mouth and spreads to the litter bin beside it.</summary>
+        private static IEnumerator BinBattery()
+        {
+            var wait = new Wait();
+            object chosen = null;
+            yield return Force("bin_battery_fire", .5f, wait, c => chosen = c);
+            if (chosen == null) { Check("bin_battery_fire offered", false, "not offered"); yield break; }
+            Check("description names a placed recycling station", Describe(chosen).Contains("recycling station "), Describe(chosen));
+            var fire = Fires().LastOrDefault(f => f.Installation != null);
+            if (fire == null) { Check("fire started", false); yield break; }
+            KnowAll();
+            var station = fire.Installation;
+            Check("burns at the recycling station", station.Kind == "recycling_bin" && Vector3.Distance(fire.View.transform.position, station.transform.position + Vector3.up * 1.05f) < .05f, station.Id + " where='" + fire.Where + "'");
+            var spread = Development("bin_fire_spreads");
+            Check("spread to the litter bin beside it offered", spread != null, spread != null ? Describe(spread) : "not offered");
+            if (spread != null)
+            {
+                int before = Fires().Count;
+                Execute(spread, .5f);
+                var next = Fires().Skip(before).FirstOrDefault(f => f.Installation != null);
+                Check("the neighbouring bin burns too", next != null && next.Installation.Kind == "litter_bin", next != null ? next.Where : "no new fire");
+            }
+            fire.Suppress(1f, 30f);
+            Check("the battery fire goes out with the extinguisher", fire.Extinguished);
+        }
+
+        /// <summary>What the equipment costs while the shift runs: the cost of listing every cause of every family (the electric and bin causes are part of it) and of the electric tick, averaged over many calls.</summary>
+        private static IEnumerator Perf()
+        {
+            yield return Sleep(3f);
+            var director = Session.Incidents;
+            var origins = typeof(IncidentDirector).GetMethod("Origins", All);
+            origins.Invoke(director, null);
+            var clock = System.Diagnostics.Stopwatch.StartNew();
+            int count = 0;
+            for (int i = 0; i < 30; i++) count = ((System.Collections.ICollection)origins.Invoke(director, null)).Count;
+            double listing = clock.Elapsed.TotalMilliseconds / 30;
+            var tick = typeof(IncidentDirector).GetMethod("ElectricPlazaTick", All);
+            clock.Restart();
+            for (int i = 0; i < 300; i++) tick.Invoke(director, new object[] { .016f });
+            double perFrame = clock.Elapsed.TotalMilliseconds / 300;
+            int renderers = EquipmentRegistry.All.Sum(e => e.GetComponentsInChildren<Renderer>(true).Length);
+            Check("listing every cause is cheap", listing < 5, listing.ToString("0.00") + " ms per Origins() call (" + count + " candidates offered), electric tick " + (perFrame * 1000).ToString("0.0") + " µs per frame; " + EquipmentRegistry.All.Count + " placed pieces, " + renderers + " renderers");
         }
     }
 }

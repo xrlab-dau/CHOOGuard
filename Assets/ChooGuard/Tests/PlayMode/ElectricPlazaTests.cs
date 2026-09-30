@@ -237,7 +237,7 @@ namespace ChooGuard.Tests.PlayMode
         {
             var panel = new Material(Shader.Find("Universal Render Pipeline/Lit"));
             made.Add(panel);
-            panel.EnableKeyword("_EMISSION");
+            // 실제 에셋의 화면 재질은 재생 중 _EMISSION 키워드가 꺼져 읽힌다: 방출 색만으로 화면을 찾아야 한다.
             panel.SetColor("_EmissionColor", Color.white);
             panel.SetColor("_BaseColor", Color.white);
             Board("a", Vector3.zero);
@@ -254,6 +254,34 @@ namespace ChooGuard.Tests.PlayMode
 
             ElectricNetwork.Switch(ElectricNetwork.CircuitOf(machine), true, "역무원");
             Assert.That(renderer.sharedMaterials[1], Is.SameAs(panel), "다시 켜면 원래 화면");
+        }
+
+        [Test]
+        public void TheRealChargingKioskPrefabGoesDarkWhenItsBreakerGoesDown()
+        {
+#if UNITY_EDITOR
+            // 실제 프리팹으로 본다: 화면 재질이 어떤 키워드 상태로 읽히든 꺼지면 어두운 재질로 바뀌어야 한다(처음에는 화면을 하나도 찾지 못했다).
+            var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ChooGuard/Art/Emergency/Equipment/Prefabs/ChargingKiosk.prefab");
+            Assert.That(prefab, Is.Not.Null);
+            Board("a", Vector3.zero);
+            var go = Object.Instantiate(prefab, new Vector3(1, 0, 0), Quaternion.identity);
+            made.Add(go);
+            var kiosk = go.GetComponent<StationEquipment>();
+            kiosk.Assign("k1", "charging_kiosk", "휴대폰 충전 키오스크", "hall2f");
+            ElectricNetwork.Build();
+            var renderer = go.GetComponentInChildren<Renderer>();
+            var lit = renderer.sharedMaterials.ToArray();
+
+            ElectricNetwork.Switch(ElectricNetwork.CircuitOf(kiosk), false, "역무원");
+            var dark = renderer.sharedMaterials.Where(m => m.name.EndsWith("(꺼짐)")).ToList();
+
+            Assert.That(dark.Count, Is.EqualTo(1), "화면 재질 하나만 어두운 재질로 바뀐다: " + string.Join(", ", renderer.sharedMaterials.Select(m => m.name)));
+            Assert.That(dark[0].GetColor("_EmissionColor").maxColorComponent, Is.LessThan(.01f));
+            Assert.That(renderer.sharedMaterials.Count(m => lit.Contains(m)), Is.EqualTo(lit.Length - 1), "나머지 재질은 그대로");
+
+            ElectricNetwork.Switch(ElectricNetwork.CircuitOf(kiosk), true, "역무원");
+            Assert.That(renderer.sharedMaterials, Is.EqualTo(lit), "다시 켜면 원래 재질");
+#endif
         }
     }
 }

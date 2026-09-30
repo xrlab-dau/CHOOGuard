@@ -44,7 +44,8 @@ namespace ChooGuard.App.Fps.Equipment
                 bool any = false;
                 for (int i = 0; i < on.Length; i++)
                 {
-                    if (on[i] == null || !on[i].IsKeywordEnabled("_EMISSION") || !on[i].HasProperty(EmissionColour) || on[i].GetColor(EmissionColour).maxColorComponent <= .01f) continue;
+                    // 화면·조명 판은 방출 색이 있는 재질이다. 키워드(_EMISSION)는 보지 않는다: 재생 중 에셋의 키워드가 꺼져 읽히는 일이 있어 그것으로 찾으면 하나도 못 찾았다.
+                    if (on[i] == null || !on[i].HasProperty(EmissionColour) || on[i].GetColor(EmissionColour).maxColorComponent <= .01f) continue;
                     off[i] = Dark(on[i]);
                     any = true;
                 }
@@ -57,6 +58,7 @@ namespace ChooGuard.App.Fps.Equipment
         {
             if (darkOf.TryGetValue(source, out var copy) && copy != null) return copy;
             copy = new Material(source) { name = source.name + " (꺼짐)" };
+            copy.DisableKeyword("_EMISSION");
             copy.SetColor(EmissionColour, Color.black);
             if (copy.HasProperty("_BaseColor")) copy.SetColor("_BaseColor", copy.GetColor("_BaseColor") * new Color(.06f, .06f, .06f, 1f));
             return darkOf[source] = copy;

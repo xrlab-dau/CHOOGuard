@@ -151,7 +151,9 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 적용 ──
 
-        /// <summary>What a fault in an installation looks like: what people call it, how high the flames come out of its front, how wide they can spread, the office's advice.</summary>
+        private static bool Electrical(StationEquipment e) => e.Kind == "distribution_board" || e.Kind == "vending_machine" || e.Kind == "charging_kiosk";
+
+        /// <summary>What a fault in an installation looks like: what people call it, how high the flames come out of its front, how wide they can spread, how far in front of the pivot, the office's advice.</summary>
         private static (string subject, float height, float footprint, float forward, string advice) FaultOf(StationEquipment e)
         {
             switch (e.Kind)
@@ -160,6 +162,11 @@ namespace ChooGuard.App.Fps.Emergency
                     return ("분전반", BreakerDeckLayout.BoardBottom + .42f, .3f, .2f, " 전기 화재입니다. 분전반은 열지 말고 분말 소화기로 끄되 물은 쓰지 마십시오. 전기 담당도 부르겠습니다.");
                 case "charging_kiosk":
                     return (e.Label, .95f, .35f, .18f, " 휴대폰 배터리 화재입니다. 충전 전원을 끊고 배터리에는 손대지 마십시오. 꺼진 뒤에도 다시 불이 붙을 수 있습니다. 물은 쓰지 마십시오.");
+                // 휴지통은 원점이 뒤판(벽)에 있어 통 가운데는 깊이의 반만큼 앞이고, 분리수거함은 원점이 바닥 가운데다. 불은 통 입구에서 오른다.
+                case "litter_bin":
+                    return ("휴지통", .85f, .25f, .22f, " 작은 쓰레기통 불입니다. 분말 소화기로 끄고, 꺼진 뒤에도 잔불이 없는지 확인하십시오.");
+                case "recycling_bin":
+                    return ("분리수거함", 1.05f, .35f, 0f, " 분리수거함 불입니다. 분말 소화기로 끄고, 안에 배터리가 섞였으면 꺼진 뒤에도 다시 타오를 수 있으니 물로 식혀 주십시오.");
                 default:
                     return (e.Label, .38f, .5f, .3f, " 전기 화재입니다. 전원 코드를 뽑거나 분전반에서 그 차단기를 내리고 물은 쓰지 마십시오. 전기 담당도 부르겠습니다.");
             }
@@ -171,21 +178,23 @@ namespace ChooGuard.App.Fps.Emergency
             e.Kind == "distribution_board" ? "단자 접촉불량 과열" : e.Kind == "charging_kiosk" ? "휴대폰 배터리 열폭주" : e.Label.Contains("음료") ? "압축기·전원 계통 합선" : "배선·전원부 합선";
 
         /// <summary>
-        /// Starts the fire in an installation: it burns where the object stands (the flames and smoke come out of its front), no
-        /// wider than the object, and while the installation is live it is fed. <paramref name="how"/> names the cause in Korean
-        /// (null: the usual fault of that kind).
+        /// Starts the fire in an installation: it burns where the object stands (the flames and smoke come out of it), no wider
+        /// than the object. An electrical installation (board, machine, kiosk) is fed while it is live; a bin is not. <paramref name="how"/>
+        /// names the cause in Korean (null: the usual fault of that kind), <paramref name="advice"/> replaces the office's usual advice.
         /// </summary>
-        private FireHazard StartEquipmentFire(StationEquipment installation, float magnitude, string how)
+        private FireHazard StartEquipmentFire(StationEquipment installation, float magnitude, string how, string advice = null)
         {
             var fault = FaultOf(installation);
             var t = installation.transform;
             var origin = t.position + t.forward * fault.forward + Vector3.up * fault.height;
-            string name = installation.Kind == "distribution_board" ? "분전반 " + ElectricNetwork.BoardOf(installation).Code : installation.Label + " " + ElectricNetwork.Tag(installation);
-            var fire = Ignite(origin, name + " " + (how ?? HowKo(installation)), fault.subject, magnitude, fault.advice, where: world.Describe(t.position) + " " + fault.subject);
+            bool electrical = Electrical(installation);
+            string name = installation.Kind == "distribution_board" ? "분전반 " + ElectricNetwork.BoardOf(installation).Code : electrical ? installation.Label + " " + ElectricNetwork.Tag(installation) : installation.Label + " " + installation.Id;
+            var fire = Ignite(origin, name + " " + (how ?? HowKo(installation)), fault.subject, magnitude, advice ?? fault.advice, where: world.Describe(t.position) + " " + fault.subject);
             fire.Footprint = fault.footprint;
             // 불은 설비 안에서 오른다. 불 표지의 충돌체가 분전반 문이나 자판기 앞을 막아 조준을 가로채지 않게 끈다.
             foreach (var collider in fire.View.GetComponents<Collider>()) collider.enabled = false;
             fire.Installation = installation;
+            if (!electrical) { installation.State = "화재"; return fire; }
             fire.Electric = true;
             fire.WaterIsDangerous = true;
             if (LiveInstallation(installation)) fire.SetFeed("전원", Agency.Facility, 25f);
@@ -279,8 +288,21 @@ namespace ChooGuard.App.Fps.Emergency
         {
             foreach (var fire in fires)
             {
-                if (!fire.Electric || fire.Extinguished || fire.Installation == null) continue;
+                if (fire.Extinguished || fire.Installation == null) continue;
                 var f = fire;
+                if (!f.Electric)
+                {
+                    // 쓰레기통 불은 바로 옆의 다른 통(휴지통 옆 분리수거함)으로 번질 수 있다.
+                    var next = BinNeighbour(f);
+                    if (next != null && Ready("bin_spreads_" + f.Id))
+                        list.Add(new Transition
+                        {
+                            Key = "bin_spreads_" + f.Id, Kind = "bin_fire_spreads",
+                            Description = "The fire in the " + f.Subject + " at " + f.Where + " reaches the " + next.Label + " " + next.Id + " standing right beside it (paper, cups and plastic bottles carry it across the gap)",
+                            Apply = _ => log.Add("쓰레기통 불이 옆 통으로 옮겨붙음 · " + StartEquipmentFire(next, Mathf.Clamp01(f.Intensity), "옆 통에서 불이 옮겨붙음").Where),
+                        });
+                    continue;
+                }
                 if (f.Feed != null && Ready("trip_" + f.Id))
                     list.Add(new Transition
                     {
@@ -382,12 +404,13 @@ namespace ChooGuard.App.Fps.Emergency
             }
             foreach (var fire in fires)
             {
-                if (!fire.Electric || fire.Installation == null) continue;
+                if (fire.Installation == null) continue;
                 if (fire.Extinguished)
                 {
                     if (burntNoted.Add(fire)) BurntOut(fire);
                     continue;
                 }
+                if (!fire.Electric) continue;
                 // 불씨까지만 죽고 더는 안 죽으면 전원이 살아 있는 것이다: 역무실이 한 번 알려 준다.
                 if (Stage == Phase.Incident && fire.Feed != null && fire.Intensity <= FireHazard.LiveEmbers + .01f && fire.SuppressedSeconds > 0 && embersHinted.Add(fire))
                     Office("역무실입니다. 불씨가 계속 살아나면 전기가 살아 있는 겁니다. 분말로 끄는 것보다 차단기를 내리거나 전원 코드를 뽑는 게 먼저입니다.");
@@ -422,7 +445,18 @@ namespace ChooGuard.App.Fps.Emergency
                     log.Add("분전반 소손 · " + board.Name + " 이(가) 붙은 설비가 모두 꺼짐");
                 }
             }
-            officeLines.Add((Time.time + 6f, "역무실입니다. 전기 담당이 점검하기 전에는 그 차단기를 다시 올리지 마십시오."));
+            if (Electrical(installation)) officeLines.Add((Time.time + 6f, "역무실입니다. 전기 담당이 점검하기 전에는 그 차단기를 다시 올리지 마십시오."));
+        }
+
+        /// <summary>The bin (or recycling station) right beside a burning bin that could catch from it.</summary>
+        private static StationEquipment BinNeighbour(FireHazard fire)
+        {
+            var at = fire.Installation.transform.position;
+            var near = new List<StationEquipment>();
+            EquipmentRegistry.Within("litter_bin", at, 1.2f, near);
+            EquipmentRegistry.Within("recycling_bin", at, 1.2f, near);
+            return near.Where(e => e != fire.Installation && Mathf.Abs(e.transform.position.y - at.y) < 1f && e.State != "소손" && !FireBurning(e))
+                .OrderBy(e => (e.transform.position - at).sqrMagnitude).ThenBy(e => e.Id, System.StringComparer.Ordinal).FirstOrDefault();
         }
 
         // ── 무전과 화면 ──
