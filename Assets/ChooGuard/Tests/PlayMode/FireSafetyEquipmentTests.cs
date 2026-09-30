@@ -187,7 +187,8 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(door.Closed, Is.True);
             Assert.That(door.Equipment.State, Is.EqualTo("닫힘"));
             var person = MakePerson(door.transform.position + door.transform.forward * 1.2f);
-            yield return Until(() => door.Angle >= FireDoorPoint.MaxAngle - .5f);
+            // 문은 일정한 속도로 열리고 끝까지 가야 '열림'이다: 0.5° 앞에서 멈춰 보면 그 프레임이 마지막 반 도 안에 걸릴 때 '열리는 중'이다.
+            yield return Until(() => Mathf.Approximately(door.Angle, FireDoorPoint.MaxAngle));
             Assert.That(door.Angle, Is.EqualTo(FireDoorPoint.MaxAngle).Within(.5f), "열린 채 사람이 서 있는 동안 문은 끝까지 열려 있다");
             Assert.That(left.localEulerAngles.y, Is.EqualTo(FireDoorPoint.MaxAngle).Within(.5f));
             Assert.That(right.localEulerAngles.y, Is.EqualTo(360f - FireDoorPoint.MaxAngle).Within(.5f), "오른쪽 문짝은 반대로 열린다");
