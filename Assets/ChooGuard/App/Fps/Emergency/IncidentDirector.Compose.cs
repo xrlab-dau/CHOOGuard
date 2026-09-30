@@ -310,7 +310,13 @@ namespace ChooGuard.App.Fps.Emergency
             var descriptions = new List<string>(batch.Count);
             foreach (var candidate in batch)
             {
-                questions.Add(new JevChoice { Id = candidate.Key, Instructions = Imminence.Instructions(candidate.Description), Levels = Imminence.Levels(candidate.Scale) });
+                questions.Add(new JevChoice
+                {
+                    Id = candidate.Key, Instructions = Imminence.Instructions(candidate.Description), Levels = Imminence.Levels(candidate.Scale),
+                    Kind = candidate.Transition.Kind,
+                    Scale = candidate.Scale == ImminenceScale.CalmOrigin ? nameof(ImminenceScale.CalmOrigin) :
+                        candidate.Scale == ImminenceScale.IncidentOrigin ? nameof(ImminenceScale.IncidentOrigin) : nameof(ImminenceScale.Development),
+                });
                 descriptions.Add(candidate.Description);
             }
             int askedState = stateHash;
