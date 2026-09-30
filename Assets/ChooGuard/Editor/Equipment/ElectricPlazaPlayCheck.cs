@@ -590,7 +590,7 @@ namespace ChooGuard.Editor
             // 감전: 통전된 불 옆에 선 사람.
             var person = Session.Crowd.People.First(p => !p.Hurt && !p.Aboard && !p.Hostile);
             person.Body.Agent.Warp(StationWorld.OnNavMesh(machine.transform.position + machine.transform.forward * 1.1f, 1.5f));
-            yield return Sleep(1f);
+            yield return null; // 바로 묻는다: 걷는 승객은 1초 뒤 1.8 m 밖이다.
             var shock = Development("electric_shock");
             Check("shock offered next to a live burning machine", shock != null, shock != null ? Describe(shock) : "not offered");
             if (shock != null)
