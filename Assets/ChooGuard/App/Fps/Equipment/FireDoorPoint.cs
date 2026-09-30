@@ -69,12 +69,12 @@ namespace ChooGuard.App.Fps.Equipment
             Apply();
         }
 
-        /// <summary>A person of the crowd or the staff member within reach of the door plane.</summary>
+        /// <summary>A person of the crowd, an agency responder or the staff member within reach of the door plane.</summary>
         private bool SomeoneNear()
         {
             int count = Physics.OverlapBoxNonAlloc(transform.position + transform.up, new Vector3(1.1f, 1f, Reach), hits, transform.rotation, ~0, QueryTriggerInteraction.Ignore);
             for (int i = 0; i < count; i++)
-                if (hits[i].GetComponentInParent<Emergency.Passenger>() != null || hits[i].GetComponentInParent<FirstPersonResponder>() != null) return true;
+                if (hits[i].GetComponentInParent<Emergency.Passenger>() != null || hits[i].GetComponentInParent<Emergency.Responder>() != null || hits[i].GetComponentInParent<FirstPersonResponder>() != null) return true;
             return false;
         }
 
