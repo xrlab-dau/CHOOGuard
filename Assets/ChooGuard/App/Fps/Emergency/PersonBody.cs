@@ -88,6 +88,8 @@ namespace ChooGuard.App.Fps.Emergency
         public RouteProfile Profile = RouteProfile.Default;
         /// <summary>Its requests to the path service are served before the everyday ones (evacuating, moving away from danger).</summary>
         public bool Urgent;
+        /// <summary>An emergency responder on its way to the scene: its requests are served before everyone else's, evacuees included.</summary>
+        public bool Rescuer;
 
         // 길 안내가 이 몸에 준 여정: 목적지까지 거치는 노드 사슬과, 지금 걷는 구간이 향하는 곳(Step == Chain.Count 이면 목적지 자신).
         internal readonly List<RouteGraph.Node> Chain = new List<RouteGraph.Node>();
@@ -201,7 +203,8 @@ namespace ChooGuard.App.Fps.Emergency
         /// found for people who stood up from a seat) it takes the path, marks it invalid and never moves (measured: hasPath false, path
         /// invalid or pending, for the rest of the shift). After a second the way is asked for again; when that fails too the body walks
         /// out of the pocket along the way the path service found (<see cref="Extricate"/>) and takes its path from there. Standing at a
-        /// partial path's end lands here as well, so after a few tries it gives up instead of moving the body.
+        /// partial path's end lands here as well (the way ends there, it is no pocket): the way is only asked for again, never walked out
+        /// of, and after a few tries the body gives up, so an owner that waits for it to stop (a responder's arrival) is not held up.
         /// </summary>
         private void WatchLostPath()
         {
@@ -218,7 +221,7 @@ namespace ChooGuard.App.Fps.Emergency
             lostSince = -1;
             if (lostRetries == 0) lostFrom = transform.position;
             if (++lostRetries > 4) { hasGoal = false; lostRetries = 0; return; }
-            if (lostRetries == 1 || !Extricate()) Replan();
+            if (lostRetries == 1 || Agent.pathStatus == NavMeshPathStatus.PathPartial || !Extricate()) Replan();
         }
 
         // NavMeshPath 는 MonoBehaviour 의 정적 초기화에서 만들 수 없다(첫 쓸 때 만든다).

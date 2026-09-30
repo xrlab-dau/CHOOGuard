@@ -8,8 +8,8 @@ namespace ChooGuard.App.Fps.Emergency
 {
     /// <summary>
     /// Finds the way for every walking person. A body asks for a route to its goal (<see cref="PersonBody.GoTo"/>); the service
-    /// works the requests off in a time-sliced queue, <see cref="BudgetMs"/> of main-thread time per frame at most (evacuees
-    /// first), and hands each agent a short path with <c>NavMeshAgent.SetPath</c>. The agents' own asynchronous path queue is
+    /// works the requests off in a time-sliced queue, <see cref="BudgetMs"/> of main-thread time per frame at most (responders
+    /// first, then evacuees), and hands each agent a short path with <c>NavMeshAgent.SetPath</c>. The agents' own asynchronous path queue is
     /// never used: with about a hundred people told to leave at once it filled up for tens of seconds and left them standing.
     /// A long trip is planned on the <see cref="RouteGraph"/> (shared by everyone starting from the same place), and the body
     /// then asks for one short leg after another as it walks; a leg that cannot be walked any more (a door locked, the way burned,
@@ -32,15 +32,15 @@ namespace ChooGuard.App.Fps.Emergency
         public event Action<Vector3, Vector3, string> Unreachable;
 
         private readonly StationWorld world;
-        private readonly Queue<PersonBody> urgent = new Queue<PersonBody>(), everyday = new Queue<PersonBody>();
+        private readonly Queue<PersonBody> rescuers = new Queue<PersonBody>(), urgent = new Queue<PersonBody>(), everyday = new Queue<PersonBody>();
         private readonly Dictionary<StationPoints.Point, RouteGraph.Node> exitNodes = new Dictionary<StationPoints.Point, RouteGraph.Node>();
         private readonly HashSet<RouteGraph.Node> exits = new HashSet<RouteGraph.Node>();
         private readonly List<(Vector3 centre, float radius)> dangers = new List<(Vector3, float)>();
-        private readonly List<RouteGraph.Node> chain = new List<RouteGraph.Node>(), starts = new List<RouteGraph.Node>();
+        private readonly List<RouteGraph.Node> chain = new List<RouteGraph.Node>(), starts = new List<RouteGraph.Node>(), ends = new List<RouteGraph.Node>();
         private readonly HashSet<(int, int, int, int, int, int)> reported = new HashSet<(int, int, int, int, int, int)>();
         private readonly NavMeshPath path = new NavMeshPath();
 
-        public int Queued => urgent.Count + everyday.Count;
+        public int Queued => rescuers.Count + urgent.Count + everyday.Count;
         /// <summary>Requests served so far (plans and legs).</summary>
         public int Served { get; private set; }
         public int Abandoned { get; private set; }
@@ -63,7 +63,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (body.Queued) return;
             body.Queued = true;
-            (body.Urgent ? urgent : everyday).Enqueue(body);
+            (body.Rescuer ? rescuers : body.Urgent ? urgent : everyday).Enqueue(body);
         }
 
         /// <summary>
@@ -74,11 +74,11 @@ namespace ChooGuard.App.Fps.Emergency
         {
             long began = Stopwatch.GetTimestamp();
             served = 0;
-            while (urgent.Count > 0 || everyday.Count > 0)
+            while (rescuers.Count > 0 || urgent.Count > 0 || everyday.Count > 0)
             {
                 float used = Ms(Stopwatch.GetTimestamp() - began);
                 if (served > 0 && used + requestMs * 1.5f > BudgetMs) break;
-                var body = urgent.Count > 0 ? urgent.Dequeue() : everyday.Dequeue();
+                var body = rescuers.Count > 0 ? rescuers.Dequeue() : urgent.Count > 0 ? urgent.Dequeue() : everyday.Dequeue();
                 if (body == null) continue;
                 long started = Stopwatch.GetTimestamp();
                 Serve(body);
@@ -98,30 +98,38 @@ namespace ChooGuard.App.Fps.Emergency
         {
             body.Queued = false;
             if (!body.WantsRoute) return;
-            if (body.Fresh && !Plan(body)) { Abandon(body, "no route on the graph"); return; }
+            if (body.Fresh) Plan(body);
             Lead(body);
         }
 
         /// <summary>
-        /// The few nodes nearest <paramref name="from"/>, nearest first: the nearest one can be a dead end (a sliver of navmesh between
-        /// a bench and a wall) that leads nowhere, so a route is planned from whichever of them is cheapest to leave by.
+        /// The few nodes nearest <paramref name="at"/>, nearest first, into <paramref name="into"/>: the nearest one can be a dead end (a
+        /// sliver of navmesh between a bench and a wall) or on the other floor of a stacked place (the track bed 0.8 m under a platform
+        /// edge), so a route is planned from and to whichever of them the graph joins.
         /// </summary>
-        private List<RouteGraph.Node> Starts(Vector3 from, RouteGraph.Node skip)
+        private List<RouteGraph.Node> Nearest(Vector3 at, RouteGraph.Node skip, List<RouteGraph.Node> into)
         {
-            starts.Clear();
-            if (skip != null) starts.Add(skip);
+            into.Clear();
+            if (skip != null) into.Add(skip);
             for (int i = 0; i < StartTries; i++)
             {
-                var node = Graph.Nearest(from, starts);
+                var node = Graph.Nearest(at, into);
                 if (node == null) break;
-                starts.Add(node);
+                into.Add(node);
             }
-            if (skip != null) starts.Remove(skip);
-            return starts;
+            if (skip != null) into.Remove(skip);
+            return into;
         }
 
-        /// <summary>Chooses the chain of nodes from where the body stands to its goal (empty for a short trip).</summary>
-        private bool Plan(PersonBody body)
+        private List<RouteGraph.Node> Starts(Vector3 from, RouteGraph.Node skip) => Nearest(from, skip, starts);
+
+        /// <summary>
+        /// Chooses the chain of nodes from where the body stands to its goal. It stays empty for a short trip, and for a goal the graph
+        /// does not join to where the body stands (the track bed below a platform is a piece of navmesh no walk reaches): the agent
+        /// then walks its own navmesh path, which ends at the nearest point it can reach, as it did before the graph existed.
+        /// The pair is reported, never hidden.
+        /// </summary>
+        private void Plan(PersonBody body)
         {
             var from = body.transform.position;
             var goal = body.Goal;
@@ -129,14 +137,15 @@ namespace ChooGuard.App.Fps.Emergency
             body.Step = 0;
             body.Fresh = false;
             var d = goal - from;
-            if (d.x * d.x + d.z * d.z <= DirectMeters * DirectMeters && Mathf.Abs(d.y) < 2.5f) return true;
-            var end = Graph.Nearest(goal);
+            if (d.x * d.x + d.z * d.z <= DirectMeters * DirectMeters && Mathf.Abs(d.y) < 2.5f) return;
             var candidates = Starts(from, body.SkipStart);
-            if (end == null || candidates.Count == 0) return true;
-            RouteGraph.Node start = null;
-            if (exits.Contains(end))
+            var targets = Nearest(goal, null, ends);
+            if (targets.Count == 0 || candidates.Count == 0) return;
+            RouteGraph.Node start = null, end = null;
+            if (exits.Contains(targets[0]))
             {
                 // 출구로 가는 길은 역 전체가 나누어 쓰는 출구별 탐색 하나에서 얻는다.
+                end = targets[0];
                 var field = Graph.Toward(end, body.Profile, Dangers(null, 0), Time.time);
                 float best = float.PositiveInfinity;
                 foreach (var node in candidates)
@@ -144,27 +153,34 @@ namespace ChooGuard.App.Fps.Emergency
                     float cost = field.CostOf(node) + Vector3.Distance(from, node.Position) * 1.3f;
                     if (cost < best) { best = cost; start = node; }
                 }
-                if (start == null) return false;
-                field.PathFrom(start, chain);
+                if (start != null) field.PathFrom(start, chain);
             }
             else
             {
-                // 그 밖의 곳은 같은 노드에서 떠나는 사람끼리 나누는 탐색에서 얻는다.
+                // 그 밖의 곳은 같은 노드에서 떠나는 사람끼리 나누는 탐색에서 얻는다. 목적지 가까운 노드 셋 중 이어지는 것 가운데 가장 싼 길.
+                float best = float.PositiveInfinity;
+                RouteGraph.Tree bestTree = null;
                 foreach (var node in candidates)
                 {
                     var tree = Graph.Explore(node, body.Profile, Dangers(null, 0), Time.time);
-                    if (!tree.Reaches(end)) continue;
-                    tree.PathTo(end, chain);
-                    start = node;
-                    break;
+                    foreach (var target in targets)
+                    {
+                        if (!tree.Reaches(target)) continue;
+                        float cost = tree.CostOf(target) + Vector3.Distance(from, node.Position) * 1.3f + Vector3.Distance(goal, target.Position) * 1.3f;
+                        if (cost < best) { best = cost; start = node; end = target; bestTree = tree; }
+                    }
                 }
-                if (start == null) return false;
+                if (bestTree != null) bestTree.PathTo(end, chain);
+            }
+            if (start == null)
+            {
+                Report(from, goal, "the route graph does not join these places: walked on the agent's own navmesh path");
+                return;
             }
             // 몸이 이미 첫 노드를 지나쳤거나 다음 노드가 더 가까우면 되돌아가지 않는다.
             while (chain.Count >= 2 && Vector3.Distance(from, chain[1].Position) <= Vector3.Distance(chain[0].Position, chain[1].Position)) chain.RemoveAt(0);
             while (chain.Count >= 2 && Vector3.Distance(goal, chain[chain.Count - 2].Position) <= Vector3.Distance(chain[chain.Count - 1].Position, chain[chain.Count - 2].Position)) chain.RemoveAt(chain.Count - 1);
             body.Chain.AddRange(chain);
-            return true;
         }
 
         /// <summary>Gives the agent the path to the next stop of its trip, or plans the trip again when that walk is closed.</summary>

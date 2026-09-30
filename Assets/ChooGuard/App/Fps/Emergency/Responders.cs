@@ -78,6 +78,8 @@ namespace ChooGuard.App.Fps.Emergency
             this.art = art;
             body = GetComponent<PersonBody>();
             body.Home = transform.parent;
+            // 출동한 사람은 길 요청이 군중 뒤에 줄을 서지 않는다(수십 명의 대피·일상 요청 뒤에서 몇십 초씩 서 있었다).
+            body.Rescuer = true;
             Equip();
             // 할 일이 열차 안이면 한 사람(구급대장·소방대원)이 그 차의 출입문으로 들어가고, 나머지는 문 앞에서 기다린다.
             bool enters = agency == Agency.Medical ? Lead : agency == Agency.Fire && !Lead;

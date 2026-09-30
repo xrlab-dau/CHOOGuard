@@ -12,8 +12,8 @@ namespace ChooGuard.Editor
 {
     /// <summary>
     /// Bakes the waypoint graph people plan their walks on (<see cref="RouteGraph"/>) from the baked world navmesh and the station
-    /// data: about every <see cref="Cell"/> m of walkable floor per metre of height one node, one at every exit and at both ends of every
-    /// escalator and elevator, and an edge wherever the navmesh (with the escalator and elevator links the session adds) walks from
+    /// data: about every <see cref="Cell"/> m of walkable floor per metre of height one node, one at every exit, at both ends of every
+    /// escalator (and of the stairs beside it) and elevator, and an edge wherever the navmesh (with the escalator and elevator links the session adds) walks from
     /// one node to a nearby one without a big detour. Edges another node already covers about as well are dropped. The file is
     /// written to Resources so the session finds it beside the navmesh; run this after baking the navmesh or changing the station
     /// data. It refuses to write a graph that cannot route a place the navmesh itself reaches an exit from, and writes into the file
@@ -104,6 +104,12 @@ namespace ChooGuard.Editor
             {
                 special.Add((escalator.path[0], escalator.id + ":start"));
                 special.Add((escalator.path[escalator.path.Length - 1], escalator.id + ":end"));
+                // 계단 양 끝에도 노드를 둔다: 에스컬레이터 끝이 계단과 이어지지 않은 navmesh 조각 위에 있으면(5·6 승강장 북쪽 등) 계단을 이을 노드가 없어 그 층 오르내림이 수백 m 돌아가는 길이 된다.
+                if (escalator.stairs)
+                {
+                    special.Add((escalator.stairsTop, escalator.id + ":stairs-top"));
+                    special.Add((escalator.stairsBottom, escalator.id + ":stairs-bottom"));
+                }
             }
             foreach (var elevator in points.Elevators)
                 for (int stop = 0; stop < elevator.stops.Length; stop++) special.Add((elevator.stops[stop].door, elevator.id + ":" + stop));
@@ -152,9 +158,12 @@ namespace ChooGuard.Editor
                         }
                     }
             }
-            // 승강 설비의 두 끝은 층이 달라 위 조건으로는 만나지 않는다: 링크 자체를 잇는다.
+            // 승강 설비의 두 끝(계단의 두 끝도)은 층이 달라 위 조건으로는 만나지 않는다: 링크와 계단 자체를 잇는다.
             foreach (var escalator in points.Escalators)
+            {
                 TryEdge(draft, points, path, corners, Find(draft, escalator.id + ":start"), Find(draft, escalator.id + ":end"), false);
+                if (escalator.stairs) TryEdge(draft, points, path, corners, Find(draft, escalator.id + ":stairs-top"), Find(draft, escalator.id + ":stairs-bottom"), false);
+            }
             foreach (var elevator in points.Elevators)
                 for (int i = 0; i < elevator.stops.Length; i++)
                     for (int j = i + 1; j < elevator.stops.Length; j++)
