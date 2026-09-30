@@ -47,7 +47,7 @@ namespace ChooGuard.App.Fps.Equipment
             tmp.font = font;
             tmp.fontSize = .13f;
             tmp.alignment = TextAlignmentOptions.TopLeft;
-            tmp.enableWordWrapping = true;
+            tmp.textWrappingMode = TextWrappingModes.Normal;
             tmp.overflowMode = TextOverflowModes.Truncate;
             tmp.margin = new Vector4(.004f, .003f, .004f, .003f);
             tmp.rectTransform.sizeDelta = ScreenSize;
