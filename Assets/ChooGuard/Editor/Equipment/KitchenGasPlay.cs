@@ -228,9 +228,9 @@ namespace ChooGuard.Editor
             yield return StartShift(wait);
             if (wait.TimedOut) { Finish("the first fresh shift did not become ready"); yield break; }
             bool fresh = true;
-            if (config["tour"] is JArray tour && tour.Count > 0)
+            if (config["catalog"] != null && (bool)config["catalog"])
             {
-                yield return Tour(tour.Select(t => (string)t).ToList());
+                yield return Tour();
                 fresh = false;
             }
             foreach (var scenario in scenarios)
@@ -274,82 +274,106 @@ namespace ChooGuard.Editor
             yield return Sleep(Value("settle", 9f));
         }
 
-        // ── 주방 둘러보기(사진) ─────────────────────────────────────────────
+        // ── 설비 도감 사진 ──────────────────────────────────────────────────
+
+        /// <summary>One kind of kitchen or gas equipment, and the shop whose piece of it is photographed.</summary>
+        private readonly struct Device
+        {
+            public readonly string Key, Kind, Shop, Role;
+            public Device(string key, string kind, string shop, string role = "") { Key = key; Kind = kind; Shop = shop; Role = role; }
+        }
+
+        private static readonly Device[] Catalog =
+        {
+            new Device("fryer", KitchenAppliancePoint.FryerKind, "반월당닭강정"),
+            new Device("range", KitchenAppliancePoint.RangeKind, "청도할매김밥"),
+            new Device("oven", KitchenAppliancePoint.OvenKind, "비엔씨제과"),
+            new Device("hood", "exhaust_hood", "청도할매김밥"),
+            new Device("auto_extinguisher", AutoExtinguisherPoint.Kind, "청도할매김밥"),
+            new Device("gas_meter", "gas_meter", "청도할매김밥"),
+            new Device("intermediate_valve", GasValvePoint.Kind, "청도할매김밥", "intermediate"),
+            new Device("main_valve", GasValvePoint.Kind, "청도할매김밥", "main"),
+            new Device("gas_hose", "gas_hose", "청도할매김밥"),
+            new Device("fuse_cock", "fuse_cock", "청도할매김밥"),
+            new Device("gas_pipe", "gas_pipe", "청도할매김밥"),
+            new Device("gas_alarm", GasAlarmPoint.Kind, "청도할매김밥"),
+            new Device("k_extinguisher", KitchenExtinguisherPoint.Kind, "청도할매김밥"),
+            new Device("counter", "kitchen_counter", "청도할매김밥"),
+            new Device("table", "kitchen_table", "청도할매김밥"),
+        };
+
+        private static Bounds BoundsOf(Component root)
+        {
+            var renderers = root.GetComponentsInChildren<Renderer>(true);
+            var box = renderers[0].bounds;
+            foreach (var renderer in renderers) box.Encapsulate(renderer.bounds);
+            return box;
+        }
 
         /// <summary>
-        /// Views of the kitchens as a player sees them, for the shops in <paramref name="labels"/>: from the concourse at the shop's
-        /// customer spot, along the cooking line from inside, at the gas meter and its valves, at the K-class extinguisher.
+        /// One photograph of every kind of kitchen and gas equipment from inside its shop (the staff member stands in the kitchen in
+        /// front of it) and from the concourse (outside the open front of the shop, looking in; the camera narrows its field of view
+        /// so a hose or a leak alarm is legible at that distance), plus a wide view from the concourse per shop. The shop's front is
+        /// found from the shop point: its yaw is the direction the customer faces, toward the counter and the back wall.
         /// </summary>
-        private static IEnumerator Tour(List<string> labels)
+        private static IEnumerator Tour()
         {
             current = new JObject
             {
-                ["name"] = "tour", ["kind"] = "-", ["summary"] = "The kitchens of the food shops seen from the concourse and from inside.", ["result"] = "running",
+                ["name"] = "catalog", ["kind"] = "-", ["summary"] = "Every kind of kitchen and gas equipment photographed from inside its shop and from the concourse.", ["result"] = "running",
                 ["checks"] = new JArray(), ["shots"] = new JArray(), ["consoleErrors"] = new JArray(), ["radioSent"] = new JArray(),
             };
             currentErrors = (JArray)current["consoleErrors"];
             currentChecks = (JArray)current["checks"];
             currentShots = (JArray)current["shots"];
-            phase = "tour";
-            foreach (var label in labels)
+            phase = "catalog";
+            var camera = Session.Player.PlayerCamera;
+            float fov = camera.fieldOfView;
+            var wide = new HashSet<string>();
+            foreach (var device in Catalog)
             {
-                var shop = Session.World.Points.Of(PointKind.Shop).FirstOrDefault(p => p.Label == label);
-                var parts = shop == null ? new List<StationEquipment>() : EquipmentRegistry.All.Where(e => e.Text("shop") == shop.Id).ToList();
-                var line = parts.Where(e => e.Kind == KitchenAppliancePoint.FryerKind || e.Kind == KitchenAppliancePoint.RangeKind || e.Kind == KitchenAppliancePoint.OvenKind).ToList();
-                Check(label + " is a shop with a cooking line in the station", line.Count > 0, parts.Count + " kitchen parts");
-                if (line.Count == 0) continue;
-                var centre = line.Aggregate(Vector3.zero, (sum, e) => sum + e.transform.position) / line.Count + Vector3.up * 1f;
-                var forward = line[0].transform.forward;
-                yield return LookFrom(shop.Position, centre);
-                yield return Sleep(1.5f);
-                yield return Shot(label + "_1front");
-                yield return Stand(centre, forward, 3.2f);
-                yield return Sleep(1.5f);
-                yield return Shot(label + "_2line");
-                yield return MeasureKitchen(label, parts);
-                var meter = parts.FirstOrDefault(e => e.Kind == "gas_meter");
-                if (meter != null)
+                var shop = Session.World.Points.Of(PointKind.Shop).FirstOrDefault(p => p.Label == device.Shop);
+                var piece = shop == null ? null : EquipmentRegistry.OfKind(device.Kind).FirstOrDefault(e => e.Text("shop") == shop.Id && (device.Role.Length == 0 || e.Text("role") == device.Role));
+                var anchor = shop == null ? null : EquipmentRegistry.OfKind(KitchenExtinguisherPoint.Kind).FirstOrDefault(e => e.Text("shop") == shop.Id);
+                Check(device.Key + " stands in " + device.Shop, piece != null && anchor != null);
+                if (piece == null || anchor == null) continue;
+                var box = BoundsOf(piece);
+                var inward = new Vector3(anchor.transform.forward.x, 0, anchor.transform.forward.z).normalized;
+                var front = -new Vector3(Mathf.Sin(shop.Yaw * Mathf.Deg2Rad), 0, Mathf.Cos(shop.Yaw * Mathf.Deg2Rad));
+                Check(device.Key + ": the kitchen lies toward the shop front (shop point faces the counter)", Vector3.Dot(box.center - shop.Position, front) > 0, "shop yaw " + shop.Yaw);
+
+                // 안에서: 설비 앞에 서서 가까이.
+                float close = Mathf.Clamp(box.size.magnitude * 1.6f, 1.4f, 3.2f);
+                yield return Stand(box.center, inward, close);
+                yield return Sleep(1.2f);
+                yield return Shot("catalog_" + device.Key + "_inside");
+
+                // 통로에서: 가게 열린 앞쪽 밖. 방 안 높은 곳에서 앞쪽으로 쏘아 유리 앞면까지의 거리를 잰다.
+                var origin = box.center + inward * 1.4f;
+                origin.y = shop.Position.y + 2.4f;
+                float frontAt = Physics.Raycast(origin, front, out var hit, 16f, ~0, QueryTriggerInteraction.Ignore) ? hit.distance : 7f;
+                var outside = origin + front * (frontAt + 2.6f);
+                var ground = Physics.Raycast(outside + Vector3.up * .5f, Vector3.down, out var floor, 4f, ~0, QueryTriggerInteraction.Ignore) ? floor.point : new Vector3(outside.x, shop.Position.y, outside.z);
+                float distance = Vector3.Distance(ground + Vector3.up * Session.Player.EyeHeight, box.center);
+                camera.fieldOfView = Mathf.Clamp(2f * Mathf.Atan(Mathf.Max(box.size.x, box.size.y, box.size.z) * 1.6f / 2f / distance) * Mathf.Rad2Deg, 8f, camera.fieldOfView);
+                yield return LookFrom(ground, box.center);
+                yield return Sleep(1.2f);
+                yield return Shot("catalog_" + device.Key + "_concourse");
+                camera.fieldOfView = fov;
+                current["frontPlane_" + device.Key] = Math.Round(frontAt, 2);
+
+                if (wide.Add(device.Shop))
                 {
-                    yield return Stand(meter.transform.position + Vector3.up * .3f, meter.transform.forward, 1.8f);
-                    yield return Sleep(1.5f);
-                    yield return Shot(label + "_3gas");
-                }
-                var extinguisher = parts.FirstOrDefault(e => e.Kind == KitchenExtinguisherPoint.Kind);
-                if (extinguisher != null)
-                {
-                    yield return Stand(extinguisher.transform.position + Vector3.up * .3f, extinguisher.transform.forward, 1.8f);
-                    yield return Sleep(1.5f);
-                    yield return Shot(label + "_4k");
+                    var line = EquipmentRegistry.All.Where(e => e.Text("shop") == shop.Id && (e.Kind == KitchenAppliancePoint.FryerKind || e.Kind == KitchenAppliancePoint.RangeKind || e.Kind == KitchenAppliancePoint.OvenKind)).ToList();
+                    var centre = line.Aggregate(Vector3.zero, (sum, e) => sum + e.transform.position) / line.Count + Vector3.up;
+                    yield return LookFrom(ground, centre);
+                    yield return Sleep(1.2f);
+                    yield return Shot("catalog_shop_" + device.Shop + "_concourse_wide");
                 }
             }
+            camera.fieldOfView = fov;
             current["result"] = "done";
             Close();
-        }
-
-        /// <summary>
-        /// What the kitchen costs at the view the player has of it: the same view sampled with the shop's kitchen parts on, off and on
-        /// again (the two "on" samples show the noise of the shared editor). Editor Game-view statistics and unscaled frame times.
-        /// </summary>
-        private static IEnumerator MeasureKitchen(string label, List<StationEquipment> parts)
-        {
-            var views = current["views"] as JArray ?? (JArray)(current["views"] = new JArray());
-            foreach (var state in new[] { "on", "off", "on again" })
-            {
-                bool on = state != "off";
-                foreach (var part in parts) part.gameObject.SetActive(on);
-                var sample = new JObject { ["shop"] = label, ["kitchenParts"] = state, ["parts"] = parts.Count };
-                yield return Sleep(3f);
-                var times = new List<float>();
-                for (int i = 0; i < 90; i++) { yield return null; times.Add(Time.unscaledDeltaTime * 1000f); }
-                times.Sort();
-                sample["frameMsMedian"] = Math.Round(times[times.Count / 2], 2);
-                sample["frameMsP95"] = Math.Round(times[(int)(times.Count * .95f)], 2);
-                sample["batches"] = UnityStats.batches;
-                sample["drawCalls"] = UnityStats.drawCalls;
-                sample["setPassCalls"] = UnityStats.setPassCalls;
-                sample["triangles"] = UnityStats.triangles;
-                views.Add(sample);
-            }
         }
 
         // ── 한 시나리오 ─────────────────────────────────────────────────────
@@ -376,8 +400,7 @@ namespace ChooGuard.Editor
             current["magnitude"] = magnitude;
             int from = session.Log.Timeline.Count;
             float gameStart = Time.time;
-            var execute = typeof(IncidentDirector).GetMethod("Execute", Members);
-            execute.Invoke(director, execute.GetParameters().Select(p => p.ParameterType == typeof(float) ? magnitude : p.ParameterType == typeof(int) ? 1 : p.ParameterType == typeof(string) ? (object)"kitchen_play" : chosen).ToArray());
+            ExecuteTransition(chosen, magnitude);
             yield return Until(() => director.Stage != IncidentDirector.Phase.Calm, 10, 30, wait);
             if (director.Stage == IncidentDirector.Phase.Calm) { current["result"] = "not_started"; yield break; }
             phase = "staff";
@@ -420,6 +443,13 @@ namespace ChooGuard.Editor
             current["result"] = ended && handover ? "ended" : ended ? "ended_without_our_handover" : "timeout";
             current["gameSeconds"] = Math.Round(Time.time - gameStart, 1);
             current["timeline"] = Timeline(session, from);
+        }
+
+        /// <summary>Runs a transition the way the director does when it draws it (the harness stands in for JEV and the dice).</summary>
+        private static void ExecuteTransition(object transition, float magnitude)
+        {
+            var execute = typeof(IncidentDirector).GetMethod("Execute", Members);
+            execute.Invoke(Session.Incidents, execute.GetParameters().Select(p => p.ParameterType == typeof(float) ? magnitude : p.ParameterType == typeof(int) ? 1 : p.ParameterType == typeof(string) ? (object)"kitchen_play" : transition).ToArray());
         }
 
         private static bool SendNext(EmergencySession session, HashSet<string> sent)
@@ -599,6 +629,12 @@ namespace ChooGuard.Editor
             },
             new Scenario
             {
+                Name = "gas_ignites_main_valve_then_k", Kind = "gas_meter_leak", Magnitude = .9f,
+                Summary = "A strong leak at the meter ignites: the fire burns on the gas (the K-class extinguisher beats it down to embers only), the main valve cuts the gas, then the extinguisher puts it out.",
+                Staff = GasIgnites,
+            },
+            new Scenario
+            {
                 Name = "cock_left_open", Kind = "gas_cock_open",
                 Summary = "A burner cock was left open: the alarm sounds, the staff member closes the burner cock and the leak ends.",
                 Staff = CockLeft,
@@ -693,7 +729,8 @@ namespace ChooGuard.Editor
             var fire = TheFire();
             if (fire == null) yield break;
             var oven = Nearest<KitchenAppliancePoint>(KitchenAppliancePoint.OvenKind, fire.Position);
-            yield return Stand(oven.transform.position + Vector3.up * .8f, oven.transform.forward, 1.3f);
+            // 불꽃이 문 앞에 서 있으니(충돌체가 시선을 막는다) 오븐 아랫 앞면을 본다.
+            yield return Stand(oven.transform.position + Vector3.up * .25f, oven.transform.forward, 1.3f);
             Press("oven", "E · 오븐 전원 끄기", () => !oven.On && fire.Feed == null, "the oven is off and the fire's feed is cut");
             yield return TakeKitchenExtinguisher(fire);
             yield return Spray(fire, 30f, oven.transform.forward);
@@ -735,6 +772,33 @@ namespace ChooGuard.Editor
             Press("range", "E · 화구 코크 잠그기(불 끄기)", () => !range.On, "the burner cock is closed");
             yield return Sleep(1.5f);
             Check("closing the cock ends the leak", !gas.Active);
+        }
+
+        private static IEnumerator GasIgnites()
+        {
+            var gas = Leaks().FirstOrDefault();
+            Check("a strong leak is a gas hazard of level 3 or more", gas != null && gas.Level >= 3, gas == null ? "no leak" : "level " + gas.Level);
+            if (gas == null) yield break;
+            var developments = ((IEnumerable)typeof(IncidentDirector).GetMethod("Developments", Members).Invoke(Session.Incidents, null)).Cast<object>();
+            var ignition = developments.FirstOrDefault(t => (string)t.GetType().GetField("Kind").GetValue(t) == "gas_ignites");
+            Check("the director offers the gas as something that can ignite", ignition != null);
+            if (ignition == null) yield break;
+            ExecuteTransition(ignition, .6f);
+            yield return Sleep(1f);
+            var fire = Fires().FirstOrDefault();
+            Check("the leak has become a fire and is no longer a gas hazard", fire != null && !gas.Active);
+            if (fire == null) yield break;
+            Check("the fire burns on the gas feed", fire.Feed != null, fire.Feed);
+            var kext = Nearest<KitchenExtinguisherPoint>(KitchenExtinguisherPoint.Kind, fire.Position);
+            var inward = kext.transform.forward;
+            yield return TakeKitchenExtinguisher(fire);
+            yield return Spray(fire, 5f, inward);
+            Check("while the gas feeds it the fire is beaten down to embers but is not out", !fire.Extinguished && fire.Intensity <= FireHazard.LiveEmbers + .02f, "intensity " + fire.Intensity.ToString("0.00"));
+            var main = EquipmentRegistry.All.Where(e => gas.StoppedBy.Contains(e.Id)).Select(e => e.GetComponent<GasValvePoint>()).First(v => v.Main);
+            yield return Stand(main.transform.position, main.transform.forward, 1.3f);
+            Press("main valve", "E · 가스 메인밸브 잠그기", () => main.Closed && fire.Feed == null, "the main valve is closed and the gas feed is cut");
+            yield return Spray(fire, 12f, inward);
+            Check("with the gas cut the extinguisher puts the fire out", fire.Extinguished, "intensity " + fire.Intensity.ToString("0.00"));
         }
 
         private static IEnumerator AutoExtinguisher()
