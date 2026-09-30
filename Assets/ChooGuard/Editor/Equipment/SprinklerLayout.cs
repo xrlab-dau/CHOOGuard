@@ -17,17 +17,22 @@ namespace ChooGuard.Editor
     /// <item>Pipes: a cross main per block of at most 16 head columns with branch lines at right angles, at most 8 heads on each side of the main (2.5.9.2), no tournament pipes (2.5.9.1); branch
     /// diameters from table 2.5.3.3 row "가" (2 heads DN25, 3 DN32, 5 DN40, 10 DN50), the main by the heads it carries (30 DN65, 60 DN80, 80 DN90, 100 DN100, 160 DN125, more DN150).
     /// Above a finished ceiling the pipes lie in the ceiling void (no mesh, the head hangs through the tile); under an exposed slab, deck or roof they are red exposed pipe on hangers
-    /// with upright heads (2.5.13, 2.5.18).</item>
+    /// with upright heads (2.5.13, 2.5.18) - but only where the slab is high enough (<see cref="MinExposedCeiling"/>) for the pipe to clear people's heads (<see cref="ClearHeight"/> above the
+    /// walkable floor): under a lower slab the pipe is concealed and only pendant heads show. Where the runs of two zones would pass through each other, one zone hangs one <see cref="LayerStep"/> lower
+    /// (<see cref="Separate"/>); a feed leaves its main at right angles. <see cref="SprinklerAudit"/> counts the clearances and overlaps that remain (both must be 0).</item>
     /// <item>Protection zones (방호구역): tiles of 48 m, at most 2,304 m² on one floor (2.3.1.1 caps 3,000 m²), one alarm valve each on the nearest wall (2.3.1.4: 0.8-1.5 m above the floor).</item>
     /// </list>
     /// </summary>
     internal static class SprinklerLayout
     {
         public const float Spacing = 3.2f, Reach = 2.3f, ZoneTile = 48f, PipeDrop = .376f, PlenumRise = .35f, WallGap = .25f, LampGap = .25f, DetectorGap = .6f, CeilingLimit = 20f;
+        /// <summary>Lowest a pipe surface may hang above the floor under it, the ceiling height from which exposed pipe is allowed (2.4 m + pipe hung 0.376 m + a second layer 0.26 m + radius of the biggest pipe 0.083 m, rounded up) and the vertical step between two zone layers.</summary>
+        public const float ClearHeight = 2.4f, MinExposedCeiling = 3.2f, LayerStep = .26f;
         private const int MinZoneHeads = 40, MinComponentCells = 6, ColumnsPerBlock = 16;
 
         /// <summary>The AlarmValve model (its pivot is the back face centre at mid height): height, the riser's offset from the wall along the front and to the right, and the pivot's height above the floor (NFTC 103 2.3.1.4: 0.8-1.5 m).</summary>
         public const float ValveHeight = 1.35f, ValveRiserDepth = .12f, ValveRiserSide = .0213f, ValveMountHeight = 1.1f;
+        private static SprinklerAudit.Floors headFloors;
         private static readonly string[] ExposedWords = { "Majibang_2F_Floor", "Kit_Slab_", "DeckLiner", "선로상층부", "출구지붕" };
 
         public sealed class Head
@@ -51,6 +56,8 @@ namespace ChooGuard.Editor
             /// <summary>Height of the floor beneath the line.</summary>
             public float FloorY;
             public bool Exposed;
+            /// <summary>How far the zone layer hangs this line below its natural height (see <see cref="Separate"/>).</summary>
+            public float Drop;
             public Vector2Int Tile;
             public string Valve = "";
         }
@@ -77,6 +84,7 @@ namespace ChooGuard.Editor
             public readonly List<Line> Lines = new List<Line>();
             public readonly List<Valve> Valves = new List<Valve>();
             public readonly List<Report> Regions = new List<Report>();
+            public SprinklerAudit.Report Audit;
         }
 
         private sealed class Lattice
@@ -102,6 +110,7 @@ namespace ChooGuard.Editor
         public static Result Plan(StationCeilings.Result survey, StationPoints points, StationWalls walls, List<Vector3> avoid, List<string> notes)
         {
             var result = new Result();
+            headFloors = new SprinklerAudit.Floors(survey);
             var toilets = points.Of(PointKind.Toilet).ToList();
             var accepted = survey.Cells.Where(c => DetectorLayout.Enclosed.Contains(c.Zone) && c.Height < CeilingLimit).ToList();
             int exempt = accepted.RemoveAll(c => c.Height < 4.5f && toilets.Exists(t => Mathf.Abs(t.Position.y - c.Floor.y) < 1f && new Vector2(t.Position.x - c.Floor.x, t.Position.z - c.Floor.z).magnitude < 3f));
@@ -120,8 +129,13 @@ namespace ChooGuard.Editor
             AssignZones(result);
             foreach (var lattice in lattices) BuildLines(lattice, result);
             AttachSpurs(result);
+            ConcealLow(result, notes);
             BuildValves(survey, walls, accepted, result, notes);
+            Separate(result, notes);
+            ConcealLow(result, notes);
+            StandRisers(result);
             Summarise(accepted, result);
+            result.Audit = SprinklerAudit.Run(result, survey);
             return result;
         }
 
@@ -176,7 +190,7 @@ namespace ChooGuard.Editor
             int x = Mathf.FloorToInt(target.x), z = Mathf.FloorToInt(target.y);
             Vector2? spot = null;
             StationCeilings.Cell cell = null;
-            bool exposed = byPosition.TryGetValue((x, z), out var here) && IsExposed(here.Owner);
+            bool exposed = byPosition.TryGetValue((x, z), out var here) && IsExposed(here.Owner) && here.Height >= MinExposedCeiling;
             if (exposed)
             {
                 cell = here;
@@ -203,6 +217,9 @@ namespace ChooGuard.Editor
         {
             var hit = survey.CeilingAt(at.x, at.y, cell.Floor.y);
             float ceiling = hit?.y ?? cell.CeilingY;
+            // Exposed pipe only where a person under it (on the highest walkable floor there: a stair or a ledge counts) still has the clear height under the pipe hung 0.376 m below the slab.
+            var pipe = new Vector3(at.x, ceiling - PipeDrop, at.y);
+            exposed = exposed && ceiling - cell.Floor.y >= MinExposedCeiling && headFloors.Clearance(pipe, pipe, .083f) >= ClearHeight;
             return new Head
             {
                 Ceiling = new Vector3(at.x, ceiling, at.y), Normal = hit?.normal ?? cell.Normal, Height = ceiling - cell.Floor.y, FloorY = cell.Floor.y,
@@ -224,7 +241,7 @@ namespace ChooGuard.Editor
             {
                 if (Covered(buckets, cell)) continue;
                 var target = new Vector2(cell.Floor.x, cell.Floor.z);
-                bool exposed = IsExposed(cell.Owner);
+                bool exposed = IsExposed(cell.Owner) && cell.Height >= MinExposedCeiling;
                 Head pick = null;
                 float best = float.MaxValue;
                 for (int dx = -1; dx <= 1; dx++)
@@ -404,7 +421,7 @@ namespace ChooGuard.Editor
                 result.Valves.Add(new Valve { Key = group.Key, Level = level, Tile = tile, Heads = heads.Count, Position = new Vector3(best.Point.x, mount, best.Point.z), Normal = best.Normal, MainMid = mid, FloorY = floorY, CeilingY = ceilingY });
                 // 입상관: 밸브 세트 위 끝에서 천장(또는 노출 배관 높이)까지 보이는 관. 이음은 그 위 교차배관으로 간다.
                 result.Lines.Add(new Line { Role = "riser", A = new Vector3(riser.x, mount + ValveHeight * .5f, riser.z), B = new Vector3(riser.x, main.Exposed ? mid.y : ceilingY, riser.z), Dn = 100, Level = level, Heads = heads.Count, Exposed = true, Tile = tile, Valve = group.Key, FloorY = floorY });
-                result.Lines.Add(new Line { Role = "feed", A = mid, B = new Vector3(riser.x, mid.y, riser.z), Dn = (int)feedDn, Level = level, Heads = heads.Count, Exposed = main.Exposed, Tile = tile, Valve = group.Key, FloorY = floorY });
+                result.Lines.Add(PlanFeed(result, main, riser, (int)feedDn, level, tile, group.Key, floorY, heads.Count));
             }
             // A zone with no wall near its main has no place for a valve: its heads join the nearest zone of the same floor that has one.
             foreach (var key in orphans)
@@ -438,6 +455,121 @@ namespace ChooGuard.Editor
                 areas[nearest.Valve] = area + 1;
             }
             foreach (var valve in result.Valves) { areas.TryGetValue(valve.Key, out int area); valve.Area = area; }
+        }
+
+        // ── 급수 배관과 층 나누기 ──
+
+        private static readonly float[] FeedShifts = { 0f, .4f, -.4f, .8f, -.8f, 1.2f, -1.2f, 1.6f, -1.6f, 2f, -2f };
+
+        /// <summary>
+        /// The feed from the valve's riser to the cross main: it meets the main at a right angle (a tee at the foot of the perpendicular from the riser, the main is lengthened when that foot lies beyond
+        /// its end), never along it, and is shifted along the main in 0.4 m steps until it clears the branch lines beside it by 5 cm. A feed of a concealed main is concealed.
+        /// </summary>
+        private static Line PlanFeed(Result result, Line main, Vector3 riser, int dn, int level, Vector2Int tile, string key, float floorY, int heads)
+        {
+            var along = new Vector3(main.B.x - main.A.x, 0, main.B.z - main.A.z);
+            float length = along.magnitude;
+            along = length > 1e-4f ? along / length : Vector3.right;
+            float foot = Vector3.Dot(new Vector3(riser.x - main.A.x, 0, riser.z - main.A.z), along);
+            var target = new Vector3(riser.x, main.A.y, riser.z);
+            var others = main.Exposed ? result.Lines.Where(l => l.Valve == key && l.Exposed && l != main && l.Role != "riser").ToList() : new List<Line>();
+            Line feed = null;
+            float at = foot;
+            foreach (float shift in FeedShifts)
+            {
+                float t = foot + shift;
+                var q = new Vector3(main.A.x + along.x * t, main.A.y, main.A.z + along.z * t);
+                var candidate = new Line { Role = "feed", A = q, B = target, Dn = dn, Level = level, Heads = heads, Exposed = main.Exposed, Tile = tile, Valve = key, FloorY = floorY };
+                var direction = (target - q).normalized;
+                bool square = (target - q).sqrMagnitude >= .01f && Mathf.Abs(Vector3.Dot(direction, along)) <= .64f;
+                if (feed == null) { feed = candidate; at = t; }
+                if (!square) continue;
+                bool clear = true;
+                foreach (var other in others)
+                {
+                    float gap = SprinklerAudit.Gap(candidate, other, out bool joint);
+                    if (gap < (joint ? 0f : SprinklerAudit.ClashGap)) { clear = false; break; }
+                }
+                if (!clear) continue;
+                feed = candidate;
+                at = t;
+                break;
+            }
+            if (at < 0) main.A = new Vector3(main.A.x + along.x * at, main.A.y, main.A.z + along.z * at);
+            else if (at > length) main.B = new Vector3(main.A.x + along.x * at, main.B.y, main.A.z + along.z * at);
+            return feed;
+        }
+
+        /// <summary>
+        /// Two zones whose exposed pipes would pass through each other are hung on different layers: the zones are coloured in order so that no two neighbours share a layer, and layer k hangs
+        /// k steps of <see cref="LayerStep"/> lower (the risers of a lowered zone end lower, its upright heads sit on its pipe). Runs of one zone are kept apart by the layout itself.
+        /// </summary>
+        private static void Separate(Result result, List<string> notes)
+        {
+            var exposed = result.Lines.Where(l => l.Exposed).ToList();
+            var neighbours = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
+            for (int i = 0; i < exposed.Count; i++)
+                for (int j = i + 1; j < exposed.Count; j++)
+                {
+                    var a = exposed[i];
+                    var b = exposed[j];
+                    if (a.Valve == b.Valve || Mathf.Abs(Mathf.Min(a.A.y, a.B.y) - Mathf.Min(b.A.y, b.B.y)) > 2f) continue;
+                    float gap = SprinklerAudit.Gap(a, b, out bool joint);
+                    if (gap >= (joint ? 0f : SprinklerAudit.ClashGap) - 1e-4f) continue;
+                    if (!neighbours.TryGetValue(a.Valve, out var na)) neighbours[a.Valve] = na = new HashSet<string>(StringComparer.Ordinal);
+                    if (!neighbours.TryGetValue(b.Valve, out var nb)) neighbours[b.Valve] = nb = new HashSet<string>(StringComparer.Ordinal);
+                    na.Add(b.Valve);
+                    nb.Add(a.Valve);
+                }
+            var layers = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (var zone in neighbours.Keys.OrderBy(k => k, StringComparer.Ordinal))
+            {
+                int layer = 0;
+                while (neighbours[zone].Any(n => layers.TryGetValue(n, out int taken) && taken == layer)) layer++;
+                layers[zone] = layer;
+            }
+            foreach (var line in exposed)
+            {
+                if (!layers.TryGetValue(line.Valve, out int layer) || layer == 0) continue;
+                float drop = layer * LayerStep;
+                line.B.y -= drop;
+                if (line.Role != "riser") { line.A.y -= drop; line.Drop = drop; }
+            }
+            foreach (var pair in layers.Where(p => p.Value > 0).OrderBy(p => p.Key, StringComparer.Ordinal)) notes.Add("zone " + pair.Key + " hangs " + (pair.Value * LayerStep).ToString("0.00") + " m lower where its pipes would cross a neighbour's");
+        }
+
+        /// <summary>
+        /// A run of exposed pipe that would hang lower than <see cref="ClearHeight"/> above the floor under any point of it (a stair, a ledge, a low soffit under a high slab) is concealed
+        /// instead, with the heads on it: they become pendant heads and the pipe joins the records without a mesh, at the height of the ceiling void.
+        /// </summary>
+        private static void ConcealLow(Result result, List<string> notes)
+        {
+            int count = 0;
+            for (int i = 0; i < result.Lines.Count; i++)
+            {
+                var line = result.Lines[i];
+                if (!line.Exposed || line.Role == "riser") continue;
+                if (headFloors.Clearance(line.A, line.B, SprinklerAudit.Radius(line)) >= ClearHeight - .001f) continue;
+                float lift = PipeDrop + PlenumRise + line.Drop;
+                line.Exposed = false;
+                line.A.y += lift;
+                line.B.y += lift;
+                line.Drop = 0;
+                foreach (var head in result.Heads) if (head.Line == i) head.Exposed = false;
+                count++;
+            }
+            if (count > 0) notes.Add("concealed " + count + " pipe runs that would hang under " + ClearHeight.ToString("0.0") + " m above the floor under them");
+        }
+
+        /// <summary>The riser stands from the valve to the height its zone's feed runs at: the ceiling void when the feed is concealed (the visible pipe ends at the ceiling), the feed's own height when it is exposed.</summary>
+        private static void StandRisers(Result result)
+        {
+            foreach (var riser in result.Lines.Where(l => l.Role == "riser"))
+            {
+                var feed = result.Lines.FirstOrDefault(l => l.Role == "feed" && l.Valve == riser.Valve);
+                var valve = result.Valves.First(v => v.Key == riser.Valve);
+                riser.B = new Vector3(riser.B.x, feed != null && feed.Exposed ? feed.A.y : valve.CeilingY, riser.B.z);
+            }
         }
 
         // ── 표 ──

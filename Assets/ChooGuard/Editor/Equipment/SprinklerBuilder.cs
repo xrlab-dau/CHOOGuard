@@ -218,6 +218,12 @@ namespace ChooGuard.Editor
         {
             yield return "CG_SPRINKLERS heads=" + plan.Heads.Count + " (pendant " + plan.Heads.Count(h => !h.Exposed) + ", upright " + plan.Heads.Count(h => h.Exposed) + ", audit " + plan.Heads.Count(h => h.Spur) + ") pipes=" + plan.Lines.Count + " valves=" + plan.Valves.Count;
             yield return "  pipe metres by kind: " + string.Join(", ", plan.Lines.GroupBy(l => (l.Exposed, l.Role)).OrderBy(g => g.Key.Item1).ThenBy(g => g.Key.Item2, StringComparer.Ordinal).Select(g => (g.Key.Item1 ? "exposed " : "concealed ") + g.Key.Item2 + " " + g.Sum(l => Vector3.Distance(l.A, l.B)).ToString("F0")));
+            if (plan.Audit != null)
+            {
+                yield return "CG_PIPE_AUDIT exposed horizontal pipe below " + SprinklerLayout.ClearHeight.ToString("0.0") + " m above the walkable floor = " + plan.Audit.LowPipes + " (lowest " + (plan.Audit.LowestClearance == float.MaxValue ? "n/a" : plan.Audit.LowestClearance.ToString("0.00") + " m") + "); interpenetrating pipe pairs outside joints = " + plan.Audit.Interpenetrating
+                    + "; crossing pairs closer than 5 cm = " + plan.Audit.TooClose + " (" + plan.Audit.PairsChecked + " pairs checked)";
+                foreach (var note in plan.Audit.Notes) yield return "  audit " + note;
+            }
             foreach (var r in plan.Regions) yield return "  region " + r.Name + ": cells(m2)=" + r.Cells + " heads=" + r.Heads + " m2/head=" + r.AreaPerHead.ToString("0.0") + " (limit " + (SprinklerLayout.Spacing * SprinklerLayout.Spacing).ToString("0.0") + ") uncovered=" + r.Uncovered;
             foreach (var v in plan.Valves.OrderBy(v => v.Level).ThenBy(v => v.Tile.x).ThenBy(v => v.Tile.y)) yield return "  zone " + v.Key + ": heads=" + v.Heads + " area(m2)=" + v.Area.ToString("F0") + " (limit 3000)";
             foreach (var n in notes.Take(30)) yield return "  note " + n;
