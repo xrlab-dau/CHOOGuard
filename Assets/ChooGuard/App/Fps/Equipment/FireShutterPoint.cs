@@ -209,6 +209,8 @@ namespace ChooGuard.App.Fps.Equipment
                     Target = 1f;
                     break;
             }
+            // 멈춤처럼 움직임이 없는 명령도 상태 글을 바꾼다(움직이는 동안에만 갱신하면 '하강 중'이 남는다).
+            Equipment.State = StateText();
             Commanded?.Invoke(this, command, by);
             return null;
         }
