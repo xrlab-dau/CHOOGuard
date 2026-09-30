@@ -57,8 +57,8 @@ namespace ChooGuard.Editor
             }
         }
 
-        /// <summary>The links the session adds at runtime (<c>StationWorld</c> builds the same ones from the same data), so paths may ride an escalator or a lift.</summary>
-        private static void AddLinks(StationPoints points, List<NavMeshLinkInstance> links)
+        /// <summary>The links the session adds at runtime (<c>StationWorld</c> builds the same ones from the same data), so paths may ride an escalator or a lift. Shared with <c>ExtinguisherPlacementProbe</c> so it measures the same graph; the caller removes the links it adds.</summary>
+        internal static void AddLinks(StationPoints points, List<NavMeshLinkInstance> links)
         {
             foreach (var entry in points.Escalators)
                 links.Add(NavMesh.AddLink(new NavMeshLinkData { startPosition = entry.path[0], endPosition = entry.path[entry.path.Length - 1], width = 0, bidirectional = false, area = StationWorld.EscalatorArea, costModifier = -1 }));
