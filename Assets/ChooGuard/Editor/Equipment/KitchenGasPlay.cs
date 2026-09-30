@@ -54,7 +54,6 @@ namespace ChooGuard.Editor
         private static bool running, envSwitched;
         private static string originalKey, endedBecause, results, phase = "load";
         private static double startedAt;
-        private static int shotNumber;
         private static Scenario[] scenarios;
 
         static KitchenGasPlay()
@@ -115,7 +114,6 @@ namespace ChooGuard.Editor
             Records.Clear();
             Frames.Clear();
             endedBecause = null;
-            shotNumber = 0;
             startedAt = EditorApplication.timeSinceStartup;
             scenarios = Scenarios();
             if (armed["names"] is JArray names && names.Count > 0)

@@ -36,7 +36,7 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         /// <summary>Where a gas leak comes from and what closes it.</summary>
-        private sealed class LeakSource
+        private sealed class GasLeakSource
         {
             public Kitchen Kitchen;
             public GasHosePoint Hose;
@@ -51,9 +51,9 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<KitchenAppliancePoint> appliances = new List<KitchenAppliancePoint>();
         private readonly List<GasHosePoint> hoses = new List<GasHosePoint>();
         private readonly List<AutoExtinguisherPoint> autoExtinguishers = new List<AutoExtinguisherPoint>();
-        private readonly Dictionary<string, GasValvePoint> valves = new Dictionary<string, GasValvePoint>();
+        private readonly Dictionary<string, GasValvePoint> gasValves = new Dictionary<string, GasValvePoint>();
         private readonly List<GasLeakHazard> gasLeaks = new List<GasLeakHazard>();
-        private readonly Dictionary<GasLeakHazard, LeakSource> leakSources = new Dictionary<GasLeakHazard, LeakSource>();
+        private readonly Dictionary<GasLeakHazard, GasLeakSource> leakSources = new Dictionary<GasLeakHazard, GasLeakSource>();
         private readonly List<Feeding> feedings = new List<Feeding>();
         private readonly HashSet<string> spentSources = new HashSet<string>();
         private readonly Dictionary<string, float> gasLingersUntil = new Dictionary<string, float>();
@@ -95,7 +95,7 @@ namespace ChooGuard.App.Fps.Emergency
                 var valve = equipment.GetComponent<GasValvePoint>();
                 valve.Bind();
                 valve.Closing += OnValveClosing;
-                valves[equipment.Id] = valve;
+                gasValves[equipment.Id] = valve;
                 if (valve.Main) KitchenAt(valve.Shop).Main = valve;
             }
             foreach (var equipment in EquipmentRegistry.OfKind(GasHosePoint.Kind))
@@ -130,7 +130,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private bool KitchenFree(string shopId) => !world.IsClosed(kitchens[shopId].Centre, 2);
 
-        private bool ValveOpen(string id) => id.Length == 0 || !valves[id].Closed;
+        private bool ValveOpen(string id) => id.Length == 0 || !gasValves[id].Closed;
 
         private bool GasOpen(KitchenAppliancePoint range) => ValveOpen(range.ValveId) && (kitchens[range.Shop].Main == null || !kitchens[range.Shop].Main.Closed);
 
@@ -244,7 +244,7 @@ namespace ChooGuard.App.Fps.Emergency
             spentSources.Add(sourceId);
             int level = Mathf.Clamp(Mathf.RoundToInt(magnitude * 4), 0, 4);
             var stoppers = new List<GasValvePoint>();
-            if (valveId != null) stoppers.Add(valves[valveId]);
+            if (valveId != null) stoppers.Add(gasValves[valveId]);
             if (k.Main != null) stoppers.Add(k.Main);
             var stoppedBy = stoppers.Select(v => v.Equipment.Id).ToList();
             if (source == GasSource.Cock) stoppedBy.Add(range.Equipment.Id);
@@ -261,7 +261,7 @@ namespace ChooGuard.App.Fps.Emergency
             hiss.rolloffMode = AudioRolloffMode.Linear;
             hiss.volume = .12f + .1f * level;
             if (level > 0) hiss.Play();
-            leakSources[gas] = new LeakSource { Kitchen = k, Hose = hose, Range = range, Valves = stoppers.ToArray(), Hiss = hiss };
+            leakSources[gas] = new GasLeakSource { Kitchen = k, Hose = hose, Range = range, Valves = stoppers.ToArray(), Hiss = hiss };
             Register(gas);
             log.Add("가스 누출 · " + gas.Where + " — " + gas.Visible);
         }
@@ -321,7 +321,7 @@ namespace ChooGuard.App.Fps.Emergency
             var fire = Ignite(gas.Position, gas.Shop + " 주방 가스", gas.Shop + " 주방", magnitude, " 가스 밸브를 잠그게 하고 불씨가 번지지 않게 주변을 비우십시오.", where: gas.Where);
             fire.Footprint = .35f;
             fire.SetFeed("가스", Agency.Fire, 20f);
-            feedings.Add(new Feeding { Fire = fire, Appliance = gas.Source == GasSource.Cock ? src.Range : null, Valves = gas.StoppedBy.Where(valves.ContainsKey).ToArray() });
+            feedings.Add(new Feeding { Fire = fire, Appliance = gas.Source == GasSource.Cock ? src.Range : null, Valves = gas.StoppedBy.Where(gasValves.ContainsKey).ToArray() });
             if (magnitude >= .5f) NearestPerson(gas.Position, 4, p => !p.Hurt && !p.Hostile)?.Injure("가스 불꽃에 화상을 입음");
             crowd.Alert(fire.Position, 25, fire, null, "there was a bang and a flash of fire");
         }
