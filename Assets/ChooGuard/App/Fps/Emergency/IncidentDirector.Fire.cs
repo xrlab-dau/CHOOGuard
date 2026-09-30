@@ -85,7 +85,7 @@ namespace ChooGuard.App.Fps.Emergency
         private Transition BinFire(StationEquipment bin, bool battery)
         {
             var exit = world.Points.Nearest(PointKind.Exit, bin.transform.position);
-            string where = Place(bin.transform.position);
+            string where = PlaceOf(bin);
             return new Transition
             {
                 Key = (battery ? "bin_battery_" : "bin_") + bin.Id, Kind = battery ? "bin_battery_fire" : "bin_fire", Origin = true,

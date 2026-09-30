@@ -45,6 +45,7 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly HashSet<FireHazard> cutReported = new HashSet<FireHazard>(), embersHinted = new HashSet<FireHazard>(), burntNoted = new HashSet<FireHazard>();
         private readonly List<(float at, string text)> officeLines = new List<(float, string)>();
         private bool syncingFeeds, brigadeAskedForCut;
+        private readonly Dictionary<StationEquipment, string> places = new Dictionary<StationEquipment, string>();
 
         // ── 시작과 끝 ──
 
@@ -77,6 +78,14 @@ namespace ChooGuard.App.Fps.Emergency
 
         private static IEnumerable<StationEquipment> Loads() => EquipmentRegistry.OfKind("vending_machine").Concat(EquipmentRegistry.OfKind("charging_kiosk"));
 
+        /// <summary>The radio name of where a placed piece stands. Naming a place scans the station's points, and the candidate lists are built again on every round, so it is asked once per piece; only a platform piece is named again each time, because its name depends on where the train stands.</summary>
+        private string PlaceOf(StationEquipment e)
+        {
+            if (e.Zone == "tracks") return Place(e.transform.position);
+            if (!places.TryGetValue(e, out var place)) places[e] = place = Place(e.transform.position);
+            return place;
+        }
+
         // ── 원인 ──
 
         partial void ElectricPlazaOrigins(Pools pools, List<Transition> list)
@@ -96,8 +105,26 @@ namespace ChooGuard.App.Fps.Emergency
             EquipmentRegistry.OfKind(kind).Where(e => !BurningIn(e) && usable(e) && !world.IsClosed(e.transform.position, 2))
                 .GroupBy(e => e.Zone).Select(g => g.OrderBy(e => Rank(e.Id)).First()).OrderBy(e => Rank(e.Id)).Take(count);
 
-        private int PeopleNear(Vector3 position, float radius) =>
-            crowd.People.Count(p => !p.Aboard && Mathf.Abs(p.transform.position.y - position.y) < 3f && (p.transform.position - position).sqrMagnitude < radius * radius);
+        private int peopleSnapshotFrame = -1;
+        private readonly List<Vector3> peopleAt = new List<Vector3>();
+
+        /// <summary>
+        /// How many people in the station (not aboard a train) stand within <paramref name="radius"/> of <paramref name="position"/>
+        /// on about the same floor. One listing of causes asks about a dozen places, and reading every person's transform for each
+        /// asked cost more than the rest of the listing together, so the crowd's positions are read once per frame.
+        /// </summary>
+        private int PeopleNear(Vector3 position, float radius)
+        {
+            if (peopleSnapshotFrame != Time.frameCount)
+            {
+                peopleSnapshotFrame = Time.frameCount;
+                peopleAt.Clear();
+                foreach (var person in crowd.People) if (!person.Aboard) peopleAt.Add(person.transform.position);
+            }
+            int near = 0;
+            foreach (var at in peopleAt) if (Mathf.Abs(at.y - position.y) < 3f && (at - position).sqrMagnitude < radius * radius) near++;
+            return near;
+        }
 
         private string CrowdNote(Vector3 position)
         {
@@ -112,8 +139,8 @@ namespace ChooGuard.App.Fps.Emergency
             return new Transition
             {
                 Key = "board_fire_" + e.Id, Kind = "board_fire", Origin = true,
-                Description = "A loose terminal on one of the breakers inside distribution board " + e.Label + " (" + Place(e.transform.position) + ") overheats and starts to melt its insulation. The panel stays live: it feeds " +
-                    machines + " vending machines and kiosks plus the lighting and sockets of the area, and smoke would first leak from its door seams. " + CrowdNote(e.transform.position),
+                Description = "A loose terminal on one of the breakers inside distribution board " + e.Label + " (" + PlaceOf(e) + ") overheats and starts to melt its insulation. The panel stays live: it feeds " +
+                    (machines > 0 ? machines + (machines == 1 ? " vending machine or kiosk plus " : " vending machines and kiosks plus ") : "") + "the lighting and sockets of the area, and smoke would first leak from its door seams. " + CrowdNote(e.transform.position),
                 Levels = BoardLevels.ToList(),
                 Apply = m => StartEquipmentFire(e, m, null),
             };
@@ -127,8 +154,8 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 Key = "vending_fire_" + machine.Id, Kind = "vending_fire", Origin = true,
                 Description = (drink
-                    ? "The compressor or the condenser fan motor of the drink vending machine " + ElectricNetwork.Tag(machine) + " (" + Place(machine.transform.position) + ") overheats: dust in the condenser, a sticking relay, a worn power cord. "
-                    : "The wiring or the power supply of the snack vending machine " + ElectricNetwork.Tag(machine) + " (" + Place(machine.transform.position) + ") shorts (worn cord insulation, dust and damp, an overloaded coil motor). ")
+                    ? "The compressor or the condenser fan motor of the drink vending machine " + ElectricNetwork.Tag(machine) + " (" + PlaceOf(machine) + ") overheats: dust in the condenser, a sticking relay, a worn power cord. "
+                    : "The wiring or the power supply of the snack vending machine " + ElectricNetwork.Tag(machine) + " (" + PlaceOf(machine) + ") shorts (worn cord insulation, dust and damp, an overloaded coil motor). ")
                     + "It starts to smoke. It is fed from " + (circuit != null ? "breaker " + circuit.Label : "the floor's sockets") + ". " + CrowdNote(machine.transform.position),
                 Levels = VendingLevels.ToList(),
                 Apply = m => StartEquipmentFire(machine, m, null),
@@ -142,7 +169,7 @@ namespace ChooGuard.App.Fps.Emergency
             return new Transition
             {
                 Key = "kiosk_fire_" + kiosk.Id, Kind = "kiosk_fire", Origin = true,
-                Description = "A phone with a damaged battery, charging in one of the lockers of the phone-charging kiosk " + ElectricNetwork.Tag(kiosk) + " (" + Place(kiosk.transform.position) + "), goes into thermal runaway. " +
+                Description = "A phone with a damaged battery, charging in one of the lockers of the phone-charging kiosk " + ElectricNetwork.Tag(kiosk) + " (" + PlaceOf(kiosk) + "), goes into thermal runaway. " +
                     phones + " of its 8 lockers hold a charging phone. It is fed from " + (circuit != null ? "breaker " + circuit.Label : "the floor's sockets") + ". " + CrowdNote(kiosk.transform.position),
                 Levels = KioskLevels.ToList(),
                 Apply = m => StartEquipmentFire(kiosk, m, null),
