@@ -95,9 +95,13 @@ namespace ChooGuard.App.Fps.Emergency
                 Levels = battery
                     ? new List<string> { "a hiss and a wisp of white smoke from the bin", "white smoke and a sharp chemical smell pouring out of the bin", "the battery vents a jet of flame that lights the paper and cups", "flames leap out of the bin, cans and bottles burst", "the bin burns fiercely, thick toxic smoke rolls along the ceiling" }
                     : new List<string> { "a thin wisp of smoke from the bin", "thick smoke from the bin", "the rubbish in the bin bursts into flames", "flames leap out of the bin", "the bin burns fiercely and melts, black smoke drifts through the entrance" },
-                Apply = m => StartEquipmentFire(bin, m, battery ? "버려진 보조배터리 열폭주" : "담배꽁초", battery
-                    ? " 배터리가 섞인 불입니다. 꺼진 뒤에도 안에서 다시 타오를 수 있으니 물로 충분히 식히고 손대지 마십시오."
-                    : null),
+                Apply = m =>
+                {
+                    if (!Still(StillIgnitable(bin), bin.Label + " " + bin.Id)) return;
+                    StartEquipmentFire(bin, m, battery ? "버려진 보조배터리 열폭주" : "담배꽁초", battery
+                        ? " 배터리가 섞인 불입니다. 꺼진 뒤에도 안에서 다시 타오를 수 있으니 물로 충분히 식히고 손대지 마십시오."
+                        : null);
+                },
             };
         }
 

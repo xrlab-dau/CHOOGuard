@@ -127,7 +127,7 @@
 | `bin_fire` | 출입구 14 m 안 휴지통, 돌아오는 사람의 담배꽁초 | 먹이 없음, 분말로 꺼짐 |
 | `bin_battery_fire` | 사람이 오가는 분리수거함에 버려진 보조배터리 | 꺼진 뒤에도 다시 탈 수 있다는 안내 |
 
-전개는 `protection_trips`(보호장치가 떨어져 스스로 차단), `equipment_fire_spreads`(1.8 m 이내 옆 기기·옆 통으로 번짐), `electric_shock`(켜진 채 타는 기기 곁에서 만진 사람이 감전), `wet_equipment_short`(터진 배관 물이 기기 밑에 닿아 합선). 옛 점 기반 전기 화재(매표창구·매장 냉장고)와 `Props.LitterBin`(런타임 원기둥)은 지웠다. 정전의 시작 지점은 역 전체 예외로 둔다: 트윈에 전기실 물체가 없고 정전은 공급 쪽에서 오므로 특정 설비에 묶지 않았다.
+전개는 `protection_trips`(보호장치가 떨어져 스스로 차단), `equipment_fire_spreads`(1.8 m 이내 옆 기기로 번짐), `electric_shock`(켜진 채 타는 기기 곁에서 만진 사람이 감전), `wet_equipment_short`(터진 배관 물이 기기 밑에 닿아 합선), `bin_fire_spreads`(옆 통으로 번짐). JEV 의 답은 후보를 나열한 뒤 한두 번 왕복하고 나서 오므로(크기를 한 번 더 묻는다) 그 사이 기기가 꺼지거나 타 버렸을 수 있다: 설비 전이는 모두 적용 순간에 후보가 아직 유효한지 다시 보고, 아니면 아무것도 시작하지 않고 근무 기록에 ‘장면이 바뀌어 적용하지 않음’을 남긴다. 옛 점 기반 전기 화재(매표창구·매장 냉장고)와 `Props.LitterBin`(런타임 원기둥)은 지웠다. 정전의 시작 지점은 역 전체 예외로 둔다: 트윈에 전기실 물체가 없고 정전은 공급 쪽에서 오므로 특정 설비에 묶지 않았다.
 
 ### 직원 조작 (`Equipment/ElectricPlaza/*`, `IncidentDirector.ElectricPlaza.cs`)
 
@@ -141,10 +141,10 @@
 JEV 는 끄고(TYPESAFE_API_KEY=off) 원인을 강제했으므로 **JEV 의 판단은 이 검증에 쓰지 않았다**. 후보가 목록에 오르는 것은 아래 성능 실행에서 확인(31개 후보).
 
 - **강제 원인**(6배속, `tools/force_all.py`, 원인마다 새 근무, 역무원이 알게 된 뒤 무전 선택지를 보내고 지휘 기관 대장에게 인계): `bin_fire`·`bin_battery_fire`·`board_fire`·`vending_fire`·`kiosk_fire` 다섯 모두 인계로 끝났고 오류 0. 결과 `tools/results/force-all-w4-final-20260930-101256/`. 예: 자판기 VM-GROUND1F-03 은 2.1 s 알림 → 소방대·전기 담당 출동 요청 → 전기 담당 78 s·소방대 108 s 도착 → 인계 201 s.
-- **직원 조작 재생 점검**(내 하네스 `Editor/Equipment/ElectricPlazaPlayCheck.cs`: 플레이어와 같은 경로로 조준하고 E 를 눌러 `FirstPersonResponder.StepInput` 으로 입력, 시드 20260930, 시나리오마다 새 근무): 분전반 열기·차단기 이름·내림/올림·메인 차단·작동금지 표지, 코드 뽑기·꽂기, 스위치 끄기·켜기, 불 난 분전반 열기 거부와 소화기 뒤 열림, 전기 담당 차단과 소방대 진화, 전개 다섯, 쓰레기통 두 원인과 옆 통 번짐, 인계 뒤 근무 종료. 열 시나리오(board 10·plug 4·kiosk 4·fire 13·boardfire 10·developments 10·bin 7·binbattery 5·electrician 7·perf 2)를 한 번에 돌려 **PASS 72, FAIL 0, 콘솔 오류 0**(게이트웨이 `w4-electric-plaza-55478b`, 2배속, 이 커밋의 코드). 앞서 돌린 완전한 실행 하나는 하네스 결함 1건(아래 표)으로 PASS 70·FAIL 1 이었다.
+- **직원 조작 재생 점검**(내 하네스 `Editor/Equipment/ElectricPlazaPlayCheck.cs`: 플레이어와 같은 경로로 조준하고 E 를 눌러 `FirstPersonResponder.StepInput` 으로 입력, 시드 20260930, 시나리오마다 새 근무): 분전반 열기·차단기 이름·내림/올림·메인 차단·작동금지 표지, 코드 뽑기·꽂기, 스위치 끄기·켜기, 불 난 분전반 열기 거부와 소화기 뒤 열림, 전기 담당 차단과 소방대 진화, 전개 다섯, 쓰레기통 두 원인과 옆 통 번짐, 늦게 온 답(전기가 끊긴 기기·이미 타는 기기)이 아무것도 시작하지 않음, 인계 뒤 근무 종료. 열한 시나리오(board 10·plug 4·kiosk 4·fire 13·boardfire 10·developments 10·bin 7·binbattery 5·stale 2·electrician 7·perf 2)를 한 번에 돌려 **PASS 74, FAIL 0, 콘솔 오류 0**(게이트웨이 `w4-electric-plaza-986190`, 2배속, 이 코드). 앞서 돌린 완전한 실행 하나는 하네스 결함 1건(아래 표)으로 PASS 70·FAIL 1 이었다.
 - **시험**: `ElectricPlazaTests` 11건(실제 충전 키오스크 프리팹이 차단기가 내려가면 어두워지는지 포함) + 관련 `EmergencyRulesTests`·`EquipmentRegistryTests` 함께 21건 통과, 플레이어 스크립트 컴파일 통과(`CG_PLAYER_COMPILE … errors=0`).
 - **시각**(`.gate/`, 저장소에는 넣지 않음): 배치 확인용 위에서 본 평면도 `w4-plan-*.png` 10장과 물건마다 가까이서 본 `w4-view-*.png` 39장(그중 물건마다의 36개 시점은 모두 가려지지 않음), 분전반 문 열림·차단기 내림/올림, 자판기 뱅크·플러그 뽑기 전후(선반의 청록 조명이 켜졌다 꺼짐: `w4-check-plug-in.png`·`w4-check-plug-out.png`), 키오스크 화면 꺼짐, 분전반·자판기·휴지통 불이 물건에서 오르는 장면(`w4-check-fire-*.png`).
-- **성능**(에디터 재생, 매번 30번 중 가장 좋은 값, 마지막 두 실행): 전기·광장 원인 목록 0.14~0.28 ms, 휴지통·분리수거함 원인 0.21~0.44 ms, 목록 전체(모든 계열) 1.85~3.47 ms, 전기 틱 0.7~1.2 µs/프레임(에디터가 다른 일과 CPU 를 나눠 실행마다 다르다). 설비 95개·렌더러 195개, 비품 스폰 43 ms(45개 셀, 42개 배치·미배치 0, w3 스포너 로그 `CG_EQUIPMENT`).
+- **성능**(에디터 재생, 매번 30번 중 가장 좋은 값, 마지막 세 실행): 전기·광장 원인 목록 0.14~0.50 ms, 휴지통·분리수거함 원인 0.21~0.79 ms, 목록 전체(모든 계열) 1.85~6.69 ms, 전기 틱 0.7~2.6 µs/프레임(에디터가 다른 작업과 CPU 를 나눠 실행마다 다르다: 마지막 실행은 모든 계열이 3배 넘게 느렸다). 설비 95개·렌더러 195개, 비품 스폰 43 ms(45개 셀, 42개 배치·미배치 0, w3 스포너 로그 `CG_EQUIPMENT`).
 
 검증에서 찾아 고친 것:
 

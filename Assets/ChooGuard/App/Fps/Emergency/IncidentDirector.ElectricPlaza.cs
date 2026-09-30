@@ -100,6 +100,24 @@ namespace ChooGuard.App.Fps.Emergency
 
         private bool BurningIn(StationEquipment installation) => fires.Exists(f => f.Installation == installation) || installation.GetComponent<ElectricLoad>() is ElectricLoad load && load.Burnt;
 
+        /// <summary>
+        /// JEV answers a moment after the candidates were listed (and again for the magnitude), and the piece may have been
+        /// switched off, burnt out or lit by then: an answer is applied only if what it names is still a candidate.
+        /// </summary>
+        private bool StillIgnitable(StationEquipment e)
+        {
+            if (e == null || BurningIn(e) || world.IsClosed(e.transform.position, 2)) return false;
+            if (e.Kind == "distribution_board") return ElectricNetwork.BoardOf(e) is ElectricNetwork.Board board && board.Main.On && !board.Damaged;
+            return e.Kind == "vending_machine" || e.Kind == "charging_kiosk" ? LoadUsable(e) : true;
+        }
+
+        /// <summary>Records that an answer named something the world no longer offers, so the shift log does not show a composed event that never happened.</summary>
+        private bool Still(bool valid, string what)
+        {
+            if (!valid) log.Add("장면이 바뀌어 적용하지 않음 · " + what);
+            return valid;
+        }
+
         /// <summary>Up to <paramref name="count"/> pieces of <paramref name="kind"/> that qualify, at most one per zone, in the shift's stable rank order.</summary>
         private IEnumerable<StationEquipment> Candidates(string kind, int count, System.Func<StationEquipment, bool> usable) =>
             EquipmentRegistry.OfKind(kind).Where(e => !BurningIn(e) && usable(e) && !world.IsClosed(e.transform.position, 2))
@@ -142,7 +160,7 @@ namespace ChooGuard.App.Fps.Emergency
                 Description = "A loose terminal on one of the breakers inside distribution board " + e.Label + " (" + PlaceOf(e) + ") overheats and starts to melt its insulation. The panel stays live: it feeds " +
                     (machines > 0 ? machines + (machines == 1 ? " vending machine or kiosk plus " : " vending machines and kiosks plus ") : "") + "the lighting and sockets of the area, and smoke would first leak from its door seams. " + CrowdNote(e.transform.position),
                 Levels = BoardLevels.ToList(),
-                Apply = m => StartEquipmentFire(e, m, null),
+                Apply = m => { if (Still(StillIgnitable(e), e.Label + " " + e.Id)) StartEquipmentFire(e, m, null); },
             };
         }
 
@@ -158,7 +176,7 @@ namespace ChooGuard.App.Fps.Emergency
                     : "The wiring or the power supply of the snack vending machine " + ElectricNetwork.Tag(machine) + " (" + PlaceOf(machine) + ") shorts (worn cord insulation, dust and damp, an overloaded coil motor). ")
                     + "It starts to smoke. It is fed from " + (circuit != null ? "breaker " + circuit.Label : "the floor's sockets") + ". " + CrowdNote(machine.transform.position),
                 Levels = VendingLevels.ToList(),
-                Apply = m => StartEquipmentFire(machine, m, null),
+                Apply = m => { if (Still(StillIgnitable(machine), machine.Label + " " + machine.Id)) StartEquipmentFire(machine, m, null); },
             };
         }
 
@@ -172,7 +190,7 @@ namespace ChooGuard.App.Fps.Emergency
                 Description = "A phone with a damaged battery, charging in one of the lockers of the phone-charging kiosk " + ElectricNetwork.Tag(kiosk) + " (" + PlaceOf(kiosk) + "), goes into thermal runaway. " +
                     phones + " of its 8 lockers hold a charging phone. It is fed from " + (circuit != null ? "breaker " + circuit.Label : "the floor's sockets") + ". " + CrowdNote(kiosk.transform.position),
                 Levels = KioskLevels.ToList(),
-                Apply = m => StartEquipmentFire(kiosk, m, null),
+                Apply = m => { if (Still(StillIgnitable(kiosk), kiosk.Label + " " + kiosk.Id)) StartEquipmentFire(kiosk, m, null); },
             };
         }
 
@@ -326,7 +344,10 @@ namespace ChooGuard.App.Fps.Emergency
                         {
                             Key = "bin_spreads_" + f.Id, Kind = "bin_fire_spreads",
                             Description = "The fire in the " + f.Subject + " at " + f.Where + " reaches the " + next.Label + " " + next.Id + " standing right beside it (paper, cups and plastic bottles carry it across the gap)",
-                            Apply = _ => log.Add("쓰레기통 불이 옆 통으로 옮겨붙음 · " + StartEquipmentFire(next, Mathf.Clamp01(f.Intensity), "옆 통에서 불이 옮겨붙음").Where),
+                            Apply = _ =>
+                            {
+                                if (Still(!f.Extinguished && next.State != "소손" && !FireBurning(next), next.Label + " " + next.Id)) log.Add("쓰레기통 불이 옆 통으로 옮겨붙음 · " + StartEquipmentFire(next, Mathf.Clamp01(f.Intensity), "옆 통에서 불이 옮겨붙음").Where);
+                            },
                         });
                     continue;
                 }
@@ -335,7 +356,7 @@ namespace ChooGuard.App.Fps.Emergency
                     {
                         Key = "trip_" + f.Id, Kind = "protection_trips",
                         Description = "The arcing fault in the burning " + f.Subject + " at " + f.Where + " draws enough current for the protection upstream to trip and cut its power by itself (a loose-contact fault often does not trip anything)",
-                        Apply = _ => ProtectionTrips(f),
+                        Apply = _ => { if (Still(!f.Extinguished && f.Feed != null, f.Subject + " " + f.Where)) ProtectionTrips(f); },
                     });
                 var neighbour = f.Feed != null ? NeighbourOf(f) : null;
                 if (neighbour != null && Ready("spreads_" + f.Id))
@@ -343,7 +364,7 @@ namespace ChooGuard.App.Fps.Emergency
                     {
                         Key = "spreads_" + f.Id, Kind = "equipment_fire_spreads",
                         Description = "The fire in the " + f.Subject + " at " + f.Where + " reaches the " + neighbour.Label + " " + ElectricNetwork.Tag(neighbour) + " standing right beside it (plastic panels and packaging carry it across the gap)",
-                        Apply = _ => SpreadTo(neighbour, f),
+                        Apply = _ => { if (Still(!f.Extinguished && !FireBurning(neighbour) && !(neighbour.GetComponent<ElectricLoad>() is ElectricLoad load && load.Burnt), neighbour.Label + " " + neighbour.Id)) SpreadTo(neighbour, f); },
                     });
                 var close = f.Feed != null ? NearestPerson(f.Position, 1.8f, p => p.Current != Passenger.Activity.Evacuate && !p.Hurt && !p.Hostile) : null;
                 if (close != null && Ready("shock"))
@@ -351,7 +372,7 @@ namespace ChooGuard.App.Fps.Emergency
                     {
                         Key = "shock_" + close.Number, Kind = "electric_shock",
                         Description = Profile(close) + ", standing next to the live burning " + f.Subject + " at " + f.Where + ", touches its casing and gets an electric shock",
-                        Apply = _ => Shock(close, f),
+                        Apply = _ => { if (Still(!f.Extinguished && f.Feed != null && !close.Hurt && close.Current != Passenger.Activity.Evacuate && Flat(close.transform.position - f.Position).magnitude < 2.2f, "감전 후보 승객 #" + close.Number)) Shock(close, f); },
                     });
             }
             // 터진 배관의 물이 바닥에 번져 설비 밑동에 닿으면 배선이 젖어 합선한다(분전반은 벽에 높이 달려 닿지 않는다).
@@ -366,7 +387,7 @@ namespace ChooGuard.App.Fps.Emergency
                 {
                     Key = "wet_" + wet.Id, Kind = "wet_equipment_short", Levels = LevelsOf(wet).ToList(),
                     Description = "Water from the burst pipe at " + l.Where + " has spread across the floor to the base of the " + wet.Label + " " + ElectricNetwork.Tag(wet) + " and gets into its wiring: it shorts",
-                    Apply = m => StartEquipmentFire(wet, m, "누수로 젖어 합선"),
+                    Apply = m => { if (Still(!BurningIn(wet) && ElectricNetwork.Powered(wet), wet.Label + " " + wet.Id)) StartEquipmentFire(wet, m, "누수로 젖어 합선"); },
                 });
             }
         }

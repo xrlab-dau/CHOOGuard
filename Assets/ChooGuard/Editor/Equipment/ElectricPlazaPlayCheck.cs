@@ -196,7 +196,7 @@ namespace ChooGuard.Editor
             originalKey = Environment.GetEnvironmentVariable(JevVariable);
             Environment.SetEnvironmentVariable(JevVariable, "off");
             envSwitched = true;
-            var names = config["scenarios"] is JArray list ? list.Select(s => (string)s).ToList() : new List<string> { "board", "plug", "kiosk", "fire", "boardfire", "developments", "bin", "binbattery", "electrician", "perf" };
+            var names = config["scenarios"] is JArray list ? list.Select(s => (string)s).ToList() : new List<string> { "board", "plug", "kiosk", "fire", "boardfire", "developments", "bin", "binbattery", "stale", "electrician", "perf" };
             foreach (var name in names)
             {
                 scenario = name;
@@ -213,6 +213,7 @@ namespace ChooGuard.Editor
                     case "developments": yield return Developments(); break;
                     case "bin": yield return Bin(); break;
                     case "binbattery": yield return BinBattery(); break;
+                    case "stale": yield return Stale(); break;
                     case "perf": yield return Perf(); break;
                     default: Check("known scenario", false, name); break;
                 }
@@ -686,6 +687,29 @@ namespace ChooGuard.Editor
             }
             fire.Suppress(1f, 30f);
             Check("the battery fire goes out with the extinguisher", fire.Extinguished);
+        }
+
+        /// <summary>JEV answers a moment after the candidates were listed: an answer that names a machine which lost its power meanwhile, or which is already burning, starts nothing.</summary>
+        private static IEnumerator Stale()
+        {
+            yield return Sleep(3f);
+            var listed = Offered("vending_fire");
+            if (listed == null) { Check("vending_fire offered", false, "not offered"); yield break; }
+            var key = (string)listed.GetType().GetField("Key").GetValue(listed);
+            var machine = EquipmentRegistry.OfKind("vending_machine").FirstOrDefault(e => key == "vending_fire_" + e.Id);
+            if (machine == null) { Check("the offered machine is a placed one", false, key); yield break; }
+            ElectricNetwork.Switch(ElectricNetwork.CircuitOf(machine), false, "electric-check");
+            int before = Fires().Count;
+            Execute(listed, .5f);
+            Check("an answer for a machine that lost its power meanwhile starts nothing", Fires().Count == before && machine.State != "화재", machine.Id + " state=" + machine.State + " fires " + before + " -> " + Fires().Count);
+            ElectricNetwork.Switch(ElectricNetwork.CircuitOf(machine), true, "electric-check");
+            var again = Offered("vending_fire");
+            if (again == null) { Check("vending_fire offered again", false, "not offered"); yield break; }
+            var againKey = (string)again.GetType().GetField("Key").GetValue(again);
+            Execute(again, .5f);
+            int burning = Fires().Count;
+            Execute(again, .5f);
+            Check("a second answer for a machine that already burns starts no second fire", burning == before + 1 && Fires().Count == burning, againKey + " fires " + before + " -> " + burning + " -> " + Fires().Count);
         }
 
         /// <summary>
