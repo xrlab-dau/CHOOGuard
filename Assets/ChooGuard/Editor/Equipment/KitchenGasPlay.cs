@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 using Object = UnityEngine.Object;
 
 namespace ChooGuard.Editor
@@ -281,7 +282,9 @@ namespace ChooGuard.Editor
         private readonly struct Device
         {
             public readonly string Key, Kind, Shop, Role;
-            public Device(string key, string kind, string shop, string role = "") { Key = key; Kind = kind; Shop = shop; Role = role; }
+            /// <summary>False for a piece the concourse cannot see by design: it hangs under the ceiling just behind the fascia of the shop front.</summary>
+            public readonly bool SeenFromConcourse;
+            public Device(string key, string kind, string shop, string role = "", bool seenFromConcourse = true) { Key = key; Kind = kind; Shop = shop; Role = role; SeenFromConcourse = seenFromConcourse; }
         }
 
         private static readonly Device[] Catalog =
@@ -297,7 +300,7 @@ namespace ChooGuard.Editor
             new Device("gas_hose", "gas_hose", "청도할매김밥"),
             new Device("fuse_cock", "fuse_cock", "청도할매김밥"),
             new Device("gas_pipe", "gas_pipe", "청도할매김밥"),
-            new Device("gas_alarm", GasAlarmPoint.Kind, "청도할매김밥"),
+            new Device("gas_alarm", GasAlarmPoint.Kind, "청도할매김밥", seenFromConcourse: false),
             new Device("k_extinguisher", KitchenExtinguisherPoint.Kind, "청도할매김밥"),
             new Device("counter", "kitchen_counter", "청도할매김밥"),
             new Device("table", "kitchen_table", "청도할매김밥"),
@@ -324,6 +327,9 @@ namespace ChooGuard.Editor
         /// The line of sight from <paramref name="eye"/> to <paramref name="target"/> is open: the shop's glass front (the twin's
         /// "Kit_Colliders", which blocks bodies but not eyes) and people do not count, walls, columns and furniture do.
         /// </summary>
+        private static bool Sees(Vector3 eye, Bounds target, Component piece) =>
+            Sees(eye, target.center, piece) || Sees(eye, target.center + Vector3.up * target.extents.y * .8f, piece) || Sees(eye, target.center - Vector3.up * target.extents.y * .8f, piece);
+
         private static bool Sees(Vector3 eye, Vector3 target, Component piece)
         {
             var toward = target - eye;
@@ -387,13 +393,14 @@ namespace ChooGuard.Editor
                 origin.y = shop.Position.y + 2.4f;
                 float frontAt = Physics.Raycast(origin, front, out var frontHit, 16f, ~0, QueryTriggerInteraction.Ignore) ? frontHit.distance : 7f;
                 Vector3? spot = null;
+                if (device.SeenFromConcourse)
                 foreach (float beyond in new[] { 2.6f, 3.6f, 4.6f })
                 {
                     foreach (float lateral in new[] { 2.4f, 1.6f, 3.2f, .9f })
                     {
                         var at = new Vector3(box.center.x, 0, box.center.z) + inward * lateral + front * (frontAt + beyond);
                         var feet = Physics.Raycast(new Vector3(at.x, shop.Position.y + 1.5f, at.z), Vector3.down, out var floor, 4f, ~0, QueryTriggerInteraction.Ignore) ? floor.point : new Vector3(at.x, shop.Position.y, at.z);
-                        if (!Sees(feet + Vector3.up * Session.Player.EyeHeight, box.center, piece)) continue;
+                        if (!Sees(feet + Vector3.up * Session.Player.EyeHeight, box, piece)) continue;
                         spot = feet;
                         break;
                     }
@@ -550,8 +557,10 @@ namespace ChooGuard.Editor
             var player = Session.Player;
             var flat = new Vector3(toward.x, 0, toward.z).normalized;
             var position = focus + flat * distance;
-            var start = new Vector3(position.x, focus.y + .3f, position.z);
-            position.y = Physics.Raycast(start, Vector3.down, out var hit, 5f, ~0, QueryTriggerInteraction.Ignore) ? hit.point.y : focus.y - 1f;
+            // 바닥은 걸을 수 있는 면(내비메시)에서: 아래로 쏘면 조리대·레인지 위에 서게 된다.
+            position.y = NavMesh.SamplePosition(new Vector3(position.x, focus.y, position.z), out var walk, 4f, NavMesh.AllAreas)
+                ? walk.position.y
+                : Physics.Raycast(new Vector3(position.x, focus.y + .3f, position.z), Vector3.down, out var hit, 5f, ~0, QueryTriggerInteraction.Ignore) ? hit.point.y : focus.y - 1f;
             yield return LookFrom(position, focus);
         }
 
