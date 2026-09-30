@@ -76,6 +76,13 @@ class VerdictTests(unittest.TestCase):
         self.assertIn("| PlayMode | 2 | 1 | 1 | 0 | 1 |", text)
         self.assertIn("**ChooGuard.Doors.Closes** — Expected: True", text)
 
+    def test_spec_keeps_a_windows_drive_letter_in_the_results_path(self):
+        # Windows runners pass RUNNER_TEMP as D:\a\_temp; splitting at every colon lost the results file (run 36396147103).
+        self.assertEqual(unity_results.parse_spec(r"EditMode:D:\a\_temp/unity/EditMode-results.xml:0"),
+                         ("EditMode", r"D:\a\_temp/unity/EditMode-results.xml", "0"))
+        self.assertEqual(unity_results.parse_spec("PlayMode:/tmp/unity/PlayMode-results.xml:"),
+                         ("PlayMode", "/tmp/unity/PlayMode-results.xml", ""))
+
 
 if __name__ == "__main__":
     unittest.main()

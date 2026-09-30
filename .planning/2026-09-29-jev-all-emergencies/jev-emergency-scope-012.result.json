@@ -1,0 +1,125 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 289,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "key_provisioning": {
+          "type": "choice",
+          "choice": "in_game_entry_per_machine",
+          "confidence": 1,
+          "probabilities": {
+            "in_game_entry_per_machine": 1,
+            "github_actions_secret": 0,
+            "commit_shared_key": 0
+          }
+        },
+        "no_jev_policy": {
+          "type": "choice",
+          "choice": "local_rules_fallback",
+          "confidence": 0.74,
+          "probabilities": {
+            "gate_start_local_on_outage": 0.13,
+            "gate_start_and_wait": 0.04,
+            "local_rules_fallback": 0.83
+          }
+        },
+        "automated_runs": {
+          "type": "choice",
+          "choice": "seeded_local_for_automation",
+          "confidence": 0.29,
+          "probabilities": {
+            "seeded_local_for_automation": 0.65,
+            "calm_without_jev": 0.35
+          }
+        },
+        "selection_randomness": {
+          "type": "choice",
+          "choice": "top_choice",
+          "confidence": 0.2,
+          "probabilities": {
+            "top_choice": 0.6,
+            "sample_jev_probabilities": 0.4
+          }
+        },
+        "magnitude_randomness": {
+          "type": "choice",
+          "choice": "expected_score",
+          "confidence": 0.42,
+          "probabilities": {
+            "expected_score": 0.71,
+            "sample_level_probabilities": 0.29
+          }
+        },
+        "candidate_breadth": {
+          "type": "choice",
+          "choice": "every_cause_every_round",
+          "confidence": 0.67,
+          "probabilities": {
+            "sampled_twelve": 0.16,
+            "every_cause_every_round": 0.84
+          }
+        },
+        "fire_other_sources": {
+          "type": "noul",
+          "noul": 0.81
+        },
+        "medical_conditions": {
+          "type": "noul",
+          "noul": 0.76
+        },
+        "stairs_and_escalator_variants": {
+          "type": "noul",
+          "noul": 0.8
+        },
+        "track_fall": {
+          "type": "noul",
+          "noul": 0.8
+        },
+        "elevator_entrapment": {
+          "type": "noul",
+          "noul": 0.74
+        },
+        "disturbance": {
+          "type": "noul",
+          "noul": 0.78
+        },
+        "bomb_threat_call": {
+          "type": "noul",
+          "noul": 0.76
+        },
+        "gas_or_odour": {
+          "type": "noul",
+          "noul": 0.7
+        },
+        "falling_object": {
+          "type": "noul",
+          "noul": 0.73
+        },
+        "power_outage": {
+          "type": "noul",
+          "noul": 0.84
+        },
+        "flooding": {
+          "type": "noul",
+          "noul": 0.6
+        },
+        "false_alarm": {
+          "type": "noul",
+          "noul": 0.74
+        }
+      },
+      "usage": {
+        "input_tokens": 2520,
+        "output_tokens": 499
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

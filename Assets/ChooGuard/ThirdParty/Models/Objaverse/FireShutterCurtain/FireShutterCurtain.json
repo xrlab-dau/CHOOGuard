@@ -1,0 +1,68 @@
+{
+ "name": "FireShutterCurtain",
+ "source": "fire_shutter_curtain",
+ "scale": 1.0,
+ "triangles": 140,
+ "liveryFaces": 0,
+ "signFaces": 0,
+ "materials": [
+  {
+   "name": "m0",
+   "source": "rollershutter_door",
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 0.0,
+   "roughness": 0.7,
+   "albedo": "FireShutterCurtain_m0_Color.png",
+   "normal": "FireShutterCurtain_m0_Normal.png",
+   "metallicSmoothness": "FireShutterCurtain_m0_MetallicSmoothness.png",
+   "alphaMode": "OPAQUE",
+   "faces": 140
+  }
+ ],
+ "size": [
+  4.02,
+  3.9999,
+  0.0413
+ ],
+ "sizeMm": [
+  4020.0,
+  3999.9,
+  41.3
+ ],
+ "boundsM": {
+  "min": [
+   -2.01,
+   -4.0,
+   -0.0071
+  ],
+  "max": [
+   2.01,
+   -0.0001,
+   0.0342
+  ]
+ },
+ "front": "+z",
+ "pivot": "mount",
+ "mount": "ceiling",
+ "split": "moving slat curtain of the fire shutter incl. the 60 mm bottom bar and its two lift handles",
+ "alignedWith": "FireShutterBox: same depth origin, so place it at FireShutterBox pivot + curtainPlaceAtM",
+ "curtainPlaceAtM": [
+  0.0,
+  4.0,
+  0.0
+ ],
+ "curtain": {
+  "heightM": 4.0,
+  "widthM": 4.02,
+  "ribs": 45,
+  "ribPitchMmAtFullHeight": 88,
+  "ribsIn": "normal map (slat grooves, 7 strips of about 6.4 ribs per face); the mesh is 7 flat strips per face",
+  "animate": "scale Y (Unity) from 0 (up, hidden in the box) to 1 (down) about the pivot at the top; the ribs compress with it; the bottom bar and handles are part of the curtain and squash with the scale"
+ },
+ "sizeBasis": "curtain of the Poly Haven rollershutter_door stretched to 4.02 m x 4.0 m (see FireShutterBox)"
+}

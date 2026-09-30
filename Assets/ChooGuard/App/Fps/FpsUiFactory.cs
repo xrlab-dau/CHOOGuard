@@ -110,5 +110,27 @@ namespace ChooGuard.App.Fps
             slider.onValueChanged.AddListener(v=>changed?.Invoke(v));
             return slider;
         }
+        // 한 줄 입력칸. password 면 글자를 가린다(키 입력용). 붙여넣기·선택은 TMP_InputField 기본 동작이다.
+        // 참조를 모두 연결한 뒤에 켜야 입력칸이 캐럿·글자 영역을 제대로 만든다.
+        public static TMP_InputField InputField(Transform parent,TMP_FontAsset font,string name,Vector2 anchor,Vector2 offset,Vector2 size,float fontSize,string placeholder,bool password)
+        {
+            var image=Block(parent,name,anchor,offset,size,Color.white);image.raycastTarget=true;
+            image.gameObject.SetActive(false);
+            var area=Node(image.transform,"글자 영역");Stretch(area);area.offsetMin=new Vector2(16,4);area.offsetMax=new Vector2(-16,-4);area.gameObject.AddComponent<RectMask2D>();
+            var hint=Label(area,font,"안내",Vector2.zero,Vector2.zero,fontSize,TextAlignmentOptions.Left);Stretch(hint.rectTransform);
+            hint.text=placeholder;hint.color=new Color(1,1,1,.35f);hint.textWrappingMode=TextWrappingModes.NoWrap;
+            var text=Label(area,font,"글자",Vector2.zero,Vector2.zero,fontSize,TextAlignmentOptions.Left);Stretch(text.rectTransform);
+            text.textWrappingMode=TextWrappingModes.NoWrap;text.richText=false;
+            var field=image.gameObject.AddComponent<TMP_InputField>();
+            field.targetGraphic=image;field.textViewport=area;field.textComponent=text;field.placeholder=hint;field.fontAsset=font;field.pointSize=fontSize;
+            field.lineType=TMP_InputField.LineType.SingleLine;field.characterLimit=512;field.richText=false;
+            if(password){field.contentType=TMP_InputField.ContentType.Password;field.asteriskChar='*';}
+            field.customCaretColor=true;field.caretColor=Accent;field.caretWidth=2;field.selectionColor=new Color(1f,.69f,.13f,.35f);
+            var colors=field.colors;colors.colorMultiplier=1;colors.fadeDuration=.08f;
+            colors.normalColor=new Color(1,1,1,.1f);colors.highlightedColor=new Color(1,1,1,.16f);colors.selectedColor=new Color(1,1,1,.2f);colors.pressedColor=new Color(1,1,1,.2f);
+            field.colors=colors;
+            image.gameObject.SetActive(true);
+            return field;
+        }
     }
 }

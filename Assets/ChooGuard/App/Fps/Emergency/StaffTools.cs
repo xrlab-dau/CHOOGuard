@@ -18,6 +18,8 @@ namespace ChooGuard.App.Fps.Emergency
         public const float DischargeSeconds = 14f;
 
         public string Serial = "";
+        /// <summary>What it sprays: the twin's extinguishers are ABC powder, the K-class extinguishers of the shop kitchens wet chemical.</summary>
+        public ExtinguishAgent Type = ExtinguishAgent.Powder;
         public bool Defective;
         public StaffHands Hands;
         public float Agent { get; set; } = 1f;
@@ -25,7 +27,7 @@ namespace ChooGuard.App.Fps.Emergency
         public bool Held { get; set; }
         public float SprayedSeconds { get; set; }
 
-        public string DisplayName => "소화기 · " + Serial;
+        public string DisplayName => (Type == ExtinguishAgent.WetChemical ? "K급 소화기 · " : "소화기 · ") + Serial;
         public string InteractionPrompt => Held ? "" : Agent <= .01f ? "빈 소화기" : "소화기 들기";
 
         public bool CanInteract(FirstPersonResponder responder, out string reason)
@@ -266,7 +268,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (Aed != null) return new GameHud.Slot { Label = "자동심장충격기(AED)", Hint = "쓰러진 사람 곁에 E · 내려놓기  G · 놓기", Fill = 1, Active = false };
             if (Held == null) return null;
             string hint = !Held.PinPulled ? "좌클릭 길게 · 안전핀" : Held.Agent <= .01f ? "약제 없음 · G 놓기" : "좌클릭 · 분사  G · 놓기";
-            return new GameHud.Slot { Label = "소화기 " + Held.Serial.Replace("BSN-CONC-", ""), Hint = hint, Fill = Held.Agent, Active = Spraying };
+            return new GameHud.Slot { Label = (Held.Type == ExtinguishAgent.WetChemical ? "K급 소화기 " : "소화기 ") + Held.Serial.Replace("BSN-CONC-", ""), Hint = hint, Fill = Held.Agent, Active = Spraying };
         }
 
         private void Update()
@@ -303,12 +305,14 @@ namespace ChooGuard.App.Fps.Emergency
             SetEmission(260);
             Held.Agent = Mathf.Max(0, Held.Agent - Time.deltaTime / Extinguisher.DischargeSeconds);
             Held.SprayedSeconds += Time.deltaTime;
-            foreach (var hazard in HazardRegistry.Active)
+            // 끝에서부터: 불이 꺼지면 OnFireOut 이 그 위험을 목록에서 빼므로 앞으로 돌면 목록이 바뀌었다는 예외가 난다.
+            for (int i = HazardRegistry.Active.Count - 1; i >= 0; i--)
             {
+                var hazard = HazardRegistry.Active[i];
                 if (!(hazard is FireHazard fire) || fire.Extinguished) continue;
                 float quality = AimQuality(view, fire);
                 if (quality <= 0) continue;
-                fire.Suppress(quality, Time.deltaTime);
+                fire.SuppressWith(Held.Type, quality, Time.deltaTime);
                 session.Log.Sprayed(fire, quality, Time.deltaTime);
                 if (fire.Extinguished) session.Incidents.OnFireOut(fire, "역무원 소화기");
             }
@@ -358,12 +362,13 @@ namespace ChooGuard.App.Fps.Emergency
             if (session.Player.IsPaused || !trigger) { Spraying = false; SetWater(0); return; }
             Spraying = true;
             SetWater(320);
-            foreach (var hazard in HazardRegistry.Active)
+            for (int i = HazardRegistry.Active.Count - 1; i >= 0; i--)
             {
+                var hazard = HazardRegistry.Active[i];
                 if (!(hazard is FireHazard fire) || fire.Extinguished) continue;
                 float quality = HoseAimQuality(view, fire);
                 if (quality <= 0) continue;
-                fire.Suppress(quality, Time.deltaTime, true);
+                fire.SuppressWith(ExtinguishAgent.Water, quality, Time.deltaTime);
                 session.Log.Sprayed(fire, quality, Time.deltaTime);
                 if (fire.Extinguished) session.Incidents.OnFireOut(fire, "역무원 옥내소화전");
             }

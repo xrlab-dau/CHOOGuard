@@ -21,7 +21,9 @@ Audio/Interface/: Kenney (www.kenney.nl).
 Kenney-InterfaceSounds.txt 및 CC0-1.0.txt 참조. https://kenney.nl/assets/interface-sounds
 Models/Rocketbox/: Microsoft Rocketbox Avatar Library, Copyright (c) 2020 Microsoft. MIT License.
 전문은 Models/Rocketbox/LICENSE.md 참조. https://github.com/microsoft/Microsoft-Rocketbox
-사용: Avatars/Adults 12종, Avatars/Professions 7종(Business 2·Fire 2·Police 2·Medical 1) 본체 FBX, all_animations_max_motextr 16개 동작 FBX.
+사용: Avatars/Adults 12종, Avatars/Professions 14종(Business 2·Fire 2·Police 4·Medical 2·Construction 2·Pilot 1·Military 1) 본체 FBX, all_animations_max_motextr 16개 동작 FBX.
+(2026-09-29 출동 부대용으로 Police_Male_03·Police_Male_02·Construction_Male_02·Construction_Male_05·Pilot_Male_01·Medical_Female_03·Military_Male_02 를 같은 방법으로 더함.
+영수증 asset-library/research-public/2026-09-29/responder-assets/rocketbox-receipts.json)
 변환(2026-09-26): 본체 텍스처 TGA를 JPG(색상)·PNG(노멀·불투명)로 바꿨고 FBX는 byte 단위 그대로 복사했다.
 URP 재질·Animator·prefab 은 Editor/CrowdAssetBuilder.cs 가 만든다. 실제 인물·기관 복장 규격의 근거가 아니다.
 CC0 제작자 표시는 자율 표기이며 상표·특허·제3자 권리의 포괄 허락이나 보증이 아니다.
@@ -65,3 +67,79 @@ OBJ·PNG 로 바꾸고 실제 높이로 크기만 맞춤(변환기 asset-library
   Suitcase = "Suitcase" by Moon_Studio, https://sketchfab.com/3d-models/16a80a9f0375413e9f752e493ff24341 (높이 0.60 m)
   Handbag = "Purse" by Jogetsu, https://sketchfab.com/3d-models/1e2b45735eb340588a4adecbb4bf5ef0 (높이 0.34 m)
   MedicalBag = "First Aid Kit" by Shedmon, https://sketchfab.com/3d-models/8b0d64278d504c508d02d33e22ea7f12 (높이 0.26 m)
+
+2026-09-29 출동 부대·장비·차량에서 더한 에셋 (영수증: asset-library/research-public/2026-09-29/responder-assets/receipts.json, 검색 기록 search.json)
+Models/Objaverse/ 추가분 (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/ — 저작자 표시 필요). Sketchfab 원본의 Objaverse 사본을
+blender_convert.py 로 OBJ(사람 모델은 뼈대 포함 FBX)·PNG 로 바꾸고 실제 크기로 맞추고 삼각형 수를 줄임. 차량에는 이 저장소에서 만든
+옆면 표시(아래 Markings)를 차체에 붙였고, 구급차(스타렉스) 원본에 없는 바퀴는 K5 모델의 바퀴를 옮겨 달았다:
+  HazmatSuit = "Hazmat suit Yellow" by TumkaPook, https://sketchfab.com/3d-models/hazmat-suit-yellow-c3b8510cd4644f8b8a51b313ac44cb99
+  Nozzle = "Hohlstrahlrohr" by JannickBremm, https://sketchfab.com/3d-models/hohlstrahlrohr-4241e3e4a02a4c29a52bf65bae5216fa
+  Cot = "Stretcher Model" by atahangokturkguner, https://sketchfab.com/3d-models/stretcher-model-1ffa0069c8e04ce1a18635fbfb987fad
+  Toolbox = "Toolbox" by holgcool, https://sketchfab.com/3d-models/toolbox-9df47cc2d6174d2b86c22cdfa4b423aa
+  Flashlight = "Flashlight" by mar.cos., https://sketchfab.com/3d-models/flashlight-5fa9a65e7b0141ee877ed18f4f42d953
+  WetFloorSign = "Wet Floor Sign" by jimbogies, https://sketchfab.com/3d-models/wet-floor-sign-441ddfb171e347129d88ffdb34c78020 (판면에 한글 표지를 덧댐)
+  EodRobot = "EOD_Inspector_DraftPunk4_XYZschool" by alpamys_seitkhanov, https://sketchfab.com/3d-models/eod-inspector-draftpunk4-xyzschool-39bd28195fd644efaaf7aa1ccb02a209 (로봇 한 대만)
+  EodHelmet = "Motorcycle_helmet" by zakyora, https://sketchfab.com/3d-models/motorcycle-helmet-6c4c23305d8148ef9717799274bdde85
+  TrafficCone = "Traffic cone (Game ready)" by PT34, https://sketchfab.com/3d-models/traffic-cone-game-ready-8cdac192abd044988c314eeb6377a3a0
+  LightBar = "lightbar 1" by Lamar.Hegmann, https://sketchfab.com/3d-models/lightbar-1-cfde7dcc1d2c46d29bbdb72055f2d4ee
+  Ambulance = "Hyundai Starex 2018" by beastblox124, https://sketchfab.com/3d-models/hyundai-starex-2018-0cd483437f464f00b0d892d4cf31e479
+  PoliceCar (및 구급차 바퀴) = "Kia Optima (K5)" by savelliy07, https://sketchfab.com/3d-models/kia-optima-k5-a50e6423aa49488bb1e6936979884748
+  FireEngine = "Fire Engine Low Poly" by afcm.contact, https://sketchfab.com/3d-models/fire-engine-low-poly-0e48ee2c1d06466686b13230f3bc6fab
+  SwatVan = "SWAT Police Van" by Zack_Hawley, https://sketchfab.com/3d-models/swat-police-van-5b9076973cda47e98609640d745bb8ce
+Art/Emergency/Crowd/Markings/*.png, Art/Emergency/Vehicles/Markings/*.png, Art/Emergency/Props/WetFloor_Korean.png: 이 저장소에서 만든 복장·차량·표지 인쇄
+(글꼴 Noto Sans CJK KR, SIL OFL 1.1). 생성기 asset-library/research-public/2026-09-29/responder-assets/make_markings.py. 실제 기관 복제·도색 규격의 근거가 아니다.
+Art/Audio/Announcements/pa_SafetyEvacuation·GasLeak·PowerOutage·WetFloor·FalseAlarm·TrackSafety·ElevatorCheck.wav: 위 MeloTTS-Korean 안내방송과 같은 방식.
+생성기·측정 asset-library/research-public/2026-09-29/pa-lines/make_pa_lines.py·pa_lines_report.json.
+
+2026-09-30 화재 감지·소화·방화구획·감시 설비 (w3-firesafety) — 영수증: asset-library/research-public/2026-09-29/responder-assets/equipment-receipts.json, 검색 기록 search-equipment.txt
+Models/Objaverse/ 추가분 (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/ — 저작자 표시 필요, 비상업 제한 없음). Sketchfab 원본의 Objaverse 사본(allenai/objaverse)을
+blender_convert_equipment.py 로 OBJ·PNG 로 바꾸고 삼각형 수·크기·기준점(설치면 중심)을 맞춤:
+  SmokeDetector = "Apollo Smoke Detector" by dylanheyes, https://sketchfab.com/3d-models/apollo-smoke-detector-06e8e9490fda4ace9bc12f9d20732152
+  AlarmBell = "Firebell & MCP" by yvesjotres, https://sketchfab.com/3d-models/firebell-mcp-477c51d6c7ea4a3a9fff737795f4979d (발신기 부분을 뺌)
+  AlarmPanel = "Fire Alarm Control Panel" by bigtree3d, https://sketchfab.com/3d-models/fire-alarm-control-panel-813c052b25fd4471a254f2fe742a1ce4 (프린터 내부 부품을 뺌)
+HeatDetector, BeamDetector = 이 저장소에서 생성한 3D 모델(asset-library/research-public/2026-09-29/responder-assets/make_detectors.py); 외부 자산 없음
+Art/Emergency/Equipment/FireSafety.json: 이 저장소의 FireSafetyBuilder(NFTC 203 배치)가 트윈의 천장에서 계산한 배치 데이터.
+
+2026-09-30 방화·소화·감시 설비 (스프링클러·배관·경보밸브·방화셔터·방화문·CCTV·방송 스피커) (w3-firesafety) — 영수증: asset-library/research-public/2026-09-29/responder-assets/equipment2-receipts.json, 검색 기록 equipment2-search.json
+Models/Objaverse/ 추가분 (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/ — 저작자 표시 필요). Sketchfab 원본의 Objaverse 사본(allenai/objaverse)을
+blender_convert_equipment2.py 로 OBJ·PNG 로 바꾸고 실제 크기로 맞추고 삼각형 수를 줄이고 장착면 기준으로 피벗을 잡음. 이름 뒤에 Low 는 같은 원본을 적은 삼각형으로 줄인 것:
+  SprinklerHeadLow = "Sprinkler Head Without Bulb" by ccych, https://sketchfab.com/3d-models/sprinkler-head-without-bulb-1ef88938c9fc486fa2981b2725bf396d (유리관은 "Sprinkler bulb" by ccych, https://sketchfab.com/3d-models/sprinkler-bulb-b45754b5a71e4aab8d9650098df1b819 를 붉게 다시 칠해 끼웠고, 15A 배관 토막은 이 저장소에서 만듦)
+  SprinklerUprightLow = "Fire alarm system Sprinkler" by tasha.kosaykina, https://sketchfab.com/3d-models/fire-alarm-system-sprinkler-9416e1a971524b1a89b89cfcf7c2d33f (스프링클러 부분만, 바닥 원반을 줄임)
+  FireDoorFrame, FireDoorLeaf = "Exit Door Double" by moderncolin, https://sketchfab.com/3d-models/exit-door-double-0d1770e0baa942ecb14422f729b1f351 (문틀 도색을 문짝과 같게 하고 문 닫힘 장치를 이 저장소에서 만들어 덧댐; FireDoorFrame 은 문틀만, FireDoorLeaf 는 왼쪽 문짝 한 장이며 오른쪽은 이 모델을 좌우 반전해 씀)
+  DomeCameraLow = "Ceiling Camera" by Marcin.Kwiatkowski, https://sketchfab.com/3d-models/ceiling-camera-1cf07a773f8e4feda7191655b1460c66
+  CeilingSpeakerLow = "Ceiling Speaker" by chives1996, https://sketchfab.com/3d-models/ceiling-speaker-58580cd22a144b64b2aa9873d429a0b5
+  HornSpeakerLow = "SiRcom ESd Maestro Horn speaker" by matyprokopiswinner, https://sketchfab.com/3d-models/sircom-esd-maestro-horn-speaker-5ce27fbad31443f4af82353a630b436d
+  AlarmValve = "alarm valve cross-section" by ccych, https://sketchfab.com/3d-models/alarm-valve-cross-section-eca6b02cf6c74faa8a7b9520332e0626 (경보밸브 세트만 쓰고 수압 경종은 뺐으며, 파트별로 줄여 DN100 크기(×2.4)로 키우고 도색을 다시 하고, 입상관·고정 브래킷·덮개판·압력스위치함·탬퍼스위치함을 이 저장소에서 만들어 붙임)
+Models/Objaverse/ 추가분 (CC0 1.0, https://creativecommons.org/publicdomain/zero/1.0/ — 표시 의무 없음, 출처 기록). Poly Haven(https://polyhaven.com) glTF 를 같은 변환기로 바꿈:
+  BulletCameraLow = "Security Camera 01" by Alexander Otterbeck (Modeling & Texturing), Yann Kervran (Rigging), https://polyhaven.com/a/security_camera_01
+  FireShutterBox, FireShutterCurtain = "Rollershutter Door" by MP (All), https://polyhaven.com/a/rollershutter_door (개구부 4.0 m × 4.0 m 로 비율을 다시 맞추고 고정부(상자·가이드레일)와 움직이는 막(커튼)으로 나눔)
+PipeRun, PipeHanger, ShutterBox: 이 저장소에서 만든 모델(무료 원본 없음). 치수 근거: Victaulic FireLock Style 005H 자료 10.02 (https://assets.victaulic.com/assets/uploads/literature/10.02.pdf), Tyco TY-B TFP152 (스프링클러 치수 대조);
+  ShutterBox 표지 글자는 Noto Sans CJK KR (SIL OFL 1.1), 생성기 asset-library/research-public/2026-09-29/responder-assets/make_shutter_box_legend.py, 모델 생성기 blender_convert_equipment2.py, 색 추출 glb_specgloss_colours.py.
+Art/Emergency/Equipment/{Sprinklers,Compartments,Surveillance}.json: 이 저장소의 빌더(SprinklerBuilder·CompartmentBuilder·SurveillanceBuilder, NFTC 103·건축물의 피난·방화구조 등의 기준에 관한 규칙 제14조·NFTC 202 배치)가 트윈에서 계산한 배치 데이터.
+Art/Emergency/Equipment/Alarm.json: 이 저장소의 AlarmBuilder(AlarmLayout, NFTC 203 2.5.1.3 지구음향장치 배치)가 트윈에서 계산한 경종·수신기 배치 데이터 (경종·수신기 모델은 위 w3-firesafety 감지 설비 블록의 AlarmBell·AlarmPanel).
+방화문 상부 인방(FireDoorTransom)의 강재 프레임은 이 저장소에서 코드로 만든 메시(외부 자산 없음), 회반죽 면은 트윈의 기존 재질 Soffit_Plaster. 수신기 화면 재질 AlarmPanelDisplay 는 이 저장소에서 만든 어두운 표시면(AlarmPanel 모델에 구워진 영어 부팅 화면 대신 한국어 글자를 그림).
+
+2026-09-30 주방·가스 설비에서 더한 에셋 (영수증·검색 기록: asset-library/research-public/2026-09-30/kitchen-gas-assets/receipts.json·search*.json)
+Models/Objaverse/ 추가분 (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/ — 저작자 표시 필요). Sketchfab 원본의 Objaverse 사본(allenai/objaverse)을
+blender_convert.py 로 OBJ·PNG 로 바꾸고 실제 크기로 맞추고 삼각형 수를 줄였다(냄비·팬·밸브의 텍스처는 512 px 로 줄임). 스테인리스 재질이 없는 것(후드·오븐)에는 금속 재질을 입혔다:
+  KitchenFryer = "Deep fryer" by FractDesign, https://sketchfab.com/3d-models/deep-fryer-1c89c6ba3e5d4148b84f32f13fa00eb1 (바구니·튀김을 빼고 기름 표면을 더함)
+  GasRange = "Gas Stove" by topfrank2013, https://sketchfab.com/3d-models/gas-stove-9a4b89d7ff5c482dae835df596fdcc2f
+  RangeHood = "Range Hood (Kitchen Hood)" by govindu94, https://sketchfab.com/3d-models/range-hood-kitchen-hood-e846cb48e88446808af55976ff76b1da (폭·높이를 늘림)
+  DeckOven = "30" Stainless Steel Double Electric Wall Oven" by allenbranch, https://sketchfab.com/3d-models/30-stainless-steel-double-electric-wall-oven-595fe97c65964c0da9cf80dbaffeb3b6 (비율을 늘림)
+  BallValve·BallValveLever = "Ball valve" by Kostroman, https://sketchfab.com/3d-models/ball-valve-4e3ad853ade140eba4f6f88830718ab3 (몸통·손잡이 분리)
+  StockPot·SteamerPot·FryPan = "Restaurant Kitchen Set - Part 1" by soidev, https://sketchfab.com/3d-models/restaurant-kitchen-set-part-1-129dd2f84879477ea261b422d21491f4 (냄비·찜솥과 뚜껑·팬만)
+  Wok = "Stainless Steel Wok" by Aullwen, https://sketchfab.com/3d-models/stainless-steel-wok-ad73e31b3f4543de9a6f42d9ff3e3f1c (뚜껑 제거)
+Art/Emergency/Equipment/Textures/KExtinguisher_body_diff.jpg: 트윈 소화기(Poly Haven `korean_fire_extinguisher_01`, CC0)의 몸체 텍스처에서 앞면 스티커만 K급(주방화재용) 스티커로 바꾼 파생물.
+스티커 글꼴 Noto Sans CJK KR(SIL OFL 1.1). 생성기 asset-library/research-public/2026-09-30/kitchen-gas-assets/make_k_label.py.
+
+2026-09-30 전기 설비·광장/대합실 비품에서 더한 에셋 (영수증: asset-library/research-public/2026-09-30/electric-plaza-assets/receipts.json, 검색 기록 search.json·search2.json·search3.json. 영수증에는 검토만 하고 넣지 않은 모델도 있다)
+Models/Objaverse/ 추가분 (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/ — 저작자 표시 필요). Sketchfab 원본의 Objaverse 사본을 blender_convert.py 로
+OBJ·PNG 로 바꾸고 실제 크기로 맞추고 삼각형 수를 줄임. 정면은 +Z, 벽에 기대는 것은 뒷면 가운데가 원점. 자동판매기 앞 유리 면은 뺐다(제품이 보이게):
+  DistributionBoard (+ DistributionBoardDoor) = "Small Fuse Box" by Big guy, https://sketchfab.com/3d-models/small-fuse-box-1818361dc6554d17bef8c0400959f93f (몸통과 문을 나누고 열린 문을 닫힌 자리로 돌림, 경첩은 sidecar json)
+  VendingDrink = "Japanese Vending Machine" by K, https://sketchfab.com/3d-models/japanese-vending-machine-f1852e99093249f1acd23ad118615b09
+  VendingSnack = "Vending Machine" by Emanuel Silva, https://sketchfab.com/3d-models/vending-machine-4bfb493631f84f8a9adc00bb69831000
+  ChargingKiosk = "Charging Signage Mockup Revision 2" by DanielKurnath, https://sketchfab.com/3d-models/charging-signage-mockup-revision-2-7ee8b84b63a847ea8b804fb746cb07fe (사람 모형은 뺐고 화면에 아래 충전 안내 화면을 덧댐)
+  RecyclingBin = "Recycle Bin High res" by laaafite, https://sketchfab.com/3d-models/recycle-bin-high-res-ede0f1a8e3624c688eedaf9a8b68ffd9
+  StreetBin (프리팹 LitterBin) = "Public Trash Bin 1" by Elasta Kristya, https://sketchfab.com/3d-models/public-trash-bin-1-3057e7f5b6c441fcb67c44e68d77dd38
+Models/Objaverse/ChargingKiosk/ChargingKiosk_m6_Color.png: 이 저장소에서 만든 충전 키오스크 화면(글꼴 Noto Sans CJK KR, SIL OFL 1.1). 생성기 asset-library/research-public/2026-09-30/electric-plaza-assets/make_screen.py.
+Models/Objaverse/ChargingKiosk 등에 더해, 이 저장소에서 처음부터 만든 모델(내려받은 것 없음, 저작권은 이 저장소, 글꼴은 Noto Sans CJK KR SIL OFL 1.1): Art/Emergency/Equipment/Models/BreakerDeck (분전반 차단기 덱: 도장 철판·차단기 8개·번호 스티커) 와 BreakerLever (차단기 손잡이). 생성기 art/blender/make_breakers.py (두 번 돌려 같은 파일이 나옴을 확인).

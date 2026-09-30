@@ -31,9 +31,6 @@ namespace ChooGuard.Editor
         private static readonly string[] FemalePassengers = { "Female_Adult_01", "Female_Adult_04", "Female_Adult_05", "Female_Adult_08", "Female_Adult_12", "Female_Adult_14", "Business_Female_01" };
         private static readonly string[] MalePassengers = { "Male_Adult_02", "Male_Adult_07", "Male_Adult_08", "Male_Adult_09", "Male_Adult_14", "Male_Adult_16" };
         private const string Colleague = "Business_Male_02";
-        private static readonly string[] Firefighters = { "Fire_Male_05", "Fire_Male_03" };
-        private static readonly string[] Police = { "Police_Male_07", "Police_Male_06" };
-        private static readonly string[] Paramedics = { "Medical_Male_02" };
 
         [MenuItem("ChooGuard/Emergency/Build crowd prefabs")]
         public static void Build()
@@ -48,12 +45,10 @@ namespace ChooGuard.Editor
             catalog.FemalePassengers = FemalePassengers.Select(n => BuildPrefab(n, true, female)).ToArray();
             catalog.MalePassengers = MalePassengers.Select(n => BuildPrefab(n, false, male)).ToArray();
             catalog.Colleague = BuildPrefab(Colleague, false, male);
-            catalog.Firefighters = Firefighters.Select(n => BuildPrefab(n, false, male)).ToArray();
-            catalog.Police = Police.Select(n => BuildPrefab(n, false, male)).ToArray();
-            catalog.Paramedics = Paramedics.Select(n => BuildPrefab(n, false, male)).ToArray();
+            ResponderTeamBuilder.Build(catalog, male, female);
             EditorUtility.SetDirty(catalog);
             AssetDatabase.SaveAssets();
-            Debug.Log("CG_CROWD_BUILT prefabs=" + (catalog.FemalePassengers.Length + catalog.MalePassengers.Length + 1 + Firefighters.Length + Police.Length + Paramedics.Length));
+            Debug.Log("CG_CROWD_BUILT prefabs=" + (catalog.FemalePassengers.Length + catalog.MalePassengers.Length + 1));
         }
 
         private static AnimationClip Clip(string name)
@@ -348,11 +343,17 @@ namespace ChooGuard.Editor
             transition.duration = duration;
         }
 
-        private static GameObject BuildPrefab(string avatar, bool female, RuntimeAnimatorController controller)
+        /// <summary>
+        /// A person prefab from a Rocketbox avatar (or <paramref name="modelPath"/>): URP materials, the shared animator,
+        /// agent, capsule and <see cref="PersonBody"/>. <paramref name="dress"/> adds a team's overlays and gear to the
+        /// instance (still in bind pose) before it is saved as <paramref name="prefabName"/>.
+        /// </summary>
+        internal static GameObject BuildPrefab(string avatar, bool female, RuntimeAnimatorController controller, string prefabName = null,
+            Action<GameObject, Animator> dress = null, string modelPath = null, Func<Material, Material> material = null)
         {
-            var modelPath = RocketboxImportRules.AvatarRoot + avatar + "/" + avatar + ".fbx";
+            modelPath ??= RocketboxImportRules.AvatarRoot + avatar + "/" + avatar + ".fbx";
             var model = AssetDatabase.LoadAssetAtPath<GameObject>(modelPath) ?? throw new FileNotFoundException(modelPath);
-            var root = new GameObject(avatar);
+            var root = new GameObject(prefabName ?? avatar);
             try
             {
                 var instance = (GameObject)PrefabUtility.InstantiatePrefab(model);
@@ -364,7 +365,7 @@ namespace ChooGuard.Editor
                 animator.cullingMode = AnimatorCullingMode.CullUpdateTransforms;
                 foreach (var renderer in instance.GetComponentsInChildren<SkinnedMeshRenderer>(true))
                 {
-                    renderer.sharedMaterials = renderer.sharedMaterials.Select(m => Material(avatar, m)).ToArray();
+                    renderer.sharedMaterials = renderer.sharedMaterials.Select(m => material != null ? material(m) : Material(avatar, m)).ToArray();
                     renderer.updateWhenOffscreen = false;
                     renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
                 }
@@ -387,13 +388,14 @@ namespace ChooGuard.Editor
                 var body = root.AddComponent<PersonBody>();
                 body.Animator = animator;
                 body.Female = female;
-                var path = PrefabRoot + "/" + avatar + ".prefab";
+                dress?.Invoke(root, animator);
+                var path = PrefabRoot + "/" + (prefabName ?? avatar) + ".prefab";
                 return PrefabUtility.SaveAsPrefabAsset(root, path);
             }
             finally { Object.DestroyImmediate(root); }
         }
 
-        private static Material Material(string avatar, Material source)
+        internal static Material Material(string avatar, Material source)
         {
             if (source == null) return null;
             var slot = source.name;
@@ -434,7 +436,7 @@ namespace ChooGuard.Editor
             return material;
         }
 
-        private static void EnsureFolder(string path)
+        internal static void EnsureFolder(string path)
         {
             var parts = path.Split('/');
             var current = parts[0];

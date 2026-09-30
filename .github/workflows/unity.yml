@@ -12,7 +12,7 @@ on:
     branches: [develop, main]
     tags: ["v*"]
   schedule:
-    - cron: "0 18 * * *" # 03:00 KST: nightly tests on every OS and players of develop
+    - cron: "0 18 * * *" # 03:00 KST: nightly tests on every OS, the Bootstrap build and players of develop
   workflow_dispatch:
     inputs:
       os:
@@ -24,6 +24,10 @@ on:
         description: Also build and smoke-run the players
         type: boolean
         default: true
+      bootstrap:
+        description: Also run CS-BOOT.01.01's real Bootstrap build on macOS and Windows (nightly does)
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -58,7 +62,9 @@ jobs:
           BUILD_INPUT: ${{ inputs.build }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          unity_paths='^(Assets|Packages|ProjectSettings)/'
+          # The Unity project plus the files its EditMode tests read from the repository root (fixtures, the assembly
+          # contract, build receipts). Keep in sync with the project checkout in the tests job.
+          unity_paths='^(Assets|Packages|ProjectSettings|content|docs/build|docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts)/'
           all='["windows","macos","linux"]'
           # Pull requests cover the team's development OSes; Linux runs on develop, nightly and release tags.
           pr='["windows","macos"]'
@@ -70,12 +76,15 @@ jobs:
           elif [[ $EVENT == pull_request && $PR_REPO != "$REPO" ]]; then
             reason="pull requests from forks receive no licence secrets"
           elif [[ $EVENT == pull_request ]]; then
-            files=$(gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" --jq '.[].filename')
-            # The files API stops at 3000 entries; a change that large is treated as touching Unity.
-            if grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 3000 )); then
+            # The files API stops at 3000 entries, and GitHub refuses to list the files of a diff it cannot generate in
+            # time (HTTP 422 "this diff is taking too long to generate"); either way the change is treated as touching Unity.
+            if ! files=$(gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" --jq '.[].filename'); then
+              echo "::notice title=Unity lane gate::GitHub could not list the pull request's files; treating it as touching Unity"
+              tests=$pr
+            elif grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 3000 )); then
               tests=$pr
             else
-              reason="the pull request does not touch Assets, Packages or ProjectSettings"
+              reason="the pull request does not touch the Unity project or its test inputs"
             fi
           elif [[ $EVENT == push && $REF == refs/tags/v* ]]; then
             tests=$all build=true
@@ -83,11 +92,13 @@ jobs:
             if [[ $BEFORE =~ ^0+$ ]]; then
               tests=$all build=true
             else
-              files=$(gh api "repos/$REPO/compare/$BEFORE...$AFTER" --jq '.files[].filename')
-              if grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 300 )); then
+              if ! files=$(gh api "repos/$REPO/compare/$BEFORE...$AFTER" --jq '.files[].filename'); then
+                echo "::notice title=Unity lane gate::GitHub could not compare the push; treating it as touching Unity"
+                tests=$all build=true
+              elif grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 300 )); then
                 tests=$all build=true
               else
-                reason="the push does not touch Assets, Packages or ProjectSettings"
+                reason="the push does not touch the Unity project or its test inputs"
               fi
             fi
           elif [[ $EVENT == workflow_dispatch ]]; then
@@ -120,14 +131,26 @@ jobs:
     permissions:
       contents: read
     env:
-      # Windows checks out under a non-ASCII folder: a teammate's Korean user folder broke Mono path handling before.
-      PROJECT: ${{ matrix.os == 'windows' && '경로 검사/CHOOGuard' || '.' }}
+      # The project lives in its own directory so the local actions can come from a small .github-only checkout at the
+      # workspace root (`uses:` cannot vary per OS). Windows uses a non-ASCII folder with a space: a teammate's Korean
+      # user folder broke Mono path handling before.
+      PROJECT: ${{ matrix.os == 'windows' && '경로 검사/CHOOGuard' || 'project' }}
     defaults:
       run:
         shell: bash
-        working-directory: ${{ matrix.os == 'windows' && '경로 검사/CHOOGuard' || '.' }}
+        working-directory: ${{ matrix.os == 'windows' && '경로 검사/CHOOGuard' || 'project' }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # First, so its clean step can never touch the project checkout below.
+      - name: Check out the CI actions
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: .github
+          persist-credentials: false
+
+      # Test inputs outside Assets come along (content/fixtures, the assembly contract, docs/build receipts);
+      # the gate's unity_paths lists the same directories.
+      - name: Check out the project
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: ${{ env.PROJECT }}
           sparse-checkout: |
@@ -135,15 +158,18 @@ jobs:
             Assets
             Packages
             ProjectSettings
+            content
+            docs/build
+            docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts
           persist-credentials: false
 
       - id: unity
-        uses: $/.github/actions/setup-unity
+        uses: ./.github/actions/setup-unity
         with:
           project-path: ${{ env.PROJECT }}
 
       - name: Pinned SQLite for the persistence tests
-        uses: $/.github/actions/pinned-sqlite
+        uses: ./.github/actions/pinned-sqlite
 
       - id: library
         name: Restore the Library import cache
@@ -182,6 +208,16 @@ jobs:
           UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
           UNITY_PROJECT: ${{ github.workspace }}/${{ env.PROJECT }}
         run: .github/scripts/unity_ci.sh test PlayMode
+
+      # CS-BOOT.01.01's real build (BuildBaseline: validator, Development player of the Bootstrap scene, receipt with
+      # output hashes) inside the same activation. BuildBaseline builds macOS and Windows targets, each on its own host.
+      - name: Bootstrap build (BuildBaseline)
+        if: steps.activate.outcome == 'success' && matrix.os != 'linux' && (github.event_name == 'schedule' || inputs.bootstrap)
+        timeout-minutes: 60
+        env:
+          UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
+          UNITY_PROJECT: ${{ github.workspace }}/${{ env.PROJECT }}
+        run: .github/scripts/unity_ci.sh bootstrap
 
       - name: Return the licence
         if: always() && steps.activate.outcome != 'skipped'
@@ -254,7 +290,7 @@ jobs:
           persist-credentials: false
 
       - id: unity
-        uses: $/.github/actions/setup-unity
+        uses: ./.github/actions/setup-unity
         with:
           modules: windows-mono linux-mono
 
@@ -294,10 +330,12 @@ jobs:
           if [[ $REF_TYPE == tag ]]; then label=$REF_NAME; else label=$(git rev-parse --short=12 HEAD); fi
           dist="$RUNNER_TEMP/dist"
           mkdir -p "$dist/macos" "$dist/windows" "$dist/linux"
-          # ditto keeps the app bundle's symlinks and every executable bit for the Linux player.
+          # ditto keeps the app bundle's symlinks and every executable bit for the Linux player. The Windows and Linux
+          # zips leave out macOS metadata: otherwise every file with an extended attribute (com.apple.provenance)
+          # ships with an AppleDouble ._ twin.
           ditto -c -k --sequesterRsrc --keepParent Builds/macOS/CHOOGuard.app "$dist/macos/CHOOGuard-macOS-arm64-$label.zip"
-          ditto -c -k --keepParent Builds/Windows "$dist/windows/CHOOGuard-Windows-x64-$label.zip"
-          ditto -c -k --keepParent Builds/Linux "$dist/linux/CHOOGuard-Linux-x64-$label.zip"
+          ditto -c -k --norsrc --noextattr --noqtn --noacl --keepParent Builds/Windows "$dist/windows/CHOOGuard-Windows-x64-$label.zip"
+          ditto -c -k --norsrc --noextattr --noqtn --noacl --keepParent Builds/Linux "$dist/linux/CHOOGuard-Linux-x64-$label.zip"
           ls -l "$dist"/*/*.zip
           echo "dist=$dist" >> "$GITHUB_OUTPUT"
 
@@ -344,7 +382,9 @@ jobs:
 
   smoke:
     # Each OS starts its own player headless in the soak mode: station load, a fresh emergency session with its crowd,
-    # play, return to title, JSON report. Players need no Unity licence, so these run in parallel.
+    # play, return to title, JSON report. Players need no Unity licence, so these run in parallel. Linux runs inside
+    # Xvfb: with no display the player's window backend stays null and it segfaults on the first frame (Unity bug,
+    # reproduced with and without Xvfb on the same player in run 36420682952).
     name: Player smoke (${{ matrix.os }})
     needs: build
     if: needs.build.result == 'success'
@@ -390,8 +430,10 @@ jobs:
           player=$(find . -path "*/$PLAYER" -type f | head -1)
           [[ -n $player ]] || { echo "::error::player $PLAYER not found in $zip"; exit 1; }
           mkdir -p "$RUNNER_TEMP/smoke"
+          runner=()
+          if [[ $OS == linux ]]; then runner=(xvfb-run -a -s "-screen 0 1920x1080x24"); fi
           status=0
-          "$player" -batchmode -nographics -soak -soak-shifts 1 -soak-minutes 0.5 \
+          ${runner[@]+"${runner[@]}"} "$player" -batchmode -nographics -soak -soak-shifts 1 -soak-minutes 0.5 \
             -soak-out "$RUNNER_TEMP/smoke/soak.json" -logFile "$RUNNER_TEMP/smoke/player.log" || status=$?
           echo "exit_code=$status" >> "$GITHUB_OUTPUT"
           echo "player exited $status"
