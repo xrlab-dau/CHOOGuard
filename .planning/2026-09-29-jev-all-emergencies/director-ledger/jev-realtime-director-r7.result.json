@@ -1,0 +1,86 @@
+{
+ "elapsed_ms": 371,
+ "mode": "LIVE",
+ "model_requested": "jev-latest",
+ "result": [
+  {
+   "model": "jev-1.13.0",
+   "answers": {
+    "rate_from_score": {
+     "type": "choice",
+     "choice": "expected_rate_over_levels",
+     "confidence": 0.97,
+     "probabilities": {
+      "draw_one_level_then_rate": 0.01,
+      "most_probable_level_rate": 0.01,
+      "expected_rate_over_levels": 0.98
+     }
+    },
+    "rating_reuse": {
+     "type": "choice",
+     "choice": "until_changed_or_stale",
+     "confidence": 0.88,
+     "probabilities": {
+      "ask_all_every_heartbeat": 0.02,
+      "ask_only_on_events": 0.07,
+      "until_changed_or_stale": 0.91
+     }
+    },
+    "origin_frequency_scaling": {
+     "type": "choice",
+     "choice": "share_one_budget_above_reference",
+     "confidence": 0.69,
+     "probabilities": {
+      "share_one_budget_above_reference": 0.8,
+      "normalise_always_to_total": 0.18,
+      "per_candidate_rate_only": 0.02
+     }
+    },
+    "lost_judging_time": {
+     "type": "choice",
+     "choice": "no_catch_up",
+     "confidence": 0.53,
+     "probabilities": {
+      "pause_the_game": 0.02,
+      "catch_up": 0.3,
+      "no_catch_up": 0.6799999999999999
+     }
+    },
+    "apply_validation": {
+     "type": "choice",
+     "choice": "list_again_and_require_same_key",
+     "confidence": 0.98,
+     "probabilities": {
+      "apply_without_check": 0.01,
+      "list_again_and_require_same_key": 0.99,
+      "require_identical_description": 0.0
+     }
+    },
+    "candidate_identity": {
+     "type": "choice",
+     "choice": "stable_rank_per_subject",
+     "confidence": 1.0,
+     "probabilities": {
+      "reroll_each_listing": 0.0,
+      "stable_rank_per_subject": 1.0,
+      "lowest_id_first": 0.0
+     }
+    },
+    "separate_emergency_framing": {
+     "type": "choice",
+     "choice": "same_question_with_load_in_state_and_anchored_levels",
+     "confidence": 0.81,
+     "probabilities": {
+      "same_question_with_load_in_state_and_anchored_levels": 0.87,
+      "no_question_only_code_rate": 0.08,
+      "ask_with_calm_state_only": 0.05
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1708,
+    "output_tokens": 385
+   }
+  }
+ ]
+}

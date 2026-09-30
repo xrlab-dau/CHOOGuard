@@ -29,26 +29,32 @@ namespace ChooGuard.App.Fps.Emergency
         public int ExtinguishersUsed { get; private set; }
         public int JevDecisions { get; private set; }
         public int LocalDecisions { get; private set; }
-        /// <summary>Every composition round's outcome (transition, magnitude, who decided). Saved, not shown on the end screen.</summary>
+        /// <summary>Every event the director made happen (transition, magnitude, the levels behind it). Saved, not shown on the end screen.</summary>
         public readonly JArray Compositions = new JArray();
-        public int JevCompositions { get; private set; }
-        public int LocalCompositions { get; private set; }
+        /// <summary>Events that happened: new emergencies and developments of existing ones.</summary>
+        public int Events { get; private set; }
+        /// <summary>Of <see cref="Events"/>, the new emergencies.</summary>
+        public int NewEmergencies { get; private set; }
+        /// <summary>The director's judging (rounds JEV answered, the hazard it produced, what a heartbeat costs), as opposed to the events.</summary>
+        public readonly DirectorRecord Director;
 
+        private const int KeepRecords = 50;
         private readonly EmergencySession session;
         private readonly HashSet<Extinguisher> used = new HashSet<Extinguisher>();
         private readonly HashSet<string> once = new HashSet<string>();
 
-        public ShiftLog(EmergencySession owner) { session = owner; }
+        public ShiftLog(EmergencySession owner) { session = owner; Director = new DirectorRecord(owner); }
 
         public void Add(string text) => Timeline.Add(new Entry(session.ShiftSeconds, text));
 
         /// <summary>Adds the fact only the first time <paramref name="key"/> is seen.</summary>
         public void Once(string key, string text) { if (once.Add(key)) Add(text); }
 
-        public void Composed(string kind, string key, float magnitude, bool byJev, string detail)
+        public void Composed(string kind, string key, bool origin, float magnitude, int candidates, string detail)
         {
-            Compositions.Add(new JObject { ["t"] = Math.Round(session.ShiftSeconds, 1), ["kind"] = kind, ["key"] = key, ["magnitude"] = Math.Round(magnitude, 2), ["by"] = byJev ? "jev" : "local", ["detail"] = detail });
-            if (byJev) JevCompositions++; else LocalCompositions++;
+            Compositions.Add(new JObject { ["t"] = Math.Round(session.ShiftSeconds, 1), ["kind"] = kind, ["key"] = key, ["origin"] = origin, ["magnitude"] = Math.Round(magnitude, 2), ["candidates"] = candidates, ["by"] = "jev", ["detail"] = detail });
+            Events++;
+            if (origin) NewEmergencies++;
         }
 
         public void Decision(Passenger who, string kind, string choice, string source)
@@ -103,13 +109,61 @@ namespace ChooGuard.App.Fps.Emergency
                 },
                 ["decisions"] = new JObject { ["jev"] = JevDecisions, ["local"] = LocalDecisions, ["choices"] = JObject.FromObject(Choices) },
                 ["compositions"] = Compositions,
+                ["director"] = Director.ToJson(Events, NewEmergencies),
                 ["jev"] = new JObject
                 {
-                    ["status"] = session.Jev.Status, ["requests"] = session.Jev.Requests, ["failures"] = session.Jev.Failures,
-                    ["input_tokens"] = session.Jev.InputTokens, ["output_tokens"] = session.Jev.OutputTokens,
+                    ["status"] = session.Jev.Status,
+                    ["main_thread_per_ask"] = AskCost(session.Jev.MainThread),
+                    ["usage"] = UsageJson(session.Jev.Usage),
+                    ["lanes"] = new JObject
+                    {
+                        ["director"] = UsageJson(session.Jev.UsageOf(JevLane.Director)),
+                        ["crowd_urgent"] = UsageJson(session.Jev.UsageOf(JevLane.CrowdUrgent)),
+                        ["crowd_routine"] = UsageJson(session.Jev.UsageOf(JevLane.CrowdRoutine)),
+                    },
+                    ["budget"] = new JObject { ["requests_per_minute"] = JevBudget.MaxRequestsPerMinute, ["dollars_per_hour"] = JevBudget.MaxDollarsPerHour, ["dollars_per_million_input_tokens"] = JevBudget.DollarsPerMillionInputTokens },
                 },
             };
         }
+
+        /// <summary>
+        /// What each JEV request took from the main thread (per Ask; waiting for the pool threads and the network is not
+        /// counted): count, wall-clock percentiles, CPU-time percentiles where the platform measures them, and the same
+        /// without the first <see cref="WarmAsks"/> requests (the first ones of a shift still meet cold code).
+        /// </summary>
+        private static JObject AskCost(IReadOnlyList<Cost> costs)
+        {
+            var wall = new List<float>(costs.Count);
+            var cpu = new List<float>(costs.Count);
+            var steadyWall = new List<float>(costs.Count);
+            var steadyCpu = new List<float>(costs.Count);
+            for (int i = 0; i < costs.Count; i++)
+            {
+                wall.Add(costs[i].WallMs);
+                cpu.Add(costs[i].CpuMs);
+                if (i < WarmAsks) continue;
+                steadyWall.Add(costs[i].WallMs);
+                steadyCpu.Add(costs[i].CpuMs);
+            }
+            return new JObject
+            {
+                ["asks"] = costs.Count,
+                ["wall"] = DirectorRecord.Percentiles(wall),
+                ["cpu"] = DirectorSpan.CpuMeasured ? DirectorRecord.Percentiles(cpu) : null,
+                ["after_first_ten"] = new JObject { ["wall"] = DirectorRecord.Percentiles(steadyWall), ["cpu"] = DirectorSpan.CpuMeasured ? DirectorRecord.Percentiles(steadyCpu) : null },
+            };
+        }
+
+        private const int WarmAsks = 10;
+
+        /// <summary>A lane's spend: the shift's totals, the average hourly rate over the shift and the highest minute.</summary>
+        private JObject UsageJson(JevUsage usage) => new JObject
+        {
+            ["requests"] = usage.Requests, ["failures"] = usage.Failures, ["input_tokens"] = usage.InputTokens, ["output_tokens"] = usage.OutputTokens,
+            ["dollars"] = Math.Round(usage.Dollars, 5),
+            ["average_dollars_per_hour"] = session.ShiftSeconds > 0 ? Math.Round(usage.Dollars * 3600 / session.ShiftSeconds, 4) : 0,
+            ["peak_requests_per_minute"] = usage.PeakRequestsPerMinute, ["peak_dollars_per_hour"] = Math.Round(usage.PeakDollarsPerHour, 4),
+        };
 
         public string Save(string ending)
         {
@@ -119,6 +173,7 @@ namespace ChooGuard.App.Fps.Emergency
                 Directory.CreateDirectory(folder);
                 var path = Path.Combine(folder, "shift-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss") + ".json");
                 File.WriteAllText(path, ToJson(ending).ToString(Formatting.Indented));
+                Trim(folder, path);
                 return path;
             }
             catch (Exception exception)
@@ -126,6 +181,167 @@ namespace ChooGuard.App.Fps.Emergency
                 Debug.LogWarning("[ShiftLog] 기록 저장 실패: " + exception.Message);
                 return null;
             }
+        }
+
+        /// <summary>Keeps the folder of shift records bounded to the newest <see cref="KeepRecords"/> (the one just written stays).</summary>
+        private static void Trim(string folder, string current)
+        {
+            try
+            {
+                var files = new DirectoryInfo(folder).GetFiles("shift-*.json");
+                Array.Sort(files, (a, b) => b.LastWriteTimeUtc.CompareTo(a.LastWriteTimeUtc));
+                for (int i = KeepRecords; i < files.Length; i++)
+                    if (files[i].FullName != current) files[i].Delete();
+            }
+            catch (Exception) { }
+        }
+    }
+
+    /// <summary>
+    /// What the director's real-time judging did over the shift, separate from the events it caused: rounds JEV answered,
+    /// how it rated candidates (levels per scale), the hazard the game drew against at every step (so the expected time to
+    /// an event can be recomputed from the record), and what a heartbeat costs on the machine.
+    /// </summary>
+    public sealed class DirectorRecord
+    {
+        /// <summary>Requests in which JEV rated candidates or answered a magnitude, and requests it did not answer (nothing is drawn against a judgment that never came).</summary>
+        public int Rounds { get; private set; }
+        public int Unanswered { get; private set; }
+        /// <summary>Candidate ratings JEV gave, over all rounds.</summary>
+        public int Judged { get; private set; }
+        /// <summary>Draws whose subject was no longer eligible (or had changed) when they were applied: nothing happened.</summary>
+        public int Vanished { get; private set; }
+        /// <summary>Multiplier on every hazard rate in this shift (1 in play; a calibration run sets it lower, see <see cref="IncidentDirector.RateScaleVariable"/>).</summary>
+        public float RateScale { get; set; } = 1f;
+
+        private readonly EmergencySession session;
+        private readonly int[,] levels = new int[3, Imminence.LevelCount];
+        private readonly JArray trajectory = new JArray();
+        private readonly List<float> enumerationMs = new List<float>(), enumerationCpu = new List<float>();
+        private readonly List<float> requestMs = new List<float>(), requestCpu = new List<float>();
+        private readonly List<float> totalMs = new List<float>(), totalCpu = new List<float>();
+        // 한 프레임에 디렉터가 쓴 시간(조각들의 합)과 조각 종류별 시간.
+        private readonly List<float> frameMs = new List<float>(), frameCpu = new List<float>();
+        private readonly List<float>[] sliceMs = { new List<float>(), new List<float>(), new List<float>() };
+        private readonly List<float>[] sliceCpu = { new List<float>(), new List<float>(), new List<float>() };
+        private int sliceFrame = -1;
+        private readonly List<float> allocatedKb = new List<float>();
+        private readonly JArray vanished = new JArray();
+        private float firstNewEmergency = -1;
+
+        public DirectorRecord(EmergencySession owner) { session = owner; }
+
+        public void Round(bool answered) { if (answered) Rounds++; else Unanswered++; }
+
+        /// <summary>A candidate JEV rated: counted at its most probable level of the scale.</summary>
+        public void Rated(ImminenceScale scale, float[] probabilities)
+        {
+            int top = 0;
+            for (int level = 1; level < probabilities.Length; level++) if (probabilities[level] > probabilities[top]) top = level;
+            levels[(int)scale, top]++;
+            Judged++;
+        }
+
+        /// <summary>A draw that did not happen because its subject was gone (<paramref name="afterMagnitude"/>: JEV's answer for the strength arrived after the subject had changed).</summary>
+        public void Vanish(string key, bool origin, bool afterMagnitude)
+        {
+            Vanished++;
+            vanished.Add(new JObject { ["t"] = Math.Round(session.ShiftSeconds, 1), ["key"] = key, ["origin"] = origin, ["stage"] = afterMagnitude ? "after_magnitude" : "at_draw" });
+        }
+
+        public void NewEmergency() { if (firstNewEmergency < 0) firstNewEmergency = session.ShiftSeconds; }
+
+        /// <summary>
+        /// The hazard the draw used over the last <paramref name="dt"/> seconds of game time (events per second): how many
+        /// candidates were listed, how many of them had a valid rating of their own (kept while the new one is on its way,
+        /// dropped after 30 s), and the highest terms.
+        /// </summary>
+        public void Trace(float dt, float origin, float development, int candidates, int rated, string top)
+        {
+            trajectory.Add(new JArray(Math.Round(session.ShiftSeconds, 2), Math.Round(dt, 3), origin, development, candidates, rated, top));
+        }
+
+        /// <summary>
+        /// One heartbeat's cost: listing and reconciling candidates and building the state, then (when a request was needed)
+        /// starting it, and the kilobytes the whole heartbeat allocated. The listing is spread over frames.
+        /// </summary>
+        public void Beat(Cost enumeration, Cost? request, float allocatedKilobytes)
+        {
+            enumerationMs.Add(enumeration.WallMs);
+            enumerationCpu.Add(enumeration.CpuMs);
+            var asked = request ?? default;
+            if (request.HasValue)
+            {
+                requestMs.Add(asked.WallMs);
+                requestCpu.Add(asked.CpuMs);
+            }
+            var total = enumeration + asked;
+            totalMs.Add(total.WallMs);
+            totalCpu.Add(total.CpuMs);
+            allocatedKb.Add(allocatedKilobytes);
+        }
+
+        /// <summary>The kind of frame work the director did: a step of the listing, the closing step (reconcile, state, request, draw) or processing a JEV answer.</summary>
+        public enum SliceKind { Step, Close, Answer }
+
+        /// <summary>What the director took from one frame; slices of the same frame add up to that frame's cost.</summary>
+        public void Slice(SliceKind kind, Cost cost)
+        {
+            sliceMs[(int)kind].Add(cost.WallMs);
+            sliceCpu[(int)kind].Add(cost.CpuMs);
+            if (Time.frameCount == sliceFrame)
+            {
+                frameMs[frameMs.Count - 1] += cost.WallMs;
+                frameCpu[frameCpu.Count - 1] += cost.CpuMs;
+                return;
+            }
+            sliceFrame = Time.frameCount;
+            frameMs.Add(cost.WallMs);
+            frameCpu.Add(cost.CpuMs);
+        }
+
+        public JObject ToJson(int events, int newEmergencies)
+        {
+            return new JObject
+            {
+                ["rate_scale"] = RateScale, ["rounds"] = Rounds, ["unanswered_rounds"] = Unanswered, ["rated_candidates"] = Judged, ["vanished_draws"] = Vanished, ["vanished"] = vanished,
+                ["events"] = events, ["new_emergencies"] = newEmergencies, ["first_new_emergency_at"] = firstNewEmergency < 0 ? null : (JToken)Math.Round(firstNewEmergency, 1),
+                ["levels"] = new JObject { ["calm_origin"] = Counts(0), ["incident_origin"] = Counts(1), ["development"] = Counts(2) },
+                ["heartbeat_ms"] = new JObject
+                {
+                    ["heartbeats"] = totalMs.Count, ["requests_built"] = requestMs.Count, ["frames_with_director_work"] = frameMs.Count,
+                    ["cpu_measured"] = DirectorSpan.CpuMeasured,
+                    ["per_frame"] = Percentiles(frameMs), ["enumeration"] = Percentiles(enumerationMs), ["request"] = Percentiles(requestMs), ["total"] = Percentiles(totalMs),
+                    ["per_frame_cpu"] = DirectorSpan.CpuMeasured ? Percentiles(frameCpu) : null, ["enumeration_cpu"] = DirectorSpan.CpuMeasured ? Percentiles(enumerationCpu) : null,
+                    ["request_cpu"] = DirectorSpan.CpuMeasured ? Percentiles(requestCpu) : null, ["total_cpu"] = DirectorSpan.CpuMeasured ? Percentiles(totalCpu) : null,
+                    ["by_slice_kind"] = new JObject { ["step"] = SliceStats(SliceKind.Step), ["close"] = SliceStats(SliceKind.Close), ["answer"] = SliceStats(SliceKind.Answer) },
+                },
+                ["gc_kilobytes_per_heartbeat"] = Percentiles(allocatedKb),
+                ["hazard_columns"] = new JArray("t", "dt", "origin_per_second", "development_per_second", "candidates", "rated", "top_terms"),
+                ["hazard"] = trajectory,
+            };
+        }
+
+        private JObject SliceStats(SliceKind kind) => new JObject
+        {
+            ["count"] = sliceMs[(int)kind].Count, ["wall"] = Percentiles(sliceMs[(int)kind]), ["cpu"] = DirectorSpan.CpuMeasured ? Percentiles(sliceCpu[(int)kind]) : null,
+        };
+
+        private JArray Counts(int scale)
+        {
+            var counts = new JArray();
+            for (int level = 0; level < Imminence.LevelCount; level++) counts.Add(levels[scale, level]);
+            return counts;
+        }
+
+        /// <summary>Median, 95th percentile and maximum of <paramref name="samples"/>.</summary>
+        public static JObject Percentiles(IReadOnlyCollection<float> samples)
+        {
+            if (samples.Count == 0) return new JObject { ["p50"] = 0, ["p95"] = 0, ["max"] = 0 };
+            var sorted = new List<float>(samples);
+            sorted.Sort();
+            float At(float fraction) => sorted[Mathf.Min(sorted.Count - 1, Mathf.FloorToInt(fraction * sorted.Count))];
+            return new JObject { ["p50"] = Math.Round(At(.5f), 3), ["p95"] = Math.Round(At(.95f), 3), ["max"] = Math.Round(sorted[sorted.Count - 1], 3) };
         }
     }
 
@@ -167,8 +383,10 @@ namespace ChooGuard.App.Fps.Emergency
                 "역 안에 남은 승객  " + crowd.InStation + "명\n" +
                 "부상  " + crowd.Injured.Count + "명\n" +
                 "소화 약제 분사  " + log.SprayedSeconds.ToString("0") + "초 (" + log.ExtinguishersUsed + "대)\n\n" +
-                "<color=#ffffff88>상황 전개 판단  JEV " + log.JevCompositions + " · 규칙 " + log.LocalCompositions + "\n" +
-                "승객 판단  JEV " + log.JevDecisions + " · 규칙 " + log.LocalDecisions + "\n" + session.Jev.Status + "</color>";
+                "<color=#ffffff88>상황 판단  JEV " + log.Director.Rounds + "회 (후보 " + log.Director.Judged + "건 평가" + (log.Director.Unanswered > 0 ? " · 응답 없음 " + log.Director.Unanswered : "") + ")\n" +
+                "일어난 사건  " + log.Events + "건 (새 비상상황 " + log.NewEmergencies + ")\n" +
+                "승객 판단  JEV " + log.JevDecisions + " · 지연 시 규칙 " + log.LocalDecisions + "\n" +
+                "JEV 사용  요청 " + session.Jev.Usage.Requests + "건 · 평균 $" + (session.ShiftSeconds > 0 ? session.Jev.Usage.Dollars * 3600 / session.ShiftSeconds : 0).ToString("0.00") + "/시간\n" + session.Jev.Status + "</color>";
 
             FpsUiFactory.Button(panel, font, "다시 근무", new Vector2(0, 0), new Vector2(0, 0), new Vector2(300, 56), () => SceneFlow.StartShift(font, null), 24);
             FpsUiFactory.Button(panel, font, "타이틀로", new Vector2(0, 0), new Vector2(320, 0), new Vector2(300, 56), SceneFlow.ToTitle, 24);

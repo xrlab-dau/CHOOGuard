@@ -89,6 +89,11 @@ namespace ChooGuard.App.Fps.Emergency
         public readonly HashSet<string> Holds = new HashSet<string>();
         /// <summary>The hold a jammed door raises. Unlike the others it lets the doors close (to the jam) instead of keeping them open.</summary>
         public const string DoorJamHold = "출입문 끼임";
+        /// <summary>
+        /// Reasons nothing may run into this set's platform (someone on the track): a set still away does not start its
+        /// approach and an approaching one stops short (traffic control's stop order), until the track is clear.
+        /// </summary>
+        public readonly HashSet<string> TrackHolds = new HashSet<string>();
         public bool AtPlatform => Stage >= Phase.Opening && Stage <= Phase.Closing;
         public bool BoardingOpen => Stage == Phase.Boarding;
 
@@ -295,10 +300,14 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 case Phase.Away:
                     if (!loaded && elapsed > 1f) { loaded = true; Loading?.Invoke(this); }
+                    // 선로에 사람이 있으면 관제가 진입을 막는다: 들어오기 시작하지 않는다.
+                    if (TrackHolds.Count > 0) { ArrivalAt = Mathf.Max(ArrivalAt, now + ApproachSeconds + 1); break; }
                     if (now >= ArrivalAt - ApproachSeconds) { Enter(Phase.Arriving); announceAt = now + 6; }
                     break;
                 case Phase.Arriving:
                 {
+                    // 들어오던 열차는 선로가 빌 때까지 그 자리에 선다(비상 정지).
+                    if (TrackHolds.Count > 0) { StageStart += Time.deltaTime; ArrivalAt += Time.deltaTime; break; }
                     float t = Mathf.Clamp01(elapsed / ApproachSeconds);
                     // 일정한 감속: 남은 거리 = D·(1-t)².
                     MoveTo(ApproachDistance * (1 - t) * (1 - t));
@@ -546,8 +555,8 @@ namespace ChooGuard.App.Fps.Emergency
         {
             switch (Stage)
             {
-                case Phase.Away: return "서울발 KTX 도착 " + Mathf.Max(0, Mathf.RoundToInt((ArrivalAt - Time.time) / 60f)) + "분 전";
-                case Phase.Arriving: return "서울발 KTX " + Platform + " 도착 중";
+                case Phase.Away: return TrackHolds.Count > 0 ? "서울발 KTX 진입 정지 (" + string.Join(", ", TrackHolds) + ")" : "서울발 KTX 도착 " + Mathf.Max(0, Mathf.RoundToInt((ArrivalAt - Time.time) / 60f)) + "분 전";
+                case Phase.Arriving: return TrackHolds.Count > 0 ? "서울발 KTX " + Platform + " 진입 중 정지 (" + string.Join(", ", TrackHolds) + ")" : "서울발 KTX " + Platform + " 도착 중";
                 case Phase.Opening:
                 case Phase.Alighting: return "서울발 KTX 도착 · 하차 중";
                 case Phase.Turnaround: return "회차 정비 중 · 서울행 탑승 대기";

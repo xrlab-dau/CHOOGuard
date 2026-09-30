@@ -29,8 +29,8 @@ namespace ChooGuard.Tests.PlayMode
         [Test]
         public void HandExtinguisherBarelyHelpsOnceTheFireHasLeftItsFirstStage()
         {
-            var early = new FireHazard("early", new Vector3(0, 0, 0), "시험", .5f, art, parent.transform);
-            var grown = new FireHazard("grown", new Vector3(20, 0, 0), "시험", 1.2f, art, parent.transform);
+            var early = new FireHazard("early", new Vector3(0, 0, 0), "시험", "가방", .5f, art, parent.transform);
+            var grown = new FireHazard("grown", new Vector3(20, 0, 0), "시험", "가방", 1.2f, art, parent.transform);
 
             early.Suppress(1f, 1f);
             grown.Suppress(1f, 1f);
@@ -44,7 +44,7 @@ namespace ChooGuard.Tests.PlayMode
         [Test]
         public void FireIsOutAndNoLongerAHazardOnceIntensityReachesZero()
         {
-            var fire = new FireHazard("small", Vector3.zero, "시험", .05f, art, parent.transform);
+            var fire = new FireHazard("small", Vector3.zero, "시험", "가방", .05f, art, parent.transform);
 
             fire.Suppress(1f, 2f);
 
@@ -57,7 +57,7 @@ namespace ChooGuard.Tests.PlayMode
         public void SmokeStaysOnItsStoreyAndRisesOnlyNarrowlyToTheOneAbove()
         {
             // 승강장(열차 안) 불의 연기가 선로 위 2층 맞이방 사람까지 쓰러뜨리던 문제: 연기는 층을 따라 퍼진다.
-            var fire = new FireHazard("smoke", Vector3.zero, "시험", .5f, art, parent.transform);
+            var fire = new FireHazard("smoke", Vector3.zero, "시험", "가방", .5f, art, parent.transform);
             fire.SpreadSmoke(20f - fire.SmokeRadius);
 
             Assert.That(fire.InSmoke(new Vector3(10, 0, 0)), Is.True, "같은 층 10 m");
@@ -70,7 +70,7 @@ namespace ChooGuard.Tests.PlayMode
         [Test]
         public void AimQualityRewardsTheBaseOfTheFireFromAFewMetres()
         {
-            var fire = new FireHazard("aim", Vector3.zero, "시험", .5f, art, parent.transform);
+            var fire = new FireHazard("aim", Vector3.zero, "시험", "가방", .5f, art, parent.transform);
             var view = new GameObject("시점").transform;
             view.SetParent(parent.transform, false);
 

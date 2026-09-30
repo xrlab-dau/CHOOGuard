@@ -1,0 +1,169 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Settle ambiguous choices for CHOOGuard (FPS emergency-response game, KORAIL station staff at a Busan Station twin) after a user correction. Typed judgments only; JEV answers are advisory (authority 0); the main model implements and the user's words win.",
+    "user_correction_2026_09_29": "Cloned the project on another PC and ran it in Unity: the emergency was one of the already-defined scenarios picked at random. Emergencies must instead be made at random under JEV's judgment, considering every emergency that can happen. Other PCs have no JEV key, so either ask each user for their JEV key per environment, or register the JEV key in a GitHub shared token.",
+    "prior_user_decisions": [
+      "JEV makes emergencies, it does not pick from a list of fixed emergencies (atomic transitions on specific people/things, then developments).",
+      "Emergencies can be terror (shown only through observable signs and the staff response), accidents or natural disasters, anywhere in the open world: train interiors, platforms, escalators, 1F-3F, plaza.",
+      "Ambiguous judgments are settled with JEV."
+    ],
+    "measured_facts": {
+      "cause_of_observation": "The other PC had no key (neither TYPESAFE_API_KEY nor ~/.chooguard/typesafe.key), so every composition round was decided by local weights over the candidate list.",
+      "current_composer": "Every 10-16 s the game lists atomic origin candidates built from the live world: power bank overheating in a passenger's bag (hall, 3F, platform, KTX car), a passenger collapsing (5 levels up to not breathing normally), a passenger leaving a suitcase, an escalator rider falling, a closing KTX door catching a bag or arm, an earthquake. At most 12 candidates are sampled. JEV answers a Choice; the game executes JEV's top choice, then asks a Score for magnitude and uses the expected score. On failure or without a key, local weights decide.",
+      "jev_primitives": "Choice (probabilities over given keys), Score (levels, probabilities per level), Noul. JEV does not generate free text or new mechanics; the game must enumerate what can physically happen.",
+      "github_secrets": "GitHub Actions secrets are write-only in the UI and only exposed to workflow runs; a local clone or a local Unity Editor cannot read them. The repository is public.",
+      "key_check": "GET https://api.typesafe.ai/v1/models returns 200 with a valid key, 401 with an invalid key, 403 without a key; it runs no model inference.",
+      "automation": "CI player smoke runs 30 s (no composition happens in the first 60-100 s calm). Local benchmark/soak runs use TYPESAFE_API_KEY=off to avoid billing.",
+      "mechanics_available": "Fire with growing smoke and extinguishers/hydrant; casualty poses (lying, crouched, slumped seated) with AED hand-over; suitcase/handbag props; train door jam; earthquake with falling hanging boards and escalator/elevator stop; agencies 119 fire, 112 railway police, 119 EMS, facility staff, train crew; cordons; public announcements with pre-recorded generic voices (fire, suspicious item, medical, door check, earthquake, escalator stopped); crowd reactions via JEV; navmesh areas for stairs, escalators, elevators; 36 shops, 9 ticket counters, 15 toilets, 792 hall seats; 5 island platforms with one KTX set cycling at 5-6; 331 lights with baked lightmaps."
+    }
+  },
+  "questions": {
+    "key_provisioning": {
+      "type": "choice",
+      "instructions": "How should a user on a new PC get JEV working in the game?",
+      "criteria": {
+        "in_game_entry_per_machine": "The title screen shows JEV status and asks each user for their own key, verifies it with GET /v1/models, and stores it outside the repository in ~/.chooguard/typesafe.key (owner-only permissions). TYPESAFE_API_KEY still overrides. The key never enters the repository, builds or logs.",
+        "github_actions_secret": "Register the key as a GitHub Actions repository secret and rely on it.",
+        "commit_shared_key": "Commit one shared key into the repository or bake it into player builds."
+      }
+    },
+    "no_jev_policy": {
+      "type": "choice",
+      "instructions": "What should happen when JEV is not available?",
+      "criteria": {
+        "gate_start_and_wait": "Starting a shift requires a key that was not rejected; if JEV fails or is late mid-shift, that composition round is asked again later. Nothing is composed by local rules.",
+        "local_rules_fallback": "Keep composing with local weights whenever JEV is missing or late (current behaviour).",
+        "gate_start_local_on_outage": "Require a key at start, but compose with local weights during mid-shift outages."
+      }
+    },
+    "automated_runs": {
+      "type": "choice",
+      "instructions": "Benchmark and soak runs started with TYPESAFE_API_KEY=off: what about emergencies?",
+      "criteria": {
+        "calm_without_jev": "They stay calm (no emergency is composed); runs that have a key compose through JEV like play.",
+        "seeded_local_for_automation": "Keep a seeded local-weight composer only for these automated runs."
+      }
+    },
+    "selection_randomness": {
+      "type": "choice",
+      "instructions": "How should the game turn JEV's Choice answer over candidate transitions into what happens?",
+      "criteria": {
+        "sample_jev_probabilities": "Draw one candidate from JEV's probability distribution, so plausible alternatives also happen across shifts.",
+        "top_choice": "Always execute JEV's top choice."
+      }
+    },
+    "magnitude_randomness": {
+      "type": "choice",
+      "instructions": "How should the game turn JEV's Score answer over magnitude levels into the magnitude?",
+      "criteria": {
+        "sample_level_probabilities": "Draw one level from JEV's per-level probabilities.",
+        "expected_score": "Use JEV's expected score."
+      }
+    },
+    "candidate_breadth": {
+      "type": "choice",
+      "instructions": "Which candidates should each calm-phase round offer JEV?",
+      "criteria": {
+        "every_cause_every_round": "Every cause whose preconditions hold anywhere in the world right now, each with one or two concrete instances (specific person/place) spread across zones, plus 'nothing yet' for the first rounds.",
+        "sampled_twelve": "A random sample of at most 12 candidates (current)."
+      }
+    },
+    "fire_other_sources": {
+      "type": "noul",
+      "instructions": "Should the candidate space include fires from other everyday ignition sources: a shop kitchen fryer or stove, a cigarette butt in a litter bin, an electrical fault in a vending machine, advertising display or ticket machine?",
+      "criteria": {
+        "true": "Include",
+        "false": "Leave out"
+      }
+    },
+    "medical_conditions": {
+      "type": "noul",
+      "instructions": "Should the candidate space include other medical emergencies of specific passengers (seizure, chest pain progressing to cardiac arrest, breathing difficulty from asthma or allergy, heat exhaustion, low blood sugar), which can worsen or ease over time?",
+      "criteria": {
+        "true": "Include",
+        "false": "Leave out"
+      }
+    },
+    "stairs_and_escalator_variants": {
+      "type": "noul",
+      "instructions": "Should the candidate space include a fall on the stairs, a shoe or clothing caught at an escalator comb plate, and a suitcase slipping down an escalator onto riders below?",
+      "criteria": {
+        "true": "Include",
+        "false": "Leave out"
+      }
+    },
+    "track_fall": {
+      "type": "noul",
+      "instructions": "Should the candidate space include a person falling or climbing down from a platform onto the track (dizziness, a dropped item), where trains must be stopped and staff must not go down themselves?",
+      "criteria": {
+        "true": "Include",
+        "false": "Leave out"
+      }
+    },
+    "elevator_entrapment": {
+      "type": "noul",
+      "instructions": "Should the candidate space include an elevator stopping between floors with passengers inside who use the emergency intercom?",
+      "criteria": {
+        "true": "Include",
+        "false": "Leave out"
+      }
+    },
+    "disturbance": {
+      "type": "noul",
+      "instructions": "Should the candidate space include a passenger (for example intoxicated) becoming aggressive: shouting, shoving, throwing things, threatening with an object, possibly hurting a bystander (police lead; staff keep distance, report and clear the area)?",
+      "criteria": {
+        "true": "Include",
+        "false": "Leave out"
+      }
+    },
+    "bomb_threat_call": {
+      "type": "noul",
+      "instructions": "Should the candidate space include the station office receiving a phoned threat that an explosive was placed in the station (terror sign; report, announcement, search by police)?",
+      "criteria": {
+        "true": "Include",
+        "false": "Leave out"
+      }
+    },
+    "gas_or_odour": {
+      "type": "noul",
+      "instructions": "Should the candidate space include a gas smell from a restaurant kitchen or an unknown irritating odour or powder near seats that makes people cough?",
+      "criteria": {
+        "true": "Include",
+        "false": "Leave out"
+      }
+    },
+    "falling_object": {
+      "type": "noul",
+      "instructions": "Should the candidate space include a ceiling panel or hanging sign coming loose and falling without an earthquake?",
+      "criteria": {
+        "true": "Include",
+        "false": "Leave out"
+      }
+    },
+    "power_outage": {
+      "type": "noul",
+      "instructions": "Should the candidate space include a power failure that darkens the station and stops escalators, elevators and gates, possibly trapping people in an elevator?",
+      "criteria": {
+        "true": "Include",
+        "false": "Leave out"
+      }
+    },
+    "flooding": {
+      "type": "noul",
+      "instructions": "Should the candidate space include heavy rain flooding the 1F entrance and plaza level, with water flowing in and slippery floors?",
+      "criteria": {
+        "true": "Include",
+        "false": "Leave out"
+      }
+    },
+    "false_alarm": {
+      "type": "noul",
+      "instructions": "Should the candidate space include a fire detector tripping without a fire (dust or steam), with the bell ringing until staff confirm and the office resets the panel?",
+      "criteria": {
+        "true": "Include",
+        "false": "Leave out"
+      }
+    }
+  }
+}

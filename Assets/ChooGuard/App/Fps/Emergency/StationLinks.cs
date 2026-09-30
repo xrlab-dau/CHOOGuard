@@ -296,12 +296,20 @@ namespace ChooGuard.App.Fps.Emergency
             }
         }
 
-        /// <summary>Earthquake or power loss: the car stops where it is; nobody enters.</summary>
+        /// <summary>Earthquake, power loss or a fault: the car stops where it is (between floors when moving); nobody enters.</summary>
         public void Stop()
         {
             Running = false;
             var working = Car;
             if (working != null) working.Stop();
+        }
+
+        /// <summary>Back in service (a technician's rescue run, power restored): the car goes on to where it was going.</summary>
+        public void Resume()
+        {
+            Running = true;
+            var working = Car;
+            if (working != null) working.Resume();
         }
 
         public Vector3 Door(int stop) => Entry.stops[stop].door;
