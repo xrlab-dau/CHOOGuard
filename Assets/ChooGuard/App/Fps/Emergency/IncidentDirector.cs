@@ -8,18 +8,19 @@ using UnityEngine;
 namespace ChooGuard.App.Fps.Emergency
 {
     /// <summary>
-    /// Composes the shift's emergency instead of picking one. Every 10–16 s the game lists every atomic causal transition
+    /// Composes the shift's emergency in real time instead of picking one. The game lists every atomic causal transition
     /// the live world makes possible for specific people, things and places anywhere in the station — the cause catalogue
     /// of the family files: fires from a power bank, a shop fryer, a litter bin, an electrical fault or under a KTX car;
     /// collapses, seizures, chest pain, breathing trouble, falls on stairs and escalators; left luggage, an aggressive
     /// passenger, a phoned bomb threat, suspicious powder; a gas smell, a burst pipe, a falling panel, a stuck elevator, a
     /// power cut, a detector tripping without a fire; a person on the track, a closing door catching a bag; an earthquake
-    /// — and JEV judges them: what happens is drawn from JEV's Choice probabilities and how strongly from its Score
-    /// probabilities per level. Common rules compute consequences; developments of what exists are asked the same way. No
-    /// incident type exists before it emerges from the chain, and nothing is composed without JEV: a round JEV does not
-    /// answer is asked again a few seconds later. It also owns what the staff member knows, the radio to the station
-    /// office, agency dispatch and arrival, and the handover that ends the shift. The family files (IncidentDirector.*.cs)
-    /// hold each family's causes, developments, rules and its own radio and board lines.
+    /// — and JEV judges how imminent each one is right now (IncidentDirector.Compose.cs: judged again the moment the
+    /// situation changes and on a heartbeat). The game turns the levels into hazard rates and draws over the game time
+    /// that has passed; how strongly what happens plays out comes from JEV's Score probabilities per level. Common rules
+    /// compute consequences; developments of what exists are judged the same way. No incident type exists before it
+    /// emerges from the chain, and nothing is composed without JEV. It also owns what the staff member knows, the radio
+    /// to the station office, agency dispatch and arrival, and the handover that ends the shift. The family files
+    /// (IncidentDirector.*.cs) hold each family's causes, developments, rules and its own radio and board lines.
     /// </summary>
     public sealed partial class IncidentDirector : MonoBehaviour
     {
@@ -30,8 +31,6 @@ namespace ChooGuard.App.Fps.Emergency
         public bool PlayerKnowsIncident { get; private set; }
         public Vector3 PlayerPosition => session.Player.transform.position;
         public StationWorld World => world;
-        /// <summary>Composition rounds JEV answered.</summary>
-        public int JevRounds { get; private set; }
         /// <summary>The station fire bell rings once a detector or call point trips; a real fire keeps it ringing to the end (JEV 009).</summary>
         public bool AlarmRinging => alarm;
 
@@ -44,10 +43,9 @@ namespace ChooGuard.App.Fps.Emergency
         private Transform root;
         private TrainService Train => world.Train;
 
-        // 합성
-        private float calmUntil, nextRound, startedAt, knownAt, jevNoticeAt;
-        private int calmRounds, serial;
-        private bool asking, separateHappened;
+        // 합성 (실시간 판단 루프는 IncidentDirector.Compose.cs)
+        private float knownAt, jevNoticeAt;
+        private int serial;
         private string knownHow = "";
         private const float DevelopmentCooldown = 40f;
         private readonly Dictionary<string, float> lastDevelopment = new Dictionary<string, float>();
@@ -86,8 +84,7 @@ namespace ChooGuard.App.Fps.Emergency
             cameraTransform = session.Player.PlayerCamera.transform;
             BeginFacility();
             BeginEquipment();
-            // 첫 사건의 시각도 정해 두지 않는다. 서울발 KTX 가 들어와 사람들이 내리는 것을 볼 시간 뒤부터 묻는다.
-            calmUntil = Time.time + world.Range(60, 100);
+            BeginCompose();
             session.RadioProviders.Add(Radio);
             session.BoardProviders.Add(SituationColumn);
             session.BoardProviders.Add(ActionColumn);
@@ -151,8 +148,7 @@ namespace ChooGuard.App.Fps.Emergency
             FacilityTick();
             EquipmentTick(dt);
             UpdateConsequences();
-            if (Stage == Phase.Calm && !asking && Time.time > calmUntil && DoorMoment()) nextRound = Time.time;
-            if (Time.time > nextRound && !asking && (Stage == Phase.Incident || Time.time > calmUntil)) Round();
+            Compose();
             if (Time.time > nextSight) { nextSight = Time.time + .25f; LookAround(); }
             UpdateHud();
         }
@@ -198,19 +194,39 @@ namespace ChooGuard.App.Fps.Emergency
             public Action<float> Apply;
         }
 
+        /// <summary>A rank (see IncidentDirector.Rank.cs) seen through one cause's slot, so different causes pick different people from the same pool.</summary>
+        private static int Mix(int rank, int slot)
+        {
+            unchecked
+            {
+                uint h = (uint)rank * 2654435761u ^ (uint)(slot + 1) * 2246822519u;
+                h ^= h >> 15;
+                h *= 2246822519u;
+                h ^= h >> 13;
+                return (int)(h & 0x7fffffff);
+            }
+        }
+
         /// <summary>
         /// People who could be the subject of a new emergency right now, grouped by zone so each cause draws its instances
-        /// from different parts of the station.
+        /// from different parts of the station. Picks follow the ranks (see above): the same person stays the pick of a cause
+        /// while they qualify. One instance is refilled for every listing (no per-listing allocation besides the picks).
         /// </summary>
         private sealed class Pools
         {
+            private readonly IncidentDirector director;
             private readonly Dictionary<string, List<Passenger>> byZone = new Dictionary<string, List<Passenger>>();
-            private readonly List<string> zones;
-            private readonly System.Random random;
+            private readonly List<int> zoneRanks = new List<int>();
+            private readonly List<Passenger> zoneMatches = new List<Passenger>();
+            private int slot;
 
-            public Pools(IncidentDirector director)
+            public Pools(IncidentDirector owner) { director = owner; }
+
+            /// <summary>Starts a listing: sorts everyone who qualifies now into their zone.</summary>
+            public void Refill()
             {
-                random = director.world.Random;
+                slot = 0;
+                foreach (var pool in byZone.Values) pool.Clear();
                 var train = director.Train;
                 foreach (var person in director.crowd.People)
                 {
@@ -221,18 +237,40 @@ namespace ChooGuard.App.Fps.Emergency
                     if (!byZone.TryGetValue(zone, out var pool)) byZone[zone] = pool = new List<Passenger>();
                     pool.Add(person);
                 }
-                zones = byZone.Keys.OrderBy(_ => random.Next()).ToList();
             }
 
-            /// <summary>Up to <paramref name="count"/> people matching <paramref name="filter"/>, at most one per zone.</summary>
+            /// <summary>Up to <paramref name="count"/> people matching <paramref name="filter"/>, at most one per zone; each call is one cause's slot.</summary>
             public List<Passenger> Spread(Func<Passenger, bool> filter, int count)
             {
-                var picked = new List<Passenger>();
-                foreach (var zone in zones)
+                int cause = slot++;
+                var picked = new List<Passenger>(count);
+                zoneRanks.Clear();
+                zoneMatches.Clear();
+                foreach (var pair in byZone)
                 {
-                    var match = byZone[zone].Where(filter).OrderBy(_ => random.Next()).FirstOrDefault();
-                    if (match != null) picked.Add(match);
-                    if (picked.Count >= count) break;
+                    Passenger match = null;
+                    int best = int.MaxValue;
+                    var people = pair.Value;
+                    for (int i = 0; i < people.Count; i++)
+                    {
+                        var person = people[i];
+                        // 목록은 여러 프레임에 걸쳐 만들어진다: 그 사이 역을 떠나 사라진 승객은 건너뛴다.
+                        if (person == null || !filter(person)) continue;
+                        int rank = Mix(director.Rank(person), cause);
+                        if (rank < best) { best = rank; match = person; }
+                    }
+                    if (match == null) continue;
+                    zoneRanks.Add(Mix(director.Rank(pair.Key), cause));
+                    zoneMatches.Add(match);
+                }
+                // 구역 순위가 앞선 구역부터 count 명.
+                for (int n = 0; n < count && zoneMatches.Count > 0; n++)
+                {
+                    int first = 0;
+                    for (int i = 1; i < zoneRanks.Count; i++) if (zoneRanks[i] < zoneRanks[first]) first = i;
+                    picked.Add(zoneMatches[first]);
+                    zoneRanks.RemoveAt(first);
+                    zoneMatches.RemoveAt(first);
                 }
                 return picked;
             }
@@ -240,86 +278,17 @@ namespace ChooGuard.App.Fps.Emergency
 
         private bool Ready(string key) => !lastDevelopment.TryGetValue(key, out var at) || Time.time - at > DevelopmentCooldown;
 
-        private static readonly Transition NothingYet = new Transition { Key = "nothing_yet", Kind = "nothing", Description = "Nothing happens yet; the station carries on normally for a while", Apply = _ => { } };
-
-        private void Round()
-        {
-            nextRound = Time.time + (Shaking ? 4 : world.Range(10, 16));
-            // 비상상황은 JEV 만 만든다. JEV 가 없으면 이 판은 평온하게 흐른다(키가 생기면 다음 근무부터).
-            if (jev == null || !jev.Available) return;
-            if (!jev.CanSend(true)) { nextRound = Time.time + 2; return; }
-            var candidates = Stage == Phase.Calm ? Origins() : Developments();
-            // JEV 007: '아직 없음'은 JEV 가 답한 평온 판 세 번까지만 둔다. 이 근무는 훈련 근무다.
-            if (Stage == Phase.Calm && calmRounds < 3) candidates.Insert(0, NothingYet);
-            if (candidates.Count == 0 || candidates.Count == 1 && candidates[0].Kind == "nothing") return;
-            bool calm = Stage == Phase.Calm;
-            var question = new JevChoice
-            {
-                Id = calm ? "what_happens" : "development",
-                Instructions = calm
-                    ? "KORAIL station-staff emergency training shift in a realistic digital twin of Busan Station. Each option is something that could physically happen next to a specific person, thing or place present right now, across every kind of emergency the station can have: fire and smoke, medical, falls and entrapment, security threats, utilities and structure, trains and track, natural hazards. Give each option the probability that it is what happens next; the game draws one from your probabilities. Shift time " + Mathf.RoundToInt(session.ShiftSeconds) + " s."
-                    : "An emergency is unfolding at Busan Station. Each option is a development the current world makes physically possible right now. Give each option the probability that it is what happens next; the game draws one from your probabilities. Staff so far: reported=" + reported.Count + ", announcement=" + announced + ", cordons=" + all.Count(h => h.Cordoned) + ", train hold requested=" + holdRequested + ".",
-            };
-            foreach (var candidate in candidates) question.Criteria[candidate.Key] = candidate.Description;
-            asking = true;
-            StartCoroutine(jev.Ask("compose", PublicState(), new[] { question }, answers =>
-            {
-                if (Stage == Phase.Ended) { asking = false; return; }
-                if (answers == null || !answers.TryGetValue(question.Id, out var answer)) { asking = false; Deferred(); return; }
-                var drawn = answer.Draw(world.Random);
-                var chosen = candidates.Find(c => c.Key == drawn);
-                if (chosen == null) { asking = false; Deferred(); return; }
-                JevRounds++;
-                if (calm) calmRounds++;
-                string detail = "JEV p" + Probability(answer, drawn) + " / " + candidates.Count + "개 후보";
-                if (chosen.Levels == null) { asking = false; Execute(chosen, .5f, candidates.Count, detail); return; }
-                AskMagnitude(chosen, candidates.Count, detail);
-            }, true));
-        }
-
-        private static string Probability(JevAnswer answer, string key) =>
-            answer.Probabilities != null && answer.Probabilities.TryGetValue(key, out var p) ? p.ToString("0.00") : "?";
-
-        /// <summary>How strong the chosen transition is: a level drawn from JEV's Score probabilities on the scale the game wrote for it.</summary>
-        private void AskMagnitude(Transition chosen, int candidates, string detail)
-        {
-            var question = new JevChoice
-            {
-                Id = "magnitude",
-                Instructions = "This is now happening at Busan Station: " + chosen.Description + " How does it play out? Give each level the probability that it plays out that way for this person and place; the game draws one from your probabilities.",
-                Levels = chosen.Levels,
-            };
-            StartCoroutine(jev.Ask("compose-magnitude", PublicState(), new[] { question }, answers =>
-            {
-                asking = false;
-                if (Stage == Phase.Ended) return;
-                // 크기를 JEV 가 답하지 않으면 이 전이는 일어나지 않는다(다음 판에 다시 묻는다).
-                if (answers == null || !answers.TryGetValue("magnitude", out var answer)) { Deferred(); return; }
-                int levels = chosen.Levels.Count, level = answer.DrawLevel(world.Random, levels);
-                float magnitude = levels > 1 ? level / (float)(levels - 1) : .5f;
-                Execute(chosen, magnitude, candidates, detail + " · 크기 " + (level + 1) + "/" + levels + " p" + Probability(answer, level.ToString()));
-            }, true));
-        }
-
-        /// <summary>JEV did not answer: nothing happens now and the round is asked again shortly.</summary>
-        private void Deferred()
-        {
-            log.Deferred();
-            nextRound = Time.time + world.Range(4, 7);
-            if (jev.FailuresInARow >= 3 && Time.time > jevNoticeAt)
-            {
-                jevNoticeAt = Time.time + 90;
-                session.Hud.Toast(jev.Rejected ? "JEV 가 키를 거부했습니다 · 비상상황이 더 만들어지지 않습니다" : "JEV 응답이 없어 상황 전개를 기다리는 중입니다", 5f);
-            }
-        }
-
         private void Execute(Transition transition, float magnitude, int candidates, string detail)
         {
-            log.Composed(transition.Kind, transition.Key, magnitude, candidates, detail);
-            if (transition.Kind == "nothing" || transition.Kind == "no_change") return;
+            log.Composed(transition.Kind, transition.Key, transition.Origin, magnitude, candidates, detail);
             lastDevelopment[transition.Key] = Time.time;
             lastDevelopment[transition.Kind] = Time.time;
-            if (transition.Origin) composedKinds.Add(transition.Kind);
+            if (transition.Origin)
+            {
+                composedKinds.Add(transition.Kind);
+                lastEmergencyAt = session.ShiftSeconds;
+                log.Director.NewEmergency();
+            }
             Debug.Log("CG_COMPOSE " + transition.Kind + " key=" + transition.Key + " m=" + magnitude.ToString("0.00") + " by " + detail);
             transition.Apply(Mathf.Clamp01(magnitude));
         }
@@ -331,57 +300,116 @@ namespace ChooGuard.App.Fps.Emergency
             if (Main != null) return;
             Main = hazard;
             Stage = Phase.Incident;
-            startedAt = Time.time;
-            nextRound = Time.time + (hazard is EarthquakeHazard ? 3 : 12);
             Debug.Log("CG_INCIDENT_START " + hazard.Label + " at " + hazard.Where);
         }
 
         /// <summary>
         /// Every cause whose preconditions hold anywhere right now, each with one or two concrete instances (JEV 012
-        /// every_cause_every_round). The family files list them.
+        /// every_cause_every_round), appended to <paramref name="list"/>. The family files list them lazily, so each step
+        /// does the work up to the end of the frame's share (<see cref="SliceSpent"/>), which lets the real-time loop spread
+        /// a listing over frames. Which instances the families pick follows the ranks so the list only changes when the
+        /// world does. <paramref name="pools"/> is refilled by the first step.
         /// </summary>
-        private List<Transition> Origins()
+        private IEnumerable<bool> OriginSteps(List<Transition> list, Pools pools)
         {
-            var pools = new Pools(this);
-            var list = new List<Transition>();
-            list.AddRange(FireOrigins(pools));
-            list.AddRange(CasualtyOrigins(pools));
-            list.AddRange(SecurityOrigins(pools));
-            list.AddRange(TrainOrigins(pools));
-            list.AddRange(FacilityOrigins(pools));
+            pools.Refill();
+            if (SliceSpent) yield return true;
+            foreach (var step in Fill(list, FireOrigins(pools))) yield return step;
+            foreach (var step in Fill(list, CasualtyOrigins(pools))) yield return step;
+            foreach (var step in Fill(list, SecurityOrigins(pools))) yield return step;
+            foreach (var step in Fill(list, TrainOrigins(pools))) yield return step;
+            foreach (var step in Fill(list, FacilityOrigins(pools))) yield return step;
             EquipmentOrigins(pools, list);
-            // 같은 사람·장소가 여러 원인의 후보가 되어도 키는 원인마다 다르다.
-            return list.GroupBy(t => t.Key).Select(g => g.First()).ToList();
         }
 
-        private List<Transition> Developments()
+        /// <summary>The developments of what exists, in steps of the frame's share like <see cref="OriginSteps"/>.</summary>
+        private IEnumerable<bool> DevelopmentSteps(List<Transition> list)
         {
-            var list = new List<Transition> { new Transition { Key = "no_change", Kind = "no_change", Description = "Nothing new happens for now", Apply = _ => { } } };
-            list.AddRange(FireDevelopments());
-            list.AddRange(CasualtyDevelopments());
-            list.AddRange(SecurityDevelopments());
-            list.AddRange(TrainDevelopments());
-            list.AddRange(FacilityDevelopments());
+            foreach (var step in Fill(list, FireDevelopments())) yield return step;
+            foreach (var step in Fill(list, CasualtyDevelopments())) yield return step;
+            foreach (var step in Fill(list, SecurityDevelopments())) yield return step;
+            foreach (var step in Fill(list, TrainDevelopments())) yield return step;
+            foreach (var step in Fill(list, FacilityDevelopments())) yield return step;
             EquipmentDevelopments(list);
-            // 이미 벌어진 일과 별개로 새 일이 겹칠 수도 있다: 근무당 한 번, 이미 있는 종류는 빼고. 일어날지는 JEV 가 판단한다.
-            if (!separateHappened)
+        }
+
+        /// <summary>
+        /// Appends what <paramref name="source"/> lists. A family is consumed whole in one step unless it marks safe places
+        /// (no live collection is being enumerated there) with a <c>null</c> checkpoint: at a checkpoint, and after the
+        /// family, the step ends once this frame's share is spent.
+        /// </summary>
+        private IEnumerable<bool> Fill(List<Transition> list, IEnumerable<Transition> source)
+        {
+            foreach (var transition in source)
             {
-                var origin = Origins().Where(t => t.Kind != "quake" && !composedKinds.Contains(t.Kind)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
-                if (origin != null)
+                if (transition == null)
                 {
-                    origin.Description = "Separately, " + origin.Description;
-                    var apply = origin.Apply;
-                    origin.Apply = m => { separateHappened = true; apply(m); };
-                    list.Add(origin);
+                    if (SliceSpent) yield return true;
+                    continue;
                 }
+                list.Add(transition);
             }
+            if (SliceSpent) yield return true;
+        }
+
+        /// <summary>The whole list of new-emergency candidates at once (editor harnesses read it by reflection to force every kind; the play loop lists in steps).</summary>
+        private List<Transition> Origins()
+        {
+            wholePools = wholePools ?? new Pools(this);
+            var list = new List<Transition>();
+            foreach (var _ in OriginSteps(list, wholePools)) { }
+            Distinct(list);
             return list;
         }
+
+        /// <summary>The same person or place can be the candidate of several causes, but every key names one cause: the first wins (in place).</summary>
+        private void Distinct(List<Transition> list)
+        {
+            seenKeys.Clear();
+            int keep = 0;
+            for (int i = 0; i < list.Count; i++)
+                if (seenKeys.Add(list[i].Key)) list[keep++] = list[i];
+            list.RemoveRange(keep, list.Count - keep);
+        }
+
+        private readonly HashSet<string> seenKeys = new HashSet<string>();
+        private Pools listingPools, wholePools;
 
         private string Profile(Passenger p) =>
             "passenger #" + p.Number + " (" + (p.Body.Female ? "woman" : "man") + (p.Elderly ? ", elderly" : "") + (p.Luggage == 2 ? ", large suitcase" : p.Luggage == 1 ? ", bag" : "") + ")";
 
-        private string Place(Vector3 position) => world.Area(position) + ", " + world.Describe(position);
+        // 후보 설명은 1 s 마다 다시 만들어진다. 앉거나 서 있는 사람이 대부분이라 같은 자리의 이름(가장 가까운 표지를 찾는 일)을
+        // 반 미터 칸마다 기억해 둔다. 이름이 열차에 따라 바뀌는 것은 열차가 서는 승강장과 객차 안뿐이라, 열차 단계가 바뀔 때
+        // 그런 칸의 이름만 다시 짓는다.
+        private struct PlaceName
+        {
+            public string Text;
+            public bool TrainDependent;
+            public int Epoch;
+        }
+
+        private readonly Dictionary<Vector3Int, PlaceName> places = new Dictionary<Vector3Int, PlaceName>();
+        private TrainService.Phase placesTrainStage;
+        private int placesEpoch;
+
+        /// <summary>The name staff would give a spot in a candidate's description, remembered per half-metre cell.</summary>
+        private string Place(Vector3 position)
+        {
+            var stage = Train != null ? Train.Stage : TrainService.Phase.Away;
+            if (stage != placesTrainStage) { placesTrainStage = stage; placesEpoch++; }
+            if (places.Count > 4000) places.Clear();
+            var cell = new Vector3Int(Mathf.RoundToInt(position.x * 2), Mathf.RoundToInt(position.y), Mathf.RoundToInt(position.z * 2));
+            if (places.TryGetValue(cell, out var known) && (!known.TrainDependent || known.Epoch == placesEpoch)) return known.Text;
+            var platform = Train != null ? world.Points.PlatformAt(position) : null;
+            known = new PlaceName
+            {
+                Text = world.Area(position) + ", " + world.Describe(position),
+                TrainDependent = Train != null && (platform != null && platform.id == world.Points.Train?.platform || Train.CarAt(position) != null),
+                Epoch = placesEpoch,
+            };
+            places[cell] = known;
+            return known.Text;
+        }
 
         private static bool Settled(Passenger p) =>
             p.Current == Passenger.Activity.Sit || p.Current == Passenger.Activity.Stand || p.Current == Passenger.Activity.PlatformWait || p.Current == Passenger.Activity.InTrain ||

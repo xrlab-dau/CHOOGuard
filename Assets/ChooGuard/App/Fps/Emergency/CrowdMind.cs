@@ -353,7 +353,7 @@ namespace ChooGuard.App.Fps.Emergency
                 bool timedOut = item.Sent ? now - item.Asked > JevPatience + 1.5f : now - item.Asked > JevPatience;
                 if (now >= item.ReadyAt && (!jevUsable || timedOut)) Resolve(item, null);
             }
-            if (!jevUsable || now < nextFlush || !jev.CanSend()) return;
+            if (!jevUsable || now < nextFlush || !jev.CanSend(JevLane.CrowdRoutine)) return;
             // 핵심 순간을 먼저, 남는 자리에 일상 판단을 싣는다.
             var batch = new List<Pending>(BatchSize);
             foreach (var item in pending) if (!item.Sent && !item.Done && item.Kind != Kind.Routine && item.Kind != Kind.Route) { batch.Add(item); if (batch.Count == BatchSize) break; }
@@ -384,7 +384,7 @@ namespace ChooGuard.App.Fps.Emergency
                     if (answer == null) { item.Sent = false; item.Asked = Mathf.Min(item.Asked, Time.time - JevPatience); continue; }
                     Resolve(item, answer);
                 }
-            }));
+            }, JevLane.CrowdRoutine));
         }
 
         private void Resolve(Pending item, JevAnswer answer)

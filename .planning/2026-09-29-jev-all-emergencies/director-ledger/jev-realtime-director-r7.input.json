@@ -1,0 +1,85 @@
+{
+ "model": "jev-latest",
+ "state": {
+  "task": "Settle ambiguous design choices of the real-time emergency director of CHOOGuard (FPS emergency-response training game, KORAIL station staff at a digital twin of Busan Station). Typed judgments only; JEV answers are advisory (authority 0); the main model implements and the user's words win.",
+  "user_decisions_already_made": [
+   "JEV makes emergencies by judgement in real time, from objects and people that exist in the map",
+   "the director is event-driven (re-judge the moment a new candidate appears or disappears, a hazard changes, or a train/door/escalator situation starts) plus a one-second heartbeat",
+   "JEV rates each candidate's imminence on verbal levels, all candidates batched as independent questions in one request over a focused state; code owns the table from level to hazard rate and draws with competing risks over elapsed game time",
+   "first 30 seconds of a shift are quiet; the first emergency then comes after about three minutes on average; new separate emergencies are rare; about one to two new emergencies per fifteen to twenty minute shift",
+   "all JEV use together costs at most 3 US dollars per hour of play"
+  ],
+  "facts": {
+   "candidates_per_listing": "about 30 in a calm shift and 40 to 60 during an incident; each rating question costs roughly 220 input tokens",
+   "jev_1_13_weaknesses": "numbers, counting, dates and time windows; reads conditions literally; large irrelevant state hurts",
+   "measured_ratings": "in a calm shift JEV puts most candidates on the level 'possible but unremarkable' and a few on 'somewhat favoured'; during a big fire it rates unrelated candidates higher than in calm even when told the fire is no reason",
+   "listing_cost": "listing all candidates takes a few milliseconds on the game's main thread",
+   "candidate_lists_change": "only when the world changes, because people and objects are picked by a stable per-shift rank"
+  }
+ },
+ "questions": {
+  "rate_from_score": {
+   "type": "choice",
+   "instructions": "A candidate's imminence was rated as a probability per verbal level. Which way of turning that into the candidate's hazard rate is right?",
+   "criteria": {
+    "expected_rate_over_levels": "The hazard is the sum over levels of the probability of the level times the game's rate for that level, so unlikely high levels still count in proportion",
+    "draw_one_level_then_rate": "Draw one level from the probabilities every time and use that level's rate, so the hazard jumps between draws",
+    "most_probable_level_rate": "Use the rate of the single most probable level and ignore the rest"
+   }
+  },
+  "rating_reuse": {
+   "type": "choice",
+   "instructions": "How long should a candidate's rating be reused before JEV is asked about it again?",
+   "criteria": {
+    "until_changed_or_stale": "Until the candidate's description changes, the situation in the state changes (a hazard, the train stage, staff response, agencies) or the rating is about a dozen seconds old",
+    "ask_all_every_heartbeat": "Ask about every candidate on every one-second heartbeat",
+    "ask_only_on_events": "Ask only when something happens and never on a timer"
+   }
+  },
+  "origin_frequency_scaling": {
+   "type": "choice",
+   "instructions": "The game will gain much more equipment, so many more candidate causes will be listed. The user wants the same overall frequency of new emergencies. What should the game do?",
+   "criteria": {
+    "share_one_budget_above_reference": "Keep every candidate's rate as calibrated while at most the calibrated number of origins is listed, and scale all origin rates down in proportion when more are listed",
+    "per_candidate_rate_only": "Give every candidate its own rate from its rating and let the overall frequency rise as candidates are added",
+    "normalise_always_to_total": "Always rescale so the sum of all rates equals a fixed total, whatever the ratings are"
+   }
+  },
+  "lost_judging_time": {
+   "type": "choice",
+   "instructions": "JEV was silent or over budget for a while and then answers again. What should happen to the game time in between?",
+   "criteria": {
+    "no_catch_up": "Time nobody judged is not made up: the draw covers at most a few seconds since the last step, and ratings older than half a minute stop counting",
+    "catch_up": "Draw over the whole silent stretch with the latest ratings so no hazard is lost",
+    "pause_the_game": "Stop the game clock until JEV answers"
+   }
+  },
+  "apply_validation": {
+   "type": "choice",
+   "instructions": "A draw picked a candidate, and JEV then needs another moment to rate how strongly it plays out. How should the game confirm the candidate still applies when the strength arrives?",
+   "criteria": {
+    "list_again_and_require_same_key": "List the candidates again and apply only if the same key naming that person, thing or place is still a candidate; otherwise nothing happens",
+    "require_identical_description": "Apply only if the candidate's whole description text is identical to what JEV rated",
+    "apply_without_check": "Apply it as drawn"
+   }
+  },
+  "candidate_identity": {
+   "type": "choice",
+   "instructions": "How should the people and places that become candidates be picked from a larger pool each time the list is rebuilt?",
+   "criteria": {
+    "stable_rank_per_subject": "Each subject gets one random rank per shift when first met, from a random stream of its own; lists pick by rank so they change only when the world does",
+    "reroll_each_listing": "Pick randomly again at every listing",
+    "lowest_id_first": "Always pick the lowest id"
+   }
+  },
+  "separate_emergency_framing": {
+   "type": "choice",
+   "instructions": "While an emergency is being handled, how should JEV be asked about a separate new emergency?",
+   "criteria": {
+    "same_question_with_load_in_state_and_anchored_levels": "Same imminence question as in calm, the load in the state, and level texts that say the emergency in progress is not a reason for it",
+    "no_question_only_code_rate": "Do not ask JEV; give every separate cause a fixed tiny rate in code",
+    "ask_with_calm_state_only": "Ask JEV with a state that hides the emergency in progress"
+   }
+  }
+ }
+}

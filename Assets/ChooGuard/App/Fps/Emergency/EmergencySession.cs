@@ -134,6 +134,7 @@ namespace ChooGuard.App.Fps.Emergency
             var logFolder = System.IO.Path.Combine(UnityEngine.Application.persistentDataPath, "jev-runs");
             System.IO.Directory.CreateDirectory(logFolder);
             Jev = new JevClient(System.IO.Path.Combine(logFolder, "jev-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss") + ".jsonl"));
+            StartCoroutine(Jev.Warm());
             // 승객이 역무원을 사람으로 피해 가도록 한다(길찾기 장애물, 길을 깎지는 않는다).
             var obstacle = Player.gameObject.AddComponent<UnityEngine.AI.NavMeshObstacle>();
             obstacle.shape = UnityEngine.AI.NavMeshObstacleShape.Capsule;

@@ -23,12 +23,18 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 원인 ──
 
+        // 792 개 좌석을 한 번만 순위대로 세워 두고 매번 앞에서부터 닫히지 않은 첫 자리를 고른다(목록을 1 s 마다 만들기 때문).
+        private List<StationPoints.Point> seatsByRank;
+
         private IEnumerable<Transition> SecurityOrigins(Pools pools)
         {
             foreach (var p in pools.Spread(p => p.Luggage == 2 && Settled(p) && p.Current != Passenger.Activity.InTrain, 2)) yield return BagLeft(p);
+            yield return null;
             foreach (var p in pools.Spread(p => !p.Elderly && p.Current != Passenger.Activity.InTrain && p.Current != Passenger.Activity.Sit && p.Current != Passenger.Activity.Toilet, 2)) yield return Aggression(p);
+            yield return null;
             if (threat == null) yield return ThreatCall();
-            var seat = world.Points.Of(PointKind.Seat).Where(s => !world.IsClosed(s.Position, 2)).OrderBy(_ => world.Random.Next()).FirstOrDefault();
+            seatsByRank = seatsByRank ?? world.Points.Of(PointKind.Seat).OrderBy(s => Rank(s.Id)).ToList();
+            var seat = seatsByRank.FirstOrDefault(s => !world.IsClosed(s.Position, 2));
             if (seat != null) yield return Powder(seat);
         }
 
