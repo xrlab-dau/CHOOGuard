@@ -8,10 +8,11 @@ namespace ChooGuard.App.Fps.Emergency
 {
     /// <summary>
     /// Fire family: what can catch fire right now and how a fire develops. Ignition sources are things that are really
-    /// there: a power bank in a passenger's bag (hall, platform, KTX car), a litter bin at a city entrance, the electrics of
-    /// a ticket window or a shop fridge, the running gear under the KTX set at the platform (the kitchen fires of the food
-    /// shops start from their real appliances: IncidentDirector.KitchenGas.cs). Detectors, the bell, smoke, rekindling and
-    /// the office's own 119 call follow common rules.
+    /// there: a power bank in a passenger's bag (hall, platform, KTX car), the litter bins and recycling stations placed at the
+    /// entrances and in the halls, the running gear under the KTX set at the platform. Fires in electrical equipment (distribution
+    /// boards, vending machines, charging kiosks) come from IncidentDirector.ElectricPlaza.cs and the kitchen fires of the food
+    /// shops from their real appliances (IncidentDirector.KitchenGas.cs); they are the same fire. Detectors, the bell, smoke,
+    /// rekindling and the office's own 119 call follow common rules.
     /// </summary>
     public sealed partial class IncidentDirector
     {
@@ -33,12 +34,9 @@ namespace ChooGuard.App.Fps.Emergency
         private IEnumerable<Transition> FireOrigins(Pools pools)
         {
             foreach (var p in pools.Spread(p => p.CarriesPowerBank && Settled(p), 2)) yield return Overheat(p);
-            var exit = world.Points.Of(PointKind.Exit).Where(e => e.Zone == "plaza" && !world.IsClosed(e.Position, 3)).OrderBy(e => Rank(e.Id)).FirstOrDefault();
-            if (exit != null) yield return BinFire(exit);
-            var counter = world.Points.Of(PointKind.Counter).OrderBy(c => Rank(c.Id)).FirstOrDefault();
-            if (counter != null) yield return ElectricalFire(counter, "the ticket office equipment behind " + counter.Label, "매표창구 안 전기 설비");
-            var store = world.Points.Of(PointKind.Shop).Where(s => KitchenOf(s) == null && !world.IsClosed(s.Position, 2)).OrderBy(s => Rank(s.Id)).FirstOrDefault();
-            if (store != null) yield return ElectricalFire(store, "the refrigerated display case of " + store.Label, "매장 냉장 진열대 배선");
+            // 쓰레기통은 실제로 놓인 통이다(IncidentDirector.ElectricPlaza 의 배치): 출입구 곁 휴지통은 담배꽁초, 사람이 오가는 분리수거함은 버려진 배터리.
+            foreach (var bin in Candidates("litter_bin", 2, NearAnExit)) yield return BinFire(bin, false);
+            foreach (var bin in Candidates("recycling_bin", 1, e => PeopleNear(e.transform.position, 10f) > 0)) yield return BinFire(bin, true);
             if (Train != null && Train.AtPlatform && Train.Stage != TrainService.Phase.Opening)
             {
                 var car = Train.Cars.Where(c => c.Entry.reachable).OrderBy(c => Rank("car" + c.Number)).FirstOrDefault();
@@ -54,28 +52,40 @@ namespace ChooGuard.App.Fps.Emergency
             Apply = m => StartPowerBankFire(owner, m),
         };
 
-        private Transition BinFire(StationPoints.Point exit) => new Transition
+        /// <summary>A place where people step out to smoke and come back: a bin within 14 m of an entrance on its floor.</summary>
+        private bool NearAnExit(StationEquipment bin)
         {
-            Key = "bin_" + exit.Id, Kind = "bin_fire", Origin = true,
-            Description = "A cigarette butt thrown into the litter bin by the station entrance '" + exit.Label + "' (" + Place(exit.Position) + ") starts smouldering.",
-            Levels = new List<string> { "a thin wisp of smoke from the bin", "thick smoke from the bin", "the rubbish in the bin bursts into flames", "flames leap out of the bin", "the bin burns fiercely and melts, black smoke drifts into the entrance" },
-            Apply = m =>
+            var p = bin.transform.position;
+            foreach (var exit in world.Points.Of(PointKind.Exit))
             {
-                var floor = Floor(StationWorld.OnNavMesh(exit.Position + (world.Points.Nearest(PointKind.Wait, exit.Position)?.Position - exit.Position ?? Vector3.forward).normalized * 3f, 2f));
-                // 불은 휴지통 위(0.72 m)에서 오른다.
-                var fire = Ignite(floor + Vector3.up * .72f, "입구 휴지통 담배꽁초", "휴지통", m, "");
-                Props.LitterBin(fire.View.transform, floor, art);
-            },
-        };
+                var d = exit.Position - p;
+                if (Mathf.Abs(d.y) < 3f && new Vector2(d.x, d.z).magnitude < 14f) return true;
+            }
+            return false;
+        }
 
-        private Transition ElectricalFire(StationPoints.Point at, string what, string ko) => new Transition
+        private Transition BinFire(StationEquipment bin, bool battery)
         {
-            Key = "electric_" + at.Id, Kind = "electrical_fire", Origin = true,
-            Description = "An electrical fault in " + what + " (" + Place(at.Position) + ") starts to smoke.",
-            Levels = new List<string> { "a smell of burning plastic", "grey smoke seeping out", "sparks and a small flame", "flames and acrid black smoke", "the wiring burns fiercely with thick toxic smoke" },
-            // 사람들이 서는 자리보다 창구·진열대 쪽(바라보는 방향)으로 조금 들어간 곳이다.
-            Apply = m => Ignite(Floor(at.Position + Quaternion.Euler(0, at.Yaw, 0) * Vector3.forward * .9f), ko + " 합선", ko, m, " 전기 화재입니다. 전원 차단을 요청하고 물을 쓰지 마십시오."),
-        };
+            var exit = world.Points.Nearest(PointKind.Exit, bin.transform.position);
+            string where = PlaceOf(bin);
+            return new Transition
+            {
+                Key = (battery ? "bin_battery_" : "bin_") + bin.Id, Kind = battery ? "bin_battery_fire" : "bin_fire", Origin = true,
+                Description = battery
+                    ? "A worn-out power bank thrown away with drink cans and paper into recycling station " + bin.Id + " (" + where + ") swells and goes into thermal runaway. " + CrowdNote(bin.transform.position)
+                    : "A cigarette butt, still lit, dropped into litter bin " + bin.Id + " (" + where + ")" + (exit != null ? " by someone coming back in from outside through the entrance '" + exit.Label + "'" : "") + " starts the rubbish smouldering. " + CrowdNote(bin.transform.position),
+                Levels = battery
+                    ? new List<string> { "a hiss and a wisp of white smoke from the bin", "white smoke and a sharp chemical smell pouring out of the bin", "the battery vents a jet of flame that lights the paper and cups", "flames leap out of the bin, cans and bottles burst", "the bin burns fiercely, thick toxic smoke rolls along the ceiling" }
+                    : new List<string> { "a thin wisp of smoke from the bin", "thick smoke from the bin", "the rubbish in the bin bursts into flames", "flames leap out of the bin", "the bin burns fiercely and melts, black smoke drifts through the entrance" },
+                Apply = m =>
+                {
+                    if (!Still(StillIgnitable(bin), bin.Label + " " + bin.Id)) return;
+                    StartEquipmentFire(bin, m, battery ? "버려진 보조배터리 열폭주" : "담배꽁초", battery
+                        ? " 배터리가 섞인 불입니다. 꺼진 뒤에도 안에서 다시 타오를 수 있으니 물로 충분히 식히고 손대지 마십시오."
+                        : null);
+                },
+            };
+        }
 
         private Transition Underfloor(TrainService.Car car) => new Transition
         {

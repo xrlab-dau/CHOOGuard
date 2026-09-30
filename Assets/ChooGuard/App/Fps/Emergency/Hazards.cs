@@ -902,18 +902,6 @@ namespace ChooGuard.App.Fps.Emergency
             return go;
         }
 
-        /// <summary>A round steel litter bin (0.4 m across, 0.75 m tall) standing on <paramref name="floor"/>.</summary>
-        public static GameObject LitterBin(Transform parent, Vector3 floor, EmergencyArt art)
-        {
-            var bin = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            bin.name = "휴지통";
-            bin.transform.SetParent(parent, true);
-            bin.transform.SetPositionAndRotation(floor + Vector3.up * .375f, Quaternion.identity);
-            bin.transform.localScale = new Vector3(.4f, .375f, .4f);
-            bin.GetComponent<Renderer>().sharedMaterial = art.CordonPost;
-            return bin;
-        }
-
         /// <summary>A shallow puddle on the floor: a flat soft-edged disc (scale it to the wet diameter).</summary>
         public static GameObject Puddle(Transform parent, Vector3 floor, Material material)
         {
