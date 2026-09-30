@@ -33,6 +33,7 @@ namespace ChooGuard.App.Fps.Emergency
     /// Routes to the exits are shared by the whole station (one search per exit), routes to other places by everyone who starts from
     /// the same node. Danger (fires, cordons) adds a large cost to the edges that pass through it rather than removing them, so a
     /// person inside the danger zone still has a way out.
+    /// A planner that may only use what it knows (<see cref="Survey"/>, for the staff member's guidance) reads none of this state: only the baked links and its own rules.
     /// </summary>
     public sealed class RouteGraph
     {
@@ -103,6 +104,20 @@ namespace ChooGuard.App.Fps.Emergency
                 for (var node = goal; node != null && node != Origin; node = Via[node.Index]?.From) chain.Add(node);
                 chain.Add(Origin);
                 chain.Reverse();
+            }
+
+            /// <summary>Fills <paramref name="edges"/> with the links from the start to <paramref name="goal"/> in walking order (empty when the goal is the start or cannot be reached).</summary>
+            public void EdgesTo(Node goal, List<Edge> edges)
+            {
+                edges.Clear();
+                for (var node = goal; node != null && node != Origin;)
+                {
+                    var via = Via[node.Index];
+                    if (via == null) { edges.Clear(); return; }
+                    edges.Add(via);
+                    node = via.From;
+                }
+                edges.Reverse();
             }
         }
 
@@ -213,6 +228,31 @@ namespace ChooGuard.App.Fps.Emergency
         public int Searches { get; private set; }
         public int SearchHits { get; private set; }
 
+        /// <summary>What a caller that plans from its own knowledge adds to the baked links (<see cref="Survey"/>): the extra cost (m) of an edge, +∞ for a link it counts as shut.</summary>
+        public interface IRules
+        {
+            float Extra(Edge edge);
+        }
+
+        private IRules surveyRules;
+
+        /// <summary>
+        /// The cheapest routes from <paramref name="start"/> to every node over the baked links alone, as a planner sees the station that is told
+        /// only what it knows: nothing that happens in the session is read (an edge blocked after a failed walk, an escalator stopped or closed, a fire,
+        /// a locked door) — <paramref name="rules"/> alone adds cost or shuts a link. Nothing is shared or remembered between calls; the answer goes into
+        /// <paramref name="into"/> (made when null) and belongs to the caller, who may reuse it for the next call.
+        /// </summary>
+        public Tree Survey(Node start, RouteProfile profile, IRules rules, Tree into = null)
+        {
+            if (rules == null) throw new ArgumentNullException(nameof(rules));
+            var tree = into ?? new Tree { Cost = new float[nodes.Count], Via = new Edge[nodes.Count] };
+            tree.Origin = start;
+            surveyRules = rules;
+            try { Search(tree, profile, 0, false); }
+            finally { surveyRules = null; }
+            return tree;
+        }
+
         /// <summary>The cheapest routes from <paramref name="start"/> to every node under <paramref name="profile"/>, avoiding <paramref name="dangers"/>; shared by everyone starting from that node for <see cref="ResultSeconds"/>.</summary>
         public Tree Explore(Node start, RouteProfile profile, IReadOnlyList<(Vector3 centre, float radius)> dangers, float now) =>
             (Tree)Result(start, profile, dangers, now, false);
@@ -306,11 +346,12 @@ namespace ChooGuard.App.Fps.Emergency
 
         private float Weight(Edge edge, RouteProfile profile, float now)
         {
-            if (edge.Missing || edge.BlockedUntil > now) return float.PositiveInfinity;
+            bool survey = surveyRules != null;
+            if (edge.Missing || !survey && edge.BlockedUntil > now) return float.PositiveInfinity;
             float weight = edge.Length;
             if (edge.Escalator != null)
             {
-                if (edge.Escalator.Closed || edge.Escalator.EntryBarred) return float.PositiveInfinity;
+                if (!survey && (edge.Escalator.Closed || edge.Escalator.EntryBarred)) return float.PositiveInfinity;
                 weight *= profile.Escalator;
             }
             if (edge.Elevator)
@@ -318,7 +359,7 @@ namespace ChooGuard.App.Fps.Emergency
                 if (profile.Elevator <= 0) return float.PositiveInfinity;
                 weight *= profile.Elevator;
             }
-            return weight + penalty[edge.Index];
+            return survey ? weight + surveyRules.Extra(edge) : weight + penalty[edge.Index];
         }
 
         private void Push(int node, float cost)

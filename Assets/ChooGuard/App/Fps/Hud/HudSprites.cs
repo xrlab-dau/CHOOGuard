@@ -5,7 +5,7 @@ namespace ChooGuard.App.Fps.Hud
     /// <summary>Small procedural sprites so the HUD needs no texture assets: disc, ring, diamond, vignette.</summary>
     public static class HudSprites
     {
-        private static Sprite disc, ring, diamond, vignette;
+        private static Sprite disc, ring, diamond, vignette, roundedPanel;
 
         public static Sprite Disc => disc != null ? disc : disc = Make(64, (x, y) => Smooth(1f - Radius(x, y), 1.5f / 32f));
         public static Sprite Ring => ring != null ? ring : ring = Make(128, (x, y) =>
@@ -17,6 +17,7 @@ namespace ChooGuard.App.Fps.Hud
             Smooth(1f - (Mathf.Abs(x) + Mathf.Abs(y)), 2f / 32f));
         public static Sprite Vignette => vignette != null ? vignette : vignette = Make(256, (x, y) =>
             Mathf.SmoothStep(0, 1, Mathf.Clamp01((Radius(x, y) - .45f) / .75f)));
+        public static Sprite RoundedPanel => roundedPanel != null ? roundedPanel : roundedPanel = MakeRoundedPanel();
 
         private static float Radius(float x, float y) => Mathf.Sqrt(x * x + y * y);
         private static float Smooth(float signedDistance, float width) => Mathf.Clamp01(signedDistance / width * .5f + .5f);
@@ -34,6 +35,32 @@ namespace ChooGuard.App.Fps.Hud
             texture.SetPixels32(pixels);
             texture.Apply(false, true);
             var sprite = Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(.5f, .5f), size);
+            sprite.hideFlags = HideFlags.DontSave;
+            return sprite;
+        }
+
+        private static Sprite MakeRoundedPanel()
+        {
+            const int size = 64;
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false)
+            {
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear,
+                hideFlags = HideFlags.DontSave
+            };
+            var pixels = new Color32[size * size];
+            for (int y = 0; y < size; y++)
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = Mathf.Max(Mathf.Abs(x + .5f - size * .5f) - 24f, 0);
+                    float dy = Mathf.Max(Mathf.Abs(y + .5f - size * .5f) - 24f, 0);
+                    float alpha = Mathf.Clamp01((8f - Mathf.Sqrt(dx * dx + dy * dy)) * .75f);
+                    pixels[y * size + x] = new Color(1, 1, 1, alpha);
+                }
+            texture.SetPixels32(pixels);
+            texture.Apply(false, true);
+            var sprite = Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(.5f, .5f), size,
+                0, SpriteMeshType.FullRect, new Vector4(24, 24, 24, 24));
             sprite.hideFlags = HideFlags.DontSave;
             return sprite;
         }

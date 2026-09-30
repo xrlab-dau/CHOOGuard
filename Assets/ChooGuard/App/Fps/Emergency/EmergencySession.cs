@@ -60,12 +60,26 @@ namespace ChooGuard.App.Fps.Emergency
         public string SituationText = "평시 근무 · 부산역 순회";
         public Color SituationColour = Color.white;
 
+        /// <summary>What the route guidance shows now (<see cref="RefreshGuide"/> sets it every couple of seconds and when the setting changes).</summary>
+        public enum GuideState { Off, Unaware, NoTarget, Arrived, Blocked, Guiding }
+        public GuideState GuideStatus { get; private set; } = GuideState.Unaware;
+        /// <summary>The line the map shows under its title for <see cref="GuideStatus"/>.</summary>
+        public string GuideMessage { get; private set; } = "";
+        /// <summary>The hazard being guided to while <see cref="GuideStatus"/> is <see cref="GuideState.Guiding"/>, <see cref="GuideState.Arrived"/> or <see cref="GuideState.Blocked"/>.</summary>
+        public Hazard GuideTarget { get; private set; }
+        /// <summary>The floor points of the route shown (empty unless guiding).</summary>
+        public IReadOnlyList<Vector3> GuidePath => guideRoute;
+
         public event Action Primary, PrimaryReleased, Drop;
 
         private readonly List<RadioOption> wheelOptions = new List<RadioOption>();
         private readonly List<BoardOverlay.Column> boardColumns = new List<BoardOverlay.Column>();
         private readonly List<GameHud.Slot> slots = new List<GameHud.Slot>();
         private bool wasPaused;
+        private float nextGuideRefresh;
+        private readonly List<Vector3> guideRoute = new List<Vector3>();
+        private WorldRouteGuide worldGuide;
+        private GuideRoute guide;
 
         public struct RadioOption
         {
@@ -84,6 +98,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (Current == this) Current = null;
             // 역무원(역 씬)이 근무 씬보다 오래 남으면 끊긴 캔버스로 일시정지 알림이 온다.
             if (Player != null) Player.PauseChanged -= OnPauseChanged;
+            GameSettings.RouteChanged -= OnSettingsChanged;
             World?.Dispose();
             HazardRegistry.Clear();
             Facilities.StationSignals.Clear();
@@ -103,6 +118,7 @@ namespace ChooGuard.App.Fps.Emergency
             EnsureEventSystem();
 
             Hud = GameHud.Create(transform, KoreanFont, Player);
+            worldGuide = WorldRouteGuide.Create(transform);
             Board = BoardOverlay.Create(transform, KoreanFont);
             Map = MapOverlay.Create(transform, KoreanFont, StationMap, StationMapBounds, Player.PlayerCamera != null ? Player.PlayerCamera.transform : Player.transform, StationMapLabel);
             Wheel = RadioWheel.Create(transform, KoreanFont);
@@ -120,6 +136,8 @@ namespace ChooGuard.App.Fps.Emergency
             int seed = NextSeed != 0 ? NextSeed : Seed != 0 ? Seed : Environment.TickCount & 0x7fffffff;
             NextSeed = 0;
             World = new StationWorld(Art, seed, transform);
+            Map.SetLandmarks(World.Points);
+            GameSettings.RouteChanged += OnSettingsChanged;
             Facilities.StationSignals.FireAlarm = false;
             Facilities.StationSignals.DoorOpen = Art.DoorOpen;
             Facilities.StationSignals.DoorClose = Art.DoorClose;
@@ -152,6 +170,7 @@ namespace ChooGuard.App.Fps.Emergency
             Sound = gameObject.AddComponent<StationSound>();
             Sound.Setup(this);
             gameObject.AddComponent<StationSoundscape>().Setup(this);
+            RefreshGuide();
             Log.Add("근무 시작 · 부산역 (시드 " + seed + ", " + Jev.Status + ")");
             Debug.Log("CG_SHIFT_START seed=" + seed + " passengers=" + Crowd.People.Count + " jev=" + Jev.Status);
         }
@@ -216,6 +235,11 @@ namespace ChooGuard.App.Fps.Emergency
         private void Update()
         {
             if (Player == null) return;
+            if (World != null && Time.unscaledTime >= nextGuideRefresh)
+            {
+                nextGuideRefresh = Time.unscaledTime + 2f;
+                RefreshGuide();
+            }
             ShiftSeconds += Time.deltaTime;
             float hours = ShiftStartHour + ShiftSeconds / 3600f;
             int h = Mathf.FloorToInt(hours) % 24, m = Mathf.FloorToInt((hours - Mathf.Floor(hours)) * 60);
@@ -252,6 +276,63 @@ namespace ChooGuard.App.Fps.Emergency
                 if (mouse.leftButton.wasReleasedThisFrame) PrimaryReleased?.Invoke();
             }
             if (keyboard.gKey.wasPressedThisFrame) Drop?.Invoke();
+        }
+
+        private void OnSettingsChanged()
+        {
+            nextGuideRefresh = 0;
+            RefreshGuide();
+        }
+
+        /// <summary>
+        /// Recomputes what the map, the compass and the floor marks show for the route to the incident now. It uses only what the player knows
+        /// (<see cref="IncidentDirector.GiveKnownObstructions"/>) and the baked station (<see cref="GuideRoute"/>), so an unseen hazard or closure
+        /// changes nothing on screen, and it never draws from the world's random numbers.
+        /// </summary>
+        public void RefreshGuide()
+        {
+            if (Map == null || Hud == null || World == null || Incidents == null || Player == null) return;
+            GuideTarget = null;
+            guideRoute.Clear();
+            if (!GameSettings.ShowRoute) { ShowGuide(GuideState.Off, "길 안내 꺼짐 · 설정에서 켤 수 있습니다"); return; }
+            if (!Incidents.PlayerKnowsIncident) { ShowGuide(GuideState.Unaware, "사고를 인지하면 이동 안내가 나타납니다"); return; }
+            if (!Incidents.TryGetKnownGuideTarget(out var target)) { ShowGuide(GuideState.NoTarget, "이동해서 확인할 사고 현장이 없습니다 · 역 전체에 걸친 상황이거나 이미 정리되었습니다"); return; }
+            GuideTarget = target;
+            guide ??= new GuideRoute(World);
+            Incidents.GiveKnownObstructions(guide);
+            var outcome = guide.Plan(Player.transform.position, target, guideRoute);
+            if (outcome == GuideRoute.Outcome.Arrived) { ShowGuide(GuideState.Arrived, target.Where + " " + target.Label + " 접근 지점에 도착했습니다"); return; }
+            if (outcome == GuideRoute.Outcome.NoRoute) { ShowGuide(GuideState.Blocked, "알고 있는 정보로는 통행 가능한 현장 접근 경로를 확인하지 못했습니다"); return; }
+            Vector3 next = guideRoute[guideRoute.Count - 1];
+            for (int i = 1; i < guideRoute.Count; i++)
+            {
+                if (Vector3.Distance(guideRoute[0], guideRoute[i]) < 4f &&
+                    MapOverlay.Floor(guideRoute[0]) == MapOverlay.Floor(guideRoute[i])) continue;
+                next = guideRoute[i];
+                break;
+            }
+            float remaining = 0;
+            for (int i = 1; i < guideRoute.Count; i++) remaining += Vector3.Distance(guideRoute[i - 1], guideRoute[i]);
+            string floor = MapOverlay.Floor(target.Scene) != MapOverlay.Floor(Player.transform.position)
+                ? " · 목적지 " + Map.FloorLabel(target.Scene) : "";
+            string transfer = MapOverlay.Floor(next) != MapOverlay.Floor(Player.transform.position)
+                ? " · 다음 " + Map.FloorLabel(next) + " 연결 지점" : "";
+            GuideStatus = GuideState.Guiding;
+            GuideMessage = target.Where + " " + target.Label + " 접근 · 약 " + Mathf.RoundToInt(remaining) + "m" + floor + transfer;
+            Map.SetRoute(guideRoute, GuideMessage);
+            // 나침반 표식은 지우지 않고 제자리에서 옮긴다(2초마다 UI 오브젝트를 만들고 부수지 않는다).
+            Hud.Compass.SetMarker("guide-next", next, MarkerKind.Guidance);
+            worldGuide?.SetRoute(guideRoute);
+        }
+
+        /// <summary>No route to show: the map says why, the compass mark and the floor marks go.</summary>
+        private void ShowGuide(GuideState state, string message)
+        {
+            GuideStatus = state;
+            GuideMessage = message;
+            Hud.Compass.RemoveMarker("guide-next");
+            worldGuide?.Clear();
+            Map.SetRoute(null, message);
         }
 
         private void OpenWheel()

@@ -23,12 +23,22 @@ namespace ChooGuard.App.Fps.Emergency
         public readonly List<Escalator> Escalators = new List<Escalator>();
         public readonly List<Elevator> Elevators = new List<Elevator>();
 
-        /// <summary>Closed-off discs (cordons, fires, fallen objects). People do not choose places inside them.</summary>
+        /// <summary>
+        /// Closed-off discs (cordons, fires, fallen objects, lowered shutters) as the crowd and the paths see them: the truth, not what the staff member
+        /// knows. People do not choose places inside them. Guidance never reads this list (<see cref="GuideRoute"/>).
+        /// </summary>
         public readonly List<(Vector3 centre, float radius, string label)> Closed = new List<(Vector3, float, string)>();
         /// <summary>Finds the way for every walking person: a waypoint graph over the navmesh and a time-sliced path queue.</summary>
         public PathService Paths { get; }
+        /// <summary>
+        /// The walkable floor as baked, untouched by anything the session does (a fire or a locked door carving the live navmesh, a closed link). Features that
+        /// must not read hidden world state, like the staff member's guidance, walk it. Added the first time it is asked for.
+        /// </summary>
+        public BakedFloor Baked => baked ??= new BakedFloor(navmeshData);
 
         private NavMeshDataInstance navmesh;
+        private readonly NavMeshData navmeshData;
+        private BakedFloor baked;
         private readonly GameObject links;
         private readonly HashSet<string> takenSlots = new HashSet<string>();
         private readonly HashSet<StationPoints.Point> takenPlaces = new HashSet<StationPoints.Point>();
@@ -41,7 +51,8 @@ namespace ChooGuard.App.Fps.Emergency
             Seed = seed;
             Random = new System.Random(seed);
             Points = StationPoints.Load(art.StationData);
-            navmesh = NavMesh.AddNavMeshData(art.WorldNavMesh);
+            navmeshData = art.WorldNavMesh;
+            navmesh = NavMesh.AddNavMeshData(navmeshData);
             if (parent != null)
             {
                 links = new GameObject("승강 설비");
@@ -74,6 +85,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (PersonBody.Paths == Paths) PersonBody.Paths = null;
             if (links != null) UnityEngine.Object.Destroy(links);
+            baked?.Dispose();
             if (navmesh.valid) navmesh.Remove();
         }
 

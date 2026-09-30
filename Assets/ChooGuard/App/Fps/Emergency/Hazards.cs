@@ -70,6 +70,25 @@ namespace ChooGuard.App.Fps.Emergency
         public abstract float DangerRadius { get; }
         /// <summary>Distance escape routes should keep from it.</summary>
         public virtual float Clearance => DangerRadius + 4;
+        /// <summary>
+        /// How far from <see cref="Scene"/> staff heading for it stop: just outside the ground routes keep clear of (<see cref="Blocks"/>). Guidance
+        /// leads to a ring of this radius around the scene, so it must lie outside everything the hazard itself blocks.
+        /// </summary>
+        public virtual float ApproachRadius => Mathf.Max(5f, Clearance + 1f);
+        /// <summary>
+        /// Whether walking at <paramref name="position"/> is walking into it now: within <see cref="Clearance"/> of it on the same storey, or where it
+        /// <see cref="Irritates"/>. Only a hazard with a place people can move away from (<see cref="Localized"/>) blocks anything; routes
+        /// and guidance keep out of the ground it blocks.
+        /// </summary>
+        public virtual bool Blocks(Vector3 position)
+        {
+            if (!Active || !Localized) return false;
+            if (Irritates(position)) return true;
+            float clearance = Clearance;
+            if (clearance <= 0 || Mathf.Abs(position.y - Position.y) >= 3f) return false;
+            float dx = position.x - Position.x, dz = position.z - Position.z;
+            return dx * dx + dz * dz < clearance * clearance;
+        }
         /// <summary>Short Korean description of what an onlooker can see now. Never hidden truth.</summary>
         public abstract string Visible { get; }
         /// <summary>Noticing needs line of sight (smoke, items, people); otherwise it is heard, smelt or felt within <see cref="NoticeRadius"/>.</summary>
@@ -239,6 +258,8 @@ namespace ChooGuard.App.Fps.Emergency
             Intensity < .7f ? Subject + "에서 불꽃과 짙은 회색 연기가 오름" :
             Intensity < 1f ? "불꽃이 주변으로 옮겨붙고 검은 연기가 퍼짐" : "불길이 커져 천장 쪽으로 검은 연기가 번짐";
         public override bool Irritates(Vector3 position) => InSmoke(position);
+        /// <summary>Staff stop outside the smoke as well (it spreads past <see cref="Hazard.Clearance"/> as the fire grows).</summary>
+        public override float ApproachRadius => Mathf.Max(base.ApproachRadius, SmokeRadius + 2f);
 
         public override Agency Command => Agency.Fire;
         public override bool Involves(Agency agency) => agency == Agency.Fire || Aboard && agency == Agency.Crew || FeedCutBy == agency;
