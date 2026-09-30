@@ -24,6 +24,10 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Valves whose flow signal is showing at the receiver.</summary>
         private readonly HashSet<string> flowSignals = new HashSet<string>();
         private float lastSprinklerCheck;
+        // 사람이 서는 자리 곁인지는 근무 내내 그대로다(고정된 배관·헤드와 대기 자리): 한 번만 골라 이 근무의 순위순으로 두고, 박동마다는
+        // 밸브·작동·통제선만 본다. 매 박동 헤드·배관 수천 개에 가장 가까운 대기 자리를 찾으면 1초마다 80 ms 가 멈췄다(2026-09-30 측정).
+        private List<(SprinklerPipeLine pipe, Vector3 floor)> publicPipes;
+        private List<SprinklerHeadPoint> publicHeads;
 
         private const float HeadBucket = 4f;
 
@@ -50,6 +54,7 @@ namespace ChooGuard.App.Fps.Emergency
                 zone.Add(head);
             }
             foreach (var equipment in EquipmentRegistry.OfKind(SprinklerPipeLine.PipeKind).OrderBy(e => e.Id, StringComparer.Ordinal)) pipes.Add(equipment.GetComponent<SprinklerPipeLine>());
+            RankPublicSprinklerSpots();
         }
 
         private SprinklerValvePoint ValveOf(SprinklerHeadPoint head) => valves.TryGetValue(head.Valve, out var valve) ? valve : null;
@@ -147,19 +152,30 @@ namespace ChooGuard.App.Fps.Emergency
 
         private Vector3 FloorUnder(Vector3 point, float floorY) => new Vector3(point.x, floorY, point.z);
 
-        /// <summary>A spot people stand near: a waiting place within 7 m on the same floor, not already cordoned off.</summary>
-        private bool PublicSpot(Vector3 floor) =>
-            world.Points.Nearest(PointKind.Wait, floor, w => Mathf.Abs(w.Position.y - floor.y) < 1.5f && Vector3.Distance(w.Position, floor) < 7f) != null && !world.IsClosed(floor, 3);
+        /// <summary>A spot people stand near: a waiting place within 7 m on the same floor (fixed for the whole shift).</summary>
+        private bool NearWaitingPlace(Vector3 floor) =>
+            world.Points.Nearest(PointKind.Wait, floor, w => Mathf.Abs(w.Position.y - floor.y) < 1.5f && Vector3.Distance(w.Position, floor) < 7f) != null;
+
+        /// <summary>The pipes and low heads over places people stand, in this shift's rank order.</summary>
+        private void RankPublicSprinklerSpots()
+        {
+            publicPipes = pipes.Select(p => (pipe: p, floor: FloorUnder(p.PointAt(.5f), p.FloorY))).Where(x => NearWaitingPlace(x.floor))
+                .OrderBy(x => Rank(x.pipe.Equipment.Id)).ToList();
+            publicHeads = sprinklerHeads.Where(h => h.MountHeight <= 5.2f && NearWaitingPlace(h.FloorPoint)).OrderBy(h => Rank(h.Equipment.Id)).ToList();
+        }
 
         private void SprinklerOrigins(List<Transition> list)
         {
+            if (publicPipes == null) RankPublicSprinklerSpots();
             if (leaks.Count == 0)
             {
-                // 배관 이음이 터진다: 사람 있는 자리 위의 배관 가운데 이 근무의 순위가 앞선 셋.
-                foreach (var pipe in pipes.Where(p => !valves.TryGetValue(p.Valve, out var v) || !v.Closed)
-                             .Where(p => PublicSpot(FloorUnder(p.PointAt(.5f), p.FloorY)))
-                             .OrderBy(p => Rank(p.Equipment.Id)).Take(3))
+                // 배관 이음이 터진다: 사람 있는 자리 위의 배관 가운데 이 근무의 순위가 앞선 셋(밸브가 닫혔거나 통제선 안인 곳은 뺀다).
+                int taken = 0;
+                foreach (var (pipe, floor) in publicPipes)
                 {
+                    if (taken == 3) break;
+                    if (valves.TryGetValue(pipe.Valve, out var v) && v.Closed || world.IsClosed(floor, 3)) continue;
+                    taken++;
                     var joint = pipe.JointNear(.2f + .6f * (Rank(pipe.Equipment.Id + "#joint") % 1000) / 1000f);
                     var p = pipe;
                     list.Add(new Transition
@@ -171,10 +187,13 @@ namespace ChooGuard.App.Fps.Emergency
                     });
                 }
             }
-            // 헤드 오작동: 사람이 오가는 곳의 낮은 헤드가 부딪혀 깨지거나 유리관이 제풀에 터진다.
-            foreach (var head in sprinklerHeads.Where(h => !h.Activated && h.MountHeight <= 5.2f && valves.TryGetValue(h.Valve, out var v) && !v.Closed && PublicSpot(h.FloorPoint))
-                         .OrderBy(h => Rank(h.Equipment.Id)).Take(2))
+            // 헤드 오작동: 사람이 오가는 곳의 낮은 헤드가 부딪혀 깨지거나 유리관이 제풀에 터진다(이미 작동했거나 밸브가 닫힌 헤드, 통제선 안은 뺀다).
+            int heads = 0;
+            foreach (var head in publicHeads)
             {
+                if (heads == 2) break;
+                if (head.Activated || !valves.TryGetValue(head.Valve, out var v) || v.Closed || world.IsClosed(head.FloorPoint, 3)) continue;
+                heads++;
                 var h = head;
                 bool knocked = Rank(head.Equipment.Id + "#cause") % 2 == 0;
                 string cause = knocked ? "a worker's ladder or a passenger's luggage knocks the head" : "the glass bulb bursts by itself (a flaw or fatigue)";
