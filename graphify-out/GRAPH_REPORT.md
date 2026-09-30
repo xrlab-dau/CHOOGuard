@@ -1,7 +1,7 @@
-# Graph Report - integration  (2026-09-30)
+# Graph Report - CHOOGuard  (2026-10-01)
 
 ## Corpus Check
-- 7180 files · ~73,898,050 words
+- 7180 files · ~73,897,914 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 19823 file(s) not represented in the graph (top: .meta 9585, .asset 3793, .mat 1719)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `09654d90`
+- Built from commit: `71b01fe6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
