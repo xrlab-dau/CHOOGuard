@@ -17,6 +17,11 @@ namespace ChooGuard.App.Fps.Emergency
         public int Target = 110;
         /// <summary>People who ride each arriving set in (JEV 007: about 110 in the station plus the train).</summary>
         public int RidersPerTrain = 38;
+        [Header("실시간 판단")]
+        [Tooltip("사건 근처에 있는 승객을 JEV 가 다시 판단하는 주기(초). 역 전체가 겪는 일(정전 등)은 이 값의 세 배.")]
+        public float JudgePeriodSeconds = 4f;
+        [Tooltip("이 거리(m, 같은 층) 안에서 알고 있는 사건은 '근처'로 본다.")]
+        public float JudgeNearMeters = 30f;
 
         public EmergencySession Session { get; private set; }
         public StationWorld World { get; private set; }
@@ -48,6 +53,8 @@ namespace ChooGuard.App.Fps.Emergency
             root = new GameObject("승객").transform;
             root.SetParent(transform, false);
             Mind = new CrowdMind(this, jev);
+            Mind.Metrics.Graph(world.Paths.Graph);
+            world.Paths.Unreachable += Mind.Metrics.Unreachable;
             if (world.Train != null)
             {
                 world.Train.Loading += FillTrain;
@@ -294,7 +301,7 @@ namespace ChooGuard.App.Fps.Emergency
                 if (Mathf.Abs(at.y - spot.y) > 2f) continue;
                 nearest = Mathf.Min(nearest, (at - spot).sqrMagnitude);
                 var body = person.Body;
-                if (body.OnNavMesh && body.Agent.hasPath) nearest = Mathf.Min(nearest, (body.Agent.destination - spot).sqrMagnitude);
+                if (body.EnRoute) nearest = Mathf.Min(nearest, (body.Goal - spot).sqrMagnitude);
             }
             foreach (var claim in claims)
                 if (claim.Until >= Time.time && (claim.Who == null || claim.Who != who) && Mathf.Abs(claim.At.y - spot.y) < 2f)
@@ -302,18 +309,40 @@ namespace ChooGuard.App.Fps.Emergency
             return Mathf.Sqrt(nearest);
         }
 
-        /// <summary>People around <paramref name="position"/> pick up on a cue without seeing the cause.</summary>
+        /// <summary>
+        /// People around <paramref name="position"/> pick up on a cue without seeing the cause. A bell (radius of hundreds of
+        /// metres) is heard on every floor of the building: NFTC 203 2.5.1.2 limits the alarm to the fire floor and the four
+        /// above it only for buildings of 11 storeys or more (16 for apartments), so a three-storey station rings everywhere.
+        /// Inside a KTX car it reaches only people near an open door. People running or shouting are noticed on the same floor only.
+        /// </summary>
         public void Alert(Vector3 position, float radius, Hazard hazard, Passenger source, string cue)
         {
             if (hazard == null) return;
             float r2 = radius * radius;
+            bool stationWide = radius >= 100f;
+            var train = World.Train;
             foreach (var person in People)
             {
                 if (person == source || person.Noticed.Contains(hazard)) continue;
+                if (stationWide && person.Aboard && !HearsThroughDoor(person, train)) continue;
                 var d = person.transform.position - position;
-                if (Mathf.Abs(d.y) > 4) continue;
+                if (!stationWide && Mathf.Abs(d.y) > 4) continue;
                 if (d.sqrMagnitude < r2) person.Notice(hazard, true, cue);
             }
+        }
+
+        /// <summary>The train's windows and doors shut the bell out: it is heard only within 6 m of a car door that stands open.</summary>
+        private static bool HearsThroughDoor(Passenger person, TrainService train) =>
+            train != null && person.TrainSeat != null && train.DoorsOpen > .9f &&
+            Vector3.Distance(person.transform.position, train.World(person.TrainSeat.Car.DoorInside)) < 6f;
+
+        private void OnDestroy()
+        {
+            // 근무가 끝나면 판단 측정 요약을 기록에 남긴다(승객 판단 기록 crowd-*.jsonl 의 마지막 줄).
+            if (Mind == null) return;
+            if (World != null && World.Paths != null) World.Paths.Unreachable -= Mind.Metrics.Unreachable;
+            Mind.Metrics.Record(new Newtonsoft.Json.Linq.JObject { ["summary"] = Mind.Metrics.Summary(Session != null ? Session.Jev : null) });
+            Mind.Metrics.Flush(true);
         }
 
         /// <summary>Staff tells the people around a passenger which way to leave. Returns how many were told.</summary>
@@ -326,25 +355,33 @@ namespace ChooGuard.App.Fps.Emergency
                 if (person.Current == Passenger.Activity.Evacuate || person.Hurt) continue;
                 var d = person.transform.position - position;
                 if (Mathf.Abs(d.y) > 3 || d.sqrMagnitude > 25) continue;
-                var danger = hazard != null && hazard.NeedsSight ? hazard.Position : (Vector3?)null;
-                person.Instruct(World.SafeExit(person.transform.position, danger, hazard != null ? hazard.Clearance : 0), true);
+                var danger = hazard != null && hazard.Localized ? hazard.Position : (Vector3?)null;
+                person.Instruct(SafeExitFor(person.transform.position, danger, hazard != null ? hazard.Clearance : 0), true);
                 told++;
             }
             Session.Log.AddGuided(told);
             return told;
         }
 
+        /// <summary>
+        /// <see cref="StationWorld.SafeExit"/> for one person: the exit with the cheapest walk that keeps clear of the danger,
+        /// read from a route tree the people standing at the same waypoint share (a search per waypoint, microseconds), so
+        /// telling a whole hall to leave at once runs no path query at all.
+        /// </summary>
+        public StationPoints.Point SafeExitFor(Vector3 from, Vector3? avoid, float clearance, StationPoints.Point except = null) =>
+            World.SafeExit(from, avoid, clearance, except);
+
         /// <summary>Public announcement: everyone within earshot (the whole station, or near <paramref name="zone"/>) is asked to leave.</summary>
         public int Announce(Vector3? zone = null, float radius = 1e4f, bool stopArrivals = true)
         {
             var hazard = MainHazard;
-            var danger = hazard != null && hazard.NeedsSight ? hazard.Position : (Vector3?)null;
+            var danger = hazard != null && hazard.Localized ? hazard.Position : (Vector3?)null;
             int heard = 0;
             foreach (var person in People.ToArray())
             {
                 if (person.Current == Passenger.Activity.Evacuate || person.Hurt) continue;
                 if (zone.HasValue && Vector3.Distance(person.transform.position, zone.Value) > radius) continue;
-                person.Instruct(World.SafeExit(person.transform.position, danger, hazard != null ? hazard.Clearance : 0), false);
+                person.Instruct(SafeExitFor(person.transform.position, danger, hazard != null ? hazard.Clearance : 0), false);
                 heard++;
             }
             if (stopArrivals) Arrivals = false;
@@ -382,6 +419,9 @@ namespace ChooGuard.App.Fps.Emergency
                 }
             }
             Mind.Tick();
+            // 길 안내: 걷는 사람의 길 요청을 프레임당 1 ms 안에서 처리한다(승객 판단의 Tick 과 합쳐 군중 비용으로 잰다).
+            float pathMs = World.Paths.Tick(out int served);
+            Mind.Metrics.Frame(pathMs, served, World.Paths.Queued, HazardRegistry.Active.Count > 0);
         }
     }
 }
