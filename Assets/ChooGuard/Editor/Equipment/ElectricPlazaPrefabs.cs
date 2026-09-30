@@ -10,7 +10,8 @@ namespace ChooGuard.Editor
     /// <summary>
     /// The prefabs of the ElectricPlaza group, built from the converted free models (ThirdParty/Models/Objaverse, credits in
     /// ThirdParty/Licenses/NOTICE.txt): every model stands with its pivot on the floor at the wall it leans on (front = +Z),
-    /// a distribution board hangs with its bottom 1.0 m above the floor and carries a hinged door. Screens and lit panels glow.
+    /// a distribution board hangs with its bottom 1.0 m above the floor and carries a hinged door and its breaker deck; vending
+    /// machines and kiosks carry an ElectricLoad. Screens and lit panels are emissive materials (ElectricLoad darkens them without power).
     /// </summary>
     internal static class ElectricPlazaPrefabs
     {

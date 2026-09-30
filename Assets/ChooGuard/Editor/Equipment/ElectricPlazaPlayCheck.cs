@@ -24,8 +24,9 @@ namespace ChooGuard.Editor
     /// Scenarios: board (open a board, read the breaker label, switch a machine's breaker off and on, walk away and the door
     /// closes), plug (pull a vending machine's plug), kiosk (throw a kiosk's power switch), fire (a vending machine burns:
     /// live fire cannot be put out, water shocks, the plug comes out, the fire goes out and the machine stays dead), boardfire
-    /// (a board burns: too hot to open, the main breaker, the board burns out), electrician (nobody cuts it: report, the
-    /// electrician cuts and inspects, the fire brigade puts it out, handover).
+    /// (a board burns: too hot to open, the main breaker, the board burns out), developments (shock, spread, protection trip, wet
+    /// short, forced one by one), bin and binbattery (a real litter bin / recycling station burns and spreads), electrician (nobody
+    /// cuts it: report, the electrician cuts and inspects, the fire brigade puts it out, handover), perf (what the causes cost).
     /// Config: out (report path), seed, timescale, shots (folder for screenshots), scenarios (list, default all).
     /// </summary>
     [InitializeOnLoad]
@@ -579,7 +580,7 @@ namespace ChooGuard.Editor
             var machine = all.FirstOrDefault(e => all.Any(o => o != e && Mathf.Abs(o.transform.position.y - e.transform.position.y) < 1f && Vector3.Distance(o.transform.position, e.transform.position) < 1.8f));
             if (machine == null) { Check("a machine with a neighbour exists", false); yield break; }
             var start = typeof(IncidentDirector).GetMethod("StartEquipmentFire", All);
-            var fire = (FireHazard)start.Invoke(director, new object[] { machine, .5f, null });
+            var fire = (FireHazard)start.Invoke(director, new object[] { machine, .5f, null, null });
             KnowAll();
             Check("fire fed by the circuit", fire.Feed == "전원" && fire.Installation == machine, machine.Id);
 
