@@ -45,7 +45,7 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly HashSet<FireHazard> cutReported = new HashSet<FireHazard>(), embersHinted = new HashSet<FireHazard>(), burntNoted = new HashSet<FireHazard>();
         private readonly List<(float at, string text)> officeLines = new List<(float, string)>();
         private bool syncingFeeds, brigadeAskedForCut;
-        private readonly Dictionary<StationEquipment, string> places = new Dictionary<StationEquipment, string>();
+        private readonly Dictionary<StationEquipment, string> equipmentPlaces = new Dictionary<StationEquipment, string>();
 
         // ── 시작과 끝 ──
 
@@ -82,7 +82,7 @@ namespace ChooGuard.App.Fps.Emergency
         private string PlaceOf(StationEquipment e)
         {
             if (e.Zone == "tracks") return Place(e.transform.position);
-            if (!places.TryGetValue(e, out var place)) places[e] = place = Place(e.transform.position);
+            if (!equipmentPlaces.TryGetValue(e, out var place)) equipmentPlaces[e] = place = Place(e.transform.position);
             return place;
         }
 

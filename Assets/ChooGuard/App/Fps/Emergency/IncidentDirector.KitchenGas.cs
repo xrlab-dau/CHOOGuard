@@ -59,7 +59,7 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly Dictionary<string, float> gasLingersUntil = new Dictionary<string, float>();
         private readonly HashSet<FireHazard> hoodFires = new HashSet<FireHazard>();
         private readonly HashSet<GasLeakHazard> shutByStaff = new HashSet<GasLeakHazard>(), shutReported = new HashSet<GasLeakHazard>();
-        private readonly HashSet<FireHazard> cutByStaff = new HashSet<FireHazard>(), cutReported = new HashSet<FireHazard>();
+        private readonly HashSet<FireHazard> cutByStaff = new HashSet<FireHazard>(), gasCutReported = new HashSet<FireHazard>();
 
         /// <summary>
         /// Where something in a shop kitchen is, in the words staff use: the floor and the shop's own name ("2층 본관 환공어묵 주방").
@@ -441,12 +441,12 @@ namespace ChooGuard.App.Fps.Emergency
                     Call(Agency.Facility, "역무원 가스 밸브 잠금 보고");
                 }));
             }
-            foreach (var fire in cutByStaff.Where(f => !cutReported.Contains(f)).Take(1))
+            foreach (var fire in cutByStaff.Where(f => !gasCutReported.Contains(f)).Take(1))
             {
                 var f = fire;
                 options.Add(Option("역무실 · 조리 열원 차단 보고", () =>
                 {
-                    cutReported.Add(f);
+                    gasCutReported.Add(f);
                     Say("역무실, " + f.Where + " " + f.FeedName + " 차단했습니다. " + (f.Extinguished ? "불은 꺼졌습니다." : "불은 아직 탑니다."));
                     Office("역무실 수신. 소방대에 열원 차단을 전하겠습니다.");
                     log.Add("역무실에 열원 차단 보고 · " + f.Where);
