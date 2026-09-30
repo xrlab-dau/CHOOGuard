@@ -393,18 +393,22 @@ namespace ChooGuard.Editor
                 origin.y = shop.Position.y + 2.4f;
                 float frontAt = Physics.Raycast(origin, front, out var frontHit, 16f, ~0, QueryTriggerInteraction.Ignore) ? frontHit.distance : 7f;
                 Vector3? spot = null;
-                if (device.SeenFromConcourse)
-                foreach (float beyond in new[] { 2.6f, 3.6f, 4.6f, 5.6f })
+                // 지나가는 사람이 가릴 수 있어 몇 초 간격으로 세 번까지 다시 찾는다.
+                for (int attempt = 0; attempt < 3 && spot == null && device.SeenFromConcourse; attempt++)
                 {
-                    foreach (float lateral in new[] { 2.4f, 1.6f, 3.2f, .9f, 4.0f, .4f })
+                    if (attempt > 0) yield return Sleep(4f);
+                    foreach (float beyond in new[] { 2.6f, 3.6f, 4.6f, 5.6f })
                     {
-                        var at = new Vector3(box.center.x, 0, box.center.z) + inward * lateral + front * (frontAt + beyond);
-                        var feet = Physics.Raycast(new Vector3(at.x, shop.Position.y + 1.5f, at.z), Vector3.down, out var floor, 4f, ~0, QueryTriggerInteraction.Ignore) ? floor.point : new Vector3(at.x, shop.Position.y, at.z);
-                        if (!Sees(feet + Vector3.up * Session.Player.EyeHeight, box, piece)) continue;
-                        spot = feet;
-                        break;
+                        foreach (float lateral in new[] { 2.4f, 1.6f, 3.2f, .9f, 4.0f, .4f })
+                        {
+                            var at = new Vector3(box.center.x, 0, box.center.z) + inward * lateral + front * (frontAt + beyond);
+                            var feet = Physics.Raycast(new Vector3(at.x, shop.Position.y + 1.5f, at.z), Vector3.down, out var floor, 4f, ~0, QueryTriggerInteraction.Ignore) ? floor.point : new Vector3(at.x, shop.Position.y, at.z);
+                            if (!Sees(feet + Vector3.up * Session.Player.EyeHeight, box, piece)) continue;
+                            spot = feet;
+                            break;
+                        }
+                        if (spot != null) break;
                     }
-                    if (spot != null) break;
                 }
                 if (spot == null) { hidden.Add(device.Key); }
                 else
@@ -582,16 +586,18 @@ namespace ChooGuard.Editor
         /// Presses the interaction on what the staff member is looking at once its prompt shows (a passer-by in the way moves on, so
         /// the prompt is awaited for a few seconds like a person would); the expected prompt is checked, then the effect.
         /// </summary>
-        private static IEnumerator Press(string what, string expectedPrompt, Func<bool> effect = null, string effectName = null)
+        private static IEnumerator Press(string what, string expectedPrompt, Component piece, Func<bool> effect = null, string effectName = null)
         {
             var player = Session.Player;
-            float until = Time.time + 8f;
+            float until = Time.time + 4f;
             while (true)
             {
                 player.RefreshInteraction();
                 if (player.CurrentPrompt == expectedPrompt || Time.time > until) break;
                 yield return Sleep(.5f);
             }
+            // 불꽃이 설비 앞에 서 있으면 그 충돌체가 시선을 막는다: 사람처럼 십자선을 설비의 다른 곳으로 옮겨 본다.
+            if (player.CurrentPrompt != expectedPrompt) yield return AimAt(piece, expectedPrompt);
             string prompt = player.CurrentPrompt;
             var eye = player.PlayerCamera.transform;
             var first = Physics.RaycastAll(eye.position, eye.forward, 3f, ~0, QueryTriggerInteraction.Ignore).Where(h => !h.collider.transform.IsChildOf(player.transform)).OrderBy(h => h.distance).FirstOrDefault();
@@ -600,6 +606,21 @@ namespace ChooGuard.Editor
             bool did = player.TryInteract();
             Check(what + ": the interaction is performed", did, player.LastFeedback);
             if (effect != null) Check(what + ": " + effectName, effect());
+        }
+
+        /// <summary>Moves the crosshair over the piece (middle, low, high, to the sides) until its prompt shows; the feet stay where they are.</summary>
+        private static IEnumerator AimAt(Component piece, string expectedPrompt)
+        {
+            var player = Session.Player;
+            var feet = player.transform.position;
+            var box = BoundsOf(piece);
+            foreach (float up in new[] { .5f, .15f, .85f, .3f, .7f, .05f, .95f })
+                foreach (float side in new[] { 0f, .3f, -.3f, .15f, -.15f, .45f, -.45f })
+                {
+                    var target = new Vector3(box.center.x, box.min.y + box.size.y * up, box.center.z) + piece.transform.right * side;
+                    yield return LookFrom(feet, target);
+                    if (player.CurrentPrompt == expectedPrompt) yield break;
+                }
         }
 
         private static IEnumerator Shot(string name)
@@ -627,7 +648,7 @@ namespace ChooGuard.Editor
             Check("a K-class extinguisher hangs in the shop's kitchen", point != null);
             if (point == null) yield break;
             yield return Stand(point.transform.position + Vector3.up * .3f, point.transform.forward, 1.1f);
-            yield return Press("K-class extinguisher", "E · 소화기 들기", () => Session.Hands.Held == point.Tool && point.Tool.Type == ExtinguishAgent.WetChemical, "the staff member holds a wet-chemical extinguisher");
+            yield return Press("K-class extinguisher", "E · 소화기 들기", point, () => Session.Hands.Held == point.Tool && point.Tool.Type == ExtinguishAgent.WetChemical, "the staff member holds a wet-chemical extinguisher");
         }
 
         /// <summary>Holds the trigger: first the pin (hold), then the spray, aimed at the base of the fire, until it is out or the agent is spent.</summary>
@@ -724,7 +745,7 @@ namespace ChooGuard.Editor
             Check("the leak names an intermediate valve that stops it", valve != null, string.Join(",", gas.StoppedBy));
             if (valve == null) yield break;
             yield return Stand(valve.transform.position, valve.transform.forward, 1.2f);
-            yield return Press("intermediate valve", "E · 가스 중간밸브 잠그기", () => valve.Closed, "the valve is closed");
+            yield return Press("intermediate valve", "E · 가스 중간밸브 잠그기", valve, () => valve.Closed, "the valve is closed");
             yield return Sleep(1.5f);
             Check("closing it ends the leak", !gas.Active);
             yield return Shot("valve_stops_hose_leak_2closed");
@@ -733,7 +754,7 @@ namespace ChooGuard.Editor
         private static IEnumerator SwitchOffFryer(FireHazard fire, KitchenAppliancePoint fryer)
         {
             yield return Stand(fryer.transform.position + Vector3.up * .3f, fryer.transform.forward, 1.3f);
-            yield return Press("fryer", "E · 튀김기 전원 끄기", () => !fryer.On && fire.Feed == null, "the fryer is off and the fire's feed is cut");
+            yield return Press("fryer", "E · 튀김기 전원 끄기", fryer, () => !fryer.On && fire.Feed == null, "the fryer is off and the fire's feed is cut");
         }
 
         private static IEnumerator FryerOffThenK()
@@ -784,7 +805,7 @@ namespace ChooGuard.Editor
             yield return Stand(fire.Position + Vector3.up * .4f, range.transform.forward, 2.8f);
             yield return Shot("range_1burning");
             yield return Stand(valve.transform.position, valve.transform.forward, 1.2f);
-            yield return Press("range's intermediate valve", "E · 가스 중간밸브 잠그기", () => valve.Closed && fire.Feed == null, "the valve is closed and the fire's gas feed is cut");
+            yield return Press("range's intermediate valve", "E · 가스 중간밸브 잠그기", valve, () => valve.Closed && fire.Feed == null, "the valve is closed and the fire's gas feed is cut");
             yield return TakeKitchenExtinguisher(fire);
             yield return Spray(fire, 30f, range.transform.forward);
             Check("the fire is out", fire.Extinguished, "intensity " + fire.Intensity.ToString("0.00"));
@@ -797,7 +818,7 @@ namespace ChooGuard.Editor
             var oven = Nearest<KitchenAppliancePoint>(KitchenAppliancePoint.OvenKind, fire.Position);
             // 불꽃이 문 앞에 서 있으니(충돌체가 시선을 막는다) 오븐 아랫 앞면을 본다.
             yield return Stand(oven.transform.position + Vector3.up * .25f, oven.transform.forward, 1.3f);
-            yield return Press("oven", "E · 오븐 전원 끄기", () => !oven.On && fire.Feed == null, "the oven is off and the fire's feed is cut");
+            yield return Press("oven", "E · 오븐 전원 끄기", oven, () => !oven.On && fire.Feed == null, "the oven is off and the fire's feed is cut");
             yield return TakeKitchenExtinguisher(fire);
             yield return Spray(fire, 30f, oven.transform.forward);
             Check("the fire is out", fire.Extinguished, "intensity " + fire.Intensity.ToString("0.00"));
@@ -820,7 +841,7 @@ namespace ChooGuard.Editor
             var intermediates = EquipmentRegistry.All.Where(e => e.Kind == GasValvePoint.Kind && e.Text("shop") == meter.Text("shop") && !e.GetComponent<GasValvePoint>().Main).ToList();
             Check("an intermediate valve does not appear among what stops a leak at the meter", intermediates.All(v => !gas.StoppedBy.Contains(v.Id)));
             yield return Stand(main.transform.position, main.transform.forward, 1.2f);
-            yield return Press("main valve", "E · 가스 메인밸브 잠그기", () => main.Closed, "the main valve is closed");
+            yield return Press("main valve", "E · 가스 메인밸브 잠그기", main, () => main.Closed, "the main valve is closed");
             yield return Sleep(1.5f);
             Check("closing it ends the leak", !gas.Active);
         }
@@ -835,7 +856,7 @@ namespace ChooGuard.Editor
             Check("the leak alarm sounds (a cock left open is what it is for)", alarm.Sounding);
             var range = Nearest<KitchenAppliancePoint>(KitchenAppliancePoint.RangeKind, gas.Position);
             yield return Stand(range.transform.position + Vector3.up * .6f, range.transform.forward, 1.3f);
-            yield return Press("range", "E · 화구 코크 잠그기(불 끄기)", () => !range.On, "the burner cock is closed");
+            yield return Press("range", "E · 화구 코크 잠그기(불 끄기)", range, () => !range.On, "the burner cock is closed");
             yield return Sleep(1.5f);
             Check("closing the cock ends the leak", !gas.Active);
         }
@@ -862,7 +883,7 @@ namespace ChooGuard.Editor
             Check("while the gas feeds it the fire is beaten down to embers but is not out", !fire.Extinguished && fire.Intensity <= FireHazard.LiveEmbers + .02f, "intensity " + fire.Intensity.ToString("0.00"));
             var main = EquipmentRegistry.All.Where(e => gas.StoppedBy.Contains(e.Id)).Select(e => e.GetComponent<GasValvePoint>()).First(v => v.Main);
             yield return Stand(main.transform.position, main.transform.forward, 1.3f);
-            yield return Press("main valve", "E · 가스 메인밸브 잠그기", () => main.Closed && fire.Feed == null, "the main valve is closed and the gas feed is cut");
+            yield return Press("main valve", "E · 가스 메인밸브 잠그기", main, () => main.Closed && fire.Feed == null, "the main valve is closed and the gas feed is cut");
             yield return Spray(fire, 12f, inward);
             Check("with the gas cut the extinguisher puts the fire out", fire.Extinguished, "intensity " + fire.Intensity.ToString("0.00"));
         }
