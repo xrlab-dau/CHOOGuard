@@ -81,8 +81,8 @@ namespace ChooGuard.App.Fps.Emergency
         private int failuresInARow;
         /// <summary>Seconds a person waits for a judgement, while JEV is failing, before they carry on with their trip.</summary>
         public float OutageSeconds = 5f;
-        /// <summary>How a request reaches JEV: its client (null). A check swaps in one that never answers, to see the crowd keep going through an outage.</summary>
-        public Func<string, object, IReadOnlyList<JevChoice>, Action<Dictionary<string, JevAnswer>>, JevLane, IEnumerator> Transport;
+        /// <summary>How the crowd's requests reach JEV: its client (null). A check sets one that never answers before the shift loads, to see the crowd keep going through an outage; nothing then leaves the process.</summary>
+        public static Func<string, object, IReadOnlyList<JevChoice>, Action<Dictionary<string, JevAnswer>>, JevLane, IEnumerator> Transport;
 
         /// <summary>One thing a person could do next, with where and for how long.</summary>
         public sealed class Choice
