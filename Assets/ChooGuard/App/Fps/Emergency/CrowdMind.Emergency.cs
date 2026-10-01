@@ -251,6 +251,8 @@ namespace ChooGuard.App.Fps.Emergency
             var chosen = DrawValid(answer, options, item.Offered);
             if (chosen == null) { slot.Log("answer dropped: no offered option fits any more"); Metrics.Moot++; return; }
             float game = Time.time - item.Raised, seconds = real - item.RaisedReal, trip = real - item.SentReal;
+            // 하던 일이 끝나서 물은 판단이면 그 답을 그대로 둔다: 관측이 바뀌지 않는 동안 같은 상황의 다음 끝남은 이 확률로 정한다.
+            if (item.Trigger == Trigger.Ended) slot.Stance = new Stance { Hazard = hazard, Version = slot.Version, Signature = Signature(who), Answer = answer, Offered = item.Offered };
             Metrics.UrgentByJev++;
             Metrics.Reaction(game, seconds, trip);
             Perform(item, chosen, "JEV", game, seconds, trip);
@@ -277,6 +279,30 @@ namespace ChooGuard.App.Fps.Emergency
             }
             Metrics.UrgentLocally++;
             Perform(item, chosen, "local", Time.time - item.Raised, 0, 0);
+        }
+
+        /// <summary>
+        /// What they were doing ended (they reached where they were moving to, finished watching, kept walking toward staff) and
+        /// nothing they observe has changed since JEV answered the same question: the next step is drawn from that answer's
+        /// probabilities among the options that make sense now, as an applied answer would be. JEV is not asked again for an
+        /// unchanged situation. False when there is no such answer, a new meaningful option exists, or none of its options fits.
+        /// </summary>
+        private bool Reuse(Passenger who, Hazard hazard)
+        {
+            var slot = who.Slot;
+            var stance = slot.Stance;
+            if (stance == null || stance.Hazard != hazard || stance.Version != slot.Version || stance.Signature != Signature(who)) return false;
+            if (who.Hurt || who.Hostile) return true;
+            if (hazard != null && !hazard.Active) return false;
+            var item = new Judgement { Who = who, Trigger = Trigger.Ended, Hazard = hazard, Direct = true, Offered = stance.Offered };
+            var options = Options(item);
+            foreach (var (option, weight) in options)
+                if (weight > 0 && !stance.Offered.Contains(option.Key)) return false;
+            var chosen = DrawValid(stance.Answer, options, stance.Offered);
+            if (chosen == null) return false;
+            Metrics.StanceReused++;
+            Perform(item, chosen, "stance", 0, 0, 0);
+            return true;
         }
 
         /// <summary>One option drawn from JEV's probabilities among those offered and still valid; null when none is.</summary>
@@ -311,7 +337,8 @@ namespace ChooGuard.App.Fps.Emergency
         {
             var who = item.Who;
             var slot = who.Slot;
-            crowd.Session.Log.Decision(who, item.Trigger.ToString(), chosen.Key, source);
+            // 근무 기록은 결정을 JEV 판단(답을 받았거나 그 확률로 정한 것)과 지역 규칙으로만 나눈다.
+            crowd.Session.Log.Decision(who, item.Trigger.ToString(), chosen.Key, source == "local" ? "local" : "JEV");
             slot.JudgedAt = Time.time;
             slot.Log("did " + chosen.Key + " (" + source + ", " + item.Trigger + ")");
             slot.Acts.Add(chosen.Description);

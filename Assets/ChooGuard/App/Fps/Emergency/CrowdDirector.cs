@@ -17,11 +17,6 @@ namespace ChooGuard.App.Fps.Emergency
         public int Target = 110;
         /// <summary>People who ride each arriving set in (JEV 007: about 110 in the station plus the train).</summary>
         public int RidersPerTrain = 38;
-        [Header("실시간 판단")]
-        [Tooltip("사건 근처에 있는 승객을 JEV 가 다시 판단하는 주기(초). 역 전체가 겪는 일(정전 등)은 이 값의 세 배.")]
-        public float JudgePeriodSeconds = 4f;
-        [Tooltip("이 거리(m, 같은 층) 안에서 알고 있는 사건은 '근처'로 본다.")]
-        public float JudgeNearMeters = 30f;
 
         public EmergencySession Session { get; private set; }
         public StationWorld World { get; private set; }
@@ -44,6 +39,7 @@ namespace ChooGuard.App.Fps.Emergency
         private Transform root;
         private float nextArrival, perceiveBudget;
         private int perceiveCursor;
+        private readonly List<StationPoints.Point> busStops = new List<StationPoints.Point>();
 
         public void Begin(EmergencySession session, StationWorld world, CrowdCatalog crowd, JevClient jev)
         {
@@ -61,6 +57,7 @@ namespace ChooGuard.App.Fps.Emergency
                 world.Train.Opened += OnOpened;
                 world.Train.Departed += OnDeparted;
             }
+            busStops.AddRange(world.Points.Of(PointKind.Wait).Where(w => w.Zone == CrowdMind.BusStopZone));
             PopulateInitial();
         }
 
@@ -102,23 +99,47 @@ namespace ChooGuard.App.Fps.Emergency
             switch (trip)
             {
                 case Passenger.Purpose.Depart:
-                    if (roll < .38f) return (Passenger.Activity.Sit, World.ReserveSeat(here + new Vector3(World.Range(-20, 20), 0, World.Range(-5, 35))), World.Range(40, 300));
-                    if (roll < .50f) return (Passenger.Activity.Stand, World.ReservePlace(PointKind.Wait, p => p.Zone == "hall2f"), World.Range(20, 120));
+                    if (roll < .36f) return (Passenger.Activity.Sit, World.ReserveSeat(here + new Vector3(World.Range(-20, 20), 0, World.Range(-5, 35))), World.Range(40, 300));
+                    if (roll < .46f) return (Passenger.Activity.Stand, World.ReservePlace(PointKind.Wait, p => p.Zone == "hall2f"), World.Range(20, 120));
+                    if (roll < .50f && StandingPlace("southgate") is StationPoints.Point gate) return (Passenger.Activity.Stand, gate, World.Range(20, 120));
                     if (roll < .58f) return (Passenger.Activity.Queue, World.ReservePlace(PointKind.Counter), World.Range(10, 45));
                     if (roll < .72f) return (Passenger.Activity.Browse, World.Pick(World.Points.Of(PointKind.Shop)), World.Range(15, 70));
-                    if (roll < .88f) return (Passenger.Activity.Sit, World.ReserveChair(here, 1e4f), World.Range(60, 260));
-                    return (Passenger.Activity.Walk, World.ReservePlace(PointKind.Wait), 0);
+                    if (roll < .85f) return (Passenger.Activity.Sit, World.ReserveChair(here, 1e4f), World.Range(60, 260));
+                    if (roll < .89f && StandingPlace(OutdoorZones) is StationPoints.Point outside) return (Passenger.Activity.Stand, outside, World.Range(30, 150));
+                    return (Passenger.Activity.Walk, StandingPlace(), 0);
                 case Passenger.Purpose.Greet:
-                    if (roll < .5f) return (Passenger.Activity.Meet, World.Pick(World.Points.Of(PointKind.Meet)), World.Range(60, 200));
+                    if (roll < .42f) return (Passenger.Activity.Meet, World.Pick(World.Points.Of(PointKind.Meet)), World.Range(60, 200));
+                    if (roll < .52f && StandingPlace(OutdoorZones) is StationPoints.Point waiting) return (Passenger.Activity.Stand, waiting, World.Range(40, 160));
                     return (Passenger.Activity.Sit, World.ReserveSeat(here), World.Range(40, 160));
                 case Passenger.Purpose.Visit:
-                    if (roll < .45f) return (Passenger.Activity.Browse, World.Pick(World.Points.Of(PointKind.Shop)), World.Range(15, 80));
-                    if (roll < .8f) return (Passenger.Activity.Sit, World.ReserveChair(here, 1e4f), World.Range(60, 260));
-                    return (Passenger.Activity.Walk, World.ReservePlace(PointKind.Wait), 0);
+                    if (roll < .40f) return (Passenger.Activity.Browse, World.Pick(World.Points.Of(PointKind.Shop)), World.Range(15, 80));
+                    if (roll < .70f) return (Passenger.Activity.Sit, World.ReserveChair(here, 1e4f), World.Range(60, 260));
+                    if (roll < .82f && StandingPlace() is StationPoints.Point lingering) return (Passenger.Activity.Stand, lingering, World.Range(30, 150));
+                    return (Passenger.Activity.Walk, StandingPlace(), 0);
                 default:
-                    return (Passenger.Activity.Walk, World.ReservePlace(PointKind.Wait, p => p.Zone == "hall2f" || p.Zone == "northdeck" || p.Zone == "main2f"), 0);
+                    return (Passenger.Activity.Walk, StandingPlace("hall2f", "northdeck", "main2f", "ground1f", "eastexit", "plaza", "skyplaza", CrowdMind.BusStopZone, "world"), 0);
             }
         }
+
+        private static readonly string[] OutdoorZones = { "plaza", "skyplaza", CrowdMind.BusStopZone, "world" };
+
+        /// <summary>
+        /// A free standing place, zone first: a zone is picked at random among those listed (all that have standing places when none
+        /// is listed) and a place inside it second, so a zone with a handful of places is as likely as one with hundreds.
+        /// </summary>
+        private StationPoints.Point StandingPlace(params string[] zones)
+        {
+            IEnumerable<string> pool = zones.Length == 0 ? Mind.LivingZones : Mind.LivingZones.Where(z => zones.Contains(z));
+            foreach (var zone in pool.OrderBy(_ => World.Random.Next()))
+            {
+                var place = World.ReservePlace(PointKind.Wait, p => p.Zone == zone);
+                if (place != null) return place;
+            }
+            return null;
+        }
+
+        /// <summary>Where a new arrival walks in: a city exit, or off a bus at the bus stop when the station has one.</summary>
+        private StationPoints.Point ArrivalPoint() => busStops.Count > 0 && World.Chance(.3f) ? World.Pick(busStops) : World.RandomExit();
 
         private void Release(StationPoints.Point place)
         {
@@ -396,7 +417,7 @@ namespace ChooGuard.App.Fps.Emergency
                 // 사건 중에는 들어오는 사람이 줄어든다(밖에서도 보이고 들린다).
                 bool incident = MainHazard != null;
                 nextArrival = Time.time + World.Range(1.2f, 3.2f) * (incident ? 3 : 1);
-                var entrance = World.RandomExit();
+                var entrance = ArrivalPoint();
                 if (!PlayerView.Sees(entrance.Position, 60))
                 {
                     float roll = (float)World.Random.NextDouble();

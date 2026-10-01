@@ -31,24 +31,27 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 원인 ──
 
-        private IEnumerable<Transition> FireOrigins(Pools pools)
-        {
-            foreach (var p in pools.Spread(p => p.CarriesPowerBank && Settled(p), 2)) yield return Overheat(p);
+        private IEnumerable<Transition> FireOrigins(Roster roster) => Chain(
+            Passengers(roster, p => p.CarriesPowerBank && Settled(p), Overheat),
             // 쓰레기통은 실제로 놓인 통이다(IncidentDirector.ElectricPlaza 의 배치): 출입구 곁 휴지통은 담배꽁초, 사람이 오가는 분리수거함은 버려진 배터리.
-            foreach (var bin in Candidates("litter_bin", 2, NearAnExit)) yield return BinFire(bin, false);
-            foreach (var bin in Candidates("recycling_bin", 1, e => PeopleNear(e.transform.position, 10f) > 0)) yield return BinFire(bin, true);
-            if (Train != null && Train.AtPlatform && Train.Stage != TrainService.Phase.Opening)
-            {
-                var car = Train.Cars.Where(c => c.Entry.reachable).OrderBy(c => Rank("car" + c.Number)).FirstOrDefault();
-                if (car != null) yield return Underfloor(car);
-            }
+            Pieces("litter_bin", NearAnExit, bin => BinFire(bin, false)),
+            Pieces("recycling_bin", bin => PeopleNear(bin.transform.position, 10f) > 0, bin => BinFire(bin, true)),
+            UnderfloorOrigins());
+
+        /// <summary>Running gear under a KTX car smokes: any car of the set standing at the platform that people can reach, once the doors have opened for the arrivals.</summary>
+        private IEnumerable<Transition> UnderfloorOrigins()
+        {
+            if (Train == null) yield break;
+            foreach (var smoke in Each(Train.Cars, car => Train.AtPlatform && Train.Stage != TrainService.Phase.Opening && car.Entry.reachable ? Underfloor(car) : null)) yield return smoke;
         }
+
+        private static readonly List<string> OverheatLevels = new List<string> { "only a faint burning smell and a wisp of white smoke", "white smoke pouring out of the bag", "the bag bursts into small flames", "flames reach the seat or things around it", "a fierce fire with thick black smoke within seconds" };
 
         private Transition Overheat(Passenger owner) => new Transition
         {
             Key = "overheat_" + owner.Number, Kind = "overheat", Origin = true,
             Description = "The power bank in the bag of " + Profile(owner) + ", " + owner.Doing + " at " + Place(owner.transform.position) + ", starts to overheat.",
-            Levels = new List<string> { "only a faint burning smell and a wisp of white smoke", "white smoke pouring out of the bag", "the bag bursts into small flames", "flames reach the seat or things around it", "a fierce fire with thick black smoke within seconds" },
+            Levels = OverheatLevels,
             Apply = m => StartPowerBankFire(owner, m),
         };
 
@@ -64,6 +67,9 @@ namespace ChooGuard.App.Fps.Emergency
             return false;
         }
 
+        private static readonly List<string> BinBatteryLevels = new List<string> { "a hiss and a wisp of white smoke from the bin", "white smoke and a sharp chemical smell pouring out of the bin", "the battery vents a jet of flame that lights the paper and cups", "flames leap out of the bin, cans and bottles burst", "the bin burns fiercely, thick toxic smoke rolls along the ceiling" };
+        private static readonly List<string> BinCigaretteLevels = new List<string> { "a thin wisp of smoke from the bin", "thick smoke from the bin", "the rubbish in the bin bursts into flames", "flames leap out of the bin", "the bin burns fiercely and melts, black smoke drifts through the entrance" };
+
         private Transition BinFire(StationEquipment bin, bool battery)
         {
             var exit = world.Points.Nearest(PointKind.Exit, bin.transform.position);
@@ -74,9 +80,7 @@ namespace ChooGuard.App.Fps.Emergency
                 Description = battery
                     ? "A worn-out power bank thrown away with drink cans and paper into recycling station " + bin.Id + " (" + where + ") swells and goes into thermal runaway. " + CrowdNote(bin.transform.position)
                     : "A cigarette butt, still lit, dropped into litter bin " + bin.Id + " (" + where + ")" + (exit != null ? " by someone coming back in from outside through the entrance '" + exit.Label + "'" : "") + " starts the rubbish smouldering. " + CrowdNote(bin.transform.position),
-                Levels = battery
-                    ? new List<string> { "a hiss and a wisp of white smoke from the bin", "white smoke and a sharp chemical smell pouring out of the bin", "the battery vents a jet of flame that lights the paper and cups", "flames leap out of the bin, cans and bottles burst", "the bin burns fiercely, thick toxic smoke rolls along the ceiling" }
-                    : new List<string> { "a thin wisp of smoke from the bin", "thick smoke from the bin", "the rubbish in the bin bursts into flames", "flames leap out of the bin", "the bin burns fiercely and melts, black smoke drifts through the entrance" },
+                Levels = battery ? BinBatteryLevels : BinCigaretteLevels,
                 Apply = m =>
                 {
                     if (!Still(StillIgnitable(bin), bin.Label + " " + bin.Id)) return;
@@ -87,11 +91,13 @@ namespace ChooGuard.App.Fps.Emergency
             };
         }
 
+        private static readonly List<string> UnderfloorLevels = new List<string> { "a burning smell and light smoke from under the car", "white smoke pours out from under the car", "sparks and small flames under the car", "flames lick up the side of the car", "a fierce fire under the car with thick black smoke" };
+
         private Transition Underfloor(TrainService.Car car) => new Transition
         {
             Key = "underfloor_" + car.Number, Kind = "underfloor_smoke", Origin = true,
             Description = "Smoke rises from under KTX " + car.Label + " standing at platform 5·6 (a brake or electrical fault in the running gear).",
-            Levels = new List<string> { "a burning smell and light smoke from under the car", "white smoke pours out from under the car", "sparks and small flames under the car", "flames lick up the side of the car", "a fierce fire under the car with thick black smoke" },
+            Levels = UnderfloorLevels,
             Apply = m => StartUnderfloorFire(car, m),
         };
 

@@ -93,6 +93,9 @@ namespace ChooGuard.App.Fps.Emergency
         public bool Chance(float probability) => Random.NextDouble() < probability;
         public T Pick<T>(IReadOnlyList<T> list) => list.Count == 0 ? default : list[Random.Next(list.Count)];
 
+        /// <summary>Public outside zones, including unnamed surroundings; shared by behaviour, daylight and acoustics.</summary>
+        public static bool IsOutdoorZone(string id) => string.IsNullOrEmpty(id) || id == "plaza" || id == "skyplaza" || id == "busstop" || id == "world";
+
         public bool IsClosed(Vector3 position, float margin = 0)
         {
             foreach (var zone in Closed)
@@ -450,10 +453,12 @@ namespace ChooGuard.App.Fps.Emergency
                 case "northdeck": return "2F north deck (arrival exits)";
                 case "main2f": return "2F main building";
                 case "eastexit": return "2F east exit";
-                case "skyplaza": return "sky plaza (port side)";
+                case "skyplaza": return "sky plaza / waterfront promenade (port side)";
                 case "upper3f": return "3F shops and restaurants";
                 case "ground1f": return "1F";
                 case "plaza": return "station square / street";
+                case "busstop": return "outside at the Jungang-daero bus stop";
+                case "world": return "station surroundings / public walking routes";
                 case "tracks": return "track side";
                 default: return "in the station";
             }

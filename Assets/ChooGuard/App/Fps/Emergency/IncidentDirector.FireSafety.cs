@@ -17,8 +17,8 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<DetectorPoint> detectors = new List<DetectorPoint>();
         /// <summary>Since when a detector has sensed a fire without tripping yet (the smoke's transport time to the ceiling).</summary>
         private readonly Dictionary<(FireHazard fire, DetectorPoint detector), float> sensing = new Dictionary<(FireHazard, DetectorPoint), float>();
-        /// <summary>The smoke detector nearest a food shop's kitchen (its fumes drift there), by shop point id.</summary>
-        private readonly Dictionary<string, DetectorPoint> kitchenDetectors = new Dictionary<string, DetectorPoint>();
+        /// <summary>The food shops whose kitchen fumes drift to a smoke detector (the one nearest each kitchen), by that detector.</summary>
+        private readonly Dictionary<DetectorPoint, List<StationPoints.Point>> kitchenShops = new Dictionary<DetectorPoint, List<StationPoints.Point>>();
         private readonly Dictionary<string, string> detectorPlaces = new Dictionary<string, string>();
         private float nextDetectorCheck;
         private int trippedDetectors;
@@ -50,7 +50,9 @@ namespace ChooGuard.App.Fps.Emergency
                     d.y = 0;
                     if (d.sqrMagnitude < best) { best = d.sqrMagnitude; nearest = detector; }
                 }
-                if (nearest != null) kitchenDetectors[shop.Id] = nearest;
+                if (nearest == null) continue;
+                if (!kitchenShops.TryGetValue(nearest, out var shops)) kitchenShops[nearest] = shops = new List<StationPoints.Point>();
+                shops.Add(shop);
             }
             BindSprinklers();
             BindShutters();
@@ -62,24 +64,28 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 원인 ──
 
-        partial void FireSafetyOrigins(Pools pools, List<Transition> list)
+        private IEnumerable<Transition> FireSafetyOrigins() => Chain(SprinklerOrigins(), ShutterOrigins(), DetectorOrigins());
+
+        /// <summary>
+        /// Every detector can trip without a fire, for the reason its place gives it: cooking fumes under the smoke detector nearest a
+        /// kitchen, a cigarette in a public toilet (the toilets have detectors: NFTC 203 2.4.5.5 leaves out only those with showers),
+        /// and for every other smoke detector its own ageing and condensation.
+        /// </summary>
+        private IEnumerable<Transition> DetectorOrigins() => Each(detectors, DetectorTripsOf);
+
+        private Transition DetectorTripsOf(DetectorPoint detector)
         {
-            SprinklerOrigins(list);
-            ShutterOrigins(list);
-            if (falseAlarm != null || alarm || detectors.Count == 0) return;
-            var picked = new List<(DetectorPoint detector, string en, string ko)>();
-            // 조리 연기는 실제 주방 가까운 연기감지기만 울린다.
-            foreach (var shop in world.Points.Of(PointKind.Shop).Where(s => kitchenDetectors.ContainsKey(s.Id)).OrderBy(s => Rank(s.Id)).Take(1))
-                picked.Add((kitchenDetectors[shop.Id], "cooking fumes from the kitchen of the food shop '" + shop.Label + "' drifting under it", "'" + shop.Label + "' 조리 연기"));
-            // 공중화장실의 담배 연기(화장실에는 감지기가 있다: NFTC 203 2.4.5.5 는 샤워 시설이 있는 화장실만 뺀다).
-            foreach (var detector in detectors.Where(d => d.Room == "toilet").OrderBy(d => Rank(d.Equipment.Id)).Take(1))
-                picked.Add((detector, "someone smoking a cigarette in the public toilet it hangs in", "화장실 흡연 연기"));
-            // 감지기 자체의 노후·결로는 구역마다 하나씩 뽑아 역 곳곳에 후보를 둔다.
-            foreach (var detector in detectors.Where(d => d.Equipment.Kind == DetectorPoint.SmokeKind && picked.TrueForAll(p => p.detector != d))
-                         .GroupBy(d => d.Equipment.Zone).Select(g => g.OrderBy(d => Rank(d.Equipment.Id)).First())
-                         .OrderBy(d => Rank(d.Equipment.Id)).Take(2))
-                picked.Add((detector, "an ageing detector head fouled by condensation", "노후·결로로 감지기 오동작"));
-            foreach (var p in picked) list.Add(DetectorTrips(p.detector, p.en, p.ko));
+            if (falseAlarm != null || alarm) return null;
+            if (kitchenShops.TryGetValue(detector, out var shops))
+            {
+                var names = new List<string>(shops.Count);
+                foreach (var shop in shops) names.Add("'" + shop.Label + "'");
+                string them = string.Join(" and ", names);
+                return DetectorTrips(detector, (shops.Count == 1 ? "cooking fumes from the kitchen of the food shop " : "cooking fumes from the kitchens of the food shops ") + them + " drifting under it", string.Join("·", names) + " 조리 연기");
+            }
+            if (detector.Room == "toilet") return DetectorTrips(detector, "someone smoking a cigarette in the public toilet it hangs in", "화장실 흡연 연기");
+            if (detector.Equipment.Kind == DetectorPoint.SmokeKind) return DetectorTrips(detector, "an ageing detector head fouled by condensation", "노후·결로로 감지기 오동작");
+            return null;
         }
 
         private Transition DetectorTrips(DetectorPoint detector, string cause, string causeKo) => new Transition

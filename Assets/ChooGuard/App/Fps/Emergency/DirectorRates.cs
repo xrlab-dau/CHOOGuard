@@ -79,15 +79,15 @@ namespace ChooGuard.App.Fps.Emergency
             return expected * Base(scale);
         }
 
-        /// <summary>How many listed origins the base rates were calibrated on; beyond this the origins share the same station-level budget.</summary>
+        /// <summary>How many rated origins the base rates were calibrated on; beyond this the origins share the same station-level budget.</summary>
         public const int ReferenceOrigins = 32;
 
         /// <summary>
-        /// How often the station has a new emergency does not depend on how many kinds of equipment and people the game models:
-        /// once more than <see cref="ReferenceOrigins"/> origins are listed, each one's rate is scaled down so the station-level
-        /// hazard stays where it was calibrated (more equipment adds variety, not frequency).
+        /// How often the station has a new emergency does not depend on how many kinds of equipment and people the game models, nor on how
+        /// many of them JEV has got round to rating: once more than <see cref="ReferenceOrigins"/> origins carry a rating that counts, each
+        /// one's rate is scaled down so the station-level hazard stays where it was calibrated (more equipment adds variety, not frequency).
         /// </summary>
-        public static float OriginShare(int listedOrigins) => listedOrigins > ReferenceOrigins ? ReferenceOrigins / (float)listedOrigins : 1f;
+        public static float OriginShare(int ratedOrigins) => ratedOrigins > ReferenceOrigins ? ReferenceOrigins / (float)ratedOrigins : 1f;
     }
 
     /// <summary>

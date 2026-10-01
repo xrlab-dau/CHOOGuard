@@ -105,24 +105,25 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 원인 ──
 
-        private void ShutterOrigins(List<Transition> list)
+        private IEnumerable<Transition> ShutterOrigins() => Each(shutters, ShutterFaultOf);
+
+        private static readonly List<string> ShutterFaultLevels = new List<string>
         {
-            if (shutterFault != null && shutterFault.Active) return;
-            foreach (var shutter in shutters.Where(s => s.Opening >= .999f && !s.Triggered && !s.ControllerFault).OrderBy(s => Rank(s.Equipment.Id)).Take(2))
+            "it stops half way and leaves a gap", "it comes down whole and cuts the passage", "it comes down whole and people crowd in front of it",
+            "it comes down and its obstacle sensor does not work", "it comes down with the sensor dead onto a person who is walking under it",
+        };
+
+        /// <summary>The interlock of any shutter that is up, with no fire signal and a working controller, can fail on its own (one fault at a time).</summary>
+        private Transition ShutterFaultOf(FireShutterPoint shutter)
+        {
+            if (shutterFault != null && shutterFault.Active || shutter.Opening < .999f || shutter.Triggered || shutter.ControllerFault) return null;
+            return new Transition
             {
-                var s = shutter;
-                list.Add(new Transition
-                {
-                    Key = "shutter_fault_" + shutter.Equipment.Id, Kind = "shutter_malfunction", Origin = true,
-                    Description = "The interlock control of the fire shutter '" + shutter.Equipment.Label + "' at " + Place(shutter.transform.position) + " fails and the curtain starts to come down by itself although the receiver shows no fire signal.",
-                    Levels = new List<string>
-                    {
-                        "it stops half way and leaves a gap", "it comes down whole and cuts the passage", "it comes down whole and people crowd in front of it",
-                        "it comes down and its obstacle sensor does not work", "it comes down with the sensor dead onto a person who is walking under it",
-                    },
-                    Apply = m => StartShutterFault(s, m),
-                });
-            }
+                Key = "shutter_fault_" + shutter.Equipment.Id, Kind = "shutter_malfunction", Origin = true,
+                Description = "The interlock control of the fire shutter '" + shutter.Equipment.Label + "' at " + FixedPlace(shutter.transform.position) + " fails and the curtain starts to come down by itself although the receiver shows no fire signal.",
+                Levels = ShutterFaultLevels,
+                Apply = m => StartShutterFault(shutter, m),
+            };
         }
 
         private void StartShutterFault(FireShutterPoint shutter, float magnitude)

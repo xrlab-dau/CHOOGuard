@@ -8,10 +8,13 @@ namespace ChooGuard.App.Fps.Emergency
     /// <summary>
     /// Real-time judgement of the people in the station, asked of JEV as typed Choice questions over options the game builds
     /// from the live world. Something a person observes (they see, hear or smell a hazard, hear the alarm bell or an
-    /// announcement, are told by staff, find their way blocked, arrive, or finish what they were doing) raises a judgement at
-    /// once; people near an active incident are judged again every few seconds; everyday choices are asked ahead of time at
-    /// low priority. A question holds only what that person could know, and people share a request only when their
-    /// observations are identical. Requests are scheduled by priority inside the crowd's share of JEV's budget. While an
+    /// announcement, are told by staff, find their way blocked, arrive) raises a judgement at once. Everyday life is a plan:
+    /// JEV is asked once when a person becomes part of the station (and the first time they need one), answers with its
+    /// probabilities over what they might do, and the person then carries the plan out step by step in code, choosing each next
+    /// activity among the options that still fit and re-resolving the places they were bound to. A plan is asked for again only
+    /// when what it was made on changes for that person (the train, their ticket, the person they meet, an incident they learn
+    /// of) or nothing is left in it. A question holds only what that person could know, and people share a request only when
+    /// their observations are identical. Requests are scheduled by priority inside the crowd's share of JEV's budget. While an
     /// answer is late, or the budget is spent, the person keeps doing what they were doing; when it arrives it is checked
     /// against their current state first. Only physical reflexes (stepping back from fire, out of smoke) are decided in code,
     /// and local weights decide only in runs without JEV (no key, or TYPESAFE_API_KEY=off); those weights are design
@@ -20,11 +23,7 @@ namespace ChooGuard.App.Fps.Emergency
     public sealed partial class CrowdMind
     {
         /// <summary>Why a judgement is needed, most urgent first (the value is the priority).</summary>
-        public enum Trigger { Quake, AfterQuake, Notice, Changed, Blocked, Instruction, Cue, Ended, Periodic, Routine, Route }
-
-        // 사건 근처 재판단 주기·거리는 CrowdDirector 에서 조정한다(인스펙터).
-        private float PeriodicSeconds => crowd.JudgePeriodSeconds;
-        private float NearMeters => crowd.JudgeNearMeters;
+        public enum Trigger { Quake, AfterQuake, Notice, Changed, Blocked, Instruction, Cue, Ended, Routine, Route }
         /// <summary>Emergency questions per request: one bell or announcement reaches everyone at once, and a request holds about a dozen questions in the time of one.</summary>
         public int UrgentBatch = 12;
         public int RoutineBatch = 12;
@@ -35,6 +34,10 @@ namespace ChooGuard.App.Fps.Emergency
         public sealed class Slot
         {
             internal Judgement Urgent, Routine, Route;
+            /// <summary>JEV's plan for this person's everyday course, carried out locally; replaced when what it was made on changes.</summary>
+            internal Plan Plan;
+            /// <summary>JEV's last answer to "they finished what they were doing" while what they observe has stayed the same.</summary>
+            internal Stance Stance;
             /// <summary>Raised whenever what the person observes changes; an answer built on an older version is stale.</summary>
             internal int Version;
             internal float JudgedAt = -1000, WaitingSince = -1;
@@ -69,6 +72,7 @@ namespace ChooGuard.App.Fps.Emergency
                 Acts.Clear();
                 Announcement = null;
                 ToldByStaff = false;
+                Stance = null;
             }
         }
 
@@ -87,13 +91,22 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>One thing a person could do next, with where and for how long.</summary>
         public sealed class Choice
         {
+            /// <summary>Stable for the life of a plan: the same key is the same wish ("browse that shop", "leave by that exit"), never a position in a shuffled list.</summary>
             public string Key, Description, Remember, Filter;
+            /// <summary>Standing places: the landmark (point label) preferred inside zone <see cref="Filter"/>.</summary>
+            public string Landmark;
             public float Weight, Seconds;
+            /// <summary>How long the activity lasts, drawn when the step starts (the train may be nearer now than when the option was built); null for none.</summary>
+            public Func<float> Length;
+            /// <summary>What carrying it out does to the wish for it: 1 nothing (waiting, sitting), between 0 and 1 less each time (a visit), 0 once only.</summary>
+            public float Fade = 1;
             public Passenger.Activity Activity;
             public PointKind Kind;
             public StationPoints.Point Place;
             /// <summary>Still sensible now (the train may have left since JEV was asked); null when nothing can change.</summary>
             public Func<bool> Guard;
+            /// <summary>Finds the place again when it moves (the person they meet); null when the place is fixed.</summary>
+            public Func<StationPoints.Point> Resolve;
         }
 
         private sealed class Option
@@ -117,10 +130,11 @@ namespace ChooGuard.App.Fps.Emergency
             public bool Sent, Done, Superseded, Received;
             public float Raised, RaisedReal, Due, NotBefore, ReadyAt, SentReal, AnsweredAt;
             public int Version, Failures, BatchSize;
-            public string Key, Answer, Note;
-            public Dictionary<string, float> Odds;
+            public string Key, Note;
             public HashSet<string> Offered;
             public List<Choice> Choices;
+            /// <summary>Everyday questions: what the plan will be made on (the person's trip and knowledge when the question was built).</summary>
+            public Basis Basis;
         }
 
         private readonly CrowdDirector crowd;
@@ -183,7 +197,13 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         /// <summary>The way to where they were heading is blocked.</summary>
-        public void OnBlocked(Passenger who) => Raise(who, Trigger.Blocked, who.Focus, true);
+        public void OnBlocked(Passenger who)
+        {
+            // 걷던 일상 걸음의 목적지가 막혔다: 그 계획은 이 걸음을 다시 고르지 않는다.
+            var plan = who.Slot.Plan;
+            if (plan != null && plan.Active != null && who.Current == Passenger.Activity.Walk) plan.Struck.Add(plan.Active);
+            Raise(who, Trigger.Blocked, who.Focus, true);
+        }
 
         /// <summary>They reached where they were going in an emergency, or finished watching.</summary>
         public void OnEnded(Passenger who) => Raise(who, Trigger.Ended, who.Focus, true);
@@ -208,9 +228,11 @@ namespace ChooGuard.App.Fps.Emergency
             var slot = who.Slot;
             var old = slot.Urgent;
             bool pending = old != null && !old.Done;
-            // 도착·관찰 끝남·주기는 이미 판단이 진행 중이면 그 판단에 맡긴다. 관측이 실제로 바뀐 것만 진행 중 판단을 낡게 만든다.
-            bool soft = trigger == Trigger.Ended || trigger == Trigger.Periodic;
+            // 도착·관찰 끝남은 이미 판단이 진행 중이면 그 판단에 맡긴다. 관측이 실제로 바뀐 것만 진행 중 판단을 낡게 만든다.
+            bool soft = trigger == Trigger.Ended;
             if (soft && pending) return;
+            // 관측이 그대로인데 하던 일이 끝났다: 지난번 답의 확률로 지금 맞는 선택지 중에서 다시 고른다(JEV 에 다시 묻지 않는다).
+            if (soft && Reuse(who, hazard)) return;
             if (!soft) slot.Version++;
             float raised = Time.time, raisedReal = Time.realtimeSinceStartup;
             if (pending)
@@ -268,7 +290,7 @@ namespace ChooGuard.App.Fps.Emergency
             for (int i = queue.Count - 1; i >= 0; i--)
             {
                 var item = queue[i];
-                if (item.Done || item.Who == null || item.Answer != null) { if (!item.Done && item.Who == null) item.Done = true; queue.RemoveAt(i); continue; }
+                if (item.Done || item.Who == null) { if (!item.Done && item.Who == null) item.Done = true; queue.RemoveAt(i); continue; }
                 if (item.Sent || item.Received) continue;
                 if (!usable)
                 {
@@ -285,70 +307,16 @@ namespace ChooGuard.App.Fps.Emergency
                     }
                     continue;
                 }
-                if (Outdated(item, now)) { Finish(item); queue.RemoveAt(i); Metrics.Stale++; }
             }
             DrainApply();
             Watchdog(now);
             if (usable)
             {
-                ScanNearIncident(now);
+                ScanPlans(now);
                 Dispatch(now);
             }
             Metrics.Flush();
             Metrics.Tick((System.Diagnostics.Stopwatch.GetTimestamp() - began) * 1000f / System.Diagnostics.Stopwatch.Frequency, GC.CollectionCount(0) != collections, Metrics.Requests - startedBefore, queue.Count);
-        }
-
-        /// <summary>A question nobody needs the answer to any more: the next round asks a fresh one.</summary>
-        private bool Outdated(Judgement item, float now)
-        {
-            if (item.Trigger == Trigger.Periodic) return now - item.Raised > PeriodicSeconds * 2f;
-            // 일상 판단은 활동이 끝나면 어차피 급한 판단으로 올라간다. 그 전에 오래 묵은 것은 다음 활동에서 다시 묻는다.
-            if (item.Everyday && !item.Urgent) return now - item.Due > 90f;
-            return false;
-        }
-
-        /// <summary>People near an incident they know of are judged again every <see cref="PeriodicSeconds"/>.</summary>
-        private void ScanNearIncident(float now)
-        {
-            if (now < nextScan) return;
-            nextScan = now + .5f;
-            foreach (var person in crowd.People)
-            {
-                if (person == null) continue;
-                // 다음 걸음을 기다리며 하던 일을 잇는 시간(가장 긴 것을 잰다). 다른 일(대피·지켜보기)이 이미 맡았으면 더는 기다리는 것이 아니다.
-                if (person.Slot.WaitingSince >= 0)
-                {
-                    if (person.Holding) Metrics.LongestWait = Mathf.Max(Metrics.LongestWait, now - person.Slot.WaitingSince);
-                    else person.Slot.WaitingSince = -1;
-                }
-                if (person.Hurt || person.Hostile) continue;
-                var focus = person.Focus;
-                if (focus == null || !focus.Active) continue;
-                switch (person.Current)
-                {
-                    case Passenger.Activity.Evacuate:
-                    case Passenger.Activity.Injured:
-                    case Passenger.Activity.OnTrack:
-                    case Passenger.Activity.Aggressive:
-                    case Passenger.Activity.Report:
-                    case Passenger.Activity.TakeCover:
-                        continue;
-                }
-                var slot = person.Slot;
-                if (slot.Urgent != null && !slot.Urgent.Done) continue;
-                // 역 전체가 겪는 일(정전 등)은 곁에서 벌어지는 일보다 느리게 다시 묻는다.
-                float interval = PeriodicSeconds * (focus.Localized ? 1f : 3f);
-                if (now - slot.JudgedAt < interval || !Near(person, focus)) continue;
-                Raise(person, Trigger.Periodic, focus, true);
-            }
-        }
-
-        private bool Near(Passenger person, Hazard hazard)
-        {
-            if (!hazard.Localized) return true;
-            var d = person.transform.position - hazard.Position;
-            float reach = Mathf.Max(NearMeters, hazard.NoticeRadius);
-            return Mathf.Abs(d.y) < 4f && d.x * d.x + d.z * d.z < reach * reach;
         }
 
         /// <summary>
@@ -425,7 +393,7 @@ namespace ChooGuard.App.Fps.Emergency
                 ready.Clear();
                 float real = Time.realtimeSinceStartup;
                 foreach (var item in queue)
-                    if (!item.Sent && !item.Received && !item.Done && item.Who != null && item.Answer == null && real >= item.NotBefore) ready.Add(item);
+                    if (!item.Sent && !item.Received && !item.Done && item.Who != null && real >= item.NotBefore) ready.Add(item);
                 if (ready.Count == 0) return;
                 ready.Sort(ByPriority);
                 // 급한 줄이 가득 차 못 보내도 일상 줄에 자리가 있으면 그쪽 첫 질문은 보낸다(예산은 JEV 클라이언트가 지킨다).
@@ -436,9 +404,9 @@ namespace ChooGuard.App.Fps.Emergency
                 if (first == null) return;
                 int capacity = first.Urgent ? UrgentBatch : RoutineBatch;
                 var batch = new List<Judgement>(capacity) { first };
-                string signature = Signature(first);
+                string signature = Signature(first.Who);
                 for (int i = 1; i < ready.Count && batch.Count < capacity; i++)
-                    if (ready[i].Urgent == first.Urgent && Signature(ready[i]) == signature) batch.Add(ready[i]);
+                    if (ready[i].Urgent == first.Urgent && Signature(ready[i].Who) == signature) batch.Add(ready[i]);
                 Send(batch, first.Urgent);
             }
         }
@@ -555,8 +523,8 @@ namespace ChooGuard.App.Fps.Emergency
             Metrics.Failures++;
             item.Failures++;
             item.NotBefore = Time.realtimeSinceStartup + Mathf.Min(8f, 1f * (1 << Mathf.Min(item.Failures - 1, 3)));
-            // 곧 다시 물을 것들(주기·습관)은 몇 번 실패하면 접는다. 관측에 대한 판단은 답이 올 때까지 묻는다.
-            if ((item.Trigger == Trigger.Periodic || item.Trigger == Trigger.Route) && item.Failures >= 3) { Finish(item); Metrics.Dropped++; }
+            // 곧 다시 물을 것(습관)은 몇 번 실패하면 접는다. 관측에 대한 판단과 일상 계획은 답이 올 때까지 묻는다.
+            if (item.Trigger == Trigger.Route && item.Failures >= 3) { Finish(item); Metrics.Dropped++; }
         }
     }
 }

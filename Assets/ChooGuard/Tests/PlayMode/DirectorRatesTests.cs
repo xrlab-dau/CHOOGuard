@@ -66,11 +66,12 @@ namespace ChooGuard.Tests.PlayMode
         }
 
         [Test]
-        public void OriginsShareOneStationBudgetOnceMoreThanTheCalibratedNumberAreListed()
+        public void RatedOriginsShareOneStationBudgetOnceMoreThanTheCalibratedNumberCarryARating()
         {
             Assert.That(Imminence.OriginShare(Imminence.ReferenceOrigins), Is.EqualTo(1f));
             Assert.That(Imminence.OriginShare(1), Is.EqualTo(1f));
-            Assert.That(Imminence.OriginShare(Imminence.ReferenceOrigins * 2), Is.EqualTo(.5f), "설비를 더 모델링해도 새 비상상황의 빈도는 그대로다");
+            Assert.That(Imminence.OriginShare(Imminence.ReferenceOrigins * 2), Is.EqualTo(.5f), "설비와 사람을 더 모델링해도, 판단이 더 많이 쌓여도 새 비상상황의 빈도는 그대로다");
+            Assert.That(Imminence.OriginShare(Imminence.ReferenceOrigins * 100) * Imminence.ReferenceOrigins * 100, Is.EqualTo(Imminence.ReferenceOrigins).Within(.01f), "원인이 수천 개여도 합친 몫은 기준 후보 수만큼이다");
         }
     }
 }

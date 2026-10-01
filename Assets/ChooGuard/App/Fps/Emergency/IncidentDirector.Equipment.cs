@@ -7,10 +7,10 @@ namespace ChooGuard.App.Fps.Emergency
     /// <summary>
     /// Equipment families: the station's building services and fittings placed as real objects in the map — fire
     /// detection, suppression, compartment and surveillance equipment; electrical equipment and concourse/plaza fittings;
-    /// kitchen and gas equipment. Each family implements the partial methods of its own group in its own file
-    /// (IncidentDirector.FireSafety.cs, IncidentDirector.ElectricPlaza.cs, IncidentDirector.KitchenGas.cs): causes and
-    /// developments built from the equipment present right now, per-frame rules, what the staff member notices, radio
-    /// options and follow-ups. A group without a file contributes nothing (C# partial methods).
+    /// kitchen and gas equipment. Each family implements its own group in its own file (IncidentDirector.FireSafety.cs,
+    /// IncidentDirector.ElectricPlaza.cs, IncidentDirector.KitchenGas.cs): the causes of every placed piece that qualifies right
+    /// now (<c>…Origins</c>, listed lazily), developments built from the equipment present, per-frame rules, what the staff member
+    /// notices, radio options and follow-ups (the partial methods below).
     /// </summary>
     public sealed partial class IncidentDirector
     {
@@ -39,12 +39,8 @@ namespace ChooGuard.App.Fps.Emergency
             KitchenGasTick(dt);
         }
 
-        private void EquipmentOrigins(Pools pools, List<Transition> list)
-        {
-            FireSafetyOrigins(pools, list);
-            ElectricPlazaOrigins(pools, list);
-            KitchenGasOrigins(pools, list);
-        }
+        /// <summary>The causes of every group, lazily (see <see cref="Fill"/>): each group's file lists them as <c>FireSafetyOrigins</c>, <c>ElectricPlazaOrigins</c>, <c>KitchenGasOrigins</c>.</summary>
+        private IEnumerable<Transition> EquipmentOrigins() => Chain(FireSafetyOrigins(), ElectricPlazaOrigins(), KitchenGasOrigins());
 
         private void EquipmentDevelopments(List<Transition> list)
         {
@@ -87,7 +83,6 @@ namespace ChooGuard.App.Fps.Emergency
         partial void BeginFireSafety();
         partial void EndFireSafety();
         partial void FireSafetyTick(float dt);
-        partial void FireSafetyOrigins(Pools pools, List<Transition> list);
         partial void FireSafetyDevelopments(List<Transition> list);
         partial void LookAroundFireSafety(Vector3 eye, Vector3 forward);
         partial void FireSafetyRadio(List<EmergencySession.RadioOption> options);
@@ -98,7 +93,6 @@ namespace ChooGuard.App.Fps.Emergency
         partial void BeginElectricPlaza();
         partial void EndElectricPlaza();
         partial void ElectricPlazaTick(float dt);
-        partial void ElectricPlazaOrigins(Pools pools, List<Transition> list);
         partial void ElectricPlazaDevelopments(List<Transition> list);
         partial void LookAroundElectricPlaza(Vector3 eye, Vector3 forward);
         partial void ElectricPlazaRadio(List<EmergencySession.RadioOption> options);
@@ -109,7 +103,6 @@ namespace ChooGuard.App.Fps.Emergency
         partial void BeginKitchenGas();
         partial void EndKitchenGas();
         partial void KitchenGasTick(float dt);
-        partial void KitchenGasOrigins(Pools pools, List<Transition> list);
         partial void KitchenGasDevelopments(List<Transition> list);
         partial void LookAroundKitchenGas(Vector3 eye, Vector3 forward);
         partial void KitchenGasRadio(List<EmergencySession.RadioOption> options);

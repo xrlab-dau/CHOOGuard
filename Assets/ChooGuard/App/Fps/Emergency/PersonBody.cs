@@ -750,7 +750,10 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         private void WatchStuck()
         {
-            bool trying = !Scripted && OnNavMesh && Agent.hasPath && !Agent.isStopped && !Planning && !Agent.isOnOffMeshLink
+            // A queued replan is part of recovery, not evidence that the body moved.
+            // Keep the tier across it; otherwise every retry starts at Replan forever.
+            if (Planning || sidestep != Vector3.zero) return;
+            bool trying = !Scripted && OnNavMesh && Agent.hasPath && !Agent.isStopped && !Agent.isOnOffMeshLink
                 && Agent.remainingDistance > Agent.stoppingDistance + .5f && Agent.desiredVelocity.sqrMagnitude > .09f;
             if (!trying) { stuckSince = -1; stuckStage = 0; return; }
             // 3초에 30cm 도 못 가면 막힌 것이다(가장자리에 부딪혀 떨리는 경우도 포함).

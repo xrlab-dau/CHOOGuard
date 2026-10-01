@@ -31,6 +31,9 @@ namespace ChooGuard.App.Fps.Emergency
             public string[] Says;
             /// <summary>From this level on the person lies on the floor (below it they sit or crouch, conscious).</summary>
             public int DownFrom;
+            private List<string> levelTexts;
+            /// <summary>The level texts as the list JEV is asked with (built once: everyone who can have the condition shares it).</summary>
+            public List<string> LevelTexts => levelTexts ?? (levelTexts = new List<string>(Levels));
         }
 
         private static readonly Condition Faint = new Condition
@@ -78,36 +81,47 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 원인 ──
 
-        private IEnumerable<Transition> CasualtyOrigins(Pools pools)
+        private IEnumerable<Transition> CasualtyOrigins(Roster roster) => Chain(
+            Passengers(roster, p => p.Current != Passenger.Activity.Walk || p.Elderly, p => Medical(p, Faint)),
+            Passengers(roster, p => Medical(p, Seizure)),
+            Passengers(roster, p => p.Current != Passenger.Activity.InTrain || p.Elderly, p => Medical(p, ChestPain)),
+            Passengers(roster, p => Medical(p, Breathing)),
+            Passengers(roster, p => p.Current != Passenger.Activity.Walk, p => Medical(p, LowSugar)),
+            Passengers(roster, p => p.Current == Passenger.Activity.Walk && OnStairs(p), StairsFall),
+            EscalatorOrigins());
+
+        /// <summary>
+        /// What can go wrong for everyone standing on a moving escalator, on every running escalator: a fall, a shoe caught in the comb
+        /// plate at the landing and, on an up escalator, a large suitcase slipping from its owner's hand onto whoever is right behind or
+        /// at the foot.
+        /// </summary>
+        private IEnumerable<Transition> EscalatorOrigins()
         {
-            foreach (var p in pools.Spread(p => p.Current != Passenger.Activity.Walk || p.Elderly, 2)) yield return Medical(p, Faint);
-            yield return null;
-            foreach (var p in pools.Spread(p => true, 1)) yield return Medical(p, Seizure);
-            yield return null;
-            foreach (var p in pools.Spread(p => p.Current != Passenger.Activity.InTrain || p.Elderly, 1)) yield return Medical(p, ChestPain);
-            yield return null;
-            foreach (var p in pools.Spread(p => true, 1)) yield return Medical(p, Breathing);
-            yield return null;
-            foreach (var p in pools.Spread(p => p.Current != Passenger.Activity.Walk, 1)) yield return Medical(p, LowSugar);
-            yield return null;
-            foreach (var p in pools.Spread(p => p.Current == Passenger.Activity.Walk && OnStairs(p), 2)) yield return StairsFall(p);
-            yield return null;
-            int falls = 0, caught = 0;
-            foreach (var escalator in world.Escalators.OrderBy(e => Rank(e.Entry.id)))
+            foreach (var escalator in world.Escalators)
             {
                 if (!escalator.Running) continue;
-                var riders = escalator.Bodies().Where(escalator.Carries).Select(b => b.GetComponent<Passenger>()).Where(p => p != null && !p.Hurt && !p.Hostile).ToList();
+                var riders = RidersOf(escalator);
                 if (riders.Count == 0) continue;
-                if (falls < 2) { yield return EscalatorFall(riders.OrderBy(p => Rank(p)).First(), escalator); falls++; }
-                if (caught < 1) { yield return CombCaught(riders[riders.Count - 1], escalator); caught++; }
-                if (!escalator.Entry.up) continue;
-                foreach (var owner in riders.Where(p => p.Luggage == 2))
-                {
-                    var below = Below(owner, escalator);
-                    if (below != null) { yield return SuitcaseTumble(owner, below, escalator); break; }
-                }
-                yield return null;
+                var belt = escalator;
+                foreach (var fall in Each(riders, rider => RidingNow(belt, rider) ? EscalatorFall(rider, belt) : null)) yield return fall;
+                foreach (var caught in Each(riders, rider => RidingNow(belt, rider) ? CombCaught(rider, belt) : null)) yield return caught;
+                if (!belt.Entry.up) continue;
+                foreach (var tumble in Each(riders, rider => RidingNow(belt, rider) && rider.Luggage == 2 && Below(rider, belt) is Passenger below ? SuitcaseTumble(rider, below, belt) : null)) yield return tumble;
             }
+        }
+
+        /// <summary>Standing on the moving steps of <paramref name="escalator"/> now, unhurt.</summary>
+        private static bool RidingNow(Escalator escalator, Passenger rider) => escalator.Running && !rider.Hurt && !rider.Hostile && escalator.Carries(rider.Body);
+
+        private static List<Passenger> RidersOf(Escalator escalator)
+        {
+            var riders = new List<Passenger>();
+            foreach (var body in escalator.Bodies())
+            {
+                var rider = body.GetComponent<Passenger>();
+                if (rider != null && RidingNow(escalator, rider)) riders.Add(rider);
+            }
+            return riders;
         }
 
         /// <summary>
@@ -146,43 +160,51 @@ namespace ChooGuard.App.Fps.Emergency
         {
             Key = condition.Kind + "_" + person.Number, Kind = condition.Kind, Origin = true,
             Description = Profile(person) + ", " + person.Doing + " at " + Place(person.transform.position) + ", " + condition.En + ".",
-            Levels = condition.Levels.ToList(),
+            Levels = condition.LevelTexts,
             Apply = m => StartMedical(person, condition, m),
         };
+
+        private static readonly List<string> StairsFallLevels = new List<string> { "stumbles and catches the handrail", "falls and bruises a knee, gets up slowly", "falls and cannot stand up (ankle or hip)", "tumbles down several steps, head bleeding", "falls down the flight and lies unconscious" };
 
         private Transition StairsFall(Passenger walker) => new Transition
         {
             Key = "stairs_" + walker.Number, Kind = "stairs_fall", Origin = true,
             Description = Profile(walker) + " walking on the stairs at " + Place(walker.transform.position) + " misses a step and falls.",
-            Levels = new List<string> { "stumbles and catches the handrail", "falls and bruises a knee, gets up slowly", "falls and cannot stand up (ankle or hip)", "tumbles down several steps, head bleeding", "falls down the flight and lies unconscious" },
+            Levels = StairsFallLevels,
             Apply = m => StartStairsFall(walker, m),
         };
+
+        private static readonly List<string> EscalatorFallLevels = new List<string> { "stumbles and catches the handrail", "falls and is bruised, tries to get up", "falls and cannot get up", "falls and knocks down the person behind", "a serious fall; several people pile up" };
 
         private Transition EscalatorFall(Passenger rider, Escalator escalator) => new Transition
         {
             Key = "fall_" + rider.Number, Kind = "escalator_fall", Origin = true,
             Description = Profile(rider) + " riding the " + escalator.Entry.label + " loses footing and falls on the moving steps.",
-            Levels = new List<string> { "stumbles and catches the handrail", "falls and is bruised, tries to get up", "falls and cannot get up", "falls and knocks down the person behind", "a serious fall; several people pile up" },
+            Levels = EscalatorFallLevels,
             Apply = m => StartFall(rider, escalator, m, .9f, "에스컬레이터 넘어짐", "에스컬레이터에서 넘어진", "fell on the escalator",
                 m < .2f ? "에스컬레이터에서 휘청였다가 손잡이를 잡음" : "에스컬레이터 계단에 넘어진 승객", "에스컬레이터에서 넘어짐"),
         };
+
+        private static readonly List<string> CombCaughtLevels = new List<string> { "a shoelace is caught and pulled free at once", "a shoe is pulled off and caught; the rider stumbles", "the foot is caught and the rider falls at the landing", "the foot is caught and injured; riders behind bunch up", "the foot is badly caught; riders behind pile up and fall" };
 
         private Transition CombCaught(Passenger rider, Escalator escalator) => new Transition
         {
             Key = "comb_" + rider.Number, Kind = "escalator_caught", Origin = true,
             Description = "As " + Profile(rider) + " reaches the end of the " + escalator.Entry.label + ", a shoe or trouser hem gets caught in the comb plate.",
-            Levels = new List<string> { "a shoelace is caught and pulled free at once", "a shoe is pulled off and caught; the rider stumbles", "the foot is caught and the rider falls at the landing", "the foot is caught and injured; riders behind bunch up", "the foot is badly caught; riders behind pile up and fall" },
+            Levels = CombCaughtLevels,
             // 발이 끼이면 곁의 사람이 바로 비상정지 버튼을 누르는 일이 많다(한국승강기안전공단 안내, research.md).
             Apply = m => StartFall(rider, escalator, m, .4f, "에스컬레이터 끼임", "에스컬레이터 발판에 발이 끼인", "had a foot caught at the escalator comb plate",
                 m < .3f ? "에스컬레이터 끝 발판에 신발이 끼었다 빠짐" : "에스컬레이터 끝 발판에 발이 끼여 넘어짐", "에스컬레이터 끝 발판에 발이 끼임"),
         };
+
+        private static readonly List<string> SuitcaseTumbleLevels = new List<string> { "it bumps their legs and is caught", "it knocks them off balance", "they fall", "they fall and knock down the person behind them", "several people fall and pile up" };
 
         private Transition SuitcaseTumble(Passenger owner, Passenger below, Escalator escalator) => new Transition
         {
             Key = "tumble_" + owner.Number, Kind = "suitcase_tumble", Origin = true,
             Description = "The large suitcase of " + Profile(owner) + " on the " + escalator.Entry.label + " slips from their hand and tumbles down toward " +
                 Profile(below) + (escalator.Carries(below.Body) ? ", riding right behind them." : ", at the foot of the escalator."),
-            Levels = new List<string> { "it bumps their legs and is caught", "it knocks them off balance", "they fall", "they fall and knock down the person behind them", "several people fall and pile up" },
+            Levels = SuitcaseTumbleLevels,
             Apply = m => StartTumble(owner, below, escalator, m),
         };
 

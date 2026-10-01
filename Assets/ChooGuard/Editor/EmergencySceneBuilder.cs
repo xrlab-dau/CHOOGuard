@@ -28,9 +28,21 @@ namespace ChooGuard.Editor
         public const string BootstrapScenePath = "Assets/ChooGuard/Scenes/Bootstrap.unity";
         public const string KoreanFontPath = "Assets/ChooGuard/Settings/ImportedAssets/Fonts/NotoSansCJKkr SDF.asset";
 
-        // 2층 맞이방과 바로 붙은 외곽. +X 동, +Z 북 (station-interior-spec coordinateNote).
-        public static readonly Rect MapBounds = new Rect(-80, -100, 210, 210);
-        private const float MapCameraY = 9.9f, MapDepth = 4.6f, MapPixelsPerMetre = 6f;
+        // The map and its marker projection share the same surveyed full-world extent.
+        public static Rect MapBounds
+        {
+            get
+            {
+                var asset = AssetDatabase.LoadAssetAtPath<TextAsset>(StationNavigationBuilder.PointsPath)
+                    ?? throw new FileNotFoundException(StationNavigationBuilder.PointsPath);
+                var data = JsonUtility.FromJson<MapData>(asset.text);
+                var world = data.zones.FirstOrDefault(z => z.id == "world")
+                    ?? throw new InvalidOperationException("역 전체 지도를 만들기 전에 Build station points 를 실행하세요.");
+                return Rect.MinMaxRect(world.min.x, world.min.z, world.max.x, world.max.z);
+            }
+        }
+        [Serializable] private sealed class MapData { public StationPoints.ZoneEntry[] zones; }
+        private const float MapCameraY = 9.9f, MapDepth = 30f, MapPixelsPerMetre = 4f;
 
         [MenuItem("ChooGuard/Emergency/Render title and map images")]
         public static void RenderImages()
@@ -100,7 +112,7 @@ namespace ChooGuard.Editor
             session.StationMapBounds = MapBounds;
             session.Art = art;
             session.Passengers = 110;
-            session.StationMapLabel = "2층 평면 · 역 전체";
+            session.StationMapLabel = "부산역 전역 · 광장·산책로·탑승구";
             if (!EditorSceneManager.SaveScene(scene, EmergencyScenePath)) throw new IOException("저장 실패: " + EmergencyScenePath);
             EditorSceneManager.CloseScene(scene, true);
         }

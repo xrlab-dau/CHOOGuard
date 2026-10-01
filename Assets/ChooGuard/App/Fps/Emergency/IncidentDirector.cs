@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ChooGuard.App.Fps.Equipment;
 using ChooGuard.App.Fps.Hud;
 using UnityEngine;
 
@@ -198,89 +199,103 @@ namespace ChooGuard.App.Fps.Emergency
             /// <summary>Magnitude scale for JEV Score (lowest first); null when the transition has no magnitude.</summary>
             public List<string> Levels;
             public Action<float> Apply;
-        }
-
-        /// <summary>A rank (see IncidentDirector.Rank.cs) seen through one cause's slot, so different causes pick different people from the same pool.</summary>
-        private static int Mix(int rank, int slot)
-        {
-            unchecked
-            {
-                uint h = (uint)rank * 2654435761u ^ (uint)(slot + 1) * 2246822519u;
-                h ^= h >> 15;
-                h *= 2246822519u;
-                h ^= h >> 13;
-                return (int)(h & 0x7fffffff);
-            }
+            /// <summary>An origin: the one concrete person, thing or place it names (the station itself for a cause that belongs to no single one). Set by <see cref="Bound{T}"/>.</summary>
+            public object Subject;
+            /// <summary>
+            /// An origin: asks the world about that same subject again and returns the transition as the world makes it now, or null when
+            /// the subject no longer qualifies. It tests the one subject and never looks through a listing, so what a check costs does not
+            /// grow with the number of people and things in the station.
+            /// </summary>
+            public Func<Transition> Recheck;
         }
 
         /// <summary>
-        /// People who could be the subject of a new emergency right now, grouped by zone so each cause draws its instances
-        /// from different parts of the station. Picks follow the ranks (see above): the same person stays the pick of a cause
-        /// while they qualify. One instance is refilled for every listing (no per-listing allocation besides the picks).
+        /// The people in the station when a listing starts: a copy, because a listing spans several frames in which people come and go.
+        /// Nobody is left out to keep a list short: every person is tested for every cause on their own (<see cref="Passengers"/>).
+        /// One instance is refilled for every listing.
         /// </summary>
-        private sealed class Pools
+        private sealed class Roster
         {
             private readonly IncidentDirector director;
-            private readonly Dictionary<string, List<Passenger>> byZone = new Dictionary<string, List<Passenger>>();
-            private readonly List<int> zoneRanks = new List<int>();
-            private readonly List<Passenger> zoneMatches = new List<Passenger>();
-            private int slot;
+            public readonly List<Passenger> People = new List<Passenger>();
 
-            public Pools(IncidentDirector owner) { director = owner; }
+            public Roster(IncidentDirector owner) { director = owner; }
 
-            /// <summary>Starts a listing: sorts everyone who qualifies now into their zone.</summary>
             public void Refill()
             {
-                slot = 0;
-                foreach (var pool in byZone.Values) pool.Clear();
-                var train = director.Train;
-                foreach (var person in director.crowd.People)
-                {
-                    if (person.Hostile || person.Hurt || !person.Body.Visible) continue;
-                    if (person.Current == Passenger.Activity.InTrain && (train == null || train.DoorsOpen < .9f || !train.AtPlatform)) continue;
-                    if (!Passenger.Routine(person.Current)) continue;
-                    var zone = director.world.ZoneId(person.transform.position);
-                    if (!byZone.TryGetValue(zone, out var pool)) byZone[zone] = pool = new List<Passenger>();
-                    pool.Add(person);
-                }
-            }
-
-            /// <summary>Up to <paramref name="count"/> people matching <paramref name="filter"/>, at most one per zone; each call is one cause's slot.</summary>
-            public List<Passenger> Spread(Func<Passenger, bool> filter, int count)
-            {
-                int cause = slot++;
-                var picked = new List<Passenger>(count);
-                zoneRanks.Clear();
-                zoneMatches.Clear();
-                foreach (var pair in byZone)
-                {
-                    Passenger match = null;
-                    int best = int.MaxValue;
-                    var people = pair.Value;
-                    for (int i = 0; i < people.Count; i++)
-                    {
-                        var person = people[i];
-                        // 목록은 여러 프레임에 걸쳐 만들어진다: 그 사이 역을 떠나 사라진 승객은 건너뛴다.
-                        if (person == null || !filter(person)) continue;
-                        int rank = Mix(director.Rank(person), cause);
-                        if (rank < best) { best = rank; match = person; }
-                    }
-                    if (match == null) continue;
-                    zoneRanks.Add(Mix(director.Rank(pair.Key), cause));
-                    zoneMatches.Add(match);
-                }
-                // 구역 순위가 앞선 구역부터 count 명.
-                for (int n = 0; n < count && zoneMatches.Count > 0; n++)
-                {
-                    int first = 0;
-                    for (int i = 1; i < zoneRanks.Count; i++) if (zoneRanks[i] < zoneRanks[first]) first = i;
-                    picked.Add(zoneMatches[first]);
-                    zoneRanks.RemoveAt(first);
-                    zoneMatches.RemoveAt(first);
-                }
-                return picked;
+                People.Clear();
+                var everyone = director.crowd.People;
+                for (int i = 0; i < everyone.Count; i++) People.Add(everyone[i]);
             }
         }
+
+        /// <summary>Whether <paramref name="person"/> can be the subject of a new emergency right now: in the station (or in a KTX car standing open at the platform), visible, unhurt and going about their day.</summary>
+        private bool Eligible(Passenger person)
+        {
+            // 목록은 여러 프레임에 걸쳐 만들어진다: 그 사이 역을 떠나 사라진 승객은 건너뛴다.
+            if (person == null || person.Hostile || person.Hurt || !person.Body.Visible) return false;
+            if (person.Current == Passenger.Activity.InTrain && (Train == null || Train.DoorsOpen < .9f || !Train.AtPlatform)) return false;
+            return Passenger.Routine(person.Current);
+        }
+
+        /// <summary>
+        /// An origin bound to the one subject it names. <paramref name="build"/> tests the subject against the world as it is now and
+        /// returns its transition, or null when the subject does not qualify; the transition remembers the subject and how to ask again
+        /// (<see cref="Transition.Recheck"/>), so a draw can confirm exactly this subject without listing the world again.
+        /// </summary>
+        private static Transition Bound<T>(T subject, Func<T, Transition> build) where T : class
+        {
+            var transition = build(subject);
+            if (transition == null) return null;
+            transition.Subject = subject;
+            transition.Recheck = () => Bound(subject, build);
+            return transition;
+        }
+
+        /// <summary>
+        /// One transition for every subject in <paramref name="subjects"/> that qualifies (see <see cref="Bound{T}"/>), none dropped. After
+        /// every subject there is a checkpoint (<c>null</c>, see <see cref="Fill"/>), so a listing of thousands ends its step when the
+        /// frame's share is spent. The lists given here do not change while the shift runs.
+        /// </summary>
+        private static IEnumerable<Transition> Each<T>(IReadOnlyList<T> subjects, Func<T, Transition> build) where T : class
+        {
+            for (int i = 0; i < subjects.Count; i++)
+            {
+                var subject = subjects[i];
+                if (subject is UnityEngine.Object unity ? unity == null : subject == null) continue;
+                var transition = Bound(subject, build);
+                if (transition != null) yield return transition;
+                yield return null;
+            }
+        }
+
+        /// <summary>A cause that belongs to the whole station (a phone call, a quake, a power cut): its subject is the station itself.</summary>
+        private IEnumerable<Transition> Station(Func<Transition> build)
+        {
+            var transition = Bound(this, _ => build());
+            if (transition != null) yield return transition;
+        }
+
+        private static IEnumerable<Transition> Chain(params IEnumerable<Transition>[] parts)
+        {
+            foreach (var part in parts)
+                foreach (var transition in part)
+                    yield return transition;
+        }
+
+        /// <summary>Everyone in the roster who qualifies for a cause: <paramref name="filter"/> is what the cause needs of a person, <paramref name="make"/> builds the transition.</summary>
+        private IEnumerable<Transition> Passengers(Roster roster, Func<Passenger, bool> filter, Func<Passenger, Transition> make) =>
+            Each(roster.People, person => Eligible(person) && filter(person) ? make(person) : null);
+
+        private IEnumerable<Transition> Passengers(Roster roster, Func<Passenger, Transition> make) =>
+            Each(roster.People, person => Eligible(person) ? make(person) : null);
+
+        /// <summary>
+        /// Every placed piece of <paramref name="kind"/> that can be the subject of a cause now: not burning, outside any cordon and
+        /// accepted by <paramref name="usable"/>; <paramref name="make"/> builds its transition.
+        /// </summary>
+        private IEnumerable<Transition> Pieces(string kind, Func<StationEquipment, bool> usable, Func<StationEquipment, Transition> make) =>
+            Each(EquipmentRegistry.OfKind(kind), piece => !BurningIn(piece) && usable(piece) && !world.IsClosed(piece.transform.position, 2) ? make(piece) : null);
 
         private bool Ready(string key) => !lastDevelopment.TryGetValue(key, out var at) || Time.time - at > DevelopmentCooldown;
 
@@ -310,22 +325,21 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         /// <summary>
-        /// Every cause whose preconditions hold anywhere right now, each with one or two concrete instances (JEV 012
-        /// every_cause_every_round), appended to <paramref name="list"/>. The family files list them lazily, so each step
+        /// Every cause whose preconditions hold anywhere right now, once for every person, piece of equipment or place it holds for
+        /// (JEV 012 every_cause_every_round), appended to <paramref name="list"/>. The family files list them lazily, so each step
         /// does the work up to the end of the frame's share (<see cref="SliceSpent"/>), which lets the real-time loop spread
-        /// a listing over frames. Which instances the families pick follows the ranks so the list only changes when the
-        /// world does. <paramref name="pools"/> is refilled by the first step.
+        /// a listing over frames however long it is. <paramref name="roster"/> is refilled by the first step.
         /// </summary>
-        private IEnumerable<bool> OriginSteps(List<Transition> list, Pools pools)
+        private IEnumerable<bool> OriginSteps(List<Transition> list, Roster roster)
         {
-            pools.Refill();
+            roster.Refill();
             if (SliceSpent) yield return true;
-            foreach (var step in Fill(list, FireOrigins(pools))) yield return step;
-            foreach (var step in Fill(list, CasualtyOrigins(pools))) yield return step;
-            foreach (var step in Fill(list, SecurityOrigins(pools))) yield return step;
-            foreach (var step in Fill(list, TrainOrigins(pools))) yield return step;
-            foreach (var step in Fill(list, FacilityOrigins(pools))) yield return step;
-            EquipmentOrigins(pools, list);
+            foreach (var step in Fill(list, FireOrigins(roster))) yield return step;
+            foreach (var step in Fill(list, CasualtyOrigins(roster))) yield return step;
+            foreach (var step in Fill(list, SecurityOrigins(roster))) yield return step;
+            foreach (var step in Fill(list, TrainOrigins(roster))) yield return step;
+            foreach (var step in Fill(list, FacilityOrigins())) yield return step;
+            foreach (var step in Fill(list, EquipmentOrigins())) yield return step;
         }
 
         /// <summary>The developments of what exists, in steps of the frame's share like <see cref="OriginSteps"/>.</summary>
@@ -361,9 +375,9 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>The whole list of new-emergency candidates at once (editor harnesses read it by reflection to force every kind; the play loop lists in steps).</summary>
         private List<Transition> Origins()
         {
-            wholePools = wholePools ?? new Pools(this);
+            wholeRoster = wholeRoster ?? new Roster(this);
             var list = new List<Transition>();
-            foreach (var _ in OriginSteps(list, wholePools)) { }
+            foreach (var _ in OriginSteps(list, wholeRoster)) { }
             Distinct(list);
             return list;
         }
@@ -379,7 +393,7 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         private readonly HashSet<string> seenKeys = new HashSet<string>();
-        private Pools listingPools, wholePools;
+        private Roster listingRoster, wholeRoster;
 
         private string Profile(Passenger p) =>
             "passenger #" + p.Number + " (" + (p.Body.Female ? "woman" : "man") + (p.Elderly ? ", elderly" : "") + (p.Luggage == 2 ? ", large suitcase" : p.Luggage == 1 ? ", bag" : "") + ")";
@@ -395,26 +409,35 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         private readonly Dictionary<Vector3Int, PlaceName> places = new Dictionary<Vector3Int, PlaceName>();
+        private readonly Dictionary<Vector3Int, PlaceName> fixedPlaces = new Dictionary<Vector3Int, PlaceName>();
         private TrainService.Phase placesTrainStage;
         private int placesEpoch;
 
-        /// <summary>The name staff would give a spot in a candidate's description, remembered per half-metre cell.</summary>
-        private string Place(Vector3 position)
+        /// <summary>The name staff would give a spot in a candidate's description, remembered per half-metre cell (people keep moving, so the cache is trimmed when it grows).</summary>
+        private string Place(Vector3 position) => PlaceIn(position, places, 4000);
+
+        /// <summary>
+        /// The same for a fixed object (a seat, a sprinkler head or pipe): the cells they stand on are few and never change, so their names are
+        /// kept for the whole shift and a walking crowd's cells cannot push them out of the cache.
+        /// </summary>
+        private string FixedPlace(Vector3 position) => PlaceIn(position, fixedPlaces, int.MaxValue);
+
+        private string PlaceIn(Vector3 position, Dictionary<Vector3Int, PlaceName> cache, int limit)
         {
             var stage = Train != null ? Train.Stage : TrainService.Phase.Away;
             if (stage != placesTrainStage) { placesTrainStage = stage; placesEpoch++; }
-            if (places.Count > 4000) places.Clear();
+            if (cache.Count > limit) cache.Clear();
             var cell = new Vector3Int(Mathf.RoundToInt(position.x * 2), Mathf.RoundToInt(position.y), Mathf.RoundToInt(position.z * 2));
-            if (places.TryGetValue(cell, out var known) && (!known.TrainDependent || known.Epoch == placesEpoch)) return known.Text;
+            if (cache.TryGetValue(cell, out var cached) && (!cached.TrainDependent || cached.Epoch == placesEpoch)) return cached.Text;
             var platform = Train != null ? world.Points.PlatformAt(position) : null;
-            known = new PlaceName
+            cached = new PlaceName
             {
                 Text = world.Area(position) + ", " + world.Describe(position),
                 TrainDependent = Train != null && (platform != null && platform.id == world.Points.Train?.platform || Train.CarAt(position) != null),
                 Epoch = placesEpoch,
             };
-            places[cell] = known;
-            return known.Text;
+            cache[cell] = cached;
+            return cached.Text;
         }
 
         private static bool Settled(Passenger p) =>

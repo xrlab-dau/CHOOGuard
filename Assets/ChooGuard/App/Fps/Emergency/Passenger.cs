@@ -62,7 +62,7 @@ namespace ChooGuard.App.Fps.Emergency
         private CrowdMind.Choice choice;
         private float until, walkSpeed, nextRepath, reportStarted, stepSeconds, hiddenUntil, phoneCallEnds = -1;
         private Vector3 lookAt;
-        private bool pendingStand, running, hidden, prefetched, alightQueued, helping, itinerary, blockedRaised;
+        private bool pendingStand, running, hidden, alightQueued, helping, itinerary, blockedRaised;
         private float nextPathCheck, stuckSince = -1, reportAskedAt, stallSince;
         private Vector3 stallAt;
         /// <summary>Gone over to help someone who collapsed or fell (see <see cref="HelpNearby"/>).</summary>
@@ -138,16 +138,18 @@ namespace ChooGuard.App.Fps.Emergency
                 case Activity.Sit when at != null:
                     Body.PlaceSeated(at.Anchor, at.Yaw);
                     Begin(Activity.Sit, seconds);
-                    return;
+                    break;
                 case Activity.Walk:
-                    // 막 들어온 사람: 일정대로 걷는다. JEV 의 첫 답이 오면 그 답이 일정을 대신한다.
+                    // 막 들어온 사람: 일정대로 걷는다. JEV 의 첫 계획이 오면 그 계획이 일정을 대신한다.
                     BeginTrip();
                     return;
                 default:
                     Begin(activity, seconds);
                     if (activity == Activity.Stand || activity == Activity.Meet) Body.SetPhone(UsesPhone && World.Chance(.6f));
-                    return;
+                    break;
             }
+            // 하던 일 한가운데에서 시작한 사람(근무 시작 인구)도 계획과 층 이동 방식을 한 번 받는다. 첫 활동이 끝날 때쯤에는 와 있다.
+            Crowd.Mind.Bootstrap(this);
         }
 
         /// <summary>Seated inside an arriving train before it comes into view.</summary>
@@ -164,7 +166,6 @@ namespace ChooGuard.App.Fps.Emergency
         {
             Current = activity;
             until = Time.time + seconds;
-            prefetched = false;
         }
 
         // ── 일상 판단 ─────────────────────────────────────────────────────────
@@ -174,7 +175,6 @@ namespace ChooGuard.App.Fps.Emergency
             // 다음 걸음이 아직 정해지지 않았으면 하던 일을 잇고, 답이 오면 그때 옮겨 간다.
             if (!Crowd.Mind.Ready(this)) { Await(); return; }
             ReleasePlace();
-            prefetched = false;
             itinerary = false;
             if (!Crowd.Mind.TryTakeRoutine(this, out choice)) { Await(); return; }
             Execute(choice);
@@ -186,6 +186,9 @@ namespace ChooGuard.App.Fps.Emergency
 
         /// <summary>Standing, sitting or watching with nothing on the way: waiting for something to tell them what to do (toilet stalls, where they are out of sight, excluded).</summary>
         public bool Idle => Holding && Current != Activity.Toilet || Current == Activity.Deciding || Current == Activity.Watch;
+
+        /// <summary>Walking out of the station (or on the last step of leaving it): nothing left to plan.</summary>
+        public bool Leaving => Current == Activity.Leave || Current == Activity.Walk && afterWalk == Activity.Leave;
 
         /// <summary>
         /// JEV is not answering: sets off on the purpose of the trip (the itinerary a person walks who has no answer yet), standing up
@@ -228,7 +231,7 @@ namespace ChooGuard.App.Fps.Emergency
             ReleasePlace();
             choice = Crowd.Mind.Itinerary(this);
             Execute(choice);
-            Crowd.Mind.AskFirst(this);
+            Crowd.Mind.Bootstrap(this);
             itinerary = true;
         }
 
@@ -301,7 +304,6 @@ namespace ChooGuard.App.Fps.Emergency
             Body.ClearPoses();
             afterWalk = then;
             Current = Activity.Walk;
-            prefetched = false;
             itinerary = false;
             blockedRaised = false;
             stallSince = Time.time;
@@ -343,7 +345,6 @@ namespace ChooGuard.App.Fps.Emergency
         {
             Current = afterWalk;
             until = Time.time + stepSeconds;
-            prefetched = false;
             switch (Current)
             {
                 case Activity.Sit:
@@ -392,26 +393,24 @@ namespace ChooGuard.App.Fps.Emergency
         private void Update()
         {
             if (Crowd == null) return;
+            // 열차가 떠났는데 승강장에 있지 않던 사람(앉아 있거나 가게에 있던 사람)도 놓친 것을 안다: 그러면 계획의 전제가 달라져 그 사람의 새 계획을 묻는다.
+            if (!MissedTrain && !Hurt && !Hostile && Current != Activity.PlatformWait && Current != Activity.Board && Current != Activity.InTrain && ServiceGone) LoseTrain();
             if (Current == Activity.Walk || Current == Activity.Evacuate || Current == Activity.MoveAway) CheckRoute();
             switch (Current)
             {
                 case Activity.Walk:
-                    if (!prefetched && OnLastLeg && Body.OnNavMesh && !Body.Planning && Body.SecondsLeft() < 12 && afterWalk != Activity.Leave && afterWalk != Activity.PlatformWait)
-                        Prefetch(Body.SecondsLeft() + stepSeconds);
                     if (Travelled(afterWalk == Activity.Leave ? 1.5f : .5f)) Arrive();
                     break;
                 case Activity.Queue:
                 case Activity.Browse:
                 case Activity.Stand:
                     if (place != null) Body.FaceYaw(Quaternion.Euler(0, place.Yaw, 0), 120);
-                    if (!prefetched && until - Time.time < 12) Prefetch(until - Time.time);
                     if (Time.time > until) Decide();
                     break;
                 case Activity.Meet:
                     UpdateMeet();
                     break;
                 case Activity.Sit:
-                    if (!prefetched && until - Time.time < 14) Prefetch(until - Time.time + 3);
                     if (Time.time > until && Body.Seat == PersonBody.SeatPhase.Seated)
                     {
                         // 다음 걸음이 정해지기 전에는 일어서지 않고 앉은 채 잇는다.
@@ -464,12 +463,6 @@ namespace ChooGuard.App.Fps.Emergency
             }
         }
 
-        private void Prefetch(float secondsLeft)
-        {
-            prefetched = true;
-            Crowd.Mind.Prefetch(this, secondsLeft);
-        }
-
         private void UpdateToilet()
         {
             if (!hidden)
@@ -489,7 +482,6 @@ namespace ChooGuard.App.Fps.Emergency
                 }
                 return;
             }
-            if (!prefetched && hiddenUntil - Time.time < 12) Prefetch(hiddenUntil - Time.time);
             if (Time.time > hiddenUntil && !PlayerView.Sees(transform.position, 30))
             {
                 hidden = false;
@@ -500,7 +492,6 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void UpdateMeet()
         {
-            if (!prefetched && until - Time.time < 12) Prefetch(until - Time.time);
             if (Partner != null && Partner.Current == Activity.Walk && Vector3.Distance(Partner.transform.position, transform.position) < 2.5f)
             {
                 Met = true;
@@ -531,16 +522,27 @@ namespace ChooGuard.App.Fps.Emergency
             if (place != null) Body.FaceYaw(Quaternion.Euler(0, place.Yaw, 0), 120);
             if (Train == null) return;
             if (Train.BoardingOpen && Train.Service == Service) { BeginBoarding(); return; }
-            if (Train.Service > Service || (Train.Service == Service && Train.Stage >= TrainService.Phase.Departing)) MissTrain();
+            if (ServiceGone) MissTrain();
         }
 
-        private void MissTrain()
+        /// <summary>Booked on a set that has left (or another has arrived since): they can no longer board it.</summary>
+        public bool ServiceGone =>
+            Train != null && Trip == Purpose.Depart && Service > 0 &&
+            (Train.Service > Service || Train.Service == Service && (Train.Stage == TrainService.Phase.Departing || Train.Stage == TrainService.Phase.Away));
+
+        /// <summary>They find out the train left without them: the ticket is void and the next service is the one to catch.</summary>
+        private void LoseTrain()
         {
             if (TrainSeat != null) { TrainSeat.Taken = null; TrainSeat = null; }
             MissedTrain = true;
             Remember("missed the train to Seoul");
             Service = Train.Service + 1;
             HasTicket = false;
+        }
+
+        private void MissTrain()
+        {
+            LoseTrain();
             Current = Activity.Stand;
             Decide();
         }
@@ -659,8 +661,8 @@ namespace ChooGuard.App.Fps.Emergency
             if (Hurt && !assisted) return;
             alightQueued = true;
             Current = Activity.Alight;
-            // 통로를 걸어 나오는 동안 내린 뒤 할 일을 미리 묻는다.
-            if (!hurry) Prefetch(12);
+            // 통로를 걸어 나오는 동안 내린 뒤 할 계획을 받는다.
+            if (!hurry) Crowd.Mind.Bootstrap(this);
             running = hurry;
             Body.BeginStand();
             StartCoroutine(StepOut());
