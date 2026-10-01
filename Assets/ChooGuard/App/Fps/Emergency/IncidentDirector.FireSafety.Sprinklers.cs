@@ -24,9 +24,9 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Valves whose flow signal is showing at the receiver.</summary>
         private readonly HashSet<string> flowSignals = new HashSet<string>();
         private float lastSprinklerCheck;
-        // 사람이 서는 자리 곁인지는 근무 내내 그대로다(고정된 배관·헤드와 대기 자리): 한 번만 골라 이 근무의 순위순으로 두고, 박동마다는
-        // 밸브·작동·통제선만 본다. 매 박동 헤드·배관 수천 개에 가장 가까운 대기 자리를 찾으면 1초마다 80 ms 가 멈췄다(2026-09-30 측정).
-        private List<(SprinklerPipeLine pipe, Vector3 floor)> publicPipes;
+        // 사람이 서는 자리 곁인지는 근무 내내 그대로다(고정된 배관·헤드와 대기 자리): 한 번만 골라 두고, 박동마다는 밸브·작동·통제선만 본다.
+        // 매 박동 헤드·배관 수천 개에 가장 가까운 대기 자리를 찾으면 1초마다 80 ms 가 멈췄다(2026-09-30 측정).
+        private List<SprinklerPipeLine> publicPipes;
         private List<SprinklerHeadPoint> publicHeads;
 
         private const float HeadBucket = 4f;
@@ -54,7 +54,7 @@ namespace ChooGuard.App.Fps.Emergency
                 zone.Add(head);
             }
             foreach (var equipment in EquipmentRegistry.OfKind(SprinklerPipeLine.PipeKind).OrderBy(e => e.Id, StringComparer.Ordinal)) pipes.Add(equipment.GetComponent<SprinklerPipeLine>());
-            RankPublicSprinklerSpots();
+            ListPublicSprinklerSpots();
         }
 
         private SprinklerValvePoint ValveOf(SprinklerHeadPoint head) => valves.TryGetValue(head.Valve, out var valve) ? valve : null;
@@ -156,55 +156,64 @@ namespace ChooGuard.App.Fps.Emergency
         private bool NearWaitingPlace(Vector3 floor) =>
             world.Points.Nearest(PointKind.Wait, floor, w => Mathf.Abs(w.Position.y - floor.y) < 1.5f && Vector3.Distance(w.Position, floor) < 7f) != null;
 
-        /// <summary>The pipes and low heads over places people stand, in this shift's rank order.</summary>
-        private void RankPublicSprinklerSpots()
+        /// <summary>The pipes and low heads over places people stand, in the order the equipment was bound: every one of them is a candidate whenever its valve is open and nobody has cordoned it.</summary>
+        private void ListPublicSprinklerSpots()
         {
-            publicPipes = pipes.Select(p => (pipe: p, floor: FloorUnder(p.PointAt(.5f), p.FloorY))).Where(x => NearWaitingPlace(x.floor))
-                .OrderBy(x => Rank(x.pipe.Equipment.Id)).ToList();
-            publicHeads = sprinklerHeads.Where(h => h.MountHeight <= 5.2f && NearWaitingPlace(h.FloorPoint)).OrderBy(h => Rank(h.Equipment.Id)).ToList();
+            publicPipes = pipes.Where(p => NearWaitingPlace(FloorUnder(p.PointAt(.5f), p.FloorY))).ToList();
+            publicHeads = sprinklerHeads.Where(h => h.MountHeight <= 5.2f && NearWaitingPlace(h.FloorPoint)).ToList();
         }
 
-        private void SprinklerOrigins(List<Transition> list)
+        /// <summary>
+        /// A number fixed for this shift for an id and a salt: for the details of a candidate that must not change from one listing to the
+        /// next (where on a pipe the joint fails, what knocks a head). It never decides which candidates exist.
+        /// </summary>
+        private int Stable(string id, int salt)
         {
-            if (publicPipes == null) RankPublicSprinklerSpots();
-            if (leaks.Count == 0)
+            unchecked
             {
-                // 배관 이음이 터진다: 사람 있는 자리 위의 배관 가운데 이 근무의 순위가 앞선 셋(밸브가 닫혔거나 통제선 안인 곳은 뺀다).
-                int taken = 0;
-                foreach (var (pipe, floor) in publicPipes)
-                {
-                    if (taken == 3) break;
-                    if (valves.TryGetValue(pipe.Valve, out var v) && v.Closed || world.IsClosed(floor, 3)) continue;
-                    taken++;
-                    var joint = pipe.JointNear(.2f + .6f * (Rank(pipe.Equipment.Id + "#joint") % 1000) / 1000f);
-                    var p = pipe;
-                    list.Add(new Transition
-                    {
-                        Key = "pipe_" + pipe.Equipment.Id, Kind = "water_leak", Origin = true,
-                        Description = (pipe.Exposed ? "A grooved coupling of the exposed sprinkler pipe under the ceiling" : "A joint of a sprinkler pipe above the ceiling") + " at " + Place(FloorUnder(joint, pipe.FloorY)) + " (" + pipe.Equipment.Label + ") fails and water pours out.",
-                        Levels = new List<string> { "water drips through a ceiling panel", "a steady stream of water pours from the ceiling", "water pours down and spreads across the floor", "the floor around floods", "the pipe gushes and water flows along the concourse" },
-                        Apply = m => StartLeak(p, joint, m),
-                    });
-                }
+                uint h = 2166136261u ^ (uint)world.Seed ^ (uint)salt * 2654435761u;
+                for (int i = 0; i < id.Length; i++) h = (h ^ id[i]) * 16777619u;
+                h ^= h >> 15;
+                h *= 2246822519u;
+                h ^= h >> 13;
+                return (int)(h & 0x7fffffff);
             }
-            // 헤드 오작동: 사람이 오가는 곳의 낮은 헤드가 부딪혀 깨지거나 유리관이 제풀에 터진다(이미 작동했거나 밸브가 닫힌 헤드, 통제선 안은 뺀다).
-            int heads = 0;
-            foreach (var head in publicHeads)
+        }
+
+        private IEnumerable<Transition> SprinklerOrigins() => Chain(Each(publicPipes, PipeBurstsOf), Each(publicHeads, HeadLetsGoOf));
+
+        private static readonly List<string> LeakLevels = new List<string> { "water drips through a ceiling panel", "a steady stream of water pours from the ceiling", "water pours down and spreads across the floor", "the floor around floods", "the pipe gushes and water flows along the concourse" };
+        private static readonly List<string> DischargeLevels = new List<string> { "a dribble runs from the head", "the head sprays a few square metres", "a full spray soaks the floor and whoever stands there", "a strong spray covers the whole passage and the floor floods", "the head is torn off and gushes" };
+
+        /// <summary>A pipe joint over a place people stand bursts: one leak at a time, and not where the zone's valve is shut or the floor is inside a cordon.</summary>
+        private Transition PipeBurstsOf(SprinklerPipeLine pipe)
+        {
+            if (leaks.Count > 0) return null;
+            var floor = FloorUnder(pipe.PointAt(.5f), pipe.FloorY);
+            if (valves.TryGetValue(pipe.Valve, out var valve) && valve.Closed || world.IsClosed(floor, 3)) return null;
+            var joint = pipe.JointNear(.2f + .6f * (Stable(pipe.Equipment.Id, 1) % 1000) / 1000f);
+            return new Transition
             {
-                if (heads == 2) break;
-                if (head.Activated || !valves.TryGetValue(head.Valve, out var v) || v.Closed || world.IsClosed(head.FloorPoint, 3)) continue;
-                heads++;
-                var h = head;
-                bool knocked = Rank(head.Equipment.Id + "#cause") % 2 == 0;
-                string cause = knocked ? "a worker's ladder or a passenger's luggage knocks the head" : "the glass bulb bursts by itself (a flaw or fatigue)";
-                list.Add(new Transition
-                {
-                    Key = "sprinkler_" + head.Equipment.Id, Kind = "sprinkler_discharge", Origin = true,
-                    Description = "The sprinkler head '" + head.Equipment.Label + "' at " + Place(head.FloorPoint) + " lets go although nothing is burning (" + cause + ") and sprays water; the flow switch starts the station alarm.",
-                    Levels = new List<string> { "a dribble runs from the head", "the head sprays a few square metres", "a full spray soaks the floor and whoever stands there", "a strong spray covers the whole passage and the floor floods", "the head is torn off and gushes" },
-                    Apply = m => StartDischarge(h, m, knocked ? "사다리·짐에 부딪혀 헤드 파손" : "유리관 자체 파열"),
-                });
-            }
+                Key = "pipe_" + pipe.Equipment.Id, Kind = "water_leak", Origin = true,
+                Description = (pipe.Exposed ? "A grooved coupling of the exposed sprinkler pipe under the ceiling" : "A joint of a sprinkler pipe above the ceiling") + " at " + FixedPlace(FloorUnder(joint, pipe.FloorY)) + " (" + pipe.Equipment.Label + ") fails and water pours out.",
+                Levels = LeakLevels,
+                Apply = m => StartLeak(pipe, joint, m),
+            };
+        }
+
+        /// <summary>A low head where people pass is knocked or its glass bulb bursts by itself: not one already open, one of a shut zone, or one inside a cordon.</summary>
+        private Transition HeadLetsGoOf(SprinklerHeadPoint head)
+        {
+            if (head.Activated || !valves.TryGetValue(head.Valve, out var valve) || valve.Closed || world.IsClosed(head.FloorPoint, 3)) return null;
+            bool knocked = Stable(head.Equipment.Id, 2) % 2 == 0;
+            string cause = knocked ? "a worker's ladder or a passenger's luggage knocks the head" : "the glass bulb bursts by itself (a flaw or fatigue)";
+            return new Transition
+            {
+                Key = "sprinkler_" + head.Equipment.Id, Kind = "sprinkler_discharge", Origin = true,
+                Description = "The sprinkler head '" + head.Equipment.Label + "' at " + FixedPlace(head.FloorPoint) + " lets go although nothing is burning (" + cause + ") and sprays water; the flow switch starts the station alarm.",
+                Levels = DischargeLevels,
+                Apply = m => StartDischarge(head, m, knocked ? "사다리·짐에 부딪혀 헤드 파손" : "유리관 자체 파열"),
+            };
         }
 
         private void StartLeak(SprinklerPipeLine pipe, Vector3 joint, float magnitude)

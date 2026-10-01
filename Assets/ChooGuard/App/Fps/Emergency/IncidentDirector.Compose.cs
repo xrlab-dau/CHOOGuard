@@ -34,10 +34,8 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>How often the cheap situation signature (hazards, train stage, escalators, staff response) is compared.</summary>
         private const float WatchSeconds = .25f;
         /// <summary>
-        /// A rating is asked for again after this long even if nothing changed. The levels depend on the situation the state
-        /// describes, which has its own trigger, and on slowly moving things (the clock, the crowd), so a dozen seconds keeps
-        /// them current while a dozen candidates a second are not re-asked: with about fifty candidates of ~170 tokens each,
-        /// the director spends a few tenths of a dollar per hour of play (measured in the shift record).
+        /// A rating is renewed after this long even when its cause is unchanged. With a large world the queue rotates through
+        /// all current causes, while developments receive priority. Ratings expire separately at MaxJudgmentAge.
         /// </summary>
         private const float JudgmentLife = 12f;
         /// <summary>A rating whose description drifted (a walking person's place changed) is renewed at most this often.</summary>
@@ -58,7 +56,9 @@ namespace ChooGuard.App.Fps.Emergency
             /// <summary>Events per second, from <see cref="Levels"/> and the scale's table.</summary>
             public float Rate;
             public float JudgedAt = -1;
-            public int JudgedState;
+            /// <summary>When the candidate was last put to JEV (it may not have been answered): a candidate that was asked and not answered waits behind ones never asked.</summary>
+            public float AskedAt = float.NegativeInfinity;
+            public int JudgedState, FairOrder;
             /// <summary>The description changed since the rating (a walking person's place): the rating still counts until the new one arrives.</summary>
             public bool Stale;
             public bool Seen;
@@ -72,6 +72,7 @@ namespace ChooGuard.App.Fps.Emergency
                 Rate = 0;
                 JudgedAt = -1;
                 Stale = false;
+                AskedAt = float.NegativeInfinity;
             }
         }
 
@@ -81,7 +82,7 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<Candidate> drawn = new List<Candidate>();
         private System.Random drawRandom;
         private float nextBeat, nextWatch, integratedAt, lastEmergencyAt = -1;
-        private int watchHash, stateHash, listedOrigins;
+        private int watchHash, stateHash;
         private bool judging, applying, beatWanted;
         private Dictionary<string, object> lastFocus;
         // 박동 하나는 여러 프레임에 나누어 한다: 한 프레임의 몫을 다 쓰면 다음 프레임으로 넘긴다(목록 전체를 한 프레임에 만들면 수 ms 가 든다).
@@ -128,7 +129,7 @@ namespace ChooGuard.App.Fps.Emergency
                 nextBeat = now + HeartbeatSeconds;
                 listed = listed ?? new List<Transition>();
                 listed.Clear();
-                listingPools = listingPools ?? new Pools(this);
+                listingRoster = listingRoster ?? new Roster(this);
                 beat = HeartbeatSteps().GetEnumerator();
                 beatCost = default;
                 beatRequested = false;
@@ -172,34 +173,37 @@ namespace ChooGuard.App.Fps.Emergency
         /// What could happen next, one source per step: a new emergency while none is going on; otherwise developments of
         /// those that are, and separate new ones.
         /// </summary>
-        private IEnumerable<bool> ListingSteps(List<Transition> into, Pools pools)
+        private IEnumerable<bool> ListingSteps(List<Transition> into, Roster roster)
         {
             if (Stage == Phase.Calm)
             {
-                foreach (var step in OriginSteps(into, pools)) yield return step;
+                foreach (var step in OriginSteps(into, roster)) yield return step;
                 yield break;
             }
             foreach (var step in DevelopmentSteps(into)) yield return step;
-            var origins = new List<Transition>();
-            foreach (var step in OriginSteps(origins, pools)) yield return step;
-            Distinct(origins);
-            foreach (var origin in origins)
+            separateOrigins.Clear();
+            foreach (var step in OriginSteps(separateOrigins, roster)) yield return step;
+            Distinct(separateOrigins);
+            foreach (var origin in separateOrigins)
             {
-                // 이미 있는 종류는 다시 만들지 않고, 지진은 진행 중인 사건 도중에 겹치지 않는다.
-                if (origin.Kind == "quake" || composedKinds.Contains(origin.Kind)) continue;
-                origin.Description = "Separately from the emergency already in progress, and unrelated to it: " + origin.Description;
-                into.Add(origin);
+                var separate = Separate(origin);
+                if (separate != null) into.Add(separate);
             }
         }
 
-        /// <summary>The whole listing at once (a draw checking that its candidate still exists); never shares state with a listing in progress.</summary>
-        private List<Transition> Enumerate()
+        private readonly List<Transition> separateOrigins = new List<Transition>();
+
+        /// <summary>
+        /// An origin as it is offered while an emergency is in progress: a kind that has already happened is not made again, a quake does
+        /// not overlap one, and the text says the new emergency is separate from the one going on. Null when it is not offered; unchanged
+        /// while the station is calm.
+        /// </summary>
+        private Transition Separate(Transition origin)
         {
-            wholePools = wholePools ?? new Pools(this);
-            var list = new List<Transition>();
-            foreach (var _ in ListingSteps(list, wholePools)) { }
-            Distinct(list);
-            return list;
+            if (origin == null || Stage == Phase.Calm) return origin;
+            if (origin.Kind == "quake" || composedKinds.Contains(origin.Kind)) return null;
+            origin.Description = "Separately from the emergency already in progress, and unrelated to it: " + origin.Description;
+            return origin;
         }
 
         /// <summary>Brings the candidate set in line with the fresh list: new ones appear, ones whose text changed are marked for a new rating, ones no longer possible go.</summary>
@@ -209,7 +213,7 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var transition in list)
             {
                 var scale = !transition.Origin ? ImminenceScale.Development : Stage == Phase.Calm ? ImminenceScale.CalmOrigin : ImminenceScale.IncidentOrigin;
-                if (!candidates.TryGetValue(transition.Key, out var candidate)) candidates[transition.Key] = candidate = new Candidate { Key = transition.Key };
+                if (!candidates.TryGetValue(transition.Key, out var candidate)) candidates[transition.Key] = candidate = new Candidate { Key = transition.Key, FairOrder = Stable(transition.Key, 911) };
                 else if (candidate.Scale != scale) candidate.Forget();
                 else if (candidate.Description != transition.Description) candidate.Stale = true;
                 candidate.Transition = transition;
@@ -218,12 +222,7 @@ namespace ChooGuard.App.Fps.Emergency
                 candidate.Seen = true;
             }
             gone.Clear();
-            listedOrigins = 0;
-            foreach (var candidate in candidates.Values)
-            {
-                if (!candidate.Seen) gone.Add(candidate);
-                else if (candidate.Scale != ImminenceScale.Development) listedOrigins++;
-            }
+            foreach (var candidate in candidates.Values) if (!candidate.Seen) gone.Add(candidate);
             foreach (var candidate in gone) candidates.Remove(candidate.Key);
         }
 
@@ -258,7 +257,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         private IEnumerable<bool> HeartbeatSteps()
         {
-            foreach (var step in ListingSteps(listed, listingPools)) yield return step;
+            foreach (var step in ListingSteps(listed, listingRoster)) yield return step;
             Distinct(listed);
             Reconcile(listed);
             if (SliceSpent) yield return true;
@@ -285,31 +284,55 @@ namespace ChooGuard.App.Fps.Emergency
 
         private bool AnyUnrated()
         {
-            foreach (var candidate in candidates.Values) if (!candidate.Rated) return true;
+            foreach (var candidate in candidates.Values) if (SubjectAlive(candidate) && !candidate.Rated) return true;
             return false;
         }
 
-        /// <summary>The rating needs asking for: none yet, made under another situation, the description drifted (not too often) or it is older than <paramref name="life"/>.</summary>
+        /// <summary>
+        /// The rating needs asking for: none yet (and not asked a moment ago), made under another situation, the description drifted
+        /// (not too often) or it is older than <paramref name="life"/>.
+        /// </summary>
         private bool Due(Candidate candidate, float now, float life) =>
-            !candidate.Rated || candidate.JudgedState != stateHash || now - candidate.JudgedAt >= life || candidate.Stale && now - candidate.JudgedAt >= RejudgeSeconds;
+            SubjectAlive(candidate) && (candidate.Rated
+                ? candidate.JudgedState != stateHash || now - candidate.JudgedAt >= life || candidate.Stale && now - candidate.JudgedAt >= RejudgeSeconds
+                : now - candidate.AskedAt >= RejudgeSeconds);
 
-        /// <summary>Asks JEV about every candidate that is new, changed, judged under another situation or old; false when nothing needed asking or JEV cannot be asked now.</summary>
+        /// <summary>When a candidate was last put to JEV or rated, whichever is later (never asked: before everything).</summary>
+        private static float LastAttempt(Candidate candidate) => Mathf.Max(candidate.JudgedAt, candidate.AskedAt);
+
+        private static int LongestWaitingFirst(Candidate a, Candidate b)
+        {
+            bool firstDevelopment = a.Scale == ImminenceScale.Development, secondDevelopment = b.Scale == ImminenceScale.Development;
+            if (firstDevelopment != secondDevelopment) return firstDevelopment ? -1 : 1;
+            int waiting = LastAttempt(a).CompareTo(LastAttempt(b));
+            if (waiting != 0) return waiting;
+            int fair = a.FairOrder.CompareTo(b.FairOrder);
+            return fair != 0 ? fair : string.CompareOrdinal(a.Key, b.Key);
+        }
+
+        /// <summary>
+        /// Asks JEV about every candidate that is new, changed, judged under another situation or old, at most <see cref="MaxQuestions"/>
+        /// in one request: developments first, then longest-waiting. Equal waits use a cached shift-seeded key order, not
+        /// source-list or dictionary order, so every cause comes round regardless of family, floor, distance or visibility.
+        /// False when nothing needed asking or JEV cannot be asked now.
+        /// </summary>
         private bool SendDue(float now, Dictionary<string, object> focus)
         {
             bool needed = false;
             foreach (var candidate in candidates.Values)
                 if (Due(candidate, now, JudgmentLife)) { needed = true; break; }
             if (!needed || !jev.CanSend(JevLane.Director)) return false;
-            // 하나라도 물어야 하면 곧 낡을 것도 함께 묻는다(요청 수를 줄인다). 오래 답을 못 받은 것부터.
+            // 하나라도 물어야 하면 곧 낡을 것도 함께 묻는다(요청 수를 줄인다). 오래 기다린 것부터.
             var batch = new List<Candidate>();
             foreach (var candidate in candidates.Values)
                 if (Due(candidate, now, JudgmentLife * .5f)) batch.Add(candidate);
-            batch.Sort((a, b) => a.JudgedAt.CompareTo(b.JudgedAt));
+            batch.Sort(LongestWaitingFirst);
             if (batch.Count > MaxQuestions) batch.RemoveRange(MaxQuestions, batch.Count - MaxQuestions);
             var questions = new List<JevChoice>(batch.Count);
             var descriptions = new List<string>(batch.Count);
             foreach (var candidate in batch)
             {
+                candidate.AskedAt = now;
                 questions.Add(new JevChoice
                 {
                     Id = candidate.Key, Instructions = Imminence.Instructions(candidate.Description), Levels = Imminence.Levels(candidate.Scale),
@@ -366,7 +389,9 @@ namespace ChooGuard.App.Fps.Emergency
         /// rate for that stretch (a rating is kept while the new one is on its way, and stops counting after
         /// <see cref="MaxJudgmentAge"/>; a candidate JEV has not rated yet contributes nothing), something happens with
         /// probability 1 − exp(−Σrate · time) and which one follows the rates. The first <see cref="QuietSeconds"/> of the
-        /// shift carry no hazard at all.
+        /// shift carry no hazard at all. New emergencies share one station-level budget (<see cref="Imminence.OriginShare"/>) among the
+        /// origins that carry a rating now, so a longer list adds variety, never frequency, and how much of a long list JEV has got
+        /// round to does not change how often the station has an emergency.
         /// </summary>
         private void Integrate(float now)
         {
@@ -374,12 +399,14 @@ namespace ChooGuard.App.Fps.Emergency
             integratedAt = now;
             rates.Clear();
             drawn.Clear();
-            float origin = 0, development = 0, share = Imminence.OriginShare(listedOrigins);
+            float origin = 0, development = 0, share = 1f;
             int first = -1, second = -1, third = -1, valid = 0;
             if (now >= QuietSeconds)
+            {
+                share = Imminence.OriginShare(JudgedOrigins(now));
                 foreach (var candidate in candidates.Values)
                 {
-                    if (!candidate.Rated || now - candidate.JudgedAt > MaxJudgmentAge) continue;
+                    if (!Counts(candidate, now)) continue;
                     valid++;
                     bool isOrigin = candidate.Scale != ImminenceScale.Development;
                     float rate = candidate.Rate * rateScale * (isOrigin ? share : 1f);
@@ -392,10 +419,25 @@ namespace ChooGuard.App.Fps.Emergency
                     else if (second < 0 || rate > rates[second]) { third = second; second = index; }
                     else if (third < 0 || rate > rates[third]) third = index;
                 }
+            }
             if (dt > 0 || now < QuietSeconds) log.Director.Trace(dt, origin, development, candidates.Count, valid, Terms(first, second, third));
             if (applying || dt <= 0) return;
             int pick = CompetingRisks.Draw(rates, dt, drawRandom);
             if (pick >= 0) Happen(drawn[pick], rates[pick]);
+        }
+
+        /// <summary>The candidate has a rating of its own that still counts toward the hazard.</summary>
+        private static bool Counts(Candidate candidate, float now) => SubjectAlive(candidate) && candidate.Rated && now - candidate.JudgedAt <= MaxJudgmentAge;
+
+        /// <summary>A sliced snapshot may outlive a departing person; a destroyed Unity subject cannot be judged or drawn.</summary>
+        private static bool SubjectAlive(Candidate candidate) => !(candidate.Transition.Subject is UnityEngine.Object subject) || subject != null;
+
+        /// <summary>How many origins carry a rating that counts: the number the station's hazard budget for new emergencies is shared among.</summary>
+        private int JudgedOrigins(float now)
+        {
+            int count = 0;
+            foreach (var candidate in candidates.Values) if (candidate.Scale != ImminenceScale.Development && Counts(candidate, now)) count++;
+            return count;
         }
 
         /// <summary>The highest rates right now as key:events per second, for the record.</summary>
@@ -411,7 +453,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void Happen(Candidate chosen, float rate)
         {
             string detail = "JEV 수준 확률 " + string.Join("/", System.Array.ConvertAll(chosen.Levels, p => p.ToString("0.00"))) + " · 초당 " + rate.ToString("0.#####") + " / 후보 " + candidates.Count + "개";
-            var fresh = Fresh(chosen.Key);
+            var fresh = Fresh(chosen);
             if (fresh == null) { log.Director.Vanish(chosen.Key, chosen.Scale != ImminenceScale.Development, false); return; }
             if (fresh.Levels == null) { Execute(fresh, .5f, candidates.Count, detail); return; }
             applying = true;
@@ -429,7 +471,7 @@ namespace ChooGuard.App.Fps.Emergency
                 // 크기를 JEV 가 답하지 않으면 이 전이는 일어나지 않는다.
                 if (answers == null || !answers.TryGetValue("magnitude", out var answer)) { log.Director.Round(false); NoticeSilence(); return; }
                 // 답이 오는 사이 세계가 바뀌었을 수 있다: 그 사람·물건이 아직 후보일 때만 일어난다.
-                var again = Fresh(chosen.Key);
+                var again = Fresh(chosen);
                 if (again == null) { log.Director.Vanish(chosen.Key, chosen.Scale != ImminenceScale.Development, true); return; }
                 int levels = question.Levels.Count, level = answer.DrawLevel(drawRandom, levels);
                 float magnitude = levels > 1 ? level / (float)(levels - 1) : .5f;
@@ -438,14 +480,96 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         /// <summary>
-        /// The transition for <paramref name="key"/> as the world makes it now, or null when it is no longer a candidate: a key
-        /// names one concrete person, thing or place, so the subject is the same and still qualifies whenever the key is listed.
+        /// The transition of <paramref name="chosen"/> as the world makes it now, or null when it no longer qualifies. A key names one concrete
+        /// person, thing or place, so only that subject is tested again: an origin asks its own subject (<see cref="Transition.Recheck"/>) and
+        /// costs the same however many candidates exist; a development of an emergency in progress is found among the developments, which
+        /// are as many as the emergency has parts, not as many as the station has people and things.
         /// </summary>
-        private Transition Fresh(string key)
+        private Transition Fresh(Candidate chosen)
         {
-            foreach (var transition in Enumerate())
-                if (transition.Key == key) return transition;
-            return null;
+            Transition fresh;
+            if (chosen.Transition.Origin) fresh = Separate(chosen.Transition.Recheck());
+            else
+            {
+                var developments = new List<Transition>();
+                foreach (var _ in DevelopmentSteps(developments)) { }
+                fresh = developments.Find(t => t.Key == chosen.Key);
+            }
+            // 키가 가리키는 대상이 아닌 다른 것이 되살아나면 그 판단은 그것의 판단이 아니다.
+            return fresh != null && fresh.Key == chosen.Key ? fresh : null;
+        }
+
+        // ── 점검용 현황 ─────────────────────────────────────────────────────
+
+        /// <summary>
+        /// The live candidate set in numbers, for smoke checks read by an editor harness (not used by the game): how many origins and
+        /// developments are listed, how many origins carry a rating that counts, how many were never asked, the longest anyone has waited
+        /// for a rating, and per kind and per zone of the subject how many are listed, rated and never asked and the hazard each carries
+        /// (events per second, after the shared budget).
+        /// </summary>
+        public Dictionary<string, object> CandidateReport()
+        {
+            float now = session.ShiftSeconds;
+            float share = Imminence.OriginShare(JudgedOrigins(now));
+            var kinds = new SortedDictionary<string, float[]>(System.StringComparer.Ordinal);
+            var zones = new SortedDictionary<string, float[]>(System.StringComparer.Ordinal);
+            int origins = 0, developments = 0, rated = 0, neverAsked = 0;
+            float longestWait = 0;
+            foreach (var candidate in candidates.Values)
+            {
+                if (!SubjectAlive(candidate)) continue;
+                bool origin = candidate.Scale != ImminenceScale.Development;
+                bool counts = Counts(candidate, now), asked = !float.IsNegativeInfinity(candidate.AskedAt);
+                if (origin) origins++; else developments++;
+                if (counts) rated++;
+                if (!asked && !candidate.Rated) neverAsked++;
+                if (candidate.Rated) longestWait = Mathf.Max(longestWait, now - candidate.JudgedAt);
+                float rate = counts ? candidate.Rate * rateScale * (origin ? share : 1f) : 0f;
+                Tally(kinds, candidate.Transition.Kind, counts, asked || candidate.Rated, rate);
+                Tally(zones, origin ? ZoneOfSubject(candidate.Transition.Subject) : "(development)", counts, asked || candidate.Rated, rate);
+            }
+            return new Dictionary<string, object>
+            {
+                ["listed_origins"] = origins, ["listed_developments"] = developments, ["rated_now"] = rated, ["origins_never_asked"] = neverAsked,
+                ["longest_rating_age_seconds"] = Mathf.Round(longestWait * 10) / 10f, ["origin_share"] = share, ["max_questions_per_request"] = MaxQuestions,
+                ["by_kind"] = Breakdown(kinds), ["by_zone"] = Breakdown(zones),
+            };
+        }
+
+        private static void Tally(SortedDictionary<string, float[]> groups, string name, bool rated, bool asked, float rate)
+        {
+            if (!groups.TryGetValue(name, out var tally)) groups[name] = tally = new float[4];
+            tally[0]++;
+            if (rated) tally[1]++;
+            if (!asked) tally[2]++;
+            tally[3] += rate;
+        }
+
+        private static Dictionary<string, object> Breakdown(SortedDictionary<string, float[]> groups)
+        {
+            var result = new Dictionary<string, object>();
+            foreach (var pair in groups) result[pair.Key] = new Dictionary<string, object> { ["listed"] = (int)pair.Value[0], ["rated"] = (int)pair.Value[1], ["never_asked"] = (int)pair.Value[2], ["events_per_second"] = pair.Value[3] };
+            return result;
+        }
+
+        /// <summary>The zone a candidate's subject is in ("station" for a cause of the whole station, "train" aboard the KTX set).</summary>
+        private string ZoneOfSubject(object subject)
+        {
+            switch (subject)
+            {
+                case IncidentDirector _: return "station";
+                case Component component: return ZoneName(component.transform.position);
+                case StationPoints.Point point: return ZoneName(point.Position);
+                case Kitchen kitchen: return ZoneName(kitchen.Centre);
+                case TrainService.Car _: return "train";
+                default: return "station";
+            }
+        }
+
+        private string ZoneName(Vector3 position)
+        {
+            var zone = world.ZoneId(position);
+            return zone.Length == 0 ? "(outside every zone)" : zone;
         }
 
         // ── JEV 에 보이는 상황 ──────────────────────────────────────────────

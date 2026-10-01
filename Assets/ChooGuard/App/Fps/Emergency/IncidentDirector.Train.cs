@@ -24,35 +24,42 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 원인 ──
 
-        private IEnumerable<Transition> TrainOrigins(Pools pools)
+        private IEnumerable<Transition> TrainOrigins(Roster roster) => Chain(
+            DoorOrigins(),
+            // 떨어짐과 (떨어뜨린 휴대전화를 주우려) 내려감은 다른 원인이라 따로 센다.
+            Passengers(roster, p => TrackFallOf(p, false)),
+            Passengers(roster, p => TrackFallOf(p, true)));
+
+        /// <summary>The closing door of any car catches whoever is still boarding at it.</summary>
+        private IEnumerable<Transition> DoorOrigins()
         {
-            if (Train != null && Train.Stage == TrainService.Phase.Closing)
-                foreach (var car in Train.Cars)
-                {
-                    var boarding = LateBoarder(car);
-                    if (boarding != null) { yield return DoorTrap(boarding, car); break; }
-                }
-            // 떨어짐과 (떨어뜨린 휴대전화를 주우려) 내려감은 다른 원인이라 따로 뽑는다: 승강장은 대개 한 구역이라
-            // 구역마다 한 명씩 뽑으면 둘째 사람이 없다.
-            foreach (bool deliberate in new[] { false, true })
-            {
-                foreach (var person in pools.Spread(p => p.Current != Passenger.Activity.InTrain && p.Current != Passenger.Activity.Sit && (!deliberate || p.UsesPhone) && world.Points.PlatformAt(p.transform.position) != null, 1))
-                    if (TrackSpot(person, out var bed, out var edge, out var onTrain, out var platform)) yield return TrackFall(person, platform, bed, edge, onTrain, deliberate);
-                yield return null;
-            }
+            if (Train == null) yield break;
+            foreach (var trap in Each(Train.Cars, car => Train.Stage == TrainService.Phase.Closing && LateBoarder(car) is Passenger boarding ? DoorTrap(boarding, car) : null)) yield return trap;
+        }
+
+        /// <summary>A person on a platform who can end up on the track: by losing balance, or (<paramref name="deliberate"/>) by climbing down for a dropped phone.</summary>
+        private Transition TrackFallOf(Passenger person, bool deliberate)
+        {
+            if (person.Current == Passenger.Activity.InTrain || person.Current == Passenger.Activity.Sit || deliberate && !person.UsesPhone || world.Points.PlatformAt(person.transform.position) == null) return null;
+            return TrackSpot(person, out var bed, out var edge, out var onTrain, out var platform) ? TrackFall(person, platform, bed, edge, onTrain, deliberate) : null;
         }
 
         /// <summary>Someone still boarding <paramref name="car"/> within 1.5 m of its door: only they can be caught by it.</summary>
         private Passenger LateBoarder(TrainService.Car car) =>
             crowd.People.FirstOrDefault(p => p.Current == Passenger.Activity.Board && !p.Body.Scripted && !p.HeldAtDoor && p.TrainSeat != null && p.TrainSeat.Car == car && Vector3.Distance(p.transform.position, Train.World(car.DoorOutside)) < 1.5f);
 
+        private static readonly List<string> DoorTrapLevels = new List<string> { "a coat hem is caught and pulled free at once", "a bag strap is caught", "a handbag is caught in the door", "a suitcase is caught in the door", "the passenger's arm is caught" };
+
         private Transition DoorTrap(Passenger person, TrainService.Car car) => new Transition
         {
             Key = "door_" + car.Number, Kind = "door_trap", Origin = true,
             Description = "The closing door of KTX " + car.Label + " at platform 5·6 catches " + Profile(person) + " who is still boarding.",
-            Levels = new List<string> { "a coat hem is caught and pulled free at once", "a bag strap is caught", "a handbag is caught in the door", "a suitcase is caught in the door", "the passenger's arm is caught" },
+            Levels = DoorTrapLevels,
             Apply = m => StartDoorTrap(person, car, m),
         };
+
+        private static readonly List<string> TrackClimbLevels = new List<string> { "climbs down and reaches for the phone", "picks it up but struggles to climb back up", "cannot climb back up and wanders along the track", "slips while climbing back and hurts a leg", "falls back down while climbing and lies still" };
+        private static readonly List<string> TrackFallLevels = new List<string> { "lands on their feet and stands up", "hurts an ankle and cannot climb back up", "cannot stand up", "hits their head and lies on the track", "lies motionless on the track" };
 
         private Transition TrackFall(Passenger person, StationPoints.PlatformEntry platform, Vector3 bed, Vector3 edge, bool onTrainTrack, bool deliberate) => new Transition
         {
@@ -60,9 +67,7 @@ namespace ChooGuard.App.Fps.Emergency
             Description = deliberate
                 ? Profile(person) + ", " + person.Doing + " on " + platform.label + ", drops their phone onto the track and climbs down to get it."
                 : Profile(person) + ", " + person.Doing + " near the edge of " + platform.label + ", loses balance and falls onto the track.",
-            Levels = deliberate
-                ? new List<string> { "climbs down and reaches for the phone", "picks it up but struggles to climb back up", "cannot climb back up and wanders along the track", "slips while climbing back and hurts a leg", "falls back down while climbing and lies still" }
-                : new List<string> { "lands on their feet and stands up", "hurts an ankle and cannot climb back up", "cannot stand up", "hits their head and lies on the track", "lies motionless on the track" },
+            Levels = deliberate ? TrackClimbLevels : TrackFallLevels,
             Apply = m => StartTrackFall(person, platform, bed, edge, onTrainTrack, deliberate, m),
         };
 

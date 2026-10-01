@@ -319,7 +319,10 @@ namespace ChooGuard.Editor
         /// <summary>The development of that kind the director offers right now, or null.</summary>
         private static object Development(string kind)
         {
-            var list = (IEnumerable)typeof(IncidentDirector).GetMethod("Developments", All).Invoke(Session.Incidents, null);
+            var transitionType = typeof(IncidentDirector).GetNestedType("Transition", All);
+            var list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(transitionType));
+            var steps = (IEnumerable)typeof(IncidentDirector).GetMethod("DevelopmentSteps", All).Invoke(Session.Incidents, new object[] { list });
+            foreach (var ignored in steps) { }
             foreach (var item in list) if ((string)item.GetType().GetField("Kind").GetValue(item) == kind) return item;
             return null;
         }
@@ -713,21 +716,23 @@ namespace ChooGuard.Editor
         }
 
         /// <summary>
-        /// What the equipment costs while the shift runs: the time to list the causes of each family (the electric and bin causes are
-        /// the ElectricPlaza and Fire families' part of it) and of the electric tick. Each is the best of many runs (the editor shares the
-        /// machine with other work, so a mean drifts by a factor of two between runs), and each run starts without the crowd snapshot
-        /// of the frame, as the first listing of a frame does.
+        /// What the equipment costs while the shift runs: the time to list the causes of each family (every placed piece and every person
+        /// that qualifies is listed, so these are the cost of the whole world) and of the electric tick. Each is the best of many runs (the
+        /// editor shares the machine with other work, so a mean drifts by a factor of two between runs), and each run starts without the
+        /// crowd snapshot of the frame, as the first listing of a frame does.
         /// </summary>
         private static IEnumerator Perf()
         {
             yield return Sleep(3f);
             var director = Session.Incidents;
             var snapshot = typeof(IncidentDirector).GetField("peopleSnapshotFrame", All);
-            var poolsType = typeof(IncidentDirector).GetNestedType("Pools", All);
-            var pools = Activator.CreateInstance(poolsType, All, null, new object[] { director }, null);
-            var arguments = new object[] { pools };
+            var rosterType = typeof(IncidentDirector).GetNestedType("Roster", All);
+            var roster = Activator.CreateInstance(rosterType, All, null, new object[] { director }, null);
+            var refill = rosterType.GetMethod("Refill");
+            refill.Invoke(roster, null);
             var whole = typeof(IncidentDirector).GetMethod("Origins", All);
             var parts = new List<string>();
+            var times = new Dictionary<string, double>();
             double Best(int runs, Action run)
             {
                 double best = double.MaxValue;
@@ -743,38 +748,26 @@ namespace ChooGuard.Editor
             void Family(string name)
             {
                 var method = typeof(IncidentDirector).GetMethod(name, All);
+                var arguments = method.GetParameters().Length == 0 ? new object[0] : new object[] { roster };
                 double ms = Best(30, () =>
                 {
                     var result = method.Invoke(director, arguments);
                     if (result is IEnumerable list) foreach (var _ in list) { }
                 });
+                times[name] = ms;
                 parts.Add(name.Replace("Origins", "") + " " + ms.ToString("0.00"));
             }
             Family("FireOrigins"); Family("CasualtyOrigins"); Family("SecurityOrigins"); Family("TrainOrigins"); Family("FacilityOrigins");
-            var candidates = typeof(IncidentDirector).GetMethod("Candidates", All);
-            var binFire = typeof(IncidentDirector).GetMethod("BinFire", All);
-            var nearAnExit = (Func<StationEquipment, bool>)Delegate.CreateDelegate(typeof(Func<StationEquipment, bool>), director, typeof(IncidentDirector).GetMethod("NearAnExit", All));
-            var peopleNear = typeof(IncidentDirector).GetMethod("PeopleNear", All);
-            Func<StationEquipment, bool> peopleAtTheStation = e => (int)peopleNear.Invoke(director, new object[] { e.transform.position, 10f }) > 0;
-            double bins = Best(30, () =>
-            {
-                foreach (var bin in (IEnumerable<StationEquipment>)candidates.Invoke(director, new object[] { "litter_bin", 2, nearAnExit })) binFire.Invoke(director, new object[] { bin, false });
-                foreach (var bin in (IEnumerable<StationEquipment>)candidates.Invoke(director, new object[] { "recycling_bin", 1, peopleAtTheStation })) binFire.Invoke(director, new object[] { bin, true });
-            });
-            parts.Add("bins " + bins.ToString("0.00"));
-            var electricMethod = typeof(IncidentDirector).GetMethod("ElectricPlazaOrigins", All);
-            var transitions = typeof(List<>).MakeGenericType(typeof(IncidentDirector).GetNestedType("Transition", All));
-            double electric = Best(30, () => electricMethod.Invoke(director, new object[] { pools, Activator.CreateInstance(transitions) }));
-            parts.Add("ElectricPlaza " + electric.ToString("0.00"));
-            parts.Add("Pools " + Best(30, () => Activator.CreateInstance(poolsType, All, null, new object[] { director }, null)).ToString("0.00"));
+            Family("FireSafetyOrigins"); Family("ElectricPlazaOrigins"); Family("KitchenGasOrigins");
+            parts.Add("Roster " + Best(30, () => refill.Invoke(roster, null)).ToString("0.00"));
             int count = 0;
             double listing = Best(30, () => count = ((ICollection)whole.Invoke(director, null)).Count);
             var tick = typeof(IncidentDirector).GetMethod("ElectricPlazaTick", All);
             double perFrame = Best(300, () => tick.Invoke(director, new object[] { .016f }));
             int renderers = EquipmentRegistry.All.Sum(e => e.GetComponentsInChildren<Renderer>(true).Length);
             string summary = "best ms per call [" + string.Join(", ", parts) + "]; whole Origins() " + listing.ToString("0.00") + " ms (" + count + " candidates offered); electric tick " + (perFrame * 1000).ToString("0.0") + " µs per frame; " + EquipmentRegistry.All.Count + " placed pieces, " + renderers + " renderers";
-            Check("the electric plaza causes are cheap to list", electric < 1, summary);
-            Check("the litter bin and recycling station causes are cheap to list", bins < 1, summary);
+            Check("the electric plaza causes are cheap to list", times["ElectricPlazaOrigins"] < 1, summary);
+            Check("the fire causes (power banks, litter bins, recycling stations, running gear) are cheap to list", times["FireOrigins"] < 1, summary);
         }
     }
 }

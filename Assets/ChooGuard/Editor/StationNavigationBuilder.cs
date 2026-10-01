@@ -21,10 +21,24 @@ namespace ChooGuard.Editor
         public const string NavMeshPath = EmergencySceneBuilder.ArtRoot + "/StationWorld.navmesh.asset";
         public const string PointsPath = EmergencySceneBuilder.ArtRoot + "/station-points.json";
         public const string TrainPatchRoot = EmergencySceneBuilder.ArtRoot + "/TrainDoors";
-        public static readonly Bounds WorldBounds = new Bounds(new Vector3(30, 7.5f, -5), new Vector3(270, 19, 270));
         // 맞이방 한가운데(대합실 좌석 남쪽). 모든 지점은 여기서 걸어서(링크 포함) 닿아야 채택한다.
         public static readonly Vector3 HallCentre = new Vector3(64, 7.0f, -2);
         public const int EscalatorArea = 3, ElevatorArea = 4;
+
+        private static Bounds SurveyBounds()
+        {
+            RequireStation();
+            var scene = SceneManager.GetSceneByPath(EmergencySceneBuilder.StationScenePath);
+            var bounds = new Bounds(HallCentre, Vector3.zero);
+            foreach (var root in scene.GetRootGameObjects())
+                foreach (var collider in root.GetComponentsInChildren<Collider>())
+                {
+                    if (!collider.enabled || collider.isTrigger || collider is CharacterController) continue;
+                    bounds.Encapsulate(collider.bounds);
+                }
+            bounds.Expand(2f);
+            return bounds;
+        }
 
         public static NavMeshBuildSettings Settings()
         {
@@ -57,7 +71,8 @@ namespace ChooGuard.Editor
             var namedEscalators = GameObject.Find("FPSWorld/맞이방 · 에스컬레이터")?.transform;
             var player = UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Fps.FirstPersonResponder>();
             var sources = new List<NavMeshBuildSource>();
-            NavMeshBuilder.CollectSources(WorldBounds, ~0, NavMeshCollectGeometry.PhysicsColliders, 0, new List<NavMeshBuildMarkup>(), sources);
+            var worldBounds = SurveyBounds();
+            NavMeshBuilder.CollectSources(worldBounds, ~0, NavMeshCollectGeometry.PhysicsColliders, 0, new List<NavMeshBuildMarkup>(), sources);
             int before = sources.Count;
             sources.RemoveAll(s =>
             {
@@ -92,13 +107,20 @@ namespace ChooGuard.Editor
                         area = StationWorld.StairsArea,
                     });
             }
-            var data = NavMeshBuilder.BuildNavMeshData(Settings(), sources, WorldBounds, Vector3.zero, Quaternion.identity);
+            var data = NavMeshBuilder.BuildNavMeshData(Settings(), sources, worldBounds, Vector3.zero, Quaternion.identity);
             if (data == null) throw new InvalidOperationException("navmesh bake produced no data");
+            data.name = Path.GetFileNameWithoutExtension(NavMeshPath);
             Directory.CreateDirectory(Path.GetDirectoryName(NavMeshPath));
-            if (AssetDatabase.LoadAssetAtPath<NavMeshData>(NavMeshPath) != null) AssetDatabase.DeleteAsset(NavMeshPath);
-            AssetDatabase.CreateAsset(data, NavMeshPath);
+            var existing = AssetDatabase.LoadAssetAtPath<NavMeshData>(NavMeshPath);
+            if (existing == null) AssetDatabase.CreateAsset(data, NavMeshPath);
+            else
+            {
+                EditorUtility.CopySerialized(data, existing);
+                EditorUtility.SetDirty(existing);
+                UnityEngine.Object.DestroyImmediate(data);
+            }
             AssetDatabase.SaveAssets();
-            Debug.Log("CG_WORLD_NAVMESH sources=" + before + "->" + sources.Count + " escalators=" + lanes.Count + " stairs=" + lanes.Count(l => l.StairsSize != Vector3.zero) + " path=" + NavMeshPath + "\n" + string.Join("\n", log));
+            Debug.Log("CG_WORLD_NAVMESH bounds=" + worldBounds + " sources=" + before + "->" + sources.Count + " escalators=" + lanes.Count + " stairs=" + lanes.Count(l => l.StairsSize != Vector3.zero) + " path=" + NavMeshPath + "\n" + string.Join("\n", log));
         }
 
         /// <summary>
@@ -127,19 +149,40 @@ namespace ChooGuard.Editor
 
         // ── 장소·구역·링크·열차 ───────────────────────────────────────────────
 
-        private static readonly StationPoints.ZoneEntry[] Zones =
+        private static readonly StationPoints.ZoneEntry[] NamedZones =
         {
             Zone("hall2f", "2층 맞이방", new Vector3(18, 5.5f, -30), new Vector3(112, 10.5f, 64), 1),
             Zone("southgate", "2층 남측 게이트(타는 곳)", new Vector3(-6, 5.5f, -70), new Vector3(95, 10.5f, -30), 2),
             Zone("northdeck", "2층 북측 데크(나가는 곳)", new Vector3(25, 5.5f, 60), new Vector3(145, 10.5f, 105), 2),
             Zone("main2f", "2층 본관", new Vector3(-62, 5.5f, -100), new Vector3(18, 10.5f, 90), 1),
             Zone("eastexit", "2층 동측 출구", new Vector3(88, 5.5f, -25), new Vector3(112, 10.5f, 30), 3),
-            Zone("skyplaza", "하늘광장(부산항 방면)", new Vector3(112, 4, -95), new Vector3(235, 11, 55), 1),
+            Zone("skyplaza", "하늘광장·부산항 산책로", new Vector3(112, -2, -95), new Vector3(235, 11, 55), 1),
             Zone("upper3f", "3층", new Vector3(0, 10.5f, -55), new Vector3(115, 17, 60), 2),
             Zone("ground1f", "1층", new Vector3(-70, -.6f, -95), new Vector3(16, 5.5f, 90), 1),
             Zone("plaza", "역 광장·중앙대로", new Vector3(-140, -2, -150), new Vector3(-58, 10.5f, 140), 0),
+            Zone("busstop", "중앙대로 버스정류장", new Vector3(-142, -2, 65), new Vector3(-120, 4.5f, 98), 4),
             Zone("tracks", "승강장 구역", new Vector3(-40, -1.5f, -160), new Vector3(160, 5.4f, 120), 0),
         };
+
+        private static StationPoints.ZoneEntry[] SurveyZones(Bounds bounds)
+        {
+            var zones = new StationPoints.ZoneEntry[NamedZones.Length + 1];
+            for (int i = 0; i < NamedZones.Length; i++)
+            {
+                var source = NamedZones[i];
+                var min = source.min;
+                var max = source.max;
+                if (source.id == "plaza")
+                {
+                    min.x = bounds.min.x; min.z = bounds.min.z;
+                    max.z = bounds.max.z;
+                    min.y = bounds.min.y;
+                }
+                zones[i] = Zone(source.id, source.label, min, max, source.priority);
+            }
+            zones[NamedZones.Length] = Zone("world", "역 주변 보행 공간", bounds.min, bounds.max, -1);
+            return zones;
+        }
 
         private static StationPoints.ZoneEntry Zone(string id, string label, Vector3 min, Vector3 max, int priority) =>
             new StationPoints.ZoneEntry { id = id, label = label, min = min, max = max, priority = priority };
@@ -202,7 +245,8 @@ namespace ChooGuard.Editor
                 if (!NavMesh.SamplePosition(HallCentre, out var centreHit, 2f, NavMesh.AllAreas)) throw new InvalidOperationException("맞이방 중심이 navmesh 위에 없습니다.");
                 var path = new NavMeshPath();
                 bool Reachable(Vector3 p) => NavMesh.CalculatePath(centreHit.position, p, NavMesh.AllAreas, path) && path.status == NavMeshPathStatus.PathComplete;
-                var zoneIndex = new StationPointsZones(Zones);
+                var zones = SurveyZones(SurveyBounds());
+                var zoneIndex = new StationPointsZones(zones);
                 var points = new List<StationPoints.PointEntry>();
                 var rejected = new List<string>();
                 void Add(string id, string kind, string label, Vector3 near, float radius, float yaw = 0, Vector3? anchor = null, string slot = null)
@@ -248,8 +292,13 @@ namespace ChooGuard.Editor
                 // 마중: 북측 나가는 곳 앞 맞이방(도착 안내판 아래).
                 Add("meet-north", "Meet", "나가는 곳 앞", new Vector3(81, 7, 39), 3f, 20);
                 Add("meet-south", "Meet", "남측 게이트 앞", new Vector3(52, 7, -26), 3f, 200);
+                // The shelter is part of the official street mesh; anchors stay on its ground-level pavement.
+                Add("bus-stop-central-0", "Wait", "중앙대로 버스정류장 대기", new Vector3(-130, 0, 79), 1.5f, 270);
+                Add("bus-stop-central-1", "Wait", "중앙대로 버스정류장 대기", new Vector3(-129, 0, 84), 1.5f, 270);
+                Add("bus-stop-central-2", "Wait", "중앙대로 버스정류장 대기", new Vector3(-128, 0, 89), 1.5f, 270);
 
                 var platforms = StationSurvey.Platforms(log);
+                AddWorldWaits(points, zoneIndex, Reachable, platforms);
                 var train = StationSurvey.Train(platforms.First(p => p.id == "p56"), log);
                 // 문 앞 승강장이 맞이방에서 걸어서 닿지 않는 객차(남측 게이트 쪽 승강장이 트윈에서 끊겨 있음)는 타고 내리는 흐름에 쓰지 않는다.
                 foreach (var car in train.cars)
@@ -280,7 +329,7 @@ namespace ChooGuard.Editor
                 var file = new StationFile
                 {
                     note = "Generated by StationNavigationBuilder.BuildPoints from FpsStation + StationWorld navmesh with escalator/elevator links. Places are reachable from the hall centre (64, 7, -2). Train positions are at the stop pose.",
-                    zones = Zones,
+                    zones = zones,
                     points = points.ToArray(),
                     escalators = escalators.ToArray(),
                     elevators = elevators.ToArray(),
@@ -463,6 +512,58 @@ namespace ChooGuard.Editor
             Grid(-65, 14, -90, 88, 0, 10f, "1층");
             Grid(-60, 18, -95, 88, 7, 12f, "2층 본관");
             Grid(115, 200, -80, 40, 7, 14f, "하늘광장");
+        }
+
+        /// <summary>Every reachable public navmesh region supplies living destinations, including outside the old bake rectangle.</summary>
+        private static void AddWorldWaits(List<StationPoints.PointEntry> points, StationPointsZones zones, Func<Vector3, bool> reachable, List<StationPoints.PlatformEntry> platforms)
+        {
+            const float cell = 12f;
+            var occupied = new HashSet<(int, int, int)>();
+            (int, int, int) Cell(Vector3 p) => (Mathf.FloorToInt(p.x / cell), Mathf.RoundToInt(p.y), Mathf.FloorToInt(p.z / cell));
+            foreach (var point in points)
+                if (point.kind == "Wait") occupied.Add(Cell(point.position));
+            var mesh = NavMesh.CalculateTriangulation();
+            var candidates = new Dictionary<(int, int, int), Vector3>();
+            for (int i = 0; i + 2 < mesh.indices.Length; i += 3)
+            {
+                var p = (mesh.vertices[mesh.indices[i]] + mesh.vertices[mesh.indices[i + 1]] + mesh.vertices[mesh.indices[i + 2]]) / 3f;
+                var key = Cell(p);
+                if (occupied.Contains(key)) continue;
+                if (!candidates.TryGetValue(key, out var old) || Mathf.Abs(p.y - Mathf.Round(p.y)) < Mathf.Abs(old.y - Mathf.Round(old.y)))
+                    candidates[key] = p;
+            }
+            foreach (var pair in candidates.OrderBy(p => p.Key))
+            {
+                if (!NavMesh.SamplePosition(pair.Value, out var hit, .8f, NavMesh.AllAreas) ||
+                    !NavMesh.FindClosestEdge(hit.position, out var edge, NavMesh.AllAreas) || edge.distance < .8f ||
+                    !reachable(hit.position)) continue;
+                var p = hit.position;
+                var zone = zones.At(p);
+                StationPoints.PlatformEntry platform = null;
+                if (p.y > -.6f && p.y < 2.5f)
+                    foreach (var strip in platforms)
+                    {
+                        var ab = strip.b - strip.a; ab.y = 0;
+                        var ap = p - strip.a; ap.y = 0;
+                        float t = Vector3.Dot(ap, ab) / ab.sqrMagnitude;
+                        if (t < 0 || t > 1) continue;
+                        var centre = strip.a + ab * t; centre.y = p.y;
+                        if (Vector3.Distance(centre, p) < strip.halfWidth - .6f) { platform = strip; break; }
+                    }
+                if (zone == "tracks" && platform == null) continue; // Track beds are not places to linger.
+                string label = platform != null ? platform.label + " 승강장 보행로" :
+                    zone == "busstop" ? "중앙대로 버스정류장" :
+                    zone == "plaza" ? "역 외부 광장·보행로" :
+                    zone == "skyplaza" ? "하늘광장·부산항 산책로" :
+                    zone == "southgate" ? "남측 기차 탑승구" :
+                    zone == "northdeck" ? "북측 기차 탑승구·나가는 곳" : "역 주변 보행 공간";
+                points.Add(new StationPoints.PointEntry
+                {
+                    id = "world-wait-" + pair.Key.Item1 + "-" + pair.Key.Item2 + "-" + pair.Key.Item3,
+                    kind = "Wait", label = label, zone = zone, position = Round(p),
+                    yaw = Mathf.Repeat(pair.Key.Item1 * 137.5f + pair.Key.Item3 * 47f, 360),
+                });
+            }
         }
 
         /// <summary>

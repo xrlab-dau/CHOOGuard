@@ -541,8 +541,8 @@ namespace ChooGuard.App.Fps.Emergency
             colour.saturation.Override(-25f);
             foreach (var zone in zones)
             {
-                // 바깥(광장·하늘광장)은 낮이라 그대로 밝다.
-                if (zone.id == "plaza" || zone.id == "skyplaza") continue;
+                // 바깥 광장·정류장·산책로와 전역 바깥 구역은 정전이어도 낮빛이 남는다.
+                if (StationWorld.IsOutdoorZone(zone.id)) continue;
                 var go = new GameObject("정전 · " + zone.label);
                 go.transform.SetParent(root.transform, false);
                 go.transform.position = (zone.min + zone.max) * .5f;

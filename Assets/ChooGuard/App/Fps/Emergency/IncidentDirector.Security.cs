@@ -23,50 +23,51 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 원인 ──
 
-        // 792 개 좌석을 한 번만 순위대로 세워 두고 매번 앞에서부터 닫히지 않은 첫 자리를 고른다(목록을 1 s 마다 만들기 때문).
-        private List<StationPoints.Point> seatsByRank;
+        private IEnumerable<Transition> SecurityOrigins(Roster roster) => Chain(
+            Passengers(roster, p => p.Luggage == 2 && Settled(p) && p.Current != Passenger.Activity.InTrain, BagLeft),
+            Passengers(roster, p => !p.Elderly && p.Current != Passenger.Activity.InTrain && p.Current != Passenger.Activity.Sit && p.Current != Passenger.Activity.Toilet, Aggression),
+            // 협박 전화는 역 전체의 일이다(한 사람이나 한 물건이 아니다).
+            Station(() => threat == null ? ThreatCall() : null),
+            // 봉투는 닫히지 않은 어느 좌석 곁에든 떨어져 있을 수 있다.
+            Each(world.Points.Of(PointKind.Seat), seat => world.IsClosed(seat.Position, 2) ? null : Powder(seat)));
 
-        private IEnumerable<Transition> SecurityOrigins(Pools pools)
-        {
-            foreach (var p in pools.Spread(p => p.Luggage == 2 && Settled(p) && p.Current != Passenger.Activity.InTrain, 2)) yield return BagLeft(p);
-            yield return null;
-            foreach (var p in pools.Spread(p => !p.Elderly && p.Current != Passenger.Activity.InTrain && p.Current != Passenger.Activity.Sit && p.Current != Passenger.Activity.Toilet, 2)) yield return Aggression(p);
-            yield return null;
-            if (threat == null) yield return ThreatCall();
-            seatsByRank = seatsByRank ?? world.Points.Of(PointKind.Seat).OrderBy(s => Rank(s.Id)).ToList();
-            var seat = seatsByRank.FirstOrDefault(s => !world.IsClosed(s.Position, 2));
-            if (seat != null) yield return Powder(seat);
-        }
+        private static readonly List<string> BagLeftLevels = new List<string> { "an absent-minded traveller who stays in the building", "walks off but lingers within the station", "walks off and heads for the exit", "walks off quickly after placing the suitcase out of the way", "hurries out of the station after looking around nervously" };
 
         private Transition BagLeft(Passenger owner) => new Transition
         {
             Key = "bag_" + owner.Number, Kind = "bag_left", Origin = true,
             Description = Profile(owner) + ", " + owner.Doing + " at " + Place(owner.transform.position) + ", will get up and walk away leaving the suitcase behind.",
-            Levels = new List<string> { "an absent-minded traveller who stays in the building", "walks off but lingers within the station", "walks off and heads for the exit", "walks off quickly after placing the suitcase out of the way", "hurries out of the station after looking around nervously" },
+            Levels = BagLeftLevels,
             Apply = m => StartBag(owner, m),
         };
+
+        private static readonly List<string> AggressionLevels = new List<string> { "shouts and swears at people nearby", "shouts and shoves people out of the way", "shouts and throws things around", "brandishes an object and threatens people", "lashes out and hits a bystander" };
 
         private Transition Aggression(Passenger person) => new Transition
         {
             Key = "aggression_" + person.Number, Kind = "disturbance", Origin = true,
             Description = Profile(person) + ", " + person.Doing + " at " + Place(person.transform.position) + ", who has been drinking, starts shouting at the people around them.",
-            Levels = new List<string> { "shouts and swears at people nearby", "shouts and shoves people out of the way", "shouts and throws things around", "brandishes an object and threatens people", "lashes out and hits a bystander" },
+            Levels = AggressionLevels,
             Apply = m => StartDisturbance(person, m),
         };
+
+        private static readonly List<string> ThreatLevels = new List<string> { "a short call that sounds like a prank", "a threat that names no place", "a threat that names a place in the station", "a threat that names a place and a time", "a detailed threat claiming several devices" };
 
         private Transition ThreatCall() => new Transition
         {
             Key = "bomb_threat", Kind = "bomb_threat", Origin = true,
             Description = "The station office gets a phone call: a caller says an explosive has been placed somewhere in Busan Station.",
-            Levels = new List<string> { "a short call that sounds like a prank", "a threat that names no place", "a threat that names a place in the station", "a threat that names a place and a time", "a detailed threat claiming several devices" },
+            Levels = ThreatLevels,
             Apply = StartThreat,
         };
+
+        private static readonly List<string> PowderLevels = new List<string> { "a little powder scattered on the floor", "a torn envelope with powder spilt around it", "people close by start coughing", "people close by complain their eyes and throats sting", "someone close by struggles to breathe and sits down" };
 
         private Transition Powder(StationPoints.Point seat) => new Transition
         {
             Key = "powder_" + seat.Id, Kind = "suspicious_powder", Origin = true,
-            Description = "A torn envelope spilling an unknown white powder is lying on the floor beside the seats at " + Place(seat.Position) + ".",
-            Levels = new List<string> { "a little powder scattered on the floor", "a torn envelope with powder spilt around it", "people close by start coughing", "people close by complain their eyes and throats sting", "someone close by struggles to breathe and sits down" },
+            Description = "A torn envelope spilling an unknown white powder is lying on the floor beside the seats at " + FixedPlace(seat.Position) + ".",
+            Levels = PowderLevels,
             Apply = m => StartSubstance(seat, m),
         };
 
@@ -132,13 +133,25 @@ namespace ChooGuard.App.Fps.Emergency
             log.Add("폭발물 협박 전화 · " + threat.Visible);
         }
 
-        /// <summary>The part of the station a caller names: a busy zone at higher levels, nowhere in particular at the lowest.</summary>
+        /// <summary>
+        /// The part of the station a caller names: the busiest zone at higher levels, nowhere in particular at the lowest. Any zone with
+        /// walkable floor the staff member can search counts, the station square, the sky plaza and the track side included: a threat
+        /// is not confined to indoors, and only a place nobody can walk to cannot be searched.
+        /// </summary>
         private (Vector3 spot, string claimed) ClaimedPlace(int level)
         {
-            var zones = world.Points.Zones.Where(z => z.id != "plaza" && z.id != "skyplaza").ToList();
-            var zone = zones.OrderByDescending(z => crowd.People.Count(p => world.ZoneId(p.transform.position) == z.id) + world.Random.Next(6)).FirstOrDefault();
-            var centre = zone != null ? StationWorld.WalkableNear((zone.min + zone.max) * .5f, 30f) : PlayerPosition;
-            return (centre, level < 2 || zone == null ? "역 안 어딘가" : zone.label);
+            StationPoints.ZoneEntry zone = null;
+            var centre = Vector3.zero;
+            int busiest = int.MinValue;
+            foreach (var candidate in world.Points.Zones)
+            {
+                var walkable = StationWorld.WalkableNear((candidate.min + candidate.max) * .5f, 30f);
+                if (!UnityEngine.AI.NavMesh.SamplePosition(walkable, out _, .5f, UnityEngine.AI.NavMesh.AllAreas)) continue;
+                int busy = crowd.People.Count(p => world.ZoneId(p.transform.position) == candidate.id) + world.Random.Next(6);
+                if (busy > busiest) { busiest = busy; zone = candidate; centre = walkable; }
+            }
+            if (zone == null) return (PlayerPosition, "역 안 어딘가");
+            return (centre, level < 2 ? "역 안 어딘가" : zone.label);
         }
 
         private void StartSubstance(StationPoints.Point seat, float magnitude)

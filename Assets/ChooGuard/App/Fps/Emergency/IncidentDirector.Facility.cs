@@ -67,47 +67,56 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 원인 ──
 
-        private IEnumerable<Transition> FacilityOrigins(Pools pools)
-        {
-            if (quake == null) yield return QuakeOrigin();
-            if (hanging.Count > 0 && quake == null) yield return LooseSign();
-            foreach (var elevator in world.Elevators)
-            {
-                elevator.Inside.RemoveAll(b => b == null);
-                if (elevator.Running && elevator.Inside.Count > 0 && !elevatorTraps.Exists(t => t.Active && t.Elevator == elevator)) yield return ElevatorStops(elevator);
-            }
-            if (outage == null) yield return PowerCut();
-        }
+        private IEnumerable<Transition> FacilityOrigins() => Chain(
+            Station(() => quake == null ? QuakeOrigin() : null),
+            Station(() => hanging.Count > 0 && quake == null ? LooseSign() : null),
+            Each(world.Elevators, ElevatorOrigin),
+            Station(() => outage == null ? PowerCut() : null));
+
+        private static readonly List<string> QuakeLevels = new List<string> { "a light tremor", "moderate shaking", "strong shaking", "very strong shaking", "violent shaking" };
 
         private Transition QuakeOrigin() => new Transition
         {
             Key = "quake", Kind = "quake", Origin = true,
             Description = "An earthquake strikes; the whole station starts to shake.",
-            Levels = new List<string> { "a light tremor", "moderate shaking", "strong shaking", "very strong shaking", "violent shaking" },
+            Levels = QuakeLevels,
             Apply = StartQuake,
         };
+
+        private static readonly List<string> LooseSignLevels = new List<string> { "it falls onto an empty spot", "it falls near one or two people", "it falls over a walkway", "it falls over a busy spot", "it falls onto the busiest spot below" };
 
         private Transition LooseSign() => new Transition
         {
             Key = "loose_sign", Kind = "falling_object", Origin = true,
             Description = "A hanging sign or ceiling panel above the concourse comes loose from its fixings and falls.",
-            Levels = new List<string> { "it falls onto an empty spot", "it falls near one or two people", "it falls over a walkway", "it falls over a busy spot", "it falls onto the busiest spot below" },
+            Levels = LooseSignLevels,
             Apply = StartLooseSign,
         };
+
+        /// <summary>An elevator that is running with people inside can stop between floors with a fault (not again while it is already trapped).</summary>
+        private Transition ElevatorOrigin(Elevator elevator)
+        {
+            elevator.Inside.RemoveAll(b => b == null);
+            return elevator.Running && elevator.Inside.Count > 0 && !elevatorTraps.Exists(t => t.Active && t.Elevator == elevator) ? ElevatorStops(elevator) : null;
+        }
+
+        private static readonly List<string> ElevatorStopsLevels = new List<string> { "it stops briefly; the lights stay on", "it is stuck; the people inside are calm", "it is stuck; the people inside press the alarm again and again", "it is stuck; someone inside panics and bangs on the door", "it is stuck in a crowded car; someone inside feels faint" };
 
         private Transition ElevatorStops(Elevator elevator) => new Transition
         {
             Key = "elevator_" + elevator.Entry.id, Kind = "elevator_trap", Origin = true,
             Description = "The " + elevator.Label + " carrying " + elevator.Inside.Count + " people stops between floors with a fault.",
-            Levels = new List<string> { "it stops briefly; the lights stay on", "it is stuck; the people inside are calm", "it is stuck; the people inside press the alarm again and again", "it is stuck; someone inside panics and bangs on the door", "it is stuck in a crowded car; someone inside feels faint" },
+            Levels = ElevatorStopsLevels,
             Apply = m => StartElevatorTrap(elevator, m),
         };
+
+        private static readonly List<string> PowerCutLevels = new List<string> { "the lights flicker and come back within seconds", "part of the lighting goes out for under a minute", "the whole station goes dark on emergency lighting for a minute or two", "a long cut: lights out and escalators and elevators stop", "a long cut: lights out, lifts stop and people are trapped in an elevator" };
 
         private Transition PowerCut() => new Transition
         {
             Key = "power_cut", Kind = "power_outage", Origin = true,
             Description = "The station loses mains power (a fault at the substation or in the grid).",
-            Levels = new List<string> { "the lights flicker and come back within seconds", "part of the lighting goes out for under a minute", "the whole station goes dark on emergency lighting for a minute or two", "a long cut: lights out and escalators and elevators stop", "a long cut: lights out, lifts stop and people are trapped in an elevator" },
+            Levels = PowerCutLevels,
             Apply = StartOutage,
         };
 

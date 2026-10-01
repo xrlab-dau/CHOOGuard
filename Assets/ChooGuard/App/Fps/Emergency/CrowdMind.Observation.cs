@@ -26,12 +26,12 @@ namespace ChooGuard.App.Fps.Emergency
         /// What the person knows, as a key: two people whose keys are equal have observed the same things (the same hazards as
         /// they last saw them, the same bell or announcement, the same instruction), so one request may carry both.
         /// </summary>
-        private string Signature(Judgement item)
+        private string Signature(Passenger who)
         {
-            var slot = item.Who.Slot;
+            var slot = who.Slot;
             var key = new StringBuilder(96);
-            foreach (var hazard in Perceived(item.Who)) key.Append(hazard.Id).Append('=').Append(slot.Seen[hazard]).Append(';');
-            if (HasKnowledge(item.Who))
+            foreach (var hazard in Perceived(who)) key.Append(hazard.Id).Append('=').Append(slot.Seen[hazard]).Append(';');
+            if (HasKnowledge(who))
             {
                 var heard = new List<string>(slot.Heard);
                 heard.Sort(string.CompareOrdinal);
@@ -121,9 +121,6 @@ namespace ChooGuard.App.Fps.Emergency
                     break;
                 case Trigger.Instruction:
                     text.Append(item.Direct ? "A station staff member is telling them directly to leave through an exit. " : "A public announcement asks everyone to leave the area. ");
-                    break;
-                case Trigger.Periodic:
-                    text.Append("A few seconds have passed. ").Append(seen != null && p.Senses(h) ? "What they last saw of it: '" + seen + "'" + (metres != null ? " (about " + metres + ")" : "") + ", and it is still going on. " : "They know about it only from what they heard or saw others do; it is still going on. ");
                     break;
                 case Trigger.Ended:
                     text.Append(p.Current == Passenger.Activity.Report ? "They have been walking to tell the station staff member for a while and have not reached them yet. " :

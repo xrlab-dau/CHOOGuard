@@ -25,7 +25,12 @@ namespace ChooGuard.App.Fps.Emergency
         public int Frozen;
         /// <summary>The first findings of the frozen watchdog in words (who, doing what, where, with the walk's state), for a failing check or a quick look.</summary>
         public readonly List<string> FrozenFindings = new List<string>();
+        /// <summary>Everyday steps: <c>RoutineByJev</c> counts steps carried out locally from a JEV plan (no JEV call for each), <c>RoutineLocally</c> steps drawn by local weights in runs without JEV.</summary>
         public int UrgentByJev, UrgentLocally, RoutineByJev, RoutineLocally, FirstAnswers;
+        /// <summary>Plan questions raised and answered (they share requests, so these are not requests), and emergency steps drawn from JEV's last answer for an unchanged situation instead of asking again.</summary>
+        public int PlansAsked, PlansAnswered, StanceReused;
+        /// <summary>Plan questions by why the person needed one: bootstrap (became part of the station), trip (train, ticket or partner changed), knowledge (learned of an incident), exhausted (nothing left in the plan), missing.</summary>
+        public readonly Dictionary<string, int> PlanReasons = new Dictionary<string, int>();
         public int MaxQueued;
         /// <summary>Longest a person kept doing their current action while the next step was still being judged (game seconds).</summary>
         public float LongestWait;
@@ -62,6 +67,14 @@ namespace ChooGuard.App.Fps.Emergency
         {
             path = logPath;
             startedReal = Time.realtimeSinceStartup;
+        }
+
+        /// <summary>A plan question raised for the reason given (see <see cref="PlanReasons"/>).</summary>
+        public void PlanQuestion(string why)
+        {
+            PlansAsked++;
+            PlanReasons.TryGetValue(why, out int count);
+            PlanReasons[why] = count + 1;
         }
 
         /// <summary>Seconds of real time the crowd has been judging, as of the last frame (the clock restarts when play mode ends, so it is not read later).</summary>
@@ -188,6 +201,13 @@ namespace ChooGuard.App.Fps.Emergency
                 ["escalations"] = Escalations,
                 ["itineraries"] = Itineraries,
                 ["first_answers"] = FirstAnswers,
+                ["plans"] = new JObject
+                {
+                    ["asked"] = PlansAsked, ["answered"] = PlansAnswered, ["steps"] = RoutineByJev,
+                    ["steps_per_answered_plan"] = PlansAnswered == 0 ? 0 : Math.Round(RoutineByJev / (double)PlansAnswered, 2),
+                    ["asked_by_reason"] = JObject.FromObject(PlanReasons),
+                    ["stance_reused"] = StanceReused,
+                },
                 ["max_queued"] = MaxQueued,
                 ["longest_wait_game_s"] = Math.Round(LongestWait, 1),
                 ["requests_per_min"] = Math.Round(Requests / minutes, 1),

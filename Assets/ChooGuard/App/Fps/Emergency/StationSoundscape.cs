@@ -112,7 +112,7 @@ namespace ChooGuard.App.Fps.Emergency
             var position = session.Player.transform.position;
             string zone = session.World.ZoneId(position);
             bool inTrain = zone == "train";
-            bool outdoors = zone == "plaza" || zone == "skyplaza" || zone.Length == 0;
+            bool outdoors = StationWorld.IsOutdoorZone(zone);
             bool onPlatform = zone == "tracks" || (zone.Length > 1 && zone[0] == 'p' && char.IsDigit(zone[1]));
             bool indoors = !inTrain && !outdoors && !onPlatform;
             if (Time.time >= nextCrowdCount)

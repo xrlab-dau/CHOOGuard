@@ -39,6 +39,8 @@ namespace ChooGuard.App.Fps.Emergency
             "the kiosk is engulfed, more batteries burst, thick toxic smoke",
         };
 
+        private static readonly List<string> BoardLevelTexts = new List<string>(BoardLevels), VendingLevelTexts = new List<string>(VendingLevels), KioskLevelTexts = new List<string>(KioskLevels);
+
         /// <summary>Who cut a feed by hand, as <see cref="FireHazard.CutBy"/> records it.</summary>
         private const string StaffCut = ElectricNetwork.StaffName;
 
@@ -88,12 +90,10 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 원인 ──
 
-        partial void ElectricPlazaOrigins(Pools pools, List<Transition> list)
-        {
-            foreach (var board in Candidates("distribution_board", 2, e => ElectricNetwork.BoardOf(e) is ElectricNetwork.Board b && b.Main.On && !b.Damaged)) list.Add(BoardFire(ElectricNetwork.BoardOf(board)));
-            foreach (var machine in Candidates("vending_machine", 2, LoadUsable)) list.Add(VendingFire(machine));
-            foreach (var kiosk in Candidates("charging_kiosk", 2, e => LoadUsable(e) && PeopleNear(e.transform.position, 8f) > 0)) list.Add(KioskFire(kiosk));
-        }
+        private IEnumerable<Transition> ElectricPlazaOrigins() => Chain(
+            Pieces("distribution_board", e => ElectricNetwork.BoardOf(e) is ElectricNetwork.Board b && b.Main.On && !b.Damaged, e => BoardFire(ElectricNetwork.BoardOf(e))),
+            Pieces("vending_machine", LoadUsable, VendingFire),
+            Pieces("charging_kiosk", e => LoadUsable(e) && PeopleNear(e.transform.position, 8f) > 0, KioskFire));
 
         /// <summary>A machine that can start a fault now: powered, not burning and not burnt out.</summary>
         private bool LoadUsable(StationEquipment machine) => ElectricNetwork.Powered(machine) && !BurningIn(machine);
@@ -117,11 +117,6 @@ namespace ChooGuard.App.Fps.Emergency
             if (!valid) log.Add("장면이 바뀌어 적용하지 않음 · " + what);
             return valid;
         }
-
-        /// <summary>Up to <paramref name="count"/> pieces of <paramref name="kind"/> that qualify, at most one per zone, in the shift's stable rank order.</summary>
-        private IEnumerable<StationEquipment> Candidates(string kind, int count, System.Func<StationEquipment, bool> usable) =>
-            EquipmentRegistry.OfKind(kind).Where(e => !BurningIn(e) && usable(e) && !world.IsClosed(e.transform.position, 2))
-                .GroupBy(e => e.Zone).Select(g => g.OrderBy(e => Rank(e.Id)).First()).OrderBy(e => Rank(e.Id)).Take(count);
 
         private int peopleSnapshotFrame = -1;
         private readonly List<Vector3> peopleAt = new List<Vector3>();
@@ -159,7 +154,7 @@ namespace ChooGuard.App.Fps.Emergency
                 Key = "board_fire_" + e.Id, Kind = "board_fire", Origin = true,
                 Description = "A loose terminal on one of the breakers inside distribution board " + e.Label + " (" + PlaceOf(e) + ") overheats and starts to melt its insulation. The panel stays live: it feeds " +
                     (machines > 0 ? machines + (machines == 1 ? " vending machine or kiosk plus " : " vending machines and kiosks plus ") : "") + "the lighting and sockets of the area, and smoke would first leak from its door seams. " + CrowdNote(e.transform.position),
-                Levels = BoardLevels.ToList(),
+                Levels = BoardLevelTexts,
                 Apply = m => { if (Still(StillIgnitable(e), e.Label + " " + e.Id)) StartEquipmentFire(e, m, null); },
             };
         }
@@ -175,7 +170,7 @@ namespace ChooGuard.App.Fps.Emergency
                     ? "The compressor or the condenser fan motor of the drink vending machine " + ElectricNetwork.Tag(machine) + " (" + PlaceOf(machine) + ") overheats: dust in the condenser, a sticking relay, a worn power cord. "
                     : "The wiring or the power supply of the snack vending machine " + ElectricNetwork.Tag(machine) + " (" + PlaceOf(machine) + ") shorts (worn cord insulation, dust and damp, an overloaded coil motor). ")
                     + "It starts to smoke. It is fed from " + (circuit != null ? "breaker " + circuit.Label : "the floor's sockets") + ". " + CrowdNote(machine.transform.position),
-                Levels = VendingLevels.ToList(),
+                Levels = VendingLevelTexts,
                 Apply = m => { if (Still(StillIgnitable(machine), machine.Label + " " + machine.Id)) StartEquipmentFire(machine, m, null); },
             };
         }
@@ -190,7 +185,7 @@ namespace ChooGuard.App.Fps.Emergency
                 // 이미 망가진 배터리가 들어 있다고 전제하지 않는다: 그런 상태는 세계에 없으므로 JEV 가 '구체적 근거'로 읽어 다른 원인보다 몇 배 높게 판단한다(2026-09-30 측정).
                 Description = "The charger electronics of the phone-charging kiosk " + ElectricNetwork.Tag(kiosk) + " (" + PlaceOf(kiosk) + ") or a phone charging in one of its lockers overheats: a failing charger module, a worn cable, a faulty battery. It starts to smoke. " +
                     phones + " of its 8 lockers hold a charging phone. It is fed from " + (circuit != null ? "breaker " + circuit.Label : "the floor's sockets") + ". " + CrowdNote(kiosk.transform.position),
-                Levels = KioskLevels.ToList(),
+                Levels = KioskLevelTexts,
                 Apply = m => { if (Still(StillIgnitable(kiosk), kiosk.Label + " " + kiosk.Id)) StartEquipmentFire(kiosk, m, null); },
             };
         }

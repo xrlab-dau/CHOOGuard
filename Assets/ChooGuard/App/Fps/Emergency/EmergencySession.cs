@@ -20,8 +20,8 @@ namespace ChooGuard.App.Fps.Emergency
         public TMP_FontAsset KoreanFont;
         public Texture StationMap;
         [Tooltip("지도 텍스처가 덮는 월드 XZ 범위 (x, z, 폭, 깊이)")]
-        public Rect StationMapBounds = new Rect(-80, -110, 180, 200);
-        public string StationMapLabel = "2층 맞이방";
+        public Rect StationMapBounds;
+        public string StationMapLabel = "부산역 전역";
         [Header("근무")]
         [Tooltip("근무 시작 시각 (시)")]
         public float ShiftStartHour = 14;
