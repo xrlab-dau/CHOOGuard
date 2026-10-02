@@ -28,18 +28,19 @@ namespace ChooGuard.App.Fps.Equipment
         public sealed class Report
         {
             public Transform Root;
-            public int Placed, Skipped, Cells, Batched, Unbatched;
+            public int Placed, Skipped, Unverified, Cells, Batched, Unbatched;
             public float Milliseconds, ParseMilliseconds, PlaceMilliseconds, BatchMilliseconds;
             public readonly SortedDictionary<string, int> PerKind = new SortedDictionary<string, int>(System.StringComparer.Ordinal);
 
             public override string ToString() =>
-                "placed=" + Placed + " skipped=" + Skipped + " cells=" + Cells + " batched=" + Batched + " unbatched=" + Unbatched + " ms=" + Milliseconds.ToString("0") +
+                "placed=" + Placed + " skipped=" + Skipped + " unverified=" + Unverified + " cells=" + Cells + " batched=" + Batched + " unbatched=" + Unbatched + " ms=" + Milliseconds.ToString("0") +
                 " (parse " + ParseMilliseconds.ToString("0") + ", place " + PlaceMilliseconds.ToString("0") + ", batch " + BatchMilliseconds.ToString("0") + ") [" + string.Join(", ", PerKind) + "]";
         }
 
         /// <summary>
-        /// Instantiates every placement of <paramref name="catalog"/> under a new "설비" object below <paramref name="parent"/>.
-        /// An entry that names an unknown prefab or repeats an id is skipped with an error in the console.
+        /// Instantiates verified placements of <paramref name="catalog"/> under a new "설비" object below <paramref name="parent"/>.
+        /// Entries without placement evidence are withheld before looking up prefabs or reserving ids. A verified entry
+        /// that names an unknown prefab or repeats an id is skipped with an error in the console.
         /// </summary>
         public static Report Spawn(EquipmentCatalog catalog, Transform parent)
         {
@@ -63,6 +64,11 @@ namespace ChooGuard.App.Fps.Equipment
                 report.ParseMilliseconds += (float)parsing.Elapsed.TotalMilliseconds;
                 foreach (var item in data.items)
                 {
+                    if (!item.HasPlacementEvidence)
+                    {
+                        report.Unverified++;
+                        continue;
+                    }
                     var prefab = catalog.Prefab(item.prefab);
                     if (prefab == null || !ids.Add(item.id))
                     {

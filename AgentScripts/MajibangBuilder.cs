@@ -38,7 +38,7 @@ public static class MajibangBuilder
     // Per-unit options; open fronts and unresolved fitout are explicit evidence-backed plan decisions.
     static string unitFasciaTex;
     static float unitDoorW = 2.0f;
-    static bool unitOpenFront, unitFixtures = true;
+    static bool unitOpenFront, unitFixtures;
     // Storefront hand-off: plan/spec "storefronts": "kit" leaves unit fronts open (no glass, frames, fascia band or sign) for kit
     // Storefront elements; walls, shop ceilings, lights and fixtures are unchanged. Default (absent) keeps the builders' fronts.
     static bool kitStorefronts;
@@ -1154,7 +1154,9 @@ public static class MajibangBuilder
         unitFasciaTex = (string)j["fasciaTex"];
         unitDoorW = j["doorW"] != null ? (float)j["doorW"] : 2.0f;
         unitOpenFront = (string)j["frontage"] == "open";
-        unitFixtures = (string)j["fixtures"] != "unresolved";
+        // Legacy type/size-based furnishing is a proposal, not an observed site layout.
+        // Keep the unit envelope; actual furnishings belong in an evidenced kit layout.
+        unitFixtures = false;
         Transform previousFrame = frame;
         string previousPrefix = batchPrefix, owner = (string)j["batchOwner"];
         if (!string.IsNullOrEmpty(owner))
@@ -1302,22 +1304,10 @@ public static class MajibangBuilder
             float su = u0 + 7 + stallW * (i + .5f), sv = v0 + 2.2f;
             string brand = (string)stalls[i];
             Box("Majibang_FoodCourt_StallBacks", wood, su, v0 + .6f, floor + 1.4f, stallW - .4f, .12f, 2.8f, true);
-            Prop("counter", brand + " counter", su - stallW * .2f, sv, floor, new Vector3(Mathf.Min(2.6f, stallW * .38f), 1.05f, .8f), 180);
-            Prop("counter", brand + " counter", su + stallW * .2f, sv, floor, new Vector3(Mathf.Min(2.6f, stallW * .38f), 1.05f, .8f), 180);
-            Prop("food", brand + " display", su, sv, floor + 1.06f, new Vector3(.7f, .22f, .45f), 180);
             Sign(brand, su, v0 + .75f, floor + 2.55f, Mathf.Min(stallW - .6f, 5.5f), .55f, 0, 1, Colour("Shop_FoodCourt_Stall" + i, new Color(.08f, .08f, .09f)), new Color(1f, .93f, .78f));
         }
-        // Window-side seating grid.
+        // The former regular seating grid was not an observed fixture layout.
         int tables = 0, keptClear = 0;
-        for (float u = u0 + 2.5f; u <= u1 - 2.5f; u += 3.4f)
-        for (float v = v0 + 6.5f; v <= EastV(u) - 2.2f; v += 3.1f)
-        {
-            if (keepClear != null && keepClear.Any(k => u + 1.4f > (float)k[0] && u - 1.4f < (float)k[1] && v + .5f > (float)k[2] && v - .5f < (float)k[3])) { keptClear++; continue; }
-            Prop("table", "푸드코트 table", u, v, floor, new Vector3(1.0f, .76f, 1.0f), 0);
-            Prop("chair", "푸드코트 chair", u - .85f, v, floor, new Vector3(.46f, .86f, .5f), 90);
-            Prop("chair", "푸드코트 chair", u + .85f, v, floor, new Vector3(.46f, .86f, .5f), -90);
-            tables++;
-        }
         // Dark ceiling with pendant bulbs seen in the 2023-2026 food-court photos.
         Batch ceil = B("Majibang_FoodCourt_Ceiling", dark);
         Vector3 c0 = P(u0, v0, floor + 4.6f), c1 = P(u1, v0, floor + 4.6f), c2 = P(u1, EastV(u1) - .25f, floor + 4.6f), c3 = P(u0, EastV(u0) - .25f, floor + 4.6f);
@@ -3169,6 +3159,15 @@ public static class MajibangBuilder
     // Integration entry (Main): builds every element of a zone spec under a freshly created root path, replacing a previous
     // build of that path only after success. Meshes -> Kit/<zone>/, receipt -> <spec>.receipt.json. No scene save.
     // args[0] = spec JSON ({"zone","elements":[...]} or [...]); args[1] = root path "Parent/Child" (parent must exist) or "Root".
+    // Rebuild the active observed layouts instead of the historical inference-filled specs.
+    public static void RebuildObservedInteriors(string[] args)
+    {
+        string manifestPath = args != null && args.Length > 0 ? args[0] : "content/world/observed-interiors/manifest.json";
+        var manifest = JObject.Parse(File.ReadAllText(manifestPath));
+        foreach (JObject spec in (JArray)manifest["specs"])
+            KitBuild(new[] { (string)spec["file"], (string)spec["root"] });
+    }
+
     public static void KitBuild(string[] args)
     {
         if (EditorApplication.isPlaying) throw new InvalidOperationException("Run KitBuild in Edit mode.");
@@ -3221,7 +3220,7 @@ public static class MajibangBuilder
             if (previous != null) previous.gameObject.SetActive(false);
             foreach (DoorBuild d in doorBuilds) kitDoorReport.Add(DoorReceipt(SaveDoor(d, d.box ? boxFrame : root, folder, b => b.Mat, s => s)));
             meshes = root.GetComponentsInChildren<MeshFilter>(true).Select(f => f.sharedMesh).Concat(root.GetComponentsInChildren<MeshCollider>(true).Select(c => c.sharedMesh))
-                .Select(m => AssetDatabase.GetAssetPath(m)).Where(s => s.StartsWith(folder + "/", StringComparison.Ordinal)).Distinct().OrderBy(s => s).ToList();
+                .Select(m => AssetDatabase.GetAssetPath(m)).Where(s => s.Normalize().StartsWith((folder + "/").Normalize(), StringComparison.Ordinal)).Distinct().OrderBy(s => s).ToList();
         }
         catch
         {
@@ -3232,7 +3231,7 @@ public static class MajibangBuilder
         finally { meshFolder = Art; batches.Clear(); doorBuilds.Clear(); doorNow = null; leafNow = null; frame = savedRoot; root = savedRoot; boxFrame = savedBox; inBox = false; }
         if (previous != null) UnityEngine.Object.DestroyImmediate(previous.gameObject);
         if (File.Exists(receiptPath) && JObject.Parse(File.ReadAllText(receiptPath))["meshes"] is JArray old)
-            foreach (string stale in old.Select(t => (string)t).Where(s => s.StartsWith(folder + "/", StringComparison.Ordinal) && !meshes.Contains(s))) AssetDatabase.DeleteAsset(stale);
+            foreach (string stale in old.Select(t => (string)t).Where(s => s.Normalize().StartsWith((folder + "/").Normalize(), StringComparison.Ordinal) && !meshes.Contains(s))) AssetDatabase.DeleteAsset(stale);
         BindWorldText();
         AssetDatabase.SaveAssets();
         EditorSceneManager.MarkSceneDirty(built.scene);
@@ -4399,61 +4398,13 @@ public static class MajibangBuilder
         if (KB(p, "light", true))
             KLight(id + " light", at(L * .5f, depth * .5f, y1 - y - 1f), new JObject { ["intensity"] = 1.1f, ["range"] = Mathf.Max(L, depth) + 1.5f, ["kelvin"] = kind == "convenience" ? 5000 : 3500 });
         if (!KB(p, "fixtures", true)) return;
+        // A store's kind and dimensions do not establish its actual fixtures.
+        // Only explicit, individually evidenced placements may enter the world map.
+        if (!(p["layout"] is JArray layout)) return;
         var rnd = new System.Random(KI(p, "seed", id.Aggregate(17, (h, ch) => unchecked(h * 31 + ch))));
-        float backD = depth - .02f;
-        if (p["layout"] is JArray layout) { KShopLayout(id, layout, y, rnd); return; }
-        switch (kind)
-        {
-            case "cafe":
-            {
-                int nc = Mathf.Clamp(Mathf.FloorToInt(L * .35f), 1, 3);
-                for (int k = 0; k < nc; k++) KitProp("kit_kitchenCounter", id + " counter " + k, at(L * .5f + (k - (nc - 1) * .5f), backD - 1.4f, 0), new Vector3(1f, .95f, .65f), OUT);
-                KMenuBoards(at(L * .5f, backD - .03f, 2.15f), EX, OUT, Mathf.Min(L - .8f, 3.2f));
-                // Seating capped at six table sets (~7k tris) per shop.
-                int sets = 0;
-                for (float d = 1.3f; d < backD - 2.3f && sets < 6; d += 2.1f)
-                    for (float s = 1.2f; s < L - .9f && sets < 6; s += 2.2f, sets++) KTableSet(id + " " + s + "," + d, at(s, d, 0), EX, IN);
-                break;
-            }
-            case "convenience":
-            {
-                KCooler(at(L * .5f, backD - .32f, 0), EX, OUT, Mathf.Min(L - .6f, 6f), rnd);
-                float d0 = 1.4f, d1 = backD - 1.5f;
-                if (d1 - d0 >= 1f) for (float s = 2.1f; s < L - .9f; s += 1.9f) KShelf(at(s, (d0 + d1) * .5f, 0), IN, EX, d1 - d0, 1.5f, .4f, true, rnd, KitProducts, 4);
-                KitProp("kit_kitchenCounter", id + " counter", at(.8f, 1.1f, 0), new Vector3(1.2f, .95f, .6f), EX);
-                break;
-            }
-            case "bakery":
-            {
-                KShelf(at(L * .5f, backD, 0), EX, OUT, Mathf.Min(L - .8f, 5f), 1.6f, .45f, false, rnd, new[] { "Kit_Bread" }, 4);
-                KitProp("kit_kitchenCounter", id + " counter", at(L * .5f, backD - 1.3f, 0), new Vector3(1.6f, .95f, .65f), OUT);
-                for (float s = 1.3f; s < L - 1f; s += 2f)
-                    for (float d = 1.4f; d < backD - 2.3f; d += 1.6f)
-                    {
-                        KitProp("kit_tableMedium", id + " table " + s + "," + d, at(s, d, 0), new Vector3(1.2f, .8f, .8f), OUT);
-                        KLoaves(at(s, d, .8f), EX, OUT, 1.1f, .7f, rnd);
-                    }
-                break;
-            }
-            case "restaurant":
-            {
-                int nk = Mathf.Clamp(Mathf.FloorToInt((L - .6f) / 1.35f), 1, 5);
-                for (int k = 0; k < nk; k++) KitProp("kit_kitchenTable", id + " kitchen " + k, at(L * .5f + (k - (nk - 1) * .5f) * 1.35f, backD - .5f, 0), new Vector3(1.35f, .87f, .9f), OUT);
-                for (float d = 1.2f; d < backD - 2.1f; d += 2.1f)
-                    for (float s = 1f; s < L - .9f; s += 2f) KitProp("kit_dining", id + " dining " + s + "," + d, at(s, d, 0), new Vector3(1.5f, .9f, 1.55f), EX);
-                break;
-            }
-            default:
-            {
-                KShelf(at(L * .5f, backD, 0), EX, OUT, Mathf.Min(L - .8f, 6f), 2f, .4f, false, rnd, KitProducts, 5);
-                for (float s = 1.4f; s < L - 1f; s += 2.2f)
-                    for (float d = 1.5f; d < backD - 1.4f && s < 1.4f + 2.2f * 2; d += 1.8f) KitProp("kit_cabinet", id + " display " + s + "," + d, at(s, d, 0), new Vector3(1f, .9f, .5f), OUT);
-                KitProp("kit_plant", id + " plant", at(.45f, .45f, 0), new Vector3(.5f, .75f, .5f), OUT);
-                break;
-            }
-        }
+        KShopLayout(id, layout, y, rnd);
     }
-    // Explicit ShopInterior fixtures (params.layout replaces the kind's automatic set): {fixture, at [u,v] (floor footprint centre;
+    // Observed ShopInterior fixtures: {fixture, placementEvidence, at [u,v] (floor footprint centre;
     // shelf/bakeryShelf: back line centre; menu: point on the wall face), heading [du,dv] (front / customer side; menu: out of the
     // wall), length (extent across heading), depth, height, elevation (menu: centre height 2.15; others: base above the floor 0)}.
     static void KShopLayout(string id, JArray layout, float y, System.Random rnd)
@@ -4461,7 +4412,10 @@ public static class MajibangBuilder
         int k = 0;
         foreach (JObject f in layout)
         {
-            string key = KS(f, "fixture", null), name = id + " " + key + " " + k++;
+            int sourceIndex = KI(f, "sourceIndex", k++);
+            string key = KS(f, "fixture", null), name = id + " " + key + " " + sourceIndex;
+            // Preserve layout indices even for withheld entries, so observed object ids stay stable.
+            if (string.IsNullOrWhiteSpace(KS(f, "placementEvidence", null))) continue;
             if (key == null) throw new InvalidOperationException(id + ": layout entry needs `fixture`.");
             Vector2 at2 = KV(KT(f, "at", id));
             if (!(f["heading"] is JArray hd) || KV(hd).sqrMagnitude < 1e-8f) throw new InvalidOperationException(id + ": layout " + key + " needs a non-zero heading.");
@@ -6190,72 +6144,8 @@ public static class MajibangBuilder
         KRoomFloor(id, poly, y, KS(p, "floor", "floorGranite"), KF(p, "slab", 0), rot);
         string ck = KS(p, "ceiling", "ceiling600");
         KRoomCeiling(id, poly, inner, KInset(poly, t * .5f), y1, ck, rot, ax, p["light"], 4000, ck == "ceiling600" ? 2.4f : 1.8f);
-        string interior = KS(p, "interior", "none");
-        if (interior == "none") return;
-        var rnd = new System.Random(KI(p, "seed", id.Aggregate(17, (h, ch) => unchecked(h * 31 + ch))));
-        var lay = new KLayout(inner);
-        foreach (KOpening o in ops) if (o.kind != "window") lay.clear.Add(KApproach(poly, o, t + 1.2f));
-        var runs = KRunsOf(inner).OrderByDescending(r => r.len).ToList();
-        if (runs.Count == 0) return;
-        Vector3 up = Vector3.up; int k = 0;
-        Material wood = KM("counterWood"), grey = KM("#6E7478"), steelGrey = KM("#AEB4B8");
-        Batch wb = B("Kit_Furniture_" + wood.name, wood), gb = B("Kit_Furniture_" + grey.name, grey), sg = B("Kit_Furniture_" + steelGrey.name, steelGrey), jb = B("Kit_Joint", dark);
-        Material hw = KM("hairline"); Batch mb = B("Kit_Trim_" + hw.name, hw);
-        switch (interior)
-        {
-            case "office":
-                foreach (KRun r in runs.Take(2))
-                    foreach (Vector2 c in KFillRun(lay, r, 1.4f, .7f, .9f, 6 - k, false))
-                    {
-                        Vector3 C = KP(c, y), AX = KD(r.d), FW = KD(r.n);
-                        KBox(wb, C + up * .725f, AX, up, FW, new Vector3(1.4f, .03f, .7f));
-                        foreach (float e in new[] { -1f, 1f }) KBox(gb, C + AX * (e * .675f) + up * .355f, AX, up, FW, new Vector3(.03f, .71f, .66f));
-                        KBox(gb, C - FW * .3f + up * .45f, AX, up, FW, new Vector3(1.32f, .4f, .02f));
-                        KBox(B("Kit_Screen", KM("Kit_Screen")), C - FW * .14f + up * 1.02f, AX, up, FW, new Vector3(.56f, .34f, .03f));
-                        KBox(jb, C - FW * .16f + up * .8f, AX, up, FW, new Vector3(.05f, .14f, .05f));
-                        KBox(jb, C + FW * .12f + up * .748f, AX, up, FW, new Vector3(.42f, .016f, .14f));
-                        KitProp("kit_chair", id + " chair " + k, C + FW * .7f, new Vector3(.45f, .85f, .48f), -FW);
-                        KColBox(C + up * .37f, AX, up, FW, new Vector3(1.4f, .74f, .7f));
-                        k++;
-                    }
-                foreach (KRun r in runs.Skip(1))
-                    foreach (Vector2 c in KFillRun(lay, r, .9f, .45f, .8f, 4, true)) KCabinet(KP(c, y), KD(r.d), KD(r.n), sg, jb, mb, .9f, 1.8f, .45f, 1);
-                break;
-            case "storage":
-                foreach (float w in new[] { 1.8f, .9f })
-                    foreach (KRun r in runs)
-                        foreach (Vector2 c in KFillRun(lay, r, w, .5f, .8f, 12, false))
-                            KShelf(KP(c - r.n * .26f, y), KD(r.d), KD(r.n), w - .04f, 2f, .45f, false, rnd, new[] { "Kit_Carton" }, 4);
-                break;
-            case "staff":
-                foreach (Vector2 c in KFillRun(lay, runs[0], .9f, .5f, .9f, 4, true)) KCabinet(KP(c, y), KD(runs[0].d), KD(runs[0].n), sg, jb, mb, .9f, 1.8f, .5f, 2);
-                foreach (KRun r in runs.Skip(1).Concat(runs.Take(1)))
-                {
-                    List<Vector2> kc = KFillRun(lay, r, 1.8f, .62f, .9f, 1, false);
-                    if (kc.Count == 0) continue;
-                    Vector3 C = KP(kc[0], y), AX = KD(r.d), FW = KD(r.n);
-                    KitProp("kit_kitchenCounter", id + " kitchenette", C - AX * .3f, new Vector3(1.2f, .9f, .6f), FW);
-                    Material wm = KM("white"); Batch fb = B("Kit_Furniture_" + wm.name, wm);
-                    KBox(fb, C + AX * .6f + up * .85f, AX, up, FW, new Vector3(.6f, 1.7f, .62f));
-                    KBox(jb, C + AX * .6f + FW * .312f + up * 1.2f, AX, up, FW, new Vector3(.58f, .008f, .005f));
-                    KBox(mb, C + AX * .38f + FW * .33f + up * 1.2f, AX, up, FW, new Vector3(.02f, .5f, .03f));
-                    KColBox(C + AX * .6f + up * .85f, AX, up, FW, new Vector3(.6f, 1.7f, .62f));
-                    break;
-                }
-                {
-                    Vector2 cen = inner.Aggregate(Vector2.zero, (s, q) => s + q) / inner.Count, tax = runs[0].d;
-                    if (lay.Try(KLayout.Rect(cen, tax, 2.1f, 2f), null))
-                    {
-                        Vector3 C = KP(cen, y), AX = KD(tax), FW = Vector3.Cross(up, AX);
-                        KBox(wb, C + up * .735f, AX, up, FW, new Vector3(1.2f, .03f, .75f));
-                        foreach (float e in new[] { -1f, 1f }) foreach (float f in new[] { -1f, 1f }) KBox(gb, C + AX * (e * .55f) + FW * (f * .32f) + up * .36f, AX, up, FW, new Vector3(.04f, .72f, .04f));
-                        foreach (float e in new[] { -1f, 1f }) foreach (float f in new[] { -1f, 1f }) KitProp("kit_chair", id + " chair " + (k++), C + AX * (e * .3f) + FW * (f * .65f), new Vector3(.45f, .85f, .48f), -FW * f);
-                        KColBox(C + up * .37f, AX, up, FW, new Vector3(1.2f, .74f, .75f));
-                    }
-                }
-                break;
-            default: throw new InvalidOperationException(id + ": interior must be none, office, storage or staff.");
-        }
+        // Room identity and its footprint do not establish desks, storage or a staff kitchen.
+        // Preserve the enclosure; furnish only through explicit site-observed fixture elements.
     }
     // Steel cabinet / staff locker (C = footprint centre on the floor, FW out of the wall): body, door split(s), handles, collider.
     static void KCabinet(Vector3 C, Vector3 AX, Vector3 FW, Batch body, Batch joint, Batch metal, float w, float h, float d, int rows)
@@ -6275,7 +6165,6 @@ public static class MajibangBuilder
     }
 
     // ---- ToiletRoom (public toilet: tiled walls, stalls, WC pans, urinals + dividers, vanity, mirror, dryer, sign, ceiling, light) ----
-    struct KItem { public string kind; public Vector2 c; public KRun r; public float w, dep; public int n; public bool rev; }
     static readonly string[] KToiletKinds = { "male", "female", "accessible", "unisex" };
     static void KitToiletRoom(string id, JObject g, JObject p)
     {
@@ -6298,121 +6187,8 @@ public static class MajibangBuilder
         KRoomFloor(id, poly, y, KS(p, "floor", "tile"), KF(p, "slab", 0), rot);
         KRoomCeiling(id, poly, inner, KInset(poly, t * .5f), y1, KS(p, "ceiling", "plaster"), rot, ex2, p["light"], 5000, 1.8f);
 
-        // Plan: stalls on the back wall (from the far corner), vanity on the side nearest the entry, urinals on the far side.
-        var (stallCap, stallAuto) = KCount(p, "stalls"); var (urinalCap, urinalAuto) = KCount(p, "urinals"); var (basinCap, basinAuto) = KCount(p, "basins");
-        if (kind != "male") urinalCap = 0;
-        float sw = KF(p, "stallWidth", kind == "accessible" ? 1.2f : .95f), sd = KF(p, "stallDepth", 1.5f), cor = KF(p, "corridor", 1.2f), upit = KF(p, "urinalPitch", .8f), bp = KF(p, "basinPitch", .8f);
-        var runs = KRunsOf(inner);
-        var back = runs.Where(r => Vector2.Dot(r.n, in2) < -.7f).OrderByDescending(r => r.len).ToList();
-        var front = runs.Where(r => Vector2.Dot(r.n, in2) > .7f).ToList();
-        var sides = runs.Where(r => Mathf.Abs(Vector2.Dot(r.n, in2)) <= .7f).OrderByDescending(r => Mathf.Abs(Vector2.Dot(r.a + r.d * (r.len * .5f) - eMid, ex2))).ToList();
-        Func<KRun, bool> farEnd = r => Vector2.Distance(r.a + r.d * r.len, eMid) > Vector2.Distance(r.a, eMid);
-        List<KItem> items = null; KLayout lay = null;
-        for (int attempt = 0; attempt < 2; attempt++)
-        {
-            lay = new KLayout(inner); var list = new List<KItem>(); items = list;
-            foreach (KOpening o in ops) if (o.kind != "window") lay.clear.Add(KApproach(poly, o, t + 1.5f));
-            KLayout L = lay;
-            int Fill(IEnumerable<KRun> rs, string what, float w, float dep, float clr, int cap, bool far, int n)
-            {
-                int got = 0;
-                foreach (KRun r in rs)
-                {
-                    if (got >= cap) break;
-                    bool rev = far ? farEnd(r) : !farEnd(r);
-                    foreach (Vector2 c in KFillRun(L, r, w, dep, clr, cap - got, rev)) { list.Add(new KItem { kind = what, c = c, r = r, w = w, dep = dep, n = n, rev = rev }); got++; }
-                }
-                return got;
-            }
-            int Vanity(IEnumerable<KRun> rs, int want, bool auto)
-            {
-                int left = want, placed = 0;
-                foreach (KRun r in rs)
-                    while (left > 0)
-                    {
-                        bool ok = false;
-                        for (int kk = Mathf.Min(left, 4); kk >= 1 && !ok; kk--)
-                            if (Fill(new[] { r }, "vanity", kk * bp + .6f, .55f, 1f, 1, false, kk) == 1) { left -= kk; placed += kk; ok = true; }
-                        if (!ok || auto) break;
-                    }
-                return placed;
-            }
-            var nearFirst = Enumerable.Reverse(sides).Concat(front).Concat(back).ToList();
-            if (kind == "accessible")
-            {
-                Fill(back.Concat(sides), "accWc", sw, .8f, 1.5f, 1, true, 0);
-                Vanity(nearFirst, 1, true);
-                break;
-            }
-            int stalls = Fill(back, "stall", sw, sd, cor, stallCap, true, 0);
-            if (kind != "male" && stalls < stallCap && sides.Count > 1) stalls += Fill(sides.Take(1), "stall", sw, sd, cor, stallCap - stalls, true, 0);
-            Vanity(nearFirst, basinAuto ? 4 : basinCap, basinAuto);
-            int urinals = urinalCap > 0 ? Fill(sides.Concat(front).Concat(back), "urinal", upit, .45f, .8f, urinalCap, true, 0) : 0;
-            if (kind == "male" && urinals == 0 && urinalAuto && stallAuto && stalls >= 2 && attempt == 0) { stallCap = stalls / 2; continue; }
-            break;
-        }
-
-        // Build.
-        Material por = KM("Kit_Porcelain"), part = KM(KS(p, "partitionColour", "#B9BEC2")), hw = KM("hairline"), top2 = KM(KS(p, "vanityTop", "granite"));
-        Batch pb = B("Kit_Sanitary_" + por.name, por), tb = B("Kit_Partition_" + part.name, part), mb = B("Kit_Trim_" + hw.name, hw), jb = B("Kit_Joint", dark);
-        Vector3 up = Vector3.up;
-        Func<string, Vector2, KItem?> neighbour = (what, q) => items.Where(it => it.kind == what && KInRing(KLayout.Rect(it.c, it.r.d, it.w, it.dep).ToList(), q)).Select(it => (KItem?)it).FirstOrDefault();
-        float open = KF(p, "doorOpen", .25f), ph = KF(p, "partitionHeight", 2f);
-        foreach (KItem it in items)
-        {
-            Vector2 wall2 = it.c - it.r.n * (it.dep * .5f + .01f);
-            Vector3 W = KP(wall2, y), AX = KD(it.r.d), FW = KD(it.r.n);
-            switch (it.kind)
-            {
-                case "stall":
-                {
-                    Vector2 pl = it.c - it.r.d * (it.w * .5f + .08f), pr = it.c + it.r.d * (it.w * .5f + .08f);
-                    bool left = KInRing(inner, pl), right = KInRing(inner, pr) && neighbour("stall", pr) == null;
-                    KStall(tb, mb, W, AX, FW, it.w, it.dep + .01f, ph, open, left, right);
-                    KWc(pb, mb, jb, W, AX, FW);
-                    KBox(mb, W + AX * (it.w * .5f - .1f) + FW * .6f + up * .72f, AX, up, FW, new Vector3(.03f, .13f, .13f));   // paper holder
-                    break;
-                }
-                case "urinal":
-                {
-                    KUrinal(pb, mb, W, AX, FW);
-                    if (neighbour("urinal", it.c - it.r.d * (it.w * .5f + .08f)) != null)
-                    {
-                        Vector3 dc = W - AX * (it.w * .5f) + FW * .235f + up * 1.0f;
-                        KBox(tb, dc, AX, up, FW, new Vector3(.02f, .9f, .45f));
-                        KColBox(dc, AX, up, FW, new Vector3(.03f, .9f, .45f));
-                    }
-                    break;
-                }
-                case "vanity":
-                    KVanity(id, W, wall2, it.r.d, it.r.n, it.w, it.n, bp, y, y1, pb, mb, jb, top2);
-                    break;
-                case "accWc":
-                {
-                    float cs = it.rev ? 1 : -1;                                           // side of the corner wall along AX
-                    Vector3 corner = W + AX * (cs * it.w * .5f), pan = corner - AX * (cs * .45f);
-                    KWc(pb, mb, jb, pan, AX, FW);
-                    Vector3 sb = corner - AX * (cs * .05f);
-                    KTube(mb, sb + FW * .25f + up * .75f, sb + FW * .95f + up * .75f, .017f, 8);
-                    KTube(mb, sb + FW * .95f + up * .75f, sb + FW * .95f + up * 1.45f, .017f, 8);
-                    Vector3 fb = pan - AX * (cs * .38f);
-                    KBox(mb, fb + FW * .03f + up * .8f, AX, up, FW, new Vector3(.08f, .25f, .05f));
-                    KTube(mb, fb + FW * .06f + up * .75f, fb + FW * .8f + up * .75f, .017f, 8);
-                    Material red = KM("Kit_EmitRed");
-                    KRectC(B("Kit_Light_" + red.name, red), corner - AX * (cs * .002f) + FW * .8f + up * .9f, FW, up, .08f, .08f, -AX * cs);
-                    break;
-                }
-            }
-        }
-        if (!KB(p, "sign", true)) return;
-        // Pictogram sign on the corridor face beside the entry (right side, else left, else above the opening).
-        float EL = Vector2.Distance(poly[ei], poly[(ei + 1) % poly.Count]), bw = KF(p, "signWidth", .45f), bh = bw * 1.55f, sc; float hc = y + 1.6f;
-        if (entry.s1 + .15f + bw <= EL - .1f) sc = entry.s1 + .15f + bw * .5f;
-        else if (entry.s0 - .15f - bw >= .1f) sc = entry.s0 - .15f - bw * .5f;
-        else if (entry.y1 + .1f + bh <= top - .05f) { sc = (entry.s0 + entry.s1) * .5f; hc = entry.y1 + .1f + bh * .5f; }
-        else return;
-        Vector3 nOut = -KD(in2);
-        KToiletSign(kind, KP(fa + ex2 * sc, hc) + nOut * .02f, nOut, bw, bh, KS(p, "signColour", null));
+        // Entrance/footprint records do not reveal sanitary counts or internal partitions.
+        // The former auto layout and entry pictogram were guesses. Keep only the enclosure.
     }
     // Stall: side partitions (skipped where a wall or a neighbour stall takes them), front pilasters, head rail, door leaf swinging in
     // by `open` x 90 deg (hinge on the -AX pilaster) with an occupancy indicator; W = back-wall point at the stall centre, FW = out.

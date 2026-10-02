@@ -10,6 +10,7 @@ from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
 SRC=ROOT/'asset-library/space-references/busan-reconstruction'
 data=json.loads((SRC/'busan-openworld.json').read_text()); b=data['requestedBounds']; bounds=box(b['minX'],b['minZ'],b['maxX'],b['maxZ'])
+source_sha256=hashlib.sha256((SRC/'osm-busan-openworld.xml').read_bytes()).hexdigest()
 r=ET.parse(SRC/'osm-busan-openworld.xml').getroot()
 nodes={n.get('id'):(float(n.get('lon')),float(n.get('lat'))) for n in r.findall('node')}
 def xy(v): return ((v[0]-data['originLon'])*111320*math.cos(math.radians(data['originLat'])),(v[1]-data['originLat'])*111320)
@@ -99,30 +100,19 @@ for w in ways.values():
  if t.get('man_made')=='quay':quays.append(LineString(ps))
  for_kind='plaza' if t.get('highway')=='pedestrian' and t.get('area')=='yes' else None
  if for_kind and ps[0]==ps[-1]:emit(for_kind,Polygon(ps).buffer(0).intersection(land))
-obstacles=unary_union(buildings+roads).buffer(1)
-# Park points are deterministic; never place vegetation on source buildings/roads/water.
-for p in polygons(unary_union(parks).difference(obstacles)):
- minx,minz,maxx,maxz=p.bounds
- for x in range(math.ceil(minx/24)*24,math.floor(maxx/24)*24+1,24):
-  for z in range(math.ceil(minz/24)*24,math.floor(maxz/24)*24+1,24):
-   if len(out['props'])>=650:break
-   if p.contains(Point(x,z)):out['props'].append({'kind':'TreePine' if (x+z)%5==0 else 'TreeBroadleaf','x':x,'z':z,'size':5.5,'angle':(x*13+z*7)%360})
-# Source road frontage lamps, bounded and outside carriageway/buildings.
-for f in data['features']:
- if f['kind']!='road' or f['subtype'] not in ['primary','secondary']:continue
- line=LineString([(p['x'],p['z']) for p in f['points']]); offset=11 if f['subtype']=='primary' else 9
- for distance in range(30,int(line.length),100):
-  if sum(p['kind']=='StreetLamp' for p in out['props'])>=180:break
-  a=line.interpolate(distance);c=line.interpolate(min(distance+1,line.length));dx,dz=c.x-a.x,c.y-a.y;l=math.hypot(dx,dz)
-  if l<.001:continue
-  p=Point(a.x-dz/l*offset,a.y+dx/l*offset)
-  if bounds.contains(p) and land.contains(p) and not obstacles.contains(p):out['props'].append({'kind':'StreetLamp','x':round(p.x,3),'z':round(p.y,3),'size':6,'angle':math.degrees(math.atan2(dx,dz))})
+# Park/road polygons establish surfaces, not the positions of individual trees or lamps.
+# Do not recreate the former park grid or road-frontage guesses without per-object site evidence.
 for id,kind,size in [('480601129','BusanTower',120),('368597686','PortTerminal',25),('382696296','JagalchiMarket',24)]:
+ source_way=ways.get(id)
+ if source_way is None or tags(source_way).get('building') in (None,'no'):continue
  f=next((x for x in data['features'] if x['id']==id),None)
  if f is None and id in ways: f={'points':[{'x':x,'z':z} for x,z in pts(ways[id])]}
  if f:
-  p=Polygon([(v['x'],v['z']) for v in f['points']]).centroid;out['props'].append({'kind':kind,'x':round(p.x,3),'z':round(p.y,3),'size':size,'angle':0,'sourceId':id,'positionEvidence':'commercial-area centroid proxy, not building footprint' if id=='502017125' else 'source building centroid','footprintWidth':round(Polygon([(v['x'],v['z']) for v in f['points']]).bounds[2]-Polygon([(v['x'],v['z']) for v in f['points']]).bounds[0],3),'footprintDepth':round(Polygon([(v['x'],v['z']) for v in f['points']]).bounds[3]-Polygon([(v['x'],v['z']) for v in f['points']]).bounds[1],3)})
-out['receipt']={'sourceSha256':hashlib.sha256((SRC/'osm-busan-openworld.xml').read_bytes()).hexdigest(),'coastWays':len(coasts),'partitionCells':len(cells),'landAreaM2':round(land.area,2),'waterAreaM2':round(sea.area,2),'triangles':sum(len(x['points'])//3 for x in out['layers']),'props':dict(collections.Counter(x['kind'] for x in out['props'])),'archetypes':dict(collections.Counter(x['archetype'] for x in out['buildings'])),'source':'OSM footprints, directed coastlines, tagged park polygons, road paths and landmark centroids','derived':'Palette, fallback heights, surface widths, furniture, tree grid and landmark visual dimensions; no solver geometry','culvertStreamsRendered':0,'topology':'polygonized original coastline plus requested boundary; land lies left of directed coastline','terrain':{'source':'Mapzen Terrarium four tiles, receipt.json','decode':'R*256+G+B/256-32768 metres','rawMin':min(raw),'rawMax':max(raw),'datumOffsetMeters':offset,'gridStepMeters':step,'gridPoints':len(heights),'flatPads':'station/terminal/market bounding envelopes plus60m apron,60m smooth transition; visual only','verticalScale':1,'accuracy':'not surveyed, visual sampled relief only'},'geometryValidation':{'coverageErrorM2':abs(land.area+sea.area-bounds.area),'overlapM2':land.intersection(sea).area,'landValid':land.is_valid,'waterValid':sea.is_valid}}
+  footprint=Polygon([(v['x'],v['z']) for v in f['points']]);p=footprint.centroid
+  evidence=f"asset-library/space-references/busan-reconstruction/osm-busan-openworld.xml#way/{id}; sha256={source_sha256}; source building centroid ({p.x:.3f},{p.y:.3f}) in busan-openworld metre frame"
+  out['props'].append({'kind':kind,'x':round(p.x,3),'z':round(p.y,3),'size':size,'angle':0,'sourceId':id,'positionEvidence':'source building centroid','placementEvidence':evidence,'footprintWidth':round(footprint.bounds[2]-footprint.bounds[0],3),'footprintDepth':round(footprint.bounds[3]-footprint.bounds[1],3)})
+assert all(p.get('placementEvidence','').strip() for p in out['props']), 'Every prop requires exact-object site-placement evidence'
+out['receipt']={'sourceSha256':source_sha256,'coastWays':len(coasts),'partitionCells':len(cells),'landAreaM2':round(land.area,2),'waterAreaM2':round(sea.area,2),'triangles':sum(len(x['points'])//3 for x in out['layers']),'props':dict(collections.Counter(x['kind'] for x in out['props'])),'archetypes':dict(collections.Counter(x['archetype'] for x in out['buildings'])),'source':'OSM footprints, directed coastlines, tagged park polygons, road paths and landmark centroids','derived':'Palette, fallback heights, surface widths and landmark visual dimensions; no solver geometry','placementPolicy':{'requirement':'Exact-object and site-coordinate source reference for every prop','excluded':'Procedural park tree grids and road-frontage lamp proposals','retained':'Source-tagged building landmarks only'},'culvertStreamsRendered':0,'topology':'polygonized original coastline plus requested boundary; land lies left of directed coastline','terrain':{'source':'Mapzen Terrarium four tiles, receipt.json','decode':'R*256+G+B/256-32768 metres','rawMin':min(raw),'rawMax':max(raw),'datumOffsetMeters':offset,'gridStepMeters':step,'gridPoints':len(heights),'flatPads':'station/terminal/market bounding envelopes plus60m apron,60m smooth transition; visual only','verticalScale':1,'accuracy':'not surveyed, visual sampled relief only'},'geometryValidation':{'coverageErrorM2':abs(land.area+sea.area-bounds.area),'overlapM2':land.intersection(sea).area,'landValid':land.is_valid,'waterValid':sea.is_valid}}
 (ROOT/'art/world/world-layers.json').write_text(json.dumps(out,separators=(',',':'),ensure_ascii=False)+'\n')
 print(json.dumps(out['receipt'],indent=2,ensure_ascii=False))
 # Reproducible URP metallic/smoothness packing from authored material receipt.

@@ -96,9 +96,9 @@ namespace ChooGuard.Tests.PlayMode
         {
             var prefab = Prefab("SmokeDetector", 40);
             var json = "{\"group\":\"test\",\"items\":[" +
-                       "{\"id\":\"a\",\"kind\":\"smoke_detector\",\"label\":\"A\",\"zone\":\"hall2f\",\"prefab\":\"SmokeDetector\",\"position\":{\"x\":5,\"y\":10,\"z\":5},\"rotation\":{\"x\":0,\"y\":0,\"z\":0}}," +
-                       "{\"id\":\"b\",\"kind\":\"smoke_detector\",\"label\":\"B\",\"zone\":\"hall2f\",\"prefab\":\"NoSuchPrefab\",\"position\":{\"x\":6,\"y\":10,\"z\":5},\"rotation\":{\"x\":0,\"y\":0,\"z\":0}}," +
-                       "{\"id\":\"a\",\"kind\":\"smoke_detector\",\"label\":\"A again\",\"zone\":\"hall2f\",\"prefab\":\"SmokeDetector\",\"position\":{\"x\":7,\"y\":10,\"z\":5},\"rotation\":{\"x\":0,\"y\":0,\"z\":0}}]}";
+                       "{\"id\":\"a\",\"kind\":\"smoke_detector\",\"label\":\"A\",\"zone\":\"hall2f\",\"prefab\":\"SmokeDetector\",\"placementEvidence\":\"test fixture only: A at (5,10,5)\",\"position\":{\"x\":5,\"y\":10,\"z\":5},\"rotation\":{\"x\":0,\"y\":0,\"z\":0}}," +
+                       "{\"id\":\"b\",\"kind\":\"smoke_detector\",\"label\":\"B\",\"zone\":\"hall2f\",\"prefab\":\"NoSuchPrefab\",\"placementEvidence\":\"test fixture only: B at (6,10,5)\",\"position\":{\"x\":6,\"y\":10,\"z\":5},\"rotation\":{\"x\":0,\"y\":0,\"z\":0}}," +
+                       "{\"id\":\"a\",\"kind\":\"smoke_detector\",\"label\":\"A again\",\"zone\":\"hall2f\",\"prefab\":\"SmokeDetector\",\"placementEvidence\":\"test fixture only: duplicate A at (7,10,5)\",\"position\":{\"x\":7,\"y\":10,\"z\":5},\"rotation\":{\"x\":0,\"y\":0,\"z\":0}}]}";
             var parent = new GameObject("설비 시험");
             made.Add(parent);
             LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex("'b'.*NoSuchPrefab"));
@@ -108,6 +108,7 @@ namespace ChooGuard.Tests.PlayMode
 
             Assert.That(report.Placed, Is.EqualTo(1));
             Assert.That(report.Skipped, Is.EqualTo(2));
+            Assert.That(report.Unverified, Is.Zero);
             var placed = EquipmentRegistry.Find("a");
             Assert.That(placed, Is.Not.Null);
             Assert.That(placed.Kind, Is.EqualTo("smoke_detector"));
@@ -115,11 +116,42 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(placed.transform.position, Is.EqualTo(new Vector3(5, 10, 5)));
         }
 
+        [Test]
+        public void SpawnWithholdsMissingEmptyAndWhitespaceEvidenceBeforeReservingIdsOrCreatingObjects()
+        {
+            var prefab = Prefab("SmokeDetector", 40);
+            prefab.AddComponent<BoxCollider>();
+            prefab.GetComponent<StationEquipment>().Interactable = true;
+            var json = "{\"group\":\"test\",\"items\":[" +
+                       "{\"id\":\"shared\",\"kind\":\"unverified_fixture\",\"prefab\":\"NoSuchPrefab\",\"position\":{\"x\":100,\"y\":100,\"z\":100}}," +
+                       "{\"id\":\"shared\",\"kind\":\"unverified_fixture\",\"prefab\":\"SmokeDetector\",\"placementEvidence\":\"\",\"position\":{\"x\":200,\"y\":200,\"z\":200}}," +
+                       "{\"id\":\"shared\",\"kind\":\"unverified_fixture\",\"prefab\":\"SmokeDetector\",\"placementEvidence\":\" \\t\\r\\n\",\"position\":{\"x\":300,\"y\":300,\"z\":300}}," +
+                       "{\"id\":\"shared\",\"kind\":\"smoke_detector\",\"label\":\"Observed fixture\",\"zone\":\"hall2f\",\"prefab\":\"SmokeDetector\",\"placementEvidence\":\"test fixture only: observed detector at (5.125,10.375,5.625), yaw 37.5\",\"position\":{\"x\":5.125,\"y\":10.375,\"z\":5.625},\"rotation\":{\"x\":0,\"y\":37.5,\"z\":0}}]}";
+            var parent = new GameObject("설비 근거 시험");
+            made.Add(parent);
+
+            var report = EquipmentSpawner.Spawn(Catalog(prefab, json), parent.transform);
+
+            Assert.That(report.Unverified, Is.EqualTo(3));
+            Assert.That(report.Skipped, Is.Zero, "근거가 없는 항목은 프리팹 오류나 중복 id 오류로 처리하지 않는다");
+            Assert.That(report.Placed, Is.EqualTo(1), "근거 없는 항목이 같은 id의 확인된 배치를 막지 않는다");
+            Assert.That(report.Cells, Is.EqualTo(1), "근거 없는 좌표에는 격자를 만들지 않는다");
+            Assert.That(report.Root.GetComponentsInChildren<StationEquipment>(true).Length, Is.EqualTo(1));
+            Assert.That(report.Root.GetComponentsInChildren<Collider>(true).Length, Is.EqualTo(1), "확인된 설비만 콜라이더를 가진다");
+            var placed = EquipmentRegistry.Find("shared");
+            Assert.That(placed, Is.Not.Null);
+            Assert.That(EquipmentRegistry.All, Is.EquivalentTo(new[] { placed }));
+            Assert.That(EquipmentRegistry.OfKind("unverified_fixture"), Is.Empty);
+            Assert.That(placed.transform.position, Is.EqualTo(new Vector3(5.125f, 10.375f, 5.625f)));
+            Assert.That(Quaternion.Angle(placed.transform.rotation, Quaternion.Euler(0, 37.5f, 0)), Is.LessThan(.001f));
+            Assert.That(report.ToString(), Does.Contain("unverified=3"));
+        }
+
         [UnityTest]
         public IEnumerator EquipmentBeyondItsDrawDistanceIsNotDrawnAndComesBackWhenTheCameraIsNear()
         {
             var prefab = Prefab("SmokeDetector", 10);
-            var json = "{\"group\":\"test\",\"items\":[{\"id\":\"far\",\"kind\":\"smoke_detector\",\"label\":\"F\",\"zone\":\"hall2f\",\"prefab\":\"SmokeDetector\",\"position\":{\"x\":0,\"y\":10,\"z\":0},\"rotation\":{\"x\":0,\"y\":0,\"z\":0}}]}";
+            var json = "{\"group\":\"test\",\"items\":[{\"id\":\"far\",\"kind\":\"smoke_detector\",\"label\":\"F\",\"zone\":\"hall2f\",\"prefab\":\"SmokeDetector\",\"placementEvidence\":\"test fixture only: F at (0,10,0)\",\"position\":{\"x\":0,\"y\":10,\"z\":0},\"rotation\":{\"x\":0,\"y\":0,\"z\":0}}]}";
             var cameraObject = new GameObject("시험 카메라", typeof(Camera));
             made.Add(cameraObject);
             var camera = cameraObject.GetComponent<Camera>();

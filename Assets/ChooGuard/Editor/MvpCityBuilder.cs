@@ -77,7 +77,8 @@ namespace ChooGuard.Editor
                     int color=archetypes.TryGetValue(feature.id,out var archetype)?archetype:0;
                     var heightResolution=heightRows[feature.id];float height=heightResolution.metres;heightResolution.terrainDatum=baseHeight;heightResolution.geometryStatus="generated_source_polygon_shell";float signed=0;for(int i=0;i<polygon.Count;i++)signed+=Cross(polygon[i],polygon[(i+1)%polygon.Count]);if(signed<0)polygon.Reverse();Roof(buildings[color],polygon,height);
                     for(int i=0;i<polygon.Count;i++) { var a=polygon[i];var b=polygon[(i+1)%polygon.Count];buildings[color].Quad(new Vector3(a.x,-.15f,a.y),new Vector3(a.x,height,a.y),new Vector3(b.x,height,b.y),new Vector3(b.x,-.15f,b.y)); }
-                    // Window rhythm, parapets and compact rooftop plant are visual detail, not source dimensions.
+                    // Window rhythm and parapets are visual shell detail, not source dimensions.
+                    // No rooftop plant or storefront canopy is inferred from a footprint or building archetype.
                     for(int edge=0;edge<polygon.Count;edge++)
                     {
                      if(height<3f)continue; // Do not place authored full-storey details above a short source roof.
@@ -95,10 +96,9 @@ namespace ChooGuard.Editor
                          var aa=a+outward*1.4f;var bb=b+outward*1.4f;
                          trim.Quad(new Vector3(aa.x,by,aa.y),new Vector3(aa.x,by+.20f,aa.y),new Vector3(bb.x,by+.20f,bb.y),new Vector3(bb.x,by,bb.y));
                      }
-                     if(edge==0&&length>3f){var mid=(a+b)*.5f+outward*2;var l=mid-direction*.6f;var r=mid+direction*.6f;windows.Quad(new Vector3(l.x,0,l.y),new Vector3(l.x,2.1f,l.y),new Vector3(r.x,2.1f,r.y),new Vector3(r.x,0,r.y));if(color==1||color==3)RoofBox(trim,new Vector3(mid.x,2.3f,mid.y),new Vector3(2.4f,.16f,1.2f));}
+                     if(edge==0&&length>3f){var mid=(a+b)*.5f+outward*2;var l=mid-direction*.6f;var r=mid+direction*.6f;windows.Quad(new Vector3(l.x,0,l.y),new Vector3(l.x,2.1f,l.y),new Vector3(r.x,2.1f,r.y),new Vector3(r.x,0,r.y));}
                      roofDetail.Quad(new Vector3(a.x,height,a.y),new Vector3(a.x,height+.48f,a.y),new Vector3(b.x,height+.48f,b.y),new Vector3(b.x,height,b.y));
                     }
-                    if(polygon.Count==4&&height>10f){var center=polygon.Aggregate(Vector2.zero,(sum,p)=>sum+p)/polygon.Count;RoofBox(roofDetail,new Vector3(center.x,height+.68f,center.y),new Vector3(2.2f,1.36f,1.6f));}
                     for(int bi=0;bi<detailBatches.Length;bi++)for(int vi=starts[bi];vi<detailBatches[bi].V.Count;vi++){var v=detailBatches[bi].V[vi];v.y=v.y<=-.14f?Mathf.Min(baseHeight-.15f,MvpWorldSurfaceBuilder.Height(v.x,v.z)-.15f):v.y+baseHeight;detailBatches[bi].V[vi]=v;}
                     built++;
                 }
@@ -130,7 +130,7 @@ namespace ChooGuard.Editor
             // Continuous buffered asphalt and curbs are emitted by world surface builder.
             // Walkways use the same tessellated relief as terrain.
             Emit(root.transform,"철도",rail,Material("철도",new Color(.18f,.2f,.21f)));
-            Emit(root.transform,"도시 창호",windows,Material("창호",new Color(.075f,.12f,.15f)));Emit(root.transform,"옥상 설비와 파라펫",roofDetail,Material("옥상",new Color(.28f,.3f,.3f)));
+            Emit(root.transform,"도시 창호",windows,Material("창호",new Color(.075f,.12f,.15f)));Emit(root.transform,"옥상 파라펫",roofDetail,Material("옥상",new Color(.28f,.3f,.3f)));
             Emit(root.transform,"입면 석재 띠",trim,Material("석회석",new Color(.74f,.69f,.57f)));Emit(root.transform,"차선과 레일",markings,Material("차선",new Color(.81f,.79f,.66f)));
             Color[] colors={new Color(.63f,.55f,.45f),new Color(.64f,.43f,.32f),new Color(.43f,.54f,.57f),new Color(.75f,.71f,.61f),new Color(.49f,.55f,.53f),new Color(.57f,.65f,.67f)};
             for(int i=0;i<6;i++)Emit(root.transform,"건물군"+i,buildings[i],Material("건물"+i,colors[i]));
@@ -162,11 +162,6 @@ namespace ChooGuard.Editor
             if(batch.V.Count==0)return;var mesh=new Mesh { name=name,indexFormat=IndexFormat.UInt32 };mesh.SetVertices(batch.V);mesh.SetTriangles(batch.T,0);mesh.SetUVs(0,batch.V.Select(v=>new Vector2((v.x+v.z)*.5f,v.y*.5f)).ToList());mesh.RecalculateNormals();mesh.RecalculateBounds();
             string path=Folder+"/"+name+".asset";mesh=MvpMeshPersistence.Store(path,mesh);
             var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root,false);go.layer=29;go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;go.isStatic=false;GameObjectUtility.SetStaticEditorFlags(go,0);
-        }
-        private static void RoofBox(Batch batch,Vector3 c,Vector3 size)
-        {
-            var p=new Vector3[8];for(int i=0;i<8;i++)p[i]=c+new Vector3((i&1)==0?-size.x*.5f:size.x*.5f,(i&2)==0?-size.y*.5f:size.y*.5f,(i&4)==0?-size.z*.5f:size.z*.5f);
-            batch.Quad(p[2],p[6],p[7],p[3]);batch.Quad(p[0],p[2],p[3],p[1]);batch.Quad(p[1],p[3],p[7],p[5]);batch.Quad(p[5],p[7],p[6],p[4]);batch.Quad(p[4],p[6],p[2],p[0]);
         }
         private static float Cross(Vector2 a,Vector2 b)=>a.x*b.y-a.y*b.x;
         private static void Roof(Batch batch,List<Vector2> polygon,float y)

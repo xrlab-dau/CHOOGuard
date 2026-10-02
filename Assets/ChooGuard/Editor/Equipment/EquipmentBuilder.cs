@@ -113,13 +113,16 @@ namespace ChooGuard.Editor
         }
 
         /// <summary>
-        /// Writes a group's placement file deterministically (entries ordered by id, positions rounded to a centimetre,
-        /// angles to a tenth of a degree, so two runs give identical bytes), then refreshes the catalog.
+        /// Writes only proposals with evidence for the exact object and site location. Geometry and regulatory spacing
+        /// never supply that evidence. Verified entries are ordered by id, positions rounded to a centimetre, and angles
+        /// to a tenth of a degree, so two runs give identical bytes, then the catalog is refreshed.
         /// </summary>
         public static void WritePlacements(string group, string note, IEnumerable<EquipmentPlacement> items)
         {
             EmergencySceneBuilder.EnsureFolder(Root);
-            var ordered = items.OrderBy(i => i.id, StringComparer.Ordinal).ToArray();
+            var proposed = items.ToArray();
+            var ordered = proposed.Where(i => i.HasPlacementEvidence).OrderBy(i => i.id, StringComparer.Ordinal).ToArray();
+            int unverified = proposed.Length - ordered.Length;
             foreach (var item in ordered)
             {
                 item.position = new Vector3(Mathf.Round(item.position.x * 100) / 100, Mathf.Round(item.position.y * 100) / 100, Mathf.Round(item.position.z * 100) / 100);
@@ -127,10 +130,13 @@ namespace ChooGuard.Editor
             }
             var duplicate = ordered.GroupBy(i => i.id).FirstOrDefault(g => g.Count() > 1);
             if (duplicate != null) throw new InvalidOperationException(group + ": id 가 겹칩니다 " + duplicate.Key);
+            if (unverified > 0)
+                note += "\nOmitted " + unverified + " unverified placement candidates. Exact object and site-location evidence is required before placement.";
             var file = new EquipmentPlacementFile { group = group, note = note, items = ordered };
             File.WriteAllText(PlacementPath(group), JsonUtility.ToJson(file, true) + "\n");
             AssetDatabase.ImportAsset(PlacementPath(group));
             RefreshCatalog();
+            Debug.Log("CG_EQUIPMENT_PLACEMENTS group=" + group + " verified=" + ordered.Length + " unverified_omitted=" + unverified);
         }
 
         /// <summary>Collects every placement file and prefab under <see cref="Root"/> into the catalog and points EmergencyArt at it.</summary>
