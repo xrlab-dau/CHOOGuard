@@ -308,7 +308,7 @@ namespace ChooGuard.Tests.PlayMode
             var catalog = ScriptableObject.CreateInstance<EquipmentCatalog>();
             made.Add(catalog);
             catalog.Prefabs = new[] { prefab };
-            catalog.Placements = new[] { new TextAsset("{\"group\":\"test\",\"items\":[{\"id\":\"sh-test\",\"kind\":\"sprinkler_head\",\"label\":\"헤드\",\"zone\":\"hall2f\",\"prefab\":\"SprinklerHead\",\"position\":{\"x\":0,\"y\":5,\"z\":0},\"rotation\":{\"x\":0,\"y\":0,\"z\":0},\"data\":\"valve=v1;floor=2\"}]}") };
+            catalog.Placements = new[] { new TextAsset("{\"group\":\"test\",\"items\":[{\"id\":\"sh-test\",\"kind\":\"sprinkler_head\",\"label\":\"헤드\",\"zone\":\"hall2f\",\"prefab\":\"SprinklerHead\",\"placementEvidence\":\"test fixture only: head at (0,5,0)\",\"position\":{\"x\":0,\"y\":5,\"z\":0},\"rotation\":{\"x\":0,\"y\":0,\"z\":0},\"data\":\"valve=v1;floor=2\"}]}") };
             var cameraObject = new GameObject("시험 카메라", typeof(Camera));
             made.Add(cameraObject);
             cameraObject.tag = "MainCamera";

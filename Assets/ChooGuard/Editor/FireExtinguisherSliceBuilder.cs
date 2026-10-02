@@ -107,37 +107,25 @@ namespace ChooGuard.EditorTools
         }
 
         // 배치 하나의 사양. 좌표·식별자·월드 상태를 바깥에서 주입받는다.
-        // NFTC 101 보행거리·구획 산정 결과(extinguisher-placement-v3.json)를 그대로 받기 위한 것이다.
+        // 실제 대상과 위치를 확인한 현장 근거를 함께 주입한다. 보행거리 산정만으로 배치하지 않는다.
         public struct Placement
         {
             public Vector3 Position;      // 바닥 접지점. 본체는 여기서 1.10m 위에 온다.
             public Quaternion Rotation;   // 로컬 +Z 가 플레이어를 향해야 판독면이 보인다.
             public string Serial;
+            // Photo/video/drawing/source-model reference identifying this extinguisher at this site position.
+            // Legal coverage calculations and player-relative coordinates are not placement evidence.
+            public string PlacementEvidence;
             public bool Corroded;         // 월드 상태. PendingVerdict 와 짝이다 — 따로 놀면 거짓 오판정이 난다.
             public bool ExpiryPassed;
             public bool TutorialTarget;   // 절차 세션이 물릴 대상. 정확히 하나여야 한다.
         }
 
-        // 기존 단일 배치 경로. 플레이어 정면 1.2m 에 하나를 두던 동작을 그대로 보존한다.
+        // 현장 위치 근거 없이 플레이어 정면에 두던 이전 경로는 생성하지 않는다.
         public static GameObject Build(bool saveScene)
         {
-            if(!Prepare(out var scene,out var responder,out _,out _,out _))return null;
-            var player=responder.transform;
-            var forward=player.forward;forward.y=0;
-            if(forward.sqrMagnitude<.0001f)forward=Vector3.forward;
-            forward.Normalize();
-            var stand=player.position+forward*1.2f;
-            var one=new Placement
-            {
-                Position=new Vector3(stand.x,player.position.y,stand.z),
-                Rotation=Quaternion.LookRotation(-forward,Vector3.up),
-                Serial="BSN-CONC-FE-003",
-                Corroded=true,          // 정답은 '부적합'이다(제23조②1)
-                ExpiryPassed=false,     // 기한만 보고 통과시키면 틀린다
-                TutorialTarget=true,
-            };
-            var built=Build(new[]{one},saveScene);
-            return built!=null&&built.Length>0?built[0]:null;
+            Debug.LogWarning("[슬라이스] 현장 배치 근거 없는 플레이어 앞 소화기를 생성하지 않습니다.");
+            return null;
         }
 
         // 여러 배치. 세션과 판정 단말은 유닛마다 만들지 않고 한 번만 만들어 바깥에 둔다
@@ -145,6 +133,9 @@ namespace ChooGuard.EditorTools
         public static GameObject[] Build(IReadOnlyList<Placement> placements,bool saveScene)
         {
             if(placements==null||placements.Count==0){Debug.LogError("[슬라이스] 배치 목록이 비었습니다.");return null;}
+            foreach(var placement in placements)
+                if(string.IsNullOrWhiteSpace(placement.PlacementEvidence))
+                {Debug.LogWarning("[슬라이스] 현장 배치 근거 없는 소화기 목록을 생성하지 않습니다 · "+placement.Serial);return null;}
             if(!Prepare(out var scene,out var responder,out var model,out var procedure,out var font))return null;
 
             int targets=0;

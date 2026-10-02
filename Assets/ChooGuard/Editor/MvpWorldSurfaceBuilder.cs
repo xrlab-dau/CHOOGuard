@@ -13,7 +13,8 @@ namespace ChooGuard.Editor
         [Serializable] public class Point { public float x,z; }
         [Serializable] public class Layer { public string kind; public Point[] points; }
         [Serializable] public class Building { public string id,district,name; public int archetype; }
-        [Serializable] public class Prop { public string kind; public float x,z,size,angle,footprintWidth,footprintDepth; }
+        // The reference must identify this exact object and its site coordinates; a park polygon or road spacing is insufficient.
+        [Serializable] public class Prop { public string kind,sourceId,placementEvidence; public float x,z,size,angle,footprintWidth,footprintDepth; }
         [Serializable] class TextureSpec { public string baseColor,roughness,normalGL; }
         [Serializable] class MaterialSpec { public string name;public float[] baseColor;public float roughness,metallic;public TextureSpec textures; }
         [Serializable] class ModelSpec { public string name,fbx; }
@@ -56,9 +57,10 @@ namespace ChooGuard.Editor
             }
             int triangleCount=0;
             foreach(var pair in chunks){Emit(root,pair.Key,pair.Value,Surface(kinds[pair.Key]));triangleCount+=pair.Value.Count/3;}
-            int loaded=0,fallback=0;var propMeshes=new Dictionary<string,List<CombineInstance>>();var propMaterials=new Dictionary<string,Material>();
+            int loaded=0,fallback=0,unverified=0;var propMeshes=new Dictionary<string,List<CombineInstance>>();var propMaterials=new Dictionary<string,Material>();
             foreach(var prop in data.props)
             {
+                if(prop==null||string.IsNullOrWhiteSpace(prop.placementEvidence)){unverified++;continue;}
                 if(MvpSourceCoverage.Active!=null&&MvpSourceCoverage.Active.ExcludeProp(prop.x*data.sourceScale,prop.z*data.sourceScale,Mathf.Max(prop.footprintWidth,prop.size)*data.sourceScale,Mathf.Max(prop.footprintDepth,prop.size)*data.sourceScale))continue;
                 var prefab=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ChooGuard/Art/WorldSet/"+prop.kind+".fbx");
                 // Missing authored assets are explicit; root rebuilds after import.
@@ -100,7 +102,7 @@ namespace ChooGuard.Editor
                 var go=new GameObject(pair.Key,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root,false);go.layer=29;go.isStatic=false;GameObjectUtility.SetStaticEditorFlags(go,0);go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=propMaterials[pair.Key];
             }
             RepairStaticFlags(root);
-            Debug.Log("World surfaces: chunks="+chunks.Count+", triangles="+triangleCount+", authored placements="+loaded+", missing asset placements="+fallback+" (visual only)");
+            Debug.Log("World surfaces: chunks="+chunks.Count+", triangles="+triangleCount+", authored placements="+loaded+", missing asset placements="+fallback+", unverified placements withheld="+unverified+" (visual only)");
         }
         public static void ConfigureWorldSetMaterials()
         {

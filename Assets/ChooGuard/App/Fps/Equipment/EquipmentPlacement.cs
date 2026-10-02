@@ -9,6 +9,15 @@ namespace ChooGuard.App.Fps.Equipment
     {
         public string id, kind, label, zone, prefab;
         public Vector3 position, rotation;
+        /// <summary>
+        /// Evidence identifying this exact object at this site location: a field photo/video, actual drawing, or source
+        /// model. Regulatory spacing, geometry-derived proposals, and a model's license alone do not verify placement.
+        /// Empty for unverified candidates, which builders and the spawner withhold.
+        /// </summary>
+        public string placementEvidence = "";
+
+        public bool HasPlacementEvidence => !string.IsNullOrWhiteSpace(placementEvidence);
+
         /// <summary>Numbers and words a kind needs at run time, as <c>key=value</c> pairs joined by ';' (a detector's coverage radius and mounting height). Empty when the kind needs none.</summary>
         public string data = "";
     }
