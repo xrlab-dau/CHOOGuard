@@ -938,13 +938,39 @@ namespace ChooGuard.Tests.PlayMode
                     // 기본으로 켜지 않는 이유는 용량이 아니라 **양식 안정성**이다. 타임라인은
                     // 회차마다 줄 수가 달라 요약을 기계로 읽는 쪽의 가정을 깬다.
                     // (용량은 문제가 아니다 - 타임라인 한 줄 약 70바이트, JSONL 한 줄은 실측 2.9KB.)
-                    if (withTimeline && session.Log != null)
+                    if (session.Log != null)
                     {
                         var report = session.Log.ToJson("수집 종료");
-                        line["timeline"] = report["timeline"];
-                        line["compositions"] = report["compositions"];
-                        var entries = report["timeline"] as JArray;
-                        Debug.Log("CG_TIMELINE shift=" + shift + " " + (entries == null ? 0 : entries.Count) + "줄");
+
+                        // jev 사용량과 director 기록은 **항상** 담는다. 모양이 고정이고(회차마다
+                        // 줄 수가 변하지 않는다), 이 둘만이 수집이 조용히 비어 가는 것을 드러낸다.
+                        //
+                        // 예산 상한에 걸려 거부된 요청은 JSONL 에 줄을 남기지 않는다 - JevClient 가
+                        // CanSend 가 false 면 done(null) 로 끝낸다. 그래서 jevLogLines·answeredLines
+                        // 만 보면 '요청이 적었다' 와 '상한에 막혔다' 를 구분할 수 없다.
+                        // director.unanswered 와 jev 의 peak_requests_per_minute 가 그 신호다.
+                        //
+                        // 하드웨어가 바뀌면 이게 중요해진다. 상한은 **실시간 분당** 기준이라,
+                        // 빠른 PC 는 같은 실시간에 더 많은 게임 시간을 돌려 분당 요청이 늘고
+                        // 상한에 더 걸린다. 느린 노트북이 우연히 상한을 피하고 있었다
+                        // (2026-10-01 실측: 937건/30분 = 31/분).
+                        //
+                        // director 에는 임박도 수준 분포와 디렉터가 한 프레임에 쓴 시간도 있다.
+                        // 수준이 전부 최저면 배울 것이 없고, 프레임 시간은 게임이 실시간을
+                        // 못 따라가는 원인을 가리킨다(같은 실측에서 게임 589초 / 실시간 1800초).
+                        line["jev"] = report["jev"];
+                        line["director"] = report["director"];
+
+                        // 타임라인·합성 기록은 선택이다. 회차마다 줄 수가 달라 요약을 기계로
+                        // 읽는 쪽의 가정을 깬다. (용량은 문제가 아니다 - 한 줄 약 70바이트,
+                        // JSONL 한 줄은 실측 2.9KB.)
+                        if (withTimeline)
+                        {
+                            line["timeline"] = report["timeline"];
+                            line["compositions"] = report["compositions"];
+                            var entries = report["timeline"] as JArray;
+                            Debug.Log("CG_TIMELINE shift=" + shift + " " + (entries == null ? 0 : entries.Count) + "줄");
+                        }
                     }
                     if (copyRelative != null) line["jsonl"] = Path.Combine("jev-" + stamp, copyRelative).Replace('\\', '/');
                     Debug.Log("CG_SHIFT " + line.ToString(Formatting.None));
