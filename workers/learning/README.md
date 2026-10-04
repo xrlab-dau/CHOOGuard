@@ -222,9 +222,12 @@ python workers/learning/distil_crowd.py --logs "D:\cg-data\jev-<UTC>" --out "D:\
 `Advice`(응급 조치 안내)도 종류별로 다르다.
 
 **그래서 수준만 회귀하면 안 된다.** 질환의 수준은 '의식 → 호흡' 축이고 스프링클러의 수준은
-'물이 새는 양' 축이다 — **같은 "수준 3" 이 뜻하는 것이 전혀 다르다.** 특징에 `kind` 만 넣고
-계열과 `scale`(calm_origin · incident_origin · development)을 빼면 이 차이가 섞인다.
-`label_causes.py` 는 지금 `kind` 만 담으므로 추가해야 한다(#266 결론 뒤에 키 분해와 함께).
+'물이 새는 양' 축이다 — **같은 "수준 3" 이 뜻하는 것이 전혀 다르다.**
+
+`label_causes.py` 는 이미 `question_metadata` 에서 `kind` 와 `scale` 을 함께 읽고
+(`chooguard.imminence-labels.v2`), 그 기록이 없는 로그는 추정하지 않고 거부한다.
+위 4절이 적은 대로다. **계열(질환·주방가스·스프링클러 …)은 `kind` 에서 묶으면 되고,
+따로 담을 필드는 필요하지 않다.**
 
 ### 임박도 모델에서 진짜 질문
 
