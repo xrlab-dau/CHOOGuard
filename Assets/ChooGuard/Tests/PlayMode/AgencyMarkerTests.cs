@@ -163,6 +163,76 @@ namespace ChooGuard.Tests.PlayMode
                 "표식이 선두 대원의 자리와 " + gap.ToString("0.00") + "m 떨어져 있습니다.");
         }
 
+        /// <summary>
+        /// 화면 위쪽 출동 상태 줄이 단계를 따라가는지 본다 (#271).
+        /// </summary>
+        /// <remarks>
+        /// 무전은 흐르고 사라지므로 "요청이 반영됐는지" 를 계속 확인할 수 없다 — 그래서 상태 줄이 필요하다.
+        ///
+        /// 가장 중요한 단정은 **없는 것을 지어내지 않는가** 이다. 팀이 생기기 전에는 좌표가 없으므로 그때의
+        /// 상태 줄에 장소 이름이 들어가면 안 된다. 사건 장소를 기관 위치인 양 적는 것이 가장 쉬운 실수라,
+        /// 사건 장소 문자열이 들어 있지 않은지까지 본다.
+        /// </remarks>
+        [UnityTest, Explicit("#271 측정·검수용. -testFilter 로 직접 지정해 돌릴 것."), Timeout(int.MaxValue)]
+        public IEnumerator 출동_상태_줄이_단계를_따라간다()
+        {
+            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+
+            float bootUntil = Time.realtimeSinceStartup + Seconds("CG_AGENCY_BOOT", 150f);
+            while ((EmergencySession.Current == null || EmergencySession.Current.Incidents == null
+                    || EmergencySession.Current.World == null)
+                   && Time.realtimeSinceStartup < bootUntil)
+            {
+                var booting = EmergencySession.Current;
+                if (booting != null && booting.Player != null) Resume(booting);
+                yield return null;
+            }
+            var session = EmergencySession.Current;
+            Assert.That(session, Is.Not.Null, "근무가 시작되지 않았습니다.");
+            Resume(session);
+            var director = session.Incidents;
+
+            var spot = StationWorld.OnNavMesh(session.Player.transform.position + session.Player.transform.forward * 6f, 3f);
+            var where = session.World.Describe(spot);
+            var fire = new FireHazard("agency-status-시험", spot, "시험", "가방", .5f, session.Art, parent.transform) { Where = where };
+            Invoke(director, "Register", fire);
+            Invoke(director, "Know", fire, "시험");
+            yield return null;
+
+            // ① 출동 요청 직후 — 팀이 없다. 소속은 밝히되 위치는 없다고 적어야 한다.
+            Invoke(director, "Report", fire);
+            yield return null;
+            yield return null;
+            var called = session.AgencyStatusText;
+            Debug.Log("CG_AGENCY_LINE 요청 직후 [" + called + "] " + called.Length + "자");
+            Assert.That(called, Does.Contain("소방"), "출동 요청한 기관이 상태 줄에 없습니다.");
+            Assert.That(called, Does.Contain("출동 중"), "출동 중 단계가 보이지 않습니다.");
+            Assert.That(called, Does.Contain("위치 확인 전"),
+                "팀이 생기기 전에는 좌표가 없습니다. '위치 확인 전' 로 적어야 합니다.");
+            Assert.That(called, Does.Not.Contain(where),
+                "팀이 없는데 사건 장소를 기관 위치처럼 적었습니다: " + where);
+
+            // ② 팀이 와서 현장으로 이동 — 이제 위치가 있다.
+            float spawnUntil = Time.realtimeSinceStartup + Seconds("CG_AGENCY_SPAWN", 240f);
+            while (Lead(director, Agency.Fire) == null && Time.realtimeSinceStartup < spawnUntil) yield return null;
+            Assert.That(Lead(director, Agency.Fire), Is.Not.Null, "소방 팀이 제한 시간 안에 오지 않았습니다.");
+            yield return null;
+            var walking = session.AgencyStatusText;
+            Debug.Log("CG_AGENCY_LINE 이동 중 [" + walking + "] " + walking.Length + "자");
+            Assert.That(walking, Does.Contain("이동 중"), "현장 이동 중 단계가 보이지 않습니다.");
+            Assert.That(walking, Does.Not.Contain("위치 확인 전"), "팀이 있는데도 위치를 모른다고 적었습니다.");
+
+            // ③ 현장 도착.
+            float sceneUntil = Time.realtimeSinceStartup + Seconds("CG_AGENCY_WALK", 180f);
+            while (!OnScene(director, Agency.Fire) && Time.realtimeSinceStartup < sceneUntil) yield return null;
+            Assert.That(OnScene(director, Agency.Fire), Is.True, "소방이 제한 시간 안에 현장에 닿지 않았습니다.");
+            yield return null;
+            var onScene = session.AgencyStatusText;
+            Debug.Log("CG_AGENCY_LINE 현장 도착 [" + onScene + "] " + onScene.Length + "자");
+            Assert.That(onScene, Does.Contain("현장 도착"), "현장 도착 단계가 보이지 않습니다.");
+        }
+
         // ── 거들기 ──────────────────────────────────────────────────────────
 
         /// <summary>지도에 전달된 표식 좌표. 공개 조회 경로가 없어 보관함을 직접 읽는다.</summary>

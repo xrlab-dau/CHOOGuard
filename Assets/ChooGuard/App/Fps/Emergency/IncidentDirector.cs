@@ -748,6 +748,34 @@ namespace ChooGuard.App.Fps.Emergency
         ///
         /// 매 프레임은 과하다. 지도를 보는 사람이 끊김을 느끼지 않을 만큼만 옮긴다.
         /// </remarks>
+        /// <summary>
+        /// 부른 기관마다 지금 어느 단계인지 한 줄로 요약한다 (#271). 아무도 부르지 않았으면 빈 문자열.
+        /// </summary>
+        /// <remarks>
+        /// 무전은 흐르고 사라진다. 요청이 반영됐는지, 기관이 오는 중인지를 계속 확인할 수 있어야 한다.
+        /// 기록은 무전과 Tab 상황판이 그대로 갖고, 이 줄은 **지금 상태만** 요약한다.
+        ///
+        /// 팀이 아직 없으면 위치를 적지 않는다. 역 밖 출발지와 이동 경로는 구현돼 있지 않아 그때의 좌표가
+        /// 존재하지 않기 때문이다 — 사건 장소를 기관 위치인 양 적는 것이 가장 쉬운 실수라 아예 적지 않는다.
+        ///
+        /// 기관 순서를 고정한다. 사전 순회 순서에 맡기면 줄이 프레임마다 뒤바뀌어 읽기 어렵다.
+        /// </remarks>
+        private string AgencyStatus()
+        {
+            if (calledBy.Count == 0) return "";
+            var parts = new List<string>();
+            foreach (var agency in calledBy.Keys.OrderBy(a => a))
+            {
+                var name = Responder.AgencyName(agency);
+                var lead = responders.FirstOrDefault(r => r != null && r.Lead && r.Agency == agency);
+                parts.Add(lead == null ? name + " 출동 중 · 위치 확인 전"
+                    : lead.OnScene ? name + " 현장 도착"
+                    : name + " 현장 이동 중 (현재 위치: " + world.Describe(lead.transform.position) + ")");
+            }
+            // 기관마다 줄을 나눈다. 한 기관만으로 이미 37자가 나왔고(실측), 둘을 한 줄에 붙이면 잘린다.
+            return string.Join("\n", parts);
+        }
+
         private void TrackTeams()
         {
             if (Time.time < nextTeamMark) return;
@@ -878,6 +906,7 @@ namespace ChooGuard.App.Fps.Emergency
             var eye = cameraTransform.position;
             float danger = Mathf.Max(FireDanger(eye), FacilityDanger(eye), SecurityDanger(eye));
             session.Hud.SetDanger(danger);
+            session.AgencyStatusText = AgencyStatus();
 
             if (!PlayerKnowsIncident || Main == null)
             {

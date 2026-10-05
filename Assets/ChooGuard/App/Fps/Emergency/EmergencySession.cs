@@ -58,6 +58,16 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Held-equipment slots after the radio. Owners register providers.</summary>
         public readonly List<Func<GameHud.Slot?>> SlotProviders = new List<Func<GameHud.Slot?>>();
         public string SituationText = "평시 근무 · 부산역 순회";
+
+        /// <summary>
+        /// 화면 위쪽에 띄울 출동 기관 상태 한 줄 (비어 있으면 띄우지 않는다). <see cref="IncidentDirector"/> 가 쓰고
+        /// 세션이 HUD 로 밀어 준다 — <see cref="SituationText"/> 와 같은 흐름이다.
+        /// </summary>
+        /// <remarks>
+        /// 무전은 흐르고 사라지므로 "요청이 반영됐는지" 를 계속 확인할 수 없다. 이 줄은 지금 상태만 요약한다 —
+        /// 기록은 무전과 Tab 상황판이 그대로 갖는다.
+        /// </remarks>
+        public string AgencyStatusText = "";
         public Color SituationColour = Color.white;
 
         /// <summary>What the route guidance shows now (<see cref="RefreshGuide"/> sets it every couple of seconds and when the setting changes).</summary>
@@ -244,6 +254,7 @@ namespace ChooGuard.App.Fps.Emergency
             float hours = ShiftStartHour + ShiftSeconds / 3600f;
             int h = Mathf.FloorToInt(hours) % 24, m = Mathf.FloorToInt((hours - Mathf.Floor(hours)) * 60);
             Hud.SetStatus(h.ToString("00") + ":" + m.ToString("00"), SituationText, SituationColour);
+            Hud.SetAgencyStatus(AgencyStatusText);
             RefreshSlots();
 
             bool paused = Player.IsPaused;
