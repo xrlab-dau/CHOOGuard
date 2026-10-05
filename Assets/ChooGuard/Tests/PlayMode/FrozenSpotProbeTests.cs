@@ -266,6 +266,98 @@ namespace ChooGuard.Tests.PlayMode
                           + " · 입구 멈춤 " + row["stallSeconds"] + "초 / " + row["stalledPeople"] + "명");
         }
 
+        /// <summary>
+        /// 멈추는 한 대와 멀쩡한 링크들의 **차이**를 잰다 (#273). 왜 그 한 대만인가.
+        /// </summary>
+        /// <remarks>
+        /// 에이전트가 링크에 올라타려면 링크 시작점이 자기가 선 navmesh 폴리곤에 닿아 있어야 한다. 그래서
+        /// 시작·끝점이 **navmesh 위에 있는지**(얼마나 벗어났는지)와 양쪽 승강장이 길로 이어지는지를 본다.
+        ///
+        /// 승객을 쓰지 않는다 — 여기서는 '누가 쓰나' 가 아니라 '링크가 어떻게 놓여 있나' 를 재기 때문이다.
+        /// 사람이 없어도 답이 나와야 한다.
+        /// </remarks>
+        [UnityTest, Explicit("#273 비교 측정용. -testFilter 로 직접 지정해 돌릴 것."), Timeout(int.MaxValue)]
+        public IEnumerator 링크마다_시작점과_끝점이_어떻게_놓였는지_비교한다()
+        {
+            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+
+            float bootUntil = Time.realtimeSinceStartup + Seconds("CG_FROZEN_BOOT", 150f);
+            while ((EmergencySession.Current == null || EmergencySession.Current.World == null
+                    || EmergencySession.Current.World.Escalators.Count == 0)
+                   && Time.realtimeSinceStartup < bootUntil)
+            {
+                var booting = EmergencySession.Current;
+                if (booting != null && booting.Player != null) Resume(booting);
+                yield return null;
+            }
+            var session = EmergencySession.Current;
+            Assert.That(session, Is.Not.Null, "근무가 시작되지 않았습니다.");
+            var links = session.World.Escalators.Where(e => e.Entry != null && e.Entry.path != null && e.Entry.path.Length >= 2).ToList();
+            Assert.That(links.Count, Is.GreaterThan(0), "에스컬레이터를 찾지 못했습니다.");
+
+            var route = new NavMeshPath();
+            var results = new JArray();
+            foreach (var escalator in links)
+            {
+                var row = new JObject
+                {
+                    ["label"] = escalator.Label,
+                    ["up"] = escalator.End.y > escalator.Start.y,
+                    ["running"] = escalator.Running,
+                    ["entryBarred"] = escalator.EntryBarred,
+                    ["pathPoints"] = escalator.Entry.path.Length,
+                    ["lengthMetres"] = Math.Round(Vector3.Distance(escalator.Start, escalator.End), 2),
+                    ["riseMetres"] = Math.Round(escalator.End.y - escalator.Start.y, 2),
+                };
+
+                // 링크 양끝이 navmesh 위에 있나. 벗어나 있으면 에이전트가 올라탈 수 없다.
+                foreach (var pair in new[] { ("start", escalator.Start), ("end", escalator.End) })
+                {
+                    var node = new JObject();
+                    if (NavMesh.SamplePosition(pair.Item2, out var on, 3f, NavMesh.AllAreas))
+                    {
+                        node["onNavMesh"] = true;
+                        node["offsetMetres"] = Math.Round(Vector3.Distance(on.position, pair.Item2), 3);
+                        node["verticalOffset"] = Math.Round(on.position.y - pair.Item2.y, 3);
+                        node["areaMask"] = on.mask;
+                    }
+                    else
+                    {
+                        node["onNavMesh"] = false;
+                        node["offsetMetres"] = (JToken)JValue.CreateNull();
+                    }
+                    node["y"] = Math.Round(pair.Item2.y, 2);
+                    row[pair.Item1] = node;
+                }
+
+                // 양끝이 길로 이어지나(링크를 빼고 걸어서 갈 수 있나와는 다른 질문 - 링크를 포함한 경로다).
+                row["pathAcross"] = NavMesh.CalculatePath(escalator.Start, escalator.End, NavMesh.AllAreas, route)
+                    ? new JObject { ["status"] = route.status.ToString(), ["corners"] = route.corners.Length }
+                    : new JObject { ["status"] = "계산 실패", ["corners"] = 0 };
+
+                results.Add(row);
+            }
+
+            var record = new JObject
+            {
+                ["at"] = DateTime.UtcNow.ToString("o"),
+                ["escalators"] = links.Count,
+                ["results"] = results,
+            };
+            Directory.CreateDirectory(OutFolder);
+            var path = Path.Combine(OutFolder,
+                "linkgeometry-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture) + ".json");
+            File.WriteAllText(path, record.ToString(), new UTF8Encoding(false));
+            Debug.Log("CG_GEOM 기록 → " + path);
+            foreach (var row in results)
+                Debug.Log("CG_GEOM " + row["label"] + " · " + (((bool)row["up"]) ? "올라감" : "내려감")
+                          + " · 시작 navmesh " + row["start"]["onNavMesh"] + "(" + row["start"]["offsetMetres"] + "m)"
+                          + " · 끝 navmesh " + row["end"]["onNavMesh"] + "(" + row["end"]["offsetMetres"] + "m)"
+                          + " · 길이 " + row["lengthMetres"] + "m 상승 " + row["riseMetres"] + "m"
+                          + " · 경로 " + row["pathAcross"]["status"]);
+        }
+
         /// <summary>굳은 승객 하나의 상태와 그 자리에 무엇이 있는지.</summary>
         private static JObject Describe(EmergencySession session, Passenger person)
         {
