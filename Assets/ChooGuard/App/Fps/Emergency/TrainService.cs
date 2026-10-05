@@ -145,6 +145,8 @@ namespace ChooGuard.App.Fps.Emergency
                     if (leaf != null && leaf.GetComponentInChildren<Collider>() != null) leaf.gameObject.AddComponent<TrainDoorControl>().Bind(this, car);
             }
             session.RadioProviders.Add(CrewRequests);
+            // 표준·실전 무전에서는 열차팀장 묶음으로 같은 요청을 낸다(차 앞에 서 있을 때만 들어 있다).
+            session.RadioGroupProviders.Add(() => new[] { new EmergencySession.RadioGroup { Label = "열차팀장", Options = new List<EmergencySession.RadioOption>(CrewRequests()) } });
             PatchInnerDoors(art);
             SetDoors(0);
             Platform = "5·6 타는 곳";

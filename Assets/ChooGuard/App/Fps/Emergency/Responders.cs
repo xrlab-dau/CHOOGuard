@@ -296,7 +296,8 @@ namespace ChooGuard.App.Fps.Emergency
                     // 차 안의 불을 끈 소방대원은 승강장으로 나온다.
                     if (inside) { LeaveCar(null); break; }
                     if (Agency == Agency.Police && target is DisturbanceHazard disturbance) { Police(disturbance); break; }
-                    if (Worker && target != null && target.Active && target.WorkSeconds(Agency) > 0) { Work(); break; }
+                    // 요청받은 팀이 그 위험에서 할 일이 없으면(전기 담당을 가스 누출에 부른 경우) 와서 서 있기만 한다.
+                    if (Worker && target != null && target.Active && target.WorkSeconds(Agency) > 0 && Teams.Fits(Team, target)) { Work(); break; }
                     if (Lead && Vector3.Distance(transform.position, player) < 8) body.Face(player);
                     else if (target != null && target.Localized) body.Face(target.Position);
                     break;
@@ -501,7 +502,7 @@ namespace ChooGuard.App.Fps.Emergency
                 // 처치를 마쳤으면 일어선 뒤에 다음 환자에게 걷는다.
                 body.SetTreat(false);
                 if (body.Kneeling) return;
-                patient = director.NextPatient(transform.position, false);
+                patient = director.NextPatient(transform.position, false, director.Requested(Agency));
                 if (patient == null) return;
                 kneelAt = KneelSpot(patient, out chest);
                 body.GoTo(kneelAt, 2f);

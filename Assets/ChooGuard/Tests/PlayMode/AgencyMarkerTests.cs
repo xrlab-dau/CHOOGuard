@@ -39,15 +39,20 @@ namespace ChooGuard.Tests.PlayMode
     public sealed class AgencyMarkerTests
     {
         private const BindingFlags Members = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+        // 출동 상태 줄은 견학에서만 뜬다(#276 안내 수준). 사용자의 안내 설정을 그대로 되돌리려고 원래 값을 그대로 둔다.
+        private static readonly string[] GuidancePrefs = { "chooguard.guidance", "chooguard.showRoute.v2", "chooguard.simpleControls" };
 
         private string savedKey;
         private GameObject parent;
+        private readonly Dictionary<string, int?> savedPrefs = new Dictionary<string, int?>();
 
         [SetUp]
         public void SetUp()
         {
             savedKey = Environment.GetEnvironmentVariable(JevKey.Variable);
             Environment.SetEnvironmentVariable(JevKey.Variable, "off");
+            foreach (var pref in GuidancePrefs) savedPrefs[pref] = PlayerPrefs.HasKey(pref) ? PlayerPrefs.GetInt(pref) : (int?)null;
+            GameSettings.Guidance = GuidanceLevel.Guided;
             EmergencySession.NextSeed = 20260930;
             parent = new GameObject("기관 표식 시험 위험");
             UnityEngine.Object.DontDestroyOnLoad(parent);
@@ -59,6 +64,9 @@ namespace ChooGuard.Tests.PlayMode
             try
             {
                 Environment.SetEnvironmentVariable(JevKey.Variable, savedKey);
+                foreach (var pref in savedPrefs)
+                    if (pref.Value.HasValue) PlayerPrefs.SetInt(pref.Key, pref.Value.Value); else PlayerPrefs.DeleteKey(pref.Key);
+                PlayerPrefs.Save();
                 EmergencySession.NextSeed = 0;
                 Time.captureFramerate = 0;
                 HazardRegistry.Clear();

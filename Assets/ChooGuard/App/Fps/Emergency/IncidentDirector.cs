@@ -94,11 +94,19 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly HashSet<Hazard> reportedDone = new HashSet<Hazard>();
         private readonly HashSet<Passenger> injuredKnown = new HashSet<Passenger>();
         private bool announced, alarm, handedOver, citizenCalled;
-        private float officeFollowUp = -1;
+        private float officeFollowUp = -1, followUpSince = -1;
+        /// <summary>When the staff member last spoke on the radio (a report, a request, a broadcast or an answer); the office holds its own late calls after it.</summary>
+        private float lastFieldResponse = -1;
+        /// <summary>When the commanding team's lead radioed for the handover (표준·실전), or -1.</summary>
+        private float handoverAskedAt = -1;
 
         // 기관
         private readonly Dictionary<Agency, float> arriveAt = new Dictionary<Agency, float>();
         private readonly Dictionary<Agency, string> calledBy = new Dictionary<Agency, string>();
+        /// <summary>The hazard a call was made for (a request names what the staff member perceived; the team goes there and nowhere else).</summary>
+        private readonly Dictionary<Agency, Hazard> callTarget = new Dictionary<Agency, Hazard>();
+        /// <summary>The unit that was asked for (a request names it: 전기 담당 rather than any facility team).</summary>
+        private readonly Dictionary<Agency, Team> callTeam = new Dictionary<Agency, Team>();
         private readonly HashSet<Agency> arrived = new HashSet<Agency>();
         private readonly List<Responder> responders = new List<Responder>();
 
@@ -120,10 +128,16 @@ namespace ChooGuard.App.Fps.Emergency
             BeginEquipment();
             BeginCompose();
             session.RadioProviders.Add(Radio);
+            session.RadioGroupProviders.Add(RadioGroups);
             session.BoardProviders.Add(SituationColumn);
             session.BoardProviders.Add(ActionColumn);
             session.BoardProviders.Add(AgencyColumn);
             session.BoardProviders.Add(CrowdColumn);
+            session.BoardProviders.Add(NotebookFacts);
+            session.BoardProviders.Add(NotebookRadio);
+            session.BoardProviders.Add(NotebookCards);
+            session.Observer = Observe;
+            session.Hud.Radio.Posted += OnRadioPosted;
             Facilities.StationSignals.CallPointPressed += CallPoint;
             if (jev == null || !jev.Available)
             {
@@ -136,6 +150,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void OnDestroy()
         {
             Facilities.StationSignals.CallPointPressed -= CallPoint;
+            if (session != null && session.Hud != null) session.Hud.Radio.Posted -= OnRadioPosted;
             EndFacility();
             EndEquipment();
             HazardRegistry.Clear();
@@ -164,24 +179,46 @@ namespace ChooGuard.App.Fps.Emergency
         private void UpdateConsequences()
         {
             if (Stage != Phase.Incident) return;
-            // 역무실은 감지기 동작이나 지진 뒤 일정 시간 보고가 없으면 스스로 판단해 부른다.
+            // 역무실은 감지기 동작이나 지진 뒤 일정 시간 보고가 없으면 스스로 판단해 부른다. 표준·실전은 그사이 역무원이 무전으로 응답했으면 부르지 않는다.
             if (officeFollowUp > 0 && Time.time > officeFollowUp && !Shaking)
             {
                 officeFollowUp = -1;
-                OfficeFollowUp();
+                if (Guided || lastFieldResponse < followUpSince) OfficeFollowUp();
+                else log.Add("역무실 자체 신고 보류 · 현장 무전 응답 있음");
             }
             foreach (var pair in arriveAt)
                 if (!arrived.Contains(pair.Key) && Time.time >= pair.Value) { arrived.Add(pair.Key); SpawnTeam(pair.Key); break; }
             // 현장을 지휘할 기관이 도착했는데 역무원이 오지 않으면 결국 그 기관이 현장을 넘겨받는다. 거드는 기관은 넘겨받지 않는다
             // (따로 겹친 불로 소방이 지휘하게 되면 먼저 와 있던 구급대·경찰은 소방이 올 때까지 넘겨받지 않는다).
+            // 견학은 100초 뒤 넘겨받는다. 표준·실전은 선두가 무전으로 인계를 요청하고 그 뒤로도 오래 기다린 다음에야 '인계 실패'로 끝난다.
             foreach (var responder in responders)
-                if (responder.Lead && responder.OnScene && !handedOver && responder.Agency == Commander && Time.time - responder.OnSceneAt > 100)
+            {
+                if (!responder.Lead || !responder.OnScene || handedOver || responder.Agency != Commander) continue;
+                float waited = Time.time - responder.OnSceneAt;
+                var name = Responder.AgencyName(responder.Agency);
+                if (Guided)
                 {
-                    var name = Responder.AgencyName(responder.Agency);
+                    if (waited <= 100) continue;
                     Finish("인계 없이 " + name + KoreanText.Subject(name) + " 현장을 넘겨받음", "no_handover");
                     return;
                 }
+                if (handoverAskedAt < 0 && waited > HandoverAskSeconds)
+                {
+                    handoverAskedAt = Time.time;
+                    var team = Teams.Name(responder.Team);
+                    session.Hud.Radio.Push(ChannelOf(responder.Agency), team + "입니다. " + world.Describe(responder.transform.position) + "에 있습니다. 현장 인계 바랍니다.");
+                    log.Add(team + KoreanText.Subject(team) + " 무전으로 현장 인계를 요청");
+                }
+                if (handoverAskedAt >= 0 && Time.time - handoverAskedAt > HandoverWaitSeconds)
+                {
+                    Finish("인계 실패 · 인계 없이 " + name + KoreanText.Subject(name) + " 현장을 넘겨받음", "handover_failed");
+                    return;
+                }
+            }
         }
+
+        /// <summary>표준·실전: seconds the commanding lead waits on scene before radioing for the handover, then how long it waits after that.</summary>
+        private const float HandoverAskSeconds = 20f, HandoverWaitSeconds = 300f;
 
         private int CountAware(Hazard hazard)
         {
@@ -475,6 +512,7 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var person in crowd.Injured)
                 if (!injuredKnown.Contains(person) && Vector3.Distance(eye, person.transform.position) < 6 && Vector3.Angle(forward, person.transform.position - eye) < 50)
                     CheckInjured(person);
+            LookCloser(eye);
         }
 
         private void Know(Hazard hazard, string how)
@@ -488,6 +526,7 @@ namespace ChooGuard.App.Fps.Emergency
             }
             log.Add("역무원 인지 · " + hazard.Label + " · " + hazard.Where + " (" + how + ")");
             if (hazard.Localized) session.SetMarker("incident-" + hazard.Id, hazard.Position, MarkerKind.Incident, hazard.Label);
+            Noted(hazard, how);
         }
 
         /// <summary>
@@ -503,7 +542,8 @@ namespace ChooGuard.App.Fps.Emergency
             var agency = (Agency)hazard.CitizenCalls;
             citizenCalled = true;
             string number = agency == Agency.Police ? "112" : "119";
-            Call(agency, "승객 " + number + " 신고");
+            // 표준·실전: 신고받은 기관은 신고된 그 위험으로 간다.
+            Call(agency, "승객 " + number + " 신고", Guided ? null : hazard);
             Office("역무실입니다. " + number + "에서 " + hazard.Named + " 신고 통보가 왔습니다. 현장 확인 바랍니다.");
             Know(hazard, "역무실 무전(" + number + " 통보)");
         }
@@ -545,7 +585,7 @@ namespace ChooGuard.App.Fps.Emergency
         private static RadioChannel ChannelOf(Agency agency) =>
             agency == Agency.Fire ? RadioChannel.Fire : agency == Agency.Police ? RadioChannel.Police : agency == Agency.Medical ? RadioChannel.Medical : RadioChannel.Colleague;
 
-        /// <summary>The staff member reports <paramref name="hazard"/>: the office answers and sends whom it needs.</summary>
+        /// <summary>The staff member reports <paramref name="hazard"/> in the guided shift (견학): the office answers with advice and sends whom it needs.</summary>
         private void Report(Hazard hazard)
         {
             reported.Add(hazard);
@@ -564,26 +604,36 @@ namespace ChooGuard.App.Fps.Emergency
             var pa = Main.Announcement;
             Say("역무실, 안내방송 요청합니다.");
             session.Announce(pa.Line, pa.Text);
-            switch (pa.Scope)
+            ApplyAnnouncement(pa.Scope, Main.Position, pa.Radius, Main);
+        }
+
+        /// <summary>
+        /// What people do on hearing an announcement of <paramref name="scope"/> about <paramref name="subject"/> (null: no hazard named) around <paramref name="centre"/>:
+        /// step aside, leave the area, leave the station, or just learn what is going on and judge for themselves.
+        /// </summary>
+        private void ApplyAnnouncement(PaScope scope, Vector3 centre, float radius, Hazard subject)
+        {
+            switch (scope)
             {
                 case PaScope.ClearAround:
                 {
-                    // 응급 환자·출입문처럼 역 전체를 비울 일이 아니면 그 주변 사람만 물러서게 한다.
+                    // 응급 환자·출입문처럼 역 전체를 비울 일이 아니면 그 주변 사람만 물러서게 한다. 피할 것이 없으면 들은 사람이 그대로 지나간다.
                     int cleared = 0;
-                    foreach (var person in crowd.People.ToArray())
-                    {
-                        if (person.Hurt || person.Current == Passenger.Activity.InTrain || Vector3.Distance(person.transform.position, Main.Position) > pa.Radius) continue;
-                        if (person.Focus == null) person.Notice(Main, true, "an announcement asks people to keep the area clear");
-                        cleared++;
-                    }
+                    if (subject != null)
+                        foreach (var person in crowd.People.ToArray())
+                        {
+                            if (person.Hurt || person.Current == Passenger.Activity.InTrain || Vector3.Distance(person.transform.position, centre) > radius) continue;
+                            if (person.Focus == null) person.Notice(subject, true, "an announcement asks people to keep the area clear");
+                            cleared++;
+                        }
                     log.Add("안내방송 · 주변 비우기 (" + cleared + "명)");
                     break;
                 }
                 case PaScope.EvacuateArea:
                 {
                     // 의심 물체처럼 주변만 비운다. 역 전체 대피는 경찰·소방이 판단한다.
-                    int moved = crowd.Announce(Main.Position, pa.Radius, false);
-                    log.Add("안내방송 · " + Main.Label + " 주변 대피 (" + moved + "명)");
+                    int moved = crowd.Announce(centre, radius, false);
+                    log.Add("안내방송 · " + (subject != null ? subject.Label : world.Describe(centre)) + " 주변 대피 (" + moved + "명)");
                     break;
                 }
                 case PaScope.EvacuateStation:
@@ -596,13 +646,14 @@ namespace ChooGuard.App.Fps.Emergency
                 {
                     // 알리기만 하는 방송(정전·승강기 점검·오작동 안내): 들은 사람이 각자 판단한다.
                     int told = 0;
-                    foreach (var person in crowd.People.ToArray())
-                    {
-                        if (person.Hurt || person.Hostile || person.Noticed.Contains(Main)) continue;
-                        person.Notice(Main, true, "an announcement explains what is going on");
-                        told++;
-                    }
-                    log.Add("안내방송 · " + Main.Label + " (" + told + "명에게 알림)");
+                    if (subject != null)
+                        foreach (var person in crowd.People.ToArray())
+                        {
+                            if (person.Hurt || person.Hostile || person.Noticed.Contains(subject)) continue;
+                            person.Notice(subject, true, "an announcement explains what is going on");
+                            told++;
+                        }
+                    log.Add("안내방송 · " + (subject != null ? subject.Label : "침착 안내") + " (" + told + "명에게 알림)");
                     break;
                 }
             }
@@ -610,15 +661,23 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 기관 ────────────────────────────────────────────────────────────
 
-        private void Call(Agency agency, string by)
+        /// <summary>
+        /// Calls <paramref name="agency"/> unless it is already on its way. A request names what it is for (<paramref name="target"/>, something the staff member
+        /// perceived, or null for none) and the unit (<paramref name="team"/>); the team then goes there and nowhere else. Without either the agency comes for
+        /// the hazard it commands (<see cref="TargetOf"/>). Returns false when the agency was already called.
+        /// </summary>
+        private bool Call(Agency agency, string by, Hazard target = null, Team? team = null)
         {
-            if (calledBy.ContainsKey(agency)) return;
+            if (calledBy.ContainsKey(agency)) return false;
             calledBy[agency] = by;
+            if (target != null || team.HasValue) callTarget[agency] = target;
+            if (team.HasValue) callTeam[agency] = team.Value;
             // 실제 출동 시간은 수 분이다. 게임에서는 압축한다(분 단위 → 1~3분). 부르는 부대에 따라 다르다(Teams.Delay).
-            var team = Teams.For(agency, TargetOf(agency));
-            var window = Teams.Delay(team);
+            var unit = team ?? Teams.For(agency, TargetFor(agency));
+            var window = Teams.Delay(unit);
             arriveAt[agency] = Time.time + world.Range(window.x, window.y);
-            log.Add(Teams.Name(team) + " 출동 요청 (" + by + ")");
+            log.Add(Teams.Name(unit) + " 출동 요청 (" + by + ")");
+            return true;
         }
 
         /// <summary>The hazard an agency is coming for (not necessarily the first incident of the shift): its command first, then one it helps with.</summary>
@@ -629,12 +688,17 @@ namespace ChooGuard.App.Fps.Emergency
                 ?? all.LastOrDefault(h => h.Command == agency) ?? all.LastOrDefault(h => h.Involves(agency));
         }
 
+        /// <summary>What the call named, else the hazard the agency commands.</summary>
+        private Hazard TargetFor(Agency agency) => callTarget.TryGetValue(agency, out var target) ? target : TargetOf(agency);
+
         private Vector3 SceneOf(Agency agency)
         {
-            var target = TargetOf(agency);
+            var target = TargetFor(agency);
             switch (agency)
             {
-                case Agency.Medical: return target != null ? target.Scene : NextPatient(PlayerPosition)?.transform.position ?? (Main != null && Main.Localized ? Main.Scene : PlayerPosition);
+                case Agency.Medical:
+                    // 대상이 없는 구급 요청은 역무원이 확인한 부상자에게 간다(표준·실전: 모르는 부상자에게 먼저 가지 않는다).
+                    return target != null ? target.Scene : (callTarget.ContainsKey(agency) ? NextPatient(PlayerPosition, true, true) : NextPatient(PlayerPosition))?.transform.position ?? (Main != null && Main.Localized ? Main.Scene : PlayerPosition);
                 case Agency.Crew when target is FireHazard fire && fire.Aboard:
                     return Train.World(Train.CarAt(fire.Position)?.DoorOutside ?? fire.Position);
                 case Agency.Facility when FacilityScene(out var scene):
@@ -646,8 +710,8 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void SpawnTeam(Agency agency)
         {
-            var target = TargetOf(agency) ?? Main;
-            var team = Teams.For(agency, target);
+            var target = callTarget.TryGetValue(agency, out var bound) ? bound : TargetOf(agency) ?? Main;
+            var team = callTeam.TryGetValue(agency, out var unit) ? unit : Teams.For(agency, target);
             var prefabs = Teams.Members(art.Crowd, team);
             var scene = SceneOf(agency);
             float standOff = agency == Agency.Police ? 9 : agency == Agency.Fire ? 4 : agency == Agency.Medical ? 1 : 3;
@@ -735,47 +799,45 @@ namespace ChooGuard.App.Fps.Emergency
         private const float VehicleRowX = -118f;
         private static readonly float[] VehicleRow = { 16, 26, 6, 36, -4, 46, -14, 56 };
 
+        // 출동 상태 줄은 이 순서로 쓴다(사전 순회 순서에 맡기면 줄이 뒤바뀌어 읽기 어렵다).
+        private static readonly Agency[] AgencyOrder = { Agency.Fire, Agency.Police, Agency.Medical, Agency.Facility, Agency.Crew };
+        private readonly System.Text.StringBuilder agencyLine = new System.Text.StringBuilder(256);
+        private string agencyStatus = "";
+
         /// <summary>
-        /// 출동한 팀의 표식을 선두 대원의 **지금 자리**로 옮긴다.
+        /// One line per called agency with its stage now (#271): dispatched, on the way (with where its lead is), on scene. Empty when
+        /// nobody was called. Only in the guided (tour) level: in Standard and Real a called agency's whereabouts come from the radio as heard.
         /// </summary>
-        /// <remarks>
-        /// 표식은 팀을 만들 때(<see cref="SpawnTeam"/>)와 현장에 닿았을 때 두 번만 걸렸다. 그 사이 이동이
-        /// 반영되지 않아, 지도만 보는 플레이어는 기관이 역 입구에 서 있다고 믿게 된다 — 실측에서 선두
-        /// 대원이 119.5 m 떨어져 걷는 동안 표식은 0.00 m 움직였다.
-        ///
-        /// 팀이 없으면 **찍지 않는다.** 역 밖 출발지와 이동 경로는 구현돼 있지 않으므로 그때의 좌표는
-        /// 존재하지 않는다. 없는 위치를 지어내지 않는다.
-        ///
-        /// 매 프레임은 과하다. 지도를 보는 사람이 끊김을 느끼지 않을 만큼만 옮긴다.
-        /// </remarks>
-        /// <summary>
-        /// 부른 기관마다 지금 어느 단계인지 한 줄로 요약한다 (#271). 아무도 부르지 않았으면 빈 문자열.
-        /// </summary>
-        /// <remarks>
-        /// 무전은 흐르고 사라진다. 요청이 반영됐는지, 기관이 오는 중인지를 계속 확인할 수 있어야 한다.
-        /// 기록은 무전과 Tab 상황판이 그대로 갖고, 이 줄은 **지금 상태만** 요약한다.
-        ///
-        /// 팀이 아직 없으면 위치를 적지 않는다. 역 밖 출발지와 이동 경로는 구현돼 있지 않아 그때의 좌표가
-        /// 존재하지 않기 때문이다 — 사건 장소를 기관 위치인 양 적는 것이 가장 쉬운 실수라 아예 적지 않는다.
-        ///
-        /// 기관 순서를 고정한다. 사전 순회 순서에 맡기면 줄이 프레임마다 뒤바뀌어 읽기 어렵다.
-        /// </remarks>
         private string AgencyStatus()
         {
-            if (calledBy.Count == 0) return "";
-            var parts = new List<string>();
-            foreach (var agency in calledBy.Keys.OrderBy(a => a))
+            if (calledBy.Count == 0 || !Guided) return "";
+            agencyLine.Clear();
+            foreach (var agency in AgencyOrder)
             {
-                var name = Responder.AgencyName(agency);
-                var lead = responders.FirstOrDefault(r => r != null && r.Lead && r.Agency == agency);
-                parts.Add(lead == null ? name + " 출동 중 · 위치 확인 전"
-                    : lead.OnScene ? name + " 현장 도착"
-                    : name + " 현장 이동 중 (현재 위치: " + world.Describe(lead.transform.position) + ")");
+                if (!calledBy.ContainsKey(agency)) continue;
+                if (agencyLine.Length > 0) agencyLine.Append('\n');
+                agencyLine.Append(Responder.AgencyName(agency));
+                var lead = Lead(agency);
+                // 팀이 아직 없으면 위치를 적지 않는다. 역 밖 출발지와 이동 경로는 구현돼 있지 않아 그때의 좌표가 없다(사건 장소를 기관 위치로 적지 않는다).
+                if (lead == null) agencyLine.Append(" 출동 중 · 위치 확인 전");
+                else if (lead.OnScene) agencyLine.Append(" 현장 도착");
+                else agencyLine.Append(" 현장 이동 중 (현재 위치: ").Append(world.Describe(lead.transform.position)).Append(')');
             }
-            // 기관마다 줄을 나눈다. 한 기관만으로 이미 37자가 나왔고(실측), 둘을 한 줄에 붙이면 잘린다.
-            return string.Join("\n", parts);
+            return agencyLine.ToString();
         }
 
+        private Responder Lead(Agency agency)
+        {
+            foreach (var responder in responders)
+                if (responder != null && responder.Lead && responder.Agency == agency) return responder;
+            return null;
+        }
+
+        /// <summary>
+        /// Moves each dispatched team's map marker to its lead's position now and refreshes the status line, four times a second. Markers were
+        /// set only when a team spawned and when it arrived, so the map showed a team still at the entrance while it walked 119.5 m (#271).
+        /// No marker before a team exists: there is no off-station origin or route to show.
+        /// </summary>
         private void TrackTeams()
         {
             if (Time.time < nextTeamMark) return;
@@ -786,6 +848,7 @@ namespace ChooGuard.App.Fps.Emergency
                 session.SetMarker("agency-" + responder.Agency, responder.transform.position,
                     MarkerKind.Responder, Teams.Name(responder.Team));
             }
+            agencyStatus = AgencyStatus();
         }
 
         public void OnResponderArrived(Responder responder)
@@ -906,7 +969,7 @@ namespace ChooGuard.App.Fps.Emergency
             var eye = cameraTransform.position;
             float danger = Mathf.Max(FireDanger(eye), FacilityDanger(eye), SecurityDanger(eye));
             session.Hud.SetDanger(danger);
-            session.AgencyStatusText = AgencyStatus();
+            session.AgencyStatusText = agencyStatus;
 
             if (!PlayerKnowsIncident || Main == null)
             {
@@ -919,8 +982,10 @@ namespace ChooGuard.App.Fps.Emergency
             session.SituationColour = focus.UnderControl ? FpsUiFactory.Accent : FpsUiFactory.Danger;
         }
 
+        // 견학의 Tab 상황판(상황·조치·기관). 표준·실전은 수첩(IncidentDirector.Radio.cs)을 보인다.
         private BoardOverlay.Column SituationColumn()
         {
+            if (!Guided) return null;
             var column = new BoardOverlay.Column { Title = "상황" };
             if (Train != null) column.Lines.Add("열차: " + Train.Status());
             if (jev == null || !jev.Available || jev.FailuresInARow >= 3) column.Lines.Add(jev != null ? jev.Status : "JEV 없음");
@@ -933,6 +998,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private BoardOverlay.Column ActionColumn()
         {
+            if (!Guided) return null;
             var column = new BoardOverlay.Column { Title = "조치" };
             column.Lines.Add((reported.Count > 0 ? "● " : "○ ") + "역무실 보고" + (reported.Count > 1 ? " " + reported.Count + "건" : ""));
             column.Lines.Add((announced ? "● " : "○ ") + "안내방송");
@@ -948,6 +1014,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private BoardOverlay.Column AgencyColumn()
         {
+            if (!Guided) return null;
             var column = new BoardOverlay.Column { Title = "기관" };
             if (calledBy.Count == 0) { column.Lines.Add("출동 요청 없음"); return column; }
             foreach (var pair in calledBy)
@@ -961,6 +1028,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private BoardOverlay.Column CrowdColumn()
         {
+            if (!Guided) return null;
             var column = new BoardOverlay.Column { Title = "승객" };
             column.Lines.Add("역 안 " + crowd.InStation + "명 · 열차 안 " + (crowd.People.Count - crowd.InStation) + "명");
             if (Stage != Phase.Calm)
