@@ -10,18 +10,33 @@ namespace ChooGuard.App.Fps.Hud
     public sealed class MapOverlay : MonoBehaviour
     {
         private const float Size = 720;
+        public const float NearbyLabelSpan = 130f;
         private static readonly Color Ink = new Color(.09f, .18f, .23f, 1);
         private Canvas canvas;
         private RectTransform mapRect, player;
         private RawImage picture;
+        private RectTransform background;
         private TMP_Text title, guideText, floorNotice, transferText;
         private Image transferChip;
         private sealed class RouteSegment { public Image Back, Line; }
         private readonly List<RouteSegment> routeLines = new List<RouteSegment>();
-        private readonly List<GameObject> landmarks = new List<GameObject>();
+        private sealed class Landmark
+        {
+            public RectTransform View, Pin;
+            public Vector3 Position;
+            public int Floor, Priority;
+            public Vector2 Anchor;
+            public Rect? Area;
+            public StationPoints.PlatformEntry Platform;
+        }
+        private readonly List<Landmark> landmarks = new List<Landmark>();
+        private readonly List<Landmark> nearby = new List<Landmark>();
+        private readonly List<Rect> occupiedLabels = new List<Rect>();
         private readonly List<Vector3> route = new List<Vector3>();
         private Rect world;
         private Transform viewer;
+        private Transform positionSource;
+        private Vector3 ViewerPosition => positionSource != null ? positionSource.position : viewer.position;
         private TMP_FontAsset font;
         private StationPoints stationPoints;
         private readonly Dictionary<string, (RectTransform rect, Image icon, TMP_Text label)> markers = new Dictionary<string, (RectTransform, Image, TMP_Text)>();
@@ -36,6 +51,8 @@ namespace ChooGuard.App.Fps.Hud
             overlay.canvas = canvasObject.GetComponent<Canvas>();
             overlay.world = worldXZ;
             overlay.viewer = viewer;
+            // The camera's eye height must not classify a 1F ramp as 2F or a stair landing as 3F.
+            overlay.positionSource = viewer != null ? (viewer.GetComponentInParent<FirstPersonResponder>()?.transform ?? viewer) : null;
             overlay.font = font;
             var root = (RectTransform)canvasObject.transform;
             float aspect = worldXZ.height > 0 ? worldXZ.width / worldXZ.height : 1;
@@ -49,19 +66,22 @@ namespace ChooGuard.App.Fps.Hud
             var mapBorder = FpsUiFactory.Panel(root, "지도 가장자리", new Vector2(0, -5), size + new Vector2(8, 8), new Color(.22f, .37f, .42f, .85f));
             mapBorder.sprite = HudSprites.RoundedPanel;
             mapBorder.type = Image.Type.Sliced;
-            overlay.picture = FpsUiFactory.Picture(root, "지도", map);
-            overlay.mapRect = overlay.picture.rectTransform;
+            overlay.mapRect = FpsUiFactory.Panel(root, "지도 영역", Vector2.zero, size, new Color(.84f, .91f, .92f, 1)).rectTransform;
             overlay.mapRect.anchoredPosition = new Vector2(0, -5);
-            overlay.mapRect.sizeDelta = size;
+            overlay.mapRect.gameObject.AddComponent<RectMask2D>();
+            overlay.background = FpsUiFactory.Node(overlay.mapRect, "지도 바탕");
+            FpsUiFactory.Stretch(overlay.background);
+            overlay.picture = FpsUiFactory.Picture(overlay.background, "지도", map);
+            overlay.picture.rectTransform.sizeDelta = size;
             overlay.picture.color = map != null ? Color.white : new Color(.9f, .93f, .94f, 1);
-            var photoWash = FpsUiFactory.Panel(overlay.mapRect, "지도 밝기", Vector2.zero, Vector2.zero, new Color(.9f, .96f, 1, .12f));
+            var photoWash = FpsUiFactory.Panel(overlay.picture.transform, "지도 밝기", Vector2.zero, Vector2.zero, new Color(.9f, .96f, 1, .12f));
             FpsUiFactory.Stretch(photoWash.rectTransform);
             overlay.title = FpsUiFactory.Label(root, font, "층", new Vector2(-42, size.y * .5f + 43), new Vector2(size.x - 100, 38), 23, TextAlignmentOptions.Left);
             overlay.title.color = Ink;
             overlay.title.text = floorLabel;
             overlay.title.fontStyle = FontStyles.Bold;
-            overlay.floorNotice = FpsUiFactory.Label(root, font, "다른 층 안내", Vector2.zero, new Vector2(size.x - 30, 65), 19);
-            overlay.floorNotice.text = "이 층의 상세 평면도는 제공되지 않습니다.\n다음 이동 지점은 나침반으로 확인하세요.";
+            overlay.floorNotice = FpsUiFactory.Label(root, font, "다른 층 안내", new Vector2(0, size.y * .5f + 12), new Vector2(size.x - 30, 24), 16);
+            overlay.floorNotice.text = "";
             overlay.floorNotice.color = Ink;
             overlay.floorNotice.gameObject.SetActive(false);
             var footerAccent = FpsUiFactory.Panel(root, "길 안내 색인", new Vector2(-size.x * .5f + 6, -size.y * .5f - 42), new Vector2(5, 37), CompassBar.Colour(MarkerKind.Guidance));
@@ -99,62 +119,93 @@ namespace ChooGuard.App.Fps.Hud
         public void SetLandmarks(StationPoints points)
         {
             stationPoints = points;
-            foreach (var item in landmarks) Destroy(item);
+            foreach (var item in landmarks)
+            {
+                Destroy(item.View.gameObject);
+                Destroy(item.Pin.gameObject);
+            }
             landmarks.Clear();
             if (points == null) return;
-            // The supplied map image is the 2F floor. Labels are bound to surveyed zone/point positions.
+            // Keep the latest full-world image and its surveyed projection together. Changing the player's
+            // position changes which names are visible, never the map extent or a place's coordinates.
             foreach (var zone in points.Zones)
             {
-                if (zone.id != "hall2f" && zone.id != "southgate" && zone.id != "northdeck" &&
-                    zone.id != "main2f" && zone.id != "eastexit") continue;
+                if (zone.id == "world" || zone.id == "tracks") continue; // Extent and duplicate platform coverage.
                 var at = (zone.min + zone.max) * .5f;
-                string label;
-                switch (zone.id)
+                var floors = new HashSet<int> { Floor(at) };
+                foreach (var point in points.All) if (point.Zone == zone.id) floors.Add(Floor(point.Position));
+                var area = Rect.MinMaxRect(zone.min.x, zone.min.z, zone.max.x, zone.max.z);
+                foreach (int floor in floors)
                 {
-                    case "hall2f": label = "맞이방"; break;
-                    case "southgate": label = "남측 게이트"; break;
-                    case "northdeck": label = "북측 데크"; break;
-                    case "main2f": label = "본관"; break;
-                    default: label = "동측 출구"; break;
+                    string label = zone.label.Replace("2층 ", "").Replace("(타는 곳)", "").Replace("(나가는 곳)", "");
+                    if (zone.id == "skyplaza") label = "하늘광장";
+                    else if (zone.id == "plaza") label = "역 광장";
+                    else if (zone.id == "busstop") label = "버스정류장";
+                    AddLandmark("zone-" + zone.id + "-" + floor, label, at, floor, 0, area);
                 }
-                AddLandmark(label, at, 132);
             }
-            var office = points.Of(PointKind.Office);
-            if (office.Count > 0) AddLandmark(office[0].Label, office[0].Position, 90);
+            // A full-world overview needs destinations, not a directory of every shop and facility.
+            foreach (var point in points.All)
+            {
+                if (point.Kind != PointKind.Office && point.Kind != PointKind.Exit) continue;
+                string label = point.Label;
+                if (point.Id == "exit-west-north") label = "초량 방면";
+                else if (point.Id == "exit-west-south") label = "중앙동 방면";
+                else if (point.Id == "exit-port") label = "부산항 방면";
+                AddLandmark(point.Id, label, point.Position, Floor(point.Position), 1);
+            }
             foreach (var link in points.Escalators)
             {
-                string label = null;
-                Vector2 offset = Vector2.zero;
-                switch (link.id)
+                if (link.path == null || link.path.Length < 2) continue;
+                var from = link.path[0];
+                var to = link.path[link.path.Length - 1];
+                if (link.stairs)
                 {
-                    case "esc-2f3f-up": label = "3층 연결 ▲"; offset = new Vector2(0, -35); break;
-                    case "esc-1f-north-1": label = "1층 연결 ▼"; break;
-                    case "esc-1f-south-1": label = "1층 연결 ▼"; break;
-                    case "esc-well-s-56": label = "5·6 타는 곳 ▼"; offset = new Vector2(0, 40); break;
+                    // One caption for each surveyed stair access; the adjacent escalator is not a
+                    // second overlapping destination. Use the survey's platform number on both floors.
+                    string destination = link.label.Split(new[] { " 타는 곳" }, System.StringSplitOptions.None)[0];
+                    string label = destination + "번 계단";
+                    AddLandmark(link.id + "-stairs-top", label, link.stairsTop, Floor(link.stairsTop), 2);
+                    AddLandmark(link.id + "-stairs-bottom", label, link.stairsBottom, Floor(link.stairsBottom), 2);
                 }
-                if (label != null && link.path != null && link.path.Length > 0)
-                    AddLandmark(label, link.path[0], 112, offset);
+                else
+                    AddLandmark(link.id, FloorLabel(to).Replace(" 타는 곳", "번") + "\n에스컬레이터", from, Floor(from), 2);
             }
+            foreach (var elevator in points.Elevators)
+                if (elevator.stops != null) foreach (var stop in elevator.stops)
+                    AddLandmark(elevator.id + "-" + stop.floor, "승강기", stop.door, Floor(stop.door), 2);
+            foreach (var platform in points.Platforms)
+            {
+                var item = AddLandmark("platform-" + platform.id, platform.label.Replace(" 타는 곳", "번\n승강장"), (platform.a + platform.b) * .5f, Floor(platform.a), 0);
+                item.Platform = platform;
+            }
+            LayoutLandmarks();
+            drawnFloor = 0;
         }
 
-        private void AddLandmark(string label, Vector3 position, float width, Vector2 offset = default)
+        private Landmark AddLandmark(string id, string label, Vector3 position, int floor, int priority, Rect? area = null)
         {
-            if (!Inside(position)) return;
-            var backing = FpsUiFactory.Panel(mapRect, label, ToMap(position) + offset, new Vector2(width, 28), new Color(.96f, .98f, .98f, .96f));
+            var backing = FpsUiFactory.Panel(mapRect, "장소 " + id, Vector2.zero, new Vector2(100, 22), new Color(.96f, .98f, .98f, .90f));
             backing.sprite = HudSprites.RoundedPanel;
             backing.type = Image.Type.Sliced;
-            var dot = FpsUiFactory.Panel(backing.transform, "장소 표식", new Vector2(-width * .5f + 13, 0), new Vector2(7, 7), new Color(.08f, .52f, .56f, 1));
+            var dot = FpsUiFactory.Panel(mapRect, "장소 위치 " + id, Vector2.zero, new Vector2(4, 4), new Color(.18f, .36f, .40f, .75f));
             dot.sprite = HudSprites.Disc;
-            var caption = FpsUiFactory.Label(backing.transform, font, "장소", new Vector2(8, 0), new Vector2(width - 26, 25), 15);
+            var caption = FpsUiFactory.Label(backing.transform, font, "장소", Vector2.zero, new Vector2(90, 20), priority == 0 ? 13 : 12);
             caption.text = label;
             caption.color = Ink;
-            caption.fontStyle = FontStyles.Bold;
+            caption.fontStyle = priority == 0 ? FontStyles.Bold : FontStyles.Normal;
             caption.textWrappingMode = TextWrappingModes.NoWrap;
-            caption.enableAutoSizing = true;
-            caption.fontSizeMin = 12;
-            caption.fontSizeMax = 15;
             caption.overflowMode = TextOverflowModes.Ellipsis;
-            landmarks.Add(backing.gameObject);
+            var preferred = caption.GetPreferredValues(label);
+            float width = Mathf.Clamp(preferred.x + 12, 42, 180);
+            float height = Mathf.Max(22, Mathf.Ceil(preferred.y + 5));
+            backing.rectTransform.sizeDelta = new Vector2(width, height);
+            caption.rectTransform.sizeDelta = new Vector2(width - 8, height - 2);
+            var item = new Landmark { View = backing.rectTransform, Pin = dot.rectTransform,
+                Position = position, Floor = floor, Priority = priority, Area = area };
+            SetLandmarkActive(item, false);
+            landmarks.Add(item);
+            return item;
         }
 
         public void SetRoute(IReadOnlyList<Vector3> points, string message)
@@ -168,19 +219,21 @@ namespace ChooGuard.App.Fps.Hud
         private void DrawRoute()
         {
             int used = 0;
+            int floor = viewer != null ? Floor(ViewerPosition) : 2;
             transferChip.gameObject.SetActive(false);
-            if (viewer != null && Floor(viewer.position) == 2)
+            if (viewer != null)
             {
                 for (int i = 1; i < route.Count; i++)
                 {
-                    if (Floor(route[i - 1]) == 2 && Floor(route[i]) != 2 && Inside(route[i - 1]))
+                    if (Floor(route[i - 1]) == floor && Floor(route[i]) != floor && Inside(route[i - 1], floor))
                     {
-                        transferChip.rectTransform.anchoredPosition = ToMap(route[i - 1]);
+                        transferChip.rectTransform.anchoredPosition = ToMap(route[i - 1], floor);
                         transferText.text = FloorLabel(route[i]) + " 이동 " + (route[i].y < route[i - 1].y ? "▼" : "▲");
                         transferChip.gameObject.SetActive(true);
                     }
-                    if (Floor(route[i - 1]) != 2 || Floor(route[i]) != 2 || !Inside(route[i - 1]) || !Inside(route[i])) continue;
-                    Vector2 a = ToMap(route[i - 1]), b = ToMap(route[i]);
+                    if (Floor(route[i - 1]) != floor || Floor(route[i]) != floor) continue;
+                    Vector2 a = ToMap(route[i - 1], floor), b = ToMap(route[i], floor);
+                    if (!ClipToMap(ref a, ref b)) continue;
                     Vector2 delta = b - a;
                     if (delta.sqrMagnitude < 2f) continue;
                     RouteSegment segment;
@@ -222,8 +275,36 @@ namespace ChooGuard.App.Fps.Hud
             return stationPoints?.ZoneAt(position)?.id == "tracks" ? "승강장" : Floor(position) + "층";
         }
 
-        private bool Inside(Vector3 position) => position.x >= world.xMin && position.x <= world.xMax &&
-                                                 position.z >= world.yMin && position.z <= world.yMax;
+        private bool ClipToMap(ref Vector2 a, ref Vector2 b)
+        {
+            var half = mapRect.sizeDelta * .5f;
+            return ClipToRect(ref a, ref b, new Rect(-half, half * 2));
+        }
+
+        private static bool ClipToRect(ref Vector2 a, ref Vector2 b, Rect bounds)
+        {
+            var start = a;
+            var delta = b - a;
+            float enter = 0, leave = 1;
+            bool Edge(float direction, float gap)
+            {
+                if (Mathf.Abs(direction) < .001f) return gap >= 0;
+                float ratio = gap / direction;
+                if (direction < 0) enter = Mathf.Max(enter, ratio);
+                else leave = Mathf.Min(leave, ratio);
+                return enter <= leave;
+            }
+            if (!Edge(-delta.x, start.x - bounds.xMin) || !Edge(delta.x, bounds.xMax - start.x) ||
+                !Edge(-delta.y, start.y - bounds.yMin) || !Edge(delta.y, bounds.yMax - start.y)) return false;
+            a = start + delta * enter;
+            b = start + delta * leave;
+            return true;
+        }
+        private bool Inside(Vector3 position, int floor)
+        {
+            var bounds = world;
+            return position.x >= bounds.xMin && position.x <= bounds.xMax && position.z >= bounds.yMin && position.z <= bounds.yMax;
+        }
 
         public void SetMarker(string id, Vector3 position, MarkerKind kind, string label) => sources[id] = (position, kind, label);
         public void RemoveMarker(string id)
@@ -232,24 +313,25 @@ namespace ChooGuard.App.Fps.Hud
             if (markers.TryGetValue(id, out var view)) { Destroy(view.rect.gameObject); markers.Remove(id); }
         }
 
-        private Vector2 ToMap(Vector3 position)
+        private Vector2 ToMap(Vector3 position, int floor)
         {
-            float u = (position.x - world.xMin) / world.width - .5f;
-            float v = (position.z - world.yMin) / world.height - .5f;
+            var bounds = world;
+            float u = (position.x - bounds.xMin) / bounds.width - .5f;
+            float v = (position.z - bounds.yMin) / bounds.height - .5f;
             return new Vector2(u * mapRect.sizeDelta.x, v * mapRect.sizeDelta.y);
         }
 
         private void LateUpdate()
         {
             if (!canvas.enabled || viewer == null) return;
-            int floor = Floor(viewer.position);
-            picture.enabled = floor == 2;
-            floorNotice.gameObject.SetActive(floor != 2);
-            title.text = floor == 2 ? "2층 안내도 · 현재 위치와 이동 경로" : FloorLabel(viewer.position) + " 현재 위치 · 상세 평면도 없음";
-            foreach (var item in landmarks) item.SetActive(floor == 2);
+            int floor = Floor(ViewerPosition);
+            picture.enabled = true;
+            floorNotice.gameObject.SetActive(true);
+            floorNotice.text = "현재 층 주요 지점 · 내 주변 130 × 130m";
+            title.text = "역 전체 안내도 · " + FloorLabel(ViewerPosition) + " 현재 위치";
             if (floor != drawnFloor) { drawnFloor = floor; DrawRoute(); }
-            player.anchoredPosition = ToMap(viewer.position);
-            player.gameObject.SetActive(floor == 2 && Inside(viewer.position));
+            player.anchoredPosition = ToMap(ViewerPosition, floor);
+            player.gameObject.SetActive(Inside(ViewerPosition, floor));
             player.localRotation = Quaternion.Euler(0, 0, -CompassBar.Heading(viewer.forward));
             foreach (var pair in sources)
             {
@@ -261,13 +343,129 @@ namespace ChooGuard.App.Fps.Hud
                     view = (icon.rectTransform, icon, label);
                     markers.Add(pair.Key, view);
                 }
-                view.rect.anchoredPosition = ToMap(pair.Value.world);
-                view.rect.gameObject.SetActive(floor == 2 && Inside(pair.Value.world));
+                view.rect.anchoredPosition = ToMap(pair.Value.world, floor);
+                view.rect.gameObject.SetActive(Inside(pair.Value.world, floor));
                 view.icon.color = CompassBar.Colour(pair.Value.kind);
                 view.label.text = Floor(pair.Value.world) == floor ? pair.Value.label : FloorLabel(pair.Value.world) + " · " + pair.Value.label;
                 view.label.color = CompassBar.Colour(pair.Value.kind);
             }
+            UpdateLandmarks(floor);
             if (player.gameObject.activeSelf) player.SetAsLastSibling();
+        }
+
+        private void UpdateLandmarks(int floor)
+        {
+            var at = ViewerPosition;
+            float half = NearbyLabelSpan * .5f;
+            var scope = new Rect(at.x - half, at.z - half, NearbyLabelSpan, NearbyLabelSpan);
+            foreach (var item in landmarks)
+            {
+                bool within;
+                if (item.Area.HasValue)
+                {
+                    var area = item.Area.Value;
+                    within = area.xMin <= scope.xMax && area.xMax >= scope.xMin && area.yMin <= scope.yMax && area.yMax >= scope.yMin;
+                }
+                else if (item.Platform != null)
+                {
+                    var platform = item.Platform;
+                    var a = new Vector2(platform.a.x, platform.a.z);
+                    var b = new Vector2(platform.b.x, platform.b.z);
+                    var expanded = new Rect(scope.min - Vector2.one * platform.halfWidth, scope.size + Vector2.one * platform.halfWidth * 2);
+                    within = ClipToRect(ref a, ref b, expanded);
+                }
+                else within = Mathf.Abs(item.Position.x - at.x) <= half && Mathf.Abs(item.Position.z - at.z) <= half;
+                // Long structures count when their surveyed footprint touches the square. Their caption
+                // and pin still stay at the same world location; never move them towards the player.
+                SetLandmarkActive(item, item.Floor == floor && Inside(item.Position, floor) && within);
+            }
+        }
+
+        private void LayoutLandmarks()
+        {
+            // Layout once against all surveyed names on the same floor. Entering/leaving the 130m square,
+            // player motion and marker changes cannot reorder or drag a caption away from its fixed pin.
+            for (int floor = 1; floor <= 3; floor++)
+            {
+                nearby.Clear();
+                foreach (var item in landmarks)
+                {
+                    if (item.Floor != floor) continue;
+                    item.Anchor = ToMap(item.Position, floor);
+                    nearby.Add(item);
+                }
+                nearby.Sort((a, b) =>
+                {
+                    int Rank(Landmark item) => item.Priority == 2 ? 0 : item.Priority == 1 ? 1 : 2;
+                    int priority = Rank(a).CompareTo(Rank(b));
+                    return priority != 0 ? priority : string.CompareOrdinal(a.View.name, b.View.name);
+                });
+                occupiedLabels.Clear();
+                foreach (var item in nearby)
+                    occupiedLabels.Add(new Rect(item.Anchor - Vector2.one * 3, Vector2.one * 6));
+                foreach (var item in nearby)
+                {
+                    PlaceCaption(item);
+                    item.Pin.anchoredPosition = item.Anchor;
+                }
+            }
+            foreach (var item in landmarks) item.Pin.SetAsLastSibling();
+            foreach (var item in landmarks) item.View.SetAsLastSibling();
+        }
+        private void PlaceCaption(Landmark item)
+        {
+            var half = item.View.sizeDelta * .5f;
+            var limit = mapRect.sizeDelta * .5f - half - Vector2.one * 4;
+            var preferred = item.Anchor + new Vector2(0, half.y + 5);
+            Vector2 chosen = preferred;
+            float bestOverlap = float.PositiveInfinity, bestDistance = float.PositiveInfinity;
+            void Consider(Vector2 candidate)
+            {
+                candidate = new Vector2(Mathf.Clamp(candidate.x, -limit.x, limit.x), Mathf.Clamp(candidate.y, -limit.y, limit.y));
+                var rect = new Rect(candidate - half - Vector2.one, item.View.sizeDelta + Vector2.one * 2);
+                float overlap = 0;
+                foreach (var occupied in occupiedLabels)
+                    overlap += Mathf.Max(0, Mathf.Min(rect.xMax, occupied.xMax) - Mathf.Max(rect.xMin, occupied.xMin)) *
+                               Mathf.Max(0, Mathf.Min(rect.yMax, occupied.yMax) - Mathf.Max(rect.yMin, occupied.yMin));
+                float distance = (candidate - preferred).sqrMagnitude;
+                if (overlap > bestOverlap || (overlap == bestOverlap && distance >= bestDistance)) return;
+                bestOverlap = overlap;
+                bestDistance = distance;
+                chosen = candidate;
+            }
+            // Compact, local placement only. Never send a caption across the overview to find a free
+            // column: without leader lines its proximity to the surveyed structure is the location cue.
+            if (item.Area.HasValue)
+            {
+                // A region caption may use free space inside that region's surveyed footprint. Point
+                // destinations stay local; large areas can absorb captions without long leader lines.
+                var area = item.Area.Value;
+                var min = ToMap(new Vector3(area.xMin, 0, area.yMin), item.Floor) - half - Vector2.one * 4;
+                var max = ToMap(new Vector3(area.xMax, 0, area.yMax), item.Floor) + half + Vector2.one * 4;
+                for (float y = min.y; y <= max.y; y += 4)
+                    for (float x = min.x; x <= max.x; x += 4) Consider(new Vector2(x, y));
+            }
+            else if (item.Platform != null)
+            {
+                // Parallel platforms are too close for five captions at their midpoints. Stagger the
+                // captions along their actual strips, once, rather than outside the station footprint.
+                var a = ToMap(item.Platform.a, item.Floor);
+                var b = ToMap(item.Platform.b, item.Floor);
+                for (int i = 10; i <= 90; i += 2)
+                    Consider(Vector2.Lerp(a, b, i * .01f) + new Vector2(0, half.y + 5));
+            }
+            else
+                for (int y = -44; y <= 44; y += 4)
+                    for (int x = -44; x <= 44; x += 4)
+                        if (x * x + y * y <= 44 * 44) Consider(preferred + new Vector2(x, y));
+            item.View.anchoredPosition = chosen;
+            occupiedLabels.Add(new Rect(chosen - half - Vector2.one, item.View.sizeDelta + Vector2.one * 2));
+        }
+
+        private static void SetLandmarkActive(Landmark item, bool visible)
+        {
+            item.View.gameObject.SetActive(visible);
+            item.Pin.gameObject.SetActive(visible);
         }
         private int drawnFloor = 2;
     }
