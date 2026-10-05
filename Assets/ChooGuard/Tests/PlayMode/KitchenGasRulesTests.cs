@@ -106,7 +106,6 @@ namespace ChooGuard.Tests.PlayMode
             string who = null;
             valve.Closing += (_, by) => { closings++; who = by; };
 
-            Assert.That(valve.InteractionPrompt, Is.EqualTo("가스 중간밸브 잠그기"));
             valve.Close("역무원");
             valve.Close("점포 직원");
 

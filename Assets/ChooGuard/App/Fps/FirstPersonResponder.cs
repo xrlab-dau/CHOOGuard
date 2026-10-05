@@ -29,6 +29,15 @@ namespace ChooGuard.App.Fps
         public Collider CurrentTargetCollider { get; private set; }
         public CollisionFlags LastCollisionFlags { get; private set; }
         public int SuccessfulInteractions { get; private set; }
+        /// <summary>One E press works a handle instead of holding E and moving the mouse (guided play, tests, the tutorial).</summary>
+        public bool SimpleControls { get; set; }=true;
+        /// <summary>Something heavy in hand (an extinguisher, the hose, the AED): no running.</summary>
+        public bool SprintBlocked { get; set; }
+        /// <summary>A handle is held now (E down on an <see cref="IFpsHoldInteraction"/>): the mouse moves it instead of the view.</summary>
+        public bool Holding=>holding!=null;
+        public IFpsHoldInteraction CurrentHold=>holding;
+        /// <summary>The target under the crosshair is a handle that holding E would grab now.</summary>
+        public bool CurrentHoldable { get; private set; }
         public float PitchDegrees=>pitch;
         public float YawDegrees=>yaw;
         public event Action<bool> PauseChanged;
@@ -38,6 +47,9 @@ namespace ChooGuard.App.Fps
         private IFpsInteraction target;
         private float yaw,pitch,verticalVelocity;
         private bool interactionHeld,secondaryHeld,jumpHeld,suppressCaptureUntilRelease;
+        private IFpsHoldInteraction holding;
+        private Collider holdCollider;
+        private const float HoldReach=3.2f;
         private int firstCaptureFrame;
         private readonly List<MonoBehaviour> interactionComponents=new List<MonoBehaviour>(8);
         private Collider cachedCollider;
@@ -62,7 +74,7 @@ namespace ChooGuard.App.Fps
         private static void UnlockPointer(){Cursor.lockState=CursorLockMode.None;Cursor.visible=true;}
         public void Pause()
         {
-            bool changed=!IsPaused;IsPaused=true;ClearTarget();UnlockPointer();if(changed)PauseChanged?.Invoke(true);
+            ReleaseHold();bool changed=!IsPaused;IsPaused=true;ClearTarget();UnlockPointer();if(changed)PauseChanged?.Invoke(true);
         }
         public bool Resume(bool capturePointer=true)
         {
@@ -84,7 +96,7 @@ namespace ChooGuard.App.Fps
             yaw=Mathf.Repeat(yawDegrees,360);pitch=Mathf.Clamp(pitchDegrees,-85,85);
             transform.SetPositionAndRotation(position,Quaternion.Euler(0,yaw,0));
             if(PlayerCamera!=null)PlayerCamera.transform.localRotation=Quaternion.Euler(pitch,0,0);
-            verticalVelocity=0;interactionHeld=false;secondaryHeld=false;jumpHeld=false;ClearTarget();
+            ReleaseHold();verticalVelocity=0;interactionHeld=false;secondaryHeld=false;jumpHeld=false;ClearTarget();
             if(enabledBody)body.enabled=true;
         }
         private void Update()
@@ -102,20 +114,23 @@ namespace ChooGuard.App.Fps
             Vector2 movement=Vector2.zero;
             if(keyboard!=null){if(keyboard.wKey.isPressed)movement.y++;if(keyboard.sKey.isPressed)movement.y--;if(keyboard.dKey.isPressed)movement.x++;if(keyboard.aKey.isPressed)movement.x--;}
             if(Time.deltaTime>MaxFrameSeconds){ShowFeedback("긴 화면 지연으로 일시 정지되었습니다. 클릭하여 계속하세요");Pause();return;}
-            Simulate(movement,mouse==null?Vector2.zero:mouse.delta.ReadValue()*LookDegreesPerPixel,keyboard!=null&&(keyboard.leftShiftKey.isPressed||keyboard.rightShiftKey.isPressed),keyboard!=null&&keyboard.eKey.isPressed,keyboard!=null&&keyboard.spaceKey.isPressed,Time.deltaTime,keyboard!=null&&keyboard.rKey.isPressed);
+            float wheel=mouse==null?0f:mouse.scroll.ReadValue().y/120f;
+            Simulate(movement,mouse==null?Vector2.zero:mouse.delta.ReadValue()*LookDegreesPerPixel,keyboard!=null&&(keyboard.leftShiftKey.isPressed||keyboard.rightShiftKey.isPressed),keyboard!=null&&keyboard.eKey.isPressed,keyboard!=null&&keyboard.spaceKey.isPressed,Time.deltaTime,keyboard!=null&&keyboard.rKey.isPressed,wheel);
         }
-        public bool StepInput(Vector2 movement,Vector2 lookDegrees,bool sprint,bool interactHeld,bool jumpPressed,float deltaSeconds,bool secondaryPressed=false)
+        public bool StepInput(Vector2 movement,Vector2 lookDegrees,bool sprint,bool interactHeld,bool jumpPressed,float deltaSeconds,bool secondaryPressed=false,float wheel=0f)
         {
-            if(!ExternalInputMode||IsPaused)return false;return Simulate(movement,lookDegrees,sprint,interactHeld,jumpPressed,deltaSeconds,secondaryPressed);
+            if(!ExternalInputMode||IsPaused)return false;return Simulate(movement,lookDegrees,sprint,interactHeld,jumpPressed,deltaSeconds,secondaryPressed,wheel);
         }
-        private bool Simulate(Vector2 movement,Vector2 look,bool sprint,bool interact,bool jump,float deltaSeconds,bool secondary)
+        private bool Simulate(Vector2 movement,Vector2 look,bool sprint,bool interact,bool jump,float deltaSeconds,bool secondary,float wheel)
         {
-            if(IsPaused||body==null||!body.enabled||!Finite(deltaSeconds)||deltaSeconds<=0||deltaSeconds>MaxFrameSeconds||!Finite(movement.x)||!Finite(movement.y)||!Finite(look.x)||!Finite(look.y))return false;
+            if(IsPaused||body==null||!body.enabled||!Finite(deltaSeconds)||deltaSeconds<=0||deltaSeconds>MaxFrameSeconds||!Finite(movement.x)||!Finite(movement.y)||!Finite(look.x)||!Finite(look.y)||!Finite(wheel))return false;
             if((transform.lossyScale-Vector3.one).sqrMagnitude>.0001f){ShowFeedback("플레이어의 미터 단위 크기 설정을 확인하세요");Pause();return false;}
-            if(SuppressLookInput)look=Vector2.zero;
+            // 손잡이를 잡고 있는 동안 마우스는 시점 대신 손잡이를 움직인다.
+            var hand=look;
+            if(SuppressLookInput||holding!=null)look=Vector2.zero;
             int steps=Mathf.CeilToInt(deltaSeconds/MaxStepSeconds);float dt=deltaSeconds/steps;yaw=Mathf.Repeat(yaw+Mathf.Clamp(look.x,-45,45),360);pitch=Mathf.Clamp(pitch-Mathf.Clamp(look.y,-45,45),-85,85);
             transform.rotation=Quaternion.Euler(0,yaw,0);PlayerCamera.transform.localRotation=Quaternion.Euler(pitch,0,0);
-            movement=Vector2.ClampMagnitude(movement,1);float speed=Mathf.Clamp(sprint?SprintSpeed:WalkSpeed,0,5);
+            movement=Vector2.ClampMagnitude(movement,1);float speed=Mathf.Clamp(sprint&&!SprintBlocked?SprintSpeed:WalkSpeed,0,5);
             bool jumpEdge=jump&&!jumpHeld;jumpHeld=jump;
             LastCollisionFlags=CollisionFlags.None;
             for(int step=0;step<steps;step++)
@@ -129,7 +144,37 @@ namespace ChooGuard.App.Fps
             }
             RefreshInteraction();bool edge=interact&&!interactionHeld&&!SuppressInteractionInput;interactionHeld=interact;
             bool secondaryEdge=secondary&&!secondaryHeld&&!SuppressInteractionInput;secondaryHeld=secondary;
-            if(edge)TryInteract();else if(secondaryEdge)TrySecondary();return true;
+            if(holding!=null)
+            {
+                if(!interact||SuppressInteractionInput||!InReach(holdCollider))ReleaseHold();
+                else holding.Hold(this,hand,wheel,deltaSeconds);
+            }
+            else if(edge)
+            {
+                if(!SimpleControls&&target is IFpsHoldInteraction handle&&handle.Holdable(this))BeginHold(handle);
+                else TryInteract();
+            }
+            else if(secondaryEdge)TrySecondary();
+            return true;
+        }
+        private void BeginHold(IFpsHoldInteraction handle)
+        {
+            holding=handle;holdCollider=CurrentTargetCollider;SuccessfulInteractions++;
+            handle.BeginHold(this);
+        }
+        /// <summary>Lets go of the handle held now (nothing when none is held).</summary>
+        public void ReleaseHold()
+        {
+            if(holding==null)return;
+            var handle=holding;holding=null;holdCollider=null;
+            string feedback=handle.EndHold(this);
+            if(!string.IsNullOrEmpty(feedback))ShowFeedback(feedback);
+        }
+        private bool InReach(Collider handle)
+        {
+            if(handle==null||!handle.enabled||!handle.gameObject.activeInHierarchy||PlayerCamera==null)return false;
+            var eye=PlayerCamera.transform.position;
+            return (handle.bounds.ClosestPoint(eye)-eye).sqrMagnitude<=HoldReach*HoldReach;
         }
         public void RefreshInteraction()
         {
@@ -158,6 +203,7 @@ namespace ChooGuard.App.Fps
             }
             if(cachedInteraction==null||!(cachedInteraction is IFpsInteraction candidate))return;
             targetBehaviour=cachedInteraction;target=candidate;CurrentTargetCollider=hit.collider;
+            CurrentHoldable=!SimpleControls&&candidate is IFpsHoldInteraction handle&&handle.Holdable(this);
             if(candidate.CanInteract(this,out var reason))
             {
                 string source=candidate.InteractionPrompt;
@@ -187,6 +233,6 @@ namespace ChooGuard.App.Fps
             bool performed=secondary.TrySecondary(this,out var feedback);if(performed)SuccessfulInteractions++;if(!string.IsNullOrEmpty(feedback))ShowFeedback(feedback);RefreshInteraction();return performed;
         }
         public void ShowFeedback(string message){LastFeedback=message??"";FeedbackChanged?.Invoke(LastFeedback);}
-        private void ClearTarget(){target=null;targetBehaviour=null;CurrentTargetCollider=null;CurrentPrompt="";CurrentSecondaryPrompt="";}
+        private void ClearTarget(){target=null;targetBehaviour=null;CurrentTargetCollider=null;CurrentPrompt="";CurrentSecondaryPrompt="";CurrentHoldable=false;}
     }
 }

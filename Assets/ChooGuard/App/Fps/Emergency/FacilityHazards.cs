@@ -449,16 +449,22 @@ namespace ChooGuard.App.Fps.Emergency
         public GasSource Source { get; }
         public int Level { get; private set; }
         public bool Shut { get; private set; }
+        /// <summary>
+        /// How much gas still gets past the valves in front of the leak (1 wide open … 0 shut): a valve turned part way only narrows how far the smell
+        /// spreads; the leak goes on until one is shut.
+        /// </summary>
+        public float Flow { get; set; } = 1f;
         /// <summary>Ids of the valves and of the range whose cock stops the leak when closed.</summary>
         public IReadOnlyList<string> StoppedBy { get; }
 
+        private float Spread => .4f + .6f * Mathf.Clamp01(Flow);
+
         public override string Label => "가스 냄새";
-        public override float NoticeRadius => Shut ? 0 : 6 + 5 * Level;
+        public override float NoticeRadius => Shut ? 0 : (6 + 5 * Level) * Spread;
         public override bool NeedsSight => false;
         public override bool Localized => true;
         public override string SensedAs => "가스 냄새를 맡음";
-        public override float DangerRadius => Shut ? 0 : 1 + 1.5f * Level;
-        public override float Clearance => 15;
+        public override float DangerRadius => Shut ? 0 : (1 + 1.5f * Level) * Spread;
         public override string Visible => Shut ? "가스 냄새가 옅어짐" :
             Level == 0 ? Shop + " 주방 쪽에서 희미한 가스 냄새가 남" :
             Level == 1 ? Shop + " 안에서 가스 냄새가 뚜렷함" :
