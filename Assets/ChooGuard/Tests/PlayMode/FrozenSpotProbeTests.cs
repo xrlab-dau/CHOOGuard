@@ -143,6 +143,129 @@ namespace ChooGuard.Tests.PlayMode
             Debug.Log("CG_FROZEN 기록 → " + path);
         }
 
+        /// <summary>
+        /// 에스컬레이터 링크 **전부**를 같은 방식으로 재서 "한 대만의 문제인가" 를 가른다 (#273).
+        /// </summary>
+        /// <remarks>
+        /// 생짜 <see cref="NavMeshAgent"/> 를 하나 만들어 재면 다른 것을 재게 된다 — 게임은
+        /// <c>autoTraverseOffMeshLink = false</c>(PersonBody)로 두고 <c>isOnOffMeshLink</c> 가 참이 될 때
+        /// 직접 몰아준다. 그래서 **실제 승객**이 쓰는 모습을 본다.
+        ///
+        /// 링크마다 두 가지를 센다.
+        /// (1) **탄 적이 있나** — <see cref="Escalator.RiderCount"/> 가 한 번이라도 0 보다 컸나.
+        /// (2) **입구에서 굳나** — 승강장 2.5 m 안에서 걷는 활동인데 속도 0 이고 링크에 올라타지도 않은
+        ///     사람이 몇 초나 서 있었나.
+        ///
+        /// 둘을 같이 봐야 뜻이 생긴다. 아무도 쓰지 않은 링크는 굳은 사람도 없어서, 멈춤 시간만 보면
+        /// '멀쩡하다' 로 잘못 읽힌다.
+        /// </remarks>
+        [UnityTest, Explicit("#273 범위 측정용. -testFilter 로 직접 지정해 돌릴 것."), Timeout(int.MaxValue)]
+        public IEnumerator 모든_에스컬레이터_링크를_같은_방식으로_잰다()
+        {
+            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+
+            float bootUntil = Time.realtimeSinceStartup + Seconds("CG_FROZEN_BOOT", 150f);
+            while ((EmergencySession.Current == null || EmergencySession.Current.Crowd == null
+                    || EmergencySession.Current.Crowd.People.Count == 0 || EmergencySession.Current.World == null)
+                   && Time.realtimeSinceStartup < bootUntil)
+            {
+                var booting = EmergencySession.Current;
+                if (booting != null && booting.Player != null) Resume(booting);
+                yield return null;
+            }
+            var session = EmergencySession.Current;
+            Assert.That(session, Is.Not.Null, "근무가 시작되지 않았습니다.");
+            Resume(session);
+            Time.captureFramerate = FramesPerSecond;
+
+            var crowd = session.Crowd;
+            var links = session.World.Escalators.Where(e => e.Entry != null && e.Entry.path != null && e.Entry.path.Length >= 2).ToList();
+            Assert.That(links.Count, Is.GreaterThan(0), "에스컬레이터를 찾지 못했습니다.");
+
+            var maxRiders = links.ToDictionary(e => e, e => 0);
+            var stallSeconds = links.ToDictionary(e => e, e => 0f);
+            var stalled = links.ToDictionary(e => e, e => new HashSet<int>());
+
+            yield return Play(5, session);
+
+            // 피난을 일으켜 링크를 많이 쓰게 한다(굳음이 드러나는 조건과 같다).
+            var witness = crowd.People
+                .Where(p => !p.Aboard && p.Body.Visible && Passenger.Routine(p.Current) && p.Current != Passenger.Activity.InTrain)
+                .OrderByDescending(p => crowd.CountNear(p.transform.position, 8, null))
+                .First();
+            var spot = StationWorld.OnNavMesh(witness.transform.position + witness.transform.forward * 3f, 2f);
+            var fire = new FireHazard("link-sweep-fire", spot, "시험용 불", "가방", .45f, session.Art, session.transform)
+            {
+                Where = session.World.Describe(spot),
+            };
+            HazardRegistry.Add(fire);
+            crowd.Alert(spot, 400f, fire, null, "the fire alarm bell is ringing");
+            crowd.Announce();
+
+            float watch = Seconds("CG_LINK_PLAY", 90f);
+            float until = session.ShiftSeconds + watch;
+            float last = session.ShiftSeconds;
+            while (session.ShiftSeconds < until)
+            {
+                float step = session.ShiftSeconds - last;
+                last = session.ShiftSeconds;
+                foreach (var escalator in links)
+                {
+                    if (escalator.RiderCount > maxRiders[escalator]) maxRiders[escalator] = escalator.RiderCount;
+                    foreach (var person in crowd.People)
+                    {
+                        if (person == null || person.Hurt || person.Hostile) continue;
+                        var doing = person.Current;
+                        bool moves = doing == Passenger.Activity.Walk || doing == Passenger.Activity.MoveAway
+                                     || doing == Passenger.Activity.Evacuate || doing == Passenger.Activity.Leave;
+                        if (!moves || person.Body.Riding != null || person.Body.Scripted) continue;
+                        if (Vector3.Distance(person.transform.position, escalator.Start) > 2.5f) continue;
+                        var agent = person.Body.Agent;
+                        if (agent == null || !agent.isActiveAndEnabled || !agent.isOnNavMesh) continue;
+                        if (agent.isOnOffMeshLink || !agent.hasPath || agent.velocity.magnitude > .05f) continue;
+                        stallSeconds[escalator] += step;
+                        stalled[escalator].Add(person.Number);
+                    }
+                }
+                yield return null;
+            }
+
+            var results = new JArray();
+            foreach (var escalator in links.OrderByDescending(e => stallSeconds[e]))
+                results.Add(new JObject
+                {
+                    ["label"] = escalator.Label,
+                    ["up"] = escalator.End.y > escalator.Start.y,
+                    ["running"] = escalator.Running,
+                    ["entryBarred"] = escalator.EntryBarred,
+                    ["maxRiders"] = maxRiders[escalator],
+                    ["everRidden"] = maxRiders[escalator] > 0,
+                    ["stallSeconds"] = Math.Round(stallSeconds[escalator], 1),
+                    ["stalledPeople"] = stalled[escalator].Count,
+                    ["startY"] = Math.Round(escalator.Start.y, 2),
+                    ["endY"] = Math.Round(escalator.End.y, 2),
+                });
+
+            var record = new JObject
+            {
+                ["at"] = DateTime.UtcNow.ToString("o"),
+                ["seed"] = 20260930,
+                ["watchGameSeconds"] = watch,
+                ["escalators"] = links.Count,
+                ["results"] = results,
+            };
+            Directory.CreateDirectory(OutFolder);
+            var path = Path.Combine(OutFolder,
+                "links-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture) + ".json");
+            File.WriteAllText(path, record.ToString(), new UTF8Encoding(false));
+            Debug.Log("CG_LINKS 기록 → " + path);
+            foreach (var row in results)
+                Debug.Log("CG_LINKS " + row["label"] + " · " + (((bool)row["up"]) ? "올라감" : "내려감")
+                          + " · 탄 적 " + row["everRidden"] + "(최대 " + row["maxRiders"] + "명)"
+                          + " · 입구 멈춤 " + row["stallSeconds"] + "초 / " + row["stalledPeople"] + "명");
+        }
+
         /// <summary>굳은 승객 하나의 상태와 그 자리에 무엇이 있는지.</summary>
         private static JObject Describe(EmergencySession session, Passenger person)
         {
