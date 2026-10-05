@@ -677,6 +677,8 @@ namespace ChooGuard.App.Fps.Emergency
             var window = Teams.Delay(unit);
             arriveAt[agency] = Time.time + world.Range(window.x, window.y);
             log.Add(Teams.Name(unit) + " 출동 요청 (" + by + ")");
+            // 출동 상태 줄과 표식은 다음 프레임에 바로 고친다(0.25 s 주기를 기다리지 않는다).
+            nextTeamMark = 0f;
             return true;
         }
 
@@ -710,6 +712,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void SpawnTeam(Agency agency)
         {
+            nextTeamMark = 0f;
             var target = callTarget.TryGetValue(agency, out var bound) ? bound : TargetOf(agency) ?? Main;
             var team = callTeam.TryGetValue(agency, out var unit) ? unit : Teams.For(agency, target);
             var prefabs = Teams.Members(art.Crowd, team);
@@ -854,7 +857,8 @@ namespace ChooGuard.App.Fps.Emergency
         public void OnResponderArrived(Responder responder)
         {
             // 표식은 TrackTeams 가 계속 옮긴다 — 도착할 때 따로 걸지 않는다. 두 곳에서 같은 표식을 걸면
-            // 기준이 둘이 되어 한쪽만 고쳐질 때 조용히 어긋난다.
+            // 기준이 둘이 되어 한쪽만 고쳐질 때 조용히 어긋난다. 출동 상태 줄은 다음 프레임에 '현장 도착'으로 고친다.
+            nextTeamMark = 0f;
             // 승무원이 도착하면 끼인 문을 연다.
             if (responder.Agency == Agency.Crew) CrewArrived();
         }
