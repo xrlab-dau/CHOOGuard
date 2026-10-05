@@ -233,6 +233,128 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(onScene, Does.Contain("현장 도착"), "현장 도착 단계가 보이지 않습니다.");
         }
 
+        /// <summary>
+        /// #271 의 남은 검수: 두 기관 동시 출동 · 층 이동 · 무전이 사라진 뒤에도 남는지 · 근무 종료 (#271).
+        /// </summary>
+        /// <remarks>
+        /// 한 기관만 보면 줄이 길어질 때 무슨 일이 생기는지 알 수 없다. 둘을 동시에 불러 **각 기관이
+        /// 제 단계를 따로 보이는지**와 줄 길이를 잰다.
+        ///
+        /// 근무 종료는 **단정하지 않고 재기만 한다.** 끝난 뒤 이 줄이 어떻게 보여야 하는지는 아직 정해진
+        /// 바가 없다 — 모르는 것을 아는 척 단정으로 박아 두면 나중에 그 단정이 설계를 대신하게 된다.
+        /// </remarks>
+        [UnityTest, Explicit("#271 검수용. -testFilter 로 직접 지정해 돌릴 것."), Timeout(int.MaxValue)]
+        public IEnumerator 두_기관이_동시에_출동해도_각각_단계를_보인다()
+        {
+            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+
+            float bootUntil = Time.realtimeSinceStartup + Seconds("CG_AGENCY_BOOT", 150f);
+            while ((EmergencySession.Current == null || EmergencySession.Current.Incidents == null
+                    || EmergencySession.Current.Crowd == null || EmergencySession.Current.Crowd.People.Count == 0)
+                   && Time.realtimeSinceStartup < bootUntil)
+            {
+                var booting = EmergencySession.Current;
+                if (booting != null && booting.Player != null) Resume(booting);
+                yield return null;
+            }
+            var session = EmergencySession.Current;
+            Assert.That(session, Is.Not.Null, "근무가 시작되지 않았습니다.");
+            Assert.That(session.Crowd.People.Count, Is.GreaterThan(0), "승객이 없어 난동 사건을 만들 수 없습니다.");
+            Resume(session);
+            var director = session.Incidents;
+
+            // 소방이 오는 사건과 경찰이 오는 사건을 하나씩. 둘을 동시에 걸어야 줄이 둘이 된다.
+            var spot = StationWorld.OnNavMesh(session.Player.transform.position + session.Player.transform.forward * 6f, 3f);
+            var fire = new FireHazard("두기관-불", spot, "시험", "가방", .5f, session.Art, parent.transform)
+            {
+                Where = session.World.Describe(spot),
+            };
+            var person = session.Crowd.People[0];
+            var disturbance = new DisturbanceHazard("두기관-난동", person, 2)
+            {
+                Where = session.World.Describe(person.transform.position),
+            };
+            Assert.That(disturbance.Command, Is.EqualTo(Agency.Police), "난동 사건은 경찰이 지휘해야 합니다.");
+
+            foreach (var hazard in new Hazard[] { fire, disturbance })
+            {
+                Invoke(director, "Register", hazard);
+                Invoke(director, "Know", hazard, "시험");
+            }
+            yield return null;
+            foreach (var hazard in new Hazard[] { fire, disturbance }) Invoke(director, "Report", hazard);
+            yield return null;
+            yield return null;
+
+            // ① 둘 다 아직 팀이 없다 — 줄이 둘이고, 둘 다 위치가 없다고 적어야 한다.
+            var called = session.AgencyStatusText;
+            var lines = called.Split('\n');
+            Debug.Log("CG_AGENCY_TWO 요청 직후 " + lines.Length + "줄 · 가장 긴 줄 "
+                      + lines.Max(l => l.Length) + "자\n" + called);
+            Assert.That(lines.Length, Is.EqualTo(2), "기관 둘을 불렀는데 줄이 " + lines.Length + "개입니다.");
+            Assert.That(lines.All(l => l.Contains("위치 확인 전")), Is.True,
+                "팀이 생기기 전인데 위치를 적은 줄이 있습니다:\n" + called);
+
+            // ② 두 팀이 모두 올 때까지 기다리며 층을 따라 본다.
+            var floors = new Dictionary<Agency, HashSet<int>>
+            {
+                [Agency.Fire] = new HashSet<int>(),
+                [Agency.Police] = new HashSet<int>(),
+            };
+            float bothUntil = Time.realtimeSinceStartup + Seconds("CG_AGENCY_SPAWN", 300f);
+            while (Time.realtimeSinceStartup < bothUntil)
+            {
+                bool both = true;
+                foreach (var agency in floors.Keys.ToArray())
+                {
+                    var lead = Lead(director, agency);
+                    if (lead == null) { both = false; continue; }
+                    floors[agency].Add(MapOverlay.Floor(lead.transform.position));
+                }
+                if (both) break;
+                yield return null;
+            }
+            foreach (var pair in floors)
+                Assert.That(Lead(director, pair.Key), Is.Not.Null, pair.Key + " 팀이 제한 시간 안에 오지 않았습니다.");
+
+            var walking = session.AgencyStatusText;
+            var walkingLines = walking.Split('\n');
+            Debug.Log("CG_AGENCY_TWO 둘 다 도착 후 " + walkingLines.Length + "줄 · 가장 긴 줄 "
+                      + walkingLines.Max(l => l.Length) + "자\n" + walking);
+            Assert.That(walkingLines.Length, Is.EqualTo(2), "두 기관이 왔는데 줄이 " + walkingLines.Length + "개입니다.");
+            Assert.That(walkingLines.All(l => l.Contains("이동 중") || l.Contains("현장 도착")), Is.True,
+                "팀이 있는데 단계가 이동 중도 현장 도착도 아닙니다:\n" + walking);
+            Assert.That(walking, Does.Not.Contain("위치 확인 전"), "팀이 둘 다 있는데 위치를 모른다고 적었습니다.");
+
+            // ③ 무전은 흐르고 사라진다. 그 뒤에도 이 줄은 남아야 한다.
+            float hold = session.ShiftSeconds + 25f;
+            while (session.ShiftSeconds < hold)
+            {
+                foreach (var agency in floors.Keys.ToArray())
+                {
+                    var lead = Lead(director, agency);
+                    if (lead != null) floors[agency].Add(MapOverlay.Floor(lead.transform.position));
+                }
+                yield return null;
+            }
+            var later = session.AgencyStatusText;
+            Debug.Log("CG_AGENCY_TWO 25 게임초 뒤\n" + later);
+            Assert.That(later, Is.Not.Empty, "무전이 사라진 뒤 상태 줄까지 비었습니다.");
+            Assert.That(later, Does.Contain("소방대"), "25초 뒤 소방대가 줄에서 사라졌습니다.");
+            Assert.That(later, Does.Contain("철도경찰"), "25초 뒤 철도경찰이 줄에서 사라졌습니다.");
+
+            foreach (var pair in floors)
+                Debug.Log("CG_AGENCY_TWO 층 이동 · " + pair.Key + " 가 지난 층 ["
+                          + string.Join(",", pair.Value.OrderBy(f => f)) + "]");
+
+            // ④ 근무 종료 — 재기만 한다. 끝난 뒤 이 줄이 어떻게 보여야 하는지는 아직 정해진 바가 없다.
+            session.EndShift();
+            yield return null;
+            yield return null;
+            Debug.Log("CG_AGENCY_TWO 근무 종료 직후 [" + session.AgencyStatusText.Replace("\n", " / ") + "]");
+        }
+
         // ── 거들기 ──────────────────────────────────────────────────────────
 
         /// <summary>지도에 전달된 표식 좌표. 공개 조회 경로가 없어 보관함을 직접 읽는다.</summary>
