@@ -48,6 +48,8 @@ GC 는 212KB → 5,012KB 로 커졌다.
 
 ### 지금은 본 수집을 시작하지 않는다 — 이슈 #266 판단 대기
 
+> **2026-10-06 주의(관리자 검토)**: 아래 수치는 모두 `90f503c1`에서 잰 값이다. 그 뒤 #267(`84851835`)이 현장 근거 없는 설비 배치(스프링클러 3,890·소방 330·감시 591·전기 광장 95·주방 가스 220·경보 80·구획 15)를 전부 비웠다. 그래서 현재 develop의 후보 수와 비용은 **다시 재야 한다**(5단계 스모크 1회차의 `director.hazard`의 `candidates`). 다시 잰 값으로 이 판단을 갱신한다.
+
 **디렉터 판단의 절반 넘게가 예산에 막혀 버려진다.** 데스크톱 실측(2026-10-02, `90f503c1`):
 
 ```
@@ -132,34 +134,17 @@ git log origin/develop --oneline | grep -i "jev-all-emergencies\|#259" | head
 
 수집 하네스는 **이미 develop 에 있다**(PR #261 머지, `651558bd`). 따로 받을 것이 없다.
 
-### 아직 머지되지 않은 변경 하나 — 이 수집에 필요하다
+### 요약의 timeline · jev · director (#268, develop에 머지됨)
 
-요약에 `timeline` · `compositions` · `jev` · `director` 를 담는 변경은 **아직 develop 에 없다.**
-그것이 없으면 수집은 되지만 **아래를 볼 수 없다.**
+요약에 `timeline` · `compositions` · `jev` · `director`를 담는 변경은 PR #268로 develop에 들어갔다. 따로 받거나 덮어쓸 파일은 없다. `origin/develop` 위에서 수집하면 된다.
+
+이것으로 다음을 볼 수 있다.
 
 - 무엇이 언제 일어났는지(`timeline`) · 어떻게 합성됐는지(`compositions`)
 - 요청 상한에 막혔는지(`director.unanswered_rounds`)
 - 임박도 수준이 한쪽으로 쏠렸는지(`director.levels`)
 
-**이 수집의 목적 중 하나가 그 변경을 PR 로 올릴 근거를 만드는 것이다.** 그래서 적용하고 돌린다.
-
-둘 중 하나로 적용한다.
-
-```sh
-# (가) 브랜치가 원격에 올라가 있으면 - 이쪽이 깔끔하다
-git fetch origin feat/shift-timeline
-git checkout -b collect origin/develop
-git merge --no-ff origin/feat/shift-timeline
-
-# (나) 파일 사본을 받았으면 - 키트의 ShiftSampleTests.cs 로 덮어쓴다
-#      경로: Assets/ChooGuard/Tests/PlayMode/ShiftSampleTests.cs
-#      덮어쓴 뒤 git diff --stat 으로 그 파일 하나만 바뀌었는지 확인한다
-```
-
-충돌이 나면 **직접 해결하지 말고 사람에게 보고한다.**
-
-적용됐는지는 4단계 컴파일 확인 뒤 5단계 스모크 요약에서 본다 — `jev` 와 `director` 키가
-있으면 적용된 것이다. 없으면 develop 버전이 돌고 있다.
+적용됐는지는 4단계 컴파일 확인 뒤 5단계 스모크 요약에서 본다. `jev`와 `director` 키가 있으면 적용된 것이다. 없으면 오래된 develop이 돌고 있으니 `git pull`부터 한다.
 
 ---
 
@@ -392,10 +377,9 @@ python workers/learning/distil_crowd.py --logs "<DATA>/run/jev-<UTC>" --out "<DA
 - 증류 결과 (기준선 대비)
 - 실패하거나 이상했던 회차(`drained:false` · `errorLogs>0` · `jevRejected`)와 그 로그 줄
 
-### PR 근거로 쓸 값 — 이 네 개는 꼭 적어 보낸다
+### 이번 수집 결과로 남길 값 — 이 네 개는 꼭 적어 보낸다
 
-요약에 timeline·jev·director 를 담는 변경(2단계)을 PR 로 올릴 때 쓴다.
-노트북 실측과 나란히 두어, 그 변경이 실제로 쓸모 있었음을 수치로 보인다.
+요약에 timeline·jev·director를 담는 변경(#268)이 실제로 쓸모 있었는지 수치로 남긴다. 노트북 실측과 나란히 둔다.
 
 | 값 | 노트북 실측 | 데스크톱 |
 |---|---|---|
