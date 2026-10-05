@@ -34,7 +34,7 @@ namespace ChooGuard.App.Fps.Hud
         private FirstPersonResponder responder;
         private Canvas canvas;
         private Image dot, holdRing, observeRing, vignette;
-        private TMP_Text targetName, targetAction, toast, observation, clock, situation, hints;
+        private TMP_Text targetName, targetAction, toast, observation, clock, situation, hints, agencyStatus;
         private readonly List<SlotView> slots = new List<SlotView>();
         private RectTransform slotRow;
         private float toastUntil, observationUntil, danger;
@@ -100,6 +100,14 @@ namespace ChooGuard.App.Fps.Hud
             situation.fontSizeMax = 15;
             situation.overflowMode = TextOverflowModes.Ellipsis;
 
+            // 나침반(위 -16, 높이 30 + 방위 글자) 아래. 조준점과 그 아래 대상 이름·살펴본 것은 가운데 앵커라 겹치지 않는다.
+            // 기관마다 한 줄이다. 기관은 다섯(소방·경찰·구급·시설·승무)이라 다섯 줄 높이를 둔다(한글 줄 높이는 글자 크기의 약 1.45배).
+            agencyStatus = FpsUiFactory.Text(Root, font, "출동 상태", new Vector2(.5f, 1), new Vector2(0, -88), new Vector2(760, 112), 15, TextAlignmentOptions.Top);
+            agencyStatus.textWrappingMode = TextWrappingModes.NoWrap;
+            agencyStatus.overflowMode = TextOverflowModes.Ellipsis;
+            agencyStatus.color = new Color(1, 1, 1, .88f);
+            agencyStatus.enabled = false;
+
             hints = FpsUiFactory.Text(Root, font, "조작 안내", new Vector2(1, 0), new Vector2(-24, 28), new Vector2(620, 24), 14, TextAlignmentOptions.BottomRight);
             hints.color = new Color(1, 1, 1, .5f);
             RefreshHints();
@@ -119,6 +127,15 @@ namespace ChooGuard.App.Fps.Hud
             if (string.IsNullOrEmpty(message)) return;
             toast.text = message;
             toastUntil = Time.unscaledTime + seconds;
+        }
+
+        /// <summary>The called agencies' status under the compass, one line each (#271); an empty string hides it.</summary>
+        /// <remarks>나침반 아래에 둔다. 상단 가운데는 나침반이, 화면 가운데는 조준점과 대상 이름이 쓴다. 줄마다 넘치면 말줄임한다.</remarks>
+        public void SetAgencyStatus(string text)
+        {
+            if (agencyStatus == null) return;
+            agencyStatus.text = text ?? "";
+            agencyStatus.enabled = !string.IsNullOrEmpty(text);
         }
 
         public void SetStatus(string clockText, string situationText, Color colour)

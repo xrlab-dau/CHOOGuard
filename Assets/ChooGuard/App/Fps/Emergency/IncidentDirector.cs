@@ -111,7 +111,7 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<Responder> responders = new List<Responder>();
 
         private Transform cameraTransform;
-        private float nextSight;
+        private float nextSight, nextTeamMark;
 
         public void Begin(EmergencySession owner, StationWorld stationWorld, CrowdDirector people, JevClient client, EmergencyArt emergencyArt, ShiftLog shiftLog)
         {
@@ -172,6 +172,7 @@ namespace ChooGuard.App.Fps.Emergency
             UpdateConsequences();
             Compose();
             if (Time.time > nextSight) { nextSight = Time.time + .25f; LookAround(); }
+            TrackTeams();
             UpdateHud();
         }
 
@@ -676,6 +677,8 @@ namespace ChooGuard.App.Fps.Emergency
             var window = Teams.Delay(unit);
             arriveAt[agency] = Time.time + world.Range(window.x, window.y);
             log.Add(Teams.Name(unit) + " 출동 요청 (" + by + ")");
+            // 출동 상태 줄과 표식은 다음 프레임에 바로 고친다(0.25 s 주기를 기다리지 않는다).
+            nextTeamMark = 0f;
             return true;
         }
 
@@ -709,6 +712,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void SpawnTeam(Agency agency)
         {
+            nextTeamMark = 0f;
             var target = callTarget.TryGetValue(agency, out var bound) ? bound : TargetOf(agency) ?? Main;
             var team = callTeam.TryGetValue(agency, out var unit) ? unit : Teams.For(agency, target);
             var prefabs = Teams.Members(art.Crowd, team);
@@ -798,9 +802,63 @@ namespace ChooGuard.App.Fps.Emergency
         private const float VehicleRowX = -118f;
         private static readonly float[] VehicleRow = { 16, 26, 6, 36, -4, 46, -14, 56 };
 
+        // 출동 상태 줄은 이 순서로 쓴다(사전 순회 순서에 맡기면 줄이 뒤바뀌어 읽기 어렵다).
+        private static readonly Agency[] AgencyOrder = { Agency.Fire, Agency.Police, Agency.Medical, Agency.Facility, Agency.Crew };
+        private readonly System.Text.StringBuilder agencyLine = new System.Text.StringBuilder(256);
+        private string agencyStatus = "";
+
+        /// <summary>
+        /// One line per called agency with its stage now (#271): dispatched, on the way (with where its lead is), on scene. Empty when
+        /// nobody was called. Only in the guided (tour) level: in Standard and Real a called agency's whereabouts come from the radio as heard.
+        /// </summary>
+        private string AgencyStatus()
+        {
+            if (calledBy.Count == 0 || !Guided) return "";
+            agencyLine.Clear();
+            foreach (var agency in AgencyOrder)
+            {
+                if (!calledBy.ContainsKey(agency)) continue;
+                if (agencyLine.Length > 0) agencyLine.Append('\n');
+                agencyLine.Append(Responder.AgencyName(agency));
+                var lead = Lead(agency);
+                // 팀이 아직 없으면 위치를 적지 않는다. 역 밖 출발지와 이동 경로는 구현돼 있지 않아 그때의 좌표가 없다(사건 장소를 기관 위치로 적지 않는다).
+                if (lead == null) agencyLine.Append(" 출동 중 · 위치 확인 전");
+                else if (lead.OnScene) agencyLine.Append(" 현장 도착");
+                else agencyLine.Append(" 현장 이동 중 (현재 위치: ").Append(world.Describe(lead.transform.position)).Append(')');
+            }
+            return agencyLine.ToString();
+        }
+
+        private Responder Lead(Agency agency)
+        {
+            foreach (var responder in responders)
+                if (responder != null && responder.Lead && responder.Agency == agency) return responder;
+            return null;
+        }
+
+        /// <summary>
+        /// Moves each dispatched team's map marker to its lead's position now and refreshes the status line, four times a second. Markers were
+        /// set only when a team spawned and when it arrived, so the map showed a team still at the entrance while it walked 119.5 m (#271).
+        /// No marker before a team exists: there is no off-station origin or route to show.
+        /// </summary>
+        private void TrackTeams()
+        {
+            if (Time.time < nextTeamMark) return;
+            nextTeamMark = Time.time + .25f;
+            foreach (var responder in responders)
+            {
+                if (responder == null || !responder.Lead) continue;
+                session.SetMarker("agency-" + responder.Agency, responder.transform.position,
+                    MarkerKind.Responder, Teams.Name(responder.Team));
+            }
+            agencyStatus = AgencyStatus();
+        }
+
         public void OnResponderArrived(Responder responder)
         {
-            if (responder.Lead) session.SetMarker("agency-" + responder.Agency, responder.transform.position, MarkerKind.Responder, Teams.Name(responder.Team));
+            // 표식은 TrackTeams 가 계속 옮긴다 — 도착할 때 따로 걸지 않는다. 두 곳에서 같은 표식을 걸면
+            // 기준이 둘이 되어 한쪽만 고쳐질 때 조용히 어긋난다. 출동 상태 줄은 다음 프레임에 '현장 도착'으로 고친다.
+            nextTeamMark = 0f;
             // 승무원이 도착하면 끼인 문을 연다.
             if (responder.Agency == Agency.Crew) CrewArrived();
         }
@@ -915,6 +973,7 @@ namespace ChooGuard.App.Fps.Emergency
             var eye = cameraTransform.position;
             float danger = Mathf.Max(FireDanger(eye), FacilityDanger(eye), SecurityDanger(eye));
             session.Hud.SetDanger(danger);
+            session.AgencyStatusText = agencyStatus;
 
             if (!PlayerKnowsIncident || Main == null)
             {

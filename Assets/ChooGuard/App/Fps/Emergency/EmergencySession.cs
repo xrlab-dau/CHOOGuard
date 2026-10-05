@@ -63,6 +63,10 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Held-equipment slots after the radio. Owners register providers.</summary>
         public readonly List<Func<GameHud.Slot?>> SlotProviders = new List<Func<GameHud.Slot?>>();
         public string SituationText = "평시 근무 · 부산역 순회";
+
+        /// <summary>The called agencies' status lines shown under the compass (empty: hidden). <see cref="IncidentDirector"/> writes it and the
+        /// session pushes it to the HUD, like <see cref="SituationText"/>; tour level only (the radio and the notebook keep the record).</summary>
+        public string AgencyStatusText = "";
         public Color SituationColour = Color.white;
 
         /// <summary>What the route guidance shows now (<see cref="RefreshGuide"/> sets it every couple of seconds and when the setting changes).</summary>
@@ -272,6 +276,7 @@ namespace ChooGuard.App.Fps.Emergency
             float hours = ShiftStartHour + ShiftSeconds / 3600f;
             int h = Mathf.FloorToInt(hours) % 24, m = Mathf.FloorToInt((hours - Mathf.Floor(hours)) * 60);
             Hud.SetStatus(h.ToString("00") + ":" + m.ToString("00"), SituationText, SituationColour);
+            Hud.SetAgencyStatus(AgencyStatusText);
             RefreshSlots();
 
             bool paused = Player.IsPaused;
