@@ -103,7 +103,7 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly List<Responder> responders = new List<Responder>();
 
         private Transform cameraTransform;
-        private float nextSight;
+        private float nextSight, nextTeamMark;
 
         public void Begin(EmergencySession owner, StationWorld stationWorld, CrowdDirector people, JevClient client, EmergencyArt emergencyArt, ShiftLog shiftLog)
         {
@@ -157,6 +157,7 @@ namespace ChooGuard.App.Fps.Emergency
             UpdateConsequences();
             Compose();
             if (Time.time > nextSight) { nextSight = Time.time + .25f; LookAround(); }
+            TrackTeams();
             UpdateHud();
         }
 
@@ -734,9 +735,35 @@ namespace ChooGuard.App.Fps.Emergency
         private const float VehicleRowX = -118f;
         private static readonly float[] VehicleRow = { 16, 26, 6, 36, -4, 46, -14, 56 };
 
+        /// <summary>
+        /// 출동한 팀의 표식을 선두 대원의 **지금 자리**로 옮긴다.
+        /// </summary>
+        /// <remarks>
+        /// 표식은 팀을 만들 때(<see cref="SpawnTeam"/>)와 현장에 닿았을 때 두 번만 걸렸다. 그 사이 이동이
+        /// 반영되지 않아, 지도만 보는 플레이어는 기관이 역 입구에 서 있다고 믿게 된다 — 실측에서 선두
+        /// 대원이 119.5 m 떨어져 걷는 동안 표식은 0.00 m 움직였다.
+        ///
+        /// 팀이 없으면 **찍지 않는다.** 역 밖 출발지와 이동 경로는 구현돼 있지 않으므로 그때의 좌표는
+        /// 존재하지 않는다. 없는 위치를 지어내지 않는다.
+        ///
+        /// 매 프레임은 과하다. 지도를 보는 사람이 끊김을 느끼지 않을 만큼만 옮긴다.
+        /// </remarks>
+        private void TrackTeams()
+        {
+            if (Time.time < nextTeamMark) return;
+            nextTeamMark = Time.time + .25f;
+            foreach (var responder in responders)
+            {
+                if (responder == null || !responder.Lead) continue;
+                session.SetMarker("agency-" + responder.Agency, responder.transform.position,
+                    MarkerKind.Responder, Teams.Name(responder.Team));
+            }
+        }
+
         public void OnResponderArrived(Responder responder)
         {
-            if (responder.Lead) session.SetMarker("agency-" + responder.Agency, responder.transform.position, MarkerKind.Responder, Teams.Name(responder.Team));
+            // 표식은 TrackTeams 가 계속 옮긴다 — 도착할 때 따로 걸지 않는다. 두 곳에서 같은 표식을 걸면
+            // 기준이 둘이 되어 한쪽만 고쳐질 때 조용히 어긋난다.
             // 승무원이 도착하면 끼인 문을 연다.
             if (responder.Agency == Agency.Crew) CrewArrived();
         }
