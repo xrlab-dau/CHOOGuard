@@ -35,6 +35,7 @@ namespace ChooGuard.Tests.PlayMode
     ///   CG_SHIFT_ZONES     순찰을 허용할 구역 id, 쉼표 구분 (기본: hall2f,main2f,eastexit)
     ///   CG_SHIFT_REQUIRE · CG_SHIFT_SEEK · CG_SHIFT_ATTEMPTS   특정 사건이 난 회차 고르기 (본문 주석 참고)
     ///   CG_SHIFT_FILM · CG_SHIFT_FILM_EVERY_MS   근무를 그림으로 남기기 (기본: 끔)
+    ///   CG_SHIFT_TIMELINE  요약에 인게임 시간순 사건 기록을 얹기 (1/true, 기본: 끔)
     ///
     /// **시간 압축 경고.** 2026-09-30 에 8배속으로 재 보니 요청 156건 중 155건이 군중 판단이었고
     /// 사건 합성은 25번 중 1번만 JEV 가 정했다(당시에는 나머지를 로컬 규칙이 대신했다 - 지금은
@@ -719,6 +720,11 @@ namespace ChooGuard.Tests.PlayMode
             var film = Environment.GetEnvironmentVariable("CG_SHIFT_FILM");
             float filmEvery = Mathf.Max(.05f, Number("CG_SHIFT_FILM_EVERY_MS", 500) / 1000f);
             var zones = Environment.GetEnvironmentVariable("CG_SHIFT_ZONES");
+            // 요약에 타임라인·합성 기록을 얹을지. 끄는 것이 기본이다 - 회차마다 줄 수가 달라
+            // 요약을 기계로 읽는 쪽의 가정을 깬다.
+            var timelineFlag = (Environment.GetEnvironmentVariable("CG_SHIFT_TIMELINE") ?? "").Trim();
+            bool withTimeline = timelineFlag == "1"
+                || timelineFlag.Equals("true", StringComparison.OrdinalIgnoreCase);
             if (string.IsNullOrEmpty(zones)) zones = "hall2f,main2f,eastexit";
             // 특정 사건이 난 회차만 모으고 싶을 때. Hazard.Label 에 이 문자열이 들어가면 채택한다.
             // 예: CG_SHIFT_REQUIRE=화재
@@ -925,6 +931,41 @@ namespace ChooGuard.Tests.PlayMode
                         ["errorLogs"] = errorLogs,
                         ["staff"] = staff.Summary(),
                     };
+                    // 인게임 시간순 사건 기록. 만들지 않고 ShiftLog 가 이미 담은 것을 얹는다 -
+                    // timeline 은 t(초)와 clock("00:12")을 함께, compositions 는 사건마다
+                    // kind·origin·magnitude·candidates·detail 을 담는다.
+                    //
+                    // 기본으로 켜지 않는 이유는 용량이 아니라 **양식 안정성**이다. 타임라인은
+                    // 회차마다 줄 수가 달라 요약을 기계로 읽는 쪽의 가정을 깬다.
+                    if (session.Log != null)
+                    {
+                        var report = session.Log.ToJson("수집 종료");
+
+                        // jev 사용량과 director 기록은 **항상** 담는다. 모양이 고정이고(회차마다
+                        // 줄 수가 변하지 않는다), 이 둘만이 수집이 조용히 비어 가는 것을 드러낸다.
+                        //
+                        // 예산 상한에 걸려 거부된 요청은 JSONL 에 줄을 남기지 않는다 - JevClient 가
+                        // CanSend 가 false 면 done(null) 로 끝낸다. 그래서 jevLogLines·answeredLines
+                        // 만 보면 '요청이 적었다' 와 '상한에 막혔다' 를 구분할 수 없다.
+                        // director.unanswered_rounds 와 jev 의 시간당 비용(peak_dollars_per_hour)이 그 신호다.
+                        // 상한은 분당 요청과 시간당 비용 둘이고, 데스크톱 실측(#266)에서 먼저 찬 것은 비용이었다.
+                        //
+                        // director 에는 임박도 수준 분포와 디렉터가 한 프레임에 쓴 시간도 있다.
+                        // 수준이 전부 최저면 배울 것이 없고, 프레임 시간은 게임이 실시간을
+                        // 못 따라가는 원인을 가리킨다(같은 실측에서 게임 589초 / 실시간 1800초).
+                        line["jev"] = report["jev"];
+                        line["director"] = report["director"];
+
+                        // 타임라인·합성 기록은 선택이다. 회차마다 줄 수가 달라 요약을 기계로
+                        // 읽는 쪽의 가정을 깬다.
+                        if (withTimeline)
+                        {
+                            line["timeline"] = report["timeline"];
+                            line["compositions"] = report["compositions"];
+                            var entries = report["timeline"] as JArray;
+                            Debug.Log("CG_TIMELINE shift=" + shift + " " + (entries == null ? 0 : entries.Count) + "줄");
+                        }
+                    }
                     if (copyRelative != null) line["jsonl"] = Path.Combine("jev-" + stamp, copyRelative).Replace('\\', '/');
                     Debug.Log("CG_SHIFT " + line.ToString(Formatting.None));
                     shifts.Add(line);
