@@ -187,7 +187,7 @@ namespace ChooGuard.App.Fps.Emergency
                 flat.y = 0;
                 if (flat.magnitude > 16f || Vector3.Angle(forward, to) > 55f) continue;
                 shutterSeen.Add(shutter);
-                session.Hud.Toast(shutter.Triggered
+                session.Hud.Toast(!Guided ? "방화셔터가 내려와 있습니다" : shutter.Triggered
                     ? "방화셔터가 내려와 있습니다 · 감지기 신호가 남아 있어 수신기 복구 뒤 조작함의 복구 스위치(R)로 올립니다"
                     : "방화셔터가 내려와 있습니다 · 조작함에서 정지하거나 복구 스위치(R)로 올릴 수 있습니다", 6f);
             }

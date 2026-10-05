@@ -255,7 +255,8 @@ namespace ChooGuard.App.Fps.Emergency
                 var behind = escalator.Behind(rider.Body)?.GetComponent<Passenger>();
                 if (behind != null) { escalator.Fall(behind.Body); behind.Injure("앞사람과 함께 넘어짐"); }
             }
-            if (magnitude > stopAbove) { escalator.Stop("비상정지 버튼(승객)"); log.Add(escalator.Label + " 비상 정지"); }
+            // 곁의 사람이 세우려면 그 에스컬레이터 승강장에 비상정지 버튼이 있어야 한다(관찰된 버튼만 트윈에 있다).
+            if (magnitude > stopAbove && escalator.HasStopButton) { escalator.Stop("비상정지 버튼(승객)"); log.Add(escalator.Label + " 비상 정지"); }
             Register(casualty);
             log.Add(label + " · " + escalator.Label);
         }
@@ -277,7 +278,7 @@ namespace ChooGuard.App.Fps.Emergency
                 var next = onSteps ? escalator.Behind(below.Body)?.GetComponent<Passenger>() : NearFoot(escalator, owner, below);
                 if (next != null && !next.Hurt) { if (onSteps) escalator.Fall(next.Body); next.Injure("앞사람과 함께 넘어짐"); }
             }
-            if (magnitude > .8f) { escalator.Stop("비상정지 버튼(승객)"); log.Add(escalator.Label + " 비상 정지"); }
+            if (magnitude > .8f && escalator.HasStopButton) { escalator.Stop("비상정지 버튼(승객)"); log.Add(escalator.Label + " 비상 정지"); }
             Register(casualty);
         }
 
@@ -326,7 +327,8 @@ namespace ChooGuard.App.Fps.Emergency
                 if (c.Escalator != null && c.Escalator.Running)
                 {
                     var escalator = c.Escalator;
-                    yield return new Transition { Key = "estop_" + escalator.Entry.id, Kind = "escalator_stopped", Description = "A bystander presses the emergency stop button of the " + escalator.Entry.label, Apply = _ => { escalator.Stop("비상정지 버튼(승객)"); log.Add(escalator.Label + " 비상 정지(승객이 버튼을 누름)"); } };
+                    if (escalator.HasStopButton)
+                        yield return new Transition { Key = "estop_" + escalator.Entry.id, Kind = "escalator_stopped", Description = "A bystander presses the emergency stop button of the " + escalator.Entry.label, Apply = _ => { escalator.Stop("비상정지 버튼(승객)"); log.Add(escalator.Label + " 비상 정지(승객이 버튼을 누름)"); } };
                     var behind = escalator.Behind(c.Person.Body)?.GetComponent<Passenger>();
                     if (behind != null && !behind.Hurt && Ready("pileup"))
                         yield return new Transition { Key = "pileup_" + behind.Number, Kind = "pileup", Description = "The moving steps carry " + Profile(behind) + " into the fallen person and they fall too", Apply = _ => { escalator.Fall(behind.Body); behind.Injure("에스컬레이터에서 앞사람에 걸려 넘어짐"); } };
@@ -386,8 +388,12 @@ namespace ChooGuard.App.Fps.Emergency
             return treated.Contains(best.Person) ? "AED 를 구급대원 곁에 두었습니다" : "AED 를 환자 곁에 두었습니다 · 구급대에 인계합니다";
         }
 
-        /// <summary>Nearest untreated injured person; <paramref name="inTrain"/> false skips people still inside a KTX car.</summary>
-        public Passenger NextPatient(Vector3 from, bool inTrain = true)
+        /// <summary>
+        /// Nearest untreated injured person; <paramref name="inTrain"/> false skips people still inside a KTX car. <paramref name="knownOnly"/> (a crew sent by a
+        /// request) keeps to people the staff member has found and to those the crew can see where it stands (12 m), so a crew never walks off to someone
+        /// nobody has reported.
+        /// </summary>
+        public Passenger NextPatient(Vector3 from, bool inTrain = true, bool knownOnly = false)
         {
             Passenger best = null;
             float bestDistance = float.PositiveInfinity;
@@ -398,10 +404,14 @@ namespace ChooGuard.App.Fps.Emergency
                 // 선로 위 사람은 구조대가 승강장으로 올린 뒤에 처치한다.
                 if (OnTrack(person)) continue;
                 float d = Vector3.Distance(from, person.transform.position);
+                if (knownOnly && d > 12f && !injuredKnown.Contains(person)) continue;
                 if (d < bestDistance) { bestDistance = d; best = person; }
             }
             return best;
         }
+
+        /// <summary>The agency was sent by a request that named its target (표준·실전): its people keep to what the staff member reported.</summary>
+        public bool Requested(Agency agency) => callTarget.ContainsKey(agency);
 
         public void OnTreated(Passenger person)
         {

@@ -287,7 +287,7 @@ namespace ChooGuard.App.Fps.Emergency
                 else if (live && fire.Feed == null && fire.Restore())
                 {
                     log.Add("불이 다시 먹이를 얻음 · 차단했던 전원을 다시 넣음 · " + fire.Where);
-                    Office("역무실입니다. 점검도 끝나기 전에 전원을 다시 넣으면 불이 되살아납니다! 차단기를 내려 주십시오.");
+                    if (Guided) Office("역무실입니다. 점검도 끝나기 전에 전원을 다시 넣으면 불이 되살아납니다! 차단기를 내려 주십시오.");
                 }
             }
             syncingFeeds = false;
@@ -309,10 +309,10 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         private string BoardBlocked(ElectricNetwork.Board board) =>
-            fires.Exists(f => f.Installation == board.Equipment && !f.Extinguished && f.Intensity > .3f) ? "불꽃과 연기가 새어 나와 열 수 없습니다 · 아크 위험, 소화기로 먼저 끄십시오" : null;
+            fires.Exists(f => f.Installation == board.Equipment && !f.Extinguished && f.Intensity > .3f) ? (Guided ? "불꽃과 연기가 새어 나와 열 수 없습니다 · 아크 위험, 소화기로 먼저 끄십시오" : "불꽃과 연기가 새어 나와 열 수 없습니다") : null;
 
         private string LoadBlocked(StationEquipment machine) =>
-            fires.Exists(f => f.Installation == machine && !f.Extinguished && f.Intensity > .45f) ? "불길이 커서 가까이 갈 수 없습니다 · 분전반에서 차단기를 내리십시오" : null;
+            fires.Exists(f => f.Installation == machine && !f.Extinguished && f.Intensity > .45f) ? (Guided ? "불길이 커서 가까이 갈 수 없습니다 · 분전반에서 차단기를 내리십시오" : "불길이 커서 가까이 갈 수 없습니다") : null;
 
         /// <summary>Water reached live equipment: the stream conducts back to the hand that holds the nozzle.</summary>
         private void OnWetWhileLive(FireHazard fire)
@@ -320,7 +320,7 @@ namespace ChooGuard.App.Fps.Emergency
             session.Hud.Toast("감전! 전기가 통하는 " + fire.Subject + "에 물을 뿌렸습니다 · 관창을 놓쳤습니다", 5f);
             session.Hands.Drop();
             log.Add("감전 위험 · 통전된 " + fire.Subject + "에 방수해 관창을 놓침 · " + fire.Where);
-            Office("역무실입니다. 전기가 살아 있는 곳에 물을 쓰면 안 됩니다! 전원 차단이 먼저입니다.");
+            if (Guided) Office("역무실입니다. 전기가 살아 있는 곳에 물을 쓰면 안 됩니다! 전원 차단이 먼저입니다.");
         }
 
         // ── 전개 ──
@@ -456,7 +456,7 @@ namespace ChooGuard.App.Fps.Emergency
                 }
                 if (!fire.Electric) continue;
                 // 불씨까지만 죽고 더는 안 죽으면 전원이 살아 있는 것이다: 역무실이 한 번 알려 준다.
-                if (Stage == Phase.Incident && fire.Feed != null && fire.Intensity <= FireHazard.LiveEmbers + .01f && fire.SuppressedSeconds > 0 && embersHinted.Add(fire))
+                if (Guided && Stage == Phase.Incident && fire.Feed != null && fire.Intensity <= FireHazard.LiveEmbers + .01f && fire.SuppressedSeconds > 0 && embersHinted.Add(fire))
                     Office("역무실입니다. 불씨가 계속 살아나면 전기가 살아 있는 겁니다. 분말로 끄는 것보다 차단기를 내리거나 전원 코드를 뽑는 게 먼저입니다.");
             }
             // 소방대는 통전 화재의 전원 차단을 요청한다: 역무원이 아직 전기 담당을 부르지 않았어도 온다.
@@ -464,7 +464,9 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 brigadeAskedForCut = true;
                 Office("역무실입니다. 소방대가 전원 차단을 요청했습니다. 전기 담당을 현장으로 보내겠습니다.");
-                Call(Agency.Facility, "소방대 전원 차단 요청");
+                // 표준·실전: 소방대가 말한 그 불로 전기 담당이 간다.
+                var live = fires.Find(f => f.Electric && f.Feed != null && !f.Extinguished);
+                Call(Agency.Facility, "소방대 전원 차단 요청", Guided ? null : live, Guided ? (Team?)null : Team.Electric);
             }
         }
 
@@ -489,7 +491,7 @@ namespace ChooGuard.App.Fps.Emergency
                     log.Add("분전반 소손 · " + board.Name + " 이(가) 붙은 설비가 모두 꺼짐");
                 }
             }
-            if (Electrical(installation)) officeLines.Add((Time.time + 6f, "역무실입니다. 전기 담당이 점검하기 전에는 그 차단기를 다시 올리지 마십시오."));
+            if (Guided && Electrical(installation)) officeLines.Add((Time.time + 6f, "역무실입니다. 전기 담당이 점검하기 전에는 그 차단기를 다시 올리지 마십시오."));
         }
 
         /// <summary>The bin (or recycling station) right beside a burning bin that could catch from it.</summary>

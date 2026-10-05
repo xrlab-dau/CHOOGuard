@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ChooGuard.App.Fps.Hud
 {
-    /// <summary>Hold-Tab situation board (PUBG inventory position): what is known, what I did, who is coming.</summary>
+    /// <summary>Hold-Tab board (PUBG inventory position): the guided shift's situation board, or the notebook in 표준·실전 — three columns under a title.</summary>
     public sealed class BoardOverlay : MonoBehaviour
     {
         public sealed class Column
@@ -16,6 +16,7 @@ namespace ChooGuard.App.Fps.Hud
 
         private Canvas canvas;
         private TMP_Text[] titles, bodies;
+        private TMP_Text heading;
         private readonly StringBuilder builder = new StringBuilder(512);
 
         public bool Visible => canvas.enabled;
@@ -30,6 +31,7 @@ namespace ChooGuard.App.Fps.Hud
             FpsUiFactory.Stretch(shade.rectTransform);
             var heading = FpsUiFactory.Text(root, font, "제목", new Vector2(.5f, 1), new Vector2(0, -70), new Vector2(1180, 40), 26, TextAlignmentOptions.Left);
             heading.text = "근무 상황판";
+            board.heading = heading;
             heading.fontStyle = FontStyles.Bold;
             board.titles = new TMP_Text[3];
             board.bodies = new TMP_Text[3];
@@ -47,8 +49,9 @@ namespace ChooGuard.App.Fps.Hud
             return board;
         }
 
-        public void Show(IReadOnlyList<Column> columns)
+        public void Show(IReadOnlyList<Column> columns, string title)
         {
+            heading.text = title;
             for (int i = 0; i < titles.Length; i++)
             {
                 if (i >= columns.Count) { titles[i].text = bodies[i].text = ""; continue; }

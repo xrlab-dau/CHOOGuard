@@ -5,7 +5,10 @@ using UnityEngine.UI;
 
 namespace ChooGuard.App.Fps.Hud
 {
-    /// <summary>Hold Q, move the mouse toward a message, release to send (PUBG radio wheel). No cursor unlock.</summary>
+    /// <summary>
+    /// Hold Q, move the mouse toward a message, release to send (PUBG radio wheel). No cursor unlock. The session can show
+    /// a ring of groups first and a group's messages after (<see cref="Show(IReadOnlyList{string}, string)"/> with its own centre text).
+    /// </summary>
     public sealed class RadioWheel : MonoBehaviour
     {
         private const float Radius = 190, DeadZone = 30;
@@ -34,7 +37,9 @@ namespace ChooGuard.App.Fps.Hud
             return wheel;
         }
 
-        public void Show(IReadOnlyList<string> options)
+        public void Show(IReadOnlyList<string> options) => Show(options, "무전\n<size=12>방향을 고른 뒤 떼기</size>");
+
+        public void Show(IReadOnlyList<string> options, string centreText)
         {
             count = options.Count;
             while (items.Count < count)
@@ -56,7 +61,7 @@ namespace ChooGuard.App.Fps.Hud
             }
             pointer = Vector2.zero;
             Selected = -1;
-            centre.text = "무전\n<size=12>방향을 고른 뒤 떼기</size>";
+            centre.text = centreText;
             canvas.enabled = true;
         }
 

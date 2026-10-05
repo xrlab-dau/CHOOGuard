@@ -134,7 +134,7 @@ namespace ChooGuard.App.Fps.Emergency
             Office("역무실입니다. 수신기 " + valve.ZoneName + " 스프링클러 유수검지장치 동작, " + cause.Where + "입니다. 현장 확인 바랍니다.");
             Know(cause, "스프링클러 동작 무전");
             crowd.Alert(cause.Position, 400, cause, null, "the fire alarm bell is ringing across the station");
-            officeFollowUp = Time.time + 40;
+            ScheduleFollowUp(40, cause, Agency.Fire);
         }
 
         /// <summary>The facility team (or the fire brigade) shuts the zone's control valve: no water, the tamper switch shows the zone out of service.</summary>
