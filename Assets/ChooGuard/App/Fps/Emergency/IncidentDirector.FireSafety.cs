@@ -127,7 +127,7 @@ namespace ChooGuard.App.Fps.Emergency
             Office("역무실입니다. 수신기 " + first.ZoneName + " 화재감지기 동작, " + hazard.Where + "입니다. 현장 확인 바랍니다.");
             Know(hazard, "화재감지기 동작 무전");
             crowd.Alert(hazard.Position, 400, hazard, null, "the fire alarm bell is ringing across the station");
-            if (followUp > 0) officeFollowUp = Time.time + followUp;
+            if (followUp > 0) ScheduleFollowUp(followUp, hazard, Agency.Fire);
         }
 
         private void TripDetector(FireHazard fire, DetectorPoint detector)
@@ -205,7 +205,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (flat.magnitude > 8f || Mathf.Abs(eye.y - detector.FloorPoint.y) > 2.5f || Vector3.Angle(forward, toDetector) > 60f) return;
             falseAlarm.Check();
             log.Add("역무원이 동작한 감지기 확인 · 동작표시등만 켜져 있고 불이나 연기 없음 · " + falseAlarm.Where);
-            session.Hud.Toast("감지기 동작표시등만 켜져 있고 불이나 연기가 없습니다 · 비화재보로 보입니다 · 역무실에 보고하세요", 6f);
+            session.Hud.Toast(Guided ? "감지기 동작표시등만 켜져 있고 불이나 연기가 없습니다 · 비화재보로 보입니다 · 역무실에 보고하세요" : "감지기 동작표시등만 켜져 있고 주변에 불이나 연기가 없습니다", 6f);
         }
 
         partial void FireSafetyResolved(Hazard hazard)

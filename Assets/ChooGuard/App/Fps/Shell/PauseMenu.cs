@@ -58,10 +58,15 @@ namespace ChooGuard.App.Fps.Shell
             {
                 BriefingDone = true;
                 heading.text = "일시정지";
-                body.text = "WASD 이동 · 마우스 시점 · Shift 빠르게 · E 상호작용 · R 역무원 열쇠(운전 모드·재가동)\n좌클릭 손에 든 장비 사용 · G 내려놓기\nTab 상황판 · M 역사 안내도 · Q 무전(누른 채 선택)";
+                body.text = ControlsText();
                 continueLabel.text = "계속하기";
             }
         }
+
+        /// <summary>The controls for the current guidance level (견학 keeps one key press per action).</summary>
+        private static string ControlsText() => GameSettings.Guided
+            ? "WASD 이동 · 마우스 시점 · Shift 빠르게 · E 상호작용 · R 역무원 열쇠(운전 모드·재가동)\n좌클릭 손에 든 장비 사용 · G 내려놓기\nTab 상황판 · M 역사 안내도 · Q 무전(누른 채 선택)"
+            : "WASD 이동 · 마우스 시점 · Shift 빠르게(무거운 장비를 들면 걷기만) · E 상호작용 · E 누른 채 마우스·휠로 손잡이 조작 · R 열쇠\n우클릭 누른 채 살펴보기 · 휠 클릭 내 표시 · 좌클릭 손에 든 장비 사용 · 휠 노즐(관창) · G 내려놓기\nTab 수첩 · M 역사 안내도 · Q 무전(누른 채 좌클릭으로 묶음 열기, 우클릭 뒤로, 떼면 보냄)";
 
         private void OnSettings()
         {
@@ -76,7 +81,11 @@ namespace ChooGuard.App.Fps.Shell
             {
                 canvas.enabled = show;
                 if (!show) { settings.Hide(); menu.gameObject.SetActive(true); }
-                else ContinueButton.Select();
+                else
+                {
+                    if (BriefingDone) body.text = ControlsText();
+                    ContinueButton.Select();
+                }
             }
             if (show) GameSettings.Apply(responder);
         }

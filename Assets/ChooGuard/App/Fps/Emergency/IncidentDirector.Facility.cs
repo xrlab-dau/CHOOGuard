@@ -129,7 +129,7 @@ namespace ChooGuard.App.Fps.Emergency
             Register(quake);
             log.Add("지진 · 역사 전체가 흔들리기 시작 (세기 " + quake.Strength.ToString("0.0") + ")");
             Know(quake, "흔들림을 직접 느낌");
-            officeFollowUp = Time.time + 150;
+            ScheduleFollowUp(150, quake, Agency.Facility);
             // 흔들리는 동안 열차는 출발하지 않는다.
             if (Train != null) Train.Holds.Add("지진");
         }
@@ -262,9 +262,9 @@ namespace ChooGuard.App.Fps.Emergency
             Register(outage);
             StationLighting.Dim(root, world.Points.Zones);
             if (outage.StopsLifts) StopLifts("정전");
-            Office(level == 0 ? "역무실입니다. 방금 순간 정전이 있었습니다. 설비에 이상 없는지 확인 바랍니다." : "역무실입니다. 정전 발생했습니다. 비상조명 켜졌습니다. 엘리베이터 갇힘과 승객 안전 확인 바랍니다.");
+            Office(level == 0 ? "역무실입니다. 방금 순간 정전이 있었습니다." + (Guided ? " 설비에 이상 없는지 확인 바랍니다." : "") : "역무실입니다. 정전 발생했습니다. 비상조명 켜졌습니다." + (Guided ? " 엘리베이터 갇힘과 승객 안전 확인 바랍니다." : ""));
             Know(outage, "정전을 직접 겪음");
-            officeFollowUp = Time.time + 90;
+            ScheduleFollowUp(90, outage, Agency.Facility);
             log.Add("정전 · " + outage.Visible);
         }
 
@@ -380,6 +380,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void OfficeFollowUp()
         {
+            if (!Guided) { OfficeFollowUpUnanswered(); return; }
             if (fires.Exists(f => !f.Extinguished) && !calledBy.ContainsKey(Agency.Fire))
             {
                 Call(Agency.Fire, "역무실(감지기 동작 확인)");
@@ -410,7 +411,7 @@ namespace ChooGuard.App.Fps.Emergency
         private bool FacilityScene(out Vector3 scene)
         {
             scene = default;
-            var target = TargetOf(Agency.Facility);
+            var target = TargetFor(Agency.Facility);
             if (target is EarthquakeHazard) { if (fallen.Count == 0) return false; scene = fallen[0].Impact; return true; }
             if (target is CollapseHazard casualty && casualty.Escalator != null) { scene = casualty.Escalator.Middle; return true; }
             return false;
@@ -441,7 +442,7 @@ namespace ChooGuard.App.Fps.Emergency
                 case FalseAlarmHazard alarmHazard when alarmHazard.Cleared:
                     ResetReceiver("소방대 비화재 확인");
                     // 감지기 점검과 경보 종료는 시설 담당이 한다: 역무원 보고 없이 소방대가 확인한 경우에도 역무실이 부른다.
-                    if (!calledBy.ContainsKey(Agency.Facility)) Call(Agency.Facility, "역무실(비화재 확인 뒤 감지기 점검)");
+                    if (!calledBy.ContainsKey(Agency.Facility)) Call(Agency.Facility, "역무실(비화재 확인 뒤 감지기 점검)", Guided ? null : alarmHazard, Guided ? (Team?)null : Team.Facility);
                     break;
                 case ElevatorTrapHazard trap when trap.Level >= 4:
                 {

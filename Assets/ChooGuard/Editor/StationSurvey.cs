@@ -16,21 +16,27 @@ namespace ChooGuard.Editor
         public const float Ground = 0f, Concourse = 7.02f, Upper = 12.2f;
         public const string KtxPath = "FPSWorld/KTXSource";
 
-        // 트윈 시험 bake(2026-09-26)의 경사 군집에서 잰 우물 계단참(높은 쪽 = 2층, 낮은 쪽 = 승강장).
-        // 남측 게이트 우물은 타는 방향(내려감), 북측 데크 우물은 나가는 방향(올라감) — JEV 008 판정 0.95.
-        private static readonly (string id, string platform, Vector2 high, Vector2 low, bool down)[] Wells =
+        // 우물 계단참(높은 쪽 = 2층, 낮은 쪽 = 승강장): 트윈 시험 bake(2026-09-26)와 공식 모델 경사 스캔(2026-10-05)의 경사 군집에서 잰 값.
+        // where: 이름에 붙는 자리(가운데 = 맞이방 북쪽 가장자리 우물). down: 우물 안 에스컬레이터 차선마다 내려가는지, 올라가는 사람의 왼쪽 차선부터.
+        // 남측 게이트 우물은 내려감, 북측 데크 우물은 올라감(JEV 008, 3·4 북측 데크 우물이 올라감은 IkIbODpkvhc 174~505 s로 확인).
+        // 가운데 5·6 쌍은 동쪽(올라가는 사람의 오른쪽) 차선이 내려감(zkOH0nK4nIY 153~175 s), 서쪽은 올라감 [INFERENCE: 한 쌍은 오르내림 하나씩].
+        // 가운데 8·9 쌍의 방향은 5·6과 같다고 본다 [INFERENCE: 같은 구조·같은 시기]. 가운데 10·11은 공식 모델에 차선 하나와 계단뿐이다
+        // (네이버 실내지도는 한 쌍, 현장 확인 필요). 근거: .planning/2026-10-05-escalator-stop-survey/.
+        private static readonly (string id, string platform, string where, Vector2 high, Vector2 low, bool[] down)[] Wells =
         {
-            ("well-n-1", "1", new Vector2(39.0f, 66.8f), new Vector2(45.5f, 82.2f), false),
-            ("well-n-34", "3·4", new Vector2(62.9f, 69.9f), new Vector2(68.9f, 86.1f), false),
-            ("well-n-56", "5·6", new Vector2(82.2f, 73.2f), new Vector2(88.2f, 89.4f), false),
-            ("well-n-89", "8·9", new Vector2(107.3f, 77.4f), new Vector2(113.3f, 93.8f), false),
-            ("well-n-1011", "10·11", new Vector2(126.5f, 80.7f), new Vector2(132.6f, 97.1f), false),
-            ("well-m-1011", "10·11", new Vector2(113.6f, 47.6f), new Vector2(107.7f, 31.8f), false),
-            ("well-s-1", "1", new Vector2(1.5f, -29.9f), new Vector2(7.1f, -14.9f), true),
-            ("well-s-34", "3·4", new Vector2(20.9f, -37.4f), new Vector2(26.0f, -21.8f), true),
-            ("well-s-56", "5·6", new Vector2(36.8f, -43.2f), new Vector2(42.6f, -27.0f), true),
-            ("well-s-89", "8·9", new Vector2(57.3f, -51.0f), new Vector2(62.7f, -35.0f), true),
-            ("well-s-1011", "10·11", new Vector2(71.0f, -63.0f), new Vector2(76.8f, -47.3f), true),
+            ("well-n-1", "1", "", new Vector2(39.0f, 66.8f), new Vector2(45.5f, 82.2f), new[] { false }),
+            ("well-n-34", "3·4", "", new Vector2(62.9f, 69.9f), new Vector2(68.9f, 86.1f), new[] { false }),
+            ("well-n-56", "5·6", "", new Vector2(82.2f, 73.2f), new Vector2(88.2f, 89.4f), new[] { false }),
+            ("well-n-89", "8·9", "", new Vector2(107.3f, 77.4f), new Vector2(113.3f, 93.8f), new[] { false }),
+            ("well-n-1011", "10·11", "", new Vector2(126.5f, 80.7f), new Vector2(132.6f, 97.1f), new[] { false }),
+            ("well-m-56", "5·6", "가운데", new Vector2(70.6f, 46.0f), new Vector2(66.2f, 34.3f), new[] { false, true }),
+            ("well-m-89", "8·9", "가운데", new Vector2(95.7f, 50.3f), new Vector2(91.5f, 39.2f), new[] { false, true }),
+            ("well-m-1011", "10·11", "가운데", new Vector2(113.6f, 47.6f), new Vector2(107.7f, 31.8f), new[] { false }),
+            ("well-s-1", "1", "", new Vector2(1.5f, -29.9f), new Vector2(7.1f, -14.9f), new[] { true }),
+            ("well-s-34", "3·4", "", new Vector2(20.9f, -37.4f), new Vector2(26.0f, -21.8f), new[] { true }),
+            ("well-s-56", "5·6", "", new Vector2(36.8f, -43.2f), new Vector2(42.6f, -27.0f), new[] { true }),
+            ("well-s-89", "8·9", "", new Vector2(57.3f, -51.0f), new Vector2(62.7f, -35.0f), new[] { true }),
+            ("well-s-1011", "10·11", "", new Vector2(71.0f, -63.0f), new Vector2(76.8f, -47.3f), new[] { true }),
         };
 
         // 승강장 띠: KTX 옆 5·6 타는 곳 한 점(69.2, 0, 32.3)을 기준으로 선로 직각 방향 거리(m)와 폭. 선로 횡단 레이 측정값.
@@ -102,25 +108,59 @@ namespace ChooGuard.Editor
         public static List<Lane> Escalators(List<string> log)
         {
             var lanes = new List<Lane>();
-            foreach (var well in Wells)
-            {
-                var lane = WellLane(well.id, well.platform, well.high, well.low, well.down, log);
-                if (lane != null) lanes.Add(lane);
-            }
+            foreach (var well in Wells) lanes.AddRange(WellLanes(well.id, well.platform, well.where, well.high, well.low, well.down, log));
             lanes.AddRange(NamedEscalators(log));
             lanes.AddRange(KitEscalators(log));
             return lanes;
         }
 
-        private static Lane WellLane(string id, string platform, Vector2 high2, Vector2 low2, bool down, List<string> log)
+        /// <summary>Highest surface at (x, z) between <paramref name="below"/> and <paramref name="above"/> (handrail tops included), ignoring the train. NaN when none.</summary>
+        private static float Top(Vector3 xz, float below, float above)
+        {
+            var hits = Physics.RaycastAll(new Vector3(xz.x, above, xz.z), Vector3.down, above - below, ~0, QueryTriggerInteraction.Ignore);
+            float best = float.NaN;
+            foreach (var hit in hits)
+            {
+                if (hit.collider.transform.IsChildOf(Ktx)) continue;
+                if (float.IsNaN(best) || hit.point.y > best) best = hit.point.y;
+            }
+            return best;
+        }
+
+        /// <summary>
+        /// Hits seen at about the same place in at least <paramref name="sections"/> cross-sections, left to right: each with its
+        /// side offset fitted as a straight line over the distance from the high end (a lane need not be parallel to the seed line).
+        /// </summary>
+        private static List<(float a, float b, float width)> Clusters(List<(float centre, float width, float t)> hits, int sections)
+        {
+            var result = new List<(float a, float b, float width)>();
+            var used = new HashSet<int>();
+            var order = Enumerable.Range(0, hits.Count).OrderBy(i => hits[i].centre).ToList();
+            foreach (int seed in order)
+            {
+                if (used.Contains(seed)) continue;
+                var group = order.Where(i => !used.Contains(i) && Mathf.Abs(hits[i].centre - hits[seed].centre) < .45f).ToList();
+                if (group.Select(i => hits[i].t).Distinct().Count() < sections) continue;
+                foreach (int i in group) used.Add(i);
+                // 옆 거리 = a + b·t (최소제곱).
+                float n = group.Count, mt = group.Average(i => hits[i].t), mc = group.Average(i => hits[i].centre);
+                float stt = group.Sum(i => (hits[i].t - mt) * (hits[i].t - mt)), stc = group.Sum(i => (hits[i].t - mt) * (hits[i].centre - mc));
+                float b = stt > 1e-4f ? stc / stt : 0f;
+                result.Add((mc - b * mt, b, group.Average(i => hits[i].width)));
+            }
+            return result;
+        }
+
+        private static IEnumerable<Lane> WellLanes(string id, string platform, string where, Vector2 high2, Vector2 low2, bool[] down, List<string> log)
         {
             var high = new Vector3(high2.x, Concourse, high2.y);
             var low = new Vector3(low2.x, Ground, low2.y);
             var up = high - low; up.y = 0;
             float length = up.magnitude;
             up /= length;
+            // 올라가는 사람의 오른쪽.
             var side = new Vector3(up.z, 0, -up.x);
-            // 씨앗 선(계단 쪽)을 위에서 아래로 따라 내려가며 표면 높이 윤곽을 잡는다.
+            // 씨앗 선을 위에서 아래로 따라 내려가며 표면 높이 윤곽을 잡는다.
             var profile = new List<(float t, float y)>();
             float expected = Concourse;
             for (float t = 0; t <= length + .01f; t += .5f)
@@ -131,102 +171,115 @@ namespace ChooGuard.Editor
                 profile.Add((t, y));
                 expected = y;
             }
-            if (profile.Count < 6) { log.Add(id + ": 윤곽 없음"); return null; }
+            if (profile.Count < 6) { log.Add(id + ": 윤곽 없음"); yield break; }
             float HeightAt(float t)
             {
                 var near = profile.OrderBy(p => Mathf.Abs(p.t - t)).First();
                 return near.y;
             }
-            // 경사 중간 세 곳에서 가로로 훑어 좁은 차선(난간 사이 약 1 m)을 찾는다.
-            var candidates = new List<(float centre, float width, float fraction)>();
-            var stairs = new List<(float centre, float width)>();
-            float width = 0;
-            foreach (float fraction in new[] { .4f, .5f, .6f })
+            // 경사 단면 아홉 곳을 5 cm 간격으로 가로질러, 평평한 면(이웃 표본 차 5 cm 미만)이 양옆 15 cm 안에서 30 cm 넘게 높은 것
+            // (난간·스커트)에 막힌 곳을 찾는다. 폭 0.9~1.3 m 면 에스컬레이터 디딤판, 1.3~2.4 m 면 계단이다(공식 모델 우물 13곳 단면, 2026-10-05).
+            const float step = .05f, reach = 4.5f;
+            int count = Mathf.RoundToInt(2 * reach / step) + 1;
+            var heights = new float[count];
+            var laneHits = new List<(float centre, float width, float t)>();
+            var stairHits = new List<(float centre, float width, float t)>();
+            for (float fraction = .2f; fraction <= .801f; fraction += .075f)
             {
                 float t = length * fraction;
                 var centre = high - up * t;
                 float y = HeightAt(t);
-                var runs = new List<(float from, float to)>();
-                float start = float.NaN, last = float.NaN;
-                for (float s = -4.5f; s <= 4.51f; s += .1f)
+                for (int i = 0; i < count; i++) heights[i] = Top(centre + side * (-reach + i * step), y - 1.2f, y + 1.9f);
+                for (int i = 0; i < count;)
                 {
-                    bool surface = !float.IsNaN(Surface(centre + side * s, y, .3f));
-                    if (surface) { if (float.IsNaN(start)) start = s; last = s; }
-                    else if (!float.IsNaN(start)) { runs.Add((start, last)); start = float.NaN; }
+                    if (float.IsNaN(heights[i])) { i++; continue; }
+                    int j = i;
+                    while (j + 1 < count && !float.IsNaN(heights[j + 1]) && Mathf.Abs(heights[j + 1] - heights[j]) < .05f) j++;
+                    float width = (j - i + 1) * step, h = heights[i], left = float.NegativeInfinity, right = float.NegativeInfinity;
+                    for (int k = Mathf.Max(0, i - 3); k < i; k++) if (!float.IsNaN(heights[k])) left = Mathf.Max(left, heights[k]);
+                    for (int k = j + 1; k <= Mathf.Min(count - 1, j + 3); k++) if (!float.IsNaN(heights[k])) right = Mathf.Max(right, heights[k]);
+                    if (left > h + .3f && right > h + .3f)
+                    {
+                        float mid = -reach + (i + j) * .5f * step;
+                        if (width >= .9f && width <= 1.3f) laneHits.Add((mid, width, t));
+                        else if (width > 1.3f && width <= 2.4f) stairHits.Add((mid, width, t));
+                    }
+                    i = j + 1;
                 }
-                if (!float.IsNaN(start)) runs.Add((start, last));
-                foreach (var narrow in runs.Where(r => r.to - r.from >= .55f && r.to - r.from <= 1.5f))
+            }
+            var lanes = Clusters(laneHits, 3);
+            var stairs = Clusters(stairHits, 2);
+            if (lanes.Count != down.Length)
+            {
+                log.Add(id + ": 에스컬레이터 차선 " + lanes.Count + "개(기대 " + down.Length + ") " + string.Join(",", lanes.Select(c => (c.a + c.b * length * .5f).ToString("F2"))));
+                yield break;
+            }
+            for (int k = 0; k < lanes.Count; k++)
+            {
+                bool goesDown = down[k];
+                var fit = lanes[k];
+                // 차선 중심을 따라 위·아래 계단참(평평한 구간)을 찾는다.
+                Vector3 LanePoint(float t) => high - up * t + side * (fit.a + fit.b * t);
+                float Level(float t, float guess) => Surface(LanePoint(t), guess, .45f);
+                float topT = float.NaN, bottomT = float.NaN;
+                float guessY = HeightAt(length * .5f);
+                for (float t = length * .5f; t >= -6; t -= .25f)
                 {
-                    candidates.Add(((narrow.from + narrow.to) * .5f, narrow.to - narrow.from + .1f, fraction));
+                    float y = Level(t, guessY);
+                    if (float.IsNaN(y)) continue;
+                    guessY = y;
+                    if (y >= Concourse - .08f) { topT = t; break; }
                 }
-                var wide = runs.Where(r => r.to - r.from > 1.5f).OrderByDescending(r => r.to - r.from).FirstOrDefault();
-                if (wide.to - wide.from > 1.5f) stairs.Add(((wide.from + wide.to) * .5f, wide.to - wide.from + .1f));
+                guessY = HeightAt(length * .5f);
+                for (float t = length * .5f; t <= length + 6; t += .25f)
+                {
+                    float y = Level(t, guessY);
+                    if (float.IsNaN(y)) continue;
+                    guessY = y;
+                    if (y <= Ground + .08f) { bottomT = t; break; }
+                }
+                float midT = length * .5f, midOffset = fit.a + fit.b * midT;
+                if (float.IsNaN(topT) || float.IsNaN(bottomT)) { log.Add(id + ": 계단참 없음(차선 " + midOffset.ToString("F2") + ")"); continue; }
+                var top = LanePoint(topT); top.y = Concourse;
+                var bottom = LanePoint(bottomT); bottom.y = Ground;
+                var lane = new Lane
+                {
+                    // 한 우물에 차선이 둘이면 올라가는 쪽 -0, 내려가는 쪽 -1.
+                    Id = "esc-" + id + (lanes.Count > 1 ? (goesDown ? "-1" : "-0") : ""),
+                    Label = platform + " 타는 곳 " + (where.Length > 0 ? where + " " : "") + (goesDown ? "내려가는" : "올라가는") + " 에스컬레이터",
+                    Up = !goesDown,
+                    Width = Mathf.Clamp(fit.width, .8f, 1.2f),
+                    From = goesDown ? "concourse" : "platform",
+                    To = goesDown ? "platform" : "concourse",
+                };
+                // 타는 쪽 계단참 1 m → 벨트 시작 → 중간 높이 표본 → 벨트 끝 → 내리는 쪽 계단참 1 m.
+                var belt = new List<Vector3>();
+                float tb = bottomT, tt = topT;
+                for (float t = tt; t <= tb + .01f; t += .5f)
+                {
+                    var p = LanePoint(t);
+                    float y = Level(t, HeightAt(Mathf.Clamp(t, 0, length)));
+                    p.y = float.IsNaN(y) ? Mathf.Lerp(Concourse, Ground, (t - tt) / (tb - tt)) : y;
+                    belt.Add(p);
+                }
+                belt[0] = top;
+                belt[belt.Count - 1] = bottom;
+                if (!goesDown) belt.Reverse();
+                var along = (belt[belt.Count - 1] - belt[0]); along.y = 0; along.Normalize();
+                lane.Path.Add(belt[0] - along * 1.0f);
+                lane.Path.AddRange(belt);
+                lane.Path.Add(belt[belt.Count - 1] + along * 1.0f);
+                var laneUp = top - bottom; laneUp.y = 0; laneUp.Normalize();
+                SetBox(lane, top, bottom, laneUp);
+                // 에스컬레이터 옆 계단(차선 하나인 우물): 차선에서 가장 가까운 계단 무리.
+                if (lanes.Count == 1 && stairs.Count > 0)
+                {
+                    var stair = stairs.OrderBy(s => Mathf.Abs(s.a + s.b * midT - midOffset)).First();
+                    lane.StairsCentre = lane.BoxCentre + side * (stair.a + stair.b * midT - midOffset);
+                    lane.StairsSize = new Vector3(stair.width, lane.BoxSize.y, lane.BoxSize.z + .6f);
+                }
+                yield return lane;
             }
-            // 세 단면 중 두 곳 이상에서 같은 자리(0.4 m 안)에 나온 좁은 차선을 에스컬레이터로 본다.
-            var cluster = candidates.Select(c => candidates.Where(o => Mathf.Abs(o.centre - c.centre) < .4f).ToList())
-                .Where(g => g.Select(o => o.fraction).Distinct().Count() >= 2)
-                .OrderByDescending(g => g.Select(o => o.fraction).Distinct().Count()).ThenBy(g => Mathf.Abs(g.Average(o => o.centre))).FirstOrDefault();
-            if (cluster == null) { log.Add(id + ": 에스컬레이터 차선 없음 " + string.Join(",", candidates.Select(c => c.centre.ToString("F2")))); return null; }
-            float offset = cluster.Average(o => o.centre);
-            width = cluster.Max(o => o.width);
-            // 차선 중심을 따라 위·아래 계단참(평평한 구간)을 찾는다.
-            Vector3 LanePoint(float t) => high - up * t + side * offset;
-            float Level(float t, float guess) => Surface(LanePoint(t), guess, .45f);
-            float topT = float.NaN, bottomT = float.NaN;
-            float guessY = HeightAt(length * .5f);
-            for (float t = length * .5f; t >= -6; t -= .25f)
-            {
-                float y = Level(t, guessY);
-                if (float.IsNaN(y)) continue;
-                guessY = y;
-                if (y >= Concourse - .08f) { topT = t; break; }
-            }
-            guessY = HeightAt(length * .5f);
-            for (float t = length * .5f; t <= length + 6; t += .25f)
-            {
-                float y = Level(t, guessY);
-                if (float.IsNaN(y)) continue;
-                guessY = y;
-                if (y <= Ground + .08f) { bottomT = t; break; }
-            }
-            if (float.IsNaN(topT) || float.IsNaN(bottomT)) { log.Add(id + ": 계단참 없음"); return null; }
-            var top = LanePoint(topT); top.y = Concourse;
-            var bottom = LanePoint(bottomT); bottom.y = Ground;
-            var lane = new Lane
-            {
-                Id = "esc-" + id,
-                Label = platform + " 타는 곳 " + (down ? "내려가는" : "올라가는") + " 에스컬레이터",
-                Up = !down,
-                Width = width,
-                From = down ? "concourse" : "platform",
-                To = down ? "platform" : "concourse",
-            };
-            // 타는 쪽 계단참 1 m → 벨트 시작 → 중간 높이 표본 → 벨트 끝 → 내리는 쪽 계단참 1 m.
-            var belt = new List<Vector3>();
-            float tb = bottomT, tt = topT;
-            for (float t = tt; t <= tb + .01f; t += .5f)
-            {
-                var p = LanePoint(t);
-                float y = Level(t, HeightAt(Mathf.Clamp(t, 0, length)));
-                p.y = float.IsNaN(y) ? Mathf.Lerp(Concourse, Ground, (t - tt) / (tb - tt)) : y;
-                belt.Add(p);
-            }
-            belt[0] = top;
-            belt[belt.Count - 1] = bottom;
-            if (!down) belt.Reverse();
-            var along = (belt[belt.Count - 1] - belt[0]); along.y = 0; along.Normalize();
-            lane.Path.Add(belt[0] - along * 1.0f);
-            lane.Path.AddRange(belt);
-            lane.Path.Add(belt[belt.Count - 1] + along * 1.0f);
-            SetBox(lane, top, bottom, up);
-            if (stairs.Count >= 2)
-            {
-                float s = stairs.Average(x => x.centre), w = stairs.Min(x => x.width);
-                var shift = side * (s - offset);
-                lane.StairsCentre = lane.BoxCentre + shift;
-                lane.StairsSize = new Vector3(w, lane.BoxSize.y, lane.BoxSize.z + .6f);
-            }
-            return lane;
         }
 
         private static void SetBox(Lane lane, Vector3 top, Vector3 bottom, Vector3 upAxis)
@@ -247,7 +300,10 @@ namespace ChooGuard.Editor
             public Transform Root;
             public float Lower, Upper;
             public int Belts;
+            /// <summary>Direction of a single belt (<see cref="Belts"/> 1).</summary>
             public bool[] Up;
+            /// <summary>For a pair: the down belt is on the left of someone riding up (otherwise on the right).</summary>
+            public bool DownOnRiderLeft;
             public string[] Labels;
             public string From, To;
             public Func<MeshFilter, bool> Steps;
@@ -273,20 +329,23 @@ namespace ChooGuard.Editor
 
         private static IEnumerable<Lane> KitEscalators(List<string> log)
         {
-            var kits = new List<(string id, string label, string path)>
+            // 한 쌍에서 내려가는 벨트가 올라가는 사람의 어느 쪽인지(킷 사양의 flight 순서, 킷은 UV 를 local x=V·z=U 로 놓아 −V 가 올라가는 사람의 왼쪽이다).
+            // 중앙 뱅크: escalator-core.json flight 0(−V) = 내려감 → 왼쪽. 실제 뱅크도 같다(blog djagytt/224289573890 #39 3·4호기, 3xn-ieDXlMc 158.67 s).
+            // U− 끝: public-1f-escalator.json flight 0(−V) = 올라감 → 내려가는 벨트는 오른쪽.
+            var kits = new List<(string id, string label, string path, bool downOnRiderLeft)>
             {
-                ("1f-north", "1층 북측", "실내 트윈 마감/수직 동선"),
-                ("1f-south", "1층 남측", "실내 트윈 마감/1F 공용 에스컬레이터"),
+                ("1f-north", "1층 북측", "실내 트윈 마감/수직 동선", true),
+                ("1f-south", "1층 남측", "실내 트윈 마감/1F 공용 에스컬레이터", false),
             };
-            foreach (var (id, label, path) in kits)
+            foreach (var (id, label, path, downOnRiderLeft) in kits)
             {
                 var root = GameObject.Find(path);
                 if (root == null) { log.Add(label + ": 에스컬레이터 없음"); continue; }
                 // 계단판 폭이 2.4 m 를 넘으면 벨트 두 개(오르내림 한 쌍)로 본다.
                 foreach (var lane in MeshLanes(new MeshEscalator
                 {
-                    Id = "esc-" + id, Root = root.transform, Lower = Ground, Upper = Concourse, Belts = 0,
-                    Up = new[] { true, false }, Labels = new[] { label + " 2층 올라가는 에스컬레이터", label + " 1층 내려가는 에스컬레이터" },
+                    Id = "esc-" + id, Root = root.transform, Lower = Ground, Upper = Concourse, Belts = 0, DownOnRiderLeft = downOnRiderLeft,
+                    Labels = new[] { label + " 2층 올라가는 에스컬레이터", label + " 1층 내려가는 에스컬레이터" },
                     From = "ground", To = "concourse", Steps = f => f.name.StartsWith("Kit_EscStep", StringComparison.Ordinal),
                 }, log)) yield return lane;
             }
@@ -335,10 +394,13 @@ namespace ChooGuard.Editor
                 for (int i = 1; i < belt.Count; i++) if (belt[i].y < belt[i - 1].y) belt[i] = new Vector3(belt[i].x, belt[i - 1].y, belt[i].z);
                 belt[0] = new Vector3(belt[0].x, spec.Lower, belt[0].z);
                 belt[belt.Count - 1] = new Vector3(belt[belt.Count - 1].x, spec.Upper, belt[belt.Count - 1].z);
-                bool upward = spec.Up[Mathf.Min(b, spec.Up.Length - 1)];
+                // 벨트는 side(+축의 오른쪽) 순서다. 위층이 +축이면 b=0 이 올라가는 사람의 왼쪽, −축이면 오른쪽이다.
+                bool riderLeft = upIsPositive ? b == 0 : b == belts - 1;
+                bool upward = belts == 1 ? spec.Up[0] : spec.DownOnRiderLeft != riderLeft;
                 var lane = new Lane
                 {
-                    Id = spec.Id + (belts > 1 ? "-" + b : ""), Label = spec.Labels[Mathf.Min(upward ? 0 : 1, spec.Labels.Length - 1)], Up = upward,
+                    // 한 쌍이면 올라가는 벨트 -0, 내려가는 벨트 -1.
+                    Id = spec.Id + (belts > 1 ? (upward ? "-0" : "-1") : ""), Label = spec.Labels[Mathf.Min(upward ? 0 : 1, spec.Labels.Length - 1)], Up = upward,
                     Width = Mathf.Min(1.1f, beltWidth - .2f), From = upward ? spec.From : spec.To, To = upward ? spec.To : spec.From,
                 };
                 if (spec.Belts == 1) lane.Label = spec.Labels[0];

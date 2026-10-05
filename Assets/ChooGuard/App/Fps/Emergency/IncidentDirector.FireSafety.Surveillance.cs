@@ -44,7 +44,7 @@ namespace ChooGuard.App.Fps.Emergency
             var seeing = cameras.Where(c => c.Covers(point)).OrderBy(c => Vector3.Distance(c.transform.position, point)).ToList();
             if (seeing.Count == 0)
             {
-                Office("역무실입니다. " + where + " 쪽은 CCTV에 잡히지 않습니다. 현장에서 확인해 주십시오.");
+                Office("역무실입니다. " + where + " 쪽은 CCTV에 잡히지 않습니다." + (Guided ? " 현장에서 확인해 주십시오." : ""));
                 log.Add("역무실 CCTV 확인 · " + where + " · 비추는 카메라 없음");
                 return;
             }
@@ -60,7 +60,7 @@ namespace ChooGuard.App.Fps.Emergency
             }
             if (parts.Count == 0) parts.Add("연기나 불꽃은 보이지 않고 승객들이 평소처럼 움직입니다");
             string seen = string.Join(". ", parts);
-            Office("역무실입니다. CCTV(" + camera.View + ")로 확인했습니다. " + seen + ". " + (fire == null ? "화재 여부는 현장에서 직접 확인하고 보고해 주십시오." : "119에 신고하고 접근을 통제하십시오."));
+            Office("역무실입니다. CCTV(" + camera.View + ")로 확인했습니다. " + seen + "." + (!Guided ? "" : fire == null ? " 화재 여부는 현장에서 직접 확인하고 보고해 주십시오." : " 119에 신고하고 접근을 통제하십시오."));
             log.Add("역무실 CCTV 확인 · " + camera.Equipment.Label + " · " + seen);
         }
     }

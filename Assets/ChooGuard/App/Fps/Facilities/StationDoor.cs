@@ -16,7 +16,7 @@ namespace ChooGuard.App.Fps.Facilities
     /// driven by <see cref="ElevatorCar"/>. A door with nothing walkable beyond it in the twin stays shut and says so.
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class StationDoor : MonoBehaviour, IFpsInteraction, IFpsNamed, IFpsSecondaryInteraction
+    public sealed class StationDoor : MonoBehaviour, IFpsInteraction, IFpsNamed, IFpsStated, IFpsSecondaryInteraction, IFpsHoldInteraction, IFpsObservable
     {
         public enum DoorKind { Sliding, Swing, Elevator }
         /// <summary>Public: anyone (entrance banks, stairs). Staff: 관계자 rooms, key from outside. Tenant: shop doors (the shop runs them).</summary>
@@ -83,6 +83,11 @@ namespace ChooGuard.App.Fps.Facilities
 
         private float target, holdUntil, closeAt = -1;
         private bool alarmOpen;
+        // 손으로 여닫이를 밀고 당기는 동안(E 홀드): 문짝이 손을 따르고, 놓으면 도어 클로저가 CloserDelay 뒤 닫는다.
+        // 손맛 수치(튜닝 대상): 시선 35도의 끌기에 문이 끝까지 열린다.
+        private const float DragDegreesForFullSwing = 35f;
+        private bool holding, keyFeedbackPending;
+        private Leaf holdLeaf;
         private Vector3 worldCentre;
         private NavMeshObstacle lockBlock;
         private AudioSource sound;
@@ -220,6 +225,8 @@ namespace ChooGuard.App.Fps.Facilities
         private void UpdateSwing(float dt)
         {
             if (!Usable) { Open = 0; return; }
+            // 손이 문짝을 잡고 있는 동안은 손이 정한다(Hold). 놓은 뒤에 도어 클로저가 이어받는다.
+            if (holding) return;
             // 공용 여닫이는 승객이 밀고 지나간다(JEV 010 npc_door_use). 관계자 문은 승객이 쓰지 않는다.
             if (Use == DoorUse.Public && Sense(1.2f, true, out _) && target < 1 && !PlayerNear()) { target = 1; closeAt = -1; }
             // 도어 클로저: 열린 뒤 아무도 문 앞을 지나지 않으면 천천히 닫힌다.
@@ -423,5 +430,94 @@ namespace ChooGuard.App.Fps.Facilities
 
         /// <summary>Sets the operator mode (scripted drills, tests).</summary>
         public void SetMode(OperatorMode mode) => Mode = mode;
+
+        // ── 손 조작 ──────────────────────────────────────────────────────────
+
+        public HoldStyle HoldStyle => HoldStyle.Swing;
+
+        /// <summary>Hinged doors that can be used are pushed and pulled by hand; sliding and elevator doors keep their own controls (<see cref="CanInteract"/> gives their state).</summary>
+        public bool Holdable(FirstPersonResponder responder) => Kind == DoorKind.Swing && Usable && responder != null && !responder.IsPaused;
+
+        public void BeginHold(FirstPersonResponder responder)
+        {
+            holding = true;
+            closeAt = -1;
+            target = Open;
+            // 겨냥한 문짝(두 짝 문이면 그쪽)이 손에 잡힌 문짝이다.
+            holdLeaf = null;
+            Leaf first = null;
+            var aimed = responder.CurrentTargetCollider;
+            foreach (var leaf in Leaves)
+            {
+                if (leaf.Pivot == null || Mathf.Abs(leaf.Swing) < 1) continue;
+                if (first == null) first = leaf;
+                if (aimed != null && aimed.transform.IsChildOf(leaf.Pivot)) { holdLeaf = leaf; break; }
+            }
+            if (holdLeaf == null) holdLeaf = first;
+            // 관계자 문은 바깥에서 열쇠로 연다: 열리는 순간 한 번만 알린다.
+            keyFeedbackPending = Use == DoorUse.Staff && Open <= .05f && Outside(responder);
+        }
+
+        public void Hold(FirstPersonResponder responder, Vector2 mouse, float wheel, float deltaSeconds)
+        {
+            if (!holding || holdLeaf == null || !Usable || responder.PlayerCamera == null) return;
+            // 문짝 가운데가 열리며 지나는 방향을 시점 좌표로 바꾸어, 문짝을 끄는 쪽으로 마우스를 움직이면 그만큼 열린다(밀면 앞으로, 당기면 뒤로).
+            var offset = holdLeaf.ClosedRotation * (Quaternion.Euler(0, holdLeaf.Swing * Open, 0) * (Vector3.right * (Mathf.Max(holdLeaf.Length, .2f) * .5f)));
+            var direction = Equipment.HandGesture.SwingDirection(holdLeaf.Pivot.parent, offset, Mathf.Sign(holdLeaf.Swing));
+            float next = Mathf.Clamp01(Open + Equipment.HandGesture.Along(responder.PlayerCamera.transform, direction, mouse) / DragDegreesForFullSwing);
+            // 서 있는 사람(역무원) 쪽으로는 닿기 전까지만 열린다. 이미 닿는 자리라면 문짝이 천천히 밀려난다.
+            float limit = SwingLimit();
+            if (next > limit) next = Mathf.Max(limit, Mathf.MoveTowards(Open, limit, deltaSeconds / SwingCloseSeconds));
+            float before = Open;
+            if (Mathf.Approximately(next, before)) return;
+            Open = next;
+            Apply();
+            Sounds(before);
+            if (keyFeedbackPending && Open > .05f)
+            {
+                keyFeedbackPending = false;
+                responder.ShowFeedback("열쇠로 문을 열었습니다");
+            }
+        }
+
+        public string EndHold(FirstPersonResponder responder)
+        {
+            holding = false;
+            holdLeaf = null;
+            keyFeedbackPending = false;
+            // 놓은 자리에서 도어 클로저가 시간을 잰다: 열려 있으면 CloserDelay 뒤 닫힌다.
+            if (Open > .05f) { target = Open; closeAt = Time.time + CloserDelay; }
+            else { target = 0; closeAt = -1; }
+            return null;
+        }
+
+        /// <summary>How far the leaf has swung (0..1); no ring for the other kinds.</summary>
+        public float HoldProgress => Kind == DoorKind.Swing ? Open : -1f;
+
+        // ── 상태 ─────────────────────────────────────────────────────────────
+
+        public string StateText
+        {
+            get
+            {
+                if (!Usable) return "";
+                if (Kind == DoorKind.Sliding && Mode == OperatorMode.Locked && !alarmOpen) return "잠김";
+                return Open >= .95f ? "열림" : Open <= .05f ? "닫힘" : Kind == DoorKind.Swing ? "반쯤 열림" : "여닫는 중";
+            }
+        }
+
+        public string Observe(FirstPersonResponder responder)
+        {
+            if (!Usable) return Label + " · " + Sealed;
+            switch (Kind)
+            {
+                case DoorKind.Swing:
+                    return Label + " · " + (Open >= .95f ? "활짝 열려 있음" : Open <= .05f ? "닫혀 있음" : "반쯤 열려 있음") + (Use == DoorUse.Staff ? " · 관계자 출입문" : "");
+                case DoorKind.Elevator:
+                    return Label + " · " + (Open >= .95f ? "문이 열려 있음" : Open <= .05f ? "문이 닫혀 있음" : "문이 여닫히는 중");
+                default:
+                    return Label + " · " + SlidingState();
+            }
+        }
     }
 }

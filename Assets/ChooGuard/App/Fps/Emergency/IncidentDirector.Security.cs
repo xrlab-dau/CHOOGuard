@@ -126,9 +126,11 @@ namespace ChooGuard.App.Fps.Emergency
             Register(threat);
             // 협박 전화는 역무실이 받는다: 바로 112 에 신고하고 역무원에게 알린다.
             reported.Add(threat);
-            Call(Agency.Police, "역무실 신고");
-            Office("역무실입니다. 방금 '" + claimed + "에 폭발물을 설치했다'는 협박 전화가 왔습니다. 112에 신고했습니다. 순회하며 수상한 물건이 있는지 살피고, 발견하면 절대 만지지 말고 보고하십시오." +
-                (level >= 3 ? " 경찰이 대피를 권고했습니다. 대피 안내방송을 요청하십시오." : ""));
+            Call(Agency.Police, "역무실 신고", Guided ? null : threat);
+            // 표준·실전: 역무실은 받은 내용과 자기 조치(112 신고)만 전하고 할 일은 말하지 않는다. 경찰의 대피 권고는 들은 사실이다.
+            Office("역무실입니다. 방금 '" + claimed + "에 폭발물을 설치했다'는 협박 전화가 왔습니다. 112에 신고했습니다." +
+                (Guided ? " 순회하며 수상한 물건이 있는지 살피고, 발견하면 절대 만지지 말고 보고하십시오." : "") +
+                (level >= 3 ? " 경찰이 대피를 권고했습니다." + (Guided ? " 대피 안내방송을 요청하십시오." : "") : ""));
             Know(threat, "역무실 무전(협박 전화)");
             log.Add("폭발물 협박 전화 · " + threat.Visible);
         }
@@ -272,7 +274,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             var (spot, claimed) = ClaimedPlace(Mathf.Max(2, threat.Level + 1));
             threat.CallsAgain(spot, claimed);
-            Office("역무실입니다. 협박범이 다시 전화했습니다. '" + claimed + "'라고 합니다. 그쪽을 먼저 살피되 수상한 물건은 만지지 마십시오.");
+            Office("역무실입니다. 협박범이 다시 전화했습니다. '" + claimed + "'라고 합니다." + (Guided ? " 그쪽을 먼저 살피되 수상한 물건은 만지지 마십시오." : ""));
             log.Add("협박 전화 재수신 · " + claimed);
         }
 
