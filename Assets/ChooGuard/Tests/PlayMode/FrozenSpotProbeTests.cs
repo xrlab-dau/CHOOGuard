@@ -358,6 +358,136 @@ namespace ChooGuard.Tests.PlayMode
                           + " · 경로 " + row["pathAcross"]["status"]);
         }
 
+        /// <summary>
+        /// 멈춤이 **벨트 포화와 함께 움직이는지** 시계열로 본다 (#273). 혼잡 설명을 가른다.
+        /// </summary>
+        /// <remarks>
+        /// 앞 측정으로 기하 차이가 없음이 드러났고, 남은 설명은 혼잡이다: 탑승자는 앞사람이 Spacing(1.1 m)을
+        /// 지날 때까지 기다리고 벨트는 0.5 m/s 다 — 사람당 2.2 초, 16명이면 마지막 사람이 약 35 초를 기다린다.
+        /// 굳음 판정선은 20 초다.
+        ///
+        /// **반증 조건을 먼저 적는다**: 탑승자가 0명인데도 입구에서 멈춰 있는 구간이 길게 나오면 혼잡
+        /// 설명은 깨진다. 그러면 사람이 없는데도 못 올라타는 것이므로 다른 원인이다.
+        ///
+        /// 0.5 게임초마다 링크별로 (탑승자 수 · 2.5 m 안 이동 중인 사람 · 그중 멈춘 사람)을 적는다.
+        /// </remarks>
+        [UnityTest, Explicit("#273 혼잡 가설 검증용. -testFilter 로 직접 지정해 돌릴 것."), Timeout(int.MaxValue)]
+        public IEnumerator 멈춤이_벨트_포화와_함께_움직이는지_본다()
+        {
+            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+
+            float bootUntil = Time.realtimeSinceStartup + Seconds("CG_FROZEN_BOOT", 150f);
+            while ((EmergencySession.Current == null || EmergencySession.Current.Crowd == null
+                    || EmergencySession.Current.Crowd.People.Count == 0 || EmergencySession.Current.World == null)
+                   && Time.realtimeSinceStartup < bootUntil)
+            {
+                var booting = EmergencySession.Current;
+                if (booting != null && booting.Player != null) Resume(booting);
+                yield return null;
+            }
+            var session = EmergencySession.Current;
+            Assert.That(session, Is.Not.Null, "근무가 시작되지 않았습니다.");
+            Resume(session);
+            Time.captureFramerate = FramesPerSecond;
+
+            var crowd = session.Crowd;
+            var links = session.World.Escalators.Where(e => e.Entry != null && e.Entry.path != null && e.Entry.path.Length >= 2).ToList();
+            var series = links.ToDictionary(e => e, e => new JArray());
+
+            yield return Play(5, session);
+
+            var witness = crowd.People
+                .Where(p => !p.Aboard && p.Body.Visible && Passenger.Routine(p.Current) && p.Current != Passenger.Activity.InTrain)
+                .OrderByDescending(p => crowd.CountNear(p.transform.position, 8, null))
+                .First();
+            var spot = StationWorld.OnNavMesh(witness.transform.position + witness.transform.forward * 3f, 2f);
+            var fire = new FireHazard("congestion-fire", spot, "시험용 불", "가방", .45f, session.Art, session.transform)
+            {
+                Where = session.World.Describe(spot),
+            };
+            HazardRegistry.Add(fire);
+            crowd.Alert(spot, 400f, fire, null, "the fire alarm bell is ringing");
+            crowd.Announce();
+
+            float watch = Seconds("CG_LINK_PLAY", 90f);
+            float until = session.ShiftSeconds + watch;
+            float nextSample = session.ShiftSeconds;
+            while (session.ShiftSeconds < until)
+            {
+                if (session.ShiftSeconds >= nextSample)
+                {
+                    nextSample = session.ShiftSeconds + .5f;
+                    foreach (var escalator in links)
+                    {
+                        int near = 0, stuck = 0;
+                        foreach (var person in crowd.People)
+                        {
+                            if (person == null || person.Hurt || person.Hostile) continue;
+                            var doing = person.Current;
+                            bool moves = doing == Passenger.Activity.Walk || doing == Passenger.Activity.MoveAway
+                                         || doing == Passenger.Activity.Evacuate || doing == Passenger.Activity.Leave;
+                            if (!moves || person.Body.Riding != null || person.Body.Scripted) continue;
+                            if (Vector3.Distance(person.transform.position, escalator.Start) > 2.5f) continue;
+                            near++;
+                            var agent = person.Body.Agent;
+                            if (agent == null || !agent.isActiveAndEnabled || !agent.isOnNavMesh) continue;
+                            if (agent.isOnOffMeshLink || !agent.hasPath || agent.velocity.magnitude > .05f) continue;
+                            stuck++;
+                        }
+                        if (near == 0 && escalator.RiderCount == 0) continue;   // 아무 일도 없던 순간은 적지 않는다
+                        series[escalator].Add(new JObject
+                        {
+                            ["t"] = Math.Round(session.ShiftSeconds, 1),
+                            ["riders"] = escalator.RiderCount,
+                            ["near"] = near,
+                            ["stuck"] = stuck,
+                        });
+                    }
+                }
+                yield return null;
+            }
+
+            var results = new JArray();
+            foreach (var escalator in links.OrderByDescending(e => series[e].Count))
+            {
+                var rows = series[escalator];
+                if (rows.Count == 0) continue;
+                int stuckRows = rows.Count(r => (int)r["stuck"] > 0);
+                int stuckWithNoRiders = rows.Count(r => (int)r["stuck"] > 0 && (int)r["riders"] == 0);
+                results.Add(new JObject
+                {
+                    ["label"] = escalator.Label,
+                    ["samples"] = rows.Count,
+                    ["maxRiders"] = rows.Max(r => (int)r["riders"]),
+                    ["maxStuck"] = rows.Max(r => (int)r["stuck"]),
+                    ["rowsWithStuck"] = stuckRows,
+                    ["rowsWithStuckAndNoRiders"] = stuckWithNoRiders,
+                    ["series"] = rows,
+                });
+                Debug.Log("CG_JAM " + escalator.Label + " · 표본 " + rows.Count
+                          + " · 최대 탑승 " + rows.Max(r => (int)r["riders"])
+                          + " · 최대 멈춤 " + rows.Max(r => (int)r["stuck"])
+                          + " · 멈춤 있던 표본 " + stuckRows
+                          + " · 그중 탑승 0명 " + stuckWithNoRiders);
+            }
+
+            var record = new JObject
+            {
+                ["at"] = DateTime.UtcNow.ToString("o"),
+                ["seed"] = 20260930,
+                ["beltSpeed"] = Escalator.BeltSpeed,
+                ["spacing"] = Escalator.Spacing,
+                ["secondsPerBoarding"] = Math.Round(Escalator.Spacing / Escalator.BeltSpeed, 2),
+                ["results"] = results,
+            };
+            Directory.CreateDirectory(OutFolder);
+            var path = Path.Combine(OutFolder,
+                "congestion-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture) + ".json");
+            File.WriteAllText(path, record.ToString(), new UTF8Encoding(false));
+            Debug.Log("CG_JAM 기록 → " + path);
+        }
+
         /// <summary>굳은 승객 하나의 상태와 그 자리에 무엇이 있는지.</summary>
         private static JObject Describe(EmergencySession session, Passenger person)
         {
