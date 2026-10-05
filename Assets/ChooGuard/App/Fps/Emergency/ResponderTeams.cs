@@ -40,6 +40,36 @@ namespace ChooGuard.App.Fps.Emergency
             }
         }
 
+        /// <summary>The agency a unit belongs to (it commands, takes handovers and is called as that agency).</summary>
+        public static Agency AgencyOf(Team team)
+        {
+            switch (team)
+            {
+                case Team.Fire:
+                case Team.Rescue:
+                case Team.Hazmat: return Agency.Fire;
+                case Team.Ems: return Agency.Medical;
+                case Team.RailwayPolice:
+                case Team.Patrol:
+                case Team.BombSquad: return Agency.Police;
+                case Team.Crew: return Agency.Crew;
+                default: return Agency.Facility;
+            }
+        }
+
+        /// <summary>
+        /// Whether <paramref name="team"/> has something to do at <paramref name="hazard"/>: its agency must be involved (<see cref="Hazard.Involves"/>, which
+        /// every kind answers), and on the facility side only the person for that installation can work it (the gas company a gas leak, the lift engineer a
+        /// trapped car, the electrician a power fault: the unit <see cref="For"/> would send). An unknown kind falls back to its agency.
+        /// </summary>
+        public static bool Fits(Team team, Hazard hazard)
+        {
+            if (hazard == null) return false;
+            var agency = AgencyOf(team);
+            if (!hazard.Involves(agency)) return false;
+            return agency != Agency.Facility || team == For(Agency.Facility, hazard);
+        }
+
         public static string Name(Team team)
         {
             switch (team)

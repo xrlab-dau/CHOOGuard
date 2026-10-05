@@ -27,6 +27,8 @@
 
 이 조사를 바탕으로 한 후속 산출물: [정밀 설계와 OSS 적용 계획](../CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/DESIGN.md). 조사 당시 확인한 사실과 새 설계 선택을 구별하며, 게임 구현·설치 완료를 뜻하지 않는다.
 
+2026-10-04 후속: 사용자 플레이 피드백("지시대로 진행하는 수준")에 따른 18개 시뮬레이션 게임 조작·진행 정밀 벤치마크와 재제안은 [SIM_CONTROLS_BENCHMARK.md](../CHOOGuard_Story_Plan_v5/SIM_CONTROLS_BENCHMARK.md)에 있다. [GAMEPLAY_VISUAL_REFERENCES.md](GAMEPLAY_VISUAL_REFERENCES.md)의 정비·HUD 관찰을 조작 문법·안내 수준·평가까지 넓혔다.
+
 ## 2. 상세 조사 문서 안내
 
 | 문서 | 내용 |

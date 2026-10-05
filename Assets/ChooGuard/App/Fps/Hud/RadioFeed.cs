@@ -56,10 +56,13 @@ namespace ChooGuard.App.Fps.Hud
 
         /// <summary>Raised for every new line (the session plays the announcement chime or the radio squelch).</summary>
         public event System.Action<RadioChannel> Pushed;
+        /// <summary>Raised for every new line with its text (the notebook keeps the radio record).</summary>
+        public event System.Action<RadioChannel, string> Posted;
 
         public void Push(RadioChannel channel, string message)
         {
             Pushed?.Invoke(channel);
+            Posted?.Invoke(channel, message);
             if (lines.Count >= MaxLines) { Destroy(lines[lines.Count - 1].Rect.gameObject); lines.RemoveAt(lines.Count - 1); }
             var rect = FpsUiFactory.Node(transform, "무전");
             rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(1, 1);

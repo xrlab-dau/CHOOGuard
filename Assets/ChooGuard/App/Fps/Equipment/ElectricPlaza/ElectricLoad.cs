@@ -10,7 +10,7 @@ namespace ChooGuard.App.Fps.Equipment
     /// cut its own power by hand — pull the plug of a vending machine, throw the power switch of a kiosk — unless it burns
     /// too fiercely to go near. Unpowered, its screens and lit panels go dark.
     /// </summary>
-    public sealed class ElectricLoad : MonoBehaviour, IFpsInteraction, IFpsNamed
+    public sealed class ElectricLoad : MonoBehaviour, IFpsInteraction, IFpsNamed, IFpsStated, IFpsObservable
     {
         private static readonly int EmissionColour = Shader.PropertyToID("_EmissionColor");
 
@@ -33,6 +33,8 @@ namespace ChooGuard.App.Fps.Equipment
         private readonly System.Collections.Generic.List<(Renderer renderer, Material[] lit, Material[] dark)> screens = new System.Collections.Generic.List<(Renderer, Material[], Material[])>();
         private static readonly System.Collections.Generic.Dictionary<Material, Material> darkOf = new System.Collections.Generic.Dictionary<Material, Material>();
         private bool lit = true;
+        private ElectricNetwork.Circuit namedFor;
+        private string name_;
 
         private void Awake()
         {
@@ -87,14 +89,28 @@ namespace ChooGuard.App.Fps.Equipment
             if (equipment != null) equipment.State = OnFire ? "화재" : Burnt ? "소손" : powered ? "정상" : "전원 차단";
         }
 
+        // 이름표(자산 번호·전원 회로)는 망이 짜인 뒤 바뀌지 않는다: 회로가 정해질 때 한 번만 만든다.
         public string DisplayName
         {
             get
             {
                 var circuit = ElectricNetwork.CircuitOf(equipment);
-                string feeder = circuit != null ? " · 전원 " + circuit.Label : "";
-                return equipment.Label + " " + ElectricNetwork.Tag(equipment) + feeder + (Burnt ? " (소손)" : !ElectricNetwork.Powered(equipment) ? " (꺼짐)" : "");
+                if (name_ == null || namedFor != circuit)
+                {
+                    namedFor = circuit;
+                    name_ = equipment.Label + " " + ElectricNetwork.Tag(equipment) + (circuit != null ? " · 전원 " + circuit.Label : "");
+                }
+                return name_;
             }
+        }
+
+        public string StateText => Burnt ? "소손" : lit ? "켜짐" : "꺼짐";
+
+        public string Observe(FirstPersonResponder responder)
+        {
+            string power = Burnt ? "겉이 그을려 있고 화면이 꺼져 있음" : lit ? "화면이 켜져 있음" : "화면이 꺼져 있음";
+            if (!Burnt && LocalOff) power += Kiosk ? " · 전원 스위치가 꺼져 있음" : " · 전원 코드가 뽑혀 있음";
+            return DisplayName + " · " + power;
         }
 
         public string InteractionPrompt

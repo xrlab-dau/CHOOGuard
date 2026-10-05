@@ -57,13 +57,15 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 links = new GameObject("승강 설비");
                 links.transform.SetParent(parent, false);
+                // 비상정지 버튼은 관찰 기록이 있는 승강장에만 둔다(기록 없는 일반 위치에 만들지 않는다).
+                var stops = EscalatorStopSurvey.LoadResource();
                 foreach (var entry in Points.Escalators)
                 {
                     var go = new GameObject(entry.label);
                     go.transform.SetParent(links.transform, false);
                     var escalator = go.AddComponent<Escalator>();
                     escalator.Setup(entry);
-                    escalator.AddStopButtons();
+                    escalator.AddStopButtons(stops);
                     Escalators.Add(escalator);
                 }
                 foreach (var entry in Points.Elevators)

@@ -184,6 +184,8 @@ namespace ChooGuard.Editor
             if (!Ready(session) || session.Incidents.Stage == IncidentDirector.Phase.Ended) return;
             if (!session.Player.ExternalInputMode) session.Player.SetExternalInputMode(true);
             if (session.Player.IsPaused) session.Player.Resume(false);
+            // 이 점검은 E 한 번 누르기(견학) 경로로 설비를 다룬다. 손 조작(E 홀드)은 HandManipulationTests 가 본다.
+            session.Player.SimpleControls = true;
             float scale = Value("timescale", 4f);
             if (Time.timeScale != scale) Time.timeScale = scale;
         }

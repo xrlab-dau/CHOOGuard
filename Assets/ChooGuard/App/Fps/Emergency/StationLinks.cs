@@ -131,13 +131,35 @@ namespace ChooGuard.App.Fps.Emergency
             else if (!Closed && !NavMesh.IsLinkValid(link)) AddLink();
         }
 
-        /// <summary>The red stop buttons at both landings (right-hand newel, 0.9 m), pressable by the staff member.</summary>
-        public void AddStopButtons()
+        /// <summary>How many stop buttons were found at this escalator's landings and built (<see cref="AddStopButtons"/>).</summary>
+        public int StopButtons { get; private set; }
+        /// <summary>Someone standing at a landing can press a stop button here (one was observed and built).</summary>
+        public bool HasStopButton => StopButtons > 0;
+
+        /// <summary>
+        /// Builds the stop buttons observed at this escalator's landings (<see cref="EscalatorStopSurvey"/>): each where its record puts it
+        /// relative to the belt end at that landing (side of a rider, height, distance out onto the landing, distance from the centre line).
+        /// A landing with no record gets no button.
+        /// </summary>
+        public void AddStopButtons(IReadOnlyList<EscalatorStopSurvey.Record> records)
         {
-            var start = Horizontal(Entry.path[1] - Entry.path[0]);
-            var end = Horizontal(Entry.path[Entry.path.Length - 1] - Entry.path[Entry.path.Length - 2]);
-            EscalatorStopButton.Build(this, Entry.path[0] - start * .25f, start, -start);
-            EscalatorStopButton.Build(this, Entry.path[Entry.path.Length - 1] + end * .25f, end, end);
+            // 경로는 타는 쪽 계단참 → 벨트 시작 … 벨트 끝 → 내리는 쪽 계단참이다. 계단참 점은 navmesh 로 옆으로 비켜 있을 수 있어
+            // 벨트 끝(디딤판이 계단참 바닥과 만나는 곳)과 벨트 전체 방향을 기준으로 삼는다.
+            int last = Entry.path.Length - 1, beltStart = last >= 3 ? 1 : 0, beltEnd = last >= 3 ? last - 1 : last;
+            bool startIsBottom = Entry.path[beltStart].y <= Entry.path[beltEnd].y;
+            // 디딤판이 움직이는 방향. 탄 사람의 오른쪽이 기록의 'right'다. 승강장 쪽(바깥)은 타는 곳에서는 반대 방향, 내리는 곳에서는 같은 방향이다.
+            var travel = Horizontal(Entry.path[beltEnd] - Entry.path[beltStart]);
+            var right = Vector3.Cross(Vector3.up, travel).normalized;
+            foreach (var record in records)
+            {
+                if (record.escalator != Entry.id) continue;
+                bool atStart = record.AtBottom == startIsBottom;
+                var landing = atStart ? Entry.path[beltStart] : Entry.path[beltEnd];
+                var outward = atStart ? -travel : travel;
+                var position = landing + outward * record.along + right * ((record.OnLeft ? -1f : 1f) * record.offset) + Vector3.up * record.height;
+                EscalatorStopButton.Build(this, position, outward);
+                StopButtons++;
+            }
         }
 
         private static Vector3 Horizontal(Vector3 v) { v.y = 0; return v.sqrMagnitude > 1e-6f ? v.normalized : Vector3.forward; }
