@@ -11,7 +11,7 @@
 | `unity.yml` | Unity 경로를 바꾼 같은 저장소 PR(Windows·macOS), develop·main push·`v*` 태그·매일 03:00 KST(Windows·macOS·Linux), 수동 | Unity lane gate → EditMode + PlayMode (OS별) → Players (macOS, Windows, Linux) → Player smoke (OS별) → Draft release, **Unity tests** | 첫 녹색 실행 후 필수 |
 | `security.yml` | PR, push, 매주 월 04:00 KST | CodeQL(Actions·C#·JS·Python), Dependency review | 정보 |
 | `scorecard.yml` | develop push, 매주, 규칙 변경 | Scorecard analysis → scorecard.dev 게시 | 정보 |
-| Dependabot | 매주 월 09:00 KST, 7일 쿨다운 | Actions 핀, `.github/requirements/*.txt` | — |
+| Dependabot | 매주 월 09:00 KST, 7일 쿨다운 | Actions 핀, `.github/requirements/tools.txt`(physics는 손으로) | — |
 
 필수 체크는 `Protected branches · main + develop` 규칙에 걸려 있다. 필수 잡은 경로 필터 없이 모든 변경에 결과를 낸다. 건너뛴 워크플로는 결과가 없어 PR을 막기 때문이다.
 
@@ -70,10 +70,10 @@ gh variable set UNITY_CI_ENABLED --body true -R xrlab-dau/CHOOGuard
 
 ### 시트 한 개를 나눠 쓰는 규칙
 
-- 시트 하나는 동시에 두 대까지 활성화된다(Unity FAQ, Pro/Enterprise 기준. 학생 플랜도 같다고 가정했고 검증하지 않았다). 관리자 Mac이 한 대, CI가 한 대를 쓴다. My Seats에는 Personal 시리얼로 활성화된 Windows PC `ADMIN`도 보인다. CI 활성화가 한도 초과로 실패하면 쓰지 않는 활성화부터 반납한다.
+- 시트 하나는 동시에 두 대까지 활성화된다. 관리자 Mac이 한 대, CI가 한 대를 쓴다. **다른 컴퓨터에서 이 계정으로 Unity Hub에 로그인하지 않는다.** 로그인하면 그 컴퓨터가 남은 한 자리를 named-user(NUL)로 차지한다. 2026-10-02 `G9`가 그렇게 활성화된 뒤 10-06까지 모든 Unity 잡이 `Activate the licence`에서 실패했다. 로그의 "Successfully activated the entitlement license" 다음 "License activation has failed"가 그 신호다. 팀원 PC는 각자 계정(Personal 또는 각자의 학생 플랜)을 쓴다. My Seats에는 Personal 시리얼로 활성화된 Windows PC `ADMIN`도 보이며, 이것은 학생 시트를 쓰지 않는다. CI 활성화가 한도 초과로 실패하면 쓰지 않는 활성화부터 반납한다.
 - 라이선스를 쓰는 잡(세 OS의 시험, 플레이어 빌드)은 저장소 전체 동시성 그룹 `unity-licence` 하나에서 한 번에 하나씩 돈다. `queue: max`라 최대 100개가 순서대로 기다린다. PR의 Windows·macOS 시험도 차례로 돈다. 실행 중인 잡은 취소하지 않는다. 강제로 종료된 에디터는 활성화를 반납하지 못한다.
 - 반납은 `if: always()` 단계가 같은 VM에서 한다. 시험 단계가 실패하거나 시간 초과여도 반납은 실행된다.
-- "no free activation"으로 실패하면 id.unity.com → **My Account → My Seats**에서 활성화를 반납하고 다시 실행한다.
+- "no free activation"으로 실패하면 id.unity.com → **My Account → My Seats**의 활성화 표에서 쓰지 않는 줄을 골라 **Remove selected activations**로 반납하고 다시 실행한다(`gh run rerun <id> --failed`).
 
 ### 무엇이 언제 도는가
 
@@ -134,7 +134,7 @@ actionlint -ignore 'unexpected key "queue" for "concurrency" section' \
 uvx zizmor@1.30.1 --offline .
 ```
 
-잠금 파일 갱신: `.github/requirements/*.txt` 머리말의 `uv pip compile` 명령을 그대로 실행한다.
+잠금 파일 갱신: `.github/requirements/*.txt` 머리말의 `uv pip compile` 명령을 그대로 실행한다. Dependabot은 `tools.*`만 올린다. `physics.*`는 JuPedSim의 GUI 의존성을 뺀 `--no-deps` 묶음이다. JuPedSim 1.4.2가 선언한 `deprecated~=1.2.18`보다 높은 `deprecated` 1.3.1과 `wrapt` 2.4.1을 고정한다. Dependabot은 전체 의존성을 풀다가 충돌로 매번 실패했으므로(run 37246683344) `exclude-paths`로 뺐다. physics 고정값은 `workers/physics/requirements-core.txt`, 탐침 영수증과 함께 손으로 올린다.
 
 ## 알려진 제약
 
