@@ -341,8 +341,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     if changed and token and args.repo:
         sizes = api_blob_sizes(args.repo, head, token)
         if sizes is None:
-            notes.append("Blob sizes unavailable (API error or truncated tree): size rule skipped.")
+            findings.append(Finding("error", "large-files", "Blob sizes unavailable (API error or truncated tree): cannot verify changed files."))
         else:
+            for path in changed:
+                if path not in sizes:
+                    findings.append(Finding("error", "large-files", "Blob size missing from API response: cannot verify changed file.", path))
             findings += check_sizes({p: sizes[p] for p in changed if p in sizes})
     elif changed:
         notes.append("No GITHUB_TOKEN: size rule skipped.")
