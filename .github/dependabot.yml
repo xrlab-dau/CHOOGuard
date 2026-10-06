@@ -18,9 +18,15 @@ updates:
       actions:
         patterns: ["*"]
 
-  # Hash-locked CI requirements (uv pip compile); workers/physics/requirements-core.txt is mirrored by hand.
+  # Hash-locked CI requirements (uv pip compile). Only tools.in: physics.in is a --no-deps set that pins deprecated 1.3.1 and
+  # wrapt 2.4.1 beyond jupedsim 1.4.2's declared deprecated~=1.2.18 (its GUI stack is left out on purpose). Dependabot resolves
+  # the full graph, so every physics update failed with "conflicting dependencies" (run 37246683344). Physics pins move by hand
+  # with workers/physics/requirements-core.txt and the probe receipt.
   - package-ecosystem: pip
     directory: /.github/requirements
+    exclude-paths:
+      - "physics.in"
+      - "physics.txt"
     target-branch: develop
     schedule:
       interval: weekly
