@@ -425,6 +425,8 @@ namespace ChooGuard.Tests.PlayMode
             world.Closed.Add((PointAlong(route, .3f), 4f, "아직 모르는 통제 구역"));
             foreach (var escalator in world.Escalators) escalator.Close();
             yield return Carved(shift, unseen.Position);
+            // 기다리는 동안 역무원이 밀려 움직였더라도 같은 자리에서 다시 묻는다(비교하는 것은 모르는 위험의 영향뿐이다).
+            Place(shift, origin);
             shift.RefreshGuide();
             Assert.That(shift.GuideStatus, Is.EqualTo(EmergencySession.GuideState.Guiding));
             Assert.That(shift.GuideMessage, Is.EqualTo(message), "what the map says changed because of something the staff member does not know");

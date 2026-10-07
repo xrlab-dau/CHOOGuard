@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Reflection;
 using ChooGuard.App.Fps.Emergency;
 using ChooGuard.App.Fps.Hud;
 using NUnit.Framework;
@@ -61,7 +62,7 @@ namespace ChooGuard.Tests.PlayMode
             var points = session.World.Points;
             map.SetLandmarks(points);
             map.Toggle();
-            RectTransform Label(string id) => map.GetComponentsInChildren<RectTransform>(true).Single(t => t.name == "장소 " + id);
+            RectTransform Label(string id) => CaptionFor(map, id);
             RectTransform Pin(string id) => map.GetComponentsInChildren<RectTransform>(true).Single(t => t.name == "장소 위치 " + id);
             var picture = map.GetComponentsInChildren<RawImage>(true).Single(t => t.name == "지도");
             var mapArea = map.GetComponentsInChildren<RectTransform>(true).Single(t => t.name == "지도 영역");
@@ -74,7 +75,7 @@ namespace ChooGuard.Tests.PlayMode
 
             viewer.position = new Vector3(64, 7, -2);
             yield return null;
-            CaptureForLocalReview(map, "spawn-130m");
+
 
             // A square includes its diagonal corner (90m from the player), but excludes anything beyond
             // either 65m axis. Both directions use the same rule; floor changes remain independent.
@@ -125,7 +126,7 @@ namespace ChooGuard.Tests.PlayMode
                 Assert.That(Label("zone-" + zone.id + "-" + MapOverlay.Floor(viewer.position)).gameObject.activeSelf, Is.True, zone.id);
                 Assert.That(picture.enabled, Is.True, "야외/다른 층에서도 전역 지도는 유지한다");
                 AssertCaptionsFitAndDoNotOverlap(map);
-                CaptureForLocalReview(map, zone.id);
+
             }
             foreach (var point in points.All.Where(p => p.Kind == PointKind.Office || p.Kind == PointKind.Exit))
             {
@@ -141,17 +142,20 @@ namespace ChooGuard.Tests.PlayMode
                     viewer.position = escalator.stairsTop;
                     yield return null;
                     Assert.That(Label(escalator.id + "-stairs-top").gameObject.activeSelf, Is.True, escalator.id);
+                    Assert.That(Pin(escalator.id + "-stairs-top").gameObject.activeSelf, Is.True, escalator.id);
                     AssertCaptionsFitAndDoNotOverlap(map);
-                    CaptureForLocalReview(map, escalator.id);
+
                     viewer.position = escalator.stairsBottom;
                     yield return null;
                     Assert.That(Label(escalator.id + "-stairs-bottom").gameObject.activeSelf, Is.True, escalator.id);
+                    Assert.That(Pin(escalator.id + "-stairs-bottom").gameObject.activeSelf, Is.True, escalator.id);
                 }
                 else
                 {
                     viewer.position = escalator.path[0];
                     yield return null;
                     Assert.That(Label(escalator.id).gameObject.activeSelf, Is.True, escalator.id);
+                    Assert.That(Pin(escalator.id).gameObject.activeSelf, Is.True, escalator.id);
                 }
                 AssertCaptionsFitAndDoNotOverlap(map);
             }
@@ -179,6 +183,26 @@ namespace ChooGuard.Tests.PlayMode
                     Assert.That(Label(elevator.id + "-" + stop.floor).gameObject.activeSelf, Is.True);
                 }
 
+            // A shared caption must not invent a position or disclose an out-of-range member.
+            var members = (IEnumerable)typeof(MapOverlay).GetField("landmarks", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(map);
+            var pair = members.Cast<object>().GroupBy(item => Field(item, "Group"))
+                .Select(g => g.ToArray()).First(g => g.Length == 2 && (string)Field(g[0], "Label") != (string)Field(g[1], "Label"));
+            var aPosition = (Vector3)Field(pair[0], "Position");
+            var bPosition = (Vector3)Field(pair[1], "Position");
+            var aId = ((RectTransform)Field(pair[0], "View")).name.Substring("장소 ".Length);
+            var bId = ((RectTransform)Field(pair[1], "View")).name.Substring("장소 ".Length);
+            viewer.position = (aPosition + bPosition) * .5f;
+            yield return null;
+            var groupPosition = Label(aId).anchoredPosition;
+            Assert.That(Label(aId), Is.SameAs(Label(bId)));
+            Assert.That(Pin(aId).anchoredPosition, Is.Not.EqualTo(Pin(bId).anchoredPosition), "individual surveyed pins remain distinct");
+            viewer.position = aPosition + new Vector3(Mathf.Sign(bPosition.x - aPosition.x) * 65.1f, 0, 0);
+            yield return null;
+            Assert.That(Pin(aId).gameObject.activeSelf, Is.False, "the grouped point outside the square must disappear");
+            Assert.That(Pin(bId).gameObject.activeSelf, Is.True);
+            Assert.That(Label(bId).GetComponentInChildren<TMP_Text>().text, Is.EqualTo((string)Field(pair[1], "Label")), "only the in-range member remains in the shared caption");
+            Assert.That(Label(bId).anchoredPosition, Is.EqualTo(groupPosition), "filtering group members must not move the label");
+
             // All nearby places obey the same axes, and the filtering square remains 130m
             // in both world directions (the world map is rectangular but its pixel projection is uniform).
             viewer.position = new Vector3(64, 7, -2);
@@ -189,7 +213,7 @@ namespace ChooGuard.Tests.PlayMode
                 Assert.That(Label(point.Id).gameObject.activeSelf, Is.EqualTo(inSquare), point.Id);
             }
             Assert.That(mapArea.sizeDelta.x / session.StationMapBounds.width, Is.EqualTo(mapArea.sizeDelta.y / session.StationMapBounds.height).Within(.001f));
-            CaptureForLocalReview(map, "spawn-130m");
+
 
             map.Hide();
             viewer.position = new Vector3(-150, 0, 80);
@@ -199,12 +223,12 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(Label(office.Id).gameObject.activeSelf, Is.False);
             Assert.That(Label("zone-busstop-1").gameObject.activeSelf, Is.True);
             Assert.That(picture.enabled, Is.True);
-            CaptureForLocalReview(map, "outdoor-west");
+
             viewer.position = new Vector3(-250, 0, -100);
             yield return null;
             Assert.That(picture.enabled, Is.True);
             Assert.That(picture.rectTransform.sizeDelta, Is.EqualTo(initialImageSize));
-            CaptureForLocalReview(map, "outdoor-far-west");
+
 
             viewer.position = new Vector3(64, 7, -2);
             map.SetRoute(new[] { new Vector3(session.StationMapBounds.xMin - 50, 7, -2), new Vector3(session.StationMapBounds.xMax + 50, 7, -2) }, "시험 경로");
@@ -224,58 +248,18 @@ namespace ChooGuard.Tests.PlayMode
             Object.Destroy(root);
         }
 
-        private static void CaptureForLocalReview(MapOverlay map, string name)
+        private static object Field(object item, string name) => item.GetType().GetField(name).GetValue(item);
+
+        private static RectTransform CaptionFor(MapOverlay map, string id)
         {
-            var directory = System.Environment.GetEnvironmentVariable("CG_ISSUE256_MAP_CAPTURE_DIR");
-            if (string.IsNullOrEmpty(directory)) return;
-            // Batchmode has no Game View render texture. Render the real uGUI canvas through a temporary
-            // camera instead; this opt-in local artifact does not affect CI or the simulation camera.
-            var canvas = map.GetComponent<Canvas>();
-            var cameraObject = new GameObject("지도 검수 렌더");
-            var camera = cameraObject.AddComponent<Camera>();
-            camera.enabled = false;
-            camera.orthographic = true;
-            camera.orthographicSize = 450;
-            camera.transform.position = new Vector3(0, 0, -10);
-            camera.clearFlags = CameraClearFlags.SolidColor;
-            camera.backgroundColor = new Color(.13f, .21f, .23f);
-            camera.cullingMask = 1 << 31;
-            var transforms = map.GetComponentsInChildren<Transform>(true);
-            var layers = transforms.Select(t => t.gameObject.layer).ToArray();
-            for (int i = 0; i < transforms.Length; i++) transforms[i].gameObject.layer = 31;
-            var render = RenderTexture.GetTemporary(1440, 900, 24);
-            var previous = RenderTexture.active;
-            var texture = new Texture2D(1440, 900, TextureFormat.RGB24, false);
-            try
-            {
-                canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                canvas.worldCamera = camera;
-                canvas.planeDistance = 1;
-                camera.targetTexture = render;
-                Canvas.ForceUpdateCanvases();
-                camera.Render();
-                RenderTexture.active = render;
-                texture.ReadPixels(new Rect(0, 0, 1440, 900), 0, 0);
-                texture.Apply();
-                System.IO.Directory.CreateDirectory(directory);
-                System.IO.File.WriteAllBytes(System.IO.Path.Combine(directory, name + ".png"), texture.EncodeToPNG());
-            }
-            finally
-            {
-                RenderTexture.active = previous;
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvas.worldCamera = null;
-                for (int i = 0; i < transforms.Length; i++) transforms[i].gameObject.layer = layers[i];
-                camera.targetTexture = null;
-                RenderTexture.ReleaseTemporary(render);
-                Object.Destroy(texture);
-                Object.Destroy(cameraObject);
-            }
+            var items = (IEnumerable)typeof(MapOverlay).GetField("landmarks", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(map);
+            var item = items.Cast<object>().Single(value => ((RectTransform)Field(value, "View")).name == "장소 " + id);
+            return (RectTransform)Field(Field(Field(item, "Group"), "Owner"), "View");
         }
 
         private static void AssertCaptionsFitAndDoNotOverlap(MapOverlay map)
         {
-            CaptureForLocalReview(map, "last-layout-check");
+
             var area = map.GetComponentsInChildren<RectTransform>(true).Single(t => t.name == "지도 영역");
             var labels = map.GetComponentsInChildren<RectTransform>(true)
                 .Where(t => t.name.StartsWith("장소 ") && t.Find("장소") != null && t.gameObject.activeSelf).ToArray();

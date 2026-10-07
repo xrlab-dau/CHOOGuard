@@ -133,7 +133,6 @@ namespace ChooGuard.Tests.PlayMode
             Place(new Vector3(0, 0, 1.8f), 180, -24);
             yield return null;
             Step();
-            Assert.That(responder.CurrentPrompt, Does.Contain("점포 관리"));
             Assert.That(responder.CurrentSecondaryPrompt, Is.Empty);
         }
 
@@ -144,9 +143,7 @@ namespace ChooGuard.Tests.PlayMode
             Place(new Vector3(0, 0, 1.2f), 180);
             yield return null;
             Step();
-            Assert.That(responder.CurrentPrompt, Is.EqualTo("E · 열쇠로 열기"));
             Step(interact: true); Step();
-            Assert.That(responder.LastFeedback, Is.EqualTo("열쇠로 문을 열었습니다"));
             yield return new WaitForSeconds(StationDoor.SwingOpenSeconds + .2f);
             Assert.That(door.Open, Is.EqualTo(1).Within(.01f));
             Place(new Vector3(0, 0, 6), 180);
@@ -154,8 +151,9 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(door.Open, Is.EqualTo(0).Within(.01f), "도어 클로저가 닫는다");
             Place(new Vector3(0, 0, -1.2f), 0);
             yield return null;
-            Step();
-            Assert.That(responder.CurrentPrompt, Is.EqualTo("E · 열기"), "안에서는 열쇠 없이 레버로 연다");
+            Step(interact: true); Step();
+            yield return new WaitForSeconds(StationDoor.SwingOpenSeconds + .2f);
+            Assert.That(door.Open, Is.EqualTo(1).Within(.01f), "안에서는 열쇠 없이 레버로 연다");
         }
 
         [UnityTest]

@@ -1,10 +1,10 @@
-# 데스크톱 수집 절차 — 1배속 20분 근무
+# 데스크톱 수집 절차 — 1배속 10분 근무 × 여러 회
 
 > 이 문서는 **데스크톱에서 Claude Code 에게 그대로 주면 되는 실행 지시서**다.
-> 목표: 1배속(`CG_SHIFT_SCALE=1`) 20분 근무를 여러 회 돌려 JEV 판단 기록을 모은다.
+> 목표: 1배속(`CG_SHIFT_SCALE=1`) 600 게임초(약 10 게임분) 근무를 여러 회 돌려 JEV 판단 기록을 모은다.
 > 왜 1배속인가 — JEV 예산(분당 요청 수·시간당 비용)이 **실시간** 기준이라, 게임만 빠르게 돌리면 판단이
 > 상한에 걸려 버려진다(#259 이전 측정: 노트북 4배속 516건 중 사건 합성 5건).
-> 1배속 20분은 Unity 테스트 러너의 기본 제한(180초)보다 길다. 하네스는 `[Timeout(int.MaxValue)]` 로 그 제한을 풀어 두었고
+> 600 게임초 근무는 Unity 테스트 러너의 기본 제한(180초)보다 길다. 하네스는 `[Timeout(int.MaxValue)]` 로 그 제한을 풀어 두었고
 > 실시간 상한은 `CG_SHIFT_REALCAP` 이 회차(재시도가 있으면 시도)마다 맡는다.
 
 각 단계는 **확인 → 실행 → 검증** 순이다. 검증에서 걸리면 다음으로 넘어가지 말 것.
@@ -14,8 +14,86 @@
 ## 0. 먼저 물어볼 것 (사람에게)
 
 - 수집 결과를 어디에 둘 것인가 (예: `D:\cg-data`) — 이 문서에서는 `<DATA>` 로 쓴다.
-- 몇 회차를 돌릴 것인가 — 1회차가 실시간 20분 + 부팅 1~2분이다. 10회차면 **3.5시간 이상**.
+- 몇 회차를 돌릴 것인가 — 아래 **시간·비용 실측**을 먼저 읽고 정한다.
 - 이 PC 를 그동안 다른 일에 쓸 것인가 — 배치모드가 프로젝트를 잠그므로 Unity 에디터를 못 연다.
+
+### 시간·비용 실측 (2026-10-01~02)
+
+**짧은 근무는 실시간과 같은 속도로 가는데, 긴 근무에서는 느려진다.** 원인은 아직 모른다.
+
+| 커밋 | 게임초/실시간초 | 요청 | 비용 | 후보 수 |
+|---|---|---|---|---|
+| `6d8a7d32` | 180 / 180 = **1.00배** | 462 | $0.027 | 53 |
+| `6d8a7d32` | 589 / 1800 = **0.33배** | 937 | $0.080 | 52~54 |
+| `90f503c1` (#265) | 180 / 180 = **1.00배** | 210 | **$0.145** | **3,813** |
+| `90f503c1` (데스크톱) | 566 / 4800 = **0.12배** | 688 | $0.439 | 2,700~3,879 |
+
+#265 가 후보를 **72배**로 늘려 비용이 5배가 되었고, 긴 근무에서 게임 진행이 0.12배까지
+떨어졌다. 두 값이 같이 커졌지만 **인과는 측정하지 않았다.**
+
+범인이 아닌 것은 확인했다 — 디렉터 프레임은 0.354~0.405ms(p50)이고, JEV 요청 소요 시간
+합계는 실시간의 14% 다. 다만 디렉터 heartbeat 전체는 1.99ms → 26.09ms(p50), heartbeat 당
+GC 는 212KB → 5,012KB 로 커졌다.
+
+**추정하지 말고 5단계 스모크 1회로 이 PC 의 `gameSeconds`/`realSeconds` 비율과
+`peak_dollars_per_hour` 를 재서 회차 수를 정한다.**
+
+600 게임초 근무를 권한다 — 589 게임초 근무에서 사건 1건과 전개 4건이 났고 첫 사건이
+113초였다. 같은 실시간이면 **회차를 길게 끌기보다 서로 다른 시드를 늘리는 쪽이 학습에
+낫다.** 같은 근무 안의 후보들은 상태가 거의 같아 표본이 서로 닮는다(그래서 교차검증도
+근무 파일 단위로 가른다).
+
+**회차 수와 비용은 #266 판단 뒤에 정한다.** 후보 3,800개가 유지되면 비용 상한에 막혀
+회차를 늘려도 표본이 비례해 늘지 않는다.
+
+### 지금은 본 수집을 시작하지 않는다 — 이슈 #266 판단 대기
+
+> **2026-10-06 주의(관리자 검토)**: 아래 수치는 모두 `90f503c1`에서 잰 값이다. 그 뒤 #267(`84851835`)이 현장 근거 없는 설비 배치(스프링클러 3,890·소방 330·감시 591·전기 광장 95·주방 가스 220·경보 80·구획 15)를 전부 비웠다. 그래서 현재 develop의 후보 수와 비용은 **다시 재야 한다**(5단계 스모크 1회차의 `director.hazard`의 `candidates`). 다시 잰 값으로 이 판단을 갱신한다.
+
+**디렉터 판단의 절반 넘게가 예산에 막혀 버려진다.** 데스크톱 실측(2026-10-02, `90f503c1`):
+
+```
+  rounds 370 · unanswered_rounds 377   <- 판단의 50.5% 가 답을 못 받았다
+  director lane 피크 $2.9787/h         <- 상한 $3 을 거의 정확히 채운다
+  분당 요청 피크 48                     <- 상한 1,000 의 5%. 요청 수는 문제가 아니다
+```
+
+**막는 것은 분당 요청이 아니라 시간당 비용이다.** 상한이 둘인데(분당 1,000건 · **시간당 $3**)
+비용 쪽이 먼저 찬다. 이 문서의 앞선 판은 분당 요청만 보고 "상한은 걱정하지 않아도 된다" 고
+적었는데 **틀렸다.**
+
+원인은 후보 수다. 같은 시드·길이·PC 로 비교하면 #265 가 후보를 **53 → 3,813(72배)** 로 늘렸고,
+`judge` 요청당 입력 토큰이 28,477(중앙값)이 되었다. 요청 수는 오히려 줄었는데 요청 하나가
+커져서 비용이 찬다.
+
+이대로 돌리면 **`judge` 표본이 조용히 절반 빠진다.** 예산에 막힌 요청은 JSONL 에 줄을 남기지
+않으므로 `answeredLines`(688/688) 만 보면 정상처럼 보인다.
+
+**→ [#266](https://github.com/xrlab-dau/CHOOGuard/issues/266) 에서 후보 3,800개가 의도된
+규모인지 판단이 나온 뒤에 본 수집을 시작한다.** 그전까지는 5단계 스모크까지만 돌린다.
+
+### 매 회차 확인할 값
+
+| 값 | 기준 | 못 지키면 |
+|---|---|---|
+| `director.unanswered_rounds` | **0** | 판단이 버려졌다. 그만큼 표본이 빠진다 |
+| `jev.lanes.director.peak_dollars_per_hour` | **$3 미만** | 비용 상한에 찬다. 이게 실제 병목이다 |
+| `jev.usage.peak_requests_per_minute` | 1,000 미만 | 실측 48~271 로 여유가 많다 |
+| `director.rated_candidates` | — | 게임초당으로 나눠 PC·커밋 간 비교 |
+| `director.hazard` 의 `candidates` | — | 후보 수 시계열. 53(#265 전) 대 3,813(#265 후) |
+
+### 수준 분포 — 수집이 쓸모 있는지 보는 값
+
+`director.levels` 가 임박도 수준을 scale 별로 센다. 180초 실측은 이랬다.
+
+```
+  calm_origin      [504, 340, 2, 0, 0]
+  incident_origin  [180, 297, 1, 0, 0]
+  development      [  0,   0, 7, 10, 0]
+```
+
+**원인과 전개가 완전히 다른 분포다.** 원인은 최저 두 수준에 쏠리고 전개는 상위에 몰린다.
+한 scale 안에서 한 수준이 95% 를 넘으면 그 scale 은 학습할 것이 거의 없다.
 
 ---
 
@@ -54,14 +132,19 @@ git log origin/develop --oneline | grep -i "jev-all-emergencies\|#259" | head
 | **머지됨** | `origin/develop` 위에서 수집한다. 데이터 폴더 이름에 `post259` 를 넣는다 |
 | **아직 열림** | 사람에게 알리고 **멈춘다.** 지금 모으면 라벨이 옛 형식(`Choice`)이라 버려야 한다 |
 
-수집 하네스는 `feat/jev-shift-sampling` 에 있다(PR #261). develop 에 아직 없으면:
+수집 하네스는 **이미 develop 에 있다**(PR #261 머지, `651558bd`). 따로 받을 것이 없다.
 
-```sh
-git checkout -b collect origin/develop
-git merge --no-ff origin/feat/jev-shift-sampling
-```
+### 요약의 timeline · jev · director (#268, develop에 머지됨)
 
-충돌이 나면 **직접 해결하지 말고 사람에게 보고한다** — 하네스와 #259 가 같은 파일을 건드린다.
+요약에 `timeline` · `compositions` · `jev` · `director`를 담는 변경은 PR #268로 develop에 들어갔다. 따로 받거나 덮어쓸 파일은 없다. `origin/develop` 위에서 수집하면 된다.
+
+이것으로 다음을 볼 수 있다.
+
+- 무엇이 언제 일어났는지(`timeline`) · 어떻게 합성됐는지(`compositions`)
+- 요청 상한에 막혔는지(`director.unanswered_rounds`)
+- 임박도 수준이 한쪽으로 쏠렸는지(`director.levels`)
+
+적용됐는지는 4단계 컴파일 확인 뒤 5단계 스모크 요약에서 본다. `jev`와 `director` 키가 있으면 적용된 것이다. 없으면 오래된 develop이 돌고 있으니 `git pull`부터 한다.
 
 ---
 
@@ -112,15 +195,17 @@ grep "Csc.*PlayModeTests" "<DATA>/compile.log" | head -1   # 이 줄이 있어�
 본 수집 전에 **1회차만** 돌려 실제 요청량과 비용을 잰다. 추정으로 예산을 잡지 않는다.
 
 ```sh
-CG_SHIFT_COUNT=1 CG_SHIFT_SECONDS=1200 CG_SHIFT_SCALE=1 CG_SHIFT_REALCAP=1800 \
-CG_SHIFT_SEED=1000 CG_SHIFT_OUT="<DATA>/smoke" \
+CG_SHIFT_COUNT=1 CG_SHIFT_SECONDS=600 CG_SHIFT_SCALE=1 CG_SHIFT_REALCAP=2400 \
+CG_SHIFT_SEED=1000 CG_SHIFT_TIMELINE=1 CG_SHIFT_OUT="<DATA>/smoke" \
 "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Unity.exe" -batchmode -nographics \
   -projectPath "<저장소>" -runTests -testPlatform PlayMode \
   -testFilter "ChooGuard.Tests.PlayMode.ShiftSampleTests.근무를_돌려_JEV_판단을_모은다" \
   -logFile "<DATA>/smoke.log" -testResults "<DATA>/smoke.xml"
 ```
 
-실시간 약 20분 + 부팅 1~2분이 걸린다. 도중에 터미널을 닫지 않는다. 끝나면 요약과 사본을 본다:
+1.00배면 실시간 약 10분, 0.33배면 약 30분 + 부팅이다. 도중에 터미널을 닫지 않는다.
+**이 실행의 `gameSeconds`/`realSeconds` 비율로 본 수집의 회차 수를 정한다.**
+끝나면 요약과 사본을 본다:
 
 ```sh
 cat "<DATA>/smoke"/shifts-*.json
@@ -208,8 +293,8 @@ print('요청 %d건 · 입력 토큰 %d · \$%.4f' % (len(rows), tokens, tokens*
 ## 6. 본 수집
 
 ```sh
-CG_SHIFT_COUNT=10 CG_SHIFT_SECONDS=1200 CG_SHIFT_SCALE=1 CG_SHIFT_REALCAP=1800 \
-CG_SHIFT_SEED=2000 CG_SHIFT_OUT="<DATA>/run" \
+CG_SHIFT_COUNT=10 CG_SHIFT_SECONDS=600 CG_SHIFT_SCALE=1 CG_SHIFT_REALCAP=2400 \
+CG_SHIFT_SEED=2000 CG_SHIFT_TIMELINE=1 CG_SHIFT_OUT="<DATA>/run" \
 "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Unity.exe" -batchmode -nographics \
   -projectPath "<저장소>" -runTests -testPlatform PlayMode \
   -testFilter "ChooGuard.Tests.PlayMode.ShiftSampleTests.근무를_돌려_JEV_판단을_모은다" \
@@ -229,7 +314,7 @@ CG_SHIFT_SEED=2000 CG_SHIFT_OUT="<DATA>/run" \
 예: `2000` 이면 0번 회차 첫 세션은 2000, 1번 회차 첫 세션은 2008. **요약의 `seed` 는 세션이 실제로 쓴
 값(`World.Seed`)이고 `staffSeed` 는 역무원 정책의 시드다** — 회차마다 +1 이 아니다.
 
-**시간.** 회차는 실시간 약 20분 + 부팅이다. 10회차면 3.5시간 이상이다. Unity 테스트 러너의 기본 제한(180초)은
+**시간.** 600 게임초 회차는 1.00배면 실시간 약 10분, 0.33배면 약 30분 + 부팅이다. 10회차면 1.7~5시간이다. 비율은 5단계 스모크로 먼저 잰다. Unity 테스트 러너의 기본 제한(180초)은
 시험의 `[Timeout(int.MaxValue)]` 로 풀려 있고, 회차(재시도가 있으면 시도)마다 `CG_SHIFT_REALCAP` 이 실시간 상한이다.
 
 특정 사건을 더 모으고 싶을 때만 `CG_SHIFT_REQUIRE`(예: `화재`)를 쓴다. 사건을 **만드는 게 아니라
@@ -291,6 +376,20 @@ python workers/learning/distil_crowd.py --logs "<DATA>/run/jev-<UTC>" --out "<DA
 - `staff` 지표 요약 (도착·무전·막힌 경로)
 - 증류 결과 (기준선 대비)
 - 실패하거나 이상했던 회차(`drained:false` · `errorLogs>0` · `jevRejected`)와 그 로그 줄
+
+### 이번 수집 결과로 남길 값 — 이 네 개는 꼭 적어 보낸다
+
+요약에 timeline·jev·director를 담는 변경(#268)이 실제로 쓸모 있었는지 수치로 남긴다. 노트북 실측과 나란히 둔다.
+
+| 값 | 노트북 실측 | 데스크톱 |
+|---|---|---|
+| `gameSeconds` / `realSeconds` | 180/180 = 1.00배 · 589/1800 = 0.33배 | |
+| `jev.usage.peak_requests_per_minute` (상한 1000) | 271 | |
+| `director.unanswered_rounds` | 0 | |
+| `timeline` 줄 수 · `compositions` 건수 | 14줄 · 5건 (589초 근무) | |
+
+**타임라인이 실제로 쓸모 있었는지**도 한 줄로 적는다 — 사건이 시간순으로 읽혔는가,
+사건 없이 끝난 회차가 몇 건인가. 이것이 그 변경의 PR 에 들어갈 `테스트 결과` 다.
 
 ---
 

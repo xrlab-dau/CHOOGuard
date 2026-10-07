@@ -308,7 +308,8 @@ namespace ChooGuard.App.Fps.Emergency
         private void OilSplashed(FireHazard fire)
         {
             log.Add("끓는 기름에 물을 뿌려 기름이 튀고 불길이 솟았다 · " + fire.Where);
-            session.Hud.Toast("끓는 기름에 물을 뿌리면 기름이 튀고 불이 커집니다 · K급 소화기를 쓰세요", 6f);
+            // 표준·실전은 결과만 보인다(원인 설명·정답은 견학에서만).
+            session.Hud.Toast(Guided ? "끓는 기름에 물을 뿌리면 기름이 튀고 불이 커집니다 · K급 소화기를 쓰세요" : "물이 닿자 끓는 기름이 튀며 불길이 솟았습니다", 6f);
             NearestPerson(fire.Position, 3, p => !p.Hurt && !p.Hostile)?.Injure("끓는 기름이 튀어 화상을 입음");
         }
 
@@ -341,6 +342,11 @@ namespace ChooGuard.App.Fps.Emergency
                 if (!gas.Active) continue;
                 var src = leakSources[gas];
                 float age = Time.time - gas.StartedAt;
+                // 반쯤 돌린 밸브·코크는 새는 양을 줄일 뿐이다(끝까지 잠가야 멈춘다).
+                float flow = 1f;
+                foreach (var valve in src.Valves) if (!valve.Closed) flow = Mathf.Min(flow, valve.Openness);
+                if (gas.Source == GasSource.Cock && src.Range != null) flow = Mathf.Min(flow, 1f - src.Range.CockTurn);
+                gas.Flow = flow;
                 // 퓨즈콕: 호스가 빠져 흐름이 갑자기 늘면 몇 초 안에 스스로 닫힌다(약한 누출만; 고장 난 것은 계속 샌다).
                 if (gas.Source == GasSource.Hose && gas.Level == 0 && age > 4) { StopLeak(gas, "퓨즈콕", "과류 차단"); continue; }
                 // 경보기: 가스가 천장까지 올라가면(새는 세기에 따라 수 초~수십 초) 울린다.

@@ -28,9 +28,23 @@ namespace ChooGuard.App.Fps.Hud
             public Vector2 Anchor;
             public Rect? Area;
             public StationPoints.PlatformEntry Platform;
+            public TMP_Text Caption;
+            public string Label, AccessType;
+            public bool Visible;
+            public CaptionGroup Group;
         }
         private readonly List<Landmark> landmarks = new List<Landmark>();
-        private readonly List<Landmark> nearby = new List<Landmark>();
+        private sealed class CaptionGroup
+        {
+            public Landmark Owner;
+            public readonly List<Landmark> Members = new List<Landmark>();
+            public Vector2 Anchor;
+        }
+        private readonly List<CaptionGroup> captionGroups = new List<CaptionGroup>();
+        private readonly List<CaptionGroup> nearby = new List<CaptionGroup>();
+        // A group is a compact local cluster, never a chain spanning an entire platform row.
+        private const float AccessClusterMetres = 28;
+
         private readonly List<Rect> occupiedLabels = new List<Rect>();
         private readonly List<Vector3> route = new List<Vector3>();
         private Rect world;
@@ -125,6 +139,7 @@ namespace ChooGuard.App.Fps.Hud
                 Destroy(item.Pin.gameObject);
             }
             landmarks.Clear();
+            captionGroups.Clear();
             if (points == null) return;
             // Keep the latest full-world image and its surveyed projection together. Changing the player's
             // position changes which names are visible, never the map extent or a place's coordinates.
@@ -165,20 +180,21 @@ namespace ChooGuard.App.Fps.Hud
                     // second overlapping destination. Use the survey's platform number on both floors.
                     string destination = link.label.Split(new[] { " 타는 곳" }, System.StringSplitOptions.None)[0];
                     string label = destination + "번 계단";
-                    AddLandmark(link.id + "-stairs-top", label, link.stairsTop, Floor(link.stairsTop), 2);
-                    AddLandmark(link.id + "-stairs-bottom", label, link.stairsBottom, Floor(link.stairsBottom), 2);
+                    AddLandmark(link.id + "-stairs-top", label, link.stairsTop, Floor(link.stairsTop), 2).AccessType = "계단";
+                    AddLandmark(link.id + "-stairs-bottom", label, link.stairsBottom, Floor(link.stairsBottom), 2).AccessType = "계단";
                 }
                 else
-                    AddLandmark(link.id, FloorLabel(to).Replace(" 타는 곳", "번") + "\n에스컬레이터", from, Floor(from), 2);
+                    AddLandmark(link.id, FloorLabel(to).Replace(" 타는 곳", "번") + "\n에스컬레이터", from, Floor(from), 2).AccessType = "에스컬레이터";
             }
             foreach (var elevator in points.Elevators)
                 if (elevator.stops != null) foreach (var stop in elevator.stops)
-                    AddLandmark(elevator.id + "-" + stop.floor, "승강기", stop.door, Floor(stop.door), 2);
+                    AddLandmark(elevator.id + "-" + stop.floor, "승강기", stop.door, Floor(stop.door), 2).AccessType = "승강기";
             foreach (var platform in points.Platforms)
             {
                 var item = AddLandmark("platform-" + platform.id, platform.label.Replace(" 타는 곳", "번\n승강장"), (platform.a + platform.b) * .5f, Floor(platform.a), 0);
                 item.Platform = platform;
             }
+            BuildCaptionGroups();
             LayoutLandmarks();
             drawnFloor = 0;
         }
@@ -202,7 +218,7 @@ namespace ChooGuard.App.Fps.Hud
             backing.rectTransform.sizeDelta = new Vector2(width, height);
             caption.rectTransform.sizeDelta = new Vector2(width - 8, height - 2);
             var item = new Landmark { View = backing.rectTransform, Pin = dot.rectTransform,
-                Position = position, Floor = floor, Priority = priority, Area = area };
+                Position = position, Floor = floor, Priority = priority, Area = area, Caption = caption, Label = label };
             SetLandmarkActive(item, false);
             landmarks.Add(item);
             return item;
@@ -327,7 +343,7 @@ namespace ChooGuard.App.Fps.Hud
             int floor = Floor(ViewerPosition);
             picture.enabled = true;
             floorNotice.gameObject.SetActive(true);
-            floorNotice.text = "현재 층 주요 지점 · 내 주변 130 × 130m";
+            floorNotice.text = "현재 층 · 주변 130 × 130m와 겹치는 주요 구조물";
             title.text = "역 전체 안내도 · " + FloorLabel(ViewerPosition) + " 현재 위치";
             if (floor != drawnFloor) { drawnFloor = floor; DrawRoute(); }
             player.anchoredPosition = ToMap(ViewerPosition, floor);
@@ -358,6 +374,7 @@ namespace ChooGuard.App.Fps.Hud
             var at = ViewerPosition;
             float half = NearbyLabelSpan * .5f;
             var scope = new Rect(at.x - half, at.z - half, NearbyLabelSpan, NearbyLabelSpan);
+            bool changed = false;
             foreach (var item in landmarks)
             {
                 bool within;
@@ -377,46 +394,119 @@ namespace ChooGuard.App.Fps.Hud
                 else within = Mathf.Abs(item.Position.x - at.x) <= half && Mathf.Abs(item.Position.z - at.z) <= half;
                 // Long structures count when their surveyed footprint touches the square. Their caption
                 // and pin still stay at the same world location; never move them towards the player.
-                SetLandmarkActive(item, item.Floor == floor && Inside(item.Position, floor) && within);
+                bool visible = item.Floor == floor && Inside(item.Position, floor) && within;
+                changed |= item.Visible != visible;
+                item.Visible = visible;
+                item.Pin.gameObject.SetActive(visible);
             }
+            if (!changed) return;
+            foreach (var group in captionGroups)
+            {
+                // The caption has a fixed layout, but names outside the square never leak through a group.
+                string text = GroupCaption(group, false);
+                group.Owner.View.gameObject.SetActive(text.Length > 0);
+                group.Owner.Caption.text = text;
+            }
+        }
+
+        private void BuildCaptionGroups()
+        {
+            captionGroups.Clear();
+            foreach (var item in landmarks)
+            {
+                item.Anchor = ToMap(item.Position, item.Floor);
+                item.Pin.anchoredPosition = item.Anchor;
+                CaptionGroup match = null;
+                if (!string.IsNullOrEmpty(item.AccessType))
+                    foreach (var group in captionGroups)
+                    {
+                        if (group.Owner.Floor != item.Floor || group.Owner.AccessType != item.AccessType) continue;
+                        bool fits = true;
+                        foreach (var member in group.Members)
+                        {
+                            var delta = new Vector2(member.Position.x - item.Position.x, member.Position.z - item.Position.z);
+                            if (delta.sqrMagnitude <= AccessClusterMetres * AccessClusterMetres) continue;
+                            fits = false;
+                            break;
+                        }
+                        if (fits) { match = group; break; }
+                    }
+                if (match == null)
+                {
+                    match = new CaptionGroup { Owner = item };
+                    captionGroups.Add(match);
+                }
+                item.Group = match;
+                match.Members.Add(item);
+            }
+            foreach (var group in captionGroups)
+            {
+                foreach (var member in group.Members) group.Anchor += member.Anchor;
+                group.Anchor /= group.Members.Count;
+                var owner = group.Owner;
+                string text = GroupCaption(group, true);
+                var preferred = owner.Caption.GetPreferredValues(text);
+                var size = new Vector2(Mathf.Clamp(preferred.x + 12, 42, 180), Mathf.Max(22, Mathf.Ceil(preferred.y + 5)));
+                owner.View.sizeDelta = size;
+                owner.Caption.rectTransform.sizeDelta = size - new Vector2(8, 2);
+                owner.Caption.text = text;
+            }
+        }
+
+        private static string GroupCaption(CaptionGroup group, bool includeHidden)
+        {
+            Landmark single = null;
+            int count = 0;
+            var destinations = new SortedSet<string>();
+            var numbers = new SortedSet<int>();
+            bool numeric = true;
+            foreach (var member in group.Members)
+            {
+                if (!includeHidden && !member.Visible) continue;
+                single = member;
+                count++;
+                string destination = member.Label.Split('\n')[0];
+                if (member.AccessType == "계단") destination = destination.Replace("번 계단", "");
+                else if (destination.EndsWith("번")) destination = destination.Substring(0, destination.Length - 1);
+                destinations.Add(destination);
+                foreach (var token in destination.Split('·'))
+                    if (int.TryParse(token, out int number)) numbers.Add(number);
+                    else numeric = false;
+            }
+            if (count == 0) return "";
+            if (count == 1 || single.AccessType == "승강기") return single.Label;
+            string where = numeric ? string.Join("·", numbers) + "번" : string.Join(" · ", destinations);
+            return where + (single.AccessType == "계단" ? " 계단" : "\n" + single.AccessType);
         }
 
         private void LayoutLandmarks()
         {
-            // Layout once against all surveyed names on the same floor. Entering/leaving the 130m square,
-            // player motion and marker changes cannot reorder or drag a caption away from its fixed pin.
+            // Lay out every group once. Movement changes membership visibility, not its position or size.
             for (int floor = 1; floor <= 3; floor++)
             {
                 nearby.Clear();
-                foreach (var item in landmarks)
-                {
-                    if (item.Floor != floor) continue;
-                    item.Anchor = ToMap(item.Position, floor);
-                    nearby.Add(item);
-                }
+                foreach (var group in captionGroups)
+                    if (group.Owner.Floor == floor) nearby.Add(group);
                 nearby.Sort((a, b) =>
                 {
-                    int Rank(Landmark item) => item.Priority == 2 ? 0 : item.Priority == 1 ? 1 : 2;
+                    int Rank(CaptionGroup group) => group.Owner.Priority == 2 ? 0 : group.Owner.Priority == 1 ? 1 : 2;
                     int priority = Rank(a).CompareTo(Rank(b));
-                    return priority != 0 ? priority : string.CompareOrdinal(a.View.name, b.View.name);
+                    return priority != 0 ? priority : string.CompareOrdinal(a.Owner.View.name, b.Owner.View.name);
                 });
                 occupiedLabels.Clear();
-                foreach (var item in nearby)
-                    occupiedLabels.Add(new Rect(item.Anchor - Vector2.one * 3, Vector2.one * 6));
-                foreach (var item in nearby)
-                {
-                    PlaceCaption(item);
-                    item.Pin.anchoredPosition = item.Anchor;
-                }
+                foreach (var item in landmarks)
+                    if (item.Floor == floor) occupiedLabels.Add(new Rect(item.Anchor - Vector2.one * 3, Vector2.one * 6));
+                foreach (var group in nearby) PlaceCaption(group);
             }
             foreach (var item in landmarks) item.Pin.SetAsLastSibling();
             foreach (var item in landmarks) item.View.SetAsLastSibling();
         }
-        private void PlaceCaption(Landmark item)
+        private void PlaceCaption(CaptionGroup group)
         {
+            var item = group.Owner;
             var half = item.View.sizeDelta * .5f;
             var limit = mapRect.sizeDelta * .5f - half - Vector2.one * 4;
-            var preferred = item.Anchor + new Vector2(0, half.y + 5);
+            var preferred = group.Anchor + new Vector2(0, half.y + 5);
             Vector2 chosen = preferred;
             float bestOverlap = float.PositiveInfinity, bestDistance = float.PositiveInfinity;
             void Consider(Vector2 candidate)
