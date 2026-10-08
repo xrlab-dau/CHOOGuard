@@ -223,6 +223,21 @@ grep -E "CG_HARNESS|CG_POLICY|CG_STAFF|CG_PATROL|CG_FLUSH" "<DATA>/smoke.log"
 
 **검증 — 아래를 모두 만족해야 본 수집으로 넘어간다.**
 
+먼저 이번 실행의 정확한 요약 파일을 지정해 자동 검증한다. `--expected-shifts`는 실행에 쓴
+`CG_SHIFT_COUNT`와 같아야 한다. 와일드카드로 예전 실행을 함께 넣지 않는다.
+
+```sh
+python workers/learning/validate_capture.py "<DATA>/smoke/shifts-<UTC>.json" --expected-shifts 1
+```
+
+종료 코드 0과 JSON의 `ok: true`를 확인한다. 이 검사는 **Unity 시험 통과와 별개**다.
+`director.unanswered_rounds > 0`은 JSONL에 성공한 응답만 있어도 실패한다(#266).
+미완료 요청·누락 회차·깨진 기록·런타임 오류·없는 사본·요약과 사본의 집계 불일치도 실패하며,
+누락 필드를 0으로 보지 않는다. 사본의 HTTP 200 + 비어 있지 않은 `answers` 객체를 직접 세어
+목적별 응답 집계까지 대조한다. 기록된 HTTP 실패·빈 응답은 경고로 따로 표시하므로 아래 표대로 확인한다.
+이 검사는 키·Unity·추가 패키지·네트워크 없이 실행되고 새 과금 요청을 보내지 않는다.
+사건 발생이나 특정 종류·수준 분포, 본 수집 승인 여부를 판정하지 않는다.
+
 | 항목 | 기준 | 안 맞을 때 |
 |---|---|---|
 | 시험 판정 | `passed=1 failed=0` | 로그의 첫 `Assert` 실패 메시지를 사람에게 보고 |
@@ -231,7 +246,7 @@ grep -E "CG_HARNESS|CG_POLICY|CG_STAFF|CG_PATROL|CG_FLUSH" "<DATA>/smoke.log"
 | `answeredLines` | **0보다 충분히 큼** — `http` 200 이고 `answers` 가 비어 있지 않은 줄만 센다 | 키·네트워크·예산 확인 후 사람에게 보고 |
 | `jevLogLines` − `answeredLines` | 실패한 요청(401 키 거부·429 한도·시간초과). 작아야 한다 | 로그의 `JEV` 상태 줄을 인용해 사람에게 보고 |
 | `drained` · `pendingRequests` | `true` · `0` | 그 회차 사본은 완전하지 않다 |
-| `requests` | `jevLogLines + pendingRequests` 이상 | 더 크면 JEV 기록 파일이 상한에 걸려 줄이 버려진 것 |
+| `requests` | drain 완료 뒤 `jevLogLines`와 같음 | 더 크면 JEV 기록 파일이 상한에 걸려 줄이 버려진 것; 더 작아도 집계 불일치 |
 | `malformedLines` | `0` | 읽지 못한 줄이다. 사본 원문을 확인 |
 | `seed` | 세션이 **실제로 쓴** 시드 | 지정했다면 6번의 시드 공식과 맞는지 |
 | `errorLogs` | `0` | 기록을 남긴 뒤 시험이 실패한다. `smoke.log` 의 첫 오류 줄을 인용해 보고 |
@@ -304,7 +319,7 @@ CG_SHIFT_SEED=2000 CG_SHIFT_TIMELINE=1 CG_SHIFT_OUT="<DATA>/run" \
 | 환경변수 | 이 수집에서 | 왜 |
 |---|---|---|
 | `CG_SHIFT_SCALE` | **반드시 1** | 압축하면 판단이 실시간 상한에 걸려 버려진다 |
-| `CG_SHIFT_SECONDS` | **1200** | 첫 30초는 조용하고 첫 사건이 평균 약 3분 뒤다 |
+| `CG_SHIFT_SECONDS` | **600** | 위 실행 명령과 같은 10 게임분 근무; 사건 발생을 보장하는 길이는 아니다 |
 | `CG_SHIFT_OUT` | **반드시 준다** | 없으면 JSONL 사본을 뜨지 않아 세션이 쌓이며 오래된 기록이 지워진다 |
 | `CG_SHIFT_SEED` | 고정값 | 재현하려면 필요하다. 0 이면 매번 무작위 |
 | `CG_SHIFT_FILM` | **주지 말 것** | 녹화는 근무에 없던 부하를 더한다 |
@@ -327,6 +342,13 @@ CG_SHIFT_SEED=2000 CG_SHIFT_TIMELINE=1 CG_SHIFT_OUT="<DATA>/run" \
 ---
 
 ## 7. 수집 후
+
+학습 전에 수집 전체를 다시 검증한다. 아래 10은 6단계의 `CG_SHIFT_COUNT=10`에 대응한다.
+한 회차라도 누락되거나 불완전하면 종료 코드 1이므로 그 원인을 해결하기 전 학습으로 넘기지 않는다.
+
+```sh
+python workers/learning/validate_capture.py "<DATA>/run/shifts-<UTC>.json" --expected-shifts 10
+```
 
 ```sh
 cat "<DATA>/run"/shifts-*.json               # 회차별 요약 (회차당 한 줄)
