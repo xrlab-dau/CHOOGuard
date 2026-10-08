@@ -28,7 +28,7 @@ blob 없이 전체 이력만 받은 체크아웃에서 돈다. 파일 내용은 
 | `unity-text` | 설정 + 변경분 | `m_SerializationMode: 2`(Force Text). 바뀐 씬·프리팹·머티리얼·애니메이션은 `%YAML`로 시작. NavMesh·LightingData `.asset`은 원래 바이너리라 제외 |
 | `tmp-dynamic-font` | 변경분 | Dynamic·DynamicOS이면서 *Clear Dynamic Data On Build*가 켜진 TMP 폰트(`*SDF*.asset`)는 **빈 상태로 커밋**한다. TMP가 Unity를 끌 때와 빌드할 때마다 이 폰트를 비우고, 한글은 쓰는 순간 원본 폰트에서 다시 채운다(#248). Unity를 켠 채 커밋하면 채워진 상태가 섞이므로 그 파일은 커밋에서 빼거나 `git checkout -- <파일>`로 되돌린다 |
 | `ignored-files` | 변경분 | `.gitignore`에 걸리는 경로를 강제로 추가하지 않는다(macOS·Windows와 같게 대소문자 무시) |
-| `large-files` | 변경분 | 50 MiB 초과 경고, 100 MiB 초과 오류 |
+| `large-files` | 변경분 | 50 MiB 초과 경고, 100 MiB 초과 오류. 인증된 API 조회가 실패하거나 응답이 잘리거나 변경 파일 크기가 누락되면 검증 불가 오류로 처리 |
 | `branch-flow` | PR | `main`에는 `develop`, `release/*`, `hotfix/*`만 |
 | `graph-freshness` | 전체 | `graphify-out/graph.json` 갱신 뒤 색인 대상 파일이 바뀌면 경고만 낸다. `graphify update .` 후 커밋 |
 

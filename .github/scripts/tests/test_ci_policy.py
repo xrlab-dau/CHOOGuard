@@ -1,10 +1,12 @@
 """Policy gate rules and the git plumbing they depend on (temporary repositories only)."""
+import json
 import os
 import subprocess
 import sys
 import tempfile
 import unittest
-from contextlib import contextmanager
+from contextlib import contextmanager, redirect_stdout
+from io import BytesIO, StringIO
 from pathlib import Path
 from unittest import mock
 
@@ -147,6 +149,79 @@ def write(root, path, data):
     target = root / path
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(data)
+
+
+class SizeApiGateTests(unittest.TestCase):
+    def setUp(self):
+        repo = repository()
+        root = repo.__enter__()
+        self.addCleanup(repo.__exit__, None, None, None)
+        write(root, "ProjectSettings/EditorSettings.asset", b"%YAML 1.1\n  m_SerializationMode: 2\n")
+        run("git", "add", "-A")
+        run("git", "commit", "-q", "-m", "base")
+        self.base = run("git", "rev-parse", "HEAD")
+        write(root, "docs/small.txt", b"small")
+        write(root, "docs/large.bin", b"payload")
+        run("git", "add", "-A")
+        run("git", "commit", "-q", "-m", "change")
+
+    def check_response(self, sizes=None, *, truncated=False, error=None, raw=None):
+        tree = {"truncated": truncated, "tree": [
+            {"path": path, "type": "blob", "size": size}
+            for path, size in (sizes or {}).items()
+        ]}
+        response = BytesIO(raw if raw is not None else json.dumps(tree).encode())
+        output = StringIO()
+        env = {k: v for k, v in os.environ.items() if k != "GITHUB_STEP_SUMMARY"}
+        env["GITHUB_TOKEN"] = "test-token"
+        with mock.patch.dict(os.environ, env, clear=True), \
+             mock.patch.object(policy.urllib.request, "urlopen", return_value=response, side_effect=error) as request, \
+             redirect_stdout(output):
+            result = policy.main(["--base", self.base, "--head", "HEAD", "--event", "push", "--repo", "owner/repo"])
+        request.assert_called_once()
+        return result, output.getvalue()
+
+    def assert_size_failure(self, result, output):
+        self.assertEqual(result, 1)
+        self.assertIn("title=large-files", output)
+        self.assertIn("| `large-files` | ❌", output)
+        self.assertNotIn("| `large-files` | ✅ pass |", output)
+
+    def test_api_errors_fail_the_gate(self):
+        for error in (policy.urllib.error.URLError("offline"), TimeoutError("timeout")):
+            with self.subTest(error=type(error).__name__):
+                result, output = self.check_response(error=error)
+                self.assert_size_failure(result, output)
+                self.assertIn("unavailable", output.lower())
+
+    def test_invalid_json_fails_the_gate(self):
+        self.assert_size_failure(*self.check_response(raw=b"not json"))
+
+    def test_truncated_response_fails_even_with_all_changed_sizes(self):
+        self.assert_size_failure(*self.check_response({"docs/small.txt": 5, "docs/large.bin": 7}, truncated=True))
+
+    def test_missing_changed_paths_fail_and_identify_each_path(self):
+        for sizes in ({}, {"docs/small.txt": 5}):
+            with self.subTest(sizes=sizes):
+                result, output = self.check_response(sizes)
+                self.assert_size_failure(result, output)
+                self.assertIn("file=docs/large.bin,title=large-files", output)
+                if not sizes:
+                    self.assertIn("file=docs/small.txt,title=large-files", output)
+
+    def test_known_oversized_files_are_reported_even_if_another_size_is_missing(self):
+        result, output = self.check_response({"docs/large.bin": 100 * MIB + 1})
+        self.assert_size_failure(result, output)
+        self.assertIn("file=docs/small.txt,title=large-files", output)
+        self.assertIn("100 MiB blob limit", output)
+
+    def test_complete_response_preserves_exact_thresholds(self):
+        for size, exit_code, verdict in ((50 * MIB, 0, "✅ pass"), (50 * MIB + 1, 0, "⚠️ 1 warning(s)"),
+                                         (100 * MIB, 0, "⚠️ 1 warning(s)"), (100 * MIB + 1, 1, "❌ 1 error(s)")):
+            with self.subTest(size=size):
+                result, output = self.check_response({"docs/small.txt": 5, "docs/large.bin": size})
+                self.assertEqual(result, exit_code)
+                self.assertIn(f"| `large-files` | {verdict} |", output)
 
 
 class GitPlumbingTests(unittest.TestCase):
