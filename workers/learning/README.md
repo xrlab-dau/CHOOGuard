@@ -144,8 +144,21 @@ CG_SHIFT_OUT="D:\cg-data" \
 
 ## 4. 파이프라인
 
+먼저 `validate_capture.py`에 해당 실행의 요약 파일과 실제 `CG_SHIFT_COUNT`를 준다.
+Unity 시험이 통과해도 `director.unanswered_rounds`가 0보다 크면 JSONL에 없는 판단이 빠진 것이다(#266).
+검증기는 회차 수·drain·오류·사본 존재와 실제 줄/응답/목적별 집계도 확인하고, 불완전하면 종료 코드 1을 낸다.
+키나 네트워크, 추가 패키지가 필요 없는 오프라인 검사다. 기록된 HTTP 실패는 경고를 확인하며,
+사건이 없는 근무나 `discarded/`에 따로 보존한 시도를 실패로 세지 않는다.
+이 통과는 수집 완전성 확인이고 사건 분포 검증·본 수집 승인·#266의 비용 문제 해결을 뜻하지 않는다.
+
+```sh
+python workers/learning/validate_capture.py "D:\cg-data\shifts-<UTC>.json" --expected-shifts 10
+python -m unittest discover -s workers/learning -p test_validate_capture.py
+```
+
 ```
 근무 실행 (ShiftSampleTests)
+   └─ shifts-<UTC>.json + 사본 → validate_capture.py (불완전하면 중단)
    └─ jev-<UTC>/jev-shift-*.jsonl             ← 시도마다 보존한 정본 사본
         ├─ distil_crowd.py      → 승객 다음 행동 판단 증류
         └─ label_causes.py      → 후보 단위 임박도 표본 펼치기
