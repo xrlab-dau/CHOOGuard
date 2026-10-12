@@ -154,7 +154,7 @@ namespace ChooGuard.App.Fps.Emergency
             Map = MapOverlay.Create(transform, KoreanFont, StationMap, StationMapBounds, Player.PlayerCamera != null ? Player.PlayerCamera.transform : Player.transform, StationMapLabel);
             Wheel = RadioWheel.Create(transform, KoreanFont);
             Pause = PauseMenu.Create(transform, KoreanFont, Player, "근무 시작",
-                "부산역 오후 근무입니다. 서울에서 KTX가 곧 5·6 타는 곳에 들어옵니다.\n승객들은 각자의 여정대로 움직입니다. 무슨 일이 언제, 어디서 일어날지는 정해져 있지 않습니다.\n이상을 발견하면 알리고, 사람들을 지키고, 도착한 기관에 인계하세요.\n" +
+                "부산역 오후 근무입니다. 서울에서 KTX가 곧 5·6 타는 곳에 들어옵니다.\n승객들은 각자의 여정대로 움직입니다. 근무를 시작하면 곧 무슨 일이 생깁니다 — 그것이 무엇이고 어디인지는 정해져 있지 않습니다.\n이상을 발견하면 알리고, 사람들을 지키고, 도착한 기관에 인계하세요.\n" +
                 "<size=15>안내 수준 " + GameSettings.Label(GameSettings.Guidance) + " · " + GameSettings.Describe(GameSettings.Guidance) + " (설정에서 바꿀 수 있습니다)</size>");
             Player.PauseChanged += OnPauseChanged;
             RadioProviders.Add(RoutineReports);
