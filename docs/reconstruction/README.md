@@ -1,6 +1,6 @@
 # Large-building reconstruction for CHOOGuard
 
-Research checked 2026-10-11; tool integration prepared 2026-10-12. The initial
+Research checked 2026-10-11; tool integration checked 2026-10-13. The initial
 recommendation is **CityGaussianV2 as a reproducible baseline**, compared against
 CityGS-X and COLMAP MVS on the same captured region. This is an implementation-fit
 decision, not an established universal ranking.
@@ -14,6 +14,9 @@ Unity project; they are not field captures of a building.
 
 The [surface-cloud worker](../../workers/reconstruction/README.md) implements the
 extracted-mesh-to-point-cloud handoff with reproducible samples and coordinate metadata.
+Its CloudCompare adapter now verifies a real SOR/subsampling run on analytic test
+geometry, retaining both stages, counts, logs and hashes. This is tool interoperability
+evidence, not a reconstructed building or an automatic quality approval.
 No new CHOOGuard building has yet been trained, cleaned in CloudCompare, processed in
 Blender, or accepted in a Unity build through this pipeline. A real capture set and
 scale evidence are still required. The inspected workstation has a 4 GB RTX 3050 Laptop;
@@ -55,8 +58,9 @@ hardware/data/evaluation conditions, not this project's unmeasured Unity perform
 3. **Create the point cloud.** Run `workers/reconstruction/surface_cloud.py` on the
    extracted PLY mesh. Keep the mesh as well. Record explicit units, source kind,
    scale evidence, axes and both coordinate transforms in the bundle.
-4. **CloudCompare cleanup.** Use recorded crop/SOR/subsampling settings and retain
-   raw/rejected/cleaned data. Inspect thin structures and important cross-sections.
+4. **CloudCompare cleanup.** Run `workers/reconstruction/clean_cloud.py` on the sampling
+   bundle with explicit SOR and spacing settings. Retain raw, SOR and sampled data;
+   record any separate crop or mask operation. Inspect thin structures and important cross-sections.
    AI can propose masks and settings; measured effects and observation evidence
    decide acceptance. A small before/after distance is not absolute survey accuracy.
 5. **Blender asset work.** Verify the retained mesh against the cloud, or explicitly
