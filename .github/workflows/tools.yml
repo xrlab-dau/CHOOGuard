@@ -98,6 +98,12 @@ jobs:
       - name: Install the physics core (locked, without JuPedSim's GUI stack)
         run: python -m pip install --require-hashes --no-deps -r .github/requirements/physics.txt
 
+      - name: Install locked surface-cloud dependencies
+        run: python -m pip install --require-hashes --no-deps -r .github/requirements/reconstruction.txt
+
+      - name: Surface point-cloud handoff tests
+        run: python -m unittest discover -s workers/reconstruction -p 'test_*.py' -v
+
       - name: Physics verification probes
         run: |
           receipt=workers/physics/verification/receipt.json
