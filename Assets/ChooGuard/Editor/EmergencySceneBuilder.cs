@@ -91,12 +91,21 @@ namespace ChooGuard.Editor
             {
                 if (setup.Length > 0) EditorSceneManager.RestoreSceneManagerSetup(setup);
             }
-            EditorBuildSettings.scenes = new[]
+            var buildScenes = new List<EditorBuildSettingsScene>
             {
                 new EditorBuildSettingsScene(BootstrapScenePath, true),
                 new EditorBuildSettingsScene(StationScenePath, true),
                 new EditorBuildSettingsScene(EmergencyScenePath, true),
             };
+            var tutorials = AssetDatabase.LoadAssetAtPath<ChooGuard.App.Fps.Tutorial.TutorialCatalog>(TrainTutorialSceneBuilder.CatalogPath);
+            if (tutorials != null && tutorials.Validate(out _))
+                foreach (var category in tutorials.Categories)
+                {
+                    var path = AssetDatabase.FindAssets("t:Scene " + category.SceneName).Select(AssetDatabase.GUIDToAssetPath)
+                        .FirstOrDefault(p => Path.GetFileNameWithoutExtension(p) == category.SceneName);
+                    if (path != null && !buildScenes.Any(s => s.path == path)) buildScenes.Add(new EditorBuildSettingsScene(path, true));
+                }
+            EditorBuildSettings.scenes = buildScenes.ToArray();
             AssetDatabase.SaveAssets();
             Debug.Log("CG_EMERGENCY_SCENES " + EmergencyScenePath + " + title + build order");
         }

@@ -25,6 +25,8 @@ namespace ChooGuard.App.Fps.Shell
         private JevKeyPanel jevPanel;
         private TMP_Text jevStatus;
         private JevKeyCheck titleCheck;
+        private TutorialMenu tutorials;
+        public Button TutorialButton { get; private set; }
 
         private void Start()
         {
@@ -69,12 +71,12 @@ namespace ChooGuard.App.Fps.Shell
             sub.color = FpsUiFactory.Accent;
             FpsUiFactory.Block(menu, "구분선", new Vector2(0, 1), new Vector2(74, -198), new Vector2(64, 3), FpsUiFactory.Accent);
 
-            StartButton = FpsUiFactory.Button(menu, KoreanFont, "근무 시작", new Vector2(0, .5f), new Vector2(72, 40), new Vector2(360, 56), OnStart, 24);
-            // 버튼 줄 수는 그대로 둔다(짧은 화면에서 아래 안내문과 겹치지 않게): JEV 연결과 설정을 한 줄에 나란히 두고,
-            // JEV 상태는 그 버튼 글자로 보인다.
-            jevStatus = FpsUiFactory.Button(menu, KoreanFont, "JEV 연결", new Vector2(0, .5f), new Vector2(72, -26), new Vector2(176, 56), () => OpenJev(null), 20).GetComponentInChildren<TMP_Text>();
-            FpsUiFactory.Button(menu, KoreanFont, "설정", new Vector2(0, .5f), new Vector2(256, -26), new Vector2(176, 56), OnSettings, 20);
-            FpsUiFactory.Button(menu, KoreanFont, "종료", new Vector2(0, .5f), new Vector2(72, -92), new Vector2(360, 56), SceneFlow.Quit, 24);
+            StartButton = FpsUiFactory.Button(menu, KoreanFont, "근무 시작", new Vector2(0, .5f), new Vector2(72, 80), new Vector2(360, 56), OnStart, 24);
+            TutorialButton = FpsUiFactory.Button(menu, KoreanFont, "튜토리얼 모드", new Vector2(0, .5f), new Vector2(72, 14), new Vector2(360, 56), () => { menu.gameObject.SetActive(false); tutorials.Show(); }, 24);
+            // 연결·설정을 나란히 두어 튜토리얼 버튼과 하단 안내문 사이의 간격을 확보한다.
+            jevStatus = FpsUiFactory.Button(menu, KoreanFont, "JEV 연결", new Vector2(0, .5f), new Vector2(72, -52), new Vector2(176, 56), () => OpenJev(null), 20).GetComponentInChildren<TMP_Text>();
+            FpsUiFactory.Button(menu, KoreanFont, "설정", new Vector2(0, .5f), new Vector2(256, -52), new Vector2(176, 56), OnSettings, 20);
+            FpsUiFactory.Button(menu, KoreanFont, "종료", new Vector2(0, .5f), new Vector2(72, -118), new Vector2(360, 56), SceneFlow.Quit, 24);
 
             var role = FpsUiFactory.Text(menu, KoreanFont, "역할", new Vector2(0, 0), new Vector2(72, 96), new Vector2(460, 56), 17, TextAlignmentOptions.BottomLeft);
             role.text = "KORAIL 역무원 · 부산역 2층 맞이방 근무\n승객과 공간에서 벌어지는 상황에 대응합니다.";
@@ -86,7 +88,16 @@ namespace ChooGuard.App.Fps.Shell
             settings = SettingsPanel.Create(root, KoreanFont, () => { settings.Hide(); menu.gameObject.SetActive(true); });
             jevPanel = JevKeyPanel.Create(root, KoreanFont, () => { jevPanel.Hide(); menu.gameObject.SetActive(true); StartButton.Select(); });
             jevPanel.Changed += CheckJev;
+            tutorials = TutorialMenu.Create(root, KoreanFont, Resources.Load<ChooGuard.App.Fps.Tutorial.TutorialCatalog>(ChooGuard.App.Fps.Tutorial.TutorialCatalog.ResourceName),
+                category => SceneFlow.StartTutorial(category.SceneName, KoreanFont, Background),
+                () => { tutorials.Hide(); menu.gameObject.SetActive(true); TutorialButton.Select(); });
             StartButton.Select();
+            if (SceneFlow.OpenTutorialMenuOnTitle)
+            {
+                SceneFlow.ConsumeTutorialMenuRequest();
+                menu.gameObject.SetActive(false);
+                tutorials.Show();
+            }
             CheckJev();
         }
 
