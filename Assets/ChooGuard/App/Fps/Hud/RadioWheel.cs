@@ -39,7 +39,7 @@ namespace ChooGuard.App.Fps.Hud
 
         public void Show(IReadOnlyList<string> options) => Show(options, "무전\n<size=12>방향을 고른 뒤 떼기</size>");
 
-        public void Show(IReadOnlyList<string> options, string centreText)
+        public void Show(IReadOnlyList<string> options, string centreText, bool preservePointer = false)
         {
             count = options.Count;
             while (items.Count < count)
@@ -59,10 +59,11 @@ namespace ChooGuard.App.Fps.Hud
                 items[i].back.rectTransform.anchoredPosition = direction * Radius;
                 items[i].text.text = options[i];
             }
-            pointer = Vector2.zero;
+            if (!preservePointer) pointer = Vector2.zero;
             Selected = -1;
             centre.text = centreText;
             canvas.enabled = true;
+            Steer(Vector2.zero);
         }
 
         public void Steer(Vector2 mouseDelta)

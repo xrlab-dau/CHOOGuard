@@ -14,6 +14,18 @@ namespace ChooGuard.App.Fps.Shell
         public const string EmergencyScene = "StationEmergency";
 
         public static bool Loading { get; private set; }
+        public static bool OpenTutorialMenuOnTitle { get; private set; }
+        public static void ConsumeTutorialMenuRequest() => OpenTutorialMenuOnTitle = false;
+        public static void StartTutorial(string sceneName, TMP_FontAsset font, Texture background)
+        {
+            if (Loading) return;
+            if (string.IsNullOrWhiteSpace(sceneName) || !UnityEngine.Application.CanStreamedLevelBeLoaded(sceneName))
+            { Debug.LogError("튜토리얼 씬을 빌드 목록에서 찾을 수 없습니다: " + sceneName); return; }
+            Loading = true;
+            var runner = new GameObject("튜토리얼 불러오기");
+            Object.DontDestroyOnLoad(runner);
+            runner.AddComponent<LoadingScreen>().Run(font, background, sceneName);
+        }
 
         public static void StartShift(TMP_FontAsset font, Texture background)
         {
@@ -28,6 +40,12 @@ namespace ChooGuard.App.Fps.Shell
         {
             Time.timeScale = 1;
             SceneManager.LoadScene(TitleScene, LoadSceneMode.Single);
+        }
+
+        public static void ToTutorialMenu()
+        {
+            OpenTutorialMenuOnTitle = true;
+            ToTitle();
         }
 
         /// <summary>Raised when the player chooses to quit. The Editor assembly uses it to leave play mode.</summary>
@@ -62,7 +80,7 @@ namespace ChooGuard.App.Fps.Shell
             private Image bar;
             private TMP_Text status;
 
-            public void Run(TMP_FontAsset font, Texture background)
+            public void Run(TMP_FontAsset font, Texture background, string tutorialScene = null)
             {
                 var canvas = FpsUiFactory.Canvas("불러오기 화면", transform, 1000);
                 var back = FpsUiFactory.Picture(canvas.transform, "배경", background);
@@ -71,14 +89,23 @@ namespace ChooGuard.App.Fps.Shell
                 var shade = FpsUiFactory.Panel(canvas.transform, "음영", Vector2.zero, Vector2.zero, new Color(0, 0, 0, .45f));
                 FpsUiFactory.Stretch(shade.rectTransform);
                 var tip = FpsUiFactory.Text(canvas.transform, font, "도움말", new Vector2(.5f, 0), new Vector2(0, 118), new Vector2(1100, 60), 20, TextAlignmentOptions.Center);
-                tip.text = Tips[Random.Range(0, Tips.Length)];
+                tip.text = tutorialScene == null ? Tips[Random.Range(0, Tips.Length)] : "위치와 조작을 순서대로 안내합니다. 천천히 따라 해도 시간 초과로 실패하지 않습니다.";
                 tip.color = FpsUiFactory.TextDim;
                 FpsUiFactory.Block(canvas.transform, "진행 바탕", new Vector2(.5f, 0), new Vector2(0, 80), new Vector2(900, 4), new Color(1, 1, 1, .15f));
                 bar = FpsUiFactory.Block(canvas.transform, "진행", new Vector2(.5f, 0), new Vector2(-450, 80), new Vector2(0, 4), FpsUiFactory.Accent);
                 bar.rectTransform.pivot = new Vector2(0, 0);
                 bar.rectTransform.anchoredPosition = new Vector2(-450, 80);
                 status = FpsUiFactory.Text(canvas.transform, font, "상태", new Vector2(.5f, 0), new Vector2(0, 40), new Vector2(900, 30), 17, TextAlignmentOptions.Center);
-                StartCoroutine(Load());
+                StartCoroutine(tutorialScene == null ? Load() : LoadTutorial(tutorialScene));
+            }
+
+            private IEnumerator LoadTutorial(string sceneName)
+            {
+                var operation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+                while (!operation.isDone) { Report(operation.progress, "열차점검 준비 중"); yield return null; }
+                Report(1, "튜토리얼 시작");
+                Loading = false;
+                Destroy(gameObject);
             }
 
             private IEnumerator Load()
