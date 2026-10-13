@@ -17,6 +17,9 @@ extracted-mesh-to-point-cloud handoff with reproducible samples and coordinate m
 Its CloudCompare adapter now verifies a real SOR/subsampling run on analytic test
 geometry, retaining both stages, counts, logs and hashes. This is tool interoperability
 evidence, not a reconstructed building or an automatic quality approval.
+The Blender handoff now exports PLY/FBX/blend from the retained mesh and checks a real
+Blender reimport on asymmetric test geometry. An isolated Unity import probe is provided,
+but local Unity stopped before import with exit 198 (no valid Editor licence).
 No new CHOOGuard building has yet been trained, cleaned in CloudCompare, processed in
 Blender, or accepted in a Unity build through this pipeline. A real capture set and
 scale evidence are still required. The inspected workstation has a 4 GB RTX 3050 Laptop;
@@ -63,7 +66,8 @@ hardware/data/evaluation conditions, not this project's unmeasured Unity perform
    record any separate crop or mask operation. Inspect thin structures and important cross-sections.
    AI can propose masks and settings; measured effects and observation evidence
    decide acceptance. A small before/after distance is not absolute survey accuracy.
-5. **Blender asset work.** Verify the retained mesh against the cloud, or explicitly
+5. **Blender asset work.** `workers/reconstruction/prepare_blender.py` prepares the
+   retained mesh using the sampler's scale/origin and explicit source axes. Verify it against the cloud, or explicitly
    reconstruct a surface and compare it. Repair relevant topology, bake color/normal
    textures, partition assets and simplify while preserving doors/stairs/railings.
    Prepare separate collision and interaction objects. Preserve unobserved regions
