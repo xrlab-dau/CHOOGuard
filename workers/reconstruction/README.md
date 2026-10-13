@@ -118,6 +118,85 @@ surface from the cleaned cloud and compare the two paths. Bake colors/textures,
 reduce geometry with important boundaries preserved, and author separate colliders.
 See [the project workflow](../../docs/reconstruction/README.md) for the Unity gate.
 
+## Blender mesh preparation
+
+Keep using the **retained extracted mesh**, with the sampling receipt that identifies
+its hash. The cleaned point cloud is a comparison reference; filtering its points
+does not automatically modify the retained mesh or create faces.
+
+```powershell
+python workers/reconstruction/prepare_blender.py capture/fuse_post.ply `
+  artifacts/reconstruction/run-001/receipt.json artifacts/reconstruction/blender-001 `
+  --blender $BlenderExe --source-forward Y --source-up Z `
+  --frame-reference "verified right-handed source frame; replace with your evidence"
+```
+
+The axis arguments above are examples. Verify your capture's frame first: this tool
+accepts **right-handed** source frames only and does not infer them from receipt text.
+`--source-forward` and `--source-up` accept `X/Y/Z/NEGATIVE_X/NEGATIVE_Y/NEGATIVE_Z`
+and must describe different axes. The native Blender axis helper rotates them to
+Blender's +Y forward / +Z up convention used for this handoff, and records its matrix.
+Left-handed inputs need a separately verified conversion before sampling.
+
+The wrapper hashes the original mesh against the receipt, then applies its scale and
+origin **in float64 before Blender import**. The intermediate `source_local_m.ply`
+therefore avoids introducing float32 loss at large global coordinates. A 1 mm storage
+precision check applies to every retained mesh vertex; this is not a building-accuracy
+claim. Degenerate faces are rejected for explicit repair and a new sampling run.
+
+The installed Blender executable runs in a fresh background process with factory
+startup and script auto-execution disabled. A new output bundle contains:
+
+- `source_local_m.ply`: retained mesh in the sampler's local-metre source frame.
+- `prepared.ply`, `prepared.fbx`, `review.blend`: Blender-frame review/export outputs.
+- `sampling_receipt.json`, `request.json`, `blender.log`, `blender_report.json`,
+  `receipt.json`: input identity, explicit frame/scale, counts, bounds, tool/code/output
+  hashes and round-trip results.
+
+The default keeps all triangles. To request native Blender Decimate explicitly,
+add `--decimate-ratio 0.5` (example only). Inspect doors, stairs and thin structures;
+the modifier does not guarantee important boundaries or colors remain acceptable.
+No holes are filled, missing building regions invented, or colliders generated.
+The wrapper retains the original local mesh for comparison.
+
+FBX uses the repository's existing `-Z` forward / `Y` up convention, with metre scale
+encoded in FBX units. A Blender reimport checks triangle count, color-attribute presence
+and bounds within 1 mm. This does **not** prove surface fidelity or Unity's import
+orientation. Vertex colors remain attributes: the Blender preview node material needs
+a suitable Unity vertex-color shader or an explicit texture bake; it is not a Unity
+material implementation.
+
+On 2026-10-13, the eight handoff tests passed with Blender 4.5.9 LTS, including genuine
+asymmetric-axis/color and decimation/export/reimport tests. Set `BLENDER_EXE` to opt
+into those two integration tests; ordinary worker CI explicitly skips them. A missing
+or failed Blender run produces no final success receipt. The default process timeout
+is 30 minutes. Start with small regions because import/export/reimport loads geometry.
+
+## Isolated Unity import probe
+
+`probe_unity.py` creates a new, disposable project containing one **analytic fixture**
+and `HandoffProbe.cs`; it does not copy anything into the CHOOGuard game project.
+Use an installed, licensed Editor matching the requested version:
+
+```powershell
+python workers/reconstruction/probe_unity.py artifacts/reconstruction/unity-probe-002 `
+  --blender $BlenderExe --unity $UnityExe --unity-version 6000.3.23f1
+```
+
+It checks a declared target mapping (+X east, +Y up, +Z north), the imported vertices,
+triangle count, and presence of normals/colors, with scale 1 and file units enabled.
+The new project retains `probe_expected.json`, `probe_result.json` if execution reaches
+the checks, `editor.log`, and the Blender/sampling bundles. An FBX hash mismatch, import
+failure, wrong version or failed verdict is not success. The default timeout is 15
+minutes; this diagnostic is outside normal CI and does not build a player.
+
+The local attempt on 2026-10-13 stopped **before import** with Unity exit 198:
+`No valid Unity Editor license found`. Thus Unity orientation/import and the full
+CHOOGuard build are **not yet verified** by this work. After activation, use a new probe
+directory and inspect its verdict; do not count the existing Blender round trip as
+Unity acceptance. Keep real model integration, collider/navigation checks and target
+device performance as separate acceptance work.
+
 ## Verified scope and provenance
 
 Tests use analytic triangles to check interior samples, area ratios, color gradients,
@@ -140,3 +219,6 @@ demonstrate interoperability only; they are not building accuracy or quality res
 - [NumPy BSD licence](https://numpy.org/doc/stable/license.html)
 - [CloudCompare CLI](https://cloudcompare.org/doc/wiki/index.php/Command_line_mode)
 - [Global Shift and Scale](https://cloudcompare.org/doc/wiki/index.php/Global_Shift_and_Scale)
+- [Blender PLY operators](https://docs.blender.org/api/4.5/bpy.ops.wm.html)
+- [Blender FBX operators](https://docs.blender.org/api/4.5/bpy.ops.export_scene.html)
+- [Unity batch arguments](https://docs.unity3d.com/6000.3/Documentation/Manual/EditorCommandLineArguments.html)
