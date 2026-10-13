@@ -70,19 +70,47 @@ and sample count before processing a whole building.
 
 ## CloudCompare and Blender
 
-For a verified local-metre cloud, a **starting example**, not a tuned preset:
+For a verified local-metre sampling bundle, run the cleanup adapter. These parameters
+are a **starting example**, not a tuned building preset:
 
 ```powershell
-& $CloudCompareExe -SILENT -AUTO_SAVE OFF -O $SurfaceInput `
-  -SOR 16 2 -SS SPATIAL 0.02 `
-  -C_EXPORT_FMT PLY -PLY_EXPORT_FMT BINARY_LE -SAVE_CLOUDS FILE $NewOutput
+python workers/reconstruction/clean_cloud.py artifacts/reconstruction/run-001 `
+  artifacts/reconstruction/clean-001 --cloudcompare $CloudCompareExe `
+  --tool-version "2.13.2 official Windows x64 archive" `
+  --neighbors 16 --sigma 2 --spacing-m 0.02
 ```
 
-Choose a new output path and retain the original bundle. Record tool version,
-parameters, input/output hashes, point counts and rejection rate. Compare stairs,
-railings and door openings before and after filtering; sparse valid structures can
-be removed by SOR. AI masks/parameter suggestions still need this geometric review.
-Do not independently auto-shift adjacent regions and assume their coordinates match.
+The executable must already be installed; the adapter does not download or install
+anything. `--tool-version` records your declared version/provenance, while the tool
+also hashes the actual executable. The Windows portable archive tested here is
+linked from the [official download page](https://www.cloudcompare.org/release/index.html).
+
+Choose a **new** output directory and retain the original bundle. The adapter verifies
+the input against its sampling receipt, runs CloudCompare silently with explicit zero
+global shift, and saves both `surface_sor.ply` and `surface_clean.ply`. It checks that
+each stage only removes existing xyz/RGB records, with duplicate counts respected.
+It never automatically shifts adjacent regions or changes their axes/units.
+
+`receipt.json` records stage counts/bounds/hashes, separate SOR and subsampling removal
+rates, parameters, command and executable hash. `sampling_receipt.json` carries the
+original provenance and transform; `request.json`, `process.log` and `cloudcompare.log`
+support diagnosis. A timeout (default 30 minutes), failed process, missing output,
+changed input or invalid output produces **no success receipt**. Preserve that failed
+directory for inspection and retry in a new one. Processing and verification load
+arrays into memory; start with a small region. The adapter does not extract a rejected
+point cloud: retain raw and both stages to inspect the removed regions in CloudCompare.
+
+CloudCompare omits alpha and compresses normals. Nonopaque input is rejected; retained
+xyz/RGB must match exactly, and stored normals must remain finite and unit length.
+The adapter does not claim identical normals, deterministic CloudCompare point order,
+or validation of the declared tool version. Direct CLI `-SAVE_CLOUDS FILE` parses its
+argument again as a filename list: the adapter uses fixed relative filenames in its
+new output directory, covering paths containing spaces and Korean text.
+
+The final status is `cleanup_complete_review_required`. Compare stairs, railings and
+door openings before/after filtering; sparse valid structures can be removed by SOR.
+AI masks/parameter suggestions still need this geometric review. A large reduction
+from spatial subsampling is **not** a measured outlier rate.
 
 Keep the original extracted mesh for Blender. A point cloud alone has no faces for
 Unity rendering/collision: either edit the retained mesh or explicitly reconstruct a
@@ -96,6 +124,15 @@ Tests use analytic triangles to check interior samples, area ratios, color gradi
 face normals, scale/origin, byte-level PLY layout, invalid inputs and no-overwrite
 behavior. They do not substitute for a field-capture or Unity build acceptance test.
 Do not label `test-fixture` or `existing-model` output as a reconstructed real building.
+
+Cleanup contract tests run in normal worker CI without a CloudCompare installation.
+For a real integration run, set `CLOUDCOMPARE_EXE` to the executable and optionally
+`CLOUDCOMPARE_VERSION`, then run the same unittest command above. Without this variable,
+the integration test is explicitly skipped. On 2026-10-13, all 26 tests passed on
+Windows with official CloudCompare 2.13.2, including real colored/uncolored clouds
+and Korean/space-containing paths. A separate **analytic triangle** run used 100,000
+samples: SOR retained 97,058, and 0.02 m subsampling retained 3,111. These numbers
+demonstrate interoperability only; they are not building accuracy or quality results.
 
 - [CityGaussianV2 extraction](https://github.com/Linketic/CityGaussian/blob/main/doc/run%26eval.md)
 - [trimesh surface sampling](https://trimesh.org/trimesh.sample.html)
