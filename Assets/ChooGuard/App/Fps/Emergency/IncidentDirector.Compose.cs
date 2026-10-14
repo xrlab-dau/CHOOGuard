@@ -26,10 +26,6 @@ namespace ChooGuard.App.Fps.Emergency
 
         private float rateScale = 1f;
 
-        /// <summary>The first seconds of a shift are quiet (the KTX from Seoul comes in and people get off): no hazard is drawn against.</summary>
-        private const float QuietSeconds = 30f;
-        /// <summary>Candidates are listed and rated this long before the quiet ends, so the first draw has judgments to use.</summary>
-        private const float WarmUpSeconds = 4f;
         private const float HeartbeatSeconds = 1f;
         /// <summary>How often the cheap situation signature (hazards, train stage, escalators, staff response) is compared.</summary>
         private const float WatchSeconds = .25f;
@@ -114,7 +110,6 @@ namespace ChooGuard.App.Fps.Emergency
             // 비상상황은 JEV 만 만든다. JEV 가 없으면 후보를 만들지도 않는다.
             if (jev == null || !jev.Available || session.Player.IsPaused) return;
             float now = session.ShiftSeconds;
-            if (now < QuietSeconds - WarmUpSeconds) return;
             if (now >= nextBeat) beatWanted = true;
             if (now >= nextWatch)
             {
@@ -388,42 +383,73 @@ namespace ChooGuard.App.Fps.Emergency
         /// Draws against the hazard over the game time since the last step: every candidate with a rating of its own has its
         /// rate for that stretch (a rating is kept while the new one is on its way, and stops counting after
         /// <see cref="MaxJudgmentAge"/>; a candidate JEV has not rated yet contributes nothing), something happens with
-        /// probability 1 − exp(−Σrate · time) and which one follows the rates. The first <see cref="QuietSeconds"/> of the
-        /// shift carry no hazard at all. New emergencies share one station-level budget (<see cref="Imminence.OriginShare"/>) among the
-        /// origins that carry a rating now, so a longer list adds variety, never frequency, and how much of a long list JEV has got
-        /// round to does not change how often the station has an emergency.
+        /// probability 1 − exp(−Σrate · time) and which one follows the rates. The shift's <b>first</b> new emergency does not
+        /// wait on that clock: as soon as JEV has rated one origin it is drawn straight away (<see cref="FirstOrigin"/>), so a
+        /// shift begins with an emergency instead of a quiet stretch. Everything after it — separate new emergencies and every
+        /// development — runs on the hazard rates as before. New emergencies share one station-level budget
+        /// (<see cref="Imminence.OriginShare"/>) among the origins that carry a rating now, so a longer list adds variety, never
+        /// frequency, and how much of a long list JEV has got round to does not change how often the station has an emergency.
         /// </summary>
         private void Integrate(float now)
         {
-            float dt = Mathf.Clamp(now - Mathf.Max(integratedAt, QuietSeconds), 0, MaxStep);
+            float dt = Mathf.Clamp(now - integratedAt, 0, MaxStep);
             integratedAt = now;
             rates.Clear();
             drawn.Clear();
-            float origin = 0, development = 0, share = 1f;
+            float origin = 0, development = 0;
             int first = -1, second = -1, third = -1, valid = 0;
-            if (now >= QuietSeconds)
+            float share = Imminence.OriginShare(JudgedOrigins(now));
+            foreach (var candidate in candidates.Values)
             {
-                share = Imminence.OriginShare(JudgedOrigins(now));
-                foreach (var candidate in candidates.Values)
-                {
-                    if (!Counts(candidate, now)) continue;
-                    valid++;
-                    bool isOrigin = candidate.Scale != ImminenceScale.Development;
-                    float rate = candidate.Rate * rateScale * (isOrigin ? share : 1f);
-                    if (rate <= 0) continue;
-                    rates.Add(rate);
-                    drawn.Add(candidate);
-                    if (isOrigin) origin += rate; else development += rate;
-                    int index = rates.Count - 1;
-                    if (first < 0 || rate > rates[first]) { third = second; second = first; first = index; }
-                    else if (second < 0 || rate > rates[second]) { third = second; second = index; }
-                    else if (third < 0 || rate > rates[third]) third = index;
-                }
+                if (!Counts(candidate, now)) continue;
+                valid++;
+                bool isOrigin = candidate.Scale != ImminenceScale.Development;
+                float rate = candidate.Rate * rateScale * (isOrigin ? share : 1f);
+                if (rate <= 0) continue;
+                rates.Add(rate);
+                drawn.Add(candidate);
+                if (isOrigin) origin += rate; else development += rate;
+                int index = rates.Count - 1;
+                if (first < 0 || rate > rates[first]) { third = second; second = first; first = index; }
+                else if (second < 0 || rate > rates[second]) { third = second; second = index; }
+                else if (third < 0 || rate > rates[third]) third = index;
             }
-            if (dt > 0 || now < QuietSeconds) log.Director.Trace(dt, origin, development, candidates.Count, valid, Terms(first, second, third));
+            if (dt > 0) log.Director.Trace(dt, origin, development, candidates.Count, valid, Terms(first, second, third));
             if (applying || dt <= 0) return;
-            int pick = CompetingRisks.Draw(rates, dt, drawRandom);
+            // 첫 사건은 위험률 시계를 기다리지 않는다. 그 뒤로는 평소대로 경쟁 위험으로 추첨한다.
+            int pick = lastEmergencyAt < 0 ? FirstOrigin() : CompetingRisks.Draw(rates, dt, drawRandom);
             if (pick >= 0) Happen(drawn[pick], rates[pick]);
+        }
+
+        /// <summary>
+        /// The origin that opens the shift, by its share of the rated origins' hazard, or −1 while JEV has rated none.
+        /// </summary>
+        /// <remarks>
+        /// 무엇이 일어날지는 여전히 세계와 JEV 가 정한다 — 바뀐 것은 <b>시각</b>뿐이다. 후보는 지금 역에 있는 사람·물건에서
+        /// 나온 것 그대로이고, 그중 하나를 고르는 저울도 JEV 가 매긴 임박도에서 나온 위험률 그대로다. 종류·장소·크기를 미리
+        /// 정하지 않으므로 하드룰(<c>.agents/rules/jev-emergency-composition.md</c>)의 금지에 걸리지 않는다.
+        ///
+        /// 전개(development)는 고르지 않는다. 첫 사건이 없으면 전개할 것도 없으므로 원인만 본다.
+        ///
+        /// JEV 가 아직 아무 원인도 판단하지 않았으면 −1 — 그 판이 비는 것이지 대신 지어내지 않는다. 뽑은 뒤 그 사람·물건이
+        /// 사라졌으면(<see cref="Fresh"/> 가 null) 그 판은 그냥 지나가고 <see cref="lastEmergencyAt"/> 가 아직 비어 있으므로
+        /// 다음 판에서 다시 고른다.
+        /// </remarks>
+        private int FirstOrigin()
+        {
+            float total = 0;
+            for (int i = 0; i < drawn.Count; i++) if (drawn[i].Scale != ImminenceScale.Development) total += rates[i];
+            if (total <= 0) return -1;
+            double roll = drawRandom.NextDouble() * total;
+            int last = -1;
+            for (int i = 0; i < drawn.Count; i++)
+            {
+                if (drawn[i].Scale == ImminenceScale.Development) continue;
+                last = i;
+                roll -= rates[i];
+                if (roll <= 0) return i;
+            }
+            return last;
         }
 
         /// <summary>The candidate has a rating of its own that still counts toward the hazard.</summary>
