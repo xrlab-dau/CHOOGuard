@@ -114,6 +114,9 @@ CG_SHIFT_OUT="D:\cg-data" \
 
 **정본은 JSONL 이다.** 회차 요약이 아니라 이쪽을 학습에 쓴다.
 
+연결 실패·부분 답변·대기 시간을 구분할 때는 [오프라인 진단](DIAGNOSTICS.md)의
+`diagnose_jev.py`를 쓴다. 전송 전 예산 차단은 현재 JSONL에 기록되지 않으므로 별도 수집 요약과 함께 확인한다.
+
 ```
 %USERPROFILE%\AppData\LocalLow\DefaultCompany\CHOOGuard\jev-runs\jev-<UTC>.jsonl
 ```
