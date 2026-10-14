@@ -134,3 +134,39 @@ invalid inputs and malformed/missing geometry. The combined suite ran 41 tests:
 skipped. Those skips do not stand in for the separate native COLMAP and SOR runs
 reported above. `graphify update .` could not run because neither the CLI nor MCP
 provider is installed; the knowledge graph was not refreshed.
+
+## Completed 640-pixel follow-up
+
+The local native-CLI experiment also completed on all 128 registered views using
+640 pixels, ten source views, three iterations and Poisson depth 8. This experiment
+started before the worker was written and used the same native stage commands; it
+is recorded separately from the worker's 320-pixel execution. The images and sparse
+model still match the worker's recorded input inventory.
+
+| Output | Observed result |
+|---|---:|
+| Fused cloud | 620,586 points; 16,756,069 bytes |
+| Poisson mesh | 5,605 vertices; 10,555 triangles; 245,140 bytes |
+| Zero-area Poisson triangles | 4 |
+| CloudCompare SOR (16 neighbors, sigma 2) | 616,060 retained; 4,526 removed |
+| Undistortion / PatchMatch / fusion / meshing | 25.969 / 1124.906 / 236.172 / 2.297 seconds |
+
+The same xyz/RGB subset and finite-unit-normal checks passed for this SOR trial.
+Raw and filtered points remain separate, in unknown model units. Point count growth
+does not establish better accuracy; neither experiment has surveyed control points.
+
+An actual Blender 4.5.9 LTS review used the **retained raw Poisson mesh**, not a new
+surface from the SOR cloud. The initial simplification check rejected degenerate
+faces. On a copy, exactly four zero-area faces were explicitly deleted using native
+`bmesh` face-area checks and `bmesh.ops.delete(..., context='FACES_ONLY')`. No distance
+threshold or hole filling was used. The repaired copy had 10,551 triangles, and
+Decimate at ratio 0.5 produced 2,902 vertices and 5,274 triangles with zero zero-area
+faces. The vertex-color attribute remained present. Exporting and reimporting that
+PLY preserved triangle count and bounds exactly in this run; this checks file
+interoperability, not color/surface fidelity after simplification.
+
+The original mesh remains alongside the simplified copy in the local review blend.
+Blender units are `NONE`, with no axis rotation or claimed metre conversion. No FBX,
+collider or Unity asset was exported in this unscaled trial. The existing metric
+handoff contract is unchanged: field capture, independent scale/frame evidence,
+geometric inspection and a licensed Unity acceptance run remain required.

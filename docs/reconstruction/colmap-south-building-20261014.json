@@ -127,6 +127,96 @@
           }
         }
       ]
+    },
+    {
+      "name": "native-cli-640-001",
+      "status": "native_processes_and_geometry_checked_review_required",
+      "runner": "local experiment using the same native commands, not the worker CLI",
+      "unit": "unknown_model_units",
+      "inputs_match_worker_320_inventory": true,
+      "settings": {
+        "max_image_size": 640,
+        "source_images": 10,
+        "iterations": 3,
+        "poisson_depth": 8,
+        "threads": 6,
+        "cache_gb": 2,
+        "gpu_index": 0
+      },
+      "stages": [
+        {
+          "stage": "undistort",
+          "elapsed_seconds": 25.969
+        },
+        {
+          "stage": "patch_match",
+          "elapsed_seconds": 1124.906
+        },
+        {
+          "stage": "fuse",
+          "elapsed_seconds": 236.172
+        },
+        {
+          "stage": "mesh",
+          "elapsed_seconds": 2.297
+        }
+      ],
+      "artifacts": [
+        {
+          "file": "fused.ply",
+          "bytes": 16756069,
+          "sha256": "f86ea7440bfb3c039d7f0ba99e6d331e5effa67e65ed89e6b6fa4ab9e5058837",
+          "geometry": {
+            "points": 620586,
+            "bounds_model_units": [
+              [
+                -17.6273193359375,
+                -5.244314670562744,
+                -6.948798179626465
+              ],
+              [
+                10.588751792907715,
+                2.00126051902771,
+                10.248967170715332
+              ]
+            ],
+            "stored_attributes": [
+              "blue",
+              "green",
+              "nx",
+              "ny",
+              "nz",
+              "red",
+              "x",
+              "y",
+              "z"
+            ]
+          }
+        },
+        {
+          "file": "meshed-poisson.ply",
+          "bytes": 245140,
+          "sha256": "7eb63f106de8fe6a8534d8b8ed0edc0195dbb651b573c4c2e68337c924752898",
+          "geometry": {
+            "vertices": 5605,
+            "triangles": 10555,
+            "bounds_model_units": [
+              [
+                -4.159265518188477,
+                -2.3586783409118652,
+                -1.7330328226089478
+              ],
+              [
+                3.0627284049987793,
+                1.359230637550354,
+                2.4763436317443848
+              ]
+            ],
+            "zero_area_triangles": 4,
+            "color_kind": "vertex"
+          }
+        }
+      ]
     }
   ],
   "validation_scope": "Process and finite geometry checks only; no absolute accuracy, mesh quality, metric handoff or Unity acceptance",
@@ -158,5 +248,164 @@
     "executable_sha256": "4695abc490711abd824714157d5258d3c16646ab107a86422bfd6cda17d7caf1",
     "validation_scope": "Only unchanged xyz/RGB subset and finite unit normals checked; removed points are not all proven outliers.",
     "tool_version": "CloudCompare 2.13.2 official Windows build"
+  },
+  "manual_cleanup_trial_640": {
+    "status": "subset_verified_review_required",
+    "tool_version": "CloudCompare 2.13.2 official Windows build",
+    "unit": "unknown_model_units",
+    "parameters": {
+      "sor_neighbors": 16,
+      "sor_sigma": 2
+    },
+    "input_points": 620586,
+    "output_points": 616060,
+    "removed_points": 4526,
+    "elapsed_seconds": 13.656,
+    "output_bounds_model_units": [
+      [
+        -5.579947471618652,
+        -2.8638782501220703,
+        -3.7373046875
+      ],
+      [
+        4.193563938140869,
+        1.0314408540725708,
+        2.787444829940796
+      ]
+    ],
+    "source_sha256": "f86ea7440bfb3c039d7f0ba99e6d331e5effa67e65ed89e6b6fa4ab9e5058837",
+    "output_sha256": "0fd803ffab03a8ebee0694750b1520fd2aba9772132b72392dd20a86feab81c0",
+    "executable_sha256": "4695abc490711abd824714157d5258d3c16646ab107a86422bfd6cda17d7caf1",
+    "validation_scope": "Only unchanged xyz/RGB subset and finite unit normals checked; removed points are not all proven outliers."
+  },
+  "blender_unscaled_review": {
+    "status": "unscaled_visual_review_only",
+    "source_sha256": "7eb63f106de8fe6a8534d8b8ed0edc0195dbb651b573c4c2e68337c924752898",
+    "blender_version": "4.5.9 LTS",
+    "build_hash": "8bf95cbd38d1",
+    "unit_system": "NONE",
+    "axis_conversion": "none",
+    "metres_per_unit": null,
+    "before": {
+      "vertices": 5605,
+      "triangles": 10555,
+      "bounds_model_units": [
+        [
+          -4.159265518188477,
+          -2.3586783409118652,
+          -1.7330328226089478
+        ],
+        [
+          3.0627284049987793,
+          1.359230637550354,
+          2.4763436317443848
+        ]
+      ],
+      "color_attributes": [
+        "Col"
+      ],
+      "zero_area_triangles": 4
+    },
+    "after": {
+      "vertices": 2902,
+      "triangles": 5274,
+      "bounds_model_units": [
+        [
+          -4.159265518188477,
+          -2.3586783409118652,
+          -1.733048915863037
+        ],
+        [
+          3.0627284049987793,
+          1.3591622114181519,
+          2.4763436317443848
+        ]
+      ],
+      "color_attributes": [
+        "Col"
+      ],
+      "zero_area_triangles": 0
+    },
+    "roundtrip": {
+      "vertices": 2902,
+      "triangles": 5274,
+      "bounds_model_units": [
+        [
+          -4.159265518188477,
+          -2.3586783409118652,
+          -1.733048915863037
+        ],
+        [
+          3.0627284049987793,
+          1.3591622114181519,
+          2.4763436317443848
+        ]
+      ],
+      "color_attributes": [
+        "Col"
+      ],
+      "zero_area_triangles": 0
+    },
+    "repair": {
+      "operation": "delete exactly zero-area faces in Blender precision; original retained",
+      "faces_removed_before_decimation": 4,
+      "faces_removed_after_decimation": 0,
+      "after_initial_repair": {
+        "vertices": 5605,
+        "triangles": 10551,
+        "bounds_model_units": [
+          [
+            -4.159265518188477,
+            -2.3586783409118652,
+            -1.7330328226089478
+          ],
+          [
+            3.0627284049987793,
+            1.359230637550354,
+            2.4763436317443848
+          ]
+        ],
+        "color_attributes": [
+          "Col"
+        ],
+        "zero_area_triangles": 0
+      },
+      "before_final_repair": {
+        "vertices": 2902,
+        "triangles": 5274,
+        "bounds_model_units": [
+          [
+            -4.159265518188477,
+            -2.3586783409118652,
+            -1.733048915863037
+          ],
+          [
+            3.0627284049987793,
+            1.3591622114181519,
+            2.4763436317443848
+          ]
+        ],
+        "color_attributes": [
+          "Col"
+        ],
+        "zero_area_triangles": 0
+      }
+    },
+    "decimation_ratio_requested": 0.5,
+    "roundtrip_max_bounds_error_model_units": 0.0,
+    "artifacts": [
+      {
+        "file": "preview-unscaled.ply",
+        "bytes": 161884,
+        "sha256": "226911b8ef33b1160d13936f6035af5f32045ca5660c56e7c91fb496d8f6955e"
+      },
+      {
+        "file": "review-unscaled.blend",
+        "bytes": 1381198,
+        "sha256": "db08f11ae3b08ac579584b3dc726773417e8d05e162f32c297f6a0b2ab8d1d6b"
+      }
+    ],
+    "limitations": "No geometry/color fidelity approval, scale calibration, FBX export, collider or Unity acceptance. Original retained in blend.",
+    "source_path_kind": "retained raw 640px Poisson mesh; not a mesh reconstructed from SOR output"
   }
 }
