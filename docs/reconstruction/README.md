@@ -1,16 +1,22 @@
 # Large-building reconstruction for CHOOGuard
 
-Research checked 2026-10-11; tool integration checked 2026-10-13. The initial
+Research checked 2026-10-11; tool integration checked 2026-10-14. The initial
 recommendation is **CityGaussianV2 as a reproducible baseline**, compared against
 CityGS-X and COLMAP MVS on the same captured region. This is an implementation-fit
 decision, not an established universal ranking.
 
 ## What exists and what still needs input
 
-The Korean presentation was prepared first: 16 main slides, two supplied Unity demo
-videos, and five appendix/reference slides, with speaker notes and a PDF. Its research
-examples are credited to their authors. The supplied CHOOG videos show the existing
-Unity project; they are not field captures of a building.
+The final Korean presentation follows the supplied CHOOGuard proposal in **five
+slides**, with a matching 5 minute 55 second script and speaker notes. The only
+delivered files are the PPTX and two-page script PDF. The earlier long deck is
+superseded. The supplied CHOOG videos show the existing Unity project; they are not
+field captures of a building.
+
+The project direction is response to large and small incidents inside a station,
+following the field senior's needs as conveyed by the team. Everyday assistance,
+crowding, equipment problems and urgent response are candidate situations, not an
+approved operator incident list. The reconstruction work supports that environment.
 
 The [surface-cloud worker](../../workers/reconstruction/README.md) implements the
 extracted-mesh-to-point-cloud handoff with reproducible samples and coordinate metadata.
@@ -24,6 +30,11 @@ No new CHOOGuard building has yet been trained, cleaned in CloudCompare, process
 Blender, or accepted in a Unity build through this pipeline. A real capture set and
 scale evidence are still required. The inspected workstation has a 4 GB RTX 3050 Laptop;
 full-building training has not been demonstrated on it.
+
+The [public COLMAP baseline](COLMAP_BASELINE.md) documents a separate photographic
+building experiment. Its worker reuses an already registered camera model, runs
+native MVS/fusion/meshing, and preserves unknown model units. It does not train
+NeRF/GS or treat the public building as the user's station capture.
 
 ## Why this method
 
