@@ -7,9 +7,9 @@ namespace ChooGuard.App.Fps.Facilities
 {
     /// <summary>
     /// One elevator of the twin: a car serving landings whose kit landing doors each have an identical cabin behind them
-    /// (grouped by the kit's car id). The car stands at one landing at a time. Between landings every door is shut and the
-    /// riders — the staff member and passengers — are carried from one cabin to the other at the same place inside
-    /// (JEV 010 elevator_player_model). Calls come from the landing buttons (or E on the landing doors) and the car panel.
+    /// (grouped by the kit's car id). An explicitly bound existing bank uses one physical carriage throughout travel; hall
+    /// doors stay at their landings, and passengers move continuously with the cabin. Incomplete unmapped banks retain
+    /// the original presentation until actual cabin parts and endpoints can be supplied. Calls come from the landing buttons (or E on the landing doors) and the car panel.
     /// Doors hold open 5 s at a stop and reopen for anyone in the doorway (되열림장치); arrival sounds a chime at the landing
     /// and in the car. Rules follow 교통약자의 이동편의 증진법 시행규칙 [별표 1] 2.바 (15인승 기준, 스위치 높이 0.8~1.2 m,
     /// 도착 음향신호, 되열림장치). Speed is a common 60 m/min; there is no fire recall (JEV 010) — the signs forbid use in a fire.
@@ -49,11 +49,27 @@ namespace ChooGuard.App.Fps.Facilities
         public int At { get; private set; }
         public State Now { get; private set; }
         public bool Running { get; private set; } = true;
+        public PhysicalElevatorCarriage Carriage { get; private set; }
+        public bool ContinuousMotion => Carriage != null && Carriage.Bound;
+        public float TravelFraction
+        {
+            get
+            {
+                if (moveSeconds <= 0) return 0;
+                float ramp = Mathf.Min(StartStopSeconds, moveSeconds * .5f);
+                float t = Mathf.Clamp(moveElapsed, 0, moveSeconds);
+                // Integrate a symmetric acceleration / constant speed / braking profile. The exact known endpoint is 1.
+                float area = moveSeconds - ramp;
+                if (t < ramp) return t * t / (2 * ramp * area);
+                if (t > moveSeconds - ramp) return 1 - (moveSeconds - t) * (moveSeconds - t) / (2 * ramp * area);
+                return (t - ramp * .5f) / area;
+            }
+        }
         public string Label => "엘리베이터 (" + string.Join("·", Landings.ConvertAll(l => l.Floor + "층")) + ")";
 
         private int to = -1;
-        private float stateStart, moveSeconds;
-        private bool transferred, closeSoon;
+        private float stateElapsed, moveSeconds, moveElapsed;
+        private bool transferred, closeSoon, physicalRequired;
         private FirstPersonResponder player;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -85,7 +101,11 @@ namespace ChooGuard.App.Fps.Facilities
 
         private void OnEnable() => All.Add(this);
         private void OnDisable() => All.Remove(this);
-        private void OnDestroy() { foreach (var landing in Landings) if (landing.Door != null) landing.Door.Car = null; }
+        private void OnDestroy()
+        {
+            if (Carriage != null) Carriage.DetachDestroyedDrive(this);
+            foreach (var landing in Landings) if (landing.Door != null) landing.Door.Car = null;
+        }
 
         private void Setup(string id, List<StationDoor> doors)
         {
@@ -129,7 +149,20 @@ namespace ChooGuard.App.Fps.Facilities
             }
             At = 0;
             Now = State.Idle;
-            stateStart = Time.time;
+            stateElapsed = 0;
+            foreach (var landing in Landings)
+            {
+                var binding = landing.Door.GetComponent<PhysicalElevatorCarriage>();
+                if (binding == null) continue;
+                Carriage = binding;
+                physicalRequired = true;
+                if (!binding.TryBind(this, out var reason))
+                {
+                    Running = false;
+                    Debug.LogError("Elevator physical binding refused: " + Id + " · " + reason, binding);
+                }
+                break;
+            }
             Indicate(Landings[At].Floor);
         }
 
@@ -162,7 +195,8 @@ namespace ChooGuard.App.Fps.Facilities
         public bool InCabin(int landing, Vector3 world)
         {
             var door = Landings[landing].Door;
-            var l = door.Cabin.InverseTransformPoint(world);
+            if (ContinuousMotion && landing != At) return false;
+            var l = CabinAt(landing).InverseTransformPoint(world);
             var size = door.CabinSize;
             return Mathf.Abs(l.x) < size.x * .5f + .05f && l.z > -.2f && l.z < size.z + .05f && l.y > -.4f && l.y < size.y;
         }
@@ -188,10 +222,12 @@ namespace ChooGuard.App.Fps.Facilities
         /// <summary>World point on the door line of <paramref name="landing"/>; <paramref name="inward"/> metres into the car (negative: out on the landing).</summary>
         public Vector3 Threshold(int landing, float inward = .2f) => Landings[landing].Door.World(new Vector3(0, 0, -inward));
 
-        public Vector3 SpotWorld(Rider rider) => Landings[rider.Cabin].Door.Cabin.TransformPoint(rider.Spot);
+        private Transform CabinAt(int landing) => ContinuousMotion ? Carriage.Cabin : Landings[landing].Door.Cabin;
+
+        public Vector3 SpotWorld(Rider rider) => CabinAt(rider.Cabin).TransformPoint(rider.Spot);
 
         /// <summary>Direction a rider faces: toward the doors.</summary>
-        public Vector3 Facing(Rider rider) => -Landings[rider.Cabin].Door.Cabin.forward;
+        public Vector3 Facing(Rider rider) => -CabinAt(rider.Cabin).forward;
 
         // ── 호출 ─────────────────────────────────────────────────────────────
 
@@ -224,7 +260,7 @@ namespace ChooGuard.App.Fps.Facilities
 
         public void Call(int landing)
         {
-            if (landing < 0 || landing >= Landings.Count) return;
+            if (!Running || landing < 0 || landing >= Landings.Count) return;
             if (At == landing && (Now == State.Open || Now == State.Opening)) return;
             if (At == landing && Now == State.Closing) { Begin(State.Opening); return; }
             Landings[landing].HallCall = true;
@@ -232,7 +268,7 @@ namespace ChooGuard.App.Fps.Facilities
 
         public void Press(int landing)
         {
-            if (landing < 0 || landing >= Landings.Count) return;
+            if (!Running || landing < 0 || landing >= Landings.Count) return;
             if (At == landing && Now != State.Moving) { if (Now == State.Closing || Now == State.Idle) Begin(State.Opening); return; }
             Landings[landing].CarCall = true;
             if (Now == State.Open) closeSoon = true;
@@ -243,7 +279,7 @@ namespace ChooGuard.App.Fps.Facilities
         public void OpenButton()
         {
             if (Now == State.Closing || Now == State.Idle) Begin(State.Opening);
-            else if (Now == State.Open) stateStart = Time.time;
+            else if (Now == State.Open) stateElapsed = 0;
         }
 
         public void CloseButton()
@@ -252,19 +288,30 @@ namespace ChooGuard.App.Fps.Facilities
         }
 
         /// <summary>Earthquake, power loss or a fault: the car stops where it is and takes no calls; a moving car stays between floors.</summary>
-        public void Stop() => Running = false;
+        public void Stop()
+        {
+            Running = false;
+            foreach (var landing in Landings) if (landing.Sound != null) landing.Sound.Stop();
+        }
 
         /// <summary>Back in service: a car stopped between floors carries on to its floor and opens there.</summary>
-        public void Resume() => Running = true;
+        public void Resume()
+        {
+            if (physicalRequired && !ContinuousMotion) return;
+            Running = true;
+            if (Now == State.Moving)
+                foreach (var landing in Landings)
+                    if (landing.Sound != null && landing.Sound.isActiveAndEnabled) { landing.Sound.clip = Hum(); landing.Sound.loop = true; landing.Sound.Play(); }
+        }
 
         /// <summary>A passenger boards at <paramref name="from"/> for <paramref name="to"/>: a standing place near the back, or null when full.</summary>
         public Rider Board(PersonBody body, int from, int to)
         {
-            if (Full) return null;
+            if (body == null || from < 0 || to < 0 || from >= Landings.Count || to >= Landings.Count || !DoorsOpenAt(from) || Full) return null;
             var size = Landings[from].Door.CabinSize;
             var taken = new List<Vector3>();
             foreach (var r in Riders) if (r.Cabin == from) taken.Add(r.Spot);
-            if (PlayerInside(out int cabin) && cabin == from) taken.Add(Landings[from].Door.Cabin.InverseTransformPoint(Player.transform.position));
+            if (PlayerInside(out int cabin) && cabin == from) taken.Add(CabinAt(from).InverseTransformPoint(Player.transform.position));
             Vector3 best = new Vector3(0, 0, size.z * .6f);
             float bestScore = float.NegativeInfinity;
             for (int ix = -1; ix <= 1; ix++)
@@ -289,7 +336,7 @@ namespace ChooGuard.App.Fps.Facilities
         private void Begin(State state)
         {
             Now = state;
-            stateStart = Time.time;
+            stateElapsed = 0;
             if (state == State.Open) closeSoon = false;
         }
 
@@ -318,9 +365,14 @@ namespace ChooGuard.App.Fps.Facilities
             return false;
         }
 
-        private void Update()
+        private void Update() => AdvanceDrive(Time.deltaTime);
+
+        /// <summary>Advance one physical drive step; invalid time cannot move the cabin or bypass a door interlock.</summary>
+        public void AdvanceDrive(float deltaSeconds)
         {
-            if (Landings.Count < 2 || Time.deltaTime <= 0) return;
+            if (Landings.Count < 2 || deltaSeconds <= 0 || float.IsNaN(deltaSeconds) || float.IsInfinity(deltaSeconds)) return;
+            if (physicalRequired && !ContinuousMotion) { Stop(); return; }
+            stateElapsed += deltaSeconds;
             Riders.RemoveAll(r => r.Body == null);
             var here = Landings[At];
             switch (Now)
@@ -340,8 +392,8 @@ namespace ChooGuard.App.Fps.Facilities
                 case State.Open:
                     Drive(1);
                     here.HallCall = here.CarCall = false;
-                    if (Blocked() || !Running) stateStart = Mathf.Max(stateStart, Time.time - (closeSoon ? 0 : DwellSeconds - 1.5f));
-                    if (Time.time - stateStart >= (closeSoon ? 1f : DwellSeconds)) Begin(State.Closing);
+                    if (Blocked() || !Running) stateElapsed = Mathf.Min(stateElapsed, closeSoon ? 0 : DwellSeconds - 1.5f);
+                    if (stateElapsed >= (closeSoon ? 1f : DwellSeconds)) Begin(State.Closing);
                     break;
                 case State.Closing:
                     if (Blocked() || !Running) { Begin(State.Opening); break; }
@@ -355,13 +407,18 @@ namespace ChooGuard.App.Fps.Facilities
                     break;
                 case State.Moving:
                     Drive(0);
-                    if (!Running) { stateStart += Time.deltaTime; break; }
-                    float t = Time.time - stateStart;
-                    if (!transferred && t >= moveSeconds * .5f) { Transfer(At, to); transferred = true; Indicate(Landings[to].Floor); }
-                    if (t >= moveSeconds)
+                    if (!Running) break;
+                    if (!AllLandingDoorsClosed()) { Stop(); break; }
+                    moveElapsed = Mathf.Min(moveSeconds, moveElapsed + deltaSeconds);
+                    if (ContinuousMotion) MoveCarriage(TravelFraction);
+                    else if (!transferred && moveElapsed >= moveSeconds * .5f) { Transfer(At, to); transferred = true; Indicate(Landings[to].Floor); }
+                    if (moveElapsed >= moveSeconds)
                     {
                         foreach (var l in Landings) if (l.Sound.isPlaying && l.Sound.clip == hum) l.Sound.Stop();
+                        int previous = At;
                         At = to;
+                        if (ContinuousMotion)
+                            foreach (var rider in Riders) if (rider.Cabin == previous) rider.Cabin = At;
                         to = -1;
                         Landings[At].HallCall = Landings[At].CarCall = false;
                         Arrive(At);
@@ -379,11 +436,41 @@ namespace ChooGuard.App.Fps.Facilities
         private void Depart(int landing)
         {
             if (landing == At) { Begin(State.Opening); return; }
+            if (!Running || !AllLandingDoorsClosed()) { Begin(State.Closing); return; }
             to = landing;
             transferred = false;
+            moveElapsed = 0;
             moveSeconds = Mathf.Abs(Landings[landing].Y - Landings[At].Y) / Speed + StartStopSeconds;
             Begin(State.Moving);
-            foreach (var l in Landings) { l.Sound.clip = Hum(); l.Sound.loop = true; l.Sound.Play(); }
+            foreach (var l in Landings)
+                if (l.Sound != null && l.Sound.isActiveAndEnabled) { l.Sound.clip = Hum(); l.Sound.loop = true; l.Sound.Play(); }
+        }
+
+        private bool AllLandingDoorsClosed()
+        {
+            foreach (var landing in Landings) if (landing.Door == null || landing.Door.Open > .001f) return false;
+            return true;
+        }
+
+        private void MoveCarriage(float fraction)
+        {
+            // Test cabin membership before moving the geometry. Preserve a person's current local walking position.
+            var occupants = new HashSet<Transform>();
+            var p = Player;
+            if (p != null && InCabin(At, p.transform.position)) occupants.Add(p.transform);
+            foreach (var rider in Riders)
+                if (rider.Body != null && rider.Cabin == At && InCabin(At, rider.Body.transform.position)) occupants.Add(rider.Body.transform);
+            foreach (var body in PersonBody.All)
+                if (body != null && body.Visible && InCabin(At, body.transform.position)) occupants.Add(body.transform);
+            var delta = Carriage.Move(At, to, fraction);
+            if (delta.sqrMagnitude <= 0) return;
+            foreach (var occupant in occupants)
+            {
+                if (occupant == null) continue;
+                if (occupant.TryGetComponent(out CharacterController controller) && controller.enabled)
+                    controller.Move(delta);
+                else occupant.position += delta;
+            }
         }
 
         /// <summary>Moves everyone inside the cabin behind <paramref name="from"/> to the same place in the cabin behind <paramref name="landing"/>.</summary>
@@ -409,7 +496,7 @@ namespace ChooGuard.App.Fps.Facilities
         private void Arrive(int landing)
         {
             Indicate(Landings[landing].Floor);
-            var sound = Landings[landing].Sound;
+            var sound = ContinuousMotion ? Landings[0].Sound : Landings[landing].Sound;
             sound.Stop();
             sound.loop = false;
             sound.clip = null;

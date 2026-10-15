@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using ChooGuard.App.Fps.Twin;
 
 namespace ChooGuard.App.Fps.Equipment
 {
@@ -16,7 +17,18 @@ namespace ChooGuard.App.Fps.Equipment
         /// </summary>
         public string placementEvidence = "";
 
-        public bool HasPlacementEvidence => !string.IsNullOrWhiteSpace(placementEvidence);
+        public PlacementVerification verification;
+
+        public bool HasPlacementEvidence => verification != null && verification.Validate(id, position, rotation, out _);
+
+        public string VerificationIssue
+        {
+            get
+            {
+                if (verification == null) return "missing_structured_field_verification";
+                return verification.Validate(id, position, rotation, out string reason) ? "" : reason;
+            }
+        }
 
         /// <summary>Numbers and words a kind needs at run time, as <c>key=value</c> pairs joined by ';' (a detector's coverage radius and mounting height). Empty when the kind needs none.</summary>
         public string data = "";
@@ -29,7 +41,7 @@ namespace ChooGuard.App.Fps.Equipment
     [Serializable]
     public sealed class EquipmentPlacementFile
     {
-        public int version = 1;
+        public int version = 2;
         public string group, note;
         public EquipmentPlacement[] items = Array.Empty<EquipmentPlacement>();
     }

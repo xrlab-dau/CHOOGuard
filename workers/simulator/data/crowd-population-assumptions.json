@@ -1,0 +1,58 @@
+{
+  "schema": "chooguard.crowd-evidence-envelope.v1",
+  "status": "PARTIALLY_OBSERVED_NO_OCCUPANCY_CALIBRATION",
+  "ridership": {
+    "year": 2025,
+    "station": "부산",
+    "boarding_events": 9021670,
+    "alighting_events": 8974338,
+    "total_events": 17996008,
+    "days": 365,
+    "daily_mean_events": 49304.13150684931,
+    "units": "recorded rail boarding/alighting events; not unique people or simultaneous occupants",
+    "source_dataset": "https://www.data.go.kr/data/15029727/fileData.do",
+    "source_sha256": "66005c6cc0cf409cdee1787fff2defc9863b4b8714e7ca9a5654178bc3da9da9",
+    "exclusions": [
+      "companions",
+      "station staff",
+      "visitors without recorded rail journey",
+      "measured station dwell",
+      "time-of-day instantaneous occupancy"
+    ],
+    "scope": "257 station general rail data; exclude metropolitan electric rail and ITX-Cheongchun per source scope"
+  },
+  "required_runtime_parameters": {
+    "time_of_day_flow_weights": null,
+    "pre_boarding_stay_distribution_seconds": null,
+    "alighting_stay_distribution_seconds": null,
+    "companions_per_party_distribution": null,
+    "staff_shift_population": null,
+    "dated_train_schedule": null,
+    "train_capacity_and_load_distribution": null,
+    "qualified_arrival_exit_observations": null
+  },
+  "goals": {
+    "target_hardware": "AppleM1MacBookAir16GiB",
+    "target_resolution": [
+      1920,
+      1080
+    ],
+    "target_FPS": 60,
+    "concurrent_population": "derive from event flow, train waves and explicit dwell/companion/staff assumptions; NPC32 target withdrawn"
+  },
+  "synthetic_stress_sizes": [
+    1000,
+    10000,
+    25000
+  ],
+  "synthetic_stress_claim": "algorithm/resource tests only; never actual Busan simultaneous crowd occupancy",
+  "arrival_and_departure_contract": "clock schedules intents; physical entry/exit and movement completion require qualified observations; never erase distant individuals or teleport completion",
+  "LOD_contract": "detail selection is separate from persistent identity/state/seed/goal graph; every individual remains model input; distant dynamics/render implementation remains unverified",
+  "rate_units": {
+    "PASSENGER_PERSON_EVENTS_PER_HOUR": "rail passengers only; party Poisson rate divides this by E[passenger party size]",
+    "VISITOR_PERSONS_PER_HOUR": "visitor members only; excludes rail passenger data unless independently observed",
+    "STAFF_PERSONS_PER_HOUR": "staff members only; never included in rail ridership",
+    "PARTY_ARRIVALS_PER_HOUR": "explicit group-arrival input; never directly substituted for recorded passenger persons rate"
+  },
+  "companion_contract": "Non-passenger companions are additional explicitly declared flow assumptions, counted separately from every rail passenger member."
+}

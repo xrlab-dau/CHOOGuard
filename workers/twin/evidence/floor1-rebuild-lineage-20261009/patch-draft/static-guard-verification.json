@@ -1,0 +1,53 @@
+{
+  "schema": "chooguard.floor1-draft-static-guards.v1",
+  "canonical_registry_rows": 54,
+  "two_field_overlay_preserves_every_other_live_field": true,
+  "unique_expected_root_sources_before": 23,
+  "unique_expected_root_sources_after": 23,
+  "exact_generated_digest_state_fixtures": [
+    {
+      "name": "stored_raw_source",
+      "decision": "accepted_exact_raw_then_partition"
+    },
+    {
+      "name": "stored_fixture_baseline",
+      "decision": "accepted_exact_saved_baseline"
+    },
+    {
+      "name": "live_guide_target",
+      "decision": "accepted_exact_saved_target"
+    },
+    {
+      "name": "raw_uv_drift",
+      "decision": "rejected_unreviewed_generated_channels",
+      "same_topology": true,
+      "original_complete_digest": "947db83c5ec6ecfd77cef81c4c08cea505430ecdd270f5b9a6d70e0290f582fd",
+      "perturbed_complete_digest": "e0ea54c1154612668e656b4618f897a736c48c1be87787d9fa0a526a0ee8b0e7"
+    },
+    {
+      "name": "processed_uv_drift",
+      "decision": "rejected_unreviewed_generated_channels",
+      "same_topology": true,
+      "original_complete_digest": "02b5c96a1ada6a6dcdd0f46305aa0918d587d921b356f2c529526de1f59b4a3a",
+      "perturbed_complete_digest": "3fc1eb36aceaf4d03e1325788924101fb301fc5910505ca89ac97dc09c4db866"
+    },
+    {
+      "name": "target_uv_drift",
+      "decision": "rejected_unreviewed_generated_channels",
+      "same_topology": true,
+      "original_complete_digest": "a2a73ef32aa789bfa521a8ea5ae5ac0d25a1ba8fb859f8b9eb5d6e4831e7823b",
+      "perturbed_complete_digest": "a593db8f53b69ad5c8a55f5faf722f5db32283c5fc65872a251ce9654434ac25"
+    }
+  ],
+  "authority_checks_precede_reviewed_saved_state_acceptance": true,
+  "preprocessing_precedes_target_shortcut": true,
+  "shared_replay_setup_count": 2,
+  "replay_state_restored_in_both_entrypoints": true,
+  "withheld_after_batch_save": true,
+  "installer_layering_preserves_preprocessing": true,
+  "runtime_guard_execution": false,
+  "csharp_compile_errors": [],
+  "standalone_csharp_dll_exists": true,
+  "unity_calls": 0,
+  "canonical_writes": 0
+}

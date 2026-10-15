@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using ChooGuard.App.Fps.Twin;
 
 namespace ChooGuard.App.Fps.Equipment
 {
@@ -28,6 +29,20 @@ namespace ChooGuard.App.Fps.Equipment
         public bool Interactable;
         [Tooltip("The renderers may be merged into static batches (one draw for many identical fittings). False for anything that moves: shutter curtains, doors, fans.")]
         public bool Batchable = true;
+        [SerializeField] public PlacementVerification Verification;
+        // Serialized proof alone cannot admit a manually attached scene object into emergency composition.
+        [NonSerialized] private PlacementVerification admittedSource, admittedProof;
+        [NonSerialized] private Vector3 admittedScale;
+        public bool IndependentlyVerified => admittedProof != null && ReferenceEquals(Verification, admittedSource) &&
+            Vector3.Distance(transform.lossyScale, admittedScale) < .0005f &&
+            admittedProof.Validate(Id, transform.position, transform.eulerAngles, out _);
+
+        internal void AdmitVerifiedPlacement()
+        {
+            admittedSource = Verification;
+            admittedProof = JsonUtility.FromJson<PlacementVerification>(JsonUtility.ToJson(Verification));
+            admittedScale = transform.lossyScale;
+        }
 
         /// <summary>
         /// Set by an owner that switches some renderers off itself (a burst sprinkler head hides its bulb): the culling keeps a renderer for which this returns true off

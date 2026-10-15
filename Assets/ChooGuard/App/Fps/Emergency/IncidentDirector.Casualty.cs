@@ -132,7 +132,7 @@ namespace ChooGuard.App.Fps.Emergency
         private Passenger Below(Passenger owner, Escalator escalator)
         {
             var behind = escalator.Behind(owner.Body)?.GetComponent<Passenger>();
-            if (behind != null) return behind.Hurt || behind.Hostile ? null : behind;
+            if (behind != null) return behind.Hurt || behind.Hostile || !InsideBuilding(behind.transform.position) ? null : behind;
             return NearFoot(escalator, owner, null);
         }
 
@@ -143,7 +143,7 @@ namespace ChooGuard.App.Fps.Emergency
             float bestDistance = 3f;
             foreach (var p in crowd.People)
             {
-                if (p == owner || p == besides || p.Hurt || p.Hostile || !p.Body.Visible || escalator.Carries(p.Body)) continue;
+                if (p == owner || p == besides || p.Hurt || p.Hostile || !p.Body.Visible || !InsideBuilding(p.transform.position) || escalator.Carries(p.Body)) continue;
                 var offset = p.transform.position - foot;
                 if (Mathf.Abs(offset.y) > 1f) continue;
                 offset.y = 0;
@@ -219,6 +219,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void StartMedical(Passenger person, Condition condition, float magnitude)
         {
+            if (person == null || !InsideBuilding(person.transform.position)) return;
             int level = Mathf.Clamp(Mathf.RoundToInt(magnitude * 4), 0, 4);
             var casualty = AddCasualty(person, "응급 환자", condition.Cause, condition.Kind == "collapse" ? "collapsed" : condition.En, "승객이 " + condition.States[level], level);
             casualty.Told = condition.Told;
@@ -233,6 +234,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void StartStairsFall(Passenger walker, float magnitude)
         {
+            if (walker == null || !InsideBuilding(walker.transform.position)) return;
             string[] states = { "계단에서 휘청였다가 난간을 잡고 주저앉음", "계단에서 넘어져 무릎을 다침", "계단에서 넘어져 일어서지 못함", "계단 여러 칸을 굴러 머리에 피가 남", "계단 아래로 굴러 의식 없이 누워 있음" };
             int level = Mathf.Clamp(Mathf.RoundToInt(magnitude * 4), 0, 4);
             var casualty = AddCasualty(walker, "계단 넘어짐", "계단에서 넘어진", "fell on the stairs", states[level], -1);
@@ -244,6 +246,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void StartFall(Passenger rider, Escalator escalator, float magnitude, float stopAbove, string label, string cause, string causeEn, string visible, string injury)
         {
+            if (rider == null || !InsideBuilding(rider.transform.position)) return;
             escalator.Fall(rider.Body);
             var casualty = AddCasualty(rider, label, cause, causeEn, visible, -1);
             casualty.Where = escalator.Label;
@@ -253,7 +256,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (magnitude > .7f)
             {
                 var behind = escalator.Behind(rider.Body)?.GetComponent<Passenger>();
-                if (behind != null) { escalator.Fall(behind.Body); behind.Injure("앞사람과 함께 넘어짐"); }
+                if (behind != null && InsideBuilding(behind.transform.position)) { escalator.Fall(behind.Body); behind.Injure("앞사람과 함께 넘어짐"); }
             }
             // 곁의 사람이 세우려면 그 에스컬레이터 승강장에 비상정지 버튼이 있어야 한다(관찰된 버튼만 트윈에 있다).
             if (magnitude > stopAbove && escalator.HasStopButton) { escalator.Stop("비상정지 버튼(승객)"); log.Add(escalator.Label + " 비상 정지"); }
@@ -263,6 +266,8 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void StartTumble(Passenger owner, Passenger below, Escalator escalator, float magnitude)
         {
+            if (owner == null || !InsideBuilding(owner.transform.position)) return;
+            if (below != null && !InsideBuilding(below.transform.position)) below = null;
             log.Add("여행가방이 " + escalator.Label + " 아래로 굴러 내려감");
             // 0: 다리에 부딪혀 멈춤, 1: 휘청임까지는 넘어지지 않는다. 그 사이 다친 사람이면 가방만 굴러간다.
             if (below == null || below.Hurt || magnitude < .4f) { log.Add(magnitude < .2f ? "굴러 내려간 가방을 아래 사람이 붙잡음" : "굴러 내려간 가방에 아래 사람이 휘청였으나 넘어지지 않음"); return; }
@@ -276,7 +281,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (magnitude > .6f)
             {
                 var next = onSteps ? escalator.Behind(below.Body)?.GetComponent<Passenger>() : NearFoot(escalator, owner, below);
-                if (next != null && !next.Hurt) { if (onSteps) escalator.Fall(next.Body); next.Injure("앞사람과 함께 넘어짐"); }
+                if (next != null && !next.Hurt && InsideBuilding(next.transform.position)) { if (onSteps) escalator.Fall(next.Body); next.Injure("앞사람과 함께 넘어짐"); }
             }
             if (magnitude > .8f && escalator.HasStopButton) { escalator.Stop("비상정지 버튼(승객)"); log.Add(escalator.Label + " 비상 정지"); }
             Register(casualty);

@@ -1,0 +1,5 @@
+# Findings
+
+Current source ec2f5f3b6097bcc7eae78e01e50ffbbb670583ea355e074ae2f02e04e8bd1e66 has 4115 explicit GameObjects and Transforms, 3827 MeshFilters and renderers, 3028 MeshColliders, 84 BoxColliders, 8 LODGroups, 1 Light and 3204 MonoBehaviours; no prefab instances or stripped docs. Roots FPSWorld and ProbeVolumePerSceneData. Sole Unity writer remains a separate ACTIVE interior writer. docs/CODEX-NAVIGATION-GUIDE.md missing. Planning skill read at /Users/um-yunsang/.agents/skills/planning-with-files/SKILL.md.
+
+Final:3957 activeSelf,3844 active hierarchy,2748 physicalEligible;3827 MF,3827 MR with16265 material refs,3028 MC,84 BoxCollider,8 LODGroup.2544 serialized mesh AABBs+84 box bounds;484 native FBX bounds pending native import.43 explicit existing typed bindings, door4 omitted.8048 closure files/688973387 bytes;0 missing GUID,0 source drift,0 copied project executable dependencies. Current KTX722GO/703MF includes saved clips/depth meshes/patches; prepared platform FBX instances omit current derivatives. Blanket root alias rejected by exact-scope evidence.

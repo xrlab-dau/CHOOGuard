@@ -1,0 +1,15 @@
+# Findings
+
+- Existing upper restaurant level is scene Y12.2 and plan `thirdFloor` box frame; source plan is L-shaped, with foodcourt/Bibimga across the northern band and Busanok/Eggbox in perpendicular wing.
+- Existing photographed full guide `busan-rail-1f-2f-3f-facilities-guide-unofficial.jpg` explicitly separates 1F/2F/3F. Its historical 3F names include foodcourt, Sirae-maeul, Busanok and Lotteria; this supports floor convention but does not establish current Eggbox/Bibimga names.
+- Existing October/March lease plans are 2F main concourse. Existing Korail Retail ad plan marked3F remains an ambiguous floor convention; do not substitute for upper restaurant guide.
+- Current plan cites an on-site board but its header/basis contains older SfM assumptions; current raw guide and current scene checks are required before accepted coordinate correction.
+
+- Directly supported current source: https://m.blog.naver.com/kgnwrite/224291656711, published 2026-05-20 20:07; previous-month visit stated, filename20260419 but EXIF unvalidated. Reused floor2 lane source family; collected original whole board2252×4000 and upper3Fdetail4000×2252 via Aside. Byte hashes/dimensions verified against exact DOM originals.
+- Whole upper guide: L outline; foodcourt–entrance–Bibimga across band; Busanok–elevator–Eggbox along perpendicular wing; corner elevator +female/male toilets; one escalator icon. Existing native two-lane pair is independently verified actual geometry. Source-photo normalizations do not fit native metric geometry.
+- Current visit image8 independently corroborates physically open concourse and upper restaurant glass edge. Grey outer guide strip remains unclassified. The board does not establish lounge polygons, stair returns or sanitary interiors.
+- Source/current L and unit order agree. Male WC separately registered room is absent; female enclosure alone does not specify whole corner pair. No male polygon or invented partition generated.
+- Exact source gate: existing Foodcourt/Bibimga entrance crossing at box a15/y13.2 reaches independent native static face at b61.02454053, after closed door leaf b60.551. Original renderer mesh1286 and collisionbackground3454 binary SHA identical; material submesh41 face50(flattened68735,vertices244006-244008). Adjacent wallbandfaces48-51 extend90m and Y12.1–15.5, so whole-face deletion is invalid. Root may revalidate any clip confined to current authored doorbank a13.2–16.8,y12.2–14.415, preserving mesh channels/materials/frame/unrelated colliders.
+- Old snapshot SHA5feb is stale against root-start7d14. Exact native gate is snapshot evidence; fresh current-scene/source registration required. Existing spec-linked Y5v exit11 contact sheets are absent locally and were not counted as current doorway photo proof.
+- Historical2023 board and2024near-match photos were classified historical/near_match_only; irrelevant2Fphotos/duplicateguidebytes are explicitly classified in receipts. No unlicensed reuse permission inferred.
+- Root1F-priority steering ends this lane at verified candidate packet, no apply/no further expansion.

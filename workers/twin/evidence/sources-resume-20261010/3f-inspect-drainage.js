@@ -1,0 +1,3 @@
+const p=await openTab("https://www.google.com/goto?url=CAESfwHrOzAV2R5PpTwKwaWjpfzR8_zz91XntGecKmuf1wodKseTKQMBWX4Uw98KIHlsk7cKJto4RToQtY3OCgNfr7vzbr3ZfXcZoLXdSDcqMbUmUEl4-GggqlTI40Zw0cc25pPB7091cvdAcX3pJacB65VNirBVKARZba3vyBDCAYE");
+const d=await p.evaluate(()=>({url:location.href,title:document.title,text:document.body.innerText,links:[...document.querySelectorAll('a')].map(e=>({text:e.innerText,url:e.href})).filter(a=>a.text&&a.url),meta:[...document.querySelectorAll('meta')].map(e=>({name:e.name||e.getAttribute('property'),content:e.content})).filter(x=>x.name&&x.content)}));
+console.log('SOURCE_JSON:'+JSON.stringify({id:'3f-drainage-candidate',acquired_at:new Date().toISOString(),...d}));

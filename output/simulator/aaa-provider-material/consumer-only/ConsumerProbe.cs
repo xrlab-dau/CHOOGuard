@@ -1,0 +1,1 @@
+using System; using ChooGuard.Seeded.Tests; public static class ConsumerProbe { public static int Main(){try{InitialWorldNativeTests.Run();Console.WriteLine("PASS_LOCAL_TAPE_CONSUMER");return 0;}catch(Exception e){Console.Error.WriteLine(e.ToString());return 1;}}}

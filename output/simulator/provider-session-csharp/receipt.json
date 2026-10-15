@@ -1,0 +1,90 @@
+{
+  "schema": "chooguard-provider-session-csharp-v1",
+  "recorded_at": "2026-10-14T03:49:49.534797+00:00",
+  "state": "source_frozen_and_engine_free_verified",
+  "scope": "Immutable single provider/account/model for both initial conditions and NPC planning; current registered-subscription Python utilities; no Unity execution or deployment",
+  "owned_source_hashes": {
+    "workers/simulator/Runtime/Planning/ProviderSelection.cs": "e94e3b9a29be704adc155ea89aa4ad3c6f8a9c25514487c4115b230aa3e27aa6",
+    "workers/simulator/Runtime/Planning/SubscriptionConnection.cs": "d3593a29a638275df00d70852002f8eb59ed2e1db3964f32ad4c5e6c4e6878dd",
+    "workers/simulator/Runtime/Unity/PlatformSeededSimulator.cs": "3b155fbd9c9df2db09d9470c7e91950df1bb977da0858ed4d8d22dd6cee7ce34",
+    "workers/simulator/Tests/SubscriptionTests.cs": "aa896441604abde8ec8db63362852043e8f545dec213bd782658edaa1c093307",
+    "workers/simulator/Tests/ProviderSelectionTests.cs": "123e54f9cee57b8405481c7bfbe37b8fc745dace68f985bbfffda0748cd4ed8d",
+    "workers/simulator/verify_subscription_bridge.py": "2fc40509d7a0e3087dfea7b740cd33eb57a0ac49c16743216a68681d6f531cac",
+    "workers/simulator/acceptance.py": "c385ea4ffa8256657b2e0d475be6f9249da21f6914ae0deee8d550aa13d6466f",
+    "workers/simulator/whole_world_acceptance.py": "51330f14a5f9aa41278842a4d75a94ddf0a235ca1b57e393ee60a07379b17c28",
+    "workers/simulator/provider_runtime/local_client.py": "a3019d32d8276545bec785e543f9f4b65d5cf38b4a87613b8d9af5f2320d1731",
+    "workers/simulator/provider_runtime/acceptance.py": "c5d2dc0fa0a831e96c6d73b0312adf32cfdee0d58f753544c0056153250edeab",
+    "workers/simulator/provider_runtime/test_runtime.py": "1ce5edd3b99dc86790cfea26c2ea6cafb66b03ec9eecfb9bc0aa84b3a63351e0"
+  },
+  "aggregate_sha256": "8333fabe852b53a596e335cf0582ee9c091006238595c05a7aa02b0bf5e93bba",
+  "evidence": {
+    "portable": {
+      "path": "output/simulator/checks/last-test.json",
+      "sha256": "2b827040a03bd09821205dbe320469c9fc35ebda7adb5eaed10fcc22d8aaa28f",
+      "passed": true,
+      "current_source_drift": [],
+      "source_changed_during_run": false,
+      "test_suites": 11,
+      "fixed_tick_seed_replay": 120
+    },
+    "unity_api_compile": {
+      "path": "output/simulator/checks/unity-source-compile.json",
+      "sha256": "620f03b54969e6acbaff8587d7087a204dcd3555ed13899d005bafa18c01b1a8",
+      "passed": true,
+      "current_source_drift": [],
+      "source_changed_during_run": false,
+      "sources": 36,
+      "references": 181,
+      "engine_execution": false
+    },
+    "python_runtime": {
+      "path": "workers/simulator/provider_runtime/test-report.json",
+      "sha256": "e99cb003910bd764b4176332ce18652f9a486df11a54817a2c03b3cbc9986b0c",
+      "passed": true,
+      "current_source_drift": [],
+      "source_changed_during_run": false,
+      "test_count": 18
+    },
+    "native_http": {
+      "path": "output/simulator/native-auth-bridge.json",
+      "sha256": "9c2738ce3e211ff6150a9f5cc1c2031cadeea267593e561076f0434bc4664bbb",
+      "passed": true,
+      "current_source_drift": [],
+      "source_changed_during_run": false,
+      "mock_completed_inferences": 4,
+      "providers_tested": 2,
+      "selection_routing_passed": true,
+      "initial_and_npc_same_selection": true,
+      "stale_session_prevented_extra_call": true,
+      "mock_inferences_by_provider": {
+        "openai-chatgpt": 2,
+        "mock-beta": 2
+      },
+      "real_provider_requests": 0,
+      "unity_engine_started": false
+    }
+  },
+  "auth_freeze_receipt": {
+    "path": "workers/simulator/provider_auth/multi-provider-implementation-receipt.json",
+    "sha256": "afa486e6192c5dfc28f7ebd824fdb8f40be05c9c95c38ed139f38a2f579fe0cc",
+    "aggregate_sha256": "b36ddfd0cf6ac051067e60a890243fcf5502f3c05b2e8f38d833fdee9e725308",
+    "current_source_drift": []
+  },
+  "real_provider_requests": 0,
+  "unity_engine_started": false,
+  "active_helper_restarted": false,
+  "private_credentials_read": false,
+  "limits_preserved": [
+    "All-object initial graph retained with explicit admission limits; no silent truncation or fixed emergency scenario selector.",
+    "Local seeded simulation and response guards remain authoritative.",
+    "No automatic provider/account/model/API-key or billing fallback.",
+    "Recorded selection provenance and replies permit replay without provider requests."
+  ],
+  "limitations": [
+    "Current app/helper and isolated Unity staging were not updated or launched.",
+    "The two-provider HTTP verification uses synthetic provider contracts; it does not prove two actual subscription providers.",
+    "Actual end-user subscription NPC inference and native Unity movement remain unverified.",
+    "Historical one-call ChatGPT initial-world proof returned an empty causal change set.",
+    "Provider availability depends on app-owned OAuth registration and account subscription entitlement; unsupported providers are explicitly unavailable."
+  ]
+}

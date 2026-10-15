@@ -27,10 +27,6 @@ namespace ChooGuard.App.Fps.Emergency
 
         private float rateScale = 1f;
 
-        /// <summary>The first seconds of a shift are quiet (the KTX from Seoul comes in and people get off): no hazard is drawn against.</summary>
-        private const float QuietSeconds = 30f;
-        /// <summary>Candidates are listed and rated this long before the quiet ends, so the first draw has judgments to use.</summary>
-        private const float WarmUpSeconds = 4f;
         private const float HeartbeatSeconds = 1f;
         /// <summary>How often the cheap situation signature (hazards, train stage, escalators, staff response) is compared.</summary>
         private const float WatchSeconds = .25f;
@@ -115,7 +111,6 @@ namespace ChooGuard.App.Fps.Emergency
             // 비상상황은 JEV 만 만든다. JEV 가 없으면 후보를 만들지도 않는다.
             if (jev == null || !jev.Available || session.Player.IsPaused) return;
             float now = session.ShiftSeconds;
-            if (now < QuietSeconds - WarmUpSeconds) return;
             if (now >= nextBeat) beatWanted = true;
             if (now >= nextWatch)
             {
@@ -172,7 +167,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         /// <summary>
         /// What could happen next, one source per step: a new emergency while none is going on; otherwise developments of
-        /// those that are, and separate new ones.
+        /// the current incident. Independent origins are ineligible until the shift has ended.
         /// </summary>
         private IEnumerable<bool> ListingSteps(List<Transition> into, Roster roster)
         {
@@ -182,29 +177,6 @@ namespace ChooGuard.App.Fps.Emergency
                 yield break;
             }
             foreach (var step in DevelopmentSteps(into)) yield return step;
-            separateOrigins.Clear();
-            foreach (var step in OriginSteps(separateOrigins, roster)) yield return step;
-            Distinct(separateOrigins);
-            foreach (var origin in separateOrigins)
-            {
-                var separate = Separate(origin);
-                if (separate != null) into.Add(separate);
-            }
-        }
-
-        private readonly List<Transition> separateOrigins = new List<Transition>();
-
-        /// <summary>
-        /// An origin as it is offered while an emergency is in progress: a kind that has already happened is not made again, a quake does
-        /// not overlap one, and the text says the new emergency is separate from the one going on. Null when it is not offered; unchanged
-        /// while the station is calm.
-        /// </summary>
-        private Transition Separate(Transition origin)
-        {
-            if (origin == null || Stage == Phase.Calm) return origin;
-            if (origin.Kind == "quake" || composedKinds.Contains(origin.Kind)) return null;
-            origin.Description = "Separately from the emergency already in progress, and unrelated to it: " + origin.Description;
-            return origin;
         }
 
         /// <summary>Brings the candidate set in line with the fresh list: new ones appear, ones whose text changed are marked for a new rating, ones no longer possible go.</summary>
@@ -393,39 +365,35 @@ namespace ChooGuard.App.Fps.Emergency
         /// Draws against the hazard over the game time since the last step: every candidate with a rating of its own has its
         /// rate for that stretch (a rating is kept while the new one is on its way, and stops counting after
         /// <see cref="MaxJudgmentAge"/>; a candidate JEV has not rated yet contributes nothing), something happens with
-        /// probability 1 − exp(−Σrate · time) and which one follows the rates. The first <see cref="QuietSeconds"/> of the
-        /// shift carry no hazard at all. New emergencies share one station-level budget (<see cref="Imminence.OriginShare"/>) among the
+        /// probability 1 − exp(−Σrate · time) and which one follows the rates. Judgment starts as soon as play begins,
+        /// without a quiet patrol gate. New emergencies share one station-level budget (<see cref="Imminence.OriginShare"/>) among the
         /// origins that carry a rating now, so a longer list adds variety, never frequency, and how much of a long list JEV has got
         /// round to does not change how often the station has an emergency.
         /// </summary>
         private void Integrate(float now)
         {
-            float dt = Mathf.Clamp(now - Mathf.Max(integratedAt, QuietSeconds), 0, MaxStep);
+            float dt = Mathf.Clamp(now - integratedAt, 0, MaxStep);
             integratedAt = now;
             rates.Clear();
             drawn.Clear();
-            float origin = 0, development = 0, share = 1f;
+            float origin = 0, development = 0, share = Imminence.OriginShare(JudgedOrigins(now));
             int first = -1, second = -1, third = -1, valid = 0;
-            if (now >= QuietSeconds)
+            foreach (var candidate in candidates.Values)
             {
-                share = Imminence.OriginShare(JudgedOrigins(now));
-                foreach (var candidate in candidates.Values)
-                {
-                    if (!Counts(candidate, now)) continue;
-                    valid++;
-                    bool isOrigin = candidate.Scale != ImminenceScale.Development;
-                    float rate = candidate.Rate * rateScale * (isOrigin ? share : 1f);
-                    if (rate <= 0) continue;
-                    rates.Add(rate);
-                    drawn.Add(candidate);
-                    if (isOrigin) origin += rate; else development += rate;
-                    int index = rates.Count - 1;
-                    if (first < 0 || rate > rates[first]) { third = second; second = first; first = index; }
-                    else if (second < 0 || rate > rates[second]) { third = second; second = index; }
-                    else if (third < 0 || rate > rates[third]) third = index;
-                }
+                if (!Counts(candidate, now)) continue;
+                valid++;
+                bool isOrigin = candidate.Scale != ImminenceScale.Development;
+                float rate = candidate.Rate * rateScale * (isOrigin ? share : 1f);
+                if (rate <= 0) continue;
+                rates.Add(rate);
+                drawn.Add(candidate);
+                if (isOrigin) origin += rate; else development += rate;
+                int index = rates.Count - 1;
+                if (first < 0 || rate > rates[first]) { third = second; second = first; first = index; }
+                else if (second < 0 || rate > rates[second]) { third = second; second = index; }
+                else if (third < 0 || rate > rates[third]) third = index;
             }
-            if (dt > 0 || now < QuietSeconds) log.Director.Trace(dt, origin, development, candidates.Count, valid, Terms(first, second, third));
+            if (dt > 0) log.Director.Trace(dt, origin, development, candidates.Count, valid, Terms(first, second, third));
             if (applying || dt <= 0) return;
             int pick = CompetingRisks.Draw(rates, dt, drawRandom);
             if (pick >= 0) Happen(drawn[pick], rates[pick]);
@@ -546,7 +514,7 @@ namespace ChooGuard.App.Fps.Emergency
         private Transition Fresh(Candidate chosen)
         {
             Transition fresh;
-            if (chosen.Transition.Origin) fresh = Separate(chosen.Transition.Recheck());
+            if (chosen.Transition.Origin) fresh = Stage == Phase.Calm && composedOrigins.Count == 0 ? chosen.Transition.Recheck() : null;
             else
             {
                 var developments = new List<Transition>();
@@ -632,6 +600,8 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── JEV 에 보이는 상황 ──────────────────────────────────────────────
 
+        private readonly JevWorldInventory worldInventory = new JevWorldInventory();
+
         /// <summary>
         /// The state JEV rates candidates against: only what bears on the judgment, in words rather than numbers. The hash
         /// covers everything except the clock, so it changes exactly when a rating made earlier may no longer hold.
@@ -653,7 +623,8 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var hazard in all) if (hazard.Cordoned) cordoned = true;
             var focus = new Dictionary<string, object>
             {
-                ["place"] = "KORAIL Busan Station (terminus of the Gyeongbu line), weekday afternoon",
+                ["place"] = "Inside the KORAIL Busan Station building, weekday afternoon. Outdoor squares, platforms, tracks and KTX cars are outside the incident scope.",
+                ["world_objects"] = worldInventory.Snapshot(now, world, crowd, hanging, InsideBuilding, e => IndoorSubject(e)),
                 ["train"] = TrainWords(),
                 ["emergencies_in_progress"] = emergencies,
                 ["load"] = uncontrolled == 0 ? "the staff member is not handling any emergency" : uncontrolled == 1 ? "one emergency is in progress" : "more than one emergency is in progress at the same time",

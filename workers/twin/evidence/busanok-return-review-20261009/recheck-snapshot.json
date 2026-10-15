@@ -1,0 +1,41 @@
+{
+  "status": "RECHECK_ORIGINAL_FINDINGS_FIXED_TWO_FOLLOWUPS_REPORTED",
+  "sampled_utc": "2026-10-08T18:10:47.155706+00:00",
+  "source_snapshot": [
+    {
+      "path": "Assets/ChooGuard/Editor/Twin/ArchitecturalCorrectionRegistry.cs",
+      "sha256": "81f6ec29d8295e4db9648e8fd26c31dd66bf418f5b934d04d14331b3d9b8f098"
+    },
+    {
+      "path": "AgentScripts/BusanokReturnInstall.cs",
+      "sha256": "2c84fb90346e8019e76eda03e415455fe7f3ed9213475373fd3a791f8011ad67"
+    },
+    {
+      "path": "AgentScripts/MajibangBuilder.cs",
+      "sha256": "bd2c84da8c7543e1272908269a5247a2035e637ba0de1b637d147a9b7436ac88"
+    }
+  ],
+  "resolved": [
+    "BGR-1 canonical exact fixed collision dependency",
+    "BGR-2 before-Save pinned full companion mesh/material proofs verified before recovery publication",
+    "BGR-3 finite companion/collider matrix comparisons"
+  ],
+  "followups": [
+    {
+      "id": "BGR-4",
+      "severity": "compile_blocker",
+      "file": "Assets/ChooGuard/Editor/Twin/ArchitecturalCorrectionRegistry.cs",
+      "finding": "ResolveForRebuild declares outer var matches and inner collider-loop var matches in overlapping enclosing scope, prohibited by C# CS0136.",
+      "resolution": "Rename inner colliderMatches."
+    },
+    {
+      "id": "BGR-5",
+      "severity": "P1_republication_compatibility",
+      "file": "Assets/ChooGuard/Editor/Twin/ArchitecturalCorrectionRegistry.cs",
+      "finding": "New PublishSavedCorrection always records ordered source complete digest for all existing four-argument callers. Resolve permits ProvenRebuildVariant then still requires that complete digest equal the original ordered source digest; republishing F931 canopy would reject previously certified E328 variant.",
+      "resolution": "Preserve unchanged legacy four-argument behavior by opt-in full-source digest for new Busanok publication, or provide separately certified complete variant support. Preserve pinned canopy proof."
+    }
+  ],
+  "transaction_recheck": "Installer still writes complete pending journal before Save, commits only after successful SaveScene, restores original references/dedicated new roots/assets on precommit failure and retains journal on postcommit metadata failure. Recovery checks unchanged packet/source asset file hashes, exact original/replacement complete channels, frozen target-relative companion frames, four persistent companion mesh GUID/channels/material GUID/file hashes, barrier GUID/channels/flags/layer, then publishes barrier dependency.",
+  "limitations": "Source review only; root owns compilation and negative Editor/runtime fixtures."
+}

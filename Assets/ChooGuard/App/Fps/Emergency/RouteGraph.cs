@@ -75,6 +75,7 @@ namespace ChooGuard.App.Fps.Emergency
             public Node From, To;
             public float Length;
             public Escalator Escalator;
+            public StationWalkingRoute Walking;
             public bool Elevator;
             /// <summary>A ride whose escalator this world does not have: the edge cannot be walked.</summary>
             internal bool Missing;
@@ -141,7 +142,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>The bake's own account of what cannot reach what (twin defects, written when the file was made).</summary>
         public string Report { get; private set; }
 
-        public static RouteGraph Load(TextAsset asset, IReadOnlyList<Escalator> escalators)
+        public static RouteGraph Load(TextAsset asset, IReadOnlyList<Escalator> escalators, IReadOnlyList<StationWalkingRoute> walkingRoutes = null)
         {
             if (asset == null) throw new ArgumentNullException(nameof(asset));
             var file = JsonUtility.FromJson<File>(asset.text);
@@ -151,6 +152,12 @@ namespace ChooGuard.App.Fps.Emergency
             var graph = new RouteGraph { Report = file.report };
             var rides = new Dictionary<string, Escalator>();
             foreach (var escalator in escalators) rides[escalator.Entry.id] = escalator;
+            var walks = new Dictionary<string, StationWalkingRoute>();
+            if (walkingRoutes != null) foreach (var walk in walkingRoutes)
+            {
+                walks[StationWalkingRoutes.LinkPrefix + walk.Entry.id] = walk;
+                walk.Changed += graph.InvalidateWalkingLink;
+            }
             for (int i = 0; i < file.labels.Length; i++)
             {
                 var node = new Node { Index = i, Position = new Vector3(file.positions[i * 3], file.positions[i * 3 + 1], file.positions[i * 3 + 2]) * .01f, Label = file.labels[i] };
@@ -161,7 +168,8 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 var edge = new Edge { Index = i, From = graph.nodes[file.from[i]], To = graph.nodes[file.to[i]], Length = file.length[i] * .01f };
                 string link = file.link[i];
-                if (link == ElevatorLink) edge.Elevator = true;
+                if (link.StartsWith(StationWalkingRoutes.LinkPrefix, StringComparison.Ordinal)) { if (!walks.TryGetValue(link, out edge.Walking)) edge.Missing = true; }
+                else if (link == ElevatorLink) edge.Elevator = true;
                 else if (link.Length > 0 && !rides.TryGetValue(link, out edge.Escalator)) edge.Missing = true;
                 graph.edges.Add(edge);
                 edge.From.Out.Add(edge);
@@ -214,6 +222,10 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         // ── 검색 결과 ───────────────────────────────────────────────────────
+
+        // Only live Result cache reads this revision; Survey retains its own
+        // knowledge rules and does not inspect owner.Closed.
+        private void InvalidateWalkingLink() => version++;
 
         private int version;
         private readonly Dictionary<(int origin, int danger, RouteProfile profile, bool toward), Costs> results = new Dictionary<(int, int, RouteProfile, bool), Costs>();
@@ -310,9 +322,24 @@ namespace ChooGuard.App.Fps.Emergency
             return array;
         }
 
-        private static bool Touches(Edge edge, Vector3 centre, float radius) =>
-            (Mathf.Abs(edge.From.Position.y - centre.y) < 3f || Mathf.Abs(edge.To.Position.y - centre.y) < 3f)
-            && StationWorld.SegmentDistance(centre, edge.From.Position, edge.To.Position) < radius;
+        private static bool Touches(Edge edge, Vector3 centre, float radius)
+        {
+            if (edge.Walking == null) return SegmentTouches(edge.From.Position, edge.To.Position, centre, radius);
+            var route = edge.Walking.Entry;
+            bool reverse = Vector3.Distance(edge.From.Position, route.End) < Vector3.Distance(edge.From.Position, route.Start);
+            var previous = edge.From.Position;
+            for (int i = 0; i < route.path.Length; i++)
+            {
+                var next = route.path[reverse ? route.path.Length - 1 - i : i];
+                if (SegmentTouches(previous, next, centre, radius)) return true;
+                previous = next;
+            }
+            return SegmentTouches(previous, edge.To.Position, centre, radius);
+        }
+
+        private static bool SegmentTouches(Vector3 a, Vector3 b, Vector3 centre, float radius) =>
+            (Mathf.Abs(a.y - centre.y) < 3f || Mathf.Abs(b.y - centre.y) < 3f)
+            && StationWorld.SegmentDistance(centre, a, b) < radius;
 
         private void Search(Costs result, RouteProfile profile, float now, bool toward)
         {
@@ -348,6 +375,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             bool survey = surveyRules != null;
             if (edge.Missing || !survey && edge.BlockedUntil > now) return float.PositiveInfinity;
+            if (!survey && edge.Walking != null && edge.Walking.Closed) return float.PositiveInfinity;
             float weight = edge.Length;
             if (edge.Escalator != null)
             {

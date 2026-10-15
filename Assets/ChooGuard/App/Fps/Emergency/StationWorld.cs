@@ -22,6 +22,7 @@ namespace ChooGuard.App.Fps.Emergency
         public TrainService Train { get; set; }
         public readonly List<Escalator> Escalators = new List<Escalator>();
         public readonly List<Elevator> Elevators = new List<Elevator>();
+        public readonly List<StationWalkingRoute> WalkingRoutes = new List<StationWalkingRoute>();
 
         /// <summary>
         /// Closed-off discs (cordons, fires, fallen objects, lowered shutters) as the crowd and the paths see them: the truth, not what the staff member
@@ -48,6 +49,7 @@ namespace ChooGuard.App.Fps.Emergency
         public StationWorld(EmergencyArt art, int seed, Transform parent = null)
         {
             if (art == null || art.WorldNavMesh == null || art.StationData == null) throw new ArgumentException("EmergencyArt 의 navmesh·역 자료가 없습니다.");
+            var walkingEntries = StationWalkingRoutes.Load(); // Validate before nav/transport registration.
             Seed = seed;
             Random = new System.Random(seed);
             Points = StationPoints.Load(art.StationData);
@@ -76,10 +78,17 @@ namespace ChooGuard.App.Fps.Emergency
                     elevator.Setup(entry);
                     Elevators.Add(elevator);
                 }
+                foreach (var entry in walkingEntries)
+                {
+                    var go = new GameObject(entry.label); go.transform.SetParent(links.transform, false);
+                    var walking = go.AddComponent<StationWalkingRoute>(); walking.Setup(entry); WalkingRoutes.Add(walking);
+                }
+                foreach (var binding in UnityEngine.Object.FindObjectsByType<ChooGuard.App.Fps.Twin.EscalatorDriveBinding>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                    binding.Bind(Escalators);
             }
             // 길 안내: navmesh 와 함께 구워 둔 경로 그래프(에디터 ChooGuard/Emergency/Bake route graph)를 읽는다. 에스컬레이터 변은 위에서 만든 에스컬레이터에 묶인다.
             var routes = Resources.Load<TextAsset>(RoutesResource) ?? throw new ArgumentException("경로 그래프(Resources/" + RoutesResource + ".json)가 없습니다: 에디터 메뉴 ChooGuard/Emergency/Bake route graph 로 만드세요.");
-            Paths = new PathService(this, RouteGraph.Load(routes, Escalators));
+            Paths = new PathService(this, RouteGraph.Load(routes, Escalators, WalkingRoutes));
             PersonBody.Paths = Paths;
         }
 

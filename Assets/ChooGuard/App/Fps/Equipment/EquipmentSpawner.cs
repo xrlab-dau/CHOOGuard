@@ -29,6 +29,7 @@ namespace ChooGuard.App.Fps.Equipment
         {
             public Transform Root;
             public int Placed, Skipped, Unverified, Cells, Batched, Unbatched;
+            public readonly SortedDictionary<string, int> VerificationIssues = new SortedDictionary<string, int>(System.StringComparer.Ordinal);
             public float Milliseconds, ParseMilliseconds, PlaceMilliseconds, BatchMilliseconds;
             public readonly SortedDictionary<string, int> PerKind = new SortedDictionary<string, int>(System.StringComparer.Ordinal);
 
@@ -62,14 +63,25 @@ namespace ChooGuard.App.Fps.Equipment
                 var parsing = Stopwatch.StartNew();
                 var data = JsonUtility.FromJson<EquipmentPlacementFile>(file.text);
                 report.ParseMilliseconds += (float)parsing.Elapsed.TotalMilliseconds;
+                if (data == null || data.items == null) continue;
                 foreach (var item in data.items)
                 {
-                    if (!item.HasPlacementEvidence)
+                    if (item == null || !item.HasPlacementEvidence)
                     {
                         report.Unverified++;
+                        string issue = item == null ? "null_placement" : item.VerificationIssue;
+                        report.VerificationIssues.TryGetValue(issue, out int issueCount);
+                        report.VerificationIssues[issue] = issueCount + 1;
                         continue;
                     }
                     var prefab = catalog.Prefab(item.prefab);
+                    if (prefab != null && !item.verification.ValidateModelDimensions(prefab, out string dimensionIssue))
+                    {
+                        report.Unverified++;
+                        report.VerificationIssues.TryGetValue(dimensionIssue, out int dimensionCount);
+                        report.VerificationIssues[dimensionIssue] = dimensionCount + 1;
+                        continue;
+                    }
                     if (prefab == null || !ids.Add(item.id))
                     {
                         Debug.LogError("[EquipmentSpawner] " + data.group + " 의 '" + item.id + "' 를 건너뜀: " + (prefab == null ? "프리팹 '" + item.prefab + "' 없음" : "id 가 겹침"));
@@ -83,7 +95,13 @@ namespace ChooGuard.App.Fps.Equipment
                         cellRoot.transform.SetParent(root.transform, false);
                         cells[key] = cell = new Cell { Root = cellRoot };
                     }
-                    Place(prefab, item, cell, holder.transform, needsPlacing);
+                    if (!Place(prefab, item, cell, holder.transform, needsPlacing, out var placementIssue))
+                    {
+                        report.Unverified++;
+                        report.VerificationIssues.TryGetValue(placementIssue, out int issueCount);
+                        report.VerificationIssues[placementIssue] = issueCount + 1;
+                        continue;
+                    }
                     report.PerKind.TryGetValue(item.kind, out int count);
                     report.PerKind[item.kind] = count + 1;
                     report.Placed++;
@@ -105,14 +123,23 @@ namespace ChooGuard.App.Fps.Equipment
             return report;
         }
 
-        private static void Place(GameObject prefab, EquipmentPlacement item, Cell cell, Transform holder, Dictionary<GameObject, bool> needsPlacing)
+        private static bool Place(GameObject prefab, EquipmentPlacement item, Cell cell, Transform holder, Dictionary<GameObject, bool> needsPlacing, out string reason)
         {
             var instance = Object.Instantiate(prefab, item.position, Quaternion.Euler(item.rotation), holder);
             instance.name = item.id;
             var equipment = instance.GetComponent<StationEquipment>() ?? instance.AddComponent<StationEquipment>();
             equipment.Assign(item.id, item.kind, item.label, item.zone, item.data);
+            equipment.Verification = item.verification;
             if (!needsPlacing.TryGetValue(prefab, out bool needs)) needsPlacing[prefab] = needs = prefab.GetComponent<IEquipmentPlaced>() != null;
             if (needs) foreach (var placed in instance.GetComponents<IEquipmentPlaced>()) placed.OnPlaced();
+            // Check the actual imported scale and any OnPlaced changes while the instance is still inactive.
+            if (!item.verification.Validate(item.id, instance.transform.position, instance.transform.eulerAngles, out reason) ||
+                !item.verification.ValidateModelDimensions(instance, out reason))
+            {
+                if (UnityEngine.Application.isPlaying) Object.Destroy(instance); else Object.DestroyImmediate(instance);
+                return false;
+            }
+            equipment.AdmitVerifiedPlacement();
             instance.transform.SetParent(cell.Root.transform, true);
             var renderers = instance.GetComponentsInChildren<Renderer>(true);
             float draw = equipment.DrawDistance * equipment.DrawDistance;
@@ -123,6 +150,7 @@ namespace ChooGuard.App.Fps.Equipment
                 if (cell.HasBounds) cell.Bounds.Encapsulate(renderer.bounds);
                 else { cell.Bounds = renderer.bounds; cell.HasBounds = true; }
             }
+            return true;
         }
 
         /// <summary>One static batch per cell out of the renderers of everything that does not move (a mesh must be readable to be combined).</summary>

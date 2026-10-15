@@ -236,6 +236,7 @@ namespace ChooGuard.Editor
                     }
                     escalators.Add(entry);
                 }
+                StationWalkingRoutes.AddTemporaryLinks(links);
                 var elevators = StationSurvey.Elevators(OnNav, log);
                 foreach (var elevator in elevators)
                     for (int i = 0; i < elevator.stops.Length; i++)
@@ -253,7 +254,7 @@ namespace ChooGuard.Editor
                 {
                     var hit = OnNav(near, radius);
                     if (hit == null || !Reachable(hit.Value)) { rejected.Add(id); return; }
-                    points.Add(new StationPoints.PointEntry { id = id, kind = kind, label = label, zone = zoneIndex.At(hit.Value), position = Round(hit.Value), yaw = Mathf.Round(yaw), anchor = anchor.HasValue ? Round(anchor.Value) : Vector3.zero, slot = slot });
+                    points.Add(new StationPoints.PointEntry { id = id, kind = kind, label = ChooGuard.Editor.Twin.ObservedFacadeRegistry.NavigationLabel(id,label), zone = zoneIndex.At(hit.Value), position = Round(hit.Value), yaw = Mathf.Round(yaw), anchor = anchor.HasValue ? Round(anchor.Value) : Vector3.zero, slot = slot });
                 }
 
                 // 출구는 가장 가까운 navmesh 가 떨어진 조각일 수 있어 주변 12 m 안에서 맞이방과 이어진 점을 찾는다.
@@ -286,6 +287,7 @@ namespace ChooGuard.Editor
 
                 AddTenants(points, rejected, Add, zoneIndex, Reachable);
                 AddToilets(Add);
+                ChooGuard.Editor.Twin.SourcePdfToiletDestinationRegistry.AppendForBuild(points, rejected, zoneIndex.At, escalators, elevators);
                 AddWaits(points, zoneIndex, Reachable);
                 AddSeats(points, rejected, Reachable, zoneIndex);
                 Add("office-door", "Office", "역무실", new Vector3(27, 7, -9.5f), 3f, 0);
@@ -477,8 +479,8 @@ namespace ChooGuard.Editor
         private static void AddToilets(Action<string, string, string, Vector3, float, float, Vector3?, string> add)
         {
             var station = SceneManager.GetSceneByPath(EmergencySceneBuilder.StationScenePath);
-            var signs = station.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<Renderer>(true))
-                .Where(r => r.name.StartsWith("Sign · ", StringComparison.Ordinal) && r.name.Contains("화장실") && !r.name.Contains("m")).ToList();
+            var signs = station.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<Renderer>(false))
+                .Where(r => r.enabled && r.gameObject.activeInHierarchy && r.name.StartsWith("Sign · ", StringComparison.Ordinal) && r.name.Contains("화장실") && !r.name.Contains("m")).ToList();
             int index = 0;
             foreach (var sign in signs)
             {

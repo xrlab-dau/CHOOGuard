@@ -1,0 +1,35 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "return new { scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene().path, dirty=UnityEngine.SceneManagement.SceneManager.GetActiveScene().isDirty, playing=UnityEditor.EditorApplication.isPlaying, compiling=UnityEditor.EditorApplication.isCompiling, updating=UnityEditor.EditorApplication.isUpdating, loadedSceneCount=UnityEngine.SceneManagement.SceneManager.sceneCount, meshFilters=UnityEngine.Object.FindObjectsByType<UnityEngine.MeshFilter>(UnityEngine.FindObjectsInactive.Include,UnityEngine.FindObjectsSortMode.None).Count(f=>f.gameObject.scene==UnityEngine.SceneManagement.SceneManager.GetActiveScene()), doors=UnityEngine.Object.FindObjectsByType<ChooGuard.App.Fps.Facilities.StationDoor>(UnityEngine.FindObjectsInactive.Include,UnityEngine.FindObjectsSortMode.None).Count(d=>d.gameObject.scene==UnityEngine.SceneManagement.SceneManager.GetActiveScene()), activeDoors=UnityEngine.Object.FindObjectsByType<ChooGuard.App.Fps.Facilities.StationDoor>(UnityEngine.FindObjectsSortMode.None).Count(d=>d.gameObject.scene==UnityEngine.SceneManagement.SceneManager.GetActiveScene()), registeredNavTriangles=UnityEngine.AI.NavMesh.CalculateTriangulation().indices.Length/3 };",
+      "timeout": "60000"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "scene": "Assets/ChooGuard/Scenes/FpsStation.unity",
+        "dirty": false,
+        "playing": false,
+        "compiling": false,
+        "updating": false,
+        "loadedSceneCount": 1,
+        "meshFilters": 3852,
+        "doors": 103,
+        "activeDoors": 99,
+        "registeredNavTriangles": 0
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

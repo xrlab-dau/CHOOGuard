@@ -198,6 +198,8 @@ namespace ChooGuard.App.Fps.Emergency
             Crowd = gameObject.AddComponent<CrowdDirector>();
             Crowd.Target = Passengers;
             Incidents.Begin(this, World, Crowd, Jev, Art, Log);
+            var spawn = PlayerSpawn.Pick(World.Points, Player.GetComponent<CharacterController>(), seed);
+            Player.RestorePhysicalPose(spawn, Player.YawDegrees, 0);
             Crowd.Begin(this, World, Art.Crowd, Jev);
             Sound = gameObject.AddComponent<StationSound>();
             Sound.Setup(this);

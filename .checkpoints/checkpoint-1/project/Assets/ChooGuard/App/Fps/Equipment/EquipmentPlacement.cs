@@ -1,0 +1,48 @@
+using System;
+using UnityEngine;
+using ChooGuard.App.Fps.Twin;
+
+namespace ChooGuard.App.Fps.Equipment
+{
+    /// <summary>One placed piece of equipment in a group's placement file (world position and euler rotation in metres/degrees).</summary>
+    [Serializable]
+    public sealed class EquipmentPlacement
+    {
+        public string id, kind, label, zone, prefab;
+        public Vector3 position, rotation;
+        /// <summary>
+        /// Evidence identifying this exact object at this site location: a field photo/video, actual drawing, or source
+        /// model. Regulatory spacing, geometry-derived proposals, and a model's license alone do not verify placement.
+        /// Empty for unverified candidates, which builders and the spawner withhold.
+        /// </summary>
+        public string placementEvidence = "";
+
+        public PlacementVerification verification;
+
+        public bool HasPlacementEvidence => verification != null && verification.Validate(id, position, rotation, out _);
+
+        public string VerificationIssue
+        {
+            get
+            {
+                if (verification == null) return "missing_structured_field_verification";
+                return verification.Validate(id, position, rotation, out string reason) ? "" : reason;
+            }
+        }
+
+        /// <summary>Numbers and words a kind needs at run time, as <c>key=value</c> pairs joined by ';' (a detector's coverage radius and mounting height). Empty when the kind needs none.</summary>
+        public string data = "";
+    }
+
+    /// <summary>
+    /// A group's placement file, <c>Assets/ChooGuard/Art/Emergency/Equipment/&lt;group&gt;.json</c>, written by that group's
+    /// editor builder (menu ChooGuard/Emergency/Equipment/&lt;Group&gt;) and read by <see cref="EquipmentSpawner"/> at session start.
+    /// </summary>
+    [Serializable]
+    public sealed class EquipmentPlacementFile
+    {
+        public int version = 2;
+        public string group, note;
+        public EquipmentPlacement[] items = Array.Empty<EquipmentPlacement>();
+    }
+}

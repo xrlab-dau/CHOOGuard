@@ -1,0 +1,60 @@
+> SUPERSEDING NOVELTY AUDIT: All15 reacquired official originals, including EKACEMPDF/5Fguide/ninephotos, match prior five-storey-architecture receipts and actualfiles exactly. Earlier NEW/BREAKTHROUGH wording below reflects an incomplete inventory and is withdrawn. Net new physicalcontrols=0. Currentoperatoridentity/independentreview refreshed only.
+
+# Findings
+
+- Shared plan explicitly states whole-building 1F–5F fidelity remains incomplete. Existing official lease PDFs establish main 2F only; older advertising drawing labeled 3F has ambiguous floor convention.
+- Existing 2026-05-20 kgnwrite on-site guide source is promising for separate restaurant 3F. Existing pshbadgirl 2026-08-09 photographs provide upper Busanok/glass return, not whole 3F geometry.
+- Prior registered ceiling fit was model-relative and had held-out 25.95px residual; it cannot certify physical calibration.
+- No current 4F/5F plan or dimensions are established by these summaries.
+- q01 official-domain 3F drawing search returned only information-disclosure index; q02 combined 4F/5F drawing search returned nearby Opera House, metro and other false matches. No station drawing retrieved. Excluded as insufficient / wrong building.
+- q03 station-section search mainly returns the separate knowledge platform and Bujeon proposal; q04 English historical station-section query returns non-geometric history/travel pages. Search-generated AI overview excluded as evidence. No section authority yet.
+- q05 found new primary technical account: Korea Construction Engineering & Management Association 2012 issue, Busan station phase2 extension supervision case. Search snippet explicitly mentions B1/5 storeys and31.85m highest point. Must download and inspect before treating heights/sections as geometry. q06 has historical operator press-release candidate for 4F office; secondary2024 recollection is navigation only.
+
+- Direct original review: kgnwrite image2 whole board (2252x4000) explicitly labels separate 3F L-shaped restaurant level above 2F matching hall. Foodcourt and Bibimga occupy top band; Busanok/Eggbox perpendicular wing; corner male/female WC, elevator, escalator icons. Image3 is 1F detail, not 3F. No4F/5F shown; omission does not prove absent storeys.
+- ENOSPC blocked Aside session creation and apply_patch. Source bytes were fetched transiently but absolute fs.writeFile denied; PDF not yet saved or reviewed.
+
+- Direct original review: pshbadgirl01 Busanok interior counter has an opaque dark tile-faced base, wood-toned sign fascia and rectangular service opening. The ceiling is smooth pale board with round recessed downlights, round grille and small point fittings. A large luminous rectangular ceiling cassette is not visible. Image02 shows full-height transparent window frames turning a perpendicular corner; beyond it open station steel-truss roof/glazed wall rather than enclosed office floor. This proves local tenant envelope/appearance, not global camera or metric floor registration; article3F label is separate authority.
+
+- NEW PRIMARY DOWNLOADED: EKACEM Construction Management News2012Mar-Apr, Han Sang-jin/HyeWonKkachi, phase2Busan extension, PDF4pages SHA256 b7f6807aefdb5c3fdfcf981d7dd3073b27ecfb72abd74d453465262a5ae24bff;4,732,524bytes. Direct original-page review PDF2/printed38-39: site1187-1Choryang, existing vs extension areas separated,2009start/2010opening; building summary B1/5storeys/max31.85m. This is historical project scope, not current all-floor metric layout.
+- Direct original-page review PDF3/printed40-41: small BEFORE/AFTER plan diagram consolidates8distributed WC/HVAC locations to1centralized location. BEFORE/AFTER structural section removes light pillars/transfer beams and replaces roof openings with light ducts. Text explicitly separates existing station4F/5F offices from added station volume for fire/ventilation/daylight/noise. Defensible correction to premise:4F/5F office floors belong existing mainbuilding, not five uniformly stacked public concourse plates. No4F/5F office-room polygons or readable floor-height dimensions supplied.
+- Aside ENOSPC workaround: reuse an existing inactive session with global --session option, transfer downloaded bytes in memory to owned runner. No files deleted.
+
+- Direct native-image review EKACEMPDF3xref12(716x307) is slab-method comparison SRC deck vs HalfPC, not a building section. xref13(867x209) is rail power/work blockage diagram, not sanitary plan. Original/revised sections and plan remain visible on complete PDF3; native embedded image mapping is being checked. Native images preserve original embedded bytes, not redrawn geometry.
+
+- q08 identifies official current Korail meeting-room page with explicit5F routing and registered room images; operator page must be inspected. Nearby SuSpace and passenger-terminal fifth-floor results are wrong buildings and excluded. q07 prior Google query tab had closed; its search text unavailable, but title/query are logged in failedfetch stdout and later downloaded exactPDF.
+
+- Native image mapping checked directly: PDF3xref11 is micro-pile foundation count/grid diagram; xref14 is original total connecting-passage demolition vs revised partial retention axonometric. Neither supplies4F/5F room topology.
+
+- Confirmed native diagram IDs: PDF3xref15(881x288) is BEFORE/AFTER plan for WC concentration plus mezzanine facilities; PDF3xref16(819x360) is BEFORE/AFTER section/structural axonometric. Revised right-hand section has high pitched steel trusses, a lower retained-volume bridge, and left-side stacked office block circled3. These are schematic historical relations, not measured current elevation controls.
+
+- q09 named-supervisor search primarily repeats exact EKACEM source; current KR rail-facility HVAC contract may help future source requests but no architectural download established. q10 historical news uses old3F-concourse/2F-restaurant terminology; not current3Frestaurant proof. This plausibly explains ad3F convention but must not relabel current sources from snippets. No office-floor drawing found.
+
+- Bounded12queries completed (q07 transient search lacked result capture; exactPDF recovered). q11/12 yielded no additional station floor drawing. Current official Korail room page directly read2026-10-10 confirms separate5Fmeeting-room access from1Fdoor2 elevator,2Fticket-counter elevator, and2Fdoor7right elevator. Current listed5xx rooms512/530/531/532/533 with areas110/70/64/23/21m²; no published layout or aspect ratios yet. No source currently found for4Froom polygons; absence in this bounded search is not evidence of nonexistence.
+
+- Official room512detail directly confirms5Felevator destination in its own modal, with sections for room photos and room sketch. Modal asset URLs pending inspection; parent skeleton broken placeholder images excluded.
+
+- NEW CURRENT OFFICIAL5FPLAN: Korail room512modal(own text says5F) serves1118x633original JPEG f2026092118SJ.jpg. Directly viewed:512left/north of double elevator+stair core; east corridor to533north-middle,532upper-right,531below532,530far-right. Door swings and unlabeled surrounding office cells drawn. Orange arrows are routing overlays, not walls. This is a cropped upper-floor sketch; no scale/north/elevations. URL filename20260921 is upload-path evidence, not independently verified drawing/survey date.
+- Direct official room512photo1(410x230): pale plain suspended ceiling with linear recessed rectangular fixtures and small round downlights; pale acoustically perforated wall panels with dark top trim, double door, light neutral floor, long desk rows. No ceiling height/plan orientation can be measured from this image. Original-image URL contains20220506 upload path; current served photo is not proven2026capture.
+
+- Room530 and531 own modals each explicitly confirm5F destination and serve distinct official room photos plus same-size1118x633guide URLs (different filenames, byte-identity comparison pending). Floor identity is directly supported by each modal; exact capture dates unknown.
+
+- Direct original530/531photos(each318x195): low pale suspended ceiling, long recessed linear lights, round downlights, ceiling projector, pale acoustic wall panels/dark top trim; far wall broad blue-green blind/window band. These share appearance family, not enough to establish metric ceiling height or actual window compass direction.
+-532/533own modals each explicitly confirm5F. Distinct official photos use20250327upload paths; original guide variants same258649B. No extra web queries beyond12.
+- Direct original532photo1(607x455): small enclosed pale-panel meeting room, acoustic dotted ceiling, two long LED strips near opposing sides, small point fittings, opaque white projection screen and rounded rectangular ten-chair table. Direct533photo1(617x462): similar family plus ceiling cassette AC, projector, square access hatch, inward visible doorway. These are valid floor/room registered appearance sources; no calibrated camera or absolute XY.
+
+- Direct532/533photo2 reviews confirm opposing wall/door relation, ceiling cassette+projector+long light strips. No depth scale. Fiveguide downloads confirmed exactsameSHA256; remainingduplicate guides will be metadata-only to avoid unnecessary assets. Sealed official5Fsource packet delivered with no world-coordinate claim.
+
+- Direct512photos2/3 confirm same rectangular room, opposing blind/screen and double-entry-door ends; ceiling projector+paired linear lights+downlights and wallpanel trim. No dimensions or world registration established. Broad existingowner lookup had a zsh unmatchedglob; no current5Fowner claim made.
+
+- Complete EKACEM PDF now directly visually inspected all4original pages (page1awards/contents;page2projectoverview;page3plan/section/structure;page4original-vs-revised exterior renderings/process). Page4renders are design illustrations, not sitephotos or current asbuilt. No additional4F/5F roomplan appears.
+
+- Direct kgnwriteimage5original(4000x2252) is enlarged3Fboard with explicit3Flabel and named foodcourt/Bibimga/Busanok/Eggbox. Directimage6original(3000x1689) is corridor by named채선당행복가마솥밥, ceiling square panels each containing large concentric circular impressions, circular vents/downlights, occasional squarelight. Wholeboard identifies that tenant as1Funit13; this links appearance to1Frestaurant corridor, not3F or boardingconcourse. No calibrated camera/heights inferred.
+- PDF4bottomright includes a small historical completion-like high-truss hall photograph alongside exterior image; its exact local region/floor/capturedate is not separately labeled and is excluded from current geometry registration. Other clearly labeled original/revised aerials are design renderings.
+
+- Primary methods refreshed directly via Aside: ICCV2017 Raster-to-Vector authorpage describes raster junctions + integer-program consistent wall/door primitives and popup3D; FloorNet arXiv1804.00090 authorabstract requires RGBD/3Dpoints and uses155residential scans. Useful decision: reviewed sourcepixel walls/doors remain defensible; neither paper supplies missingBusan4Frooms or physical heights. No benchmark percentage transfers to this station; no model trained/run by this lane.
+
+- Narrowextensionq13/q14executed afterAside recovery. CurrentKRICnamedHVACprimary page read; businesscontract index, not releaseddrawings. Relevantcontract rows/attachmentlinks nowchecked. No broadsearch expansion.
+
+- KRICprimarycontract index directly confirms named2026HVACconstruction and supervision entries; UI links open contractmetadata popups. No downloadlink on index. Following exactUI-derived construction/design popup URLs once, then stop.
+
+- NamedHVAClead closed: KRICconstruction2026-1-088-202601-00 anddesign2024-2-048-202603-07 expose contractmetadata only, no drawing/annex links. Newphysicalcontrols0;4F/vertical gaps unchanged.14queries total(initial12+manager-directed2namedfollowups); no furtherquery.37binary cleanup targets in manifest; activepackets repointed to verifiedoldoriginals.

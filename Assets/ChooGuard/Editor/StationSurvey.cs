@@ -108,7 +108,12 @@ namespace ChooGuard.Editor
         public static List<Lane> Escalators(List<string> log)
         {
             var lanes = new List<Lane>();
-            foreach (var well in Wells) lanes.AddRange(WellLanes(well.id, well.platform, well.where, well.high, well.low, well.down, log));
+            foreach (var well in Wells)
+            {
+                var d = Twin.Platform6BankB1Replay.SurveyWellOffset(well.id) + Twin.Platform6BanksB24PlacementReplay.SurveyWellOffset(well.id);
+                var offset = new Vector2(d.x, d.z);
+                lanes.AddRange(WellLanes(well.id, well.platform, well.where, well.high + offset, well.low + offset, well.down, log));
+            }
             lanes.AddRange(NamedEscalators(log));
             lanes.AddRange(KitEscalators(log));
             return lanes;
@@ -262,6 +267,20 @@ namespace ChooGuard.Editor
                     p.y = float.IsNaN(y) ? Mathf.Lerp(Concourse, Ground, (t - tt) / (tb - tt)) : y;
                     belt.Add(p);
                 }
+                // In the middle 5/6 well the platform floor also continues below
+                // the last treads. A closest-height query can select that buried
+                // floor instead of the exposed original tread (reviewed source
+                // Layer0_5 faces 720/310). Keep X/Z and both landing endpoints.
+                if(id=="well-m-56")for(int i=1;i+1<belt.Count;i++)
+                {
+                    var p=belt[i];
+                    var hits=Physics.RaycastAll(p+Vector3.up*.75f,Vector3.down,1.5f,~0,QueryTriggerInteraction.Ignore)
+                        .Where(h=>h.normal.y>.9f&&!h.collider.transform.IsChildOf(Ktx)).OrderBy(h=>h.distance).ToArray();
+                    if(hits.Length==0)continue;
+                    var hit=hits[0];float rise=hit.point.y-p.y;
+                    if(rise>.3f&&rise<.6f&&hit.collider.name=="OfficialStation_Layer0_5"&&hit.collider.transform.parent.name=="Layer0PlatformsDetails")
+                    {p.y=hit.point.y;belt[i]=p;log.Add(id+" exposed native tread height restored at "+i+": "+rise.ToString("F6"));}
+                }
                 belt[0] = top;
                 belt[belt.Count - 1] = bottom;
                 if (!goesDown) belt.Reverse();
@@ -316,9 +335,11 @@ namespace ChooGuard.Editor
                 foreach (Transform child in group.transform)
                 {
                     bool upward = child.name.Contains("상행");
+                    float acceptedUpper = Upper;
+                    if (Twin.UpperCoherentHeightReplay.TryGetEscalatorUpper(child, out float sourceUpper)) acceptedUpper = sourceUpper;
                     var lane = MeshLanes(new MeshEscalator
                     {
-                        Id = upward ? "esc-2f3f-up" : "esc-2f3f-down", Root = child, Lower = Concourse, Upper = Upper, Belts = 1,
+                        Id = upward ? "esc-2f3f-up" : "esc-2f3f-down", Root = child, Lower = Concourse, Upper = acceptedUpper, Belts = 1,
                         Up = new[] { upward }, Labels = new[] { upward ? "3층 올라가는 에스컬레이터" : "2층 내려가는 에스컬레이터" },
                         From = "concourse", To = "upper", Steps = f => true,
                     }, log).FirstOrDefault();

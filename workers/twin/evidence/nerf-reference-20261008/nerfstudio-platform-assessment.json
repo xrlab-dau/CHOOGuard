@@ -1,0 +1,50 @@
+{
+  "schema": "chooguard.nerfstudio-platform-assessment.v1",
+  "primary_repository": "https://github.com/nerfstudio-project/nerfstudio",
+  "primary_commit": "50e0e3c70c775e89333256213363badbf074f29d",
+  "vanilla_torch_encoding": true,
+  "train_device_choices": [
+    "cpu",
+    "cuda",
+    "mps"
+  ],
+  "cuda_only_claim_supported": false,
+  "canonical_sources": "asset-library/research-public/2026-10-08/nerf-methods/receipts.json",
+  "attempts": [
+    {
+      "environment": "Python3.14.5 macOS26.5 arm64",
+      "command": "python3 -m pip install --dry-run --only-binary=:all: --no-cache-dir --target isolated-owned-plan nerfstudio==1.1.5",
+      "exit_code": 1,
+      "failure": "no matching distribution for mandatoryxatlas",
+      "log": "workers/twin/evidence/nerf-reference-20261008/nerfstudio-install-dry-run.log"
+    },
+    {
+      "environment": "installed Python3.13.12 macOS26.5 arm64",
+      "command": "python3.13 -m pip install --dry-run --only-binary=:all: --no-cache-dir --target isolated-owned-plan nerfstudio==1.1.5",
+      "exit_code": 1,
+      "failure": "no matching distribution for mandatoryfpsample",
+      "log": "workers/twin/evidence/nerf-reference-20261008/nerfstudio-python313-dry-run.log"
+    },
+    {
+      "environment": "existing Blender4.5 bundledPython3.11; macOS14arm64 binarycompatibilityprobe on host26.5",
+      "status": "wheel_compatible",
+      "log": "workers/twin/evidence/nerf-reference-20261008/nerfstudio-python311-wheel-probe.log",
+      "exit_code": 0,
+      "resolved_packages": 230,
+      "note": "Compatibilityresolutionprobeusingexisting3.11ABI; notofficialtoolruntimeexecution"
+    }
+  ],
+  "packages_installed": false,
+  "source_compilation_attempted": false,
+  "interpretation": "NerfstudiovanillaTorchCPU/MPSrouteexists. Current3.14/3.13binaryplansfail, while existing3.11compatiblewheelsresolve. Standard3.11fullinstallationpeak2.187GB beforecurrentartifacts exceedsfixed2GBnewdiskbound. Noofficialexecutabletrainwasrun; sourcebuilds/selectivesequentialinstallationwerenotpursuedinthisboundedlane. ThisdoesnotproveMac/NeRFincompatibility.",
+  "wheel_budget": {
+    "compressed_bytes": 509633000,
+    "expanded_bytes": 1677057242,
+    "standard_installer_peak_new_bytes_before_existing_lane_artifacts": 2186690242,
+    "all230wheel_sizes_verified": true,
+    "budget_bytes": 2000000000,
+    "budget_result": "Standardfullinstallerpeakexceeds2GB; noinstallstarted",
+    "measurement": "boundedremoteZIPcentral-directoryuncompressed/compressedsizes; nofullwheelretained",
+    "evidence": "workers/twin/evidence/nerf-reference-20261008/nerfstudio-python311-wheel-budget.json"
+  }
+}

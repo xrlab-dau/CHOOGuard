@@ -1,1 +1,0 @@
-ChooGuard.Editor.MvpAgencyDispatchBuilder.EditorBindExisting();var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>();return new{bound=w.GetComponent<ChooGuard.App.Mvp.MvpAgencyDispatchController>()!=null,saved=UnityEditor.SceneManagement.EditorSceneManager.SaveScene(w.gameObject.scene)};

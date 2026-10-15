@@ -1,0 +1,1 @@
+Desktop GitHub authentication confirmed as umyunsang. Current changes staged; large binaries registered with Git LFS. Ignored private configuration and regenerable caches retain their existing exclusions. Remote publication receipt will be recorded in .git/chooguard-publication/.

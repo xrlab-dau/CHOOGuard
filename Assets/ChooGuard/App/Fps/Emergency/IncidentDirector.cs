@@ -82,7 +82,7 @@ namespace ChooGuard.App.Fps.Emergency
         private string knownHow = "";
         private const float DevelopmentCooldown = 40f;
         private readonly Dictionary<string, float> lastDevelopment = new Dictionary<string, float>();
-        private readonly HashSet<string> composedKinds = new HashSet<string>();
+        private readonly HashSet<string> composedOrigins = new HashSet<string>();
 
         // 위험
         private readonly List<Hazard> all = new List<Hazard>();
@@ -124,6 +124,7 @@ namespace ChooGuard.App.Fps.Emergency
             root = new GameObject("사건").transform;
             root.SetParent(transform, false);
             cameraTransform = session.Player.PlayerCamera.transform;
+            building = new StationBuilding(world.Points);
             BeginFacility();
             BeginEquipment();
             BeginCompose();
@@ -267,12 +268,12 @@ namespace ChooGuard.App.Fps.Emergency
             }
         }
 
-        /// <summary>Whether <paramref name="person"/> can be the subject of a new emergency right now: in the station (or in a KTX car standing open at the platform), visible, unhurt and going about their day.</summary>
+        /// <summary>Whether this person can be the subject of a new emergency: inside the station building, visible, unhurt and going about their day.</summary>
         private bool Eligible(Passenger person)
         {
             // 목록은 여러 프레임에 걸쳐 만들어진다: 그 사이 역을 떠나 사라진 승객은 건너뛴다.
             if (person == null || person.Hostile || person.Hurt || !person.Body.Visible) return false;
-            if (person.Current == Passenger.Activity.InTrain && (Train == null || Train.DoorsOpen < .9f || !Train.AtPlatform)) return false;
+            if (person.Current == Passenger.Activity.InTrain || !InsideBuilding(person.transform.position)) return false;
             return Passenger.Routine(person.Current);
         }
 
@@ -281,10 +282,12 @@ namespace ChooGuard.App.Fps.Emergency
         /// returns its transition, or null when the subject does not qualify; the transition remembers the subject and how to ask again
         /// (<see cref="Transition.Recheck"/>), so a draw can confirm exactly this subject without listing the world again.
         /// </summary>
-        private static Transition Bound<T>(T subject, Func<T, Transition> build) where T : class
+        private Transition Bound<T>(T subject, Func<T, Transition> build) where T : class
         {
+            if (!IndoorSubject(subject)) return null;
             var transition = build(subject);
             if (transition == null) return null;
+            if (transition.Origin && composedOrigins.Contains(transition.Key)) return null;
             transition.Subject = subject;
             transition.Recheck = () => Bound(subject, build);
             return transition;
@@ -295,7 +298,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// every subject there is a checkpoint (<c>null</c>, see <see cref="Fill"/>), so a listing of thousands ends its step when the
         /// frame's share is spent. The lists given here do not change while the shift runs.
         /// </summary>
-        private static IEnumerable<Transition> Each<T>(IReadOnlyList<T> subjects, Func<T, Transition> build) where T : class
+        private IEnumerable<Transition> Each<T>(IReadOnlyList<T> subjects, Func<T, Transition> build) where T : class
         {
             for (int i = 0; i < subjects.Count; i++)
             {
@@ -339,21 +342,27 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void Execute(Transition transition, float magnitude, int candidates, string detail)
         {
+            // A rating may return after another origin has already taken effect. Recheck the session boundary at commit time.
+            if (transition == null || Stage == Phase.Ended || transition.Origin && (Stage != Phase.Calm || composedOrigins.Count > 0)) return;
+            var previousMain = Main;
+            transition.Apply(Mathf.Clamp01(magnitude));
+            // A final physical precondition can refuse application. It must not consume the shift's one independent incident.
+            if (transition.Origin && (Main == previousMain || Stage != Phase.Incident)) return;
             log.Composed(transition.Kind, transition.Key, transition.Origin, magnitude, candidates, detail);
             lastDevelopment[transition.Key] = Time.time;
             lastDevelopment[transition.Kind] = Time.time;
             if (transition.Origin)
             {
-                composedKinds.Add(transition.Kind);
+                composedOrigins.Add(transition.Key);
                 lastEmergencyAt = session.ShiftSeconds;
                 log.Director.NewEmergency();
             }
             Debug.Log("CG_COMPOSE " + transition.Kind + " key=" + transition.Key + " m=" + magnitude.ToString("0.00") + " by " + detail);
-            transition.Apply(Mathf.Clamp01(magnitude));
         }
 
         private void Register(Hazard hazard)
         {
+            hazard.IncidentId = Main != null ? Main.IncidentId : hazard.Id;
             if (!all.Contains(hazard)) all.Add(hazard);
             if (hazard.Active) HazardRegistry.Add(hazard);
             if (Main != null) return;
@@ -575,6 +584,7 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var option in TrainRadio()) yield return option;
             foreach (var option in FacilityRadio()) yield return option;
             foreach (var option in EquipmentRadio()) yield return option;
+            foreach (var option in WorkflowOptions()) yield return option;
         }
 
         private static EmergencySession.RadioOption Option(string label, Action send) => new EmergencySession.RadioOption { Label = label, Send = send };
@@ -872,6 +882,8 @@ namespace ChooGuard.App.Fps.Emergency
             if (hazard == null || !hazard.Active) return;
             var line = hazard.Resolve(responder.Agency);
             if (!hazard.Active) HazardRegistry.Remove(hazard);
+            workFinishedAt[hazard] = Time.time;
+            verifiedWork.Remove(hazard);
             log.Add(Teams.Name(responder.Team) + " 조치 완료 · " + hazard.Named);
             if (!string.IsNullOrEmpty(line)) session.Hud.Radio.Push(ChannelOf(responder.Agency), line);
             Resolved(hazard);
@@ -932,27 +944,13 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         public Agency Commander => calledBy.ContainsKey(Agency.Fire) && all.Any(h => h.Command == Agency.Fire) ? Agency.Fire : Main != null ? Main.Command : Agency.Fire;
 
-        public bool CanHandOver(Responder responder) => !handedOver && Stage == Phase.Incident && responder.Lead && responder.Agency == Commander;
+        public bool CanHandOver(Responder responder) => responder != null && !handedOver && Stage == Phase.Incident && responder.Lead && responder.OnScene && responder.Agency == Commander;
 
         /// <summary>Why a team lead on scene cannot take the handover (another agency commands).</summary>
         public string HandOverRefusal(Responder responder) =>
             handedOver || Stage != Phase.Incident || responder.Agency == Commander ? "" : "현장 인계는 " + Responder.AgencyName(Commander) + "에 합니다";
 
-        public string HandOver(Responder responder)
-        {
-            handedOver = true;
-            string team = Teams.Name(responder.Team);
-            var summary = new StringBuilder();
-            summary.Append(Main != null ? Main.Named : "역 상황");
-            if (PlayerKnowsIncident) summary.Append(", ").Append(session.Clock(knownAt - Time.time + session.ShiftSeconds)).Append(" 인지(").Append(knownHow).Append(")");
-            foreach (var hazard in all) summary.Append(", ").Append(hazard.Handover);
-            summary.Append(", 대피 안내 ").Append(log.Guided).Append("명, 부상 ").Append(crowd.Injured.Count).Append("명");
-            Say(team + "에 인계합니다: " + summary + ".");
-            session.Hud.Radio.Push(ChannelOf(responder.Agency), "인계받았습니다. 이후는 저희가 맡겠습니다.");
-            log.Add(team + "에 현장 인계: " + summary);
-            Invoke(nameof(FinishAfterHandover), 3f);
-            return "현장을 " + team + "에 인계했습니다";
-        }
+        public string HandOver(Responder responder) => ReviewAndHandOver(responder);
 
         private void FinishAfterHandover() => Finish("현장 인계로 근무 종료", "handover");
 
@@ -1049,7 +1047,7 @@ namespace ChooGuard.App.Fps.Emergency
             float bestDistance = radius;
             foreach (var person in crowd.People)
             {
-                if (!filter(person)) continue;
+                if (person == null || !InsideBuilding(person.transform.position) || !filter(person)) continue;
                 var d = person.transform.position - position;
                 if (Mathf.Abs(d.y) > 3) continue;
                 float distance = d.magnitude;

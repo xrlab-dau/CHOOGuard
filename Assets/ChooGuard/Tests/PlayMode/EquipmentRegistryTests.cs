@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using ChooGuard.App.Fps.Equipment;
+using ChooGuard.App.Fps.Twin;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -72,8 +73,46 @@ namespace ChooGuard.Tests.PlayMode
             var catalog = ScriptableObject.CreateInstance<EquipmentCatalog>();
             made.Add(catalog);
             catalog.Prefabs = new[] { prefab };
-            catalog.Placements = new[] { new TextAsset(json) };
+            var file = JsonUtility.FromJson<EquipmentPlacementFile>(json);
+            foreach (var item in file.items)
+                if (item.placementEvidence != null && item.placementEvidence.StartsWith("test fixture only:", System.StringComparison.Ordinal))
+                    item.verification = SyntheticProof(item);
+            catalog.Placements = new[] { new TextAsset(JsonUtility.ToJson(file)) };
             return catalog;
+        }
+
+        // Numeric fixture only. Production imports must regenerate from retained physical survey manifests.
+        private static PlacementVerification SyntheticProof(EquipmentPlacement item)
+        {
+            var proof = new PlacementVerification
+            {
+                object_id = item.id, status = "validated", validation_id = "synthetic-runtime-fixture", capture_epoch = "test-only",
+                coordinate_frame_id = "test-unity", handedness = "unity_left_handed_y_up", measurement_basis = "independent_field_survey",
+                manifest_sha256 = new string('a', 64), target_max_error_m = .02f, validated_rotation = item.rotation,
+                fit_control_ids = new[] { "fit-a", "fit-b", "fit-c" },
+                sources = new[] {
+                    new PlacementVerification.EvidenceSource { id = "survey", role = "field_survey", path = "synthetic-survey", sha256 = new string('a', 64), captured_at = "2026-10-08T00:00:00Z", capture_epoch = "test-only" },
+                    new PlacementVerification.EvidenceSource { id = "capture", role = "field_capture", path = "synthetic-photo", sha256 = new string('a', 64), captured_at = "2026-10-08T00:00:00Z", capture_epoch = "test-only" }
+                },
+                checks = new[] { new PlacementVerification.PositionCheck { id = "holdout", object_id = item.id, role = "holdout", predicted_position = item.position, measured_position = item.position, uncertainty_m = .002f, evidence_source_ids = new[] { "survey" } } },
+                dimension_checks = new PlacementVerification.DimensionCheck[3]
+            };
+            for (int i = 0; i < 3; i++) proof.dimension_checks[i] = new PlacementVerification.DimensionCheck { id = "size-" + i, object_id = item.id, axis = new[] { "x", "y", "z" }[i], predicted_length_m = .1f, measured_length_m = .1f, uncertainty_m = .002f, evidence_source_ids = new[] { "survey" } };
+            return proof;
+        }
+
+        [Test]
+        public void ActualInstanceChangesAfterPlacementSetupCannotPassTheVerifiedPrefabDimensions()
+        {
+            var prefab = Prefab("SmokeDetector", 40);
+            prefab.AddComponent<ResizeOnPlacedTestFixture>();
+            var json = "{\"group\":\"test\",\"items\":[{\"id\":\"changed\",\"kind\":\"smoke_detector\",\"prefab\":\"SmokeDetector\",\"placementEvidence\":\"test fixture only: verified before placement setup\"}]}";
+            var parent = new GameObject("post-placement dimension test"); made.Add(parent);
+            var report = EquipmentSpawner.Spawn(Catalog(prefab, json), parent.transform);
+            Assert.That(report.Placed, Is.Zero);
+            Assert.That(report.Unverified, Is.EqualTo(1));
+            Assert.That(report.VerificationIssues.ContainsKey("model_dimensions_changed:x"), Is.True);
+            Assert.That(EquipmentRegistry.Find("changed"), Is.Null);
         }
 
         private GameObject Prefab(string name, float drawDistance)
@@ -111,9 +150,17 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(report.Unverified, Is.Zero);
             var placed = EquipmentRegistry.Find("a");
             Assert.That(placed, Is.Not.Null);
+            Assert.That(placed.IndependentlyVerified, Is.True, "Only an admitted placement can enter incident composition.");
+            var staged = Make("staged", "smoke_detector", placed.transform.position);
+            staged.Verification = SyntheticProof(new EquipmentPlacement { id = "staged", position = staged.transform.position });
+            Assert.That(staged.IndependentlyVerified, Is.False, "A self-consistent serialized proof cannot admit a manually attached scene object.");
             Assert.That(placed.Kind, Is.EqualTo("smoke_detector"));
             Assert.That(placed.Zone, Is.EqualTo("hall2f"));
             Assert.That(placed.transform.position, Is.EqualTo(new Vector3(5, 10, 5)));
+            placed.transform.position += Vector3.right;
+            placed.Verification.checks[0].predicted_position = placed.transform.position;
+            placed.Verification.checks[0].measured_position = placed.transform.position;
+            Assert.That(placed.IndependentlyVerified, Is.False, "Editing proof values after admission cannot authorize a moved installation.");
         }
 
         [Test]
@@ -169,5 +216,10 @@ namespace ChooGuard.Tests.PlayMode
             yield return new WaitForSecondsRealtime(.4f);
             Assert.That(renderer.enabled, Is.True, "5 m 안으로 오면 다시 그린다");
         }
+    }
+
+    public sealed class ResizeOnPlacedTestFixture : MonoBehaviour, IEquipmentPlaced
+    {
+        public void OnPlaced() => transform.localScale *= 2f;
     }
 }

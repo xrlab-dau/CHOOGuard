@@ -7,7 +7,8 @@
     "appearance": "Retained recorded photo/video fixture topology; inference-only furnishings removed. No new site coordinate validation.",
     "generator": ".planning/2026-09-24-interior-twin/specs/full/make_shop_interiors.py",
     "estimatedTriangles": 115673,
-    "lights": 16
+    "lights": 16,
+    "enclosure": "One existing GroundUnit envelope owns collision boundaries and ceiling. KitShop keeps existing finishes/fixtures and must not generate another ceiling or collision enclosure. Retained model dimensions remain public-reference estimates."
   },
   "elements": [
     {
@@ -52,7 +53,7 @@
           ]
         ],
         "y": 0.0,
-        "y1": 3.0
+        "y1": 3
       },
       "params": {
         "kind": "retail",
@@ -106,13 +107,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-01; observed: 2025-02 blog photo 025 and SY0 76-84 s: luggage storage/delivery counter behind a poster-covered glazed front, queue at the counter; the 2024 김밥천국 in this slot (SY0 130-144 s) is superseded by the 2026-09 짐캐리 storefront.; recorded relative layout: service counter across the unit behind the door approach (footage: counter + queue); parcel racks on the walls [INFERENCE]"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_5309_Walls"
       },
       "unit": "짐캐리 부산역점",
       "identity": "짐캐리 부산역점",
       "interiorFootage": "2025-02 blog photo 025 and SY0 76-84 s: luggage storage/delivery counter behind a poster-covered glazed front, queue at the counter; the 2024 김밥천국 in this slot (SY0 130-144 s) is superseded by the 2026-09 짐캐리 storefront.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: service counter across the unit behind the door approach (footage: counter + queue); parcel racks on the walls [INFERENCE]",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -152,7 +160,7 @@
           ]
         ],
         "y": 0.0,
-        "y1": 3.0
+        "y1": 3
       },
       "params": {
         "kind": "convenience",
@@ -180,13 +188,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-02; observed: 2025-02 blog photos 003/004 and SY0 144-146 s: StoryWay convenience store at the U+ exit, stocked shelving behind the glass.; recorded relative layout: cooler wall, gondolas and a cash counter by the door (convenience kind) [INFERENCE]"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_4917_Walls"
       },
       "unit": "편의점",
       "identity": "편의점 (StoryWay)",
       "interiorFootage": "2025-02 blog photos 003/004 and SY0 144-146 s: StoryWay convenience store at the U+ exit, stocked shelving behind the glass.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: cooler wall, gondolas and a cash counter by the door (convenience kind) [INFERENCE]",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -249,7 +264,7 @@
           ]
         ],
         "y": 0.0,
-        "y1": 3.0
+        "y1": 3
       },
       "params": {
         "kind": "bakery",
@@ -400,13 +415,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-03; observed: 2026-05 photo 00: display counter with donuts in the middle, pendant lamps, café tables along the windows; 2024 SY0 172-178 s: bar seating along the glass, brick back wall, hanging plants.; recorded relative layout: counter + bread wall on the solid east wall, café tables along the glass (footage)"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_4918_Walls"
       },
       "unit": "비엔씨도넛",
       "identity": "비엔씨도넛 (B&C Donuts)",
       "interiorFootage": "2026-05 photo 00: display counter with donuts in the middle, pendant lamps, café tables along the windows; 2024 SY0 172-178 s: bar seating along the glass, brick back wall, hanging plants.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: counter + bread wall on the solid east wall, café tables along the glass (footage)",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -461,7 +483,7 @@
           ]
         ],
         "y": 0.0,
-        "y1": 3.0
+        "y1": 3
       },
       "params": {
         "kind": "retail",
@@ -548,13 +570,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-04; observed: 2026-05 photo 01: tall white wall shelving full of stationery/gifts, gondolas; 2024 DESIGNSKIN: wood wall shelving along the glass.; recorded relative layout: wall shelving on the solid walls, gondola rows in the middle, cash counter by a door (footage topology)"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_4916_Walls"
       },
       "unit": "ARTBOX",
       "identity": "ARTBOX",
       "interiorFootage": "2026-05 photo 01: tall white wall shelving full of stationery/gifts, gondolas; 2024 DESIGNSKIN: wood wall shelving along the glass.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: wall shelving on the solid walls, gondola rows in the middle, cash counter by a door (footage topology)",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -596,7 +625,7 @@
           ]
         ],
         "y": 0.0,
-        "y1": 3.0
+        "y1": 3
       },
       "params": {
         "kind": "bakery",
@@ -662,13 +691,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-05; observed: 2026-05 photo 04: small glazed kiosk; glass display cases with fish cakes inside, counter at the back.; recorded relative layout: display counter at the back, fish-cake display table and wall display (footage; bakery kind as the nearest kit kind)"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_3336_Walls"
       },
       "unit": "환공어묵",
       "identity": "환공어묵",
       "interiorFootage": "2026-05 photo 04: small glazed kiosk; glass display cases with fish cakes inside, counter at the back.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: display counter at the back, fish-cake display table and wall display (footage; bakery kind as the nearest kit kind)",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -835,13 +871,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-06; observed: 2026-05 photos 05/11: red-and-white tiled interior, tables and chairs behind the glass, order counter at the back.; recorded relative layout: order counter + menu on the back wall, 2-seat tables (footage)"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_4915_Walls"
       },
       "unit": "버거앤타코",
       "identity": "버거앤타코 (BT Burger & Taco)",
       "interiorFootage": "2026-05 photos 05/11: red-and-white tiled interior, tables and chairs behind the glass, order counter at the back.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: order counter + menu on the back wall, 2-seat tables (footage)",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -885,14 +928,21 @@
         "light": true,
         "collider": true,
         "layout": [],
-        "fixtures": false
+        "fixtures": false,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_4914_Walls"
       },
       "unit": "편의점",
       "identity": "편의점 (SELF StoryWay)",
       "interiorFootage": "SY0 326-334 s (2024): SELF StoryWay unmanned store behind a vending-machine frontage.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: cooler wall on the back, gondolas, self-checkout counter by the door [INFERENCE]",
       "furnishingDisposition": "WITHHELD_UNOBSERVED",
-      "note": "Site identity/envelope retained; unobserved interior furnishings removed."
+      "note": "Site identity/envelope retained; unobserved interior furnishings removed.",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -939,7 +989,7 @@
           ]
         ],
         "y": 0.0,
-        "y1": 3.0
+        "y1": 3
       },
       "params": {
         "kind": "restaurant",
@@ -1046,13 +1096,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-08; observed: SY0 313-326 s and 2026-05 photo 13: dining room with wooden 4-seat tables and Windsor chairs across the whole unit, beige walls, downlights, plants by the glass.; recorded relative layout: dining tables across the room (footage), service counter on the back wall [INFERENCE]"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_4912_Walls"
       },
       "unit": "양산국밥",
       "identity": "양산국밥",
       "interiorFootage": "SY0 313-326 s and 2026-05 photo 13: dining room with wooden 4-seat tables and Windsor chairs across the whole unit, beige walls, downlights, plants by the glass.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: dining tables across the room (footage), service counter on the back wall [INFERENCE]",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -1164,13 +1221,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-09; observed: SY0 296-304 s and 2026-05 photo 12: white makgeolli shop; sales counter with POS just inside the glass, glass-door fridges along the back wall, tasting table.; recorded relative layout: front sales counter, fridge wall at the back, two display cabinets (footage)"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061928_Walls"
       },
       "unit": "복순도가",
       "identity": "복순도가",
       "interiorFootage": "SY0 296-304 s and 2026-05 photo 12: white makgeolli shop; sales counter with POS just inside the glass, glass-door fridges along the back wall, tasting table.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: front sales counter, fridge wall at the back, two display cabinets (footage)",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -1309,13 +1373,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-10; observed: 2026-05 photo 10: Korean-food restaurant, tables with chairs and plants behind the glass (2024: 스시보노 with dark tables).; recorded relative layout: dining tables, counter + menu at the back (footage)"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061929_Walls"
       },
       "unit": "아트센트",
       "identity": "아트센트 (ARTCENT)",
       "interiorFootage": "2026-05 photo 10: Korean-food restaurant, tables with chairs and plants behind the glass (2024: 스시보노 with dark tables).",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: dining tables, counter + menu at the back (footage)",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -1454,13 +1525,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-11; observed: 2026-05 photo 09: pho restaurant, wood tables and chairs, decorated back wall; 2024 udon shop with the same table layout.; recorded relative layout: 2-seat tables, counter + menu at the back (footage)"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061927_Walls"
       },
       "unit": "포레일",
       "identity": "포레일 (PHO-RAIL)",
       "interiorFootage": "2026-05 photo 09: pho restaurant, wood tables and chairs, decorated back wall; 2024 udon shop with the same table layout.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: 2-seat tables, counter + menu at the back (footage)",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -1576,13 +1654,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-12; observed: 2026-05 photo 08: orange-lit shelving with boxed cakes/breads along the side wall, counter at the back (2024 TOMNTOMS COFFEE with the same orange wall shelving).; recorded relative layout: orange bread shelving on a side wall, counter + menu at the back (footage)"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061931_Walls"
       },
       "unit": "비앤씨박스앤컵",
       "identity": "비앤씨박스앤컵 (B&C BOX&CUP)",
       "interiorFootage": "2026-05 photo 08: orange-lit shelving with boxed cakes/breads along the side wall, counter at the back (2024 TOMNTOMS COFFEE with the same orange wall shelving).",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: orange bread shelving on a side wall, counter + menu at the back (footage)",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -1721,13 +1806,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-13; observed: 2026-05 photo 07 and SY0 247-252 s: dining room with wooden tables and chairs through the whole depth, kiosk by the door.; recorded relative layout: dining tables through the depth, counter + menu at the back (footage)"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061932_Walls"
       },
       "unit": "채선당 행복가마솥밥",
       "identity": "채선당 행복가마솥밥",
       "interiorFootage": "2026-05 photo 07 and SY0 247-252 s: dining room with wooden tables and chairs through the whole depth, kiosk by the door.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: dining tables through the depth, counter + menu at the back (footage)",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -1866,13 +1958,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-14; observed: 2026-05 photo 06 and SY0 218-229 s: 낙지볶음 restaurant, tables and chairs behind the glass, menu posters.; recorded relative layout: dining tables, counter + menu at the back (footage)"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061930_Walls"
       },
       "unit": "개미집",
       "identity": "개미집",
       "interiorFootage": "2026-05 photo 06 and SY0 218-229 s: 낙지볶음 restaurant, tables and chairs behind the glass, menu posters.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: dining tables, counter + menu at the back (footage)",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -2011,13 +2110,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-15; observed: 2026-05 photo 03 and SY0 187-205 s: tables and chairs through the depth, pendant lamps, wood finishes.; recorded relative layout: dining tables, counter + menu at the back (footage)"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061933_Walls"
       },
       "unit": "새벽집국밥국수",
       "identity": "새벽집 국밥국수",
       "interiorFootage": "2026-05 photo 03 and SY0 187-205 s: tables and chairs through the depth, pendant lamps, wood finishes.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: dining tables, counter + menu at the back (footage)",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     },
     {
       "type": "ShopInterior",
@@ -2202,13 +2308,20 @@
             "placementEvidence": ".planning/2026-09-24-interior-twin/specs/full/shop-interiors-report.json#SHOP-1F-16; observed: 2026-05 photo 02: wine rack and gift-box displays behind the glass, bread on shelves; SY0 181-187 s: bread display tables along the corridor glass.; recorded relative layout: bread display tables along the glass, bread shelving on the walls, counter, drinks cooler (footage)"
           }
         ],
-        "fixtures": true
+        "fixtures": true,
+        "buildEnvelope": false,
+        "envelopeOwner": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061935_Walls"
       },
       "unit": "파리바게트",
       "identity": "파리바게트",
       "interiorFootage": "2026-05 photo 02: wine rack and gift-box displays behind the glass, bread on shelves; SY0 181-187 s: bread display tables along the corridor glass.",
       "positionBasis": "unit polygon = built unit (.planning/2026-09-23-video-twin/1f-implementation/interior-spec.json); front/open edges and door approaches = kit Storefront elements; ceiling y1 = storefront head; layout: bread display tables along the glass, bread shelving on the walls, counter, drinks cooler (footage)",
-      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION"
+      "furnishingDisposition": "RETAINED_RECORDED_OBSERVATION",
+      "enclosureOwnership": {
+        "status": "existing_envelope_owner",
+        "reason": "2026-10-08 actual scene binary audit: reuse existing collision boundaries and ceiling; preserve independent interior wall finish faces",
+        "siteAccuracyVerified": false
+      }
     }
   ],
   "sourceSpec": ".planning/2026-09-24-interior-twin/specs/full/shops-1f.json",

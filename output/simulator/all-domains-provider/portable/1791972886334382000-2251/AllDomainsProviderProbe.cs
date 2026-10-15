@@ -1,0 +1,2 @@
+using System;using ChooGuard.Seeded.Tests;
+public static class AllDomainsProviderProbe {public static int Main(){try{PlanningTests.Run();SubscriptionTests.Run();ProviderSelectionTests.Run();NativeProviderControlTests.Run();MaterialStoreTests.Run();EmergenceGenerationTests.Run();EmergenceGraphCodecTests.Run();InitialWorldNativeTests.Run();Console.WriteLine("PASS_ALL_DOMAINS_PROVIDER_SOURCE_CONTRACTS");return 0;}catch(Exception e){Console.Error.WriteLine(e.ToString());return 1;}}}

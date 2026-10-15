@@ -1,0 +1,70 @@
+{
+  "status": "BOUNDED_REVIEW_COMPLETE_TWO_BLOCKING_INTEGRITY_GAPS",
+  "sampled_utc": "2026-10-08T18:06:51.465414+00:00",
+  "source_snapshot": [
+    {
+      "path": "AgentScripts/BusanokReturnInstall.cs",
+      "sha256": "946ee157355b1081b650f197544162a1f7a5e700db52bcf887af0a0b3d27de9c"
+    },
+    {
+      "path": "AgentScripts/MajibangBuilder.cs",
+      "sha256": "bd2c84da8c7543e1272908269a5247a2035e637ba0de1b637d147a9b7436ac88"
+    },
+    {
+      "path": "workers/twin/output/busanok-glazed-return-20261009/BusanokGlazedReturnSetup.cs",
+      "sha256": "b92de99de6091542cf43d6c33803a03a90423d91824f28f895f3986aee31678f"
+    },
+    {
+      "path": "workers/twin/output/busanok-glazed-return-20261009/busanok-glazed-return-packet.json",
+      "sha256": "ee6191b95ec6144ea6e80643cabb62b496cc81f273d28497187118e12beba806"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/Twin/ArchitecturalCorrectionRegistry.cs",
+      "sha256": "772ac12cf7cd8eb3224362f36ca402762b069e82d19027909b818cef9f86a6f8"
+    }
+  ],
+  "independent_geometry_check": "workers/twin/evidence/busanok-return-review-20261009/independent-geometry-check.json",
+  "findings": [
+    {
+      "id": "BGR-1",
+      "severity": "P1",
+      "status": "reported_to_root",
+      "file": "Assets/ChooGuard/Editor/Twin/ArchitecturalCorrectionRegistry.cs",
+      "finding": "Canonical rebuild dependency omits fixed barrier MeshCollider. Main retains eight source wall facets, so an absent/disabled/changed relocated four-face barrier can pass renderer-only correction preflight and create traversable glazing.",
+      "negative_fixture": "Disable or replace fixed barrier collision after installation; VerifyShopCorrections and registry Resolve must reject before Main material/root mutation.",
+      "requested_resolution": "Pin exact collision owner, asset/GUID/channel digest, enabled/active/trigger/convex state and absolute frozen frame; mandatory dependency validation."
+    },
+    {
+      "id": "BGR-2",
+      "severity": "P1",
+      "status": "reported_to_root",
+      "file": "AgentScripts/BusanokReturnInstall.cs",
+      "finding": "Pending recovery journal stores companion owner names but no geometry/material identity. Finalize validates four visible companions only by triangle counts/frame, then publishes current altered mesh/materials as canonical.",
+      "negative_fixture": "After a saved stage and before Finalize, change glass positions/UV/normals/tangents or material without changing triangles/frame. Recovery must reject, not publish changed geometry.",
+      "requested_resolution": "Journal companion asset path/GUID, full accepted channel digests, material path/GUID and barrier identity before Save; recover only exact saved rows with unchanged frozen packet/source hashes."
+    },
+    {
+      "id": "BGR-3",
+      "severity": "P2",
+      "status": "reported_to_root",
+      "file": "Assets/ChooGuard/Editor/Twin/ArchitecturalCorrectionRegistry.cs",
+      "finding": "Companion frame comparison uses Abs(delta)>tolerance without finite checks; NaN delta does not reject.",
+      "negative_fixture": "Non-finite companion/collision frame must reject canonical rebuild resolution.",
+      "requested_resolution": "Check finite actual and expected matrix channels before comparing."
+    }
+  ],
+  "cleared_paths": [
+    "Packet matches actual frozen source binary vertices/indices and source asset file hashes.",
+    "Exactly triangles8..11 on localX36.5 are removed; first8 triangle ordering and all native wall vertex/normal/tangent/color/UV channels stay cloned.",
+    "Fixed barrier reuses exactly four removed source facets, preserving traversability boundary.",
+    "Visible companions total344triangles (56glass,192frame,84kick,12fascia), all finite/nondegenerate in independent analytic reproduction.",
+    "Existing source front and other sources remain shared original meshes/materials; no fallback material or new SourcePartIdentity.",
+    "Companions outside MainRoot receive original source world frame; unsupported/sheared transfer rejected by matrix comparison.",
+    "Main preflight rebuilds pure current-plan ShopGeometry before material mutation/root deletion, validates complete expected correction source coverage and resolves saved replacement.",
+    "Outer installer retains prior mesh/collider refs and scene transform set until successful SaveScene; dedicated assets/root rollback occurs before commit, pending journal survives postcommit failure."
+  ],
+  "limitations": [
+    "Read-only source review; no Unity compilation, Apply, Editor/Play tests or saved production receipt verification by this lane. Root owns runtime checks.",
+    "No claim of full station completion or physical survey accuracy."
+  ]
+}

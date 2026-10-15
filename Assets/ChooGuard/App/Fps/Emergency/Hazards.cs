@@ -56,6 +56,8 @@ namespace ChooGuard.App.Fps.Emergency
     public abstract class Hazard
     {
         public string Id { get; protected set; }
+        /// <summary>The first cause and its related developments share this incident id; it is never a second independent origin.</summary>
+        public string IncidentId { get; internal set; }
         public HazardKind Kind { get; protected set; }
         public Vector3 Position { get; protected set; }
         public bool Active { get; protected set; } = true;

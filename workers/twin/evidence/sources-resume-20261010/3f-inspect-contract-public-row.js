@@ -1,0 +1,3 @@
+const p=await openTab('https://jodal.craftspace.co.kr/supplier/1198637765');
+const d=await p.evaluate(()=>({url:location.href,title:document.title,matching_rows:[...document.querySelectorAll('tr')].filter(e=>e.innerText.includes('푸드코트')).map(e=>({text:e.innerText,html:e.outerHTML})),matching_public_scripts:[...document.scripts].map(e=>e.textContent).filter(t=>t.includes('푸드코트')).map(t=>{const i=t.indexOf('푸드코트');return t.slice(Math.max(0,i-1000),i+1200)}),official_links:[...document.querySelectorAll('a')].map(e=>({text:e.innerText,url:e.href})).filter(x=>/g2b.go.kr|data.go.kr|korailretail.com/.test(x.url))}));
+console.log('SOURCE_JSON:'+JSON.stringify({id:'3f-contract-public-row',acquired_at:new Date().toISOString(),...d}));

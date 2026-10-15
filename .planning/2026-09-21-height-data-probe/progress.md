@@ -1,1 +1,0 @@
-Complete. HTTP ranges and CRC verified. Original input hashes unchanged; 95 height tags and 390 floor-count tags preserved. Compressed temporary deleted only after hash verification; full exact TIFF and ROI clip retained.

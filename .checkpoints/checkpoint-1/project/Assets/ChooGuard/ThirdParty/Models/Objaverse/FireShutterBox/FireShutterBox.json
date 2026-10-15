@@ -1,0 +1,74 @@
+{
+ "name": "FireShutterBox",
+ "source": "fire_shutter_box",
+ "scale": 1.0,
+ "triangles": 412,
+ "liveryFaces": 0,
+ "signFaces": 0,
+ "materials": [
+  {
+   "name": "m0",
+   "source": "rollershutter_door",
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 0.0,
+   "roughness": 0.7,
+   "albedo": "FireShutterBox_m0_Color.png",
+   "normal": "FireShutterBox_m0_Normal.png",
+   "metallicSmoothness": "FireShutterBox_m0_MetallicSmoothness.png",
+   "alphaMode": "OPAQUE",
+   "faces": 412
+  }
+ ],
+ "size": [
+  4.1,
+  4.3,
+  0.3001
+ ],
+ "sizeMm": [
+  4100.0,
+  4300.0,
+  300.1
+ ],
+ "boundsM": {
+  "min": [
+   -2.05,
+   0.0,
+   -0.0105
+  ],
+  "max": [
+   2.05,
+   4.3,
+   0.2896
+  ]
+ },
+ "front": "+z",
+ "pivot": "mount",
+ "mount": "floor",
+ "split": "fixed part of the fire shutter (head box, guide rails, hardware); the moving curtain is FireShutterCurtain",
+ "opening": {
+  "widthM": 4.0,
+  "heightM": 4.0,
+  "axis": "floor of the opening, centred; clear width between the rail inner edges (x = +-2.0 m), clear height up to the underside of the roll box (y = 4.0 m)"
+ },
+ "rollBox": {
+  "heightM": 0.3,
+  "depthM": 0.3,
+  "undersideM": 4.0,
+  "on": "the front (+z) side, above the opening"
+ },
+ "guideRails": {
+  "innerEdgeXM": 2.0,
+  "outerEdgeXM": 2.05
+ },
+ "curtainPlaceAtM": [
+  0.0,
+  4.0,
+  0.0
+ ],
+ "sizeBasis": "Poly Haven rollershutter_door (1.08 m x 2.4 m incl. box) re-proportioned to a 4.0 x 4.0 m opening: rails, box and curtain stretched by a piecewise-linear vertex map, screws and handles moved rigidly"
+}

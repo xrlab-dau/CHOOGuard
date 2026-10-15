@@ -22,6 +22,8 @@ Shader "CHOOGuard/Escalator/Step"
         [Normal]      _BumpMap       ("Normal Map", 2D) = "bump" {}
                       _BumpScale     ("Normal Scale", Float) = 1.0
                       _ScrollSpeed   ("Scroll Speed (m/s)", Float) = 0.5
+                      _DriveBound    ("Use Bound Drive", Float) = 0
+                      _TravelMetres  ("Drive Travel (m)", Float) = 0
                       _TexMetres     ("Texture Repeat Length (m)", Float) = 0.4
                       _Direction     ("Direction (+1 Up / -1 Down)", Float) = 1.0
                       _Smoothness    ("Smoothness", Range(0,1)) = 0.35
@@ -52,6 +54,8 @@ Shader "CHOOGuard/Escalator/Step"
             half4  _BaseColor;
             half   _BumpScale;
             float  _ScrollSpeed;
+            float  _DriveBound;
+            float  _TravelMetres;
             float  _TexMetres;
             float  _Direction;
             half   _Smoothness;
@@ -72,7 +76,7 @@ Shader "CHOOGuard/Escalator/Step"
             float metres = max(_TexMetres, 1e-4);
             float2 st    = uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
             st.y = st.y * (EscalatorScaleZ() / metres)
-                 + _Time.y * (_ScrollSpeed / metres) * _Direction;
+                 + lerp(_Time.y * _ScrollSpeed, _TravelMetres, saturate(_DriveBound)) / metres * _Direction;
             return st;
         }
         ENDHLSL

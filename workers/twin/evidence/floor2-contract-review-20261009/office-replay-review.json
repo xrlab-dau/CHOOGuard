@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "checks": {
+    "only_office_source_opts_in": true,
+    "nonfinite_target_and_saved_frame_rejected": true,
+    "unsaved_mesh_and_material_rejected": true,
+    "duplicate_planned_names_rejected": true,
+    "all_dependency_validation_precedes_creation": true,
+    "batch_invokes_replay_after_source_resolution": true,
+    "previous_root_retained_through_batch_save": true,
+    "actual_temp_replay_report_passes": true,
+    "scene_seal_unchanged": true,
+    "fresh_services_source_regenerates_exactly": true
+  },
+  "opt_in_sources": [
+    "Assets/ChooGuard/Art/StationInterior/Kit/2F_services/Kit_RoomWall_벽_내장.asset"
+  ],
+  "files": {
+    "Assets/ChooGuard/Editor/Twin/ArchitecturalCorrectionRegistry.cs": "570d7a484a1ddcd7d21da15cfc50d9c2ae4d289315e26133d75f9b121e123c5a",
+    "AgentScripts/MajibangBuilder.cs": "d50bec7bf71ca5a00d406171d4bbf52714c67782f89ec8d759d3f872726c9955",
+    "AgentScripts/ObservedOfficeGlazingVerify.cs": "3ff2216e6a4d0d49ed3c9f0260a385f49b6f1058b8ff0d25a8be4bb39600ae25",
+    ".planning/2026-10-09-floor2-guide-restoration/office-replay-validation.json": "d80474d386e6caa7a3a5439459cbce89b2552305774631e9970e6fdde328f049",
+    ".planning/2026-10-08-interior-runtime-completion/source-rebuild-channel-comparison.json": "487da09862d68e220a4104f3acd404594e591b440f44725aeeb668315f79ebd9"
+  },
+  "production_scene_sha256": "1e15cae6edceb65da229497a0dffe67af05b3b9d35066739a3285c36dcfc34e4",
+  "review": "Current KitBuild keeps the previous root until Batch.Save completes. Batch.Save resolves the exact fresh original against the existing old companion before recreating the office child on the new owner. Every saved child mesh/material/frame is validated before creation; only direct child geometry is replayed, no collider is added. Dirty dependencies, non-finite frames, existing child duplicates and duplicate planned names are rejected.",
+  "limits": "Exact source regeneration preflight and temporary companion recreation are verified. A full production root regeneration was deliberately not executed."
+}

@@ -1,0 +1,5 @@
+for (const [id,url] of [["kunwon-busan-original", "https://www.kunwon.com/board/perform.read.php?BBS_GUBUN=1&SC_LP=&SC_YEAR=&SC_SUPPLY=&SC_LOCAL=&SC_word=%EB%B6%80%EC%82%B0&page=1&BBS_IDX=32"], ["retail-tender-busan", "https://www.korailretail.com/bbs/selectBbsList.do?bbsId=BBSMSTR_000000000027&searchCnd=0&searchWrd=%EB%B6%80%EC%82%B0"], ["retail-commercial-busan", "https://www.korailretail.com/board/boardList.do?boardTypeNum=46&searchCnd=0&searchWrd=%EB%B6%80%EC%82%B0"]]) {
+const p=await openTab(url);
+const d=await p.evaluate(()=>({url:location.href,title:document.title,text:document.body.innerText,links:[...document.querySelectorAll('a')].map(a=>({text:a.innerText,url:a.href,raw:a.getAttribute('href'),onclick:a.getAttribute('onclick')})).filter(a=>/부산|푸드|기념품|첨부|도면|다음|마지막/i.test(a.text+' '+a.url)),images:[...document.images].map(i=>({alt:i.alt,src:i.src,w:i.naturalWidth,h:i.naturalHeight})).filter(i=>i.w>300),scripts:[...document.scripts].filter(s=>!s.src).map(s=>s.text).filter(t=>/첨부|down|select|linkPage/.test(t))}));
+console.log('SOURCE_JSON:'+JSON.stringify({id,acquired_at:new Date().toISOString(),...d}));
+}

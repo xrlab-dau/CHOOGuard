@@ -1,1 +1,0 @@
-var type=typeof(ChooGuard.Editor.FpsStationSceneBuilder);var method=type.GetMethod("RepairExistingFromJson");return new{methodPresent=method!=null,assembly=type.Assembly.Location,compiling=UnityEditor.EditorApplication.isCompiling,updating=UnityEditor.EditorApplication.isUpdating,playing=UnityEditor.EditorApplication.isPlaying};

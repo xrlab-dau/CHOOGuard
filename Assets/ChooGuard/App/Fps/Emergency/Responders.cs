@@ -209,6 +209,28 @@ namespace ChooGuard.App.Fps.Emergency
         private float nextLegCheck;
         private Vector3 lastCheck;
 
+        /// <summary>A team cannot silently abandon a patient, a live task or a floor-link traversal.</summary>
+        public bool CanReassign => director != null && body != null && !body.Scripted && !working && !inside && !walkingAisle && supporting == null && patient == null;
+
+        public void Reassign(Hazard hazard, Vector3 destination)
+        {
+            if (!CanReassign) throw new System.InvalidOperationException("Responder is occupied.");
+            target = hazard;
+            goal = destination;
+            OnScene = false;
+            OnSceneAt = 0;
+            nearSince = workUntil = approachSince = -1;
+            nextRepath = nextLegCheck = 0;
+            idleRetries = leg = 0;
+            car = null;
+            legs.Clear();
+            legs.AddRange(director.World.Route(transform.position, goal, "stairs"));
+            legs.Add(goal);
+            body.SetTreat(false);
+            SetHose(0);
+            body.GoTo(legs[0], 2.4f);
+        }
+
         public string InteractionPrompt => Lead && OnScene && director.CanHandOver(this) ? "현장 인계" : "";
 
         public bool CanInteract(FirstPersonResponder responder, out string reason)

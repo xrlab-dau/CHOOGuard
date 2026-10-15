@@ -1,0 +1,1 @@
+Current Unity scene and Assets preserved. Original nonGS evidence moved before historical tree deletion; current runtime interpreters/providers retained. Actual df free space increased by approximately 22.12 GiB. APFS clone snapshot shares blocks without hardlinks. Live editor import cache and Git history retained.

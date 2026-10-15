@@ -20,6 +20,7 @@ namespace ChooGuard.App.Fps.Emergency
         private static Material red, steel;
         // 눌린 버튼은 정지가 이어지는 동안 들어가 있다.
         private Transform knob;
+        private Vector3 knobRestPosition, knobTravel;
         private float held = -1f, knobIn;
         private bool pressedHere;
 
@@ -42,9 +43,21 @@ namespace ChooGuard.App.Fps.Emergency
             knob.transform.localScale = new Vector3(.45f, 1.2f, .45f);
             knob.GetComponent<MeshRenderer>().sharedMaterial = Lamp(ref red, "비상정지 버튼 (빨강)", new Color(.85f, .06f, .05f));
             var button = plate.AddComponent<EscalatorStopButton>();
-            button.escalator = escalator;
-            button.name_ = escalator.Label + " 비상정지 버튼";
-            button.knob = knob.transform;
+            button.Bind(escalator, knob.transform, new Vector3(0, 0, KnobPressedZ - KnobRestZ));
+        }
+
+        /// <summary>Connect a separated surveyed button and its local travel without creating a plate or changing its placement.</summary>
+        public void Bind(Escalator source, Transform pressPart, Vector3 localTravel)
+        {
+            if (knob != null) knob.localPosition = knobRestPosition;
+            escalator = source;
+            name_ = source != null ? source.Label + " 비상정지 버튼" : "에스컬레이터 비상정지 버튼";
+            knob = pressPart;
+            knobRestPosition = pressPart != null ? pressPart.localPosition : Vector3.zero;
+            knobTravel = localTravel;
+            held = -1f;
+            knobIn = 0f;
+            pressedHere = false;
         }
 
         private static Material Lamp(ref Material cache, string name, Color colour)
@@ -110,9 +123,11 @@ namespace ChooGuard.App.Fps.Emergency
         public void Hold(FirstPersonResponder responder, Vector2 mouse, float wheel, float deltaSeconds)
         {
             if (held < 0f || escalator == null || !escalator.Running) return;
+            if (deltaSeconds <= 0f || float.IsNaN(deltaSeconds) || float.IsInfinity(deltaSeconds)) return;
             held += deltaSeconds;
             if (held < CallPointButton.PressSeconds) return;
-            responder?.ShowFeedback(Press());
+            string feedback = Press();
+            responder?.ShowFeedback(feedback);
         }
 
         public string EndHold(FirstPersonResponder responder)
@@ -123,7 +138,7 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         /// <summary>Time held over <see cref="CallPointButton.PressSeconds"/> (0..1).</summary>
-        public float HoldProgress => escalator != null && !escalator.Running ? 1f : Mathf.Clamp01(held / CallPointButton.PressSeconds);
+        public float HoldProgress => pressedHere && escalator != null && !escalator.Running ? 1f : Mathf.Clamp01(held / CallPointButton.PressSeconds);
 
         public string Observe(FirstPersonResponder responder) =>
             name_ + " · " + (escalator == null || escalator.Running ? "버튼이 나와 있고 에스컬레이터가 움직이는 중" : pressedHere ? "버튼이 눌려 있고 에스컬레이터가 멈춰 있음" : "에스컬레이터가 멈춰 있음");
@@ -131,10 +146,11 @@ namespace ChooGuard.App.Fps.Emergency
         private void Update()
         {
             if (knob == null) return;
-            float knobGoal = pressedHere && escalator != null && !escalator.Running ? 1f : 0f;
+            if (escalator != null && escalator.Running && held < 0f) pressedHere = false;
+            float knobGoal = pressedHere && escalator != null && !escalator.Running ? 1f : Mathf.Clamp01(held / CallPointButton.PressSeconds);
             if (Mathf.Approximately(knobIn, knobGoal)) return;
             knobIn = Mathf.MoveTowards(knobIn, knobGoal, Time.deltaTime / .12f);
-            knob.localPosition = new Vector3(0, 0, Mathf.Lerp(KnobRestZ, KnobPressedZ, knobIn));
+            knob.localPosition = knobRestPosition + knobTravel * knobIn;
         }
     }
 }

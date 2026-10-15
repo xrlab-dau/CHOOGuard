@@ -1,0 +1,20 @@
+# Independent 2F guide contract review
+
+The installed four-bay correction passes the saved-artifact audit in `four-bay-saved-audit.json`. The sealed production Scene at that stage is `e884084565080caae4126c8d376d666371de9c13f0f8da4e6c0aad40bb0b6035`.
+
+- All 26,141 YAML document IDs and order are preserved.
+- Exactly 32 documents change: 15 MeshFilters, 5 MeshColliders, and 12 motion-root Transforms. Every changed field is declared in the sealed packet; all other documents, including earlier 1F changes, remain byte-identical.
+- All 103 StationDoor serialized components and 1,035 SourcePartIdentity components remain byte-identical. Door roots move while their leaf/child local definitions remain unchanged.
+- Every saved mesh equals the original interleaved vertex bytes with only the declared position float32 values substituted. Normals, tangents, UVs, unused vertices, index buffers/formats, and submesh assignments are preserved.
+
+`native-preview-review.json` compares the sealed current-source main-up portal packet against Unity's actual in-memory preview. Separate render and collider sources remain separate. The 2/2/3/3 clipped source triangles and removed areas agree with the independent expectation. The guide and actual shop photograph support the connector on the left of shop 26 and the adjacent locker-labelled jamb; neither establishes field dimensions or the exact numbered-track signage.
+
+The source override installer rejects duplicate source rows and duplicate opening identities within a row, checks all current MF/MC owners and frames, and journals the prior receipt as well as its registry. The cut validates source vertex-channel prefixes and preserves unaffected submesh indices. Historical stored bounds drift is logged separately from new used-geometry bounds changes. The retained threshold for new used-geometry changes remains unchanged.
+
+`audit_native_install.py` ran against the saved native transaction and passes in `native-saved-audit.json`. The sealed Scene is `0d9e7e3ac4598d622115994c9fd2031f07a07d278a6cbc470ac97b01b8a195b1`. It checks original channel bytes, every unaffected oriented triangle, unaffected submesh assignments/descriptors, new retained faces outside the cut boxes, and exactly four authorized Scene mesh-reference changes (two MeshFilters, two MeshColliders). No other Scene documents change; all 26,141 IDs/order remain intact. Later buffer byte offsets may shift after a clipped preceding submesh while logical indices and material assignments remain identical. No Scene or Assets writes occur in this lane.
+
+This review does not establish a fully measured digital twin or unseen shop interiors. Runtime door, navigation, and full platform access tests are owned by the root and must accompany the artifact checks.
+
+The observed 2F office glazing follow-up also passes. See `office-review.md`, `office-saved-audit.json` and `office-replay-review.json`. The final saved office stage is `1e15cae6edceb65da229497a0dffe67af05b3b9d35066739a3285c36dcfc34e4`; the completed 1F baseline remains preserved. The office-only direct child replay and exact fresh services source preflight are verified; full production root regeneration was not performed.
+
+The later native #21 storefront reuse passes the independent saved source, bounds, owner-closure and cumulative 1F preservation audits. See `native-front-reuse/README.md`, `native-front-reuse/saved-audit.json` and `native-front-reuse/supplemental-audit.json`. Its saved geometry Scene is `3719ef2fbc1a87a51270bbae4ae98b196c8d22b400c1675798f09bf9ddc3425d`. Exactly 136 generated duplicate faces and 14 declared boundary positions change, with six render references, two collider references and one generated door active flag updated. Native geometry/operator, all door fields and all poses remain unchanged. The current main-source preflight accepts nine sources using the preserved original baselines and three exact certificates under `regeneration/`; no broad source validation tolerance is relaxed.

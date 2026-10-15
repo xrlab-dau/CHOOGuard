@@ -1,0 +1,756 @@
+{
+  "fileKey": "ALL6vULQS9Kj5gVM2cCCO3",
+  "pageId": "0:1",
+  "slides": [
+    {
+      "number": 1,
+      "id": "3:2",
+      "childIds": [
+        "29:2"
+      ],
+      "fingerprint": "3518d586",
+      "expectedNotes": "각본 밖의 비상상황을,\n가상 현장에서 경험하다\n\n각본형 비상대응훈련은 정해진 상황·역할·진행의 반복이라는 한계가 있다. 실제 현장은 높은 불확실성 아래 사람·시설·정보·대응이 서로 영향을 준다. CHOOGuard는 현장 재현과 상태 기반 상황 합성을 결합해 최종사용자가 직접 대응하며 경험을 축적하는 프로그램을 제안한다. 축적 경험이 실제 대응 능력의 바탕이 될 것이라는 기대이며 입증 성과가 아니다. 표지 이미지는 설명용 개념 그림이다."
+    },
+    {
+      "number": 2,
+      "id": "3:12",
+      "childIds": [
+        "29:13"
+      ],
+      "fingerprint": "aa0b2954",
+      "expectedNotes": "각본대로 끝난 훈련이, 예측할 수 없는 현장에서도 통할까?\n\n사용자가 제기한 문제는 지금의 훈련이 정해진 비상상황과 역할을 수행하는 각본·연극에 머문다는 것이다. 실제 비상상황은 정해진 목록만 나타나지 않으며 사람·시설·정보·대응이 얽혀 전개된다. 이 간극을 경험할 환경이 필요하다. 모든 기관의 모든 훈련을 조사한 보편 통계로 확대하지 않는다."
+    },
+    {
+      "number": 3,
+      "id": "3:34",
+      "childIds": [
+        "29:53"
+      ],
+      "fingerprint": "32a70631",
+      "expectedNotes": "현장은 재현하고, 상황은 각본 없이 전개한다\n\n해결의 두 축은 현장을 재현한 디지털트윈 공간과 상태 기반 상황 합성이다. 공간은 위치·시설·시야·이동 경로라는 대응의 조건을 제공한다. 상황은 현재 사람·물건에서 가능한 변화를 판단하고 적용하며, 승객과 사용자의 대응이 다음 상태를 바꾼다. 최종사용자가 이 안에서 직접 대응하는 경험을 축적한다. 무조건 사건 종류를 무작위 선택하거나 아무 물리 변화나 생성한다는 뜻이 아니다."
+    },
+    {
+      "number": 4,
+      "id": "3:62",
+      "childIds": [
+        "29:96"
+      ],
+      "fingerprint": "4f4b4385",
+      "expectedNotes": "부산역과 KTX를 대응 경험의 무대로 옮긴다\n\n현재 공간 구축의 실제 근거를 보여준다. 사용자 제공 부산역 공식 디지털 로케이션 SKP를 Blender에서 변환·분할 FBX로 내보내 Unity에서 조립했다. 별도 공급된 KTX 모델을 배치했고 사진·영상·지도 기반으로 실내를 보완했다. 충돌·보행 경로·시설 조작이 공간에 연결된다. 완전한 현장 동등성·측량 정확도·실시간 운영 연동이 검증됐다는 주장은 하지 않는다. 철회된 초기 실내 완성 수치는 근거로 사용하지 않는다. 이 이미지는 실제 현재 개발 화면이며 사고부터 인계까지 완료한 VR 시연은 아니다."
+    },
+    {
+      "number": 5,
+      "id": "3:89",
+      "childIds": [
+        "30:2"
+      ],
+      "fingerprint": "c093f38b",
+      "expectedNotes": "모델에 충돌·이동 경로·시설 조작을 붙여 훈련 공간으로 만든다.\n\n모델을 배치한 뒤 벽·바닥의 충돌, 보행 경로와 층간 이동, 시설 조작을 붙였다. 훈련에는 공간·이동, 장비·소통, 상황·승객, 대응 기록이 필요하다. 현재 Unity6000.3.23f1, URP17.3.0, InputSystem1.20.0, C#, Blender, Git, macOS를 쓴다. XR 입력과 공간 UI를 연결하고 HMD 조작을 확인할 계획이다."
+    },
+    {
+      "number": 6,
+      "id": "3:108",
+      "childIds": [
+        "30:52"
+      ],
+      "fingerprint": "e6b20fdb",
+      "expectedNotes": "사람과 물건의 상태에서 변화 후보를 만들고 JEV 판단과 시간 추첨으로 적용한다.\n\n사건 대본을 고르지 않는다. 현재 사람과 물건에서 일어날 수 있는 변화를 후보로 만든다. JEV는 각 후보가 지금 일어날 가능성을 판단한다. 코드는 그 판단에 따라 시간이 흐르는 동안 추첨하고, 적용 직전에 조건을 다시 확인한다. 바뀐 상태는 다음 판단에 쓴다. 사건 종류·장소·시각·개수를 고정하지 않는다."
+    },
+    {
+      "number": 7,
+      "id": "3:144",
+      "childIds": [
+        "30:142"
+      ],
+      "fingerprint": "14c5006d",
+      "expectedNotes": "승객은 자신이 보고 들은 정보와 위치에 따라 판단하고 움직인다.\n\n승객은 자신이 보고 들은 정보로 판단한다. 거리·벽·층·문 때문에 알 수 있는 정보가 다르다. 안내를 들은 뒤 이동하거나 주변에 알리면 다른 승객의 정보와 행동도 바뀐다. 사용자의 신고·방송·안내·통제도 이 과정에 영향을 준다."
+    },
+    {
+      "number": 8,
+      "id": "3:168",
+      "childIds": [
+        "30:228"
+      ],
+      "fingerprint": "34e5a073",
+      "expectedNotes": "사람·시설·승객 반응과 사용자의 대응이 다음 상황을 바꾼다.\n\n상황이 달라지는 이유는 사건 종류를 무작위로 고르기 때문이 아니다. 사람과 시설의 상태에 따라 후보가 달라진다. 시간에 따라 추첨하고, 승객은 각자의 정보로 반응한다. 사용자의 조치가 현장 상태를 바꾸면 그 뒤에 일어날 일도 달라진다. 여기서 엔트로피는 상황의 복잡성과 예측의 어려움을 뜻한다. 수치로 측정한 결과는 없다."
+    },
+    {
+      "number": 9,
+      "id": "3:183",
+      "childIds": [
+        "30:283"
+      ],
+      "fingerprint": "c9596418",
+      "expectedNotes": "사용자는 직접 대응하고, 기록을 보며 다시 훈련한다.\n\n사용자는 주변을 보고 장비·무전·이동을 선택해 대응한다. 그 결과가 현장 상태에 반영된다. 기록을 보며 자신이 한 조치를 돌아보고 다시 훈련한다. 화면의 UI는 완성 목표다. 현재 VR 실행 화면이나 교육 효과를 측정한 결과가 아니다."
+    },
+    {
+      "number": 10,
+      "id": "3:217",
+      "childIds": [
+        "30:346"
+      ],
+      "fingerprint": "7f741041",
+      "expectedNotes": "공간·이동·조작·상황을 순서대로 연결한다.\n\n8주 제안 일정이다. 현장 자료와 대응 기준을 정리한 뒤 VR 이동·조작, 장비·무전, JEV·승객 반응을 연결한다. 기존에 만든 공간과 기능을 사용한다. 실제 날짜나 팀원 수를 정한 일정은 아니다."
+    },
+    {
+      "number": 11,
+      "id": "3:249",
+      "childIds": [
+        "30:396"
+      ],
+      "fingerprint": "b144807e",
+      "expectedNotes": "대응·상태 변화·기록·재시작을 연결하고 베타에서 확인한다.\n\n조작 안내를 붙이고 대응·상태 변화·기록·재시작을 연결한다. 베타에서는 사용자가 무엇을 보고 왜 대응했는지, 어디서 막혔는지 확인한다. HMD 조작·멀미와 JEV 사용량·응답시간도 확인한다. 체험 만족도가 높다는 이유로 실제 대응 능력이 좋아졌다고 주장하지 않는다."
+    },
+    {
+      "number": 12,
+      "id": "3:281",
+      "childIds": [
+        "30:446"
+      ],
+      "fingerprint": "4c114736",
+      "expectedNotes": "여러 상황에서 대응한 경험이 실제 대응에 도움이 될 것으로 기대한다.\n\n사용자는 각본을 따라가는 대신 상황을 보고 직접 대응한다. 여러 전개를 겪고 기록을 돌아보며 경험을 쌓는다. 이 경험이 실제 비상상황에서 판단하고 대응하는 데 도움이 될 것으로 기대한다. 실제 현장에서의 효과는 검증해야 한다."
+    },
+    {
+      "number": 13,
+      "id": "3:304",
+      "childIds": [
+        "30:487"
+      ],
+      "fingerprint": "41673564",
+      "expectedNotes": "공간과 상황을 만든 근거를 설명하고, 실제 대응 효과는 검증할 내용으로 구분한다.\n\n공간 제작은 원본 모델·변환 기록·실내 보완 자료와 현재 코드를 근거로 설명한다. 상황 생성은 IncidentDirector·DirectorRates·CrowdMind·StaffTools 코드로 설명한다. Unity 문서는 입력과 XR 개발의 참고자료다. 현장과의 일치 수준, 엔트로피 수치, 실제 대응 효과는 검증한 범위와 구분한다."
+    }
+  ],
+  "textTargets": [
+    {
+      "slide": 1,
+      "before": "각본 밖의 비상상황을,\n가상 현장에서 경험하다",
+      "after": "실제 비상상황을,\n가상공간에서 훈련한다.",
+      "id": "29:6",
+      "width": 752,
+      "height": 192,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Black",
+        "variationSettings": {
+          "wght": 900
+        }
+      },
+      "fontSize": 56
+    },
+    {
+      "slide": 2,
+      "before": "각본대로 끝난 훈련,\n현장에서도 통할까?",
+      "after": "훈련은 각본을 따른다.\n실제 상황은 그렇지 않다.",
+      "id": "29:19",
+      "width": 1760,
+      "height": 176,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "variationSettings": {
+          "wght": 700
+        }
+      },
+      "fontSize": 72
+    },
+    {
+      "slide": 3,
+      "before": "현장은 재현하고,\n상황은 각본 없이 전개한다.",
+      "after": "현장을 옮기고,\n그 안에서 상황을 만든다.",
+      "id": "29:59",
+      "width": 1760,
+      "height": 176,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "variationSettings": {
+          "wght": 700
+        }
+      },
+      "fontSize": 72
+    },
+    {
+      "slide": 4,
+      "before": "부산역과 KTX를,\n대응 경험의 무대로.",
+      "after": "부산역과 KTX를\n가상공간에 옮겼다.",
+      "id": "29:102",
+      "width": 1760,
+      "height": 176,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "variationSettings": {
+          "wght": 700
+        }
+      },
+      "fontSize": 72
+    },
+    {
+      "slide": 2,
+      "before": "각본 수행의 숙련 ≠\n예측 불가 현장의 대응",
+      "after": "각본을 익히는 것과\n현장에 대응하는 것은 다르다.",
+      "id": "29:39",
+      "width": 456,
+      "height": 120,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 30
+    },
+    {
+      "slide": 2,
+      "before": "정해진 각본의 수행만으로는,\n예측하기 어려운 전개를 충분히 경험하기 어렵다.",
+      "after": "각본에 없는 상황에도\n대응해 볼 훈련이 필요하다.",
+      "id": "29:52",
+      "width": 1128,
+      "height": 104,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 30
+    },
+    {
+      "slide": 2,
+      "before": "정해진 상황.\n정해진 역할.\n정해진 진행.",
+      "after": "상황·역할·진행이\n훈련 전에 정해진다.",
+      "id": "29:38",
+      "width": 456,
+      "height": 208,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Black",
+        "variationSettings": {
+          "wght": 900
+        }
+      },
+      "fontSize": 40
+    },
+    {
+      "slide": 2,
+      "before": "달라지는 조건",
+      "after": "사람·시설의 상태",
+      "id": "29:49",
+      "width": 352,
+      "height": 128,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Black",
+        "variationSettings": {
+          "wght": 900
+        }
+      },
+      "fontSize": 38
+    },
+    {
+      "slide": 2,
+      "before": "서로 다른 반응",
+      "after": "승객의 반응",
+      "id": "29:50",
+      "width": 352,
+      "height": 128,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Black",
+        "variationSettings": {
+          "wght": 900
+        }
+      },
+      "fontSize": 38
+    },
+    {
+      "slide": 2,
+      "before": "대응 이후의 변화",
+      "after": "대응 뒤의 상황",
+      "id": "29:51",
+      "width": 352,
+      "height": 128,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Black",
+        "variationSettings": {
+          "wght": 900
+        }
+      },
+      "fontSize": 38
+    },
+    {
+      "slide": 3,
+      "before": "현장 재현 ×\n상황 합성",
+      "after": "공간을 옮기고,\n상황을 만든다.",
+      "id": "29:76",
+      "width": 408,
+      "height": 192,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Black",
+        "variationSettings": {
+          "wght": 900
+        }
+      },
+      "fontSize": 48
+    },
+    {
+      "slide": 3,
+      "before": "같은 무대를 옮기고,\n달라지는 전개 속에서\n직접 대응한다.",
+      "after": "사용자가 이동하고,\n판단하고, 대응한다.\n기록을 보며 다시 훈련한다.",
+      "id": "29:77",
+      "width": 408,
+      "height": 176,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 32
+    },
+    {
+      "slide": 3,
+      "before": "공간은 대응의 조건.\n상황은 행동의 결과를 반영.",
+      "after": "시설·위치·이동 경로를 옮긴다.\n대응이 다음 상황을 바꾼다.",
+      "id": "29:78",
+      "width": 408,
+      "height": 144,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 26
+    },
+    {
+      "slide": 3,
+      "before": "관찰하고, 판단하고, 행동한 결과가 다음 상황으로 이어진다.",
+      "after": "판단과 조치가 사람·시설의 상태를 바꾼다.",
+      "id": "29:95",
+      "width": 680,
+      "height": 72,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 28
+    },
+    {
+      "slide": 3,
+      "before": "현장을 재현한 공간",
+      "after": "디지털트윈 공간",
+      "id": "29:80",
+      "width": 440,
+      "height": 64,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Black",
+        "variationSettings": {
+          "wght": 900
+        }
+      },
+      "fontSize": 32
+    },
+    {
+      "slide": 3,
+      "before": "부산역·KTX의\n공간·시설·동선",
+      "after": "부산역·KTX의\n시설·위치·이동 경로",
+      "id": "29:82",
+      "width": 440,
+      "height": 104,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "variationSettings": {
+          "wght": 700
+        }
+      },
+      "fontSize": 36
+    },
+    {
+      "slide": 3,
+      "before": "상태 기반 상황 합성",
+      "after": "상황 만들기",
+      "id": "29:85",
+      "width": 680,
+      "height": 72,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Black",
+        "variationSettings": {
+          "wght": 900
+        }
+      },
+      "fontSize": 36
+    },
+    {
+      "slide": 3,
+      "before": "현재 사람·물건의 변화\n서로 다른 정보와 반응",
+      "after": "사람·시설의 상태\n승객과 사용자의 행동",
+      "id": "29:89",
+      "width": 560,
+      "height": 136,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 32
+    },
+    {
+      "slide": 4,
+      "before": "원본 모델.\n공간 조립.\n훈련 기능 연결.",
+      "after": "모델 변환.\n공간 배치.\n이동·조작 연결.",
+      "id": "29:121",
+      "width": 272,
+      "height": 248,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Black",
+        "variationSettings": {
+          "wght": 900
+        }
+      },
+      "fontSize": 36
+    },
+    {
+      "slide": 4,
+      "before": "현재 공간과\n평시 플레이의 형상",
+      "after": "현재 공간과\n평시 플레이 화면",
+      "id": "29:122",
+      "width": 272,
+      "height": 112,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 28
+    },
+    {
+      "slide": 4,
+      "before": "현재 구현 근거 · 현장 동등성의 완전 검증은 별도",
+      "after": "현재 개발 화면 · 현장과의 일치 수준은 검증해야 한다.",
+      "id": "29:125",
+      "width": 1120,
+      "height": 48,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 26
+    },
+    {
+      "slide": 6,
+      "before": "원자 전이 후보",
+      "after": "변화 후보",
+      "id": "30:133",
+      "width": 368,
+      "height": 40,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "variationSettings": {
+          "wght": 700
+        }
+      },
+      "fontSize": 32
+    },
+    {
+      "slide": 6,
+      "before": "특정 사람·물건의\n가능한 다음 변화",
+      "after": "이 사람·물건에서\n일어날 수 있는 변화",
+      "id": "30:134",
+      "width": 368,
+      "height": 72,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 28
+    },
+    {
+      "slide": 6,
+      "before": "곧 일어날 가능성·정도",
+      "after": "곧 일어날 가능성",
+      "id": "30:136",
+      "width": 400,
+      "height": 72,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 28
+    },
+    {
+      "slide": 6,
+      "before": "새 현장 상태",
+      "after": "바뀐 현장 상태",
+      "id": "30:139",
+      "width": 372,
+      "height": 40,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "variationSettings": {
+          "wght": 700
+        }
+      },
+      "fontSize": 32
+    },
+    {
+      "slide": 6,
+      "before": "다음 판단에 반영",
+      "after": "다음 판단에 쓴다",
+      "id": "30:140",
+      "width": 372,
+      "height": 40,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 28
+    },
+    {
+      "slide": 7,
+      "before": "직접 관찰한 위험",
+      "after": "눈으로 본 위험",
+      "id": "30:221",
+      "width": 270.8532409667969,
+      "height": 52.42320251464844,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 30.580204010009766
+    },
+    {
+      "slide": 7,
+      "before": "수신한 안내 방송",
+      "after": "들은 안내 방송",
+      "id": "30:222",
+      "width": 270.8532409667969,
+      "height": 52.423187255859375,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 30.580204010009766
+    },
+    {
+      "slide": 7,
+      "before": "개인이 가진 정보",
+      "after": "승객이 아는 정보",
+      "id": "30:224",
+      "width": 270.85321044921875,
+      "height": 52.423187255859375,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "variationSettings": {
+          "wght": 700
+        }
+      },
+      "fontSize": 30.580204010009766
+    },
+    {
+      "slide": 7,
+      "before": "행동·이동 동선",
+      "after": "행동·이동 경로",
+      "id": "30:226",
+      "width": 270.853271484375,
+      "height": 52.423187255859375,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 30.580204010009766
+    },
+    {
+      "slide": 7,
+      "before": "개인의 관찰·수신 범위만 반영",
+      "after": "본 것과 들은 것으로 판단한다.",
+      "id": "30:227",
+      "width": 620,
+      "height": 40,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 28
+    },
+    {
+      "slide": 1,
+      "before": "부산역·KTX 기반\n비상대응훈련 VR 프로그램",
+      "after": "부산역·KTX\n비상대응훈련 VR 프로그램",
+      "id": "29:7",
+      "width": 640,
+      "height": 112,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 32
+    },
+    {
+      "slide": 6,
+      "before": "공간·설비·승객",
+      "after": "공간·시설·승객",
+      "id": "30:132",
+      "width": 376,
+      "height": 40,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "fontSize": 28
+    },
+    {
+      "slide": 9,
+      "before": "신고 내용",
+      "after": "관찰한 상황",
+      "id": "30:336",
+      "width": 384,
+      "height": 48,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "variationSettings": {
+          "wght": 700
+        }
+      },
+      "fontSize": 28
+    },
+    {
+      "slide": 9,
+      "before": "초기 조치",
+      "after": "선택한 조치",
+      "id": "30:338",
+      "width": 384,
+      "height": 48,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "variationSettings": {
+          "wght": 700
+        }
+      },
+      "fontSize": 28
+    },
+    {
+      "slide": 9,
+      "before": "대피 안내",
+      "after": "현장 변화",
+      "id": "30:340",
+      "width": 384,
+      "height": 48,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "variationSettings": {
+          "wght": 700
+        }
+      },
+      "fontSize": 28
+    },
+    {
+      "slide": 9,
+      "before": "인계 정보",
+      "after": "다음 판단",
+      "id": "30:342",
+      "width": 384,
+      "height": 48,
+      "fontName": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "variationSettings": {
+          "wght": 700
+        }
+      },
+      "fontSize": 28
+    }
+  ],
+  "vectorTargets": [
+    {
+      "slide": 8,
+      "name": "State coupling right top",
+      "path": "M 0 104 L 56 104 Q 64 104 64 96 L 64 8 Q 64 0 72 0 L 96 0 M 88 -8 L 96 0 L 88 8",
+      "id": "30:253",
+      "x": 1096,
+      "y": 456,
+      "beforePaths": [
+        {
+          "windingRule": "NONZERO",
+          "data": "M 120 0 L 128 8 L 120 16"
+        },
+        {
+          "windingRule": "NONE",
+          "data": "M 0 112 L 56 112 C 61.33333349227905 112 64 109.33333349227905 64 104 L 64 16 C 64 10.666666507720947 66.66666650772095 8 72 8 L 128 8"
+        }
+      ]
+    },
+    {
+      "slide": 8,
+      "name": "State coupling right bottom",
+      "path": "M 0 0 L 56 0 Q 64 0 64 8 L 64 88 Q 64 96 72 96 L 96 96 M 88 88 L 96 96 L 88 104",
+      "id": "30:255",
+      "x": 1096,
+      "y": 664,
+      "beforePaths": [
+        {
+          "windingRule": "NONZERO",
+          "data": "M 120 88 L 128 96 L 120 104"
+        },
+        {
+          "windingRule": "NONE",
+          "data": "M 0 0 L 56 0 C 61.33333349227905 0 64 2.6666665077209473 64 8 L 64 88 C 64 93.33333349227905 66.66666650772095 96 72 96 L 128 96"
+        }
+      ]
+    }
+  ],
+  "mutationPerformed": false
+}

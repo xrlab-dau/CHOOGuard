@@ -24,6 +24,8 @@ namespace ChooGuard.Editor
         public const string RoutesPath = EmergencySceneBuilder.ArtRoot + "/Resources/StationRoutes.json";
         private const float Cell = 16f, Band = 1f, Reach = 32f, Vertical = 4.5f, Detour = 1.6f, Slack = 8f;
 
+        private static StationWalkingRouteEntry[] walkingRoutes = Array.Empty<StationWalkingRouteEntry>();
+
         private sealed class Draft
         {
             public readonly List<Vector3> Positions = new List<Vector3>();
@@ -41,6 +43,7 @@ namespace ChooGuard.Editor
             var links = new List<NavMeshLinkInstance>();
             try
             {
+                walkingRoutes = StationWalkingRoutes.Load();
                 AddLinks(points, links);
                 var draft = Sample(points);
                 Connect(draft, points);
@@ -54,12 +57,14 @@ namespace ChooGuard.Editor
             {
                 foreach (var link in links) NavMesh.RemoveLink(link);
                 instance.Remove();
+                walkingRoutes = Array.Empty<StationWalkingRouteEntry>();
             }
         }
 
         /// <summary>The links the session adds at runtime (<c>StationWorld</c> builds the same ones from the same data), so paths may ride an escalator or a lift. Shared with <c>ExtinguisherPlacementProbe</c> so it measures the same graph; the caller removes the links it adds.</summary>
         internal static void AddLinks(StationPoints points, List<NavMeshLinkInstance> links)
         {
+            StationWalkingRoutes.AddTemporaryLinks(links);
             foreach (var entry in points.Escalators)
                 links.Add(NavMesh.AddLink(new NavMeshLinkData { startPosition = entry.path[0], endPosition = entry.path[entry.path.Length - 1], width = 0, bidirectional = false, area = StationWorld.EscalatorArea, costModifier = -1 }));
             foreach (var entry in points.Elevators)
@@ -99,6 +104,11 @@ namespace ChooGuard.Editor
                 if (NavMesh.SamplePosition(pair.Value.point, out var hit, 1f, NavMesh.AllAreas) && Mathf.Abs(hit.position.y - pair.Value.point.y) < .8f) floor.Add(hit.position);
 
             var special = new List<(Vector3 position, string label)>();
+            foreach (var route in walkingRoutes)
+            {
+                special.Add((route.Start, StationWalkingRoutes.LinkPrefix + route.id + ":start"));
+                special.Add((route.End, StationWalkingRoutes.LinkPrefix + route.id + ":end"));
+            }
             foreach (var exit in points.Of(PointKind.Exit)) special.Add((exit.Position, exit.Id));
             foreach (var escalator in points.Escalators)
             {
@@ -116,7 +126,8 @@ namespace ChooGuard.Editor
             var placed = new List<(Vector3 position, string label)>();
             foreach (var (position, label) in special)
             {
-                if (!NavMesh.SamplePosition(position, out var hit, 3f, NavMesh.AllAreas) || Mathf.Abs(hit.position.y - position.y) > 1.5f) throw new InvalidOperationException("이 지점이 navmesh 위에 없습니다: " + label + " " + position);
+                bool measured = label.StartsWith(StationWalkingRoutes.LinkPrefix, StringComparison.Ordinal);
+                if (!NavMesh.SamplePosition(position, out var hit, measured ? .12f : 3f, NavMesh.AllAreas) || Mathf.Abs(hit.position.y - position.y) > (measured ? .15f : 1.5f)) throw new InvalidOperationException("이 지점이 navmesh 위에 없습니다: " + label + " " + position);
                 placed.Add((hit.position, label));
             }
             // 출입구·링크 끝 5 m 안의 바닥 노드는 그 노드에 자리를 내준다.
@@ -140,6 +151,13 @@ namespace ChooGuard.Editor
             }
             var path = new NavMeshPath();
             var corners = new Vector3[512];
+            foreach (var route in walkingRoutes)
+            {
+                int a = Find(draft, StationWalkingRoutes.LinkPrefix + route.id + ":start"), b = Find(draft, StationWalkingRoutes.LinkPrefix + route.id + ":end");
+                float length = route.Length + Vector3.Distance(draft.Positions[a], route.Start) + Vector3.Distance(route.End, draft.Positions[b]);
+                draft.Edges.Add((a, b, length, StationWalkingRoutes.LinkPrefix + route.id));
+                draft.Edges.Add((b, a, length, StationWalkingRoutes.LinkPrefix + route.id));
+            }
             for (int a = 0; a < draft.Positions.Count; a++)
             {
                 var from = draft.Positions[a];
@@ -187,7 +205,14 @@ namespace ChooGuard.Editor
             link = "";
             if (!NavMesh.CalculatePath(from, to, NavMesh.AllAreas, path) || path.status != NavMeshPathStatus.PathComplete) return false;
             int count = path.GetCornersNonAlloc(corners);
-            for (int i = 1; i < count; i++) length += Vector3.Distance(corners[i - 1], corners[i]);
+            for (int i = 1; i < count; i++)
+            {
+                // A measured walk is its dedicated endpoint↔endpoint graph arc.
+                // Excluding generic crossings prevents a composite path from losing
+                // a second walking owner or an existing transport-link closure.
+                if (walkingRoutes.Any(w => w.Matches(corners[i - 1], corners[i], out _))) return false;
+                length += Vector3.Distance(corners[i - 1], corners[i]);
+            }
             if (ratio && length > Vector3.Distance(from, to) * Detour + Slack) return false;
             for (int i = 0; i + 1 < count; i++)
             {

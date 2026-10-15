@@ -11,12 +11,16 @@ namespace ChooGuard.App.Fps.Emergency
     /// escalator and elevator rides; inside the train the body walks the aisle in the train's own frame.
     /// </summary>
     [DisallowMultipleComponent, RequireComponent(typeof(PersonBody))]
-    public sealed class Passenger : MonoBehaviour, IFpsInteraction, IFpsNamed
+    public sealed class Passenger : MonoBehaviour, IFpsInteraction, IFpsNamed, IFpsSecondaryInteraction, IFpsStated
     {
-        public enum Activity { Walk, Queue, Browse, Sit, Stand, Leave, Toilet, PlatformWait, Board, InTrain, Alight, Meet, Deciding, Watch, MoveAway, Evacuate, Report, TakeCover, Injured, Aggressive, OnTrack }
+        public enum Activity { Walk, Queue, Browse, Sit, Stand, Leave, Toilet, PlatformWait, Board, InTrain, Alight, Meet, Deciding, Watch, MoveAway, Evacuate, Report, TakeCover, Injured, Aggressive, OnTrack, Escorted }
         public enum Purpose { Depart, Arrive, Greet, Visit }
 
         public PersonBody Body { get; private set; }
+        public CitizenEscort Escort { get; private set; }
+        public float WalkingPace => walkSpeed;
+        public bool BeingEscorted => Escort != null && Escort.Active;
+        public string StateText => BeingEscorted ? Escort.StateText : "";
         public CrowdDirector Crowd { get; private set; }
         public int Number { get; private set; }
         public Activity Current { get; private set; }
@@ -84,6 +88,8 @@ namespace ChooGuard.App.Fps.Emergency
             Crowd = crowd;
             Number = number;
             Body = GetComponent<PersonBody>();
+            Escort = GetComponent<CitizenEscort>() ?? gameObject.AddComponent<CitizenEscort>();
+            Escort.Setup(this);
             Body.Home = crowd.PeopleRoot;
             Trip = trip;
             Elderly = random.NextDouble() < .14;
@@ -196,7 +202,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         public void ContinueItinerary()
         {
-            if (Hurt || Hostile || Body.Scripted || Body.Seat != PersonBody.SeatPhase.None && Body.Seat != PersonBody.SeatPhase.Seated) return;
+            if (BeingEscorted || Hurt || Hostile || Body.Scripted || Body.Seat != PersonBody.SeatPhase.None && Body.Seat != PersonBody.SeatPhase.Seated) return;
             var next = Crowd.Mind.Itinerary(this);
             if (next == null) return;
             ReleasePlace();
@@ -238,6 +244,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Drops the itinerary walk for the step JEV chose (its first answer arrived while they were still on the way).</summary>
         public void Redirect(CrowdMind.Choice next)
         {
+            if (BeingEscorted) return;
             ReleasePlace();
             choice = next;
             Execute(next);
@@ -246,6 +253,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Gives up on where they were heading (the way is blocked) and stands ready to be told what to do instead.</summary>
         public void Replan()
         {
+            if (BeingEscorted) return;
             if (Body.Seat != PersonBody.SeatPhase.None || Body.Scripted || Current == Activity.InTrain) return;
             Body.Stop();
             ReleasePlace();
@@ -257,6 +265,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>The way to their exit is blocked: heads for a different exit.</summary>
         public void Reroute()
         {
+            if (BeingEscorted) return;
             var danger = Focus != null && Focus.Localized ? Focus.Position : (Vector3?)null;
             exit = Crowd.SafeExitFor(transform.position, danger, Focus != null ? Focus.Clearance : 0, exit);
             blockedRaised = false;
@@ -267,6 +276,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void Execute(CrowdMind.Choice next)
         {
+            if (BeingEscorted) return;
             if (next == null) { WalkTo(World.RandomExit().Position, Activity.Leave, walkSpeed); return; }
             if (next.Remember != null) Remember(next.Remember);
             stepSeconds = next.Seconds;
@@ -392,7 +402,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void Update()
         {
-            if (Crowd == null) return;
+            if (Crowd == null || BeingEscorted) return;
             // 열차가 떠났는데 승강장에 있지 않던 사람(앉아 있거나 가게에 있던 사람)도 놓친 것을 안다: 그러면 계획의 전제가 달라져 그 사람의 새 계획을 묻는다.
             if (!MissedTrain && !Hurt && !Hostile && Current != Activity.PlatformWait && Current != Activity.Board && Current != Activity.InTrain && ServiceGone) LoseTrain();
             if (Current == Activity.Walk || Current == Activity.Evacuate || Current == Activity.MoveAway) CheckRoute();
@@ -738,6 +748,7 @@ namespace ChooGuard.App.Fps.Emergency
         public void Perceive(float deltaSeconds)
         {
             if (Hostile || Current == Activity.OnTrack) return;
+            if (BeingEscorted) { ExposeToSmoke(deltaSeconds); return; }
             if (Current == Activity.Evacuate || Current == Activity.Injured) { ExposeToSmoke(deltaSeconds); return; }
             var eye = transform.position + Vector3.up * (Body.Seat == PersonBody.SeatPhase.None ? 1.6f : 1.2f);
             foreach (var hazard in HazardRegistry.Active)
@@ -840,6 +851,7 @@ namespace ChooGuard.App.Fps.Emergency
                 Focus = Crowd.MainHazard;
                 Noticed.Add(Focus);
             }
+            if (BeingEscorted) return;
             Crowd.Mind.OnInstruction(this, direct);
         }
 
@@ -847,6 +859,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void KeepGoing()
         {
+            if (BeingEscorted) return;
             if (Current == Activity.InTrain || Current == Activity.Alight || Current == Activity.Board) return;
             if (Current == Activity.Deciding || Current == Activity.Watch)
             {
@@ -859,6 +872,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void Watch(float seconds, bool film)
         {
+            if (BeingEscorted) return;
             if (Current == Activity.InTrain) return;
             Interrupt();
             Current = Activity.Watch;
@@ -868,6 +882,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void MoveAway(float distance)
         {
+            if (BeingEscorted) return;
             if (Focus == null) { KeepGoing(); return; }
             if (Current == Activity.InTrain) { BeginAlight(true); return; }
             Interrupt();
@@ -887,6 +902,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void Evacuate(bool run)
         {
+            if (BeingEscorted) { Instructed = true; return; }
             running = run;
             if (Current == Activity.InTrain)
             {
@@ -916,6 +932,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void ReportToStaff()
         {
+            if (BeingEscorted) return;
             if (Crowd.Player == null || Current == Activity.InTrain) { Evacuate(false); return; }
             Interrupt();
             ReleasePlace();
@@ -974,6 +991,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Goes over to someone who collapsed or fell, crouches beside them for a while.</summary>
         public void HelpNearby(Hazard hazard)
         {
+            if (BeingEscorted) return;
             if (hazard == null || Current == Activity.InTrain) { KeepGoing(); return; }
             Interrupt();
             ReleasePlace();
@@ -1189,6 +1207,7 @@ namespace ChooGuard.App.Fps.Emergency
                 case Activity.TakeCover: return "crouching to protect themselves";
                 case Activity.Aggressive: return "shouting and acting aggressively";
                 case Activity.OnTrack: return "down on the track below the platform";
+                case Activity.Escorted: return "walking with a staff member";
                 default: return "hurt, on the floor";
             }
         }
@@ -1199,6 +1218,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             get
             {
+                if (BeingEscorted) return "동행 승객 확인";
                 if (Hurt) return CarriesAedFor() ? "AED 곁에 두기" : "상태 확인";
                 if (Current == Activity.Aggressive) return "말로 진정시키기";
                 if (Current == Activity.OnTrack) return "움직이지 말라고 안내";
@@ -1220,6 +1240,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             feedback = null;
             if (!CanInteract(responder, out feedback)) return false;
+            if (BeingEscorted) { feedback = Escort.StateText + " · R로 동행 안내 마침"; return true; }
             if (Hurt && CarriesAedFor()) { feedback = Crowd.Session.Hands.PlaceAedBeside(this); return true; }
             if (Hurt) { feedback = Crowd.Session.Incidents.CheckInjured(this); return true; }
             // 난동 승객은 직접 제지하지 않는다: 말은 걸 수 있지만 듣지 않는다(공개 행동요령: 거리를 두고 신고).
@@ -1234,6 +1255,38 @@ namespace ChooGuard.App.Fps.Emergency
             if (Body.Seat == PersonBody.SeatPhase.None && !Body.Scripted) { Body.Face(responder.transform.position); Body.Listen(); }
             feedback = "승객: " + SmallTalk();
             return true;
+        }
+
+        public string SecondaryPrompt => BeingEscorted ? "동행 안내 마침" : Escort != null && !Hurt && !Hostile && Body != null && Body.Visible && !Body.Scripted && Body.Seat == PersonBody.SeatPhase.None && Body.OnNavMesh && Current != Activity.OnTrack && Current != Activity.InTrain && Current != Activity.Board && Current != Activity.Alight ? "동행 안내" : "";
+
+        public bool TrySecondary(FirstPersonResponder responder, out string feedback)
+        {
+            if (Escort == null) { feedback = "지금은 동행 안내할 수 없습니다"; return false; }
+            return BeingEscorted ? Escort.Release(responder, out feedback) : Escort.Begin(responder, out feedback);
+        }
+
+        internal void BeginEscort()
+        {
+            ReleasePlace();
+            Slot.Forget();
+            itinerary = false;
+            helping = false;
+            pendingStand = false;
+            running = false;
+            Body.ClearPoses();
+            Body.Stop();
+            Body.Urgent = true;
+            Current = Activity.Escorted;
+        }
+
+        internal void EndEscort(StationPoints.Point reached)
+        {
+            // An injury/reflex that ended the escort owns the resulting pose and activity.
+            if (Current != Activity.Escorted) return;
+            Body.Stop();
+            Current = Activity.Stand;
+            until = Time.time + .75f;
+            if (reached != null) LeaveWith(reached);
         }
 
         private string SmallTalk()
