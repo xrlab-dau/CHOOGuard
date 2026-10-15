@@ -992,7 +992,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (!Guided) return null;
             var column = new BoardOverlay.Column { Title = "상황" };
             if (Train != null) column.Lines.Add("열차: " + Train.Status());
-            if (jev == null || !jev.Available || jev.FailuresInARow >= 3) column.Lines.Add(jev != null ? jev.Status : "JEV 없음");
+            column.Lines.Add(jev != null ? jev.Status : "JEV 없음");
             if (!PlayerKnowsIncident || Main == null) { column.Lines.Add("이상 없음"); column.Lines.Add("역 순회 근무 · " + world.Describe(PlayerPosition)); return column; }
             column.Lines.Add("인지 " + session.Clock(knownAt - Time.time + session.ShiftSeconds) + " (" + knownHow + ")");
             foreach (var hazard in known.Take(5)) column.Lines.Add(hazard.Label + " — " + hazard.Where + " · " + hazard.BoardState);

@@ -175,7 +175,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (Guided) return null;
             var column = new BoardOverlay.Column { Title = "확인한 사실" };
-            if (jev == null || !jev.Available || jev.FailuresInARow >= 3) column.Lines.Add(jev != null ? jev.Status : "JEV 없음");
+            column.Lines.Add(jev != null ? jev.Status : "JEV 없음");
             for (int i = facts.Count - 1; i >= 0 && column.Lines.Count < NotebookShown; i--) column.Lines.Add(facts[i]);
             return column;
         }
