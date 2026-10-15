@@ -178,7 +178,7 @@ class SizeApiGateTests(unittest.TestCase):
              mock.patch.object(policy.urllib.request, "urlopen", return_value=response, side_effect=error) as request, \
              redirect_stdout(output):
             result = policy.main(["--base", self.base, "--head", "HEAD", "--event", "push", "--repo", "owner/repo"])
-        request.assert_called_once()
+        self.assertEqual(request.call_count, 2 if truncated else 1)
         return result, output.getvalue()
 
     def assert_size_failure(self, result, output):

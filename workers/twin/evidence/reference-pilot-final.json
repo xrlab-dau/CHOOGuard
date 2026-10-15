@@ -1,0 +1,210 @@
+{
+  "schema": "chooguard.reference-pilot-receipt.v1",
+  "status": "reconstructed_relative_reference",
+  "role": "reference_only",
+  "metric_verified": false,
+  "placement_export_allowed": false,
+  "source": {
+    "path": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-10-08/measured-twin/clips/RY2qvE0Tugk_041-154.webm",
+    "sha256": "8edfacbe331d6291631b5411642f0bf0e718deeacfe2fad550a253ab6931541c",
+    "source_url": "https://www.youtube.com/watch?v=RY2qvE0Tugk",
+    "source_id": "RY2qvE0Tugk",
+    "capture_date": null,
+    "upload_date": "2023-05-01",
+    "capture_epoch_basis": "single retained video only; capture date may be unknown"
+  },
+  "sampling": {
+    "clip_local_start_seconds": 15.0,
+    "duration_seconds": 12.0,
+    "fps": 2.0,
+    "width": 720,
+    "static_top_fraction": 0.55
+  },
+  "sfm": {
+    "image_count": 24,
+    "model_count": 1,
+    "models": [
+      {
+        "id": 0,
+        "registered_images": 24,
+        "points3d": 2954,
+        "mean_reprojection_error_pixels": 0.48673788015705577
+      }
+    ]
+  },
+  "dense_points": 19372,
+  "mesh": {
+    "vertices": 11429,
+    "faces": 22830
+  },
+  "elapsed_seconds": 39.016746332054026,
+  "stages": [
+    {
+      "stage": "extract",
+      "argv": [
+        "/opt/homebrew/bin/ffmpeg",
+        "-v",
+        "error",
+        "-nostdin",
+        "-ss",
+        "15.0",
+        "-i",
+        "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-10-08/measured-twin/clips/RY2qvE0Tugk_041-154.webm",
+        "-t",
+        "12.0",
+        "-vf",
+        "fps=2.0,scale=720:-2",
+        "-q:v",
+        "2",
+        "/Users/um-yunsang/CHOOGuard/workers/twin/output/public-reference-pilot-20261008-v3/images/%06d.jpg"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.0220157909789123,
+      "log": "/Users/um-yunsang/CHOOGuard/workers/twin/output/public-reference-pilot-20261008-v3/extract.log"
+    },
+    {
+      "stage": "features",
+      "exit_code": 0,
+      "elapsed_seconds": 4.572090041998308,
+      "api": "pycolmap 4.2.0"
+    },
+    {
+      "stage": "matching",
+      "exit_code": 0,
+      "elapsed_seconds": 3.103900541027542,
+      "api": "pycolmap 4.2.0"
+    },
+    {
+      "stage": "mapping",
+      "exit_code": 0,
+      "elapsed_seconds": 5.488680959038902,
+      "api": "pycolmap 4.2.0"
+    },
+    {
+      "stage": "undistort",
+      "exit_code": 0,
+      "elapsed_seconds": 0.13207966601476073,
+      "api": "pycolmap 4.2.0"
+    },
+    {
+      "stage": "interface",
+      "argv": [
+        "/Users/um-yunsang/CHOOGuard/.tools/openmvs-v2.4.0/InterfaceCOLMAP",
+        "-i",
+        "colmap",
+        "-o",
+        "scene.mvs",
+        "--image-folder",
+        "images",
+        "--max-threads",
+        "2"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.058971457998268306,
+      "log": "/Users/um-yunsang/CHOOGuard/workers/twin/output/public-reference-pilot-20261008-v3/interface.log"
+    },
+    {
+      "stage": "dense",
+      "argv": [
+        "/Users/um-yunsang/CHOOGuard/.tools/openmvs-v2.4.0/DensifyPointCloud",
+        "scene.mvs",
+        "--resolution-level",
+        "1",
+        "--min-resolution",
+        "160",
+        "--max-resolution",
+        "720",
+        "--number-views",
+        "4",
+        "--number-views-fuse",
+        "2",
+        "--ignore-mask-label",
+        "0",
+        "--max-threads",
+        "2",
+        "--tower-mode",
+        "0",
+        "--estimate-roi",
+        "0",
+        "--crop-to-roi",
+        "0",
+        "-o",
+        "scene_dense.mvs"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 17.4202931659529,
+      "log": "/Users/um-yunsang/CHOOGuard/workers/twin/output/public-reference-pilot-20261008-v3/dense.log"
+    },
+    {
+      "stage": "mesh",
+      "argv": [
+        "/Users/um-yunsang/CHOOGuard/.tools/openmvs-v2.4.0/ReconstructMesh",
+        "scene_dense.mvs",
+        "--max-threads",
+        "2",
+        "--close-holes",
+        "0",
+        "-o",
+        "scene_mesh.ply"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.7123004170134664,
+      "log": "/Users/um-yunsang/CHOOGuard/workers/twin/output/public-reference-pilot-20261008-v3/mesh.log"
+    },
+    {
+      "stage": "texture",
+      "argv": [
+        "/Users/um-yunsang/CHOOGuard/.tools/openmvs-v2.4.0/TextureMesh",
+        "scene_dense.mvs",
+        "--mesh-file",
+        "scene_mesh.ply",
+        "--max-threads",
+        "2",
+        "--ignore-mask-label",
+        "0",
+        "--close-holes",
+        "0",
+        "--export-type",
+        "obj",
+        "-o",
+        "reference_textured.obj"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 6.506414292030968,
+      "log": "/Users/um-yunsang/CHOOGuard/workers/twin/output/public-reference-pilot-20261008-v3/texture.log"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "workers/twin/output/public-reference-pilot-20261008-v3/reference_sparse.ply",
+      "bytes": 44488,
+      "sha256": "3e18aa1f7452815e22156ee7bcbbfcbf41aa407b8534e61edb6da779ad012cb1"
+    },
+    {
+      "path": "workers/twin/output/public-reference-pilot-20261008-v3/reference_textured.mtl",
+      "bytes": 169,
+      "sha256": "97c110b71628944cef666a684cd55b0235a75443976bc397c2821d13c877231f"
+    },
+    {
+      "path": "workers/twin/output/public-reference-pilot-20261008-v3/reference_textured.obj",
+      "bytes": 2596183,
+      "sha256": "a18cf4d71a18ad3bce4ea41dc449739d7c79cd6a72d0b9e79874995691313231"
+    },
+    {
+      "path": "workers/twin/output/public-reference-pilot-20261008-v3/scene_dense.ply",
+      "bytes": 1412562,
+      "sha256": "a1987d6a7785780e3b1a3edb3a165e4c47f6a2e68185f8680bfbf0c70b0bfa9c"
+    },
+    {
+      "path": "workers/twin/output/public-reference-pilot-20261008-v3/scene_mesh.ply",
+      "bytes": 434124,
+      "sha256": "e7773b12eaf05fee51a68166fa5d82d8e0868c2aa81f0cb2b42f9576182373f8"
+    }
+  ],
+  "limitations": [
+    "Local clip PTS is not the original video's timestamp; requested section can include earlier keyframes.",
+    "Date/scale/origin are unverified. No independent field controls are supplied.",
+    "Static top mask deliberately omits crowded floor regions. This pilot cannot establish a complete interior.",
+    "Dynamic screens, reflection, repetitive structure and calibration uncertainty require inspection."
+  ]
+}

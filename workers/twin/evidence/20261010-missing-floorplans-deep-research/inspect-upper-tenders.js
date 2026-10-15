@@ -1,0 +1,4 @@
+for (const [id,ntt] of [["official-3f-foodcourt-fire", "100045068"], ["official-1f-5f-construction", "100045066"], ["official-3f-construction-2018", "100041854"], ["official-3f-construction-2017", "100038714"], ["official-MDplan-2018", "100041922"]]) {
+const p=await openTab('https://www.korailretail.com/bbs/selectBbsDetail.do?bbsId=BBSMSTR_000000000027&nttId='+ntt);
+console.log('SOURCE_JSON:'+JSON.stringify({id,acquired_at:new Date().toISOString(),...(await p.evaluate(()=>({url:location.href,title:document.title,text:document.body.innerText.slice(0,8000),links:[...document.querySelectorAll('a')].map(a=>({text:a.innerText,url:a.href,raw:a.getAttribute('href'),onclick:a.getAttribute('onclick')})).filter(a=>/첨부|도면|설계|pdf|zip|hwp|fileDown|downFile/i.test(a.text+' '+a.url))})))}));
+}

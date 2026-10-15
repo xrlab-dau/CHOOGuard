@@ -235,10 +235,11 @@ namespace ChooGuard.App.Fps.Emergency
                 about = HazardAhead(eye, forward, looked);
                 if (about != null) text = about.Visible;
             }
-            if (about != null && about.Active || about is FireHazard)
+            if (about != null && (about.Active || known.Contains(about) || about is FireHazard))
             {
                 Know(about, "직접 살펴봄");
                 seen[about] = text;
+                observedAt[about] = Time.time;
                 focus = about;
                 UnlockCards(about);
             }
@@ -314,6 +315,8 @@ namespace ChooGuard.App.Fps.Emergency
                     broadcasts.Add(Option(ScopeName(s) + " · " + (r ? "보고한 위치" : "현 위치"), () => Broadcast(s, r)));
                 }
             yield return new EmergencySession.RadioGroup { Label = "방송", Options = broadcasts };
+            var workflow = WorkflowOptions();
+            if (workflow.Count > 0) yield return new EmergencySession.RadioGroup { Label = "업무·인계", Options = workflow };
             var answers = new List<EmergencySession.RadioOption>(Answers.Length);
             for (int i = 0; i < Answers.Length; i++) { int index = i; answers.Add(Option(Answers[i], () => Answer(index))); }
             yield return new EmergencySession.RadioGroup { Label = question != null && Time.time < question.Until ? "응답 · 질문 있음" : "응답", Options = answers };

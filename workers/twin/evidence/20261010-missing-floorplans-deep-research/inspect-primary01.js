@@ -1,0 +1,5 @@
+for (const [id,url] of [["auric-2004", "https://www.auric.or.kr/user/rdoc/DocCmag.aspx?returnVal=CMAG&dn=121819"], ["goods-notice", "https://www.bidpro.co.kr/n0_ipchal/konggo/sisul/konggo_view.asp?num=3811587"], ["kunwon", "https://www.kunwon.com/"]]) {
+try {const p=await openTab(url);
+const d=await p.evaluate(()=>({url:location.href,title:document.title,text:document.body.innerText,links:[...document.querySelectorAll('a')].map(a=>({text:a.innerText,url:a.href,onclick:a.getAttribute('onclick')})).filter(a=>a.text||a.onclick),images:[...document.images].map(i=>({alt:i.alt,src:i.src,w:i.naturalWidth,h:i.naturalHeight}))}));
+console.log('SOURCE_JSON:'+JSON.stringify({id,acquired_at:new Date().toISOString(),...d}));} catch(e){console.log('SOURCE_JSON:'+JSON.stringify({id,url,error:String(e)}));}
+}

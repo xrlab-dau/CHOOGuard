@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>부산역 2층 — 추가 근거·CV 비교</title>
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#18202b;background:#f2f4f7}body{margin:0}main{max-width:1400px;margin:auto;padding:30px 24px 70px}h1{font-size:30px;margin:0 0 14px}p{line-height:1.7}nav{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0}button{background:white;border:1px solid #bac4d2;border-radius:7px;padding:10px 20px;font:inherit;cursor:pointer}button[aria-pressed=true]{background:#183b65;color:white}a{color:#164c86}section{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}article{background:white;border:1px solid #dce1e9;border-radius:10px;overflow:hidden}article[hidden]{display:none}article h2{font-size:19px;margin:20px 22px 10px}article p{margin:10px 22px 22px;color:#445164}article img{width:100%;display:block;max-height:640px;object-fit:contain;background:#e9edf1}.tag{display:inline-block;font-size:13px;margin:18px 22px 0;padding:5px 9px;background:#e4edf7;border-radius:5px}.held{background:#fff0df;color:#7d430b}footer{margin-top:28px;font-size:14px;color:#526172}@media(max-width:800px){section{grid-template-columns:1fr}main{padding:22px 16px}h1{font-size:25px}}@media print{nav{display:none}article{break-inside:avoid}main{padding:0}}
+</style>
+<main>
+<h1>부산역 2층: 추가 근거와 실제 CV 결과</h1>
+<p>새 회의실 약도·원본 사진·도면 제약을 함께 비교합니다. 사진을 누르면 원본을 엽니다.<br>사진 정면화와 상대 구조 추론은 현장 실측이 아닙니다. 이번 근거 수집으로 운영 씬의 벽을 변경하지 않았습니다.</p>
+<p><a href="README.md">상세 결과</a> · <a href="evidence-catalog.json">출처·해시·결정 목록</a></p>
+<nav aria-label="자료 분류"><button data-filter="all" aria-pressed="true">전체</button><button data-filter="source" aria-pressed="false">새 도면·사진</button><button data-filter="cv" aria-pressed="false">실제 CV 실행</button><button data-filter="gap" aria-pressed="false">구조 대응 공백</button></nav>
+<section>
+<article data-group="source"><span class="tag">2024년 공개 행사장 약도</span><h2>201·202호가 표시된 2층 약도</h2><a href="../../../asset-library/research-public/2026-10-09/floor2-cv-source-extension/kimst2024-venues-p4.png"><img src="../../../asset-library/research-public/2026-10-09/floor2-cv-source-extension/kimst2024-busan2f-native.jpeg" alt="매표소·철도경찰·201·202호와 7번 출구를 표시한 2024년 부산역 약도"></a><p>안양대 KIMST EDU 첨부 PDF 4쪽. 201호는 철도경찰 오른쪽, 202호는 그 오른쪽 위입니다. 406×285px 원본이며 치수 도면이 아닙니다. <a href="https://www.anyang.ac.kr/iacf/community/notice.do?mode=view&amp;articleNo=31082">공개 출처</a></p></article>
+<article data-group="source"><span class="tag">2026년 7월 방문 주장</span><h2>새 안내판의 2층 패널 정면화</h2><a href="../../../workers/twin/output/floor2-current-guide-review-20261009/guide-2f-rectified.png"><img src="../../../workers/twin/output/floor2-current-guide-review-20261009/guide-2f-rectified.png" alt="원본 사진의 실제 모서리를 기록해 정면화한 2층 안내판"></a><p>역무실·철도경찰서·매표창구와 점포명을 판독했습니다. 원본 사진 좌표와 호모그래피를 보존했습니다. 201·202호의 방 경계는 표시되어 있지 않습니다. <a href="https://m.blog.naver.com/kimwurly_/224351351388">사진 출처</a></p></article>
+<article data-group="source"><span class="tag">2026년 6월 게시 원본 사진</span><h2>남천 전면·유리 통로·천장·계단 접속</h2><a href="../../../asset-library/research-public/2026-10-09/floor2-cv-source-extension/locker2026-c19.jpg"><img src="../../../asset-library/research-public/2026-10-09/floor2-cv-source-extension/locker2026-c19.jpg" alt="남천할매떡볶이와 유리 통로, 철도경찰·화장실 표지와 천장을 함께 담은 사진"></a><p>4032×3024px 원본입니다. 간판과 방향 표지를 함께 대조할 수 있습니다. 사진의 유리 통로와 원도의 특정 회의실 문은 아직 동일성이 확인되지 않았습니다. <a href="https://m.blog.naver.com/nose_/224311088135">사진 출처</a></p></article>
+<article data-group="cv"><span class="tag">실제 OpenCV 실행</span><h2>공식 원도에서 선·기호·반복 간격 추출</h2><a href="../../../workers/twin/output/floor2-cv-constraint-trial-20261009/plan-constraints-editable.svg"><img src="../../../workers/twin/output/floor2-cv-constraint-trial-20261009/plan-constraints-overlay.png" alt="631x496 공식 원도 위에 추출 선, 기호 후보, 검토 지점과 추정 격자를 표시한 오버레이"></a><p>기호 후보 47개·선 후보 89개. 검토 기호 검출은 9/13입니다. 추정 격자는 원본 픽셀 단위이며 벽·기둥의 자동 설치 지시가 아닙니다. 그림을 누르면 편집 SVG를 엽니다.</p></article>
+<article data-group="cv"><span class="tag held">실제 실행 · 건축 복원 채택 실패</span><h2>라운지 사진 5개의 다중 시점 시험</h2><a href="../../../workers/twin/output/floor2-lounge-multiview-trial-20261009/registered-observations-contact-sheet.jpg"><img src="../../../workers/twin/output/floor2-lounge-multiview-trial-20261009/registered-observations-contact-sheet.jpg" alt="실제 라운지 사진 위의 학습 관측점과 분리한 검증점 투영 결과"></a><p>3개 카메라·94점 생성. 학습 오차 0.635px와 달리 분리한 관측점 오차는 28.59px입니다. 점이 포스터에 집중되어 건축 체적으로 채택하지 않았습니다.</p></article>
+<article data-group="gap"><span class="tag held">도면·사진의 정확한 방 대응 미확정</span><h2>201·202호 약도와 현재 원도의 차이</h2><a href="../../../workers/twin/output/floor2-current-guide-review-20261009/kimst2024-vs-clean-source.png"><img src="../../../workers/twin/output/floor2-current-guide-review-20261009/kimst2024-vs-clean-source.png" alt="역사적 회의실 번호 약도와 공식 건축 배경의 서비스 구역을 비교한 그림"></a><p>역사적 약도는 두 방을 좌우로 어긋나게 표시하고, 공식 원도의 후보 방은 상하로 정렬됩니다. 방 번호·문·경계를 기존 생성 규칙의 이름에 바로 연결할 수 없습니다.</p></article>
+<article data-group="gap"><span class="tag held">T01·T02·T03</span><h2>남은 구조 검증의 우선 구역</h2><a href="../../../workers/twin/output/floor2-additional-evidence-targets-20261009/target-packet.json"><img src="../../../workers/twin/output/floor2-additional-evidence-targets-20261009/priority-crop-overview.png" alt="공식 원도에서 남쪽 서비스 구역, 북쪽 문턱, 맞이방 반대편 전면을 표시한 우선 구역"></a><p>남은 MAIN40은 벽 31개·바닥 8개·문 1개입니다. MAIN64는 기존 추정 규칙의 조각이며 60개가 한 칸막이에 집중되어 있습니다. 그림을 누르면 구역별 필요 시야·식별 표지를 확인합니다.</p></article>
+</section>
+<footer>2026-10-09 · 참고 근거와 추론 결과. 독립 현장 실측·전체 내부 99% 일치 검증은 완료되지 않았습니다.</footer>
+</main>
+<script>
+for(const button of document.querySelectorAll('button[data-filter]')) button.addEventListener('click',()=>{
+const filter=button.dataset.filter;
+for(const item of document.querySelectorAll('button[data-filter]')) item.setAttribute('aria-pressed',String(item===button));
+for(const card of document.querySelectorAll('article[data-group]')) card.hidden=filter!=='all'&&card.dataset.group!==filter;
+});
+</script>
+</html>

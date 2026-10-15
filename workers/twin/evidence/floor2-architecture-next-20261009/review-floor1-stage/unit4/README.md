@@ -1,0 +1,17 @@
+# Unit4 independent source and target review
+
+Accepted sealed packet `48963c4d102ff2b2ae3e324cc01d651311bec52dc89d4625933dc95c3eb06a36`: 439/439 independent checks pass for 24 meshes, 23 renderer owners, 23,658 selected vertices, 2 generic collider owners and 3 parent motions (counter, front6 door, front8 door). Source inventory is the current-before-Unit4 production export at scene `b184eee22339aec4e517d2405722a5f47a17f6b58a260830c16fbe8c57d6b984`.
+
+Every selected indexed face is closed over moved vertices and complete source welded components. Referenced source positions have zero split or torn exact-coordinate welds; unreferenced vertices left by previous source-face removals are recorded separately and do not represent live geometry tears. No target face flips or collapses remain. No contributor previously moved by the Units9–15 or Unit16 stages is selected again.
+
+The native polygon vertices1–6 stay fixed, and the new footprint is a subset of the current footprint. All front1/front5 profiles, caps, glazing, fascia, signage and fixed facade lights remain unchanged. Both shortened/moved facades have complete bounded stock/finish coverage. The full original floor geometry stays unchanged under the smaller store and the freed39.0123 model-area strip. Root owns the separate full floor/collision-support receipt.
+
+Explicit procedural assembly attribution provides32 per-sourceIndex/per-batch masks across the wall shelf and three gondolas. Its1,119 checks pass. All shelf bodies, products, bases and collider use one coherent edge0 wall projection; this fixes the15 product faces that flipped under nearest-edge switching. All three gondolas use one rigid delta per assembly across every role. Their collider clearance to the new aisle-facing V boundary is0.0799998,0.9037723 and2.9261626 model units; the fitted wall shelf collider is0.0968952 inside. The imported counter's current conservative world bounds are contained by the new footprint; this is not an assertion that its unexported imported mesh was independently reconstructed.
+
+Explicit facade fixture attribution supplies17 moving downlights (13front6,4front8), with each80-vertex ring and60-vertex lens sharing one rigid anchor delta. Five front5 fixtures are protected. All44 source profile checks pass. Circular radius, height and assembly relationships are preserved.
+
+The nominal door aperture interval is1.8 model units. The original static glazing collision gaps are approximately1.85 because glass stops0.025 short of each jamb center. The fit changes those outer setbacks: actual target gaps are1.823566 onfront6 and1.849014 onfront8. Both fully contain the moved nominal1.8 interval. The original1.85 static gap is **not** claimed unchanged. Root owns actual door-leaf, capsule-walk and gameplay clearance checks.
+
+`unit4-review.json` is the final source/frame/mask/target receipt. `fixture-attribution-masks.json`, `facade-downlight-masks.json` and `fixed-frontage-masks.json` are frozen integration evidence; their SHA hashes are pinned by the root packet. `audit_unit4.py` reproduces the bounded offline review and writes only this evidence folder. Root owns installation, source-policy guards, Unity runtime/navigation/render validation and any later Unit8 work. No Unity calls, production writes or new public research were performed here.
+
+This is a guide-relative placement correction, with all distances in existing model coordinates. No field-survey, independent metric or final site-accuracy claim is made.

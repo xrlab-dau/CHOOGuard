@@ -115,6 +115,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void StartPowerBankFire(Passenger owner, float magnitude)
         {
+            if (owner == null || owner.Current == Passenger.Activity.InTrain || !InsideBuilding(owner.transform.position)) return;
             bool aboard = owner.Current == Passenger.Activity.InTrain && Train != null;
             Vector3 spot;
             if (aboard)
@@ -128,6 +129,8 @@ namespace ChooGuard.App.Fps.Emergency
                 var side = owner.transform.right * (world.Chance(.5f) ? .5f : -.5f) + owner.transform.forward * .3f;
                 spot = Floor(StationWorld.OnNavMesh(owner.transform.position + side, 1f));
             }
+            if (!InsideBuilding(spot)) spot = Floor(owner.transform.position);
+            if (!InsideBuilding(spot)) return;
             var fire = Ignite(spot, "승객 가방 속 보조배터리", "가방", magnitude, "", aboard ? Train.Carrier : null, aboard);
             owner.Notice(fire, false);
         }

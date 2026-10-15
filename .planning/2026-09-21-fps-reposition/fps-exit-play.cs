@@ -1,1 +1,0 @@
-UnityEditor.EditorApplication.isPlaying=false;return new{requestedStop=true};

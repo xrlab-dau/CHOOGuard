@@ -1,0 +1,1 @@
+Completed. Snapshot: ../project. Restore: ../RESTORE.md. Original evidence index: ../../../source-evidence/INDEX.json. Cleanup result: ../CLEANUP-RESULT.json. Current scene file remains byte-identical to checkpoint1.

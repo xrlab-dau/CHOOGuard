@@ -1,0 +1,1015 @@
+{
+  "direction": "Station Field Atlas",
+  "schemaVersion": 1,
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "unit": "px"
+  },
+  "palette": {
+    "ink": "#142025",
+    "night": "#0C1D26",
+    "paper": "#F4F2EA",
+    "mist": "#E1E8E6",
+    "accent": "#D0F266",
+    "accentInk": "#3D550A",
+    "muted": "#52635F",
+    "mutedOnNight": "#B5C4BD",
+    "lineLight": "#667872",
+    "lineDark": "#809390"
+  },
+  "paletteRoles": {
+    "ink": "Graphite typography and structural outlines on warm/light/lime fields.",
+    "night": "Deep midnight architectural ground for cover, system loop, photo atlas, target and reference pages.",
+    "paper": "Warm editorial paper; main thesis, requirements, plan and evidence spread ground.",
+    "mist": "Cool neutral observation/learning ground; not a low-contrast border.",
+    "accent": "Electric lime focal mass, selected route on night, attention/current chapter; never a pass or learning-gain signal.",
+    "accentInk": "Dark olive partner for lime and light-ground emphasis, not a second vivid accent.",
+    "muted": "Secondary text on paper/mist/accent only.",
+    "mutedOnNight": "Secondary text on night/ink only.",
+    "lineLight": "Meaningful route/relationship strokes on paper/mist/accent; not light-ground text.",
+    "lineDark": "Meaningful route/relationship strokes on night/ink; not light-ground strokes."
+  },
+  "paletteDevelopment": {
+    "approachesConsidered": [
+      {
+        "approach": "Photo extraction only",
+        "tradeoff": "Grounds the atlas in the real station but produces mostly gray/cyan and no deliberate editorial focal color; retained as neutral reference, not copied wholesale."
+      },
+      {
+        "approach": "Constraint-led tonal anchors plus electric lime",
+        "tradeoff": "Selected: source-derived graphite/mist character, contract warm paper/night anchors, one high-chroma attention color; separate light/dark text and line tokens meet explicit thresholds."
+      }
+    ],
+    "selection": "Do not claim lime was sampled from station photos. Palette anchors ink/night/paper/mist/accent/accentInk follow the approved direction; extracted neutrals support scene compatibility. New muted/line tokens were chosen by numerical readability, not old blue-token renaming.",
+    "tonalFamilies": {
+      "neutral": [
+        "night",
+        "ink",
+        "muted",
+        "lineLight",
+        "lineDark",
+        "mutedOnNight",
+        "mist",
+        "paper"
+      ],
+      "lime": [
+        "accentInk",
+        "accent"
+      ]
+    },
+    "semanticAdaptation": "This is a proposal atlas, not an application status theme. No invented success/error/chart colors or incident taxonomy. Sequence is encoded by labels, arrows and node shape; planned versus current is written explicitly."
+  },
+  "contrastMatrix": {
+    "method": "WCAG 2.x sRGB relative luminance; channel <=0.04045 divides by 12.92, else ((channel+0.055)/1.055)^2.4; coefficients 0.2126/0.7152/0.0722; (Llighter+0.05)/(Ldarker+0.05). Full opacity only.",
+    "textThreshold": 4.5,
+    "meaningfulConnectorThreshold": 3,
+    "approvedTextPairs": [
+      {
+        "foreground": "ink",
+        "background": "paper",
+        "ratio": 14.8334
+      },
+      {
+        "foreground": "muted",
+        "background": "paper",
+        "ratio": 5.6624
+      },
+      {
+        "foreground": "accentInk",
+        "background": "paper",
+        "ratio": 7.4876
+      },
+      {
+        "foreground": "ink",
+        "background": "mist",
+        "ratio": 13.3697
+      },
+      {
+        "foreground": "muted",
+        "background": "mist",
+        "ratio": 5.1037
+      },
+      {
+        "foreground": "accentInk",
+        "background": "mist",
+        "ratio": 6.7488
+      },
+      {
+        "foreground": "ink",
+        "background": "accent",
+        "ratio": 13.1226
+      },
+      {
+        "foreground": "muted",
+        "background": "accent",
+        "ratio": 5.0094
+      },
+      {
+        "foreground": "accentInk",
+        "background": "accent",
+        "ratio": 6.624
+      },
+      {
+        "foreground": "paper",
+        "background": "night",
+        "ratio": 15.365
+      },
+      {
+        "foreground": "mist",
+        "background": "night",
+        "ratio": 13.8488
+      },
+      {
+        "foreground": "accent",
+        "background": "night",
+        "ratio": 13.5929
+      },
+      {
+        "foreground": "mutedOnNight",
+        "background": "night",
+        "ratio": 9.5095
+      },
+      {
+        "foreground": "paper",
+        "background": "ink",
+        "ratio": 14.8334
+      },
+      {
+        "foreground": "mist",
+        "background": "ink",
+        "ratio": 13.3697
+      },
+      {
+        "foreground": "accent",
+        "background": "ink",
+        "ratio": 13.1226
+      },
+      {
+        "foreground": "mutedOnNight",
+        "background": "ink",
+        "ratio": 9.1805
+      }
+    ],
+    "approvedConnectorPairs": [
+      {
+        "foreground": "lineLight",
+        "background": "paper",
+        "ratio": 4.1685
+      },
+      {
+        "foreground": "lineLight",
+        "background": "mist",
+        "ratio": 3.7572
+      },
+      {
+        "foreground": "lineLight",
+        "background": "accent",
+        "ratio": 3.6878
+      },
+      {
+        "foreground": "lineDark",
+        "background": "night",
+        "ratio": 5.3258
+      },
+      {
+        "foreground": "lineDark",
+        "background": "ink",
+        "ratio": 5.1415
+      },
+      {
+        "foreground": "ink",
+        "background": "paper",
+        "ratio": 14.8334
+      },
+      {
+        "foreground": "ink",
+        "background": "mist",
+        "ratio": 13.3697
+      },
+      {
+        "foreground": "ink",
+        "background": "accent",
+        "ratio": 13.1226
+      },
+      {
+        "foreground": "accentInk",
+        "background": "paper",
+        "ratio": 7.4876
+      },
+      {
+        "foreground": "accentInk",
+        "background": "mist",
+        "ratio": 6.7488
+      },
+      {
+        "foreground": "accentInk",
+        "background": "accent",
+        "ratio": 6.624
+      },
+      {
+        "foreground": "accent",
+        "background": "night",
+        "ratio": 13.5929
+      },
+      {
+        "foreground": "accent",
+        "background": "ink",
+        "ratio": 13.1226
+      }
+    ],
+    "allUniqueTokenPairs": {
+      "ink/night": 1.0358,
+      "ink/paper": 14.8334,
+      "ink/mist": 13.3697,
+      "ink/accent": 13.1226,
+      "ink/accentInk": 1.9811,
+      "ink/muted": 2.6196,
+      "ink/mutedOnNight": 9.1805,
+      "ink/lineLight": 3.5584,
+      "ink/lineDark": 5.1415,
+      "night/paper": 15.365,
+      "night/mist": 13.8488,
+      "night/accent": 13.5929,
+      "night/accentInk": 2.0521,
+      "night/muted": 2.7135,
+      "night/mutedOnNight": 9.5095,
+      "night/lineLight": 3.686,
+      "night/lineDark": 5.3258,
+      "paper/mist": 1.1095,
+      "paper/accent": 1.1304,
+      "paper/accentInk": 7.4876,
+      "paper/muted": 5.6624,
+      "paper/mutedOnNight": 1.6158,
+      "paper/lineLight": 4.1685,
+      "paper/lineDark": 2.885,
+      "mist/accent": 1.0188,
+      "mist/accentInk": 6.7488,
+      "mist/muted": 5.1037,
+      "mist/mutedOnNight": 1.4563,
+      "mist/lineLight": 3.7572,
+      "mist/lineDark": 2.6003,
+      "accent/accentInk": 6.624,
+      "accent/muted": 5.0094,
+      "accent/mutedOnNight": 1.4294,
+      "accent/lineLight": 3.6878,
+      "accent/lineDark": 2.5523,
+      "accentInk/muted": 1.3223,
+      "accentInk/mutedOnNight": 4.6341,
+      "accentInk/lineLight": 1.7962,
+      "accentInk/lineDark": 2.5953,
+      "muted/mutedOnNight": 3.5045,
+      "muted/lineLight": 1.3584,
+      "muted/lineDark": 1.9627,
+      "mutedOnNight/lineLight": 2.5799,
+      "mutedOnNight/lineDark": 1.7856,
+      "lineLight/lineDark": 1.4449
+    },
+    "minimumApprovedTextRatio": 5.0094,
+    "minimumApprovedConnectorRatio": 3.6878,
+    "prohibited": [
+      "No accent text/connector directly on paper or mist: 1.1304 / 1.0188. Use accentInk lettering and ink outline around lime nodes.",
+      "No lineDark on light fields: paper 2.8850, mist 2.6003, accent 2.5523.",
+      "No lineLight as light-ground caption text: paper 4.1685, mist 3.7572, accent 3.6878. Use muted instead.",
+      "No muted on night/ink; no mutedOnNight on paper/mist/accent.",
+      "No text on unmeasured photographic pixels, alpha-reduced lines, or boundaries between paper/mist/accent without a contrasting ink edge."
+    ]
+  },
+  "typography": {
+    "roles": {
+      "coverLatin": {
+        "family": "Inter",
+        "style": "Black",
+        "weight": 900,
+        "sizePx": 144,
+        "lineHeightPx": 152,
+        "trackingPx": -4.32,
+        "usage": "CHOOGuard project identity on cover only; do not repeat as a generic giant heading"
+      },
+      "displayKorean": {
+        "family": "Noto Sans KR",
+        "style": "Black",
+        "weight": 900,
+        "sizePx": 88,
+        "lineHeightPx": 104,
+        "trackingPx": -0.88,
+        "usage": "Short thesis on cover and effect keywords only; at most two lines"
+      },
+      "headline": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "weight": 700,
+        "sizePx": 72,
+        "lineHeightPx": 88,
+        "trackingPx": -0.72,
+        "usage": "Korean main thesis, explicit semantic line groups from layout plan; at most two lines"
+      },
+      "section": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "weight": 700,
+        "sizePx": 40,
+        "lineHeightPx": 56,
+        "trackingPx": 0,
+        "usage": "Functional clusters and outcome headings"
+      },
+      "body": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "weight": 400,
+        "sizePx": 32,
+        "lineHeightPx": 48,
+        "trackingPx": 0,
+        "usage": "Primary explanation; 18–28 Hangul characters per line as an initial measure, not a glyph-width guarantee"
+      },
+      "bodyEmphasis": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "weight": 700,
+        "sizePx": 32,
+        "lineHeightPx": 48,
+        "trackingPx": 0,
+        "usage": "Short response principles or current/target distinctions; same size as body, not another enlarged role"
+      },
+      "graphicLabel": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "weight": 700,
+        "sizePx": 28,
+        "lineHeightPx": 40,
+        "trackingPx": 0,
+        "usage": "Diagram stops, stage names and concise relationship labels"
+      },
+      "caption": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "weight": 400,
+        "sizePx": 24,
+        "lineHeightPx": 32,
+        "trackingPx": 0,
+        "usage": "Source, actual-image captions, readable URL labels and attribution"
+      },
+      "chapterIndex": {
+        "family": "Inter",
+        "style": "Black",
+        "weight": 900,
+        "sizePx": 56,
+        "lineHeightPx": 64,
+        "trackingPx": -1.12,
+        "usage": "01–06 narrative index; REF for reference page, never emergency counts"
+      },
+      "chapterKorean": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "weight": 700,
+        "sizePx": 28,
+        "lineHeightPx": 40,
+        "trackingPx": 0,
+        "usage": "Header section identifier"
+      },
+      "chapterEnglish": {
+        "family": "Inter",
+        "style": "Regular",
+        "weight": 400,
+        "sizePx": 24,
+        "lineHeightPx": 32,
+        "trackingPx": 0.96,
+        "usage": "Uppercase bilingual header identifier"
+      },
+      "wordmark": {
+        "family": "Inter",
+        "style": "Bold",
+        "weight": 700,
+        "sizePx": 28,
+        "lineHeightPx": 40,
+        "trackingPx": -0.56,
+        "usage": "CHOOGuard exact spelling, no pseudo-logo replacement"
+      },
+      "routeLabel": {
+        "family": "Noto Sans KR",
+        "style": "Regular",
+        "weight": 400,
+        "sizePx": 24,
+        "lineHeightPx": 32,
+        "trackingPx": 0,
+        "usage": "Six topics, unselected labels retain readable contrast"
+      },
+      "routeActive": {
+        "family": "Noto Sans KR",
+        "style": "Bold",
+        "weight": 700,
+        "sizePx": 24,
+        "lineHeightPx": 32,
+        "trackingPx": 0,
+        "usage": "Selected route label; underline and filled node supplement color"
+      },
+      "folio": {
+        "family": "Inter",
+        "style": "Bold",
+        "weight": 700,
+        "sizePx": 28,
+        "lineHeightPx": 40,
+        "trackingPx": 0,
+        "usage": "Two-digit page / 13, right aligned"
+      },
+      "milestone": {
+        "family": "Inter",
+        "style": "Black",
+        "weight": 900,
+        "sizePx": 64,
+        "lineHeightPx": 72,
+        "trackingPx": -1.28,
+        "usage": "Actual W1–W8 milestones, not statistics"
+      },
+      "technicalLabel": {
+        "family": "Inter",
+        "style": "Bold",
+        "weight": 700,
+        "sizePx": 28,
+        "lineHeightPx": 40,
+        "trackingPx": 0,
+        "usage": "JEV, Unity and other Latin technical labels"
+      }
+    },
+    "basis": {
+      "bodyPx": 32,
+      "ratio": 1.25,
+      "modularCandidatesPx": [
+        20.48,
+        25.6,
+        32,
+        40,
+        50,
+        62.5,
+        78.125,
+        97.65625
+      ],
+      "selection": "Quantize role sizes and line heights to the fixed-slide rhythm; 24 captions, 28 compact labels, 32 body and 40 sections. Editorial headlines and cover are deliberate display exceptions, not wholesale type enlargement. Reuse 24/28/32/40/72 for routine pages."
+    },
+    "scriptRules": [
+      "Noto Sans KR owns Korean runs, including punctuation next to Korean. Inter owns standalone Latin editorial identifiers/numerals. Do not let Inter silently supply Korean glyphs.",
+      "Use exact Black/Bold/Regular styles listed in the contract; no synthetic emboldening. Data lookup supports family choice; contract supplies Figma style availability, not local render evidence.",
+      "Body Korean tracking is 0. Display Korean is at most -1% and must preserve readable syllable spacing. Wider +4% is reserved for Latin uppercase chapter identifiers.",
+      "Keep supplied headline line breaks and semantic chunks; no arbitrary syllable split, auto shrinking, horizontal scaling, full justification or forced widows.",
+      "Body block normally 2–4 short lines; source captions remain >=24px. Preserve meaning by reflow, not copy deletion. Highlight one short phrase rather than making every word Bold."
+    ],
+    "grid": {
+      "baselineStepPx": 8,
+      "outerMarginPx": 72,
+      "gutterPx": 32,
+      "paragraphGapPx": 16,
+      "labelToBodyGapPx": 8,
+      "sectionGapPx": 32,
+      "headlineToContentGapPx": 32
+    },
+    "deliveryScaling": {
+      "native": "1920×1080 fixed editorial canvas, no mobile UI breakpoint pretend-workflow.",
+      "1280x720": "Scale whole composition uniformly by 2/3; body is 21.33px and caption 16px on output, preserving hierarchy. Do not selectively enlarge or shrink text to fit.",
+      "smallPreview": "Preview is not a reading delivery format. Provide full-resolution slides or a separate accessible reading document owned by parent if needed."
+    },
+    "evidenceLevel": "Authored role system and installed typography-data lookup. Final glyph coverage, actual Figma font selection, baseline, wrap and projection readability are not verified by this slice."
+  },
+  "headerFooter": {
+    "chapters": [
+      {
+        "index": "01",
+        "korean": "취지",
+        "english": "PURPOSE"
+      },
+      {
+        "index": "02",
+        "korean": "요구·환경",
+        "english": "REQUIREMENTS / ENVIRONMENT"
+      },
+      {
+        "index": "03",
+        "korean": "기술",
+        "english": "TECHNOLOGY"
+      },
+      {
+        "index": "04",
+        "korean": "형상",
+        "english": "DEVELOPMENT / TARGET"
+      },
+      {
+        "index": "05",
+        "korean": "계획",
+        "english": "PLAN"
+      },
+      {
+        "index": "06",
+        "korean": "기대효과",
+        "english": "EXPECTED EFFECTS"
+      }
+    ],
+    "variants": {
+      "paper": {
+        "background": "paper",
+        "primary": "ink",
+        "secondary": "muted",
+        "indexFill": "accent",
+        "indexText": "ink",
+        "connector": "lineLight",
+        "activeNode": "accentInk",
+        "inactiveNode": "lineLight",
+        "activeLabel": "accentInk"
+      },
+      "mist": {
+        "background": "mist",
+        "primary": "ink",
+        "secondary": "muted",
+        "indexFill": "night",
+        "indexText": "paper",
+        "connector": "lineLight",
+        "activeNode": "accentInk",
+        "inactiveNode": "lineLight",
+        "activeLabel": "accentInk"
+      },
+      "night": {
+        "background": "night",
+        "primary": "paper",
+        "secondary": "mutedOnNight",
+        "indexFill": "accent",
+        "indexText": "ink",
+        "connector": "lineDark",
+        "activeNode": "accent",
+        "inactiveNode": "lineDark",
+        "activeLabel": "accent"
+      },
+      "accent": {
+        "background": "accent",
+        "primary": "ink",
+        "secondary": "muted",
+        "indexFill": "night",
+        "indexText": "paper",
+        "connector": "lineLight",
+        "activeNode": "ink",
+        "inactiveNode": "lineLight",
+        "activeLabel": "ink"
+      }
+    },
+    "header": {
+      "y": 40,
+      "height": 64,
+      "elements": [
+        {
+          "name": "chapterIndex",
+          "x": 72,
+          "y": 40,
+          "width": 112,
+          "height": 64,
+          "style": "chapterIndex",
+          "treatment": "filled index block using indexFill/indexText; centered text, no fake symbol"
+        },
+        {
+          "name": "chapterKorean",
+          "x": 208,
+          "y": 40,
+          "width": 376,
+          "height": 40,
+          "style": "chapterKorean",
+          "color": "primary"
+        },
+        {
+          "name": "chapterEnglish",
+          "x": 608,
+          "y": 48,
+          "width": 768,
+          "height": 32,
+          "style": "chapterEnglish",
+          "color": "secondary"
+        },
+        {
+          "name": "wordmark",
+          "x": 1512,
+          "y": 48,
+          "width": 336,
+          "height": 40,
+          "style": "wordmark",
+          "color": "primary",
+          "text": "CHOOGuard",
+          "alignment": "RIGHT"
+        }
+      ],
+      "semanticRule": "Index is proposal chapter, not page or emergency count. Reference page uses REF / 참고자료 / REFERENCES; does not invent chapter 07.",
+      "photoPages": "Header stays on a solid night ground, outside the photographic crop."
+    },
+    "footer": {
+      "kind": "Six-topic route navigator + active chapter label + folio",
+      "route": {
+        "x": 72,
+        "y": 992,
+        "nodeCentersX": [
+          88,
+          296,
+          504,
+          712,
+          920,
+          1128
+        ],
+        "lineWidthPx": 4,
+        "lineStartX": 88,
+        "lineEndX": 1128,
+        "inactiveNode": {
+          "diameterPx": 14,
+          "outlinePx": 4,
+          "fill": "background",
+          "stroke": "inactiveNode"
+        },
+        "activeNode": {
+          "diameterPx": 24,
+          "fill": "activeNode",
+          "outlinePx": 4,
+          "stroke": "primary"
+        },
+        "labels": [
+          {
+            "text": "취지",
+            "x": 72,
+            "y": 1008,
+            "width": 176,
+            "height": 32,
+            "style": "routeLabel"
+          },
+          {
+            "text": "요구·환경",
+            "x": 280,
+            "y": 1008,
+            "width": 176,
+            "height": 32,
+            "style": "routeLabel"
+          },
+          {
+            "text": "기술",
+            "x": 488,
+            "y": 1008,
+            "width": 176,
+            "height": 32,
+            "style": "routeLabel"
+          },
+          {
+            "text": "형상",
+            "x": 696,
+            "y": 1008,
+            "width": 176,
+            "height": 32,
+            "style": "routeLabel"
+          },
+          {
+            "text": "계획",
+            "x": 904,
+            "y": 1008,
+            "width": 176,
+            "height": 32,
+            "style": "routeLabel"
+          },
+          {
+            "text": "기대효과",
+            "x": 1112,
+            "y": 1008,
+            "width": 176,
+            "height": 32,
+            "style": "routeLabel"
+          }
+        ],
+        "activeLabelStyle": "routeActive",
+        "activeUnderline": {
+          "y": 1044,
+          "widthPx": 80,
+          "heightPx": 4,
+          "color": "activeLabel"
+        },
+        "meaning": "All six actual proposal topics remain labeled. No completed/uncompleted states, percentages, pass ticks or extra stops. The filled larger node and bold underline identify reader position, not progress performance."
+      },
+      "chapterReadout": {
+        "x": 1320,
+        "y": 1000,
+        "width": 328,
+        "height": 40,
+        "style": "chapterKorean",
+        "color": "primary",
+        "format": "{chapterIndex}  {chapterKorean}"
+      },
+      "folio": {
+        "x": 1696,
+        "y": 1000,
+        "width": 152,
+        "height": 40,
+        "style": "folio",
+        "color": "primary",
+        "format": "{page:02d} / 13",
+        "alignment": "RIGHT"
+      },
+      "referenceVariant": "Keep the six-topic route with every node outlined, no seventh active node. Chapter readout is 참고자료; folio 13 / 13.",
+      "coverVariant": "Chapter 01 is selected; route labels remain readable while cover identity is the dominant information.",
+      "lightAccentRule": "Lime-filled header block has ink lettering. Lime route nodes on paper/mist require ink boundary; default route uses dark accentInk instead."
+    },
+    "pageAssignments": [
+      {
+        "slide": 1,
+        "variant": "night",
+        "chapter": "01",
+        "activeTopicIndex": 0,
+        "headerLabel": "취지"
+      },
+      {
+        "slide": 2,
+        "variant": "paper",
+        "chapter": "01",
+        "activeTopicIndex": 0,
+        "headerLabel": "취지"
+      },
+      {
+        "slide": 3,
+        "variant": "mist",
+        "chapter": "01",
+        "activeTopicIndex": 0,
+        "headerLabel": "취지"
+      },
+      {
+        "slide": 4,
+        "variant": "paper",
+        "chapter": "02",
+        "activeTopicIndex": 1,
+        "headerLabel": "요구·환경"
+      },
+      {
+        "slide": 5,
+        "variant": "mist",
+        "chapter": "02",
+        "activeTopicIndex": 1,
+        "headerLabel": "요구·환경"
+      },
+      {
+        "slide": 6,
+        "variant": "night",
+        "chapter": "03",
+        "activeTopicIndex": 2,
+        "headerLabel": "기술"
+      },
+      {
+        "slide": 7,
+        "variant": "paper",
+        "chapter": "03",
+        "activeTopicIndex": 2,
+        "headerLabel": "기술"
+      },
+      {
+        "slide": 8,
+        "variant": "night",
+        "chapter": "04",
+        "activeTopicIndex": 3,
+        "headerLabel": "형상"
+      },
+      {
+        "slide": 9,
+        "variant": "night",
+        "chapter": "04",
+        "activeTopicIndex": 3,
+        "headerLabel": "형상"
+      },
+      {
+        "slide": 10,
+        "variant": "paper",
+        "chapter": "05",
+        "activeTopicIndex": 4,
+        "headerLabel": "계획"
+      },
+      {
+        "slide": 11,
+        "variant": "accent",
+        "chapter": "05",
+        "activeTopicIndex": 4,
+        "headerLabel": "계획"
+      },
+      {
+        "slide": 12,
+        "variant": "paper",
+        "chapter": "06",
+        "activeTopicIndex": 5,
+        "headerLabel": "기대효과"
+      },
+      {
+        "slide": 13,
+        "variant": "night",
+        "chapter": null,
+        "activeTopicIndex": null,
+        "headerLabel": "참고자료"
+      }
+    ]
+  },
+  "graphicRules": {
+    "groundRhythm": [
+      "night",
+      "paper",
+      "mist",
+      "paper",
+      "mist",
+      "night",
+      "paper",
+      "night",
+      "night",
+      "paper",
+      "accent",
+      "paper",
+      "night"
+    ],
+    "massing": "Use page ground as a full-bleed major field, not a small tint around white cards. Cover may use a large lime plane behind station cutout; slide 11 intentionally uses full lime ground. Night atlas pages retain actual image colors.",
+    "accentCoverage": "Typically 5–12% attention mass on paper/mist/night pages, 15–25% on cover; slide 11 is intentional full-ground reversal. These are composition targets, not measured output percentages.",
+    "meaningfulConnectors": "Full-opacity strokes >=4px at 1920, visible arrowheads >=12px; use approvedConnectorPairs. Junction/outline must contrast with BOTH adjacent fills; ink edge separates lime from paper/mist. No light tint connectors mistaken for accessible structure.",
+    "photoText": "Text only on an opaque night/paper plate or outside photos. Do not imply chosen token contrast proves text on arbitrary photo pixels. Keep source footage ungraded and disclose concept/current/target.",
+    "hierarchy": "One dominant thesis or visual per slide. Body Regular vs short Bold emphasis, concise labels and source captions; huge numerals only for actual chapter/milestone information. No recurring three-box template.",
+    "boundaries": "No shadow, gradient, arbitrary colored ribbon or fake KPI. Route geometry means topic order; diagrams mean actual dependencies. A repeated process glyph cannot stand for a fixed incident kind."
+  },
+  "toolsActuallyExecuted": [
+    {
+      "tool": "functions.read / functions.glob",
+      "result": "Read contract/layout and installed ui-design command procedures plus supporting color/type/grid/dark/visualization workflows; confirmed named identity output absent before creation. Reading workflow markdown is not plugin invocation."
+    },
+    {
+      "tool": "functions.eval Python + subprocess.run",
+      "invocation": "python3 /Users/um-yunsang/.claude/skills/ui-ux-pro-max/scripts/search.py Noto Sans KR Inter Korean --domain typography --max-results 3 --json",
+      "exitCode": 0,
+      "result": "3 installed typography.csv records returned: Korean Modern (Noto Sans KR), Spatial Clear (Inter), Minimal Swiss (Inter). No remote provider used."
+    },
+    {
+      "tool": "Pillow 12.2.0 Image.quantize",
+      "invocation": "Image.open(source).convert(\"RGB\"); thumbnail((320,180)); quantize(colors=8, method=Image.Quantize.MEDIANCUT); getcolors()/getpalette()",
+      "result": "Actual local scene pixels extracted from play-crop.png and world-crop.png, eight weighted chips each; full extraction below."
+    },
+    {
+      "tool": "functions.eval Python WCAG relative-luminance calculator",
+      "invocation": "Linearize sRGB channels and enumerate all 45 unique canonical token pairs; approve role-specific pairs at 4.5 text / 3.0 meaningful strokes.",
+      "result": {
+        "uniquePairs": 45,
+        "approvedTextPairs": 17,
+        "approvedConnectorPairs": 13,
+        "minimumApprovedText": 5.0094,
+        "minimumApprovedConnector": 3.6878
+      }
+    }
+  ],
+  "toolArtifacts": {
+    "identityPath": "output/proposals/team-term-project/redesign-identity.json",
+    "paletteExtraction": [
+      {
+        "source": "output/proposals/team-term-project/assets/play-crop.png",
+        "originalSize": [
+          1920,
+          825
+        ],
+        "sampleSize": [
+          320,
+          138
+        ],
+        "chips": [
+          {
+            "hex": "#494948",
+            "coverage": 0.1652
+          },
+          {
+            "hex": "#8F979B",
+            "coverage": 0.163
+          },
+          {
+            "hex": "#505861",
+            "coverage": 0.129
+          },
+          {
+            "hex": "#646E7A",
+            "coverage": 0.1286
+          },
+          {
+            "hex": "#5C5E61",
+            "coverage": 0.1222
+          },
+          {
+            "hex": "#7A7E7F",
+            "coverage": 0.1109
+          },
+          {
+            "hex": "#B2BCC0",
+            "coverage": 0.0967
+          },
+          {
+            "hex": "#2F3233",
+            "coverage": 0.0843
+          }
+        ]
+      },
+      {
+        "source": "output/proposals/team-term-project/assets/world-crop.png",
+        "originalSize": [
+          1308,
+          736
+        ],
+        "sampleSize": [
+          320,
+          180
+        ],
+        "chips": [
+          {
+            "hex": "#92938D",
+            "coverage": 0.168
+          },
+          {
+            "hex": "#FEFEFE",
+            "coverage": 0.1622
+          },
+          {
+            "hex": "#2D3B49",
+            "coverage": 0.1335
+          },
+          {
+            "hex": "#D2F2F1",
+            "coverage": 0.1237
+          },
+          {
+            "hex": "#647278",
+            "coverage": 0.1234
+          },
+          {
+            "hex": "#494F5A",
+            "coverage": 0.1101
+          },
+          {
+            "hex": "#BEC4BC",
+            "coverage": 0.0896
+          },
+          {
+            "hex": "#93B5AD",
+            "coverage": 0.0895
+          }
+        ]
+      }
+    ],
+    "typographyLookup": {
+      "domain": "typography",
+      "query": "Noto Sans KR Inter Korean",
+      "file": "typography.csv",
+      "count": 3,
+      "results": [
+        {
+          "Font Pairing Name": "Korean Modern",
+          "Category": "Sans + Sans",
+          "Heading Font": "Noto Sans KR",
+          "Body Font": "Noto Sans KR",
+          "Mood/Style Keywords": "korean, modern, clean, professional, multilingual, readable",
+          "Best For": "Korean sites, K-beauty, K-pop, Korean businesses, multilingual",
+          "Google Fonts URL": "https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap",
+          "CSS Import": "@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');",
+          "Tailwind Config": "fontFamily: { sans: ['Noto Sans KR', 'sans-serif'] }",
+          "Notes": "Clean Korean typography. Single font with weight variations."
+        },
+        {
+          "Font Pairing Name": "Spatial Clear",
+          "Category": "Sans + Sans",
+          "Heading Font": "Inter",
+          "Body Font": "Inter",
+          "Mood/Style Keywords": "spatial, legible, glass, system, clean, neutral",
+          "Best For": "Spatial computing, AR/VR, glassmorphism interfaces",
+          "Google Fonts URL": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap",
+          "CSS Import": "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');",
+          "Tailwind Config": "fontFamily: { sans: ['Inter', 'sans-serif'] }",
+          "Notes": "Optimized for readability on dynamic backgrounds."
+        },
+        {
+          "Font Pairing Name": "Minimal Swiss",
+          "Category": "Sans + Sans",
+          "Heading Font": "Inter",
+          "Body Font": "Inter",
+          "Mood/Style Keywords": "minimal, clean, swiss, functional, neutral, professional",
+          "Best For": "Dashboards, admin panels, documentation, enterprise apps, design systems",
+          "Google Fonts URL": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+          "CSS Import": "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');",
+          "Tailwind Config": "fontFamily: { sans: ['Inter', 'sans-serif'] }",
+          "Notes": "Single font family with weight variations. Ultimate simplicity."
+        }
+      ]
+    },
+    "pluginHarness": {
+      "status": "unavailable",
+      "commands": [
+        "/color-palette",
+        "/type-system"
+      ],
+      "reason": "Parent reports prior Anthropic-provider 429. No available command harness was invoked or retried in this slice; installed markdown procedures were applied directly. Do not describe these as executed plugin commands.",
+      "proceduresApplied": [
+        "Palette: tonal families → semantic mapping → actual contrast matrix → light/night mappings → non-numeric relation encoding → usage guidance.",
+        "Type: modular basis → hierarchy → fixed-slide delivery scaling → spacing → 8px baseline alignment → role records."
+      ],
+      "unavailableOptionalLibraries": {
+        "PIL": true,
+        "colorgram": false,
+        "colour": false,
+        "wcag_contrast_ratio": false
+      }
+    },
+    "notClaimed": [
+      "No Figma mutation or remote render.",
+      "No Claude/provider retry or command invocation.",
+      "No local font-render or projector verification; parent inspects real Figma output.",
+      "No tests/build/lint/formatters run."
+    ]
+  }
+}

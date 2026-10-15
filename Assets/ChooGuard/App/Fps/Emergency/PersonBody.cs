@@ -66,7 +66,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Every enabled body (station door sensors look for people through this list).</summary>
         public static readonly List<PersonBody> All = new List<PersonBody>();
         private void OnEnable() => All.Add(this);
-        private void OnDisable() => All.Remove(this);
+        private void OnDisable() { All.Remove(this); GetComponent<NativeLandingWalkHandle>()?.Cancel(); }
 
         private void Awake()
         {
@@ -98,6 +98,8 @@ namespace ChooGuard.App.Fps.Emergency
         internal RouteGraph.Node SkipStart;
         /// <summary>The path service found no way to the goal; the body stands where it is.</summary>
         public bool NoRoute { get; private set; }
+        /// <summary>A measured floor walk failed off the navmesh. GoTo fails immediately until this actual foot can rebind within .12m.</summary>
+        public bool WalkingLinkFailed { get; private set; }
 
         /// <summary>A route or a leg is being asked for (the body has no path yet, or is about to get a new one).</summary>
         public bool Planning => Queued || Fresh;
@@ -109,6 +111,11 @@ namespace ChooGuard.App.Fps.Emergency
         public bool GoTo(Vector3 destination, float speed)
         {
             WalkSpeed = speed;
+            if (WalkingLinkFailed && !RebindActualWalkingFoot())
+            {
+                goal = destination; hasGoal = false; goalPending = false; Forget(); NoRoute = true;
+                return false;
+            }
             goal = destination;
             hasGoal = true;
             goalPending = false;
@@ -396,6 +403,21 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (link != null) yield return link.Traverse(this, data);
             else yield return WalkLine(data.endPos, WalkSpeed);
+            if (link is IPhysicalStationLink physical)
+            {
+                bool complete = physical.Succeeded(this);
+                traversal = null; Riding = null; Scripted = false; scriptedSpeed = 0;
+                // Both outcomes rebind only at the already supported actual foot.
+                // There is no CompleteOffMeshLink, Warp, or jump to an endpoint.
+                bool attached = RebindActualWalkingFoot();
+                if (complete && attached) { Agent.isStopped = false; if (hasGoal) Replan(); }
+                else
+                {
+                    WalkingLinkFailed = !attached;
+                    hasGoal = false; goalPending = false; Forget(); NoRoute = true;
+                }
+                yield break;
+            }
             traversal = null;
             Riding = null;
             Scripted = false;
@@ -407,6 +429,23 @@ namespace ChooGuard.App.Fps.Emergency
             Agent.Warp(StationWorld.OnNavMesh(transform.position, 1.5f));
             if (Agent.isOnNavMesh) Agent.isStopped = false;
             if (hasGoal) { if (Agent.isOnNavMesh) Replan(); else goalPending = true; }
+        }
+
+        private void CancelTraversalRoutine()
+        {
+            GetComponent<NativeLandingWalkHandle>()?.Cancel();
+            if (traversal != null) StopCoroutine(traversal);
+        }
+
+        private bool RebindActualWalkingFoot()
+        {
+            var actual = transform.position;
+            if (!NavMesh.SamplePosition(actual, out var hit, .12f, NavMesh.AllAreas) || Vector3.Distance(hit.position, actual) > .15f) { Agent.enabled = false; return false; }
+            Agent.updatePosition = false; Agent.enabled = true;
+            if (!Agent.isOnNavMesh || Vector3.Distance(Agent.nextPosition, actual) > .15f) { Agent.enabled = false; return false; }
+            Agent.nextPosition = actual; Agent.updatePosition = true; Agent.isStopped = true; Agent.ResetPath();
+            WalkingLinkFailed = false;
+            return true;
         }
 
         /// <summary>Moves in a straight line at <paramref name="speed"/> with the walk animation (link rides call this).</summary>
@@ -448,7 +487,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         public void FollowInFrame(Transform frame, IList<Vector3> localPath, float speed, System.Action done, System.Func<int, bool> mayAdvance = null)
         {
-            if (traversal != null) { StopCoroutine(traversal); traversal = null; }
+            if (traversal != null) { CancelTraversalRoutine(); traversal = null; }
             if (Agent.isActiveAndEnabled) { if (Agent.isOnNavMesh) Agent.ResetPath(); Agent.enabled = false; }
             Scripted = true;
             transform.SetParent(frame, true);
@@ -479,7 +518,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Back onto the navmesh at <paramref name="world"/> (out of a car, off a scripted path).</summary>
         public bool ReturnToNavMesh(Vector3 world)
         {
-            if (traversal != null) { StopCoroutine(traversal); traversal = null; }
+            if (traversal != null) { CancelTraversalRoutine(); traversal = null; }
             transform.SetParent(Home, true);
             Scripted = false;
             scriptedSpeed = 0;
@@ -512,7 +551,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         public void SupportFromBehind(PersonBody patient, float gap = .55f)
         {
-            if (traversal != null) { StopCoroutine(traversal); traversal = null; }
+            if (traversal != null) { CancelTraversalRoutine(); traversal = null; }
             if (Agent.isActiveAndEnabled) { if (Agent.isOnNavMesh) Agent.ResetPath(); Agent.enabled = false; }
             Scripted = true;
             transform.SetParent(Home, true);
@@ -578,7 +617,7 @@ namespace ChooGuard.App.Fps.Emergency
             gap.y = 0;
             if (gap.magnitude > MaxSettle) return false;
             ClearPoses();
-            if (traversal != null) { StopCoroutine(traversal); traversal = null; }
+            if (traversal != null) { CancelTraversalRoutine(); traversal = null; }
             if (Agent.isActiveAndEnabled) { if (Agent.isOnNavMesh) { Agent.isStopped = true; Agent.ResetPath(); } Agent.enabled = false; }
             Scripted = false;
             seatFrame = frame;

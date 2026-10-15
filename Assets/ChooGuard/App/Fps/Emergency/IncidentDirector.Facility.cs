@@ -36,7 +36,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void BeginFacility()
         {
-            hanging.AddRange(art.Hanging);
+            foreach (var item in art.Hanging) if (InsideBuilding(HangingFloor(item))) hanging.Add(item);
             cameraRest = cameraTransform.localPosition;
         }
 
@@ -69,7 +69,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private IEnumerable<Transition> FacilityOrigins() => Chain(
             Station(() => quake == null ? QuakeOrigin() : null),
-            Station(() => hanging.Count > 0 && quake == null ? LooseSign() : null),
+            Each(hanging, item => quake == null ? LooseSign(item) : null),
             Each(world.Elevators, ElevatorOrigin),
             Station(() => outage == null ? PowerCut() : null));
 
@@ -83,14 +83,11 @@ namespace ChooGuard.App.Fps.Emergency
             Apply = StartQuake,
         };
 
-        private static readonly List<string> LooseSignLevels = new List<string> { "it falls onto an empty spot", "it falls near one or two people", "it falls over a walkway", "it falls over a busy spot", "it falls onto the busiest spot below" };
-
-        private Transition LooseSign() => new Transition
+        private Transition LooseSign(EmergencyArt.HangingItem item) => new Transition
         {
-            Key = "loose_sign", Kind = "falling_object", Origin = true,
-            Description = "A hanging sign or ceiling panel above the concourse comes loose from its fixings and falls.",
-            Levels = LooseSignLevels,
-            Apply = StartLooseSign,
+            Key = "loose_sign_" + item.Label + "_" + item.Centre, Kind = "falling_object", Origin = true,
+            Description = "The hanging sign or ceiling panel '" + item.Label + "' at " + FixedPlace(HangingFloor(item)) + " comes loose from its fixings and falls. " + CrowdNote(HangingFloor(item)),
+            Apply = m => StartLooseSign(item),
         };
 
         /// <summary>An elevator that is running with people inside can stop between floors with a fault (not again while it is already trapped).</summary>
@@ -159,12 +156,10 @@ namespace ChooGuard.App.Fps.Emergency
             return board;
         }
 
-        /// <summary>A sign comes loose on its own: which one is JEV's magnitude — low over an empty spot, high over a crowd.</summary>
-        private void StartLooseSign(float magnitude)
+        /// <summary>The exact indoor sign JEV judged comes loose; never substitute a different sign after the answer.</summary>
+        private void StartLooseSign(EmergencyArt.HangingItem pick)
         {
-            var sorted = hanging.OrderBy(item => crowd.CountNear(new Vector3(item.Centre.x, item.Centre.y - 4, item.Centre.z), 6, null)).ToList();
-            if (sorted.Count == 0) return;
-            var pick = sorted[Mathf.Clamp(Mathf.RoundToInt(magnitude * (sorted.Count - 1)), 0, sorted.Count - 1)];
+            if (!hanging.Contains(pick) || !IndoorSubject(pick)) return;
             var board = Drop(pick);
             var hazard = new FallingObjectHazard("falling-" + ++serial, board) { Where = world.Describe(pick.Centre) };
             boardHazards[board] = hazard;
@@ -203,10 +198,11 @@ namespace ChooGuard.App.Fps.Emergency
         private void StopLifts(string cause)
         {
             escalatorsStopped = true;
-            foreach (var escalator in world.Escalators) escalator.Stop(cause);
+            foreach (var escalator in world.Escalators) if (InsideBuilding(escalator.Middle)) escalator.Stop(cause);
             int trapped = 0;
             foreach (var elevator in world.Elevators)
             {
+                if (!IndoorSubject(elevator)) continue;
                 elevator.Stop();
                 elevator.Inside.RemoveAll(b => b == null);
                 if (elevator.Inside.Count == 0) continue;
@@ -355,7 +351,7 @@ namespace ChooGuard.App.Fps.Emergency
                 var walker = NearestPerson(l.Position, l.Radius + 2, p => !p.Hurt && !p.Hostile && p.Current != Passenger.Activity.InTrain);
                 if (walker != null && Ready("slips"))
                     yield return new Transition { Key = "slip_" + walker.Number, Kind = "slips", Description = Profile(walker) + " slips on the wet floor at " + l.Where + " and falls", Apply = _ => Slip(walker, l) };
-                var shop = world.Points.Nearest(PointKind.Shop, l.Position, s => Vector3.Distance(s.Position, l.Position) < 12);
+                var shop = world.Points.Nearest(PointKind.Shop, l.Position, s => InsideBuilding(s.Position) && Vector3.Distance(s.Position, l.Position) < 12);
                 if (shop != null && l.Level >= 2 && !shorted.Contains(shop.Id) && Ready("water_electrics"))
                     yield return new Transition { Key = "water_electrics_" + shop.Id, Kind = "electrical_fire", Description = "Water from the burst pipe reaches the electrics of '" + shop.Label + "' and sparks fly", Levels = new List<string> { "sparks and a burning smell", "grey smoke from the socket", "small flames at the socket", "flames and acrid smoke", "the wiring burns fiercely" }, Apply = m => { shorted.Add(shop.Id); Ignite(Floor(shop.Position), shop.Label + " 전기 설비(누수)", "젖은 전기 설비", m, " 전기 화재입니다. 전원 차단을 요청하고 물을 쓰지 마십시오."); } };
             }
@@ -363,6 +359,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void Slip(Passenger walker, WaterLeakHazard leak)
         {
+            if (walker == null || !InsideBuilding(walker.transform.position)) return;
             var casualty = AddCasualty(walker, "미끄러짐 부상", "젖은 바닥에 미끄러진", "slipped on the wet floor", "젖은 바닥에 미끄러져 넘어진 승객", -1);
             casualty.Told = "에서 사람이 물에 미끄러져 넘어졌어요!";
             walker.Injure("젖은 바닥에 미끄러져 넘어짐");
@@ -458,7 +455,7 @@ namespace ChooGuard.App.Fps.Emergency
         private IEnumerator FaintAfter(Passenger person, float seconds)
         {
             yield return new WaitForSeconds(seconds);
-            if (person == null || person.Hurt) yield break;
+            if (person == null || person.Hurt || !InsideBuilding(person.transform.position)) yield break;
             var casualty = AddCasualty(person, "응급 환자", "엘리베이터에 갇혔다 쓰러진", "fainted after being trapped in the elevator", "엘리베이터에서 내린 뒤 어지러워 주저앉음", 1);
             person.Injure("엘리베이터에 갇혔다 내린 뒤 어지러워 주저앉음");
             Register(casualty);

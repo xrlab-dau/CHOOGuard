@@ -1,0 +1,13 @@
+HITS 6_renderers [(30319, np.float64(1.7475885762610703)), (30320, np.float64(8.08198570593507))]
+HITS 6_colliders [(30319, np.float64(1.7475885762610703)), (30320, np.float64(8.08198570593507))]
+HITS 5_renderers [(52596, np.float64(0.7496731969721997)), (52599, np.float64(0.8444370900766238)), (52601, np.float64(1.8062518156352239))]
+HITS 5_colliders [(53826, np.float64(0.7496731969721997)), (53829, np.float64(0.8444370900766238)), (53831, np.float64(1.8062518156352239))]
+FLOOR_MISSING [{'UV': [-31.375, 0.0], 'native_floor_missing': True}, {'UV': [-31.375, 0.5], 'native_floor_missing': True}, {'UV': [-31.375, 1.0], 'native_floor_missing': True}, {'UV': [-31.375, 1.5], 'native_floor_missing': True}, {'UV': [-31.375, 2.0], 'native_floor_missing': True}, {'UV': [-31.375, 2.5], 'native_floor_missing': True}, {'UV': [-31.375, 3.0], 'native_floor_missing': True}, {'UV': [-31.375, 3.5], 'native_floor_missing': True}, {'UV': [-31.375, 4.0], 'native_floor_missing': True}, {'UV': [-31.375, 4.5], 'native_floor_missing': True}, {'UV': [-31.375, 5.0], 'native_floor_missing': True}]
+Traceback (most recent call last):
+  File "/Users/um-yunsang/CHOOGuard/workers/twin/evidence/floor2-platform-passages-20261009/stage_mainup_openings.py", line 95, in <module>
+    print('FLOOR_MISSING',[p for p in probehits if 'native_floor_missing'in p]);ck('all39_center_path_probes_have_native_floor',all('native_floor_missing'not in p for p in probehits),[p for p in probehits if 'native_floor_missing'in p])
+                                                                                ~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/um-yunsang/CHOOGuard/workers/twin/evidence/floor2-platform-passages-20261009/stage_mainup_openings.py", line 11, in ck
+    def ck(name,value,detail=None):checks.append({'name':name,'pass':bool(value),'detail':detail});assert value,name
+                                                                                                          ^^^^^
+AssertionError: all39_center_path_probes_have_native_floor

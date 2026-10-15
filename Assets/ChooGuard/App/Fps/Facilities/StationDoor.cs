@@ -428,6 +428,17 @@ namespace ChooGuard.App.Fps.Facilities
             return true;
         }
 
+        /// <summary>A mapped physical push plate requests the same automatic operator as its sensors.</summary>
+        public bool RequestButtonOpen(out string feedback)
+        {
+            if (Kind != DoorKind.Sliding || !Usable) { feedback = "자동문 운전 연결을 확인할 수 없습니다"; return false; }
+            if (Mode == OperatorMode.Locked && !(Use == DoorUse.Public && StationSignals.FireAlarm)) { feedback = "운전 모드 잠금 · 버튼 요청이 차단되었습니다"; return false; }
+            holdUntil = Mathf.Max(holdUntil, Time.time + SlideHoldSeconds);
+            target = 1;
+            feedback = Label + " · 자동문 열림 요청";
+            return true;
+        }
+
         /// <summary>Sets the operator mode (scripted drills, tests).</summary>
         public void SetMode(OperatorMode mode) => Mode = mode;
 

@@ -104,6 +104,47 @@ class ActivePlanTests(unittest.TestCase):
             mutate(state)
             self.assertTrue(self.validate(state=state))
 
+    def test_checkpoint_migration_preserves_retirement_and_acceptance_boundaries(self):
+        self.assertNotIn("activeEvidenceGraph", self.state)
+        self.assertEqual(self.state["currentCheckpoint"], ".checkpoints/checkpoint-1/CHECKPOINT.json")
+        self.assertEqual(self.state["currentRequirements"], ".state/REQUIREMENTS.md")
+        self.assertEqual(self.state["sourceEvidenceIndex"], "source-evidence/INDEX.json")
+        record = self.tool.read_json(REPO / self.state["evidenceRetirementRef"])
+        self.assertEqual(record["retiredEvidence"]["status"], "RETIRED_UNAVAILABLE")
+        self.assertEqual(record["retiredEvidence"]["path"],
+                         ".planning/2026-09-21-fps-reposition/actual-transfer/root-evidence-graph.json")
+        self.assertFalse(record["retiredEvidence"]["historicalClaimsReverified"])
+        self.assertFalse(record["executionAuthorized"])
+        self.assertFalse(record["productAcceptanceVerified"])
+        self.assertEqual(self.state["acceptanceStatus"], "NOT_ACCEPTED")
+        for key, value in record["currentReferences"].items():
+            self.assertEqual(self.state[key], value)
+            self.assertTrue((REPO / value).is_file())
+        view = self.tool.render(self.plan, self.state)
+        self.assertIn(self.state["currentCheckpoint"], view)
+        self.assertIn(self.state["evidenceRetirementRef"], view)
+        self.assertNotIn(record["retiredEvidence"]["path"], view)
+        active_tests = {test["name"]: test for test in self.state["tests"]}
+        self.assertEqual(len(record["retiredTestRecords"]), 14)
+        for historical in record["retiredTestRecords"]:
+            self.assertEqual(historical["result"], "PASS")
+            self.assertTrue(historical["evidenceRef"].startswith(".planning/"))
+            current = active_tests[historical["name"]]
+            self.assertEqual(current["result"], "NOT_RUN")
+            self.assertIsNone(current["evidenceRef"])
+            self.assertIn(historical["summary"], current["summary"])
+
+    def test_current_and_legacy_optional_pointers_require_existing_files(self):
+        for key in self.tool.PROGRESS_REFERENCES.split():
+            with self.subTest(pointer=key):
+                state = copy.deepcopy(self.state)
+                state[key] = "docs/CHOOGuard_Story_Plan_v5/MISSING.json"
+                self.assertEqual(self.validate(state=state), ["MISSING_REFERENCE:" + state[key]])
+        # Retained clients can still supply a live legacy graph; it is not silently ignored.
+        state = copy.deepcopy(self.state)
+        state["activeEvidenceGraph"] = self.state["evidenceRetirementRef"]
+        self.assertEqual(self.validate(state=state), [])
+
     def test_bootstrap_only_cannot_complete_or_accept_project(self):
         for status, acceptance in (("COMPLETED", "NOT_ACCEPTED"),
                                    ("IN_PROGRESS", "ACCEPTED"),

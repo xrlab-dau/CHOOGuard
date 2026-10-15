@@ -376,7 +376,7 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 if (leak.Stopped || !leak.Active || leak.Level < 1) continue;
                 var l = leak;
-                var wet = Loads().Where(e => !BurningIn(e) && ElectricNetwork.Powered(e) && Mathf.Abs(e.transform.position.y - l.Position.y) < 2f && Flat(e.transform.position - l.Position).magnitude < l.Radius + .4f)
+                var wet = Loads().Where(e => IndoorSubject(e) && !BurningIn(e) && ElectricNetwork.Powered(e) && Mathf.Abs(e.transform.position.y - l.Position.y) < 2f && Flat(e.transform.position - l.Position).magnitude < l.Radius + .4f)
                     .OrderBy(e => e.Id, System.StringComparer.Ordinal).FirstOrDefault();
                 if (wet == null || !Ready("wet_" + wet.Id)) continue;
                 list.Add(new Transition
@@ -432,6 +432,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void Shock(Passenger person, FireHazard fire)
         {
+            if (person == null || !InsideBuilding(person.transform.position)) return;
             person.Injure("감전 (통전된 " + fire.Subject + "에 접촉)", true);
             log.Add("감전 · 통전된 " + fire.Subject + "에 손을 댄 승객 1명 쓰러짐 · " + fire.Where);
         }
@@ -495,13 +496,13 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         /// <summary>The bin (or recycling station) right beside a burning bin that could catch from it.</summary>
-        private static StationEquipment BinNeighbour(FireHazard fire)
+        private StationEquipment BinNeighbour(FireHazard fire)
         {
             var at = fire.Installation.transform.position;
             var near = new List<StationEquipment>();
             EquipmentRegistry.Within("litter_bin", at, 1.2f, near);
             EquipmentRegistry.Within("recycling_bin", at, 1.2f, near);
-            return near.Where(e => e != fire.Installation && Mathf.Abs(e.transform.position.y - at.y) < 1f && e.State != "소손" && !FireBurning(e))
+            return near.Where(e => e != fire.Installation && IndoorSubject(e) && Mathf.Abs(e.transform.position.y - at.y) < 1f && e.State != "소손" && !FireBurning(e))
                 .OrderBy(e => (e.transform.position - at).sqrMagnitude).ThenBy(e => e.Id, System.StringComparer.Ordinal).FirstOrDefault();
         }
 

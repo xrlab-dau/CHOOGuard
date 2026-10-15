@@ -1,0 +1,19 @@
+# Simulator ownership and evidence
+
+- Cumulative requirements (user rule, 2026-10-15): new requirements add to every previously authorized unfinished objective. Do not replace, cancel or stop earlier work unless the user explicitly cancels or replaces it; apply that change only to its stated scope and continue the rest.
+- Root keeps the cumulative objectives and dependency holds current. Mark a new requirement's completion separately from the original objective; a completed handoff or scoped worker STOP does not complete or cancel the overarching work. Existing implementation, runtime, Unity and model/provider authorization holds remain in force.
+
+- Latest user cleanup direction (2026-10-15): retain only active plans, inputs and consumer dependencies. Once integration and required independent review finish, immediately unlink obsolete task plans, instructions, probes, outputs and backups; a handoff alone is not consumer completion. Preserve product/runtime code and necessary regression assets. Do not create permanent cleanup ledgers.
+
+- This module is the seeded FPS response simulator. The MVP covers every object in a current saved station/platform/KTX snapshot and its NPCs; Car04 is a bounded component check.
+- Work here and in `output/simulator` is independent of the station construction session. Never write the original `Assets`, original scenes, official geometry, registration, tombstones, shared Unity/ILPP, global provider configuration or another application's credentials.
+- Root serializes staging and isolated Unity execution. Read the current construction writer authority before every Unity launch; use only `output/simulator/platform-ktx-unity` as project and working directory. Do not signal the shared editor or its children.
+- Use a hash-verified immutable current geometry packet as the sole visual source. Preserve source mesh/material references, hierarchy, transforms and active flags. Do not replace current derivatives with raw legacy FBX subtrees.
+- Every object is input/context. Grant causal capabilities to explicit semantic assemblies with source bindings and declared training assumptions; never multiply incident probability by mesh/renderer count. Keep unknown capabilities explicit.
+- Emergencies emerge from seeded local object/NPC relationships and external conditions. Do not choose randomly from developer-authored emergency scripts. Response procedures may have prerequisites and ordered actions.
+- The user authorizes inferred detailed manipulation and response because confidential railway manuals are unavailable. Implement without waiting for those documents. Mark site-specific inference `INFERRED_TRAINING`; do not describe it as approved KORAIL procedure, field measurement, clinical guidance or proven effectiveness.
+- Manipulation is local: part, axis, range, contact, tool, lock, power, resource, duration and failure state. Record continuous inputs and outcomes for replay. A legacy operation must not bypass a bound detailed mechanism.
+- Source transforms may be zero while mesh vertices contain world coordinates. Use actual collider/qualified registry bounds for interaction distance and proposed pivots; retain original inventory transforms.
+- Walkable station places require actual upward current-source collider hits, triangle/source identity, NavMesh attachment and capsule clearance. A named floor group is not floor geometry. Preserve missing/disconnected regions as unresolved; never invent a floor to pass a check.
+- End-user model use requires browser OAuth and explicit subscription choice. Never fall back to API-key billing or existing CLI credentials. Local input/ticks do not call a model. One initial-generation allowance is single-use; an empty accepted causal update is valid.
+- Keep source, model, inferred gameplay, native runtime, visual review and field efficacy evidence separate. Historical component receipts do not certify a changed whole-world build.

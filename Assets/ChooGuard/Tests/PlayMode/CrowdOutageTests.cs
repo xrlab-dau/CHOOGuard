@@ -58,7 +58,7 @@ namespace ChooGuard.Tests.PlayMode
             var crowd = shift.Crowd;
             var mind = crowd.Mind;
             Assert.That(shift.Jev.Available, Is.True, "a plausible key must leave JEV available");
-            // 디렉터의 박동도 끈다(평온 구간 30 s 안이라 아직 아무것도 묻지 않았지만, 이 시험의 60 s 동안에도 묻지 않게).
+            // 이 시험은 군중의 무응답 대응만 본다. 플레이어가 멈춰 있는 동안 디렉터를 꺼 실제 사건 판단 요청이 나가지 않게 한다.
             shift.Incidents.enabled = false;
             Time.captureFramerate = 30;
 

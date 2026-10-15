@@ -1,1 +1,0 @@
-Started draft-only lane; no Assets or Unity calls authorized here. Read persistence and binder exact contracts. Need transparent-order guard and materialpropertyblock guard, channel layout compatibility, explicit atomic publish/restore receipts.

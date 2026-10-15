@@ -1,0 +1,13 @@
+# Findings
+
+Native floor: Box_Majibang_3F_L, assetSHA b821ab884bc97189839a9c6121bb39bfdcf010f82c7eb9c65968f4456ddf62c6. Only source top triangles16/18 intersect Busanok. Exact source-native x(v)26.5..36.5,z(u)-2.35..6.75 rectangle clips them into12 outside and4 inside facets. Retained slab38facets, all68 native vertices retained; native Float32 position/normal/tangent/UV0 preserved and barycentrically interpolated at new split vertices. Collider support transfers same4 facets to fixed same-owner companion; original26 unaffected bottom/perimeter/neighbor triangles keep exact indices.
+
+Shared ceiling: Box_Majibang_ShopCeiling, assetSHA158b3bd4aee1e8166ea69267741f02bbbd986a29448019657c421ffb34e0b62f. Ten faces belong to five shops; Busanok exactly0/1. Both main and generated shadow child share source. Retain8 faces, transfer2 native tenant facets to pale ceiling. Publish main source only; builder shadow regeneration receives resolved mesh automatically.
+
+Material reuse: PBR_WoodFloor064_4K Lane material, ambientCG CC0 acquisition already retained; Kit_GypsumLit reuses project CC0 fine painted gypsum texture. Photos support appearance class, not site material identity or plank dimensions. Smooth ceiling uses no printed tile grid; no fixtures/layout added. Stage rejects dirty loaded materials/textures/source meshes; root wrapper pins approved bytes before and after save.
+
+Evidence: Naver author Aug9 2026 published photo01/02, shooting date unknown; unmodified retained800px CDN renditions. Historical RY2 publishedMay1 2023 localclip/frame03 supports tenant and appearance continuity; absolute video timestamp unverified. Public photo license is local reference only, not texture use.
+
+Geometry QA: tenant top91 native area, max polygon overlap2.84e-14, barycentric position error <1e-7, correct native winding. Float32 emitted fragment area conservation error0. All exported renderer audit: ceiling only source main+shadow; floor only source slab plus existing downward contact bottoms of kick strips/posts/door0/1. No additional upward finish or tenant ceiling plane. Fresh after-busanok-glazing3843-renderer export confirms the new glazed-return kick/post bottoms have the same retained downward-contact condition. Total6 additional downward-contact owners; no duplicate upward finish or tenant ceiling plane.
+
+Current root-reported sceneSHA2d69933f22e361515010a88a3fb2735d1eb19b3cf94485d56df1cc85f3939deb; old frozen source inventory used only for unchanged source owners. Exact owner/source/frame/complete native channel preflight fails closed on drift. Physical site dimensions and current camera date remain unverified.

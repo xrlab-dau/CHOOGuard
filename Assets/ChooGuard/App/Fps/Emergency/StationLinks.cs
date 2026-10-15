@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using ChooGuard.Circulation;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -42,7 +43,7 @@ namespace ChooGuard.App.Fps.Emergency
     /// whose entry flap gate is shut, is not offered to path finding. Link traversal follows Unity NavMeshComponents
     /// AgentLinkMover (MIT, 2016).
     /// </summary>
-    public sealed class Escalator : MonoBehaviour, IStationLink
+    public sealed class Escalator : MonoBehaviour, IStationLink, IEscalatorDrive
     {
         public const float BeltSpeed = .5f, Spacing = 1.1f, StoppedWalk = .5f;
 
@@ -51,6 +52,8 @@ namespace ChooGuard.App.Fps.Emergency
         public StationPoints.EscalatorEntry Entry { get; private set; }
         public string Label => Entry.label;
         public bool Running { get; private set; } = true;
+        public float DriveSpeed => Running ? BeltSpeed : 0f;
+        public double TravelDistance { get; private set; }
         public bool Closed { get; private set; }
         /// <summary>The flap gate at the boarding landing is shut (it follows a stopped belt): nobody is routed onto it.</summary>
         public bool EntryBarred { get; private set; }
@@ -71,6 +74,23 @@ namespace ChooGuard.App.Fps.Emergency
             for (int i = 1; i < entry.path.Length; i++) distance[i] = distance[i - 1] + Vector3.Distance(entry.path[i - 1], entry.path[i]);
             length = distance[distance.Length - 1];
             AddLink();
+        }
+
+        /// <summary>Binds supplied real part animations and ride volumes to this catalogued lane. Creates no geometry.</summary>
+        public void BindDrive(Transform partsRoot)
+        {
+            if (partsRoot == null) return;
+            foreach (var ride in partsRoot.GetComponentsInChildren<EscalatorRide>(true)) ride.Bind(this);
+            foreach (var motion in partsRoot.GetComponentsInChildren<EscalatorMotion>(true)) motion.Bind(this);
+        }
+
+        private void Update() => AdvanceDrive(Time.deltaTime);
+
+        /// <summary>Advances only the operating belt; exposed for deterministic mechanical checks.</summary>
+        public void AdvanceDrive(float deltaSeconds)
+        {
+            if (!Running || deltaSeconds <= 0f || float.IsNaN(deltaSeconds) || float.IsInfinity(deltaSeconds)) return;
+            TravelDistance += BeltSpeed * (double)deltaSeconds;
         }
 
         private void AddLink()
@@ -231,7 +251,7 @@ namespace ChooGuard.App.Fps.Emergency
                 while (me.S < leaveS)
                 {
                     if (me.Fallen) { body.transform.position = PointAt(me.S); yield return null; continue; }
-                    float speed = Running ? BeltSpeed : StoppedWalk;
+                    float speed = Running ? DriveSpeed : StoppedWalk;
                     float next = me.S + speed * Time.deltaTime;
                     // 앞사람을 앞질러 가지 않는다(정지한 벨트를 걸어서 가도 앞사람 뒤에 붙는다).
                     if (Ahead(me) is Rider leader && leader.S > me.S) next = Mathf.Min(next, leader.S - Spacing);

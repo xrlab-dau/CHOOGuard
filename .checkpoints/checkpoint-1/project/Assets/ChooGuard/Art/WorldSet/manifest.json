@@ -1,0 +1,699 @@
+{
+  "schemaVersion": 1,
+  "parameterSource": ".planning/2026-09-20-integrated-build/world-art-design-packet.json",
+  "jevRef": ".planning/2026-09-20-integrated-build/jev-world-interior-design-019.result.json",
+  "sourceRef": ".planning/2026-09-20-integrated-build/world-art-reference-graph.json",
+  "roles": {
+    "Jev": "advisory design/parameter choice",
+    "Astra low": "script and actual procedural Blender execution"
+  },
+  "blender": "4.5.9 LTS",
+  "units": "meters authored; consumer fits geographic source footprint without claiming measured geometry",
+  "appliedOperations": {
+    "palette": {
+      "stone": [
+        0.65,
+        0.61,
+        0.51
+      ],
+      "metal": [
+        0.19,
+        0.24,
+        0.25
+      ],
+      "glass": [
+        0.13,
+        0.24,
+        0.29
+      ],
+      "wood": [
+        0.31,
+        0.17,
+        0.078
+      ],
+      "roof": [
+        0.72,
+        0.74,
+        0.69
+      ],
+      "leaves": [
+        [
+          0.12,
+          0.24,
+          0.07
+        ],
+        [
+          0.2,
+          0.32,
+          0.1
+        ],
+        [
+          0.28,
+          0.38,
+          0.14
+        ]
+      ]
+    },
+    "lighting": {
+      "sunEnergy": 2.3,
+      "sunRotation": [
+        0.46,
+        -0.42,
+        -0.7
+      ],
+      "worldEnergy": 0.6,
+      "color": [
+        0.72,
+        0.82,
+        0.94
+      ]
+    },
+    "budget": {
+      "mergeByMaterial": true,
+      "branchSides": 9,
+      "foliageSubdivisions": 2,
+      "pineFoliageSubdivisions": 1,
+      "bevelSegments": 2,
+      "architecturalSides": 48
+    },
+    "seed": 190921
+  },
+  "materials": [
+    {
+      "name": "WS_Limestone",
+      "baseColor": [
+        0.65,
+        0.61,
+        0.51,
+        1
+      ],
+      "roughness": 0.83,
+      "metallic": 0,
+      "textures": {
+        "baseColor": "Assets/ChooGuard/Art/WorldSet/Textures/Concrete031_1K-JPG_Color.jpg",
+        "roughness": "Assets/ChooGuard/Art/WorldSet/Textures/Concrete031_1K-JPG_Roughness.jpg",
+        "normalGL": "Assets/ChooGuard/Art/WorldSet/Textures/Concrete031_1K-JPG_NormalGL.jpg"
+      },
+      "textureTint": [
+        0.65,
+        0.61,
+        0.51
+      ]
+    },
+    {
+      "name": "WS_PaintedMetal",
+      "baseColor": [
+        0.19,
+        0.24,
+        0.25,
+        1
+      ],
+      "roughness": 0.43,
+      "metallic": 0.55,
+      "textures": {}
+    },
+    {
+      "name": "WS_Stainless",
+      "baseColor": [
+        0.52,
+        0.57,
+        0.58,
+        1
+      ],
+      "roughness": 0.28,
+      "metallic": 0.78,
+      "textures": {
+        "baseColor": "Assets/ChooGuard/Art/WorldSet/Textures/Metal032_1K-JPG_Color.jpg",
+        "roughness": "Assets/ChooGuard/Art/WorldSet/Textures/Metal032_1K-JPG_Roughness.jpg",
+        "normalGL": "Assets/ChooGuard/Art/WorldSet/Textures/Metal032_1K-JPG_NormalGL.jpg"
+      },
+      "textureTint": [
+        0.52,
+        0.57,
+        0.58
+      ]
+    },
+    {
+      "name": "WS_Glass",
+      "baseColor": [
+        0.13,
+        0.24,
+        0.29,
+        1
+      ],
+      "roughness": 0.18,
+      "metallic": 0.45,
+      "textures": {}
+    },
+    {
+      "name": "WS_Roof",
+      "baseColor": [
+        0.72,
+        0.74,
+        0.69,
+        1
+      ],
+      "roughness": 0.38,
+      "metallic": 0.4,
+      "textures": {}
+    },
+    {
+      "name": "WS_Wood",
+      "baseColor": [
+        0.31,
+        0.17,
+        0.078,
+        1
+      ],
+      "roughness": 0.76,
+      "metallic": 0,
+      "textures": {}
+    },
+    {
+      "name": "WS_Bark",
+      "baseColor": [
+        0.19,
+        0.14,
+        0.085,
+        1
+      ],
+      "roughness": 0.94,
+      "metallic": 0,
+      "textures": {}
+    },
+    {
+      "name": "WS_Earth",
+      "baseColor": [
+        0.14,
+        0.11,
+        0.075,
+        1
+      ],
+      "roughness": 0.97,
+      "metallic": 0,
+      "textures": {}
+    },
+    {
+      "name": "WS_White",
+      "baseColor": [
+        0.84,
+        0.83,
+        0.77,
+        1
+      ],
+      "roughness": 0.52,
+      "metallic": 0,
+      "textures": {}
+    },
+    {
+      "name": "WS_TransitBlue",
+      "baseColor": [
+        0.075,
+        0.21,
+        0.32,
+        1
+      ],
+      "roughness": 0.43,
+      "metallic": 0.2,
+      "textures": {}
+    },
+    {
+      "name": "WS_AwningRed",
+      "baseColor": [
+        0.47,
+        0.13,
+        0.1,
+        1
+      ],
+      "roughness": 0.73,
+      "metallic": 0,
+      "textures": {}
+    },
+    {
+      "name": "WS_Lamp",
+      "baseColor": [
+        0.88,
+        0.83,
+        0.6,
+        1
+      ],
+      "roughness": 0.27,
+      "metallic": 0,
+      "textures": {}
+    },
+    {
+      "name": "WS_Leaf0",
+      "baseColor": [
+        0.12,
+        0.24,
+        0.07,
+        1
+      ],
+      "roughness": 0.9,
+      "metallic": 0,
+      "textures": {}
+    },
+    {
+      "name": "WS_Leaf1",
+      "baseColor": [
+        0.2,
+        0.32,
+        0.1,
+        1
+      ],
+      "roughness": 0.9,
+      "metallic": 0,
+      "textures": {}
+    },
+    {
+      "name": "WS_Leaf2",
+      "baseColor": [
+        0.28,
+        0.38,
+        0.14,
+        1
+      ],
+      "roughness": 0.9,
+      "metallic": 0,
+      "textures": {}
+    }
+  ],
+  "models": [
+    {
+      "name": "TreeBroadleaf",
+      "fbx": "Assets/ChooGuard/Art/WorldSet/TreeBroadleaf.fbx",
+      "bytes": 103356,
+      "sha256": "5efefa1ac0552bc8486afd78f0e571f1c274ff5bace46c198dfa2cd94b5137a6",
+      "units": "meters",
+      "axes": {
+        "source": "Blender X right,Y forward,Z up",
+        "fbx": "-Z forward,Y up; Unity bounds must be observed after import"
+      },
+      "groundPivot": true,
+      "localBoundsBlender": {
+        "min": [
+          -3.3425657749176025,
+          -3.1025328636169434,
+          0.0
+        ],
+        "max": [
+          3.3425660133361816,
+          3.1025328636169434,
+          8.19047737121582
+        ]
+      },
+      "intendedMeters": {
+        "width": 6.685131788253784,
+        "depth": 6.205065727233887,
+        "height": 8.19047737121582
+      },
+      "materials": [
+        "WS_Bark",
+        "WS_Leaf0",
+        "WS_Leaf1",
+        "WS_Leaf2"
+      ],
+      "meshCount": 4,
+      "triangles": 3120,
+      "vertices": 1680,
+      "precision": "Authored coastal urban broadleaf; not a botanically identified specimen. No placement claim.",
+      "parameters": {
+        "palette": "warm_limestone_coastal",
+        "density": "district_batched",
+        "seed": 190921
+      }
+    },
+    {
+      "name": "TreePine",
+      "fbx": "Assets/ChooGuard/Art/WorldSet/TreePine.fbx",
+      "bytes": 73420,
+      "sha256": "870428b1a8a3472562c361bcd461e5ce3342cb7b5e6d6ce16d30607ef5c7abe0",
+      "units": "meters",
+      "axes": {
+        "source": "Blender X right,Y forward,Z up",
+        "fbx": "-Z forward,Y up; Unity bounds must be observed after import"
+      },
+      "groundPivot": true,
+      "localBoundsBlender": {
+        "min": [
+          -3.124368667602539,
+          -2.976283550262451,
+          0.0
+        ],
+        "max": [
+          3.12436842918396,
+          2.976283311843872,
+          8.215033531188965
+        ]
+      },
+      "intendedMeters": {
+        "width": 6.248737096786499,
+        "depth": 5.952566862106323,
+        "height": 8.215033531188965
+      },
+      "materials": [
+        "WS_Bark",
+        "WS_Leaf0",
+        "WS_Leaf1",
+        "WS_Leaf2"
+      ],
+      "meshCount": 3,
+      "triangles": 1956,
+      "vertices": 1146,
+      "precision": "Authored irregular pine-like canopy with lateral branches; not a uniform conical forest asset.",
+      "parameters": {
+        "palette": "warm_limestone_coastal",
+        "density": "district_batched",
+        "seed": 190921
+      }
+    },
+    {
+      "name": "StreetLamp",
+      "fbx": "Assets/ChooGuard/Art/WorldSet/StreetLamp.fbx",
+      "bytes": 37676,
+      "sha256": "6ee553b66fe3889e83b1ea12a86c9fe1a3b4131bba14a0e27cf5975217227937",
+      "units": "meters",
+      "axes": {
+        "source": "Blender X right,Y forward,Z up",
+        "fbx": "-Z forward,Y up; Unity bounds must be observed after import"
+      },
+      "groundPivot": true,
+      "localBoundsBlender": {
+        "min": [
+          -0.36000001430511475,
+          -1.4674999713897705,
+          0.0
+        ],
+        "max": [
+          0.36000001430511475,
+          1.467499852180481,
+          8.130000114440918
+        ]
+      },
+      "intendedMeters": {
+        "width": 0.7200000286102295,
+        "depth": 2.9349998235702515,
+        "height": 8.130000114440918
+      },
+      "materials": [
+        "WS_Lamp",
+        "WS_Limestone",
+        "WS_PaintedMetal",
+        "WS_Stainless"
+      ],
+      "meshCount": 4,
+      "triangles": 508,
+      "vertices": 274,
+      "precision": "Authored Korean urban LED streetlight approximation, 8m pole. No exact municipal product claim.",
+      "parameters": {
+        "palette": "warm_limestone_coastal",
+        "density": "district_batched",
+        "seed": 190921
+      }
+    },
+    {
+      "name": "Bench",
+      "fbx": "Assets/ChooGuard/Art/WorldSet/Bench.fbx",
+      "bytes": 62588,
+      "sha256": "89a3830d9e254db38c8e8d99878ac8fdfc448f2c66cfefbf9c67d00e3338ad11",
+      "units": "meters",
+      "axes": {
+        "source": "Blender X right,Y forward,Z up",
+        "fbx": "-Z forward,Y up; Unity bounds must be observed after import"
+      },
+      "groundPivot": true,
+      "localBoundsBlender": {
+        "min": [
+          -0.949999988079071,
+          -0.3582143783569336,
+          0.0
+        ],
+        "max": [
+          0.949999988079071,
+          0.3582143783569336,
+          1.0049999952316284
+        ]
+      },
+      "intendedMeters": {
+        "width": 1.899999976158142,
+        "depth": 0.7164287567138672,
+        "height": 1.0049999952316284
+      },
+      "materials": [
+        "WS_PaintedMetal",
+        "WS_Stainless",
+        "WS_Wood"
+      ],
+      "meshCount": 3,
+      "triangles": 1552,
+      "vertices": 816,
+      "precision": "Authored timber-and-steel civic bench, 1.9m seat.",
+      "parameters": {
+        "palette": "warm_limestone_coastal",
+        "density": "district_batched",
+        "seed": 190921
+      }
+    },
+    {
+      "name": "BusStop",
+      "fbx": "Assets/ChooGuard/Art/WorldSet/BusStop.fbx",
+      "bytes": 124812,
+      "sha256": "4b6f02c6ebe06fc0642b9f835e593a82a450200c2b6c82a7495007d5edb034da",
+      "units": "meters",
+      "axes": {
+        "source": "Blender X right,Y forward,Z up",
+        "fbx": "-Z forward,Y up; Unity bounds must be observed after import"
+      },
+      "groundPivot": true,
+      "localBoundsBlender": {
+        "min": [
+          -2.75,
+          -1.0695000886917114,
+          0.0
+        ],
+        "max": [
+          2.75,
+          1.0434999465942383,
+          3.0880300998687744
+        ]
+      },
+      "intendedMeters": {
+        "width": 5.5,
+        "depth": 2.1130000352859497,
+        "height": 3.0880300998687744
+      },
+      "materials": [
+        "WS_Glass",
+        "WS_Limestone",
+        "WS_PaintedMetal",
+        "WS_Stainless",
+        "WS_TransitBlue",
+        "WS_White",
+        "WS_Wood"
+      ],
+      "meshCount": 7,
+      "triangles": 3396,
+      "vertices": 1764,
+      "precision": "Generic Korean shelter; baked lettering removed and replaced by geometric bus pictogram under latest UI-only text rule.",
+      "parameters": {
+        "palette": "warm_limestone_coastal",
+        "density": "district_batched",
+        "seed": 190921
+      },
+      "textMeshes": 0,
+      "fontObjects": 0
+    },
+    {
+      "name": "Planter",
+      "fbx": "Assets/ChooGuard/Art/WorldSet/Planter.fbx",
+      "bytes": 69052,
+      "sha256": "0ca9389e61c2f4809d14c074b3040e47a2a180efc718a64f1ccdd12aecad391e",
+      "units": "meters",
+      "axes": {
+        "source": "Blender X right,Y forward,Z up",
+        "fbx": "-Z forward,Y up; Unity bounds must be observed after import"
+      },
+      "groundPivot": true,
+      "localBoundsBlender": {
+        "min": [
+          -1.0892492532730103,
+          -0.675000011920929,
+          0.0
+        ],
+        "max": [
+          1.0892493724822998,
+          0.675000011920929,
+          1.1977083683013916
+        ]
+      },
+      "intendedMeters": {
+        "width": 2.17849862575531,
+        "depth": 1.350000023841858,
+        "height": 1.1977083683013916
+      },
+      "materials": [
+        "WS_Earth",
+        "WS_Leaf0",
+        "WS_Leaf1",
+        "WS_Leaf2",
+        "WS_Limestone"
+      ],
+      "meshCount": 5,
+      "triangles": 1368,
+      "vertices": 714,
+      "precision": "Authored limestone planter with coping, visible soil and low foliage.",
+      "parameters": {
+        "palette": "warm_limestone_coastal",
+        "density": "district_batched",
+        "seed": 190921
+      }
+    },
+    {
+      "name": "BusanTower",
+      "fbx": "Assets/ChooGuard/Art/WorldSet/BusanTower.fbx",
+      "bytes": 80476,
+      "sha256": "44d4e50c3a9d704f8a9622f978b4da5d809ff31e285694a3a1d1949170c75d2c",
+      "units": "meters",
+      "axes": {
+        "source": "Blender X right,Y forward,Z up",
+        "fbx": "-Z forward,Y up; Unity bounds must be observed after import"
+      },
+      "groundPivot": true,
+      "localBoundsBlender": {
+        "min": [
+          -11.0,
+          -11.0,
+          0.0
+        ],
+        "max": [
+          11.0,
+          11.0,
+          120.0
+        ]
+      },
+      "intendedMeters": {
+        "width": 22.0,
+        "depth": 22.0,
+        "height": 120.0
+      },
+      "materials": [
+        "WS_Glass",
+        "WS_Limestone",
+        "WS_Roof",
+        "WS_Stainless",
+        "WS_White"
+      ],
+      "meshCount": 5,
+      "triangles": 3240,
+      "vertices": 1712,
+      "precision": "Official Busan city page confirms120m tower/observatory. Shaft/deck/base proportions authored approximations; linked photo download returned401. Not surveyed CAD.",
+      "parameters": {
+        "palette": "warm_limestone_coastal",
+        "density": "district_batched",
+        "seed": 190921
+      }
+    },
+    {
+      "name": "PortTerminal",
+      "fbx": "Assets/ChooGuard/Art/WorldSet/PortTerminal.fbx",
+      "bytes": 344508,
+      "sha256": "d42db1e548d82cfc71ca20dbe0c6c824d6818a01aff1a7e7d1801cb56230318d",
+      "units": "meters",
+      "axes": {
+        "source": "Blender X right,Y forward,Z up",
+        "fbx": "-Z forward,Y up; Unity bounds must be observed after import"
+      },
+      "groundPivot": true,
+      "localBoundsBlender": {
+        "min": [
+          -69.0,
+          -47.20000076293945,
+          0.0
+        ],
+        "max": [
+          69.0,
+          47.19999694824219,
+          28.2500057220459
+        ]
+      },
+      "intendedMeters": {
+        "width": 138.0,
+        "depth": 94.39999771118164,
+        "height": 28.2500057220459
+      },
+      "materials": [
+        "WS_Glass",
+        "WS_Limestone",
+        "WS_Roof",
+        "WS_Stainless"
+      ],
+      "meshCount": 4,
+      "triangles": 16964,
+      "vertices": 8840,
+      "precision": "Horizontal coastal terminal, terraced glazing and curved roof vocabulary from root reference brief; detailed actual terminal profile/dimensions not verified. Entire mass is an authored geographic-fit proxy.",
+      "parameters": {
+        "palette": "warm_limestone_coastal",
+        "density": "district_batched",
+        "seed": 190921
+      }
+    },
+    {
+      "name": "JagalchiMarket",
+      "fbx": "Assets/ChooGuard/Art/WorldSet/JagalchiMarket.fbx",
+      "bytes": 670140,
+      "sha256": "b7f7dd4bd9bedaed4fe366208ee82ddaf333e37e7473ada86b546c381397840d",
+      "units": "meters",
+      "axes": {
+        "source": "Blender X right,Y forward,Z up",
+        "fbx": "-Z forward,Y up; Unity bounds must be observed after import"
+      },
+      "groundPivot": true,
+      "localBoundsBlender": {
+        "min": [
+          -75.5,
+          -23.99460220336914,
+          0.0
+        ],
+        "max": [
+          75.5,
+          23.99460220336914,
+          41.5
+        ]
+      },
+      "intendedMeters": {
+        "width": 151.0,
+        "depth": 47.98920440673828,
+        "height": 41.5
+      },
+      "materials": [
+        "WS_AwningRed",
+        "WS_Glass",
+        "WS_Limestone",
+        "WS_Roof",
+        "WS_Stainless",
+        "WS_TransitBlue"
+      ],
+      "meshCount": 6,
+      "triangles": 31176,
+      "vertices": 16344,
+      "precision": "OSM building382696296 root evidence:151x48m planar bounding envelope,6levels,centroid35.0966,129.030656. Model fitted to that envelope. Seagull roof/facade proportions remain authored approximations; operator-page fetch timed out.",
+      "parameters": {
+        "palette": "warm_limestone_coastal",
+        "density": "district_batched",
+        "seed": 190921
+      }
+    }
+  ],
+  "acceptance": "render review and Unity material/bounds validation remain separate from successful generation",
+  "busStopTextPatch": {
+    "authority": "root-authorized latest UI-only world text constraint",
+    "mode": "BusStop-only FBX export; no render, no other8 FBX or textures modified",
+    "removedMeshes": [
+      "Korean sign"
+    ],
+    "replacement": "geometric bus silhouette/windows/wheels plus plain route backing",
+    "otherEightHashesUnchanged": true,
+    "scriptSha256": "4e33782c3d28410422e48c8d3055a65fb675c40f1ca289ee27f9cab35747d45a",
+    "sourceBlend": "world_set.blend remains prior frozen source snapshot; generator updated for future builds"
+  }
+}

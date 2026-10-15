@@ -1,0 +1,1 @@
+Use compact/whole-world-baseline.json, validated against the original Unity PreDigest by native C#/Newtonsoft. The *.invalid-python-readback.json file is historical failed evidence and must never be used for application/replay.

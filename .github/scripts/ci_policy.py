@@ -20,6 +20,9 @@ import urllib.request
 from dataclasses import dataclass
 from typing import Callable, Iterable, Sequence
 
+from github_tree_sizes import api_blob_sizes
+from lfs_text_assets import LfsTextAssetError, resolve_lfs_text_assets
+
 MIB = 1024 * 1024
 WARN_BYTES = 50 * MIB  # GitHub warns on push above 50 MiB
 LIMIT_BYTES = 100 * MIB  # GitHub rejects blobs above 100 MiB
@@ -246,19 +249,6 @@ def blob_heads(oids: dict[str, str], length: int | None = 8) -> dict[str, bytes]
     return heads
 
 
-def api_blob_sizes(repo: str, sha: str, token: str) -> dict[str, int] | None:
-    request = urllib.request.Request(f"https://api.github.com/repos/{repo}/git/trees/{sha}?recursive=1",
-                                     headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"})
-    try:
-        with urllib.request.urlopen(request, timeout=60) as response:
-            tree = json.load(response)
-    except (urllib.error.URLError, TimeoutError, ValueError):
-        return None
-    if tree.get("truncated"):
-        return None
-    return {entry["path"]: entry["size"] for entry in tree["tree"] if entry.get("type") == "blob"}
-
-
 def graph_state(head: str) -> tuple[str | None, list[str], set[str]]:
     commit = git("log", "-1", "--format=%H", head, "--", GRAPH_FILE).decode().strip() or None
     if not commit:
@@ -335,7 +325,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         notes.append("No base commit (scheduled, manual or new-branch run): change-scoped rules skipped.")
     changed = list(blobs)
     findings += check_ignored(changed, git_ignored)
-    findings += check_text_assets(blob_heads({p: oid for p, oid in blobs.items() if unity_text_asset(p)}))
+    text_heads = blob_heads({p: oid for p, oid in blobs.items() if unity_text_asset(p)}, length=None)
+    try:
+        text_heads = resolve_lfs_text_assets(text_heads, head)
+    except LfsTextAssetError as exc:
+        findings.append(Finding("error", "unity-text", str(exc)))
+    else:
+        findings += check_text_assets(text_heads)
     findings += check_dynamic_fonts(blob_heads({p: oid for p, oid in blobs.items() if tmp_font_asset(p)}, length=None))
     token = env("GITHUB_TOKEN", "")
     if changed and token and args.repo:

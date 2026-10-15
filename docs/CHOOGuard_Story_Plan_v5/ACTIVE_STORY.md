@@ -6,7 +6,7 @@
 
 상태 **IN_PROGRESS** / 수용 **NOT_ACCEPTED**
 
-임의 통로 연결은 실제 부산역 복원으로 인정하지 않고 사용자 교정을 반영했다. 부산시2019 개통자료·2018-405고시 치수·2021부산시설공단 실제 CAD평면도·공식 안내도와 현장 사진을 확보했다. Astra low가 실제 평면도와 사진 기반 통로 모듈을 새로 제작하고 root가 미리보기를 검토했다. 도시철도/지하상가 출구번호를 분리했다. 철도역·도시철도 양끝의 정확한 접속 위치·고저차는 미확정이며 새모델은 Unity에 미적용. 기존기술적 보행PASS는 실제연결수용이 아니다. 현재NOT_A.
+체크포인트 1로 현재 씬을 저장하고 완료된 작업 산출물·캐시를 사용자 지시에 따라 정리했다. 현재 상태와 계속되는 요구사항은 체크포인트·.state/REQUIREMENTS.md·원본 자료 색인으로 확인한다. 과거 activeEvidenceGraph는 정리로 폐기되어 재검증할 수 없으며 복원하지 않는다. 부스·마감·엘리베이터 주변 벽 대응 등 남은 요구사항은 누적 유지한다. 체크포인트에 대한 사용자 승인은 현재 씬 상태에 한정하며 99% 실측 완료나 제품 수용을 뜻하지 않는다. 아래 기능·시험은 각 보존 기록의 범위에 한정된 과거 기록이며 이 관리 참조 전환에서 재실행하지 않았다.
 
 이 도구의 PASS는 관리 구조·참조 정합만 뜻하며 제품 실행·완료·기관 수용 검증이 아니다.
 
@@ -16,6 +16,17 @@
 
 정본: [docs/CHOOGuard_Story_Plan_v4/plan.json](../../docs/CHOOGuard_Story_Plan_v4/plan.json)
 전환 digest: `1399115c47999aae7825233666c4c3471fc2bdda43f99000d45f98c1718c65a4`
+
+## 현재 정본·참조 상태
+
+체크포인트는 저장된 씬 상태이며 제품 수용이나 과거 시험의 재검증 근거가 아니다.
+
+- 활성 방향: [docs/CHOOGuard_Story_Plan_v5/MVP_DIRECTION.md](../../docs/CHOOGuard_Story_Plan_v5/MVP_DIRECTION.md)
+- 통로 복원 기록: [docs/CHOOGuard_Story_Plan_v5/BUSAN_TRANSFER_RECONSTRUCTION.md](../../docs/CHOOGuard_Story_Plan_v5/BUSAN_TRANSFER_RECONSTRUCTION.md)
+- 현재 체크포인트: [.checkpoints/checkpoint-1/CHECKPOINT.json](../../.checkpoints/checkpoint-1/CHECKPOINT.json)
+- 현재 요구사항: [.state/REQUIREMENTS.md](../../.state/REQUIREMENTS.md)
+- 보존된 원본 자료 색인: [source-evidence/INDEX.json](../../source-evidence/INDEX.json)
+- 과거 증거 폐기·참조 전환 기록: [docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-10-15-checkpoint-cleanup.json](../../docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-10-15-checkpoint-cleanup.json)
 
 ### 부팅·입력·빌드 · PARTIAL
 
@@ -224,9 +235,9 @@ content-validation에서 PLAY0101 5/5, PLAY0102 8/8, IntegratedInput PlayMode 12
 - **Physics runtime and initial native MVP — PASS**: 저장 probe7 PASS; FDS120s completed; real JPS crowd72/fire24 completed; 전체 제품/부산역물리/최종HUD PASS 아님
   - 범위: 각각 별도 실행한 열린 Editor 저장 probe7건 및 FDS/JPS 참조 사례의 실행 성공에 한정. 통합 green run·실제 부산역 검증 아님
   - 결과: [docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-physics-openworld-mvp.json](../../docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-physics-openworld-mvp.json)
-- **Direct-command native client to solver flow — PASS**: 일시정지 계획, 개별 집단 유도 및 대기 ACK, 전체 대피 후69/69명54초 완료. 별도 animation repair는 실제 보행 pose변화 및 interaction시간재시작 PASS.
+- **Direct-command native client to solver flow — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: 일시정지 계획, 개별 집단 유도 및 대기 ACK, 전체 대피 후69/69명54초 완료. 별도 animation repair는 실제 보행 pose변화 및 interaction시간재시작 PASS.
   - 범위: 공식 Unity CLI를 통한 UI callback 및 실제 worker 연동. OS 마우스/키보드·시각 품질·전체 부산역 검증 아님
-  - 결과: [.planning/2026-09-20-integrated-build/live-reposition-flow-guarded.json](../../.planning/2026-09-20-integrated-build/live-reposition-flow-guarded.json)
+  - 결과: 미실행; 결과 파일 없음
 - **Metre scene and UI-only text native check — PASS**: scene saved clean; root/source scale1; crew~1.78m; worldTMP0/UI51; ref30×20m; currentcompiler0
   - 범위: 실제 Editor 저장 및 메시/글자/인물치수; 실측역사·상용시각수용 아님
   - 결과: [docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json](../../docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json)
@@ -236,45 +247,45 @@ content-validation에서 PLAY0101 5/5, PLAY0102 8/8, IntegratedInput PlayMode 12
 - **Production visual and field twin acceptance — NOT_RUN**: 기관도시출동/영속시민/현장작업/복구의부분구현과native증거존재. 전체상용품질·현장보정·압착·임상수용은미완료.
   - 범위: JWE3급프로덕션품질·사용자수용·부산역현장검증
   - 결과: [docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json](../../docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json)
-- **Official guide review — PASS**: 15guidepages catalogued,14bodytexts+welcomeoverview,52HowToanchors,help/controls/2toolboxes;wholewelcomevideo notviewed
+- **Official guide review — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: 15guidepages catalogued,14bodytexts+welcomeoverview,52HowToanchors,help/controls/2toolboxes;wholewelcomevideo notviewed
   - 범위: 한정된 현재 로컬 증거; 전체 제품 수용 아님
-  - 결과: [.planning/2026-09-21-official-guide-benchmark/coverage.json](../../.planning/2026-09-21-official-guide-benchmark/coverage.json)
-- **Four source agency points — PASS**: Nativepoints match sourcecatalog projection, notsurveyedentranceaccuracy
+  - 결과: 미실행; 결과 파일 없음
+- **Four source agency points — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: Nativepoints match sourcecatalog projection, notsurveyedentranceaccuracy
   - 범위: 한정된 현재 로컬 증거; 전체 제품 수용 아님
-  - 결과: [.planning/2026-09-21-official-guide-benchmark/agency-coordinate-native-parity.json](../../.planning/2026-09-21-official-guide-benchmark/agency-coordinate-native-parity.json)
-- **Central119 actual city roundtrip — PASS**: PausedUIrequest→directedroad→135ssimarrival→onsiteownACK170s→return→343sbaseReady;duplicate/busy/unavailablegates
+  - 결과: 미실행; 결과 파일 없음
+- **Central119 actual city roundtrip — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: PausedUIrequest→directedroad→135ssimarrival→onsiteownACK170s→return→343sbaseReady;duplicate/busy/unavailablegates
   - 범위: 한정된 현재 로컬 증거; 전체 제품 수용 아님
-  - 결과: [.planning/2026-09-21-official-guide-benchmark/agency-native-proof.json](../../.planning/2026-09-21-official-guide-benchmark/agency-native-proof.json)
-- **Current 2F path query — PASS**: NativeDetour obstacleavoidance,3stagingtargetsreachable,unsupportedfloorrejected
+  - 결과: 미실행; 결과 파일 없음
+- **Current 2F path query — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: NativeDetour obstacleavoidance,3stagingtargetsreachable,unsupportedfloorrejected
   - 범위: 한정된 현재 로컬 증거; 전체 제품 수용 아님
-  - 결과: [.planning/2026-09-21-official-guide-benchmark/nav-query-source-validation.json](../../.planning/2026-09-21-official-guide-benchmark/nav-query-source-validation.json)
-- **Current 50-person evacuation and Recovery — PASS**: Currentnav+actualworker50exited67simseconds;separate runfromagencytrip
+  - 결과: 미실행; 결과 파일 없음
+- **Current 50-person evacuation and Recovery — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: Currentnav+actualworker50exited67simseconds;separate runfromagencytrip
   - 범위: 한정된 현재 로컬 증거; 전체 제품 수용 아님
-  - 결과: [.planning/2026-09-21-official-guide-benchmark/nav-evac-native-proof.json](../../.planning/2026-09-21-official-guide-benchmark/nav-evac-native-proof.json)
-- **Corrected Ready UI — PASS**: Unavailablecrewcard showsagency;onsitebuttonsdisabled;emptyfirepanelhidden
+  - 결과: 미실행; 결과 파일 없음
+- **Corrected Ready UI — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: Unavailablecrewcard showsagency;onsitebuttonsdisabled;emptyfirepanelhidden
   - 범위: 한정된 현재 로컬 증거; 전체 제품 수용 아님
-  - 결과: [.planning/2026-09-21-official-guide-benchmark/ready-hud-native-proof.json](../../.planning/2026-09-21-official-guide-benchmark/ready-hud-native-proof.json)
-- **SUMO installed and used — PASS**: ProjectlocalmacOSarm64SUMO1.27.1;fullOSMnetconvert/duarouter/SUMOexit0;one169s/1330.3mreferencevehicle;UnityvehiclemotionnotSUMO-driven
+  - 결과: 미실행; 결과 파일 없음
+- **SUMO installed and used — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: ProjectlocalmacOSarm64SUMO1.27.1;fullOSMnetconvert/duarouter/SUMOexit0;one169s/1330.3mreferencevehicle;UnityvehiclemotionnotSUMO-driven
   - 범위: 한정된 현재 로컬 증거; 전체 제품 수용 아님
-  - 결과: [.planning/2026-09-21-official-guide-benchmark/sumo-tooling-graph.json](../../.planning/2026-09-21-official-guide-benchmark/sumo-tooling-graph.json)
-- **Agency-first context — PASS**: 실제도시시작→현장보기2F→기관위치도시 UIcallback검증,기관이도시의주패널로표시됨
+  - 결과: 미실행; 결과 파일 없음
+- **Agency-first context — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: 실제도시시작→현장보기2F→기관위치도시 UIcallback검증,기관이도시의주패널로표시됨
   - 범위: 한정된 현재 로컬 증거; 전체 제품 수용 아님
-  - 결과: [.planning/2026-09-21-official-guide-benchmark/agency-context-native-proof.json](../../.planning/2026-09-21-official-guide-benchmark/agency-context-native-proof.json)
-- **Executable operations graph — PASS**: 12nodes19edges,3jobs,50evacuated,all3returnedReady475simsec;56provenance records
+  - 결과: 미실행; 결과 파일 없음
+- **Executable operations graph — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: 12nodes19edges,3jobs,50evacuated,all3returnedReady475simsec;56provenance records
   - 범위: 현재 로컬 구현의 한정된 검증; 전체 제품 수용 아님
-  - 결과: [.planning/2026-09-21-fleet-building/progression-native-provenance-proof.json](../../.planning/2026-09-21-fleet-building/progression-native-provenance-proof.json)
-- **Camera native API seams — PASS**: cursoranchor<1px,focus/follow/cancel/floor/DEM;OSmouse andbackgroundqueuedinput excluded
+  - 결과: 미실행; 결과 파일 없음
+- **Camera native API seams — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: cursoranchor<1px,focus/follow/cancel/floor/DEM;OSmouse andbackgroundqueuedinput excluded
   - 범위: 현재 로컬 구현의 한정된 검증; 전체 제품 수용 아님
-  - 결과: [.planning/2026-09-21-fleet-building/camera-native-proof.json](../../.planning/2026-09-21-fleet-building/camera-native-proof.json)
-- **Restored building height/native refs — PASS**: 3FBXs rendered;95numeric tags preserved incl200m;existingfloors/navrefs
+  - 결과: 미실행; 결과 파일 없음
+- **Restored building height/native refs — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: 3FBXs rendered;95numeric tags preserved incl200m;existingfloors/navrefs
   - 범위: 현재 로컬 구현의 한정된 검증; 전체 제품 수용 아님
-  - 결과: [.planning/2026-09-21-fleet-building/building-height-native-proof.json](../../.planning/2026-09-21-fleet-building/building-height-native-proof.json)
-- **Contextual building game UI — PASS**: Defaultnocard,selectedbuildingrequests,targetclick,inside-onlyfloorcontrols,nopublicAI/graphUI
+  - 결과: 미실행; 결과 파일 없음
+- **Contextual building game UI — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: Defaultnocard,selectedbuildingrequests,targetclick,inside-onlyfloorcontrols,nopublicAI/graphUI
   - 범위: Native world-ray andactualbuttoncallbacks; notOSinput/JWE3parity
-  - 결과: [.planning/2026-09-21-production-benchmark/context-ui-native-proof.json](../../.planning/2026-09-21-production-benchmark/context-ui-native-proof.json)
-- **OpenRA countdown and internal Jev arithmetic — PASS**: SourceWaitported;0.55→28.5s→29accepteds;pausefreeze/unavailableuntilready;allteamsReady443s
+  - 결과: 미실행; 결과 파일 없음
+- **OpenRA countdown and internal Jev arithmetic — NOT_RUN**: 과거 PASS 보고는 참조 전환 기록에 보존했다. 사용자 정리 지시로 원본 실행 증거가 폐기되어 현재 확인 불가하며 이번 전환에서 재실행하지 않았다. 과거 보고: SourceWaitported;0.55→28.5s→29accepteds;pausefreeze/unavailableuntilready;allteamsReady443s
   - 범위: Actualtwo-teamlocalreferenceoperation; notcalibratedphysicalor119timings
-  - 결과: [.planning/2026-09-21-production-benchmark/turnaround-native-proof.json](../../.planning/2026-09-21-production-benchmark/turnaround-native-proof.json)
+  - 결과: 미실행; 결과 파일 없음
 - **Official source world + operational kit targeted native — PASS**: 8sourcezones/36overlapsreplaced;31.15mroofselection;50evac+one-timekitlifecycle; sourceinterior andperformancegaps remain
   - 범위: CurrentlocalUnitysource-world/picking/contextUI andone450scrowdresourceworkflow only; 제품 수용 아님(대상 한정 PASS)
   - 결과: [docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-official-source-world.json](../../docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-official-source-world.json)

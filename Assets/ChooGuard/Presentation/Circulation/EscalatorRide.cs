@@ -8,6 +8,7 @@
 //   않았다. 본 파일은 순수 UnityEngine API 만으로 새로 작성한 구현이다.
 // -----------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ChooGuard.Circulation
@@ -93,6 +94,24 @@ namespace ChooGuard.Circulation
         [SerializeField]
         private bool affectRigidbody = true;
 
+        [Tooltip("운행 상태 공급자. Escalator.BindDrive 로 연결하며, 연결된 공급자가 사라지면 이송을 멈춘다.")]
+        [SerializeField]
+        private MonoBehaviour driveSource;
+        [SerializeField, HideInInspector]
+        private bool hasDriveBinding;
+
+        /// <summary>Current source, or null for an existing unbound standalone conveyor.</summary>
+        public IEscalatorDrive Drive => driveSource != null ? driveSource as IEscalatorDrive : null;
+
+        /// <summary>Uses one lane's operating state without changing the volume's surveyed direction.</summary>
+        public void Bind(IEscalatorDrive source)
+        {
+            if (source != null && !(source is MonoBehaviour))
+                throw new System.ArgumentException("The drive source must be a Unity component", nameof(source));
+            driveSource = source as MonoBehaviour;
+            hasDriveBinding = true;
+        }
+
         /// <summary>정규화된 로컬 진행 축. <see cref="OnValidate"/> 에서 갱신된다.</summary>
         private Vector3 normalizedAxis = Vector3.forward;
 
@@ -125,6 +144,9 @@ namespace ChooGuard.Circulation
         {
             get
             {
+                var drive = Drive;
+                float actualSpeed = drive != null ? (drive.Running ? drive.DriveSpeed : 0f) : hasDriveBinding || driveSource != null ? 0f : speed;
+                if (actualSpeed <= 0f) return Vector3.zero;
                 Vector3 worldDir = transform.TransformDirection(normalizedAxis) * (int)direction;
 
                 if (horizontalOnly)
@@ -138,7 +160,7 @@ namespace ChooGuard.Circulation
                     return Vector3.zero;
                 }
 
-                return (worldDir / magnitude) * speed;
+                return (worldDir / magnitude) * actualSpeed;
             }
         }
 
@@ -170,12 +192,52 @@ namespace ChooGuard.Circulation
 
         private void Awake()
         {
+            if (driveSource != null) hasDriveBinding = true;
             OnValidate();
+        }
+
+        private sealed class TransportStep
+        {
+            public Component Body;
+            public MonoBehaviour Drive;
+            public double Time;
+        }
+        private static readonly Dictionary<(int drive, int body), TransportStep> transported = new Dictionary<(int, int), TransportStep>();
+        private static readonly List<(int drive, int body)> expiredTransport = new List<(int, int)>();
+        private static int transportClaims;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetTransportSteps() { transported.Clear(); expiredTransport.Clear(); transportClaims = 0; }
+
+        /// <summary>Adjacent volumes of one lane may overlap at a ramp seam; carry each body only once per physics step.</summary>
+        public bool TryClaimTransport(Component occupant, double physicsTime)
+        {
+            if (occupant == null || double.IsNaN(physicsTime) || double.IsInfinity(physicsTime)) return false;
+            var drive = Drive;
+            if (drive == null) return !hasDriveBinding && driveSource == null;
+            if (!drive.Running || drive.DriveSpeed <= 0) return false;
+            var source = drive as MonoBehaviour;
+            if (source == null) return false;
+            var key = (source.GetInstanceID(), occupant.GetInstanceID());
+            if (transported.TryGetValue(key, out var previous) && previous.Body == occupant && previous.Drive == source)
+            {
+                if (previous.Time == physicsTime) return false;
+                previous.Time = physicsTime;
+            }
+            else transported[key] = new TransportStep { Body = occupant, Drive = source, Time = physicsTime };
+            if ((++transportClaims & 127) == 0)
+            {
+                expiredTransport.Clear();
+                foreach (var pair in transported)
+                    if (pair.Value.Body == null || pair.Value.Drive == null) expiredTransport.Add(pair.Key);
+                foreach (var stale in expiredTransport) transported.Remove(stale);
+            }
+            return true;
         }
 
         private void OnTriggerStay(Collider other)
         {
-            if (speed <= 0f || other == null)
+            if (other == null)
             {
                 return;
             }
@@ -189,7 +251,7 @@ namespace ChooGuard.Circulation
             if (affectCharacterController &&
                 other.TryGetComponent(out CharacterController controller))
             {
-                controller.Move(velocity * Time.deltaTime);
+                if (TryClaimTransport(controller, Time.fixedTimeAsDouble)) controller.Move(velocity * Time.deltaTime);
                 return;
             }
 
@@ -203,6 +265,8 @@ namespace ChooGuard.Circulation
             {
                 return;
             }
+
+            if (!TryClaimTransport(body, Time.fixedTimeAsDouble)) return;
 
             // 정지해 잠든 Rigidbody 는 MovePosition 후에도 보간이 멈춰 있을 수 있다.
             if (body.IsSleeping())

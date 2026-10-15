@@ -1,0 +1,121 @@
+        const string RetainedShopRoot = "실내 트윈 마감/점포 내부 1F";
+        const string RetainedShopFolder = "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F";
+        const string RawShopCollider = RetainedShopFolder + "/Kit_Colliders.asset";
+        const string FixtureShopCollider = "Assets/ChooGuard/Art/StationInterior/ArchitectureCorrections/1F_KitFixturesOnly.asset";
+        static readonly string[] RetainedShopCaps = { "Kit_CeilingGrid", "Kit_Light_조명기구_downlight", "Kit_ShopCeiling_Kit_GridWhite" };
+        static readonly string[] RetainedShopSources = RetainedShopCaps.Select(n => RetainedShopFolder + "/" + n + ".asset").Concat(new[]{RawShopCollider}).ToArray();
+
+        // Reenact authored source geometry; the canonical enclosure-owner policy is still false.
+        // Only this pinned observed spec/root/folder may enter the retained-source generation lane.
+        public static bool NeedsRetainedShopEnvelopeReplay(JObject spec, string specPath, string ownerRoot, string folder)
+        {
+            if(ownerRoot.Trim('/') != RetainedShopRoot || !File.Exists(Registry)) return false;
+            var rows=(JArray)JObject.Parse(File.ReadAllText(Registry))["meshes"];
+            var rawRows=rows.Where(r => (string)r["source_asset"] == RawShopCollider).ToArray();
+            if(rawRows.Length==0) return false; // The unmigrated registry still fails its missing-source gate.
+            if(rawRows.Length!=1) throw new InvalidDataException("Ambiguous retained shop collision source");
+            var preprocessing=rawRows[0]["source_preprocess"] as JObject;
+            if(preprocessing==null || (string)preprocessing["schema"]!="chooguard.exact-collision-envelope-partition.v1" ||
+                folder!=RetainedShopFolder || (string)spec["root"]!=RetainedShopRoot || (string)spec["zone"]!="shops 1F" ||
+                (string)preprocessing["owner"]!=RetainedShopRoot+"/Kit_Colliders")
+                throw new InvalidDataException("Retained shop replay scope changed");
+            string canonical=(string)preprocessing["canonical_spec"], specHash=(string)preprocessing["canonical_spec_sha256"];
+            if(canonical!="content/world/observed-interiors/shops-1f.json" || !File.Exists(canonical) ||
+                FileDigest(canonical)!=specHash || !File.Exists(specPath) || FileDigest(specPath)!=specHash ||
+                !JToken.DeepEquals(spec,JObject.Parse(File.ReadAllText(specPath))))
+                throw new InvalidDataException("Retained shop replay spec changed");
+            var elements=spec["elements"] as JArray;
+            if(elements==null || elements.Count!=16 || elements.Any(e => (string)e["type"]!="ShopInterior" ||
+                (string)e["frame"]!="root" || (string)e["tier"]!="b" || (bool?)e["params"]?["buildEnvelope"]!=false ||
+                (bool?)e["params"]?["collider"]!=true))
+                throw new InvalidDataException("Retained shop replay ownership policy changed");
+            var sources=SourceAssetsForRoot(ownerRoot);
+            if(sources.Length!=23 || RetainedShopSources.Except(sources).Any())
+                throw new InvalidDataException("Retained shop replay requires every registered source");
+            return true;
+        }
+
+        // The three retained secondary caps remain available for future source verification.
+        // Disabling all descendant renderers also disables separately-created ShadowCaster children.
+        public static void WithholdRetainedShopEnvelopeRenderers(Transform built)
+        {
+            if(built==null) throw new InvalidDataException("Retained shop replay root missing");
+            var parts=new System.Collections.Generic.List<string>();
+            for(var t=built;t!=null;t=t.parent) parts.Add(t.name);
+            parts.Reverse();
+            if(string.Join("/",parts)!=RetainedShopRoot) throw new InvalidDataException("Retained shop withholding root changed");
+            var rows=(JArray)JObject.Parse(File.ReadAllText(Registry))["meshes"];
+            foreach(string name in RetainedShopCaps)
+            {
+                var owner=built.Find(name);var row=rows.Single(r => (string)r["source_asset"]==RetainedShopFolder+"/"+name+".asset");
+                var filter=owner!=null?owner.GetComponent<MeshFilter>():null;
+                var renderers=owner!=null?owner.GetComponentsInChildren<MeshRenderer>(true):Array.Empty<MeshRenderer>();
+                if(filter==null || renderers.Length==0 || AssetDatabase.GetAssetPath(filter.sharedMesh)!=(string)row["replacement_asset"] ||
+                    ArchitecturalCorrectionRegistry.CompleteChannelDigest(filter.sharedMesh)!=(string)row["replacement_digest"] ||
+                    owner.GetComponentsInChildren<MeshCollider>(true).Length!=0)
+                    throw new InvalidDataException("Retained secondary shop envelope assignment changed");
+                foreach(var renderer in renderers) renderer.enabled=false;
+            }
+        }
+
+        // Accept the fresh raw source only, then prove the exact ordinal partition against its saved baseline.
+        // Return the persistent baseline after comparison, avoiding a transient mesh escaping this method.
+        static Mesh PreprocessForRebuild(Mesh generated, JToken row, string sourceAsset)
+        {
+            var policy=row["source_preprocess"] as JObject;
+            if(policy==null) return generated;
+            if((string)policy["schema"]!="chooguard.exact-collision-envelope-partition.v1" || sourceAsset!=RawShopCollider ||
+                (string)row["source_asset"]!=RawShopCollider || (string)row["baseline_asset"]!=FixtureShopCollider ||
+                (string)policy["owner"]!=RetainedShopRoot+"/Kit_Colliders" || (string)policy["raw_source_asset"]!=RawShopCollider ||
+                (string)policy["baseline_asset"]!=FixtureShopCollider || (string)row["source_digest"]!=(string)policy["baseline_complete_digest"])
+                throw new InvalidDataException("Unreviewed guide source preprocessing");
+            string ordinalFile=(string)policy["ordinal_source"];
+            if(ordinalFile!=".planning/2026-10-08-interior-runtime-completion/architecture-kitshop-overlap.json" ||
+                !File.Exists(ordinalFile) || FileDigest(ordinalFile)!=(string)policy["ordinal_source_sha256"] ||
+                !File.Exists(RawShopCollider) || FileDigest(RawShopCollider)!=(string)policy["raw_source_file_sha256"] ||
+                !File.Exists(FixtureShopCollider) || FileDigest(FixtureShopCollider)!=(string)policy["baseline_file_sha256"])
+                throw new InvalidDataException("Pinned shop partition authority changed");
+            var raw=AssetDatabase.LoadAssetAtPath<Mesh>(RawShopCollider);
+            var baseline=AssetDatabase.LoadAssetAtPath<Mesh>(FixtureShopCollider);
+            if(generated==null || raw==null || baseline==null || generated.blendShapeCount!=0 ||
+                generated.boneWeights.Length!=0 || generated.bindposes.Length!=0 || raw.vertexCount!=768 || raw.subMeshCount!=1 ||
+                raw.GetTopology(0)!=MeshTopology.Triangles || raw.triangles.Length!=384*3 ||
+                ArchitecturalCorrectionRegistry.CompleteChannelDigest(raw)!=(string)policy["raw_source_complete_digest"] ||
+                baseline.vertexCount!=768 || baseline.subMeshCount!=1 || baseline.GetTopology(0)!=MeshTopology.Triangles ||
+                baseline.triangles.Length!=132*3 ||
+                ArchitecturalCorrectionRegistry.CompleteChannelDigest(baseline)!=(string)policy["baseline_complete_digest"])
+                throw new InvalidDataException("Pinned raw or baseline shop collision changed");
+            var ordinals=JObject.Parse(File.ReadAllText(ordinalFile));
+            if((string)ordinals["kit_owner"]!=(string)policy["owner"] || (string)ordinals["kit_mesh"]["asset"]!=RawShopCollider)
+                throw new InvalidDataException("Shop collision ordinal owner changed");
+            var removed=ordinals["duplicate_kit_triangle_ordinals"].ToObject<int[]>();
+            var kept=ordinals["preserve_remaining_triangle_ordinals"].ToObject<int[]>();
+            var all=removed.Concat(kept).ToArray();
+            if(removed.Length!=252 || kept.Length!=132 || all.Distinct().Count()!=384 ||
+                all.Any(n => n<0 || n>=384) || Enumerable.Range(0,384).Except(all).Any() ||
+                !kept.SequenceEqual(Enumerable.Range(0,384).Except(removed)))
+                throw new InvalidDataException("Invalid exact shop collision partition");
+            var rawIndices=raw.triangles;
+            var expected=kept.SelectMany(n => rawIndices.Skip(n*3).Take(3)).ToArray();
+            if(!expected.SequenceEqual(baseline.triangles)) throw new InvalidDataException("Pinned shop fixture index order changed");
+            // Saved-source checks may supply the exact reviewed fixture baseline or the latest guide target.
+            // These states are accepted only after all original authority and partition checks above.
+            string generatedDigest=ArchitecturalCorrectionRegistry.CompleteChannelDigest(generated);
+            if(generatedDigest==(string)row["source_digest"] || generatedDigest==(string)row["replacement_digest"])
+                return generated;
+            if(generated.vertexCount!=768 || generated.subMeshCount!=1 || generated.GetTopology(0)!=MeshTopology.Triangles ||
+                generated.triangles.Length!=384*3 || generated.blendShapeCount!=0 || generated.boneWeights.Length!=0 ||
+                generated.bindposes.Length!=0 || generatedDigest!=(string)policy["raw_source_complete_digest"] ||
+                !generated.triangles.SequenceEqual(rawIndices))
+                throw new InvalidDataException("Fresh raw shop collision differs from its pinned source");
+            var partition=InteriorEnvelopeRepair.KeepOtherTriangles(generated,removed);
+            try
+            {
+                if(partition.vertexCount!=768 || partition.triangles.Length!=132*3 ||
+                    ArchitecturalCorrectionRegistry.CompleteChannelDigest(partition)!=(string)policy["baseline_complete_digest"])
+                    throw new InvalidDataException("Fresh shop fixture partition attributes changed");
+            }
+            finally { UnityEngine.Object.DestroyImmediate(partition); }
+            return baseline;
+        }
+

@@ -1,0 +1,3163 @@
+{
+  "schema_version": 1,
+  "created": "2026-10-08",
+  "purpose": "Capability definitions for registering physical inputs to atomic JEV composition. This file is design documentation, not a runtime placement or executable scenario catalogue.",
+  "runtime_registered_by_this_file": false,
+  "runtime_loads_this_file": false,
+  "current_inspection": {
+    "equipment_placement_files": 7,
+    "equipment_placement_items": 0,
+    "existing_equipment_prefabs": 44,
+    "existing_equipment_kinds": 34,
+    "source": "Assets/ChooGuard/Art/Emergency/Equipment/*.json and Prefabs/*.prefab; inspected 2026-10-08"
+  },
+  "common_registration_contract": {
+    "identity": [
+      "unique_object_id",
+      "kind",
+      "actual_source_reference",
+      "inside_building_floor_position"
+    ],
+    "state": [
+      "live physical values only",
+      "observed knowledge separately",
+      "state_version",
+      "last_state_change_game_time"
+    ],
+    "links": [
+      "explicit existing object IDs",
+      "electrical/water/gas/air/ownership/route dependencies as appropriate"
+    ],
+    "candidate": [
+      "source_id + atomic_transition_key + source_state_version",
+      "physical preconditions",
+      "same-source recheck immediately before execution",
+      "JEV per-transition imminence and magnitude judgement"
+    ],
+    "randomness": "Composition owns its seeded random stream. Registration, inventory, HUD and navigation consume no world or composition random draws.",
+    "absence": "Missing physical source or missing adapter means no origin candidate; unknown kinds retain inventory identity without gaining an invented origin."
+  },
+  "definitions": [
+    {
+      "kind": "passenger",
+      "label_ko": "승객",
+      "design_group": "medical;crowd",
+      "implementation_status": "implemented_existing_source",
+      "mesh_status": "existing_runtime_or_source_model",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/Passenger.cs",
+      "capabilities": [
+        "routine",
+        "medical_symptoms",
+        "observe",
+        "report",
+        "help"
+      ],
+      "physical_state_schema": [
+        "activity",
+        "visible",
+        "hurt",
+        "hostile",
+        "elderly",
+        "helping"
+      ],
+      "links_to_register": [
+        "current_position",
+        "noticed_hazard_ids"
+      ],
+      "atomic_transitions": [
+        "feels_faint",
+        "has_seizure",
+        "chest_pain",
+        "breathing_difficulty",
+        "low_blood_sugar"
+      ],
+      "observation_channels": [
+        "visible_pose",
+        "voice",
+        "direct_check"
+      ],
+      "runtime_behavior_required": "Existing medical and crowd adapters; do not invent unrecorded diagnoses.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "carried_power_bank",
+      "label_ko": "휴대 보조배터리",
+      "design_group": "fire",
+      "implementation_status": "implemented_existing_source",
+      "mesh_status": "existing_runtime_or_source_model",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/Passenger.cs",
+      "capabilities": [
+        "portable_battery",
+        "overheat"
+      ],
+      "physical_state_schema": [
+        "carries_power_bank",
+        "carrier_activity"
+      ],
+      "links_to_register": [
+        "carrier_passenger_id"
+      ],
+      "atomic_transitions": [
+        "overheats",
+        "smokes",
+        "ignites_bag"
+      ],
+      "observation_channels": [
+        "smoke",
+        "smell",
+        "flame"
+      ],
+      "runtime_behavior_required": "Existing CarriesPowerBank passenger proxy; no independent equipment object claimed.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "traveller_luggage",
+      "label_ko": "여행가방",
+      "design_group": "security;crowd",
+      "implementation_status": "implemented_existing_source",
+      "mesh_status": "existing_runtime_or_source_model",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/Passenger.cs",
+      "capabilities": [
+        "carried",
+        "can_be_left",
+        "can_tumble"
+      ],
+      "physical_state_schema": [
+        "luggage_class",
+        "owner_present",
+        "unattended"
+      ],
+      "links_to_register": [
+        "owner_passenger_id",
+        "escalator_id"
+      ],
+      "atomic_transitions": [
+        "owner_walks_away",
+        "slips_from_hand",
+        "curious_person_approaches"
+      ],
+      "observation_channels": [
+        "visual",
+        "owner_statement",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing passenger luggage proxy and SuspiciousItemHazard; separate two owners as distinct sources.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "stair_flight",
+      "label_ko": "계단",
+      "design_group": "crowd;medical",
+      "implementation_status": "implemented_existing_source",
+      "mesh_status": "existing_runtime_or_source_model",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/StationWorld.cs",
+      "capabilities": [
+        "vertical_walk",
+        "fall_support"
+      ],
+      "physical_state_schema": [
+        "navmesh_stair_area",
+        "walking_person_present"
+      ],
+      "links_to_register": [
+        "connected_floor_ids",
+        "walking_passenger_ids"
+      ],
+      "atomic_transitions": [
+        "walking_person_misses_step"
+      ],
+      "observation_channels": [
+        "visual",
+        "cry",
+        "witness_report"
+      ],
+      "runtime_behavior_required": "Existing mapped stair area; inspect actual walking actor, not a random stair event.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "escalator",
+      "label_ko": "에스컬레이터",
+      "design_group": "crowd;medical",
+      "implementation_status": "implemented_existing_source",
+      "mesh_status": "existing_runtime_or_source_model",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/StationLinks.cs",
+      "capabilities": [
+        "moving_steps",
+        "comb",
+        "emergency_stop"
+      ],
+      "physical_state_schema": [
+        "running",
+        "closed",
+        "rider_count"
+      ],
+      "links_to_register": [
+        "rider_ids",
+        "connected_floor_ids",
+        "stop_button_ids"
+      ],
+      "atomic_transitions": [
+        "rider_falls",
+        "comb_catches_clothing",
+        "luggage_tumbles",
+        "following_rider_falls"
+      ],
+      "observation_channels": [
+        "visual",
+        "motor_sound",
+        "button_state",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing escalator adapter and source checks; root indoor domain excludes outdoor links.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "elevator",
+      "label_ko": "엘리베이터",
+      "design_group": "facility;medical",
+      "implementation_status": "implemented_existing_source",
+      "mesh_status": "existing_runtime_or_source_model",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/StationLinks.cs",
+      "capabilities": [
+        "vertical_car",
+        "occupancy",
+        "alarm"
+      ],
+      "physical_state_schema": [
+        "running",
+        "inside_count",
+        "waiting"
+      ],
+      "links_to_register": [
+        "floor_stops",
+        "occupant_ids"
+      ],
+      "atomic_transitions": [
+        "occupied_car_stops",
+        "occupants_grow_distressed"
+      ],
+      "observation_channels": [
+        "door",
+        "alarm",
+        "intercom",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing elevator adapter; no trapped passenger without actual occupancy.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "hanging_board",
+      "label_ko": "천장 안내판",
+      "design_group": "natural_disaster;facility",
+      "implementation_status": "implemented_existing_source",
+      "mesh_status": "existing_runtime_or_source_model",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/EmergencyArt.cs",
+      "capabilities": [
+        "suspended_mass",
+        "fall",
+        "route_obstruction"
+      ],
+      "physical_state_schema": [
+        "remaining_live_item",
+        "attachment_state_not_measured"
+      ],
+      "links_to_register": [
+        "source_model_parts",
+        "floor_position",
+        "nearby_passenger_ids"
+      ],
+      "atomic_transitions": [
+        "fixing_fails",
+        "board_falls",
+        "impact_injures_person"
+      ],
+      "observation_channels": [
+        "visual",
+        "impact_sound",
+        "witness"
+      ],
+      "runtime_behavior_required": "Existing live HangingItem source; adapter rechecks the same item rather than choosing another sign.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "indoor_seat_point",
+      "label_ko": "실내 좌석 지점",
+      "design_group": "crowd",
+      "implementation_status": "implemented_existing_source",
+      "mesh_status": "existing_runtime_or_source_model",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/StationPoints.cs",
+      "capabilities": [
+        "seat_place",
+        "waiting_anchor"
+      ],
+      "physical_state_schema": [
+        "point_kind",
+        "occupied_slot"
+      ],
+      "links_to_register": [
+        "point_id",
+        "slot_id",
+        "nearby_passenger_ids"
+      ],
+      "atomic_transitions": [
+        "person_sits",
+        "person_notices_existing_object"
+      ],
+      "observation_channels": [
+        "visual",
+        "witness"
+      ],
+      "runtime_behavior_required": "This is a mapped place, not registered equipment. A seat marker must not establish an envelope or appliance.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "indoor_shop_point",
+      "label_ko": "실내 점포 지점",
+      "design_group": "facility",
+      "implementation_status": "implemented_existing_source",
+      "mesh_status": "existing_runtime_or_source_model",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/StationPoints.cs",
+      "capabilities": [
+        "shop_place",
+        "waiting_anchor"
+      ],
+      "physical_state_schema": [
+        "point_kind",
+        "position"
+      ],
+      "links_to_register": [
+        "point_id",
+        "registered_appliance_ids"
+      ],
+      "atomic_transitions": [
+        "people_wait",
+        "people_notice_registered_hazard"
+      ],
+      "observation_channels": [
+        "visual",
+        "report"
+      ],
+      "runtime_behavior_required": "This place marker does not prove a fryer, socket or worker exists; link only actual registered sources.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "distribution_board",
+      "label_ko": "분전반",
+      "design_group": "electric;fire",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.ElectricPlaza.cs",
+      "capabilities": [
+        "board_fire"
+      ],
+      "physical_state_schema": [
+        "live",
+        "main_breaker",
+        "branch_breakers",
+        "damaged"
+      ],
+      "links_to_register": [
+        "fed_load_ids",
+        "lighting_zone"
+      ],
+      "atomic_transitions": [
+        "terminal_overheats",
+        "insulation_smokes",
+        "feed_cut"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "vending_machine",
+      "label_ko": "자동판매기",
+      "design_group": "electric;fire",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.ElectricPlaza.cs",
+      "capabilities": [
+        "vending_fire"
+      ],
+      "physical_state_schema": [
+        "powered",
+        "burnt",
+        "switch"
+      ],
+      "links_to_register": [
+        "distribution_board_id",
+        "circuit_id"
+      ],
+      "atomic_transitions": [
+        "motor_or_wiring_overheats",
+        "smokes",
+        "ignites"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "charging_kiosk",
+      "label_ko": "휴대폰 충전함",
+      "design_group": "electric;fire",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.ElectricPlaza.cs",
+      "capabilities": [
+        "kiosk_fire"
+      ],
+      "physical_state_schema": [
+        "powered",
+        "burnt",
+        "actual_occupied_slots"
+      ],
+      "links_to_register": [
+        "circuit_id",
+        "actual_device_ids"
+      ],
+      "atomic_transitions": [
+        "charger_overheats",
+        "registered_battery_heats",
+        "smokes"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "litter_bin",
+      "label_ko": "휴지통",
+      "design_group": "fire",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.Fire.cs",
+      "capabilities": [
+        "bin_fire"
+      ],
+      "physical_state_schema": [
+        "contents_observed",
+        "near_exit"
+      ],
+      "links_to_register": [
+        "nearby_exit_id"
+      ],
+      "atomic_transitions": [
+        "rubbish_smoulders",
+        "flames_grow"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "recycling_bin",
+      "label_ko": "분리수거함",
+      "design_group": "fire",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.Fire.cs",
+      "capabilities": [
+        "bin_battery_fire"
+      ],
+      "physical_state_schema": [
+        "contents_observed",
+        "battery_presence_not_measured"
+      ],
+      "links_to_register": [
+        "nearby_people_ids"
+      ],
+      "atomic_transitions": [
+        "discarded_battery_proxy_overheats",
+        "contents_ignite"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "smoke_detector",
+      "label_ko": "연기감지기",
+      "design_group": "alarm;fire",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.FireSafety.cs",
+      "capabilities": [
+        "false_alarm"
+      ],
+      "physical_state_schema": [
+        "normal",
+        "tripped",
+        "coverage",
+        "room"
+      ],
+      "links_to_register": [
+        "alarm_panel_id",
+        "covered_sources"
+      ],
+      "atomic_transitions": [
+        "senses_smoke",
+        "trips_without_fire"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "sprinkler_pipe",
+      "label_ko": "스프링클러 배관",
+      "design_group": "water;facility",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.FireSafety.Sprinklers.cs",
+      "capabilities": [
+        "water_leak"
+      ],
+      "physical_state_schema": [
+        "pressure_source",
+        "valve",
+        "floor_height",
+        "joints"
+      ],
+      "links_to_register": [
+        "zone_valve_id",
+        "physical_pipe_segment"
+      ],
+      "atomic_transitions": [
+        "joint_fails",
+        "water_leaks",
+        "floor_wets"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "sprinkler_head",
+      "label_ko": "스프링클러 헤드",
+      "design_group": "water;fire",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.FireSafety.Sprinklers.cs",
+      "capabilities": [
+        "sprinkler_discharge"
+      ],
+      "physical_state_schema": [
+        "activated",
+        "mount_height",
+        "valve_state"
+      ],
+      "links_to_register": [
+        "zone_valve_id",
+        "pipe_id"
+      ],
+      "atomic_transitions": [
+        "bulb_opens",
+        "head_sprays",
+        "floor_wets"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "fire_shutter",
+      "label_ko": "방화셔터",
+      "design_group": "facility;crowd",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.FireSafety.Shutters.cs",
+      "capabilities": [
+        "shutter_malfunction"
+      ],
+      "physical_state_schema": [
+        "curtain_height",
+        "fault",
+        "closed"
+      ],
+      "links_to_register": [
+        "control_id",
+        "detector_zone",
+        "blocked_link_ids"
+      ],
+      "atomic_transitions": [
+        "control_fault_lowers_curtain",
+        "passage_closes"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "kitchen_fryer",
+      "label_ko": "튀김기",
+      "design_group": "kitchen;fire",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.KitchenGas.cs",
+      "capabilities": [
+        "fryer_oil_fire"
+      ],
+      "physical_state_schema": [
+        "on",
+        "oil",
+        "spent_source"
+      ],
+      "links_to_register": [
+        "shop_id",
+        "power_switch",
+        "hood_id"
+      ],
+      "atomic_transitions": [
+        "oil_overheats",
+        "oil_ignites",
+        "feed_cut"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "gas_range",
+      "label_ko": "가스레인지",
+      "design_group": "kitchen;gas;fire",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.KitchenGas.cs",
+      "capabilities": [
+        "kitchen_fire",
+        "gas_cock_open"
+      ],
+      "physical_state_schema": [
+        "on",
+        "cock",
+        "valve_open"
+      ],
+      "links_to_register": [
+        "shop_id",
+        "hose_id",
+        "intermediate_valve_id",
+        "main_valve_id"
+      ],
+      "atomic_transitions": [
+        "pan_burns",
+        "flame_goes_out",
+        "unlit_gas_leaks"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "kitchen_oven",
+      "label_ko": "오븐",
+      "design_group": "kitchen;fire",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.KitchenGas.cs",
+      "capabilities": [
+        "oven_fire"
+      ],
+      "physical_state_schema": [
+        "on",
+        "spent_source",
+        "door"
+      ],
+      "links_to_register": [
+        "shop_id",
+        "power_switch",
+        "hood_id"
+      ],
+      "atomic_transitions": [
+        "food_or_grease_burns",
+        "smoke_leaks",
+        "power_cut"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "gas_hose",
+      "label_ko": "가스 호스",
+      "design_group": "kitchen;gas",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.KitchenGas.cs",
+      "capabilities": [
+        "gas_hose_off"
+      ],
+      "physical_state_schema": [
+        "attached",
+        "detached",
+        "gas_feed"
+      ],
+      "links_to_register": [
+        "range_id",
+        "fuse_cock_id",
+        "main_valve_id"
+      ],
+      "atomic_transitions": [
+        "hose_detaches",
+        "gas_leaks",
+        "valve_stops_feed"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "gas_meter",
+      "label_ko": "가스 계량기",
+      "design_group": "kitchen;gas",
+      "implementation_status": "implemented_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.KitchenGas.cs",
+      "capabilities": [
+        "gas_meter_leak"
+      ],
+      "physical_state_schema": [
+        "union",
+        "main_valve_open"
+      ],
+      "links_to_register": [
+        "shop_id",
+        "main_valve_id"
+      ],
+      "atomic_transitions": [
+        "union_leaks",
+        "main_valve_stops_feed"
+      ],
+      "observation_channels": [
+        "visual",
+        "equipment_state",
+        "smoke_or_water_or_sound",
+        "report"
+      ],
+      "runtime_behavior_required": "Existing source adapter needs an actual registered indoor placement and its dependent links. All seven equipment placement files currently have zero items.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "alarm_panel",
+      "label_ko": "화재 수신기",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "zone_signal",
+        "alarm_display"
+      ],
+      "physical_state_schema": [
+        "normal",
+        "zone_tripped",
+        "reset"
+      ],
+      "links_to_register": [
+        "detector_ids",
+        "bell_ids"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "alarm_bell",
+      "label_ko": "비상벨",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "audible_alarm"
+      ],
+      "physical_state_schema": [
+        "ringing"
+      ],
+      "links_to_register": [
+        "alarm_panel_id"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "heat_detector",
+      "label_ko": "열감지기",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "heat_detection"
+      ],
+      "physical_state_schema": [
+        "normal",
+        "tripped",
+        "coverage"
+      ],
+      "links_to_register": [
+        "alarm_panel_id",
+        "covered_source_ids"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "beam_detector",
+      "label_ko": "광전식 분리형 감지기",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "beam_detection"
+      ],
+      "physical_state_schema": [
+        "normal",
+        "tripped",
+        "receiver"
+      ],
+      "links_to_register": [
+        "paired_detector_id",
+        "alarm_panel_id"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "sprinkler_valve",
+      "label_ko": "스프링클러 밸브",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "water_feed_stop"
+      ],
+      "physical_state_schema": [
+        "open",
+        "closed"
+      ],
+      "links_to_register": [
+        "pipe_ids",
+        "head_ids"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "fire_door",
+      "label_ko": "방화문",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "fire_compartment",
+        "passage"
+      ],
+      "physical_state_schema": [
+        "open",
+        "closed",
+        "interlock"
+      ],
+      "links_to_register": [
+        "fire_zone_id",
+        "route_link_ids"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "shutter_control",
+      "label_ko": "방화셔터 제어함",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "raise",
+        "stop",
+        "reset"
+      ],
+      "physical_state_schema": [
+        "power",
+        "fault"
+      ],
+      "links_to_register": [
+        "shutter_id"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "cctv_camera",
+      "label_ko": "CCTV",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "remote_observation"
+      ],
+      "physical_state_schema": [
+        "coverage",
+        "visible_view"
+      ],
+      "links_to_register": [
+        "camera_monitor_id",
+        "zone_id"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "gas_valve",
+      "label_ko": "가스 밸브",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "gas_feed_stop"
+      ],
+      "physical_state_schema": [
+        "open",
+        "closed",
+        "main_or_branch"
+      ],
+      "links_to_register": [
+        "shop_id",
+        "fed_source_ids"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "fuse_cock",
+      "label_ko": "퓨즈콕",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "gas_flow_stop"
+      ],
+      "physical_state_schema": [
+        "open",
+        "closed",
+        "operated"
+      ],
+      "links_to_register": [
+        "hose_id",
+        "range_id"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "gas_alarm",
+      "label_ko": "가스 누출 경보기",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "gas_detection",
+        "audible_alarm"
+      ],
+      "physical_state_schema": [
+        "gas_reaches_sensor",
+        "alarming"
+      ],
+      "links_to_register": [
+        "shop_id",
+        "leak_source_ids"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "kitchen_auto_extinguisher",
+      "label_ko": "주방 자동소화 장치",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "automatic_discharge"
+      ],
+      "physical_state_schema": [
+        "unspent",
+        "discharged",
+        "bulb"
+      ],
+      "links_to_register": [
+        "hood_id",
+        "appliance_ids"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "kitchen_k_extinguisher",
+      "label_ko": "K급 소화기",
+      "design_group": "detection;response",
+      "implementation_status": "implemented_response_adapter_unplaced",
+      "mesh_status": "existing_prefab",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "Assets/ChooGuard/App/Fps/Equipment/",
+      "capabilities": [
+        "cooking_oil_suppression"
+      ],
+      "physical_state_schema": [
+        "available",
+        "used"
+      ],
+      "links_to_register": [
+        "hands",
+        "reachable_fire_id"
+      ],
+      "atomic_transitions": [
+        "responds_to_existing_source",
+        "changes_own_state"
+      ],
+      "observation_channels": [
+        "visual",
+        "audio",
+        "equipment_state",
+        "direct_interaction"
+      ],
+      "runtime_behavior_required": "Existing response component requires an actual registered placement. This definition adds no spontaneous origin adapter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "inspected_current_code",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "entrance_auto_door",
+      "label_ko": "자동 출입문",
+      "design_group": "facility;crowd",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "facility",
+        "crowd",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "powered",
+        "open",
+        "closing",
+        "blocked"
+      ],
+      "links_to_register": [
+        "power_circuit",
+        "route_link",
+        "person_ids"
+      ],
+      "atomic_transitions": [
+        "door_jams",
+        "closing_motion_stops",
+        "person_is_caught"
+      ],
+      "observation_channels": [
+        "door_motion",
+        "warning_sound"
+      ],
+      "runtime_behavior_required": "Door state controller, safe collision/entrapment detection, manual stop and route closure.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "ticket_gate",
+      "label_ko": "개찰구",
+      "design_group": "facility;crowd",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "facility",
+        "crowd",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "powered",
+        "open",
+        "locked",
+        "flow"
+      ],
+      "links_to_register": [
+        "power_circuit",
+        "route_link",
+        "person_ids"
+      ],
+      "atomic_transitions": [
+        "gate_stalls",
+        "passage_locks",
+        "queue_builds"
+      ],
+      "observation_channels": [
+        "visual",
+        "beep"
+      ],
+      "runtime_behavior_required": "Gate adapter linked to actual queue density and safe alternate routes.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "storage_locker",
+      "label_ko": "보관함",
+      "design_group": "security;fire",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "security",
+        "fire",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "occupied",
+        "owner",
+        "closed",
+        "temperature"
+      ],
+      "links_to_register": [
+        "owner_id",
+        "contents_id",
+        "camera_id"
+      ],
+      "atomic_transitions": [
+        "owner_leaves_registered_item",
+        "contents_smoke",
+        "witness_reports"
+      ],
+      "observation_channels": [
+        "visual",
+        "smell",
+        "report"
+      ],
+      "runtime_behavior_required": "Persistent contents/ownership identity; suspicious appearance alone must not establish a device.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "unattended_package",
+      "label_ko": "등록 소포",
+      "design_group": "security",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "security",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "owner",
+        "location",
+        "opened",
+        "observed_condition"
+      ],
+      "links_to_register": [
+        "owner_id",
+        "camera_id"
+      ],
+      "atomic_transitions": [
+        "owner_walks_away",
+        "person_notices",
+        "police_inspects"
+      ],
+      "observation_channels": [
+        "visual",
+        "report"
+      ],
+      "runtime_behavior_required": "Registered neutral prop with ownership/inspection state. No explosive construction or automatic guilt by appearance.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "portable_charging_cart",
+      "label_ko": "이동 충전 카트",
+      "design_group": "electric;fire",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "electric",
+        "fire",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "charge",
+        "power",
+        "temperature",
+        "parked"
+      ],
+      "links_to_register": [
+        "power_feed",
+        "registered_battery_ids",
+        "route_link"
+      ],
+      "atomic_transitions": [
+        "battery_heats",
+        "cart_smokes",
+        "cart_blocks_passage"
+      ],
+      "observation_channels": [
+        "visual",
+        "smell",
+        "alarm"
+      ],
+      "runtime_behavior_required": "Battery/thermal proxy, safe feed isolation and persistent route obstruction.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "power_strip",
+      "label_ko": "멀티탭",
+      "design_group": "electric;fire",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "electric",
+        "fire",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "powered",
+        "connected_load",
+        "temperature",
+        "wet"
+      ],
+      "links_to_register": [
+        "circuit_id",
+        "load_ids",
+        "water_source_id"
+      ],
+      "atomic_transitions": [
+        "connection_heats",
+        "water_reaches_live_strip",
+        "protection_trips"
+      ],
+      "observation_channels": [
+        "smoke",
+        "sparks",
+        "equipment_state"
+      ],
+      "runtime_behavior_required": "Electrical dependency graph and wet/live checks; no invented overload state.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "laptop",
+      "label_ko": "노트북",
+      "design_group": "electric;fire",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "electric",
+        "fire",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "powered",
+        "battery_temperature",
+        "owner"
+      ],
+      "links_to_register": [
+        "owner_id",
+        "charger_id"
+      ],
+      "atomic_transitions": [
+        "battery_heats",
+        "smokes",
+        "owner_moves_away"
+      ],
+      "observation_channels": [
+        "visual",
+        "smell",
+        "report"
+      ],
+      "runtime_behavior_required": "Bind actual carried or placed device and visual thermal states.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "timetable_display",
+      "label_ko": "전광판",
+      "design_group": "electric;crowd",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "electric",
+        "crowd",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "powered",
+        "attached",
+        "display_state"
+      ],
+      "links_to_register": [
+        "circuit_id",
+        "attachment_id",
+        "nearby_people"
+      ],
+      "atomic_transitions": [
+        "display_goes_dark",
+        "fixing_fails",
+        "display_falls"
+      ],
+      "observation_channels": [
+        "visual",
+        "impact"
+      ],
+      "runtime_behavior_required": "Electrical and attachment adapters; keep service-information uncertainty separate from hazard truth.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "exit_guidance_sign",
+      "label_ko": "피난 유도등",
+      "design_group": "electric;crowd",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "electric",
+        "crowd",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "powered",
+        "backup_power",
+        "visible"
+      ],
+      "links_to_register": [
+        "circuit_id",
+        "route_exit_id"
+      ],
+      "atomic_transitions": [
+        "supply_fails",
+        "backup_expires",
+        "people_hesitate"
+      ],
+      "observation_channels": [
+        "visual",
+        "report"
+      ],
+      "runtime_behavior_required": "Lighting state tied to actual circuit; route guidance uses only player-known failures.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "emergency_light",
+      "label_ko": "비상 조명",
+      "design_group": "electric;crowd",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "electric",
+        "crowd",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "mains",
+        "backup_charge",
+        "light_output"
+      ],
+      "links_to_register": [
+        "circuit_id",
+        "covered_floor_zone"
+      ],
+      "atomic_transitions": [
+        "mains_fails",
+        "backup_runs",
+        "backup_exhausts"
+      ],
+      "observation_channels": [
+        "visual"
+      ],
+      "runtime_behavior_required": "Area visibility proxy and actual supply links; no visual noise random calls.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "public_alert_receiver",
+      "label_ko": "재난 경보 수신기",
+      "design_group": "wartime;natural_disaster",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "wartime",
+        "natural_disaster",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "signal_received",
+        "verified_training_alert",
+        "audible"
+      ],
+      "links_to_register": [
+        "pa_controller_id",
+        "office_id"
+      ],
+      "atomic_transitions": [
+        "registered_receiver_gets_warning",
+        "office_broadcasts",
+        "people_seek_protection"
+      ],
+      "observation_channels": [
+        "radio",
+        "display",
+        "siren"
+      ],
+      "runtime_behavior_required": "Explicit simulated/verified warning input and acknowledgement state. World news, war and outside strikes are not invented.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "pa_controller",
+      "label_ko": "방송 제어기",
+      "design_group": "wartime;response",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "wartime",
+        "response",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "powered",
+        "working",
+        "broadcast_channel"
+      ],
+      "links_to_register": [
+        "speaker_ids",
+        "microphone_id",
+        "power_feed"
+      ],
+      "atomic_transitions": [
+        "broadcast_starts",
+        "broadcast_interrupts",
+        "staff_retries"
+      ],
+      "observation_channels": [
+        "audio",
+        "panel",
+        "radio"
+      ],
+      "runtime_behavior_required": "Actual equipment fault and audible coverage; support warning, evacuation and uncertainty announcements.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "intercom",
+      "label_ko": "비상 인터폰",
+      "design_group": "medical;response",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "medical",
+        "response",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "powered",
+        "call_active",
+        "working"
+      ],
+      "links_to_register": [
+        "office_id",
+        "caller_id",
+        "power_feed"
+      ],
+      "atomic_transitions": [
+        "person_calls",
+        "call_connects",
+        "call_interrupts"
+      ],
+      "observation_channels": [
+        "audio",
+        "indicator"
+      ],
+      "runtime_behavior_required": "Call state machine and localized report with caller knowledge preserved.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "radio_terminal",
+      "label_ko": "무전 단말",
+      "design_group": "response;wartime",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "response",
+        "wartime",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "power",
+        "channel",
+        "signal_quality"
+      ],
+      "links_to_register": [
+        "agency_id",
+        "office_id"
+      ],
+      "atomic_transitions": [
+        "report_transmitted",
+        "report_unheard",
+        "staff_retries"
+      ],
+      "observation_channels": [
+        "audio",
+        "indicator"
+      ],
+      "runtime_behavior_required": "Equipment communication state; no cybersecurity attack mechanics required.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "communication_router",
+      "label_ko": "통신 장비",
+      "design_group": "facility;response",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "facility",
+        "response",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "power",
+        "connection",
+        "temperature"
+      ],
+      "links_to_register": [
+        "circuit_id",
+        "connected_terminal_ids"
+      ],
+      "atomic_transitions": [
+        "supply_fails",
+        "connection_drops",
+        "heat_rises"
+      ],
+      "observation_channels": [
+        "panel",
+        "radio_report"
+      ],
+      "runtime_behavior_required": "Benign equipment fault dependency; do not model intrusion/exploitation.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "ventilation_fan",
+      "label_ko": "환기 팬",
+      "design_group": "smoke;gas;facility",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "smoke",
+        "gas",
+        "facility",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "power",
+        "running",
+        "airflow_direction"
+      ],
+      "links_to_register": [
+        "duct_zone_ids",
+        "power_feed"
+      ],
+      "atomic_transitions": [
+        "fan_stops",
+        "airflow_changes",
+        "smoke_accumulates"
+      ],
+      "observation_channels": [
+        "sound",
+        "airflow",
+        "smoke"
+      ],
+      "runtime_behavior_required": "Zone airflow and smoke/gas transport proxy with actual connected openings.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "smoke_damper",
+      "label_ko": "방연 댐퍼",
+      "design_group": "smoke;facility",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "smoke",
+        "facility",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "open",
+        "closed",
+        "actuator_working"
+      ],
+      "links_to_register": [
+        "duct_id",
+        "alarm_zone_id"
+      ],
+      "atomic_transitions": [
+        "damper_closes",
+        "actuator_stalls",
+        "smoke_path_changes"
+      ],
+      "observation_channels": [
+        "panel",
+        "airflow",
+        "inspection"
+      ],
+      "runtime_behavior_required": "Compartment flow graph and safe default for an unknown state.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "drain_pump",
+      "label_ko": "배수 펌프",
+      "design_group": "natural_disaster;water",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "natural_disaster",
+        "water",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "power",
+        "running",
+        "water_inflow",
+        "capacity"
+      ],
+      "links_to_register": [
+        "drain_zone",
+        "power_feed",
+        "water_source_ids"
+      ],
+      "atomic_transitions": [
+        "pump_stops",
+        "water_rises",
+        "protection_trips"
+      ],
+      "observation_channels": [
+        "water",
+        "motor_sound",
+        "alarm"
+      ],
+      "runtime_behavior_required": "Indoor water volume and capacity model tied to actual ingress/piping; no exterior flood actor needed.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "floor_drain",
+      "label_ko": "바닥 배수구",
+      "design_group": "water;medical",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "water",
+        "medical",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "clear",
+        "blocked",
+        "water_level"
+      ],
+      "links_to_register": [
+        "water_zone",
+        "registered_debris_ids"
+      ],
+      "atomic_transitions": [
+        "drain_blocks",
+        "water_pools",
+        "walker_slips"
+      ],
+      "observation_channels": [
+        "visual",
+        "witness"
+      ],
+      "runtime_behavior_required": "Registered obstruction/source identity and wet-floor radius.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "roof_drain",
+      "label_ko": "실내 우수 배관",
+      "design_group": "natural_disaster;water",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "natural_disaster",
+        "water",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "flow",
+        "blocked",
+        "joint_integrity"
+      ],
+      "links_to_register": [
+        "roof_water_input",
+        "pipe_segment",
+        "floor_zone"
+      ],
+      "atomic_transitions": [
+        "pipe_overflows",
+        "joint_leaks",
+        "ceiling_wets"
+      ],
+      "observation_channels": [
+        "drip",
+        "water",
+        "smell"
+      ],
+      "runtime_behavior_required": "Explicit weather/input state feeding a registered indoor pipe; no unbound storm event.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "window_panel",
+      "label_ko": "실내 유리창",
+      "design_group": "natural_disaster;facility",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "natural_disaster",
+        "facility",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "intact",
+        "fixing",
+        "cracked"
+      ],
+      "links_to_register": [
+        "frame_id",
+        "indoor_floor_zone",
+        "nearby_people"
+      ],
+      "atomic_transitions": [
+        "panel_cracks",
+        "panel_falls",
+        "floor_is_obstructed"
+      ],
+      "observation_channels": [
+        "visual",
+        "impact"
+      ],
+      "runtime_behavior_required": "Break/fall visual proxy, injury radius and route closure; force requires an explicit registered environmental input.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "ceiling_panel",
+      "label_ko": "천장 패널",
+      "design_group": "natural_disaster;facility",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "natural_disaster",
+        "facility",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "attached",
+        "wet",
+        "damaged"
+      ],
+      "links_to_register": [
+        "fixing_id",
+        "water_source_id",
+        "floor_zone"
+      ],
+      "atomic_transitions": [
+        "water_weakens_fixing",
+        "panel_detaches",
+        "falls"
+      ],
+      "observation_channels": [
+        "visual",
+        "drip",
+        "impact"
+      ],
+      "runtime_behavior_required": "Actual source item binding, attachment/wet state and same-source recheck.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "suspended_light",
+      "label_ko": "천장 조명",
+      "design_group": "natural_disaster;electric",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "natural_disaster",
+        "electric",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "attached",
+        "powered",
+        "damage"
+      ],
+      "links_to_register": [
+        "fixing_id",
+        "circuit_id",
+        "floor_zone"
+      ],
+      "atomic_transitions": [
+        "mount_fails",
+        "light_falls",
+        "wire_supply_isolated"
+      ],
+      "observation_channels": [
+        "visual",
+        "impact",
+        "sparks"
+      ],
+      "runtime_behavior_required": "Linked attachment and circuit adapters; shared falling-object hazard.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "glass_partition",
+      "label_ko": "유리 칸막이",
+      "design_group": "facility;crowd",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "facility",
+        "crowd",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "intact",
+        "damaged",
+        "clearance"
+      ],
+      "links_to_register": [
+        "frame_id",
+        "route_link",
+        "nearby_people"
+      ],
+      "atomic_transitions": [
+        "partition_breaks",
+        "debris_blocks_passage"
+      ],
+      "observation_channels": [
+        "visual",
+        "impact",
+        "report"
+      ],
+      "runtime_behavior_required": "Safe break visual proxy and injury/obstruction state without detailed weapon physics.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "floor_liquid_container",
+      "label_ko": "실내 액체 용기",
+      "design_group": "medical;facility",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "medical",
+        "facility",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "closed",
+        "upright",
+        "contents_known",
+        "spilled"
+      ],
+      "links_to_register": [
+        "owner_id",
+        "floor_zone"
+      ],
+      "atomic_transitions": [
+        "container_tips",
+        "liquid_spills",
+        "walker_slips"
+      ],
+      "observation_channels": [
+        "visual",
+        "smell",
+        "report"
+      ],
+      "runtime_behavior_required": "Neutral spill prop with content knowledge separate from actual contents.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "cleaning_cart",
+      "label_ko": "청소 카트",
+      "design_group": "facility;medical",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "facility",
+        "medical",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "parked",
+        "moving",
+        "loaded",
+        "stable"
+      ],
+      "links_to_register": [
+        "worker_id",
+        "route_link",
+        "container_ids"
+      ],
+      "atomic_transitions": [
+        "cart_rolls",
+        "container_spills",
+        "passage_blocks"
+      ],
+      "observation_channels": [
+        "visual",
+        "witness"
+      ],
+      "runtime_behavior_required": "Worker and carried-content registration; safe motion and obstructions.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "service_trolley",
+      "label_ko": "운반 카트",
+      "design_group": "crowd;medical",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "crowd",
+        "medical",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "braked",
+        "moving",
+        "load_stable"
+      ],
+      "links_to_register": [
+        "operator_id",
+        "registered_load_ids",
+        "route_link"
+      ],
+      "atomic_transitions": [
+        "brake_releases",
+        "load_falls",
+        "person_is_struck"
+      ],
+      "observation_channels": [
+        "visual",
+        "impact",
+        "report"
+      ],
+      "runtime_behavior_required": "Cart velocity and load-support proxies; no injury without a reachable actual actor.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "wheelchair",
+      "label_ko": "휠체어",
+      "design_group": "medical;crowd",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "medical",
+        "crowd",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "occupied",
+        "braked",
+        "accessible_route"
+      ],
+      "links_to_register": [
+        "occupant_id",
+        "helper_id",
+        "route_link"
+      ],
+      "atomic_transitions": [
+        "route_becomes_unusable",
+        "helper_calls",
+        "occupant_needs_assistance"
+      ],
+      "observation_channels": [
+        "visual",
+        "voice",
+        "report"
+      ],
+      "runtime_behavior_required": "Mobility profile and reachable safe-route support; do not turn disability into an inherent hazard.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "aed_cabinet",
+      "label_ko": "AED 보관함",
+      "design_group": "medical;response",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "medical",
+        "response",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "available",
+        "opened",
+        "device_present"
+      ],
+      "links_to_register": [
+        "aed_id",
+        "location_id"
+      ],
+      "atomic_transitions": [
+        "staff_opens",
+        "device_is_taken",
+        "availability_changes"
+      ],
+      "observation_channels": [
+        "visual",
+        "alarm",
+        "interaction"
+      ],
+      "runtime_behavior_required": "Equipment accessibility/inventory and trained-response handoff; no invented clinical efficacy.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "first_aid_station",
+      "label_ko": "응급 처치 물품함",
+      "design_group": "medical;response",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "medical",
+        "response",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "accessible",
+        "inventory",
+        "used"
+      ],
+      "links_to_register": [
+        "staff_id",
+        "casualty_id"
+      ],
+      "atomic_transitions": [
+        "supplies_retrieved",
+        "missing_supply_noticed"
+      ],
+      "observation_channels": [
+        "visual",
+        "interaction"
+      ],
+      "runtime_behavior_required": "Resource inventory and treatment/handoff tracking, linked to an observed casualty.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "crowd_barrier",
+      "label_ko": "이동식 통제 펜스",
+      "design_group": "crowd;response",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "crowd",
+        "response",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "placed",
+        "stable",
+        "opening_width"
+      ],
+      "links_to_register": [
+        "route_link",
+        "staff_id",
+        "hazard_id"
+      ],
+      "atomic_transitions": [
+        "barrier_placed",
+        "people_redirect",
+        "barrier_topples"
+      ],
+      "observation_channels": [
+        "visual",
+        "impact"
+      ],
+      "runtime_behavior_required": "Known route obstruction and flow-density change; UI cannot reveal unobserved placement.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "shelter_marker",
+      "label_ko": "실내 임시 보호 구역 표지",
+      "design_group": "wartime;response",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "wartime",
+        "response",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "designated",
+        "accessible",
+        "capacity"
+      ],
+      "links_to_register": [
+        "protected_indoor_zone",
+        "staff_id",
+        "route_links"
+      ],
+      "atomic_transitions": [
+        "staff_designates",
+        "people_arrive",
+        "capacity_is_reached"
+      ],
+      "observation_channels": [
+        "visual",
+        "broadcast"
+      ],
+      "runtime_behavior_required": "Only a reviewed indoor zone can be designated; do not label any room a verified real wartime shelter.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "suspicious_substance_container",
+      "label_ko": "미확인 물질 용기",
+      "design_group": "security;medical",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "security",
+        "medical",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "sealed",
+        "leaking",
+        "contents_unknown",
+        "source_verified"
+      ],
+      "links_to_register": [
+        "owner_id",
+        "floor_zone",
+        "ventilation_zone"
+      ],
+      "atomic_transitions": [
+        "container_leaks",
+        "person_notices",
+        "exposed_person_reports_symptoms"
+      ],
+      "observation_channels": [
+        "visual",
+        "odor_if_defined",
+        "report"
+      ],
+      "runtime_behavior_required": "Generic high-level exposure proxy and isolation/agency handoff. No chemical recipe, dispersal design or identification by appearance.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "security_person_actor",
+      "label_ko": "보안 상황 행위자",
+      "design_group": "security;crowd",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "security",
+        "crowd",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "intent_registered",
+        "observable_behavior",
+        "restrained"
+      ],
+      "links_to_register": [
+        "person_id",
+        "carried_prop_ids",
+        "noticed_hazard_ids"
+      ],
+      "atomic_transitions": [
+        "person_threatens",
+        "people_move_away",
+        "police_intervenes"
+      ],
+      "observation_channels": [
+        "visual",
+        "voice",
+        "witness"
+      ],
+      "runtime_behavior_required": "Training-only behavior state machine, neutral prop identity, safe separation and police handoff. No attack planning.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "incident_notice_terminal",
+      "label_ko": "현장 신고 단말",
+      "design_group": "security;wartime;response",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "security",
+        "wartime",
+        "response",
+        "live_state",
+        "local_observation"
+      ],
+      "physical_state_schema": [
+        "powered",
+        "message_received",
+        "verified"
+      ],
+      "links_to_register": [
+        "reporter_id",
+        "reported_source_ids",
+        "office_id"
+      ],
+      "atomic_transitions": [
+        "report_received",
+        "staff_checks",
+        "report_is_corrected"
+      ],
+      "observation_channels": [
+        "display",
+        "radio"
+      ],
+      "runtime_behavior_required": "Knowledge provenance and reliability state; a reported second source must resolve to an actual registered object.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "training_hazard_device",
+      "label_ko": "훈련용 위험 장치 프록시",
+      "design_group": "security;fire;medical",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "local_simulated_hazard_effect",
+        "observable_cues"
+      ],
+      "physical_state_schema": [
+        "registered",
+        "inert",
+        "explicit_training_activation",
+        "effect_radius"
+      ],
+      "links_to_register": [
+        "source_prop_id",
+        "nearby_registered_object_ids",
+        "responding_agency"
+      ],
+      "atomic_transitions": [
+        "training_activation_changes_local_hazard_state",
+        "nearby_person_is_affected",
+        "police_checks"
+      ],
+      "observation_channels": [
+        "visual",
+        "sound",
+        "smoke",
+        "report"
+      ],
+      "runtime_behavior_required": "Non-operational training prop with a reviewed local effect proxy and safe-distance/isolation/handoff. Do not implement a real device, recipe, attack plan or automatic certainty from appearance.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "training_smoke_source",
+      "label_ko": "훈련용 연무 발생원",
+      "design_group": "security;smoke;medical",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "local_smoke_proxy",
+        "observable_cues"
+      ],
+      "physical_state_schema": [
+        "registered",
+        "inactive",
+        "training_release_active",
+        "flow"
+      ],
+      "links_to_register": [
+        "ventilation_zone",
+        "nearby_person_ids"
+      ],
+      "atomic_transitions": [
+        "training_source_releases_smoke",
+        "flow_carries_smoke",
+        "person_reports_breathing_difficulty"
+      ],
+      "observation_channels": [
+        "visual",
+        "voice",
+        "report"
+      ],
+      "runtime_behavior_required": "Generic smoke/exposure simulation from a registered source, airflow and agency handoff; no real substance or dispersal-device instructions.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "food_item",
+      "label_ko": "음식 소품",
+      "design_group": "medical",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "eating_proxy",
+        "ownership"
+      ],
+      "physical_state_schema": [
+        "present",
+        "being_eaten",
+        "owner"
+      ],
+      "links_to_register": [
+        "owner_passenger_id",
+        "shop_id"
+      ],
+      "atomic_transitions": [
+        "eating_person_shows_distress",
+        "bystander_notices",
+        "staff_reports"
+      ],
+      "observation_channels": [
+        "visual",
+        "voice",
+        "witness"
+      ],
+      "runtime_behavior_required": "Bind actual food and eating activity before adding a choking-condition adapter. Symptoms and trained-response handoff; no unsupported diagnosis or efficacy claim.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "lost_child_actor",
+      "label_ko": "보호자와 떨어진 아동 행위자",
+      "design_group": "crowd;response",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "guardian_relation",
+        "help_request"
+      ],
+      "physical_state_schema": [
+        "visible",
+        "guardian_nearby",
+        "distressed",
+        "protected"
+      ],
+      "links_to_register": [
+        "guardian_person_id",
+        "known_meeting_point",
+        "staff_id"
+      ],
+      "atomic_transitions": [
+        "guardian_separation_is_noticed",
+        "child_seeks_help",
+        "staff_keeps_safe"
+      ],
+      "observation_channels": [
+        "visual",
+        "voice",
+        "report"
+      ],
+      "runtime_behavior_required": "Dedicated actor and actual guardian relation, knowledge-limited search and handoff; do not infer a missing child from unrelated crowd density.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    },
+    {
+      "kind": "temporary_indoor_structure",
+      "label_ko": "실내 행사 구조물",
+      "design_group": "facility;crowd;medical",
+      "implementation_status": "pending_adapter",
+      "mesh_status": "mesh_pending_or_reuse_after_review",
+      "placement_status": "not_a_placement_record",
+      "existing_source": "proposal_only",
+      "capabilities": [
+        "attachment",
+        "crowd_flow",
+        "route_obstruction"
+      ],
+      "physical_state_schema": [
+        "registered",
+        "attached",
+        "loaded",
+        "stable"
+      ],
+      "links_to_register": [
+        "fixing_ids",
+        "route_link",
+        "nearby_people"
+      ],
+      "atomic_transitions": [
+        "fixing_fails",
+        "structure_moves",
+        "passage_is_blocked"
+      ],
+      "observation_channels": [
+        "visual",
+        "impact",
+        "report"
+      ],
+      "runtime_behavior_required": "Explicitly training-added indoor prop with attachment and obstruction adapters. Do not claim it is an observed permanent Busan Station installation.",
+      "scope": "station_building_interior_only",
+      "provenance": {
+        "basis": "design_proposal",
+        "placement_verified": false,
+        "guard": "This definition does not establish an object or location in the running map."
+      },
+      "enable_gate": "Instantiate or bind an actual indoor source, register unique identity and live state, implement and validate the atomic adapter, then let JEV judge each eligible transition. No candidate without a source."
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "date": "2026-10-15",
+  "scope": "MANAGEMENT_REFERENCE_MIGRATION_ONLY",
+  "reason": "The user explicitly retired completed planning/worker outputs after saving checkpoint 1. Do not restore the retired graph or treat current saved state as its replacement execution evidence.",
+  "retiredEvidence": {
+    "path": ".planning/2026-09-21-fps-reposition/actual-transfer/root-evidence-graph.json",
+    "status": "RETIRED_UNAVAILABLE",
+    "previousCurrentWork": "임의 통로 연결은 실제 부산역 복원으로 인정하지 않고 사용자 교정을 반영했다. 부산시2019 개통자료·2018-405고시 치수·2021부산시설공단 실제 CAD평면도·공식 안내도와 현장 사진을 확보했다. Astra low가 실제 평면도와 사진 기반 통로 모듈을 새로 제작하고 root가 미리보기를 검토했다. 도시철도/지하상가 출구번호를 분리했다. 철도역·도시철도 양끝의 정확한 접속 위치·고저차는 미확정이며 새모델은 Unity에 미적용. 기존기술적 보행PASS는 실제연결수용이 아니다. 현재NOT_A.",
+    "historicalClaimsReverified": false
+  },
+  "currentReferences": {
+    "currentCheckpoint": ".checkpoints/checkpoint-1/CHECKPOINT.json",
+    "currentRequirements": ".state/REQUIREMENTS.md",
+    "sourceEvidenceIndex": "source-evidence/INDEX.json"
+  },
+  "boundaries": [
+    "Checkpoint 1 preserves the user-accepted current scene; it does not establish measured 99% completion or product acceptance.",
+    "This migration performs no Unity execution, geometry change, test rerun or re-verification of historical transfer claims.",
+    "Preserved historical area/test receipts retain their existing scopes. Fourteen test reports with retired source receipts are recorded verbatim here and shown as NOT_RUN in the active view; their previous PASS reports are not new verification. The active story remains IN_PROGRESS and NOT_ACCEPTED."
+  ],
+  "executionAuthorized": false,
+  "productAcceptanceVerified": false,
+  "retiredTestRecords": [
+    {
+      "name": "Direct-command native client to solver flow",
+      "scope": "공식 Unity CLI를 통한 UI callback 및 실제 worker 연동. OS 마우스/키보드·시각 품질·전체 부산역 검증 아님",
+      "result": "PASS",
+      "summary": "일시정지 계획, 개별 집단 유도 및 대기 ACK, 전체 대피 후69/69명54초 완료. 별도 animation repair는 실제 보행 pose변화 및 interaction시간재시작 PASS.",
+      "evidenceRef": ".planning/2026-09-20-integrated-build/live-reposition-flow-guarded.json"
+    },
+    {
+      "name": "Official guide review",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "15guidepages catalogued,14bodytexts+welcomeoverview,52HowToanchors,help/controls/2toolboxes;wholewelcomevideo notviewed",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/coverage.json"
+    },
+    {
+      "name": "Four source agency points",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "Nativepoints match sourcecatalog projection, notsurveyedentranceaccuracy",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/agency-coordinate-native-parity.json"
+    },
+    {
+      "name": "Central119 actual city roundtrip",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "PausedUIrequest→directedroad→135ssimarrival→onsiteownACK170s→return→343sbaseReady;duplicate/busy/unavailablegates",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/agency-native-proof.json"
+    },
+    {
+      "name": "Current 2F path query",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "NativeDetour obstacleavoidance,3stagingtargetsreachable,unsupportedfloorrejected",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/nav-query-source-validation.json"
+    },
+    {
+      "name": "Current 50-person evacuation and Recovery",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "Currentnav+actualworker50exited67simseconds;separate runfromagencytrip",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/nav-evac-native-proof.json"
+    },
+    {
+      "name": "Corrected Ready UI",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "Unavailablecrewcard showsagency;onsitebuttonsdisabled;emptyfirepanelhidden",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/ready-hud-native-proof.json"
+    },
+    {
+      "name": "SUMO installed and used",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "ProjectlocalmacOSarm64SUMO1.27.1;fullOSMnetconvert/duarouter/SUMOexit0;one169s/1330.3mreferencevehicle;UnityvehiclemotionnotSUMO-driven",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/sumo-tooling-graph.json"
+    },
+    {
+      "name": "Agency-first context",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "실제도시시작→현장보기2F→기관위치도시 UIcallback검증,기관이도시의주패널로표시됨",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/agency-context-native-proof.json"
+    },
+    {
+      "name": "Executable operations graph",
+      "scope": "현재 로컬 구현의 한정된 검증; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "12nodes19edges,3jobs,50evacuated,all3returnedReady475simsec;56provenance records",
+      "evidenceRef": ".planning/2026-09-21-fleet-building/progression-native-provenance-proof.json"
+    },
+    {
+      "name": "Camera native API seams",
+      "scope": "현재 로컬 구현의 한정된 검증; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "cursoranchor<1px,focus/follow/cancel/floor/DEM;OSmouse andbackgroundqueuedinput excluded",
+      "evidenceRef": ".planning/2026-09-21-fleet-building/camera-native-proof.json"
+    },
+    {
+      "name": "Restored building height/native refs",
+      "scope": "현재 로컬 구현의 한정된 검증; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "3FBXs rendered;95numeric tags preserved incl200m;existingfloors/navrefs",
+      "evidenceRef": ".planning/2026-09-21-fleet-building/building-height-native-proof.json"
+    },
+    {
+      "name": "Contextual building game UI",
+      "scope": "Native world-ray andactualbuttoncallbacks; notOSinput/JWE3parity",
+      "result": "PASS",
+      "summary": "Defaultnocard,selectedbuildingrequests,targetclick,inside-onlyfloorcontrols,nopublicAI/graphUI",
+      "evidenceRef": ".planning/2026-09-21-production-benchmark/context-ui-native-proof.json"
+    },
+    {
+      "name": "OpenRA countdown and internal Jev arithmetic",
+      "scope": "Actualtwo-teamlocalreferenceoperation; notcalibratedphysicalor119timings",
+      "result": "PASS",
+      "summary": "SourceWaitported;0.55→28.5s→29accepteds;pausefreeze/unavailableuntilready;allteamsReady443s",
+      "evidenceRef": ".planning/2026-09-21-production-benchmark/turnaround-native-proof.json"
+    }
+  ]
+}

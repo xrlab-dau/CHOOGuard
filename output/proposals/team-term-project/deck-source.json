@@ -1,0 +1,1287 @@
+{
+  "project": "CHOOGuard",
+  "deckTitle": "CHOOGuard · 팀 Term Project 제안서",
+  "teamLabel": "XR-Lab",
+  "language": "ko",
+  "product": "Figma Slides",
+  "figma": {
+    "fileKey": "ALL6vULQS9Kj5gVM2cCCO3",
+    "pageId": "0:1",
+    "url": "https://www.figma.com/slides/ALL6vULQS9Kj5gVM2cCCO3",
+    "receipt": "figma-receipt.json"
+  },
+  "sourceUnderstanding": {
+    "sources": [
+      "/Users/um-yunsang/Downloads/CHOOGuard.pdf",
+      "/Users/um-yunsang/Downloads/CHOOGuard_진행사항발표.pptx",
+      "local://paste-1.md"
+    ],
+    "sourcePurpose": "PDF와 PPTX는 전달하려는 본문·발표 의도를 파악하는 자료이며, 새 제안서의 디자인·페이지 수·형식을 그대로 복제할 기준이 아니다.",
+    "centralMessage": "각본대로 하는 훈련과 실제 비상상황은 다르다. 부산역·KTX를 가상공간에 옮기고, 그 안에서 생기는 상황에 직접 대응하며 경험을 쌓는다.",
+    "why": "훈련의 상황·역할·진행은 정해져 있다. 실제 비상상황은 사람·시설·정보와 대응에 따라 달라진다. 각본에 없는 상황에도 대응해 볼 훈련이 필요하다.",
+    "what": "사용자가 역무원 역할로 이동하고, 판단하고, 대응하는 훈련 공간.",
+    "how": "부산역 SketchUp 모델을 Blender에서 FBX로 변환해 Unity에 배치했다. KTX 모델도 변환해 배치하고 사진·영상·지도로 실내를 보완했다. 충돌·이동 경로·시설 조작을 붙였다. 현재 사람·물건에서 변화 후보를 만들고 JEV가 곧 일어날 가능성을 판단한다. 코드는 시간에 따라 추첨하고 적용 전 조건을 확인한다. 승객과 사용자의 대응이 바꾼 상태를 다시 판단한다.",
+    "next": "공간·상황·승객·조작 기능에 VR 입력과 공간 UI를 연결한다. 대응 결과를 기록하고 다시 훈련할 수 있게 만든다.",
+    "correctnessBoundary": "여기서 높은 엔트로피는 상황의 불확실성과 전개 다양성을 설명하는 개념이다. 정량 엔트로피, 실제 재난 통계 충실도, 측량 수준 현장 동등성·실시간 운영 연동, 실제 대응 능력 향상은 입증된 성과로 주장하지 않는다. 대응 기준은 매뉴얼·확인된 자료이며 AI가 이를 대신하지 않는다.",
+    "currentVsGoal": "역사 공간·1인칭 이동·지도·상황판·무전·승객 판단·기록은 현재 개발 기반이다. VR 입력·조작·사용성은 개발·검증 목표이다. 제공된 영상은 공간과 평시 플레이를 보여준다.",
+    "scheduleBoundary": "제공된 본문에는 주차 일정이 없다. 과제 항목을 충족하기 위해 작업 의존성에 맞춘 8주 제안 일정을 새로 구성하며, 실제 날짜·마감·팀원 인원은 가정하지 않는다.",
+    "digitalTwinBoundary": "현장과 동일한 디지털트윈이 제작 목표다. 현재는 원본 모델과 관측·참고 기반 보완 공간, 충돌·보행·시설 조작의 구축 근거가 있다. 초기 proxy, 철회된 실내 완성 주장과 향후 v4 계획은 완성 증거로 사용하지 않는다.",
+    "expectedTransfer": "여러 상황에서 대응한 경험이 실제 대응에 도움이 될 것으로 기대한다. 실제 현장에서의 효과는 검증해야 한다.",
+    "userCorrection": "취지는 원칙을 배우는 튜토리얼이 아니라 각본형 비상대응훈련의 한계를 극복하는 것. 디지털트윈을 어떻게 만들었고 왜 높은 상황 다양성을 만들 수 있는지 설명·설득하는 서사로 변경.",
+    "userInstructionQuote": "그럼 어떻게 디지털트윈 공간을 만들었고, 왜 우리 프로그램은 엔트로픽이 높은 상황을 만들수 있는지 설명하고 설득하는 서사로 진행해야해",
+    "bodyCopyInstructionQuote": "본문 작성할때 수식어나 번역말투 사용하지마"
+  },
+  "informationArchitecture": {
+    "classification": [
+      "각본형 훈련과 실제 상황의 간극",
+      "해결 구조: 현장 재현×상태 기반 상황 합성",
+      "디지털트윈 구축 과정과 현재 공간 증거",
+      "JEV·개인별 정보·사용자 대응의 상호작용",
+      "직접 대응 경험과 완성 목표",
+      "개발 요구·환경 및 주차별 구현계획",
+      "경험 축적에서 실제 대응 능력으로 이어지는 기대"
+    ],
+    "relationships": [
+      {
+        "from": "정해진 각본의 반복",
+        "to": "예측하기 어려운 현장에 대한 경험 부족",
+        "type": "문제-간극"
+      },
+      {
+        "from": "현장 원본 모델·관측 자료",
+        "to": "이동·관찰·시설 조작이 가능한 훈련 공간",
+        "type": "근거-구축"
+      },
+      {
+        "from": "현재 사람·물건과 각자의 정보",
+        "to": "JEV 임박도 판단→시간 추첨→새 현장 상태",
+        "type": "맥락-상황 합성"
+      },
+      {
+        "from": "승객 반응·사용자의 대응",
+        "to": "다음 조건·후속 전개의 변화",
+        "type": "상호작용-피드백"
+      },
+      {
+        "from": "다른 전개 속 직접 대응",
+        "to": "경험 축적→실제 대응 능력의 바탕",
+        "type": "경험-기대 가설"
+      },
+      {
+        "from": "공간·상황·입력·기록의 결합",
+        "to": "W1–W8 통합·베타·산출물",
+        "type": "의존성-구현"
+      }
+    ],
+    "requiredTopicCoverage": {
+      "제작 취지": [
+        1,
+        2,
+        3
+      ],
+      "개발 요구사항 및 개발 환경": [
+        5,
+        10,
+        11
+      ],
+      "기술적 특징": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "주단위 구현계획": [
+        10,
+        11
+      ],
+      "결과물 형상": [
+        4,
+        9
+      ],
+      "기대효과": [
+        12
+      ]
+    },
+    "oneMessagePerSlide": true,
+    "sequencing": "질문→해결 원리→공간 구축 증거→상황 다양성의 인과→직접 대응 경험→구현계획→기대효과"
+  },
+  "design": {
+    "canvas": {
+      "width": 1920,
+      "height": 1080
+    },
+    "direction": "Station Field Atlas — railway wayfinding and technical editorial atlas; deliberate night/paper/mist/lime color grounds, not the old white/blue equal-box system.",
+    "palette": {
+      "ink": "#142025",
+      "night": "#0C1D26",
+      "paper": "#F4F2EA",
+      "mist": "#E1E8E6",
+      "accent": "#D0F266",
+      "accentInk": "#3D550A",
+      "muted": "#52635F",
+      "mutedOnNight": "#B5C4BD",
+      "lineLight": "#667872",
+      "lineDark": "#809390"
+    },
+    "fonts": {
+      "korean": "Noto Sans KR",
+      "latin": "Inter",
+      "weights": [
+        "Regular",
+        "Bold",
+        "Black"
+      ]
+    },
+    "typography": {
+      "primaryRoles": {
+        "coverLatin": {
+          "family": "Inter",
+          "style": "Black",
+          "weight": 900,
+          "sizePx": 144,
+          "lineHeightPx": 152,
+          "trackingPx": -4.32,
+          "usage": "CHOOGuard project identity on cover only; do not repeat as a generic giant heading"
+        },
+        "displayKorean": {
+          "family": "Noto Sans KR",
+          "style": "Black",
+          "weight": 900,
+          "sizePx": 88,
+          "lineHeightPx": 104,
+          "trackingPx": -0.88,
+          "usage": "Short thesis on cover and effect keywords only; at most two lines"
+        },
+        "headline": {
+          "family": "Noto Sans KR",
+          "style": "Bold",
+          "weight": 700,
+          "sizePx": 72,
+          "lineHeightPx": 88,
+          "trackingPx": -0.72,
+          "usage": "Korean main thesis, explicit semantic line groups from layout plan; at most two lines"
+        },
+        "section": {
+          "family": "Noto Sans KR",
+          "style": "Bold",
+          "weight": 700,
+          "sizePx": 40,
+          "lineHeightPx": 56,
+          "trackingPx": 0,
+          "usage": "Functional clusters and outcome headings"
+        },
+        "body": {
+          "family": "Noto Sans KR",
+          "style": "Regular",
+          "weight": 400,
+          "sizePx": 32,
+          "lineHeightPx": 48,
+          "trackingPx": 0,
+          "usage": "Primary explanation; 18–28 Hangul characters per line as an initial measure, not a glyph-width guarantee"
+        },
+        "bodyEmphasis": {
+          "family": "Noto Sans KR",
+          "style": "Bold",
+          "weight": 700,
+          "sizePx": 32,
+          "lineHeightPx": 48,
+          "trackingPx": 0,
+          "usage": "Short response principles or current/target distinctions; same size as body, not another enlarged role"
+        },
+        "graphicLabel": {
+          "family": "Noto Sans KR",
+          "style": "Bold",
+          "weight": 700,
+          "sizePx": 28,
+          "lineHeightPx": 40,
+          "trackingPx": 0,
+          "usage": "Diagram stops, stage names and concise relationship labels"
+        },
+        "caption": {
+          "family": "Noto Sans KR",
+          "style": "Regular",
+          "weight": 400,
+          "sizePx": 24,
+          "lineHeightPx": 32,
+          "trackingPx": 0,
+          "usage": "Source, actual-image captions, readable URL labels and attribution"
+        },
+        "chapterIndex": {
+          "family": "Inter",
+          "style": "Black",
+          "weight": 900,
+          "sizePx": 56,
+          "lineHeightPx": 64,
+          "trackingPx": -1.12,
+          "usage": "01–06 narrative index; REF for reference page, never emergency counts"
+        },
+        "chapterKorean": {
+          "family": "Noto Sans KR",
+          "style": "Bold",
+          "weight": 700,
+          "sizePx": 28,
+          "lineHeightPx": 40,
+          "trackingPx": 0,
+          "usage": "Header section identifier"
+        },
+        "chapterEnglish": {
+          "family": "Inter",
+          "style": "Regular",
+          "weight": 400,
+          "sizePx": 24,
+          "lineHeightPx": 32,
+          "trackingPx": 0.96,
+          "usage": "Uppercase bilingual header identifier"
+        },
+        "wordmark": {
+          "family": "Inter",
+          "style": "Bold",
+          "weight": 700,
+          "sizePx": 28,
+          "lineHeightPx": 40,
+          "trackingPx": -0.56,
+          "usage": "CHOOGuard exact spelling, no pseudo-logo replacement"
+        },
+        "routeLabel": {
+          "family": "Noto Sans KR",
+          "style": "Regular",
+          "weight": 400,
+          "sizePx": 24,
+          "lineHeightPx": 32,
+          "trackingPx": 0,
+          "usage": "Six topics, unselected labels retain readable contrast"
+        },
+        "routeActive": {
+          "family": "Noto Sans KR",
+          "style": "Bold",
+          "weight": 700,
+          "sizePx": 24,
+          "lineHeightPx": 32,
+          "trackingPx": 0,
+          "usage": "Selected route label; underline and filled node supplement color"
+        },
+        "folio": {
+          "family": "Inter",
+          "style": "Bold",
+          "weight": 700,
+          "sizePx": 28,
+          "lineHeightPx": 40,
+          "trackingPx": 0,
+          "usage": "Two-digit page / 13, right aligned"
+        },
+        "milestone": {
+          "family": "Inter",
+          "style": "Black",
+          "weight": 900,
+          "sizePx": 64,
+          "lineHeightPx": 72,
+          "trackingPx": -1.28,
+          "usage": "Actual W1–W8 milestones, not statistics"
+        },
+        "technicalLabel": {
+          "family": "Inter",
+          "style": "Bold",
+          "weight": 700,
+          "sizePx": 28,
+          "lineHeightPx": 40,
+          "trackingPx": 0,
+          "usage": "JEV, Unity and other Latin technical labels"
+        }
+      },
+      "compositionVariantsPx": [
+        26,
+        30,
+        34,
+        36,
+        38,
+        42,
+        48,
+        80
+      ],
+      "diagramRule": "Keep actual AntV label measurements, including the proportional 30.5802px observation labels; no automatic shrinking to fit. Variants are explicit editorial compositions, not a claim that every native field matches the base role table."
+    },
+    "grid": {
+      "unit": 8,
+      "margin": 72,
+      "gutter": 32,
+      "headerY": 40,
+      "headlineY": 128,
+      "bodyTop": 328,
+      "footerY": 1000
+    },
+    "headerFooter": {
+      "chapters": [
+        {
+          "index": "01",
+          "korean": "취지",
+          "english": "PURPOSE"
+        },
+        {
+          "index": "02",
+          "korean": "요구·환경",
+          "english": "REQUIREMENTS / ENVIRONMENT"
+        },
+        {
+          "index": "03",
+          "korean": "기술",
+          "english": "TECHNOLOGY"
+        },
+        {
+          "index": "04",
+          "korean": "형상",
+          "english": "DEVELOPMENT / TARGET"
+        },
+        {
+          "index": "05",
+          "korean": "계획",
+          "english": "PLAN"
+        },
+        {
+          "index": "06",
+          "korean": "기대효과",
+          "english": "EXPECTED EFFECTS"
+        }
+      ],
+      "variants": {
+        "paper": {
+          "background": "paper",
+          "primary": "ink",
+          "secondary": "muted",
+          "indexFill": "accent",
+          "indexText": "ink",
+          "connector": "lineLight",
+          "activeNode": "accentInk",
+          "inactiveNode": "lineLight",
+          "activeLabel": "accentInk"
+        },
+        "mist": {
+          "background": "mist",
+          "primary": "ink",
+          "secondary": "muted",
+          "indexFill": "night",
+          "indexText": "paper",
+          "connector": "lineLight",
+          "activeNode": "accentInk",
+          "inactiveNode": "lineLight",
+          "activeLabel": "accentInk"
+        },
+        "night": {
+          "background": "night",
+          "primary": "paper",
+          "secondary": "mutedOnNight",
+          "indexFill": "accent",
+          "indexText": "ink",
+          "connector": "lineDark",
+          "activeNode": "accent",
+          "inactiveNode": "lineDark",
+          "activeLabel": "accent"
+        },
+        "accent": {
+          "background": "accent",
+          "primary": "ink",
+          "secondary": "muted",
+          "indexFill": "night",
+          "indexText": "paper",
+          "connector": "lineLight",
+          "activeNode": "ink",
+          "inactiveNode": "lineLight",
+          "activeLabel": "ink"
+        }
+      },
+      "header": {
+        "y": 40,
+        "height": 64,
+        "elements": [
+          {
+            "name": "chapterIndex",
+            "x": 72,
+            "y": 40,
+            "width": 112,
+            "height": 64,
+            "style": "chapterIndex",
+            "treatment": "filled index block using indexFill/indexText; centered text, no fake symbol"
+          },
+          {
+            "name": "chapterKorean",
+            "x": 208,
+            "y": 40,
+            "width": 376,
+            "height": 40,
+            "style": "chapterKorean",
+            "color": "primary"
+          },
+          {
+            "name": "chapterEnglish",
+            "x": 608,
+            "y": 48,
+            "width": 768,
+            "height": 32,
+            "style": "chapterEnglish",
+            "color": "secondary"
+          },
+          {
+            "name": "wordmark",
+            "x": 1512,
+            "y": 48,
+            "width": 336,
+            "height": 40,
+            "style": "wordmark",
+            "color": "primary",
+            "text": "CHOOGuard",
+            "alignment": "RIGHT"
+          }
+        ],
+        "semanticRule": "Index is proposal chapter, not page or emergency count. Reference page uses REF / 참고자료 / REFERENCES; does not invent chapter 07.",
+        "photoPages": "Header stays on a solid night ground, outside the photographic crop."
+      },
+      "footer": {
+        "kind": "Six-topic route navigator + active chapter label + folio",
+        "route": {
+          "x": 72,
+          "y": 992,
+          "nodeCentersX": [
+            88,
+            296,
+            504,
+            712,
+            920,
+            1128
+          ],
+          "lineWidthPx": 4,
+          "lineStartX": 88,
+          "lineEndX": 1128,
+          "inactiveNode": {
+            "diameterPx": 14,
+            "outlinePx": 4,
+            "fill": "background",
+            "stroke": "inactiveNode"
+          },
+          "activeNode": {
+            "diameterPx": 24,
+            "fill": "activeNode",
+            "outlinePx": 4,
+            "stroke": "primary"
+          },
+          "labels": [
+            {
+              "text": "취지",
+              "x": 72,
+              "y": 1008,
+              "width": 176,
+              "height": 32,
+              "style": "routeLabel"
+            },
+            {
+              "text": "요구·환경",
+              "x": 280,
+              "y": 1008,
+              "width": 176,
+              "height": 32,
+              "style": "routeLabel"
+            },
+            {
+              "text": "기술",
+              "x": 488,
+              "y": 1008,
+              "width": 176,
+              "height": 32,
+              "style": "routeLabel"
+            },
+            {
+              "text": "형상",
+              "x": 696,
+              "y": 1008,
+              "width": 176,
+              "height": 32,
+              "style": "routeLabel"
+            },
+            {
+              "text": "계획",
+              "x": 904,
+              "y": 1008,
+              "width": 176,
+              "height": 32,
+              "style": "routeLabel"
+            },
+            {
+              "text": "기대효과",
+              "x": 1112,
+              "y": 1008,
+              "width": 176,
+              "height": 32,
+              "style": "routeLabel"
+            }
+          ],
+          "activeLabelStyle": "routeActive",
+          "activeUnderline": {
+            "y": 1044,
+            "widthPx": 80,
+            "heightPx": 4,
+            "color": "activeLabel"
+          },
+          "meaning": "All six actual proposal topics remain labeled. No completed/uncompleted states, percentages, pass ticks or extra stops. The filled larger node and bold underline identify reader position, not progress performance."
+        },
+        "chapterReadout": {
+          "x": 1320,
+          "y": 1000,
+          "width": 328,
+          "height": 40,
+          "style": "chapterKorean",
+          "color": "primary",
+          "format": "{chapterIndex}  {chapterKorean}"
+        },
+        "folio": {
+          "x": 1696,
+          "y": 1000,
+          "width": 152,
+          "height": 40,
+          "style": "folio",
+          "color": "primary",
+          "format": "{page:02d} / 13",
+          "alignment": "RIGHT"
+        },
+        "referenceVariant": "Keep the six-topic route with every node outlined, no seventh active node. Chapter readout is 참고자료; folio 13 / 13.",
+        "coverVariant": "Poster exception: XR-LAB / TERM PROJECT identifies the header; CHOOGuard / XR-Lab and folio identify the footer. No chapter stamp or six-topic route on the cover.",
+        "lightAccentRule": "Lime-filled header block has ink lettering. Lime route nodes on paper/mist require ink boundary; default route uses dark accentInk instead."
+      },
+      "pageAssignments": [
+        {
+          "slide": 1,
+          "variant": "night",
+          "chapter": "01",
+          "activeTopicIndex": 0,
+          "headerLabel": "취지"
+        },
+        {
+          "slide": 2,
+          "variant": "paper",
+          "chapter": "01",
+          "activeTopicIndex": 0,
+          "headerLabel": "취지"
+        },
+        {
+          "slide": 3,
+          "variant": "mist",
+          "chapter": "01",
+          "activeTopicIndex": 0,
+          "headerLabel": "취지"
+        },
+        {
+          "slide": 4,
+          "variant": "night",
+          "chapter": "02",
+          "activeTopicIndex": 1,
+          "headerLabel": "요구·환경"
+        },
+        {
+          "slide": 5,
+          "variant": "mist",
+          "chapter": "02",
+          "activeTopicIndex": 1,
+          "headerLabel": "요구·환경"
+        },
+        {
+          "slide": 6,
+          "variant": "night",
+          "chapter": "03",
+          "activeTopicIndex": 2,
+          "headerLabel": "기술"
+        },
+        {
+          "slide": 7,
+          "variant": "paper",
+          "chapter": "03",
+          "activeTopicIndex": 2,
+          "headerLabel": "기술"
+        },
+        {
+          "slide": 8,
+          "variant": "night",
+          "chapter": "03",
+          "activeTopicIndex": 2,
+          "headerLabel": "기술"
+        },
+        {
+          "slide": 9,
+          "variant": "night",
+          "chapter": "04",
+          "activeTopicIndex": 3,
+          "headerLabel": "형상"
+        },
+        {
+          "slide": 10,
+          "variant": "paper",
+          "chapter": "05",
+          "activeTopicIndex": 4,
+          "headerLabel": "계획"
+        },
+        {
+          "slide": 11,
+          "variant": "accent",
+          "chapter": "05",
+          "activeTopicIndex": 4,
+          "headerLabel": "계획"
+        },
+        {
+          "slide": 12,
+          "variant": "paper",
+          "chapter": "06",
+          "activeTopicIndex": 5,
+          "headerLabel": "기대효과"
+        },
+        {
+          "slide": 13,
+          "variant": "night",
+          "chapter": null,
+          "activeTopicIndex": null,
+          "headerLabel": "참고자료"
+        }
+      ]
+    },
+    "workflowGuidesApplied": [
+      "ui-design color-palette and type-system procedures (direct application, plugin command invocation not performed)",
+      "color-expert and typography",
+      "layout-grid and compound editorial layouts",
+      "diagram-design and infographic-creator",
+      "visual-critique 1.1.0 color/type/composition/information-density/hierarchy"
+    ],
+    "toolsActuallyExecuted": [
+      {
+        "tool": "functions.read / functions.glob",
+        "result": "Read contract/layout and installed ui-design command procedures plus supporting color/type/grid/dark/visualization workflows; confirmed named identity output absent before creation. Reading workflow markdown is not plugin invocation."
+      },
+      {
+        "tool": "functions.eval Python + subprocess.run",
+        "invocation": "python3 /Users/um-yunsang/.claude/skills/ui-ux-pro-max/scripts/search.py Noto Sans KR Inter Korean --domain typography --max-results 3 --json",
+        "exitCode": 0,
+        "result": "3 installed typography.csv records returned: Korean Modern (Noto Sans KR), Spatial Clear (Inter), Minimal Swiss (Inter). No remote provider used."
+      },
+      {
+        "tool": "Pillow 12.2.0 Image.quantize",
+        "invocation": "Image.open(source).convert(\"RGB\"); thumbnail((320,180)); quantize(colors=8, method=Image.Quantize.MEDIANCUT); getcolors()/getpalette()",
+        "result": "Actual local scene pixels extracted from play-crop.png and world-crop.png, eight weighted chips each; full extraction below."
+      },
+      {
+        "tool": "functions.eval Python WCAG relative-luminance calculator",
+        "invocation": "Linearize sRGB channels and enumerate all 45 unique canonical token pairs; approve role-specific pairs at 4.5 text / 3.0 meaningful strokes.",
+        "result": {
+          "uniquePairs": 45,
+          "approvedTextPairs": 17,
+          "approvedConnectorPairs": 13,
+          "minimumApprovedText": 5.0094,
+          "minimumApprovedConnector": 3.6878
+        }
+      },
+      {
+        "tool": "Authenticated Figma MCP use_figma via existing Codex bridge",
+        "result": "Same13editable native slides rewritten; native twin/experience and coupled-state diagrams authored on3/8; actual AntV native geometry retained on6/7. Actual13PNGexports inspected. Palette/type plugin procedures were applied directly, not claimed as command invocation.",
+        "proof": [
+          "narrative-batch-01-receipt.json",
+          "narrative-batch-02-receipt.json",
+          "narrative-batch-03-receipt.json",
+          "narrative-batch-04-receipt.json",
+          "narrative-language-receipt.json",
+          "narrative-refinement-receipt.json",
+          "narrative-live-validation.json",
+          "narrative-render-receipt.json"
+        ]
+      }
+    ],
+    "infographicsActuallyRendered": [
+      {
+        "slide": 3,
+        "template": "choo-journey-route",
+        "kind": "custom registered AntV template",
+        "structure": "choo-journey-route",
+        "source": "output/proposals/team-term-project/graphics/structure-journey-route.jsx",
+        "syntax": "output/proposals/team-term-project/graphics/dsl/slide-03-learning-journey.infographic",
+        "renderInvocation": "infographic.render(syntaxes[3])",
+        "observed": "Unequal phase zones, continuous wayfinding route and eight semantic pictograms rendered in real Chromium.",
+        "inCurrentDeck": false,
+        "currentPlacement": "historical render; replaced by a native twin/situation relationship diagram"
+      },
+      {
+        "slide": 6,
+        "template": "choo-state-circular",
+        "kind": "registered customization of the installed sequence-circular-simple design",
+        "structure": "sequence-circular",
+        "source": "output/proposals/team-term-project/graphics/structure-renderer-variants.jsx",
+        "syntax": "output/proposals/team-term-project/graphics/dsl/slide-06-state-loop.infographic",
+        "renderInvocation": "infographic.render(syntaxes[6])",
+        "observed": "Actual AntV five-sector circular geometry and icons retained; original stock text overflow is preserved only in original.svg. Native label placement fixes collision/clipping. A separate documented vector closes updated-state to current-state feedback.",
+        "inCurrentDeck": true,
+        "currentPlacement": "retained AntV native geometry; Korean labels revised in narrative-language-receipt.json"
+      },
+      {
+        "slide": 7,
+        "template": "choo-observation-dagre",
+        "kind": "registered customization of installed relation-dagre-flow-lr-simple-circle-node design",
+        "structure": "relation-dagre-flow",
+        "source": "output/proposals/team-term-project/graphics/structure-renderer-variants.jsx",
+        "syntax": "output/proposals/team-term-project/graphics/dsl/slide-07-observation-relation.infographic",
+        "renderInvocation": "infographic.render(syntaxes[7])",
+        "observed": "Actual AntV Dagre orthogonal fan-in layout and arrows retained; custom semantic glyph items use circular observation nodes, a distinct lime individual-information capsule, judgment and movement glyphs.",
+        "inCurrentDeck": true,
+        "currentPlacement": "retained AntV native geometry; Korean labels revised in narrative-language-receipt.json"
+      }
+    ],
+    "contrastEvidence": {
+      "kind": "sRGB role-pair calculation, not a substitute for rendered/photo validation",
+      "canonicalPairs": 45,
+      "minimumApprovedText": 5.0094,
+      "minimumApprovedConnector": 3.6878,
+      "source": "redesign-identity.json"
+    },
+    "rules": [
+      "Cover all six topics and the corrected purpose: scripted-drill limits, field reconstruction, changing situations, direct response and accumulated experience.",
+      "Alternate deliberate full color grounds and genuinely different page geometry.",
+      "Interior pages use a chapter index and bilingual classification in the header, and a six-topic route plus current chapter/folio in the footer. The cover uses a deliberate poster-branding exception.",
+      "Lime denotes attention/navigation, never fabricated success or measured improvement.",
+      "Native Figma text, vectors, connectors and target UI; no full-slide flattened images.",
+      "Use real current development captures and retain their HUD; FIT for shallow detail-image frames.",
+      "Clearly label current captures, TARGET UI and concept illustration.",
+      "JEV judges atomic candidates from current individuals/objects; code time-samples and rechecks; no fixed incident kind/place/time/count.",
+      "Eight-week plan is proposed, not source-provided dates.",
+      "No invented team members, educational KPIs, grades or cost-saving percentages."
+    ],
+    "currentInfographicComposition": {
+      "newNativeFigmaDiagrams": [
+        3,
+        8
+      ],
+      "retainedActualAntVNativeDiagrams": [
+        6,
+        7
+      ],
+      "supersededTutorialFirstDiagram": 3,
+      "executionBoundary": "Actual AntV rendering from previous native design is retained on6/7; new causal solution/state-factor diagrams are authored as native editable Figma primitives this revision, not falsely attributed to a fresh AntV render.",
+      "plainNativeLabelRevision": "narrative-language-receipt.json"
+    },
+    "bodyCopyRule": "수식어와 번역투를 쓰지 않는다. 누가 무엇을 하고 무엇이 바뀌는지 짧게 쓴다. 구현·목표·검증할 내용은 구분한다."
+  },
+  "assets": [
+    {
+      "key": "concept",
+      "path": "assets/source-image-01.png",
+      "meaning": "승강장 설명용 개념 그림",
+      "type": "concept",
+      "use": [
+        1
+      ]
+    },
+    {
+      "key": "world",
+      "path": "assets/world-crop.png",
+      "meaning": "Unity Scene view 역사 외관",
+      "type": "current development",
+      "use": [
+        8
+      ]
+    },
+    {
+      "key": "play",
+      "path": "assets/play-crop.png",
+      "meaning": "실제 1인칭 평시 플레이",
+      "type": "current development",
+      "use": [
+        8,
+        9
+      ]
+    },
+    {
+      "key": "door",
+      "path": "assets/door-crop.png",
+      "meaning": "열차 출입구 현재 개발 화면",
+      "type": "current development",
+      "use": [
+        8
+      ]
+    },
+    {
+      "key": "cabin",
+      "path": "assets/cabin-crop.png",
+      "meaning": "객실 내부 현재 개발 화면",
+      "type": "current development",
+      "use": [
+        8
+      ]
+    }
+  ],
+  "slides": [
+    {
+      "number": 1,
+      "title": "CHOOGuard",
+      "section": "TERM PROJECT",
+      "claim": "실제 비상상황을,\n가상공간에서 훈련한다.",
+      "layout": "asymmetric display-type poster with transparent station cutout and one large lime ground plane",
+      "content": {
+        "subtitle": "부산역·KTX 비상대응훈련 VR 프로그램",
+        "identity": "XR-Lab · 팀 Term Project 제안서",
+        "caption": "설명용 개념 그림"
+      },
+      "images": [
+        "concept"
+      ],
+      "notes": "현재 비상대응훈련은 정해진 상황과 역할을 각본대로 반복한다. 실제 현장에서는 사람·시설·정보와 사용자의 대응에 따라 상황이 달라진다. 우리는 부산역과 KTX를 가상공간에 옮기고, 그 안에서 상황을 만들어 직접 대응하게 한다. 이 경험이 실제 대응에 도움이 될 것으로 기대한다. 효과를 입증한 결과는 아직 없다. 표지 그림은 설명용이다.",
+      "displayHeadline": "실제 비상상황을,\n가상공간에서 훈련한다.",
+      "layoutFamily": "cover-poster",
+      "ground": "night"
+    },
+    {
+      "number": 2,
+      "title": "훈련은 각본을 따른다. 실제 상황은 그렇지 않다.",
+      "section": "WHY",
+      "claim": "훈련은 각본을 따르지만, 실제 비상상황은 각본대로 일어나지 않는다.",
+      "layout": "scripted-training constraint panel contrasted with condition, individual-response and downstream-change graphics",
+      "content": {
+        "problem": {
+          "title": "각본형 훈련",
+          "body": "상황·역할·진행이\n훈련 전에 정해진다."
+        },
+        "goal": {
+          "title": "실제 현장의 불확실성",
+          "steps": [
+            "사람·시설의 상태",
+            "승객의 반응",
+            "대응 뒤의 상황"
+          ]
+        },
+        "context": "각본을 익히는 것과\n현장에 대응하는 것은 다르다.",
+        "gap": "각본에 없는 상황에도\n대응해 볼 훈련이 필요하다."
+      },
+      "notes": "문제는 각본 수행을 익히는 것과 실제 상황에 대응하는 것이 같지 않다는 점이다. 실제 비상상황은 각본에 있는 상황만 일어나지 않는다. 사람과 시설의 상태가 바뀌고, 대응에 따라 그 뒤의 상황도 달라진다. 이런 조건에서 대응해 볼 훈련이 필요하다.",
+      "displayHeadline": "훈련은 각본을 따른다.\n실제 상황은 그렇지 않다.",
+      "layoutFamily": "script-reality-gap",
+      "ground": "paper"
+    },
+    {
+      "number": 3,
+      "title": "현장을 옮기고, 그 안에서 상황을 만든다.",
+      "section": "EXPERIENCE",
+      "claim": "부산역과 KTX를 가상공간에 옮기고, 그 안에서 상황을 만든다.",
+      "layout": "asymmetric twin-space and state-composition pillars converge into direct-response experience; replaces the tutorial-first journey",
+      "content": {
+        "thesis": "공간을 옮기고,\n상황을 만든다.",
+        "body": "사용자가 이동하고,\n판단하고, 대응한다.\n기록을 보며 다시 훈련한다.",
+        "boundary": "시설·위치·이동 경로를 옮긴다.\n대응이 다음 상황을 바꾼다.",
+        "pillars": [
+          {
+            "title": "디지털트윈 공간",
+            "detail": "부산역·KTX의\n시설·위치·이동 경로"
+          },
+          {
+            "title": "상황 만들기",
+            "detail": "사람·시설의 상태\n승객과 사용자의 행동"
+          }
+        ],
+        "experience": "직접 대응 → 경험 축적",
+        "experienceDetail": "판단과 조치가 사람·시설의 상태를 바꾼다."
+      },
+      "notes": "공간과 상황을 함께 만든다. 공간에는 부산역과 KTX의 시설·위치·이동 경로를 옮긴다. 상황은 현재 사람과 물건에서 일어날 수 있는 변화를 판단해 만든다. 사용자는 직접 이동하고 판단하고 대응한다. 그 결과가 현장 상태를 바꾸고 다음 상황으로 이어진다.",
+      "displayHeadline": "현장을 옮기고,\n그 안에서 상황을 만든다.",
+      "layoutFamily": "twin-dynamics-solution",
+      "ground": "mist"
+    },
+    {
+      "number": 4,
+      "title": "부산역과 KTX를 가상공간에 옮겼다.",
+      "section": "REQUIREMENTS",
+      "claim": "부산역과 KTX 모델을 변환해 Unity에 배치하고, 실내와 이동·조작을 붙였다.",
+      "layout": "actual development photo atlas moved earlier to support source-model, spatial assembly and functional reconstruction claims",
+      "content": {
+        "captions": {
+          "world": "역사 외관 · Unity\n공간 제작 화면",
+          "play": "평시 근무 · 실제 1인칭 플레이",
+          "door": "열차 출입구",
+          "cabin": "객실 내부 이동"
+        },
+        "label": "현재 개발 화면",
+        "thesis": "모델 변환.\n공간 배치.\n이동·조작 연결.",
+        "boundary": "현재 공간과\n평시 플레이 화면",
+        "note": "현재 개발 화면 · 현장과의 일치 수준은 검증해야 한다."
+      },
+      "notes": "부산역 원본 SketchUp 모델을 Blender에서 변환해 FBX로 내보내고 Unity에 배치했다. KTX 모델도 변환해 배치했다. 사진·영상·지도로 실내를 보완하고 충돌·이동 경로·시설 조작을 연결했다. 사진은 현재 공간과 평시 플레이 화면이다. 현장과 완전히 같다는 검증이나 VR 대응 시연을 완료한 것은 아니다.",
+      "displayHeadline": "부산역과 KTX를\n가상공간에 옮겼다.",
+      "layoutFamily": "twin-construction-evidence",
+      "ground": "night"
+    },
+    {
+      "number": 5,
+      "title": "모델에 이동과 시설 조작을 붙였다.",
+      "section": "ENVIRONMENT",
+      "claim": "모델에 충돌·이동 경로·시설 조작을 붙여 훈련 공간으로 만든다.",
+      "layout": "source model to Unity spatial assembly to actionable space layers, separate planned XR panel and current runtime environment",
+      "content": {
+        "layers": [
+          {
+            "label": "이동·시설 조작",
+            "sub": "충돌 · 보행 경로 · 시설 사용"
+          },
+          {
+            "label": "Unity 배치·실내 보완",
+            "sub": "위치·축척 · 사진·영상·지도 참고"
+          },
+          {
+            "label": "부산역·KTX 모델 변환",
+            "sub": "SketchUp → Blender → FBX · KTX 변환"
+          }
+        ],
+        "requirements": "필수 기능: 이동·장비·무전·상황·기록",
+        "plannedTitle": "VR 개발·확인 목표",
+        "planned": [
+          "XR Interaction Toolkit · XR Origin",
+          "XR Interaction Simulator · 공간 UI",
+          "HMD·컨트롤러 조작과 사용성 확인"
+        ],
+        "shared": "현재 환경: Unity 6.3 LTS · C# · URP 17.3 · Input System 1.20 · Blender · Git · macOS"
+      },
+      "notes": "모델을 배치한 뒤 벽·바닥의 충돌, 보행 경로와 층간 이동, 시설 조작을 붙였다. 훈련에는 공간·이동, 장비·소통, 상황·승객, 대응 기록이 필요하다. 현재 Unity6000.3.23f1, URP17.3.0, InputSystem1.20.0, C#, Blender, Git, macOS를 쓴다. XR 입력과 공간 UI를 연결하고 HMD 조작을 확인할 계획이다.",
+      "displayHeadline": "모델에 이동과\n시설 조작을 붙였다.",
+      "layoutFamily": "twin-pipeline-and-environment",
+      "ground": "mist"
+    },
+    {
+      "number": 6,
+      "title": "사건 대본 대신, 일어날 변화를 판단한다.",
+      "section": "JEV",
+      "claim": "사람과 물건의 상태에서 변화 후보를 만들고 JEV 판단과 시간 추첨으로 적용한다.",
+      "layout": "closed feedback loop distinguishing state, atomic candidates, JEV judgment, code/time application and updated state",
+      "content": {
+        "stages": [
+          {
+            "title": "현재 상태",
+            "detail": "공간·시설·승객"
+          },
+          {
+            "title": "변화 후보",
+            "detail": "누가·무엇이 바뀌는가"
+          },
+          {
+            "title": "JEV 판단",
+            "detail": "곧 일어날 가능성"
+          },
+          {
+            "title": "코드 적용",
+            "detail": "시간에 따라 추첨\n적용 전 조건 확인"
+          },
+          {
+            "title": "바뀐 현장 상태",
+            "detail": "다음 판단에 반영"
+          }
+        ],
+        "feedback": "상태가 바뀌면 다시 판단",
+        "reasons": [
+          "사람·물건마다 변화를 판단",
+          "JEV는 판단, 코드는 추첨·적용",
+          "상태가 바뀌면 다시 판단"
+        ]
+      },
+      "notes": "사건 대본을 고르지 않는다. 현재 사람과 물건에서 일어날 수 있는 변화를 후보로 만든다. JEV는 각 후보가 지금 일어날 가능성을 판단한다. 코드는 그 판단에 따라 시간이 흐르는 동안 추첨하고, 적용 직전에 조건을 다시 확인한다. 바뀐 상태는 다음 판단에 쓴다. 사건 종류·장소·시각·개수를 고정하지 않는다.",
+      "displayHeadline": "사건 대본 대신,\n일어날 변화를 판단한다.",
+      "layoutFamily": "feedback-loop",
+      "ground": "night"
+    },
+    {
+      "number": 7,
+      "title": "승객은 보고 들은 정보로 행동한다.",
+      "section": "NPC",
+      "claim": "승객은 자신이 보고 들은 정보와 위치에 따라 판단하고 움직인다.",
+      "layout": "observation fields and received information flow into individual NPC knowledge, then judgment/behavior",
+      "content": {
+        "inputs": [
+          "위험을 직접 관찰",
+          "안내 방송 수신",
+          "현재 위치·이동 경로"
+        ],
+        "chain": [
+          "승객이 가진 정보",
+          "상황 판단",
+          "행동·이동 동선"
+        ],
+        "connection": "사용자의 신고·안내가 승객의 정보와 현장 상태를 바꾼다.",
+        "boundary": "대응 기준은\n매뉴얼·자료로 확인한다."
+      },
+      "notes": "승객은 자신이 보고 들은 정보로 판단한다. 거리·벽·층·문 때문에 알 수 있는 정보가 다르다. 안내를 들은 뒤 이동하거나 주변에 알리면 다른 승객의 정보와 행동도 바뀐다. 사용자의 신고·방송·안내·통제도 이 과정에 영향을 준다.",
+      "displayHeadline": "승객은 보고 들은\n정보로 행동한다.",
+      "layoutFamily": "information-field",
+      "ground": "paper"
+    },
+    {
+      "number": 8,
+      "title": "사용자의 대응이 다음 상황을 바꾼다.",
+      "section": "CURRENT",
+      "claim": "사람·시설·승객 반응과 사용자의 대응이 다음 상황을 바꾼다.",
+      "layout": "four distinct interacting factors around an updated-world-state core explain emergent trajectories, not a fixed incident list",
+      "content": {
+        "rows": [
+          [
+            "사람·시설 상태",
+            "지금 누가 어디에 있는가",
+            "일어날 수 있는 변화가 달라진다"
+          ],
+          [
+            "승객의 정보",
+            "무엇을 보고 들었는가",
+            "판단과 이동이 달라진다"
+          ],
+          [
+            "사용자의 대응",
+            "신고·장비·안내·통제",
+            "사람·시설 상태가 바뀐다"
+          ],
+          [
+            "다음 상황",
+            "바뀐 상태를 다시 판단",
+            "그 뒤에 일어날 일을 적용한다"
+          ]
+        ],
+        "core": "바뀐\n현장 상태",
+        "closing": "대응이 상태를 바꾸고, 바뀐 상태에서 다음 상황이 생긴다.",
+        "qualifier": "엔트로피: 상황의 복잡성과 예측의 어려움 · 측정한 수치는 없음"
+      },
+      "images": [
+        "world",
+        "play",
+        "door",
+        "cabin"
+      ],
+      "notes": "상황이 달라지는 이유는 사건 종류를 무작위로 고르기 때문이 아니다. 사람과 시설의 상태에 따라 후보가 달라진다. 시간에 따라 추첨하고, 승객은 각자의 정보로 반응한다. 사용자의 조치가 현장 상태를 바꾸면 그 뒤에 일어날 일도 달라진다. 여기서 엔트로피는 상황의 복잡성과 예측의 어려움을 뜻한다. 수치로 측정한 결과는 없다.",
+      "displayHeadline": "사용자의 대응이\n다음 상황을 바꾼다.",
+      "layoutFamily": "coupled-state-diversity",
+      "ground": "night"
+    },
+    {
+      "number": 9,
+      "title": "직접 대응하고, 기록을 보며 다시 훈련한다.",
+      "section": "TARGET",
+      "claim": "사용자는 직접 대응하고, 기록을 보며 다시 훈련한다.",
+      "layout": "spatial-interaction blueprint over actual scene with editable target selection UI and an action-record slate",
+      "content": {
+        "worldUI": {
+          "mode": "VR 공간 조작·상황 안내",
+          "action": "대상을 가리키고 선택",
+          "context": "현재 위치와 관찰 정보 확인",
+          "actions": [
+            "상황 보고",
+            "장비 사용",
+            "이동·안내"
+          ]
+        },
+        "recordUI": {
+          "title": "대응 기록",
+          "steps": [
+            "관찰한 상황",
+            "선택한 조치",
+            "현장 변화",
+            "다음 판단"
+          ],
+          "fields": [
+            "수행 순서",
+            "상태 변화",
+            "관찰·전달 정보"
+          ],
+          "button": "다시 훈련하기",
+          "descriptions": [
+            "본 상황·들은 정보",
+            "사용한 도구·조치",
+            "사람·시설의 상태 변화",
+            "조치 뒤에 다시 본 상황"
+          ]
+        },
+        "label": "완성 목표"
+      },
+      "images": [
+        "play"
+      ],
+      "notes": "사용자는 주변을 보고 장비·무전·이동을 선택해 대응한다. 그 결과가 현장 상태에 반영된다. 기록을 보며 자신이 한 조치를 돌아보고 다시 훈련한다. 화면의 UI는 완성 목표다. 현재 VR 실행 화면이나 교육 효과를 측정한 결과가 아니다.",
+      "displayHeadline": "직접 대응하고,\n기록을 보며 다시 훈련한다.",
+      "layoutFamily": "target-interface",
+      "ground": "night"
+    },
+    {
+      "number": 10,
+      "title": "공간·이동·조작을 먼저 연결한다.",
+      "section": "W1–W4",
+      "claim": "공간·이동·조작·상황을 순서대로 연결한다.",
+      "layout": "W1–W4 horizontal milestone track linking work, artifact and completion criteria",
+      "content": {
+        "label": "8주 제안 일정",
+        "columns": [
+          "주차",
+          "구현·보완",
+          "산출물",
+          "확인 항목"
+        ],
+        "weeks": [
+          {
+            "week": "W1",
+            "work": "현장 자료·대응 기준과\n개발 요구 정리",
+            "output": "공간·훈련 구성안",
+            "check": "자료와 대응 기준 확인"
+          },
+          {
+            "week": "W2",
+            "work": "VR 입력·시점·이동 연결",
+            "output": "입력·공간 이동 씬",
+            "check": "가상 입력과 이동 동작 확인"
+          },
+          {
+            "week": "W3",
+            "work": "장비 선택·사용·무전 연결",
+            "output": "장비·소통 모듈",
+            "check": "장비 사용과 무전 동작 확인"
+          },
+          {
+            "week": "W4",
+            "work": "JEV 상황 생성·승객\n정보·반응 연결",
+            "output": "상황·대응 데모",
+            "check": "대응이 현장 상태를 바꾸는지 확인"
+          }
+        ]
+      },
+      "notes": "8주 제안 일정이다. 현장 자료와 대응 기준을 정리한 뒤 VR 이동·조작, 장비·무전, JEV·승객 반응을 연결한다. 기존에 만든 공간과 기능을 사용한다. 실제 날짜나 팀원 수를 정한 일정은 아니다.",
+      "displayHeadline": "공간·이동·조작을\n먼저 연결한다.",
+      "layoutFamily": "implementation-track",
+      "ground": "paper"
+    },
+    {
+      "number": 11,
+      "title": "대응과 기록을 연결하고, 베타에서 확인한다.",
+      "section": "W5–W8",
+      "claim": "대응·상태 변화·기록·재시작을 연결하고 베타에서 확인한다.",
+      "layout": "vertical release runway with large phase typography, W5–W8 linked checkpoints and final deliverables",
+      "content": {
+        "columns": [
+          "주차",
+          "구현·보완",
+          "산출물",
+          "확인 항목"
+        ],
+        "weeks": [
+          {
+            "week": "W5",
+            "work": "조작법·기본 대응 안내 연결",
+            "output": "처음 시작할 때의 안내",
+            "check": "처음 쓰는 사용자가 조작하는지 확인"
+          },
+          {
+            "week": "W6",
+            "work": "대응·상태 변화·기록·재시작 연결",
+            "output": "훈련 데모",
+            "check": "조치·상태 변화·기록 확인"
+          },
+          {
+            "week": "W7",
+            "work": "상황 전개·조작·멀미·JEV 확인",
+            "output": "베타 관찰 기록",
+            "check": "판단 근거·막힌 단계·응답시간 기록"
+          },
+          {
+            "week": "W8",
+            "work": "보완·실행 빌드·영상·보고서 정리",
+            "output": "최종 제출물",
+            "check": "훈련 흐름과 제출물 확인"
+          }
+        ],
+        "deliverables": [
+          "Unity 프로젝트",
+          "실행 빌드",
+          "시연 영상",
+          "구현 보고서"
+        ]
+      },
+      "notes": "조작 안내를 붙이고 대응·상태 변화·기록·재시작을 연결한다. 베타에서는 사용자가 무엇을 보고 왜 대응했는지, 어디서 막혔는지 확인한다. HMD 조작·멀미와 JEV 사용량·응답시간도 확인한다. 체험 만족도가 높다는 이유로 실제 대응 능력이 좋아졌다고 주장하지 않는다.",
+      "displayHeadline": "대응과 기록을 연결하고,\n베타에서 확인한다.",
+      "layoutFamily": "release-runway",
+      "ground": "accent"
+    },
+    {
+      "number": 12,
+      "title": "훈련 경험이 실제 대응에 도움이 될 수 있다.",
+      "section": "OUTCOMES",
+      "claim": "여러 상황에서 대응한 경험이 실제 대응에 도움이 될 것으로 기대한다.",
+      "layout": "experience, judgment and transfer typography map to observations; real-response transfer is an expected hypothesis",
+      "content": {
+        "terms": [
+          "경험",
+          "판단",
+          "대응"
+        ],
+        "rows": [
+          [
+            "대응 경험 쌓기",
+            "상황을 보고 판단하고\n직접 대응한다.",
+            "사용한 조치·상태 변화·기록"
+          ],
+          [
+            "각본 없이 판단하기",
+            "각본에 없는 조건에서\n무엇을 할지 정한다.",
+            "선택 이유·대응 근거·막힌 단계"
+          ],
+          [
+            "실제 대응에 쓰기",
+            "훈련 경험이 실제 대응에\n도움이 될 것으로 기대한다.",
+            "실제 현장에서의 효과는 검증 필요"
+          ]
+        ],
+        "closing": "상황에 대응한다 → 경험을 쌓는다 → 실제 대응에 쓴다"
+      },
+      "notes": "사용자는 각본을 따라가는 대신 상황을 보고 직접 대응한다. 여러 전개를 겪고 기록을 돌아보며 경험을 쌓는다. 이 경험이 실제 비상상황에서 판단하고 대응하는 데 도움이 될 것으로 기대한다. 실제 현장에서의 효과는 검증해야 한다.",
+      "displayHeadline": "훈련 경험이\n실제 대응에 도움이 될 수 있다.",
+      "layoutFamily": "experience-judgment-transfer",
+      "ground": "paper"
+    },
+    {
+      "number": 13,
+      "title": "구현한 내용과 검증할 내용을 구분한다.",
+      "section": "REFERENCES",
+      "claim": "공간과 상황을 만든 근거를 설명하고, 실제 대응 효과는 검증할 내용으로 구분한다.",
+      "layout": "linked technical-library index and quiet project/media attribution",
+      "content": {
+        "references": [
+          {
+            "title": "부산역 원본 모델",
+            "detail": "모델을 공급받고\n변환한 기록",
+            "url": "https://bwebtoon.com/webtoon-home/core-businesses/digital-location/",
+            "linkLabel": "Digital Location ↗"
+          },
+          {
+            "title": "Unity · XR 조작",
+            "detail": "이동·시설 조작과\nVR 입력 개발",
+            "url": "https://docs.unity3d.com/6000.3/Documentation/Manual/com.unity.xr.interaction.toolkit.html",
+            "linkLabel": "Unity Documentation ↗"
+          },
+          {
+            "title": "Unity Input System",
+            "detail": "장치 입력과 Input Actions",
+            "url": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.20/manual/Actions.html",
+            "linkLabel": "Unity Documentation ↗"
+          }
+        ],
+        "projectSource": "구현 근거: 모델 변환·실내 보완 자료 · IncidentDirector · CrowdMind · StaffTools",
+        "mediaSource": "개발 화면과 목표 UI 구분 · 현장 일치 수준·엔트로피 수치·실제 대응 효과는 검증 필요"
+      },
+      "notes": "공간 제작은 원본 모델·변환 기록·실내 보완 자료와 현재 코드를 근거로 설명한다. 상황 생성은 IncidentDirector·DirectorRates·CrowdMind·StaffTools 코드로 설명한다. Unity 문서는 입력과 XR 개발의 참고자료다. 현장과의 일치 수준, 엔트로피 수치, 실제 대응 효과는 검증한 범위와 구분한다.",
+      "displayHeadline": "구현한 내용과\n검증할 내용을 구분한다.",
+      "layoutFamily": "reference-index",
+      "ground": "night"
+    }
+  ],
+  "narrativeEvidence": {
+    "spatial": [
+      "asset-library/source/busan-official/digital-location-station/acquisition-receipt.json",
+      ".planning/2026-09-21-quality-a/station-model-conversion-graph.json",
+      ".planning/2026-09-23-video-twin/reconstruction-method-receipt.json",
+      "Assets/ChooGuard/Editor/FpsStationSceneBuilder.cs",
+      "Assets/ChooGuard/Editor/StationNavigationBuilder.cs",
+      "Assets/ChooGuard/Editor/StationRouteBuilder.cs"
+    ],
+    "dynamics": [
+      "Assets/ChooGuard/App/Fps/Emergency/IncidentDirector.Compose.cs",
+      "Assets/ChooGuard/App/Fps/Emergency/DirectorRates.cs",
+      "Assets/ChooGuard/App/Fps/Emergency/CrowdMind.Observation.cs",
+      "Assets/ChooGuard/App/Fps/Emergency/StaffTools.cs"
+    ],
+    "review": "TwinConstructionEvidence and EntropyMechanismEvidence read-only current-repo investigation; original PDF/PPTX visual/text body read without media extraction"
+  }
+}

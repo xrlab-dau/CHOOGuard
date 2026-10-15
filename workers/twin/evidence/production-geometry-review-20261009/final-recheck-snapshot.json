@@ -1,0 +1,26 @@
+{
+  "review_mode": "read-only source and saved runtime evidence; no tests or Unity run by reviewer",
+  "snapshot_sha256": {
+    "AgentScripts/ObservedCeilingInstall.cs": "32e7282a6caf13f1cfaba3fa800c14c1a7dda7951338bead21d6aaa3ae709605",
+    "Assets/ChooGuard/Editor/Twin/ArchitecturalCorrectionRegistry.cs": "772ac12cf7cd8eb3224362f36ca402762b069e82d19027909b818cef9f86a6f8",
+    "AgentScripts/MajibangBuilder.cs": "0debb6575464145c6f076b2bae8b161f816f9b0698fe61cb62382f8a230b145c",
+    "content/world/observed-interiors/structural-corrections.json": "768b3eee52b97cc74862595790b607d33a77d6c1ca4112fda8edb22e14586a2f",
+    ".planning/2026-10-08-interior-runtime-completion/actual-kit-correction-rebuild-validation.json": "d6d1aaa96204d91eae67b2aeda504d4f96922cbed101990fbca2e015fa805502"
+  },
+  "five_original_findings_status": [
+    "fixed in source: source assets retained in receipt and protected from stale deletion",
+    "fixed in source: complete preflight before production KitInit and batch writes",
+    "fixed in source: expected and actual registered path sets must agree exactly",
+    "fixed in source and current registry: both relief and trim companions, render enabled, material GUID identities",
+    "recoverable journal implemented; remaining absolute source-frame anchor gap notified to root"
+  ],
+  "runtime_result": "ACTUAL_SOURCE_REBUILD_CORRECTIONS_PASSED 6",
+  "remaining_blocking_gap": "FinalizeInstalled validates mutual frame equality, but does not anchor any current frame against original source export world matrix before republishing.",
+  "absolute_frame_followup": {
+    "source_sha256": "ef2be6c1e7f45035b5891a5569e69b20f95424041e411228efd394dc4d2c6db2",
+    "status": "fixed in source",
+    "evidence": "FinalizeInstalled hashes frozen source export, reads authoritative original panel/grid world matrices, checks each actual matrix is finite and within 0.00002 of its original source frame before registry publication.",
+    "remaining_blocking_source_findings": [],
+    "runtime_after_this_last_frame_edit": "root owned; reviewer did not execute Unity"
+  }
+}

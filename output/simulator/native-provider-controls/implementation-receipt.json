@@ -1,0 +1,94 @@
+{
+  "schema": "chooguard-native-provider-ui-client-implementation-v1",
+  "recorded_at": "2026-10-14T06:15:06.499148+00:00",
+  "state": "source_frozen_and_control_contract_verified",
+  "source_files": {
+    "workers/simulator/Runtime/Planning/NativeProviderControlClient.cs": "ab1578807c4b1e31d09a6e815589f230aae3cf1cdd984aa67cf58261d15d52be",
+    "workers/simulator/Runtime/Planning/SubscriptionConnection.cs": "d4ced3ffa9fbb5e7d50a0a6c85c2c29a127c9c82125104e1938f9ac26a356e03",
+    "workers/simulator/Runtime/Unity/INativeProviderMenuHost.cs": "8f5e98a866e691dc64796a348dd3d71857c7f270f58de80456c551957eb5613a",
+    "workers/simulator/Runtime/Unity/PlatformSeededSimulator.cs": "b25889121956f095fd122c834376c22c32853c19efde582e567fde4a05dfc77c",
+    "workers/simulator/Tests/NativeProviderControlTests.cs": "6fba604d36ab2b710bf52c48b321076ae32e19c1899a2eb94f565e80ae7d64aa",
+    "workers/simulator/verify_native_provider_controls.py": "5571047d01c4fb7442fdcad8792e8f34c3b51eb31e0803fdf4c5e4308b8e8bef",
+    "workers/simulator/compile_unity.py": "d370cd09d110e34041d710a8ccac90128acd23518d8860c44ce21d3a18a7c291",
+    "workers/simulator/stage_unity.py": "9bbfb4678fa8e8317931f8a6b9e294096bed5b560d68cf123c7068dee4e84293"
+  },
+  "aggregate_sha256": "ed71d8b79b7d4c0a8dc66942e98e21b7837e6e86ed8340254d5d5f7d686cf761",
+  "api_compile": {
+    "path": "output/simulator/checks/unity-source-compile.json",
+    "sha256": "5b2fe0732fc6a8d16c07d86384e876c0ee3ac5b89192ec69f9530c54f62fa033",
+    "exit_code": 0,
+    "sources": 40,
+    "references": 182,
+    "current_source_drift": []
+  },
+  "targeted_portable_and_ephemeral_http": {
+    "path": "output/simulator/native-provider-controls/receipt.json",
+    "sha256": "8db12697388cc3c78b7fef31aa143f61152025f7d61094364e9ba90de3bd487d",
+    "passed": true,
+    "two_mock_providers_same_model_id": true,
+    "callback_generation_conflict_recovered": true,
+    "playing_mutations_refused": true,
+    "noncooperative_cancel_and_late200_refused": true,
+    "current_source_drift": []
+  },
+  "actual_helper_readonly_native_status": {
+    "path": "output/simulator/native-provider-controls/live-status-interop.json",
+    "sha256": "12a399747446f908d1d2e5505d6937f22205691cdc2cbeb410aa3fefb7f66f18",
+    "passed": true,
+    "status_gets": 1,
+    "observed_pid_from_deployment_handoff": 71656,
+    "current_source_drift": []
+  },
+  "backend_freeze": {
+    "path": "workers/simulator/provider_auth/native-control-implementation-receipt.json",
+    "aggregate_sha256": "778d237c987c8df65295c5bf6bccd6d06a28fccaae28f6366af361d7882ba7f6",
+    "current_source_drift": []
+  },
+  "ui_freeze": {
+    "path": ".planning/2026-10-14-native-provider-ui/ui-source-freeze.json",
+    "aggregate_sha256": "035c8f22a11e02bd49f82df15f3635c2c61cafda37b8dcd987ab53a7cdac5280",
+    "current_source_drift": []
+  },
+  "staging_recipe": {
+    "runtime_references_added": [
+      "UnityEngine.UI",
+      "Unity.TextMeshPro"
+    ],
+    "installed_assembly_definitions": [
+      {
+        "path": "Library/PackageCache/com.unity.ugui@27635d171b1a/Runtime/UGUI/UnityEngine.UI.asmdef",
+        "name": "UnityEngine.UI",
+        "sha256": "9cb2d9ab449842401295e78f89b0d8b2fd719f3ba777044f1813df7aab121716"
+      },
+      {
+        "path": "Library/PackageCache/com.unity.ugui@27635d171b1a/Runtime/TMP/Unity.TextMeshPro.asmdef",
+        "name": "Unity.TextMeshPro",
+        "sha256": "1630b20f8f0030af5ac996a6f60793076c8285bedffabc9bcbbfe70a3d5811ca"
+      }
+    ],
+    "package_dependency_already_declared": "com.unity.ugui 2.0.0 includes UGUI and TMP",
+    "recipe_syntax_valid": true,
+    "staging_executed": false
+  },
+  "product_source_review": {
+    "no_environment_api_or_jev_key_fallback": true,
+    "no_product_local_html_open": true,
+    "external_login_open_guard_present": true,
+    "completed_hidden_login_is_queued_for_cancel": true,
+    "deferred_capture_restore_not_same_escape_frame": true
+  },
+  "real_provider_requests": 0,
+  "model_inference_posts": 0,
+  "real_login_requests": 0,
+  "real_catalog_refresh_requests": 0,
+  "unity_engine_started": false,
+  "browser_windows_opened_by_this_lane": 0,
+  "provider_credential_files_read": false,
+  "normal_app_capability_loaded_for_one_status_get": true,
+  "limitations": [
+    "Unity UI rendering, native modal focus/cursor ordering and full gameplay behavior were not executed.",
+    "Korean TMP font staging/assignment and original project integration remain pending; no original Assets or scene were edited.",
+    "The native auth helper API is deployed separately; the Unity game build was not staged, built or launched.",
+    "Actual end-user subscription model inference and NPC motion were not reverified in this work."
+  ]
+}

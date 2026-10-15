@@ -1,0 +1,15 @@
+# Independent remaining native fronts review
+
+PASS with no blocker for the frozen three-front correction. Packet SHA is `ee89e772209de48165e9f29c66856702803d389cc575c7c54d48c31947d6f098`; final saved geometry Scene SHA is `80a55958f086fd89ca524f1124643003a4df387eca05869dea61424650f15af9`.
+
+`frozen-preflight.json` verifies four current #21-corrected sources against immutable asset/meta/channel/index hashes, exact previous #21 oriented face lineage, all three contributor remappings and removed/retained partitions, actual unique owner closures, registry lineage and exact native/generated door bindings. It verifies the previous #21 withholding policy remains present. Upper glass/header retained from each contributor lies above the nominal native aperture. The final packet adds material/QA evidence to the reviewed draft without changing geometry, masks, owners or door bindings.
+
+`saved-audit.json` verifies all four installed meshes. Exactly 408 approved generated duplicate faces are removed: 108 trim, 24 glass, 252 frame and 24 collider triangles. Every vertex byte remains exact, including normals, tangents, UVs and unused vertices; no positions change. Retained oriented indices remain in the original sequence. Complete replacement channel digests are independently reproduced, finite mesh/submesh bounds pass, and shape/skin/readability metadata and material asset/GUID/file/meta hashes remain unchanged.
+
+Exactly seven Scene documents change: three MeshFilter references, one MeshCollider reference and three generated door GameObject active flags. All 26,145 document IDs/types/order remain intact. All 18,608 FPSWorld native documents, all 103 StationDoor components, every Transform and all 1,035 source identity components remain byte-identical. The already installed #21 door state and boundary corrections are preserved. All four persistent duplicate-withholding policies exist exactly once with their pinned evidence hashes.
+
+The cumulative audit against the completed 1F `fa4dc…` baseline permits only previously sealed 2F correction fields and the four office child documents. No unauthorized existing document fields or added IDs are found.
+
+The generalized transaction supports the original single-door schema and the new exactly-three-door schema. Remaining-stage asset/backup/receipt paths are separate, native/generated bindings are unique, the previous withholding policy is retained while three are appended, and failure restores source references/door flags/Scene/registry and deletes newly created assets. Existing original source/baseline digests and exact reorder certificates remain pinned. `SaveDoor` applies withholding after reviewed pose, leaf creation and seal derivation.
+
+This review used no Unity calls and made no production writes. Actual movement of all four original doors, CharacterController walks, final navigation bake and post-runtime checks are root-owned. Offline aperture geometry and saved source persistence do not establish independently measured field dimensions or full production root regeneration.

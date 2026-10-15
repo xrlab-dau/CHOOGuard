@@ -1,0 +1,95 @@
+{
+  "schema": "chooguard.floor1-source-lineage-migration-draft.v1",
+  "status": "DRAFT_NOT_APPLIED",
+  "canonical_registry": "content/world/observed-interiors/floor-guide-layout.json",
+  "canonical_registry_input_sha256": "b436755357cf9d249b10ec70940867e13d1d0ac73dcf557b2f330fc58fcefaf8",
+  "code_inputs": [
+    {
+      "path": "AgentScripts/MajibangBuilder.cs",
+      "input_sha256": "012d7b0eeb38ff3b6d1dfbe93cefa463d158e19512117112028223b1593dbb08",
+      "current_authority_sha256": "012d7b0eeb38ff3b6d1dfbe93cefa463d158e19512117112028223b1593dbb08",
+      "draft_sha256": "2f12d84b79acdce894ce6277c8c7b08c35d620c2f099600d3d1939d3c041ef14"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/Twin/FloorGuideLayoutRegistry.cs",
+      "input_sha256": "c990eb532fdf86c7b324a648a920d837f9560d1c01ed6d348eab7113d2e83332",
+      "current_authority_sha256": "c990eb532fdf86c7b324a648a920d837f9560d1c01ed6d348eab7113d2e83332",
+      "draft_sha256": "e6ed3661c207994f5c9fe268d161075b869f4e58d6aa7b2d51c95a073c71a658"
+    },
+    {
+      "path": "AgentScripts/FloorGuideLayoutInstall.cs",
+      "input_sha256": "ca7a46ffe85dcc71a68a0a8186c4f04029a798688b03074f01ea5d732a07f729",
+      "current_authority_sha256": "ca7a46ffe85dcc71a68a0a8186c4f04029a798688b03074f01ea5d732a07f729",
+      "draft_sha256": "14d25aa300845dfcf0d75826645f22ae7b811c5ccdadeab3c84e08580f32d698"
+    }
+  ],
+  "scope": "Apply only these two fields into the live collider entry; never replace the full registry or overwrite any current guide/world-rigid/packet fields",
+  "entry_key": {
+    "source_asset": "Assets/ChooGuard/Art/StationInterior/ArchitectureCorrections/1F_KitFixturesOnly.asset",
+    "baseline_asset": "Assets/ChooGuard/Art/StationInterior/ArchitectureCorrections/1F_KitFixturesOnly.asset",
+    "source_digest": "02b5c96a1ada6a6dcdd0f46305aa0918d587d921b356f2c529526de1f59b4a3a"
+  },
+  "set_fields": {
+    "source_asset": "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Colliders.asset",
+    "source_preprocess": {
+      "schema": "chooguard.exact-collision-envelope-partition.v1",
+      "owner": "실내 트윈 마감/점포 내부 1F/Kit_Colliders",
+      "raw_source_asset": "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Colliders.asset",
+      "raw_source_file_sha256": "4fc166b1368979226c1f9850dd495316150c3270c7533871a28664143e641338",
+      "raw_source_complete_digest": "947db83c5ec6ecfd77cef81c4c08cea505430ecdd270f5b9a6d70e0290f582fd",
+      "baseline_asset": "Assets/ChooGuard/Art/StationInterior/ArchitectureCorrections/1F_KitFixturesOnly.asset",
+      "baseline_file_sha256": "61f4961bbb789cda0032316ae845103d4cd713b3cf3f66177657e60b19abe120",
+      "baseline_complete_digest": "02b5c96a1ada6a6dcdd0f46305aa0918d587d921b356f2c529526de1f59b4a3a",
+      "ordinal_source": ".planning/2026-10-08-interior-runtime-completion/architecture-kitshop-overlap.json",
+      "ordinal_source_sha256": "16e963c9face4d5ce05242024a805ada1bb5b3733f15891ee20e14c3714e7019",
+      "source_vertices": 768,
+      "source_triangles": 384,
+      "removed_wall_triangles": 252,
+      "retained_fixture_triangles": 132,
+      "canonical_spec": "content/world/observed-interiors/shops-1f.json",
+      "canonical_spec_sha256": "5b705b88291beb1ec65b731db0a26c92387a4fb1f751e817870dd6ed4e500e45"
+    }
+  },
+  "row_before_reference_only": {
+    "source_asset": "Assets/ChooGuard/Art/StationInterior/ArchitectureCorrections/1F_KitFixturesOnly.asset",
+    "baseline_asset": "Assets/ChooGuard/Art/StationInterior/ArchitectureCorrections/1F_KitFixturesOnly.asset",
+    "patch_baseline_asset": "Assets/ChooGuard/Art/StationInterior/FloorGuideLayout20261009/unit16/1F-027.asset",
+    "source_digest": "02b5c96a1ada6a6dcdd0f46305aa0918d587d921b356f2c529526de1f59b4a3a",
+    "replacement_asset": "Assets/ChooGuard/Art/StationInterior/FloorGuideLayout20261009/unit4/1F-022.asset",
+    "replacement_digest": "a2a73ef32aa789bfa521a8ea5ae5ac0d25a1ba8fb859f8b9eb5d6e4831e7823b",
+    "packet": ".planning/2026-10-08-interior-runtime-completion/floor-guide-layout/unit4-packet.json",
+    "packet_sha256": "48963c4d102ff2b2ae3e324cc01d651311bec52dc89d4625933dc95c3eb06a36"
+  },
+  "expected_unique_sources_before": 23,
+  "expected_unique_sources_after": 23,
+  "expected_source_assets_after": [
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Glass.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_ShopWall_Tube_White.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Floor_floor_granite_tile.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_CeilingGrid.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_ShopCeiling_Kit_GridWhite.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_ShopWall_wall_wood_slat_panel.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Product_Kit_Bread.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Screen.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Product_Kit_ProductBlue.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Shelf_Tube_White.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_ShopWall_Kit_Paint_E08A3C.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_ShopWall_벽_내장.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Light_조명기구_downlight.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Trim_Kit_Hairline.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Product_Kit_ProductYellow.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Joint.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Light_Kit_Backlight.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Product_Kit_ProductRed.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Product_Kit_ProductGreen.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Product_Kit_ProductWhite.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Frame_Stainless_Hairline.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Glyph_Kit_Glyph.asset",
+    "Assets/ChooGuard/Art/StationInterior/Kit/shops_1F/Kit_Colliders.asset"
+  ],
+  "canonical_spec_changed": false,
+  "source_assets_changed": false,
+  "unity_calls": 0,
+  "fresh_generation_accepted": false,
+  "source_gate": "Generated raw complete digest must equal pinned raw digest; exact partition digest must equal pinned fixture digest; all23 unique sources remain required."
+}

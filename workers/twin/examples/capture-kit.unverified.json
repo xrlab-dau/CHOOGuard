@@ -1,0 +1,63 @@
+{
+  "schema": "chooguard.metric-capture.v1",
+  "template_unverified": true,
+  "instructions": "Replace placeholders with retained source hashes, actual capture dates and independently measured field records. Set template_unverified false only after entering actual records. No values here are a Busan survey.",
+  "capture_epoch": {
+    "id": "REPLACE_WITH_ACTUAL_CAPTURE_EPOCH",
+    "started_at": "REPLACE_WITH_TIMEZONE_ISO8601",
+    "ended_at": "REPLACE_WITH_TIMEZONE_ISO8601"
+  },
+  "coordinate_frame": {
+    "id": "REPLACE_WITH_SURVEY_DATUM_ID",
+    "units": "metres",
+    "handedness": "right",
+    "axes": {
+      "x": "Survey right axis; physically document origin and orientation",
+      "y": "Survey forward axis",
+      "z": "Survey up axis"
+    },
+    "unity_from_site": {
+      "unity_frame_id": "REPLACE_WITH_UNITY_WORLD_DATUM_ID",
+      "matrix": [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+      "translation_m": [0, 0, 0],
+      "unverified_mapping_note": "Example axis swap only. Translation/orientation must be registered against the actual Unity scene datum. Do not use by assumption."
+    }
+  },
+  "sources": [],
+  "controls": [],
+  "dimension_checks": [],
+  "objects": [],
+  "control_record_template": {
+    "id": "REPLACE_WITH_PHYSICAL_LANDMARK_ID",
+    "role": "holdout",
+    "object_id": "REPLACE_WITH_EXACT_OBJECT_ID_OR_OMIT_FOR_GENERAL_LANDMARK",
+    "reconstruction_xyz": "REPLACE_WITH_THREE_RECONSTRUCTED_NUMBERS",
+    "site_xyz_m": "REPLACE_WITH_THREE_INDEPENDENT_FIELD_MEASUREMENTS",
+    "measurement_method": "total_station",
+    "uncertainty_m": "REPLACE_WITH_POSITIVE_METRE_UPPER_BOUND",
+    "uncertainty_basis": "upper_bound",
+    "evidence_source_ids": ["REPLACE_WITH_FIELD_SURVEY_SOURCE_ID"],
+    "observed_at": "REPLACE_WITH_TIMEZONE_ISO8601"
+  },
+  "dimension_record_template": {
+    "id": "REPLACE_WITH_UNIQUE_DIMENSION_CHECK_ID",
+    "object_id": "REPLACE_WITH_EXACT_OBJECT_ID",
+    "axis": "x",
+    "reconstructed_length": "REPLACE_WITH_POSITIVE_RECONSTRUCTION_LENGTH",
+    "measured_length_m": "REPLACE_WITH_POSITIVE_MEASURED_LENGTH",
+    "measurement_method": "laser_distance",
+    "uncertainty_m": "REPLACE_WITH_POSITIVE_METRE_UPPER_BOUND",
+    "uncertainty_basis": "upper_bound",
+    "evidence_source_ids": ["REPLACE_WITH_FIELD_SURVEY_SOURCE_ID"],
+    "observed_at": "REPLACE_WITH_TIMEZONE_ISO8601"
+  },
+  "object_record_template": {
+    "id": "REPLACE_WITH_EXACT_OBJECT_ID",
+    "rotation_unity_euler_deg": "REPLACE_WITH_THREE_EXPLICIT_SURVEYED_EULER_ANGLES",
+    "orientation_measurement_method": "total_station",
+    "orientation_evidence_source_ids": ["REPLACE_WITH_FIELD_SURVEY_SOURCE_ID"],
+    "orientation_observed_at": "REPLACE_WITH_TIMEZONE_ISO8601",
+    "orientation_measurement_uncertainty_m": "REPLACE_WITH_POSITIVE_BOUND_FOR_ORIENTATION_MEASUREMENT_BASELINE",
+    "capture_source_ids": ["REPLACE_WITH_FIELD_CAPTURE_SOURCE_ID"]
+  }
+}

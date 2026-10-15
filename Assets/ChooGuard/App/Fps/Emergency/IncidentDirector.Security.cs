@@ -76,6 +76,8 @@ namespace ChooGuard.App.Fps.Emergency
         private void StartBag(Passenger owner, float magnitude)
         {
             var spot = Floor(owner.transform.position + owner.transform.right * .55f);
+            if (!InsideBuilding(spot)) spot = Floor(owner.transform.position);
+            if (!InsideBuilding(spot)) return;
             var bag = new SuspiciousItemHazard("bag-" + ++serial, spot, owner.transform.rotation * Quaternion.Euler(0, 90, 0), owner, art, root) { Where = world.Describe(spot) };
             bags.Add(bag);
             ownerLeaves[bag] = (Time.time + world.Range(12, 30), magnitude >= .5f);
@@ -88,6 +90,8 @@ namespace ChooGuard.App.Fps.Emergency
         private void FoundBag(Vector3 near)
         {
             var spot = Floor(StationWorld.OnNavMesh(near + new Vector3(world.Range(-1.5f, 1.5f), 0, world.Range(-1.5f, 1.5f)), 2f));
+            if (!InsideBuilding(spot)) spot = Floor(near);
+            if (!InsideBuilding(spot)) return;
             var bag = new SuspiciousItemHazard("bag-" + ++serial, spot, Quaternion.Euler(0, world.Range(0, 360), 0), null, art, root) { Where = world.Describe(spot) };
             bags.Add(bag);
             CordonMarker(bag, bag.View, "주인 없는 여행가방");
@@ -137,8 +141,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         /// <summary>
         /// The part of the station a caller names: the busiest zone at higher levels, nowhere in particular at the lowest. Any zone with
-        /// walkable floor the staff member can search counts, the station square, the sky plaza and the track side included: a threat
-        /// is not confined to indoors, and only a place nobody can walk to cannot be searched.
+        /// walkable floor inside the actual station building counts; outdoor squares, platforms and trains are excluded.
         /// </summary>
         private (Vector3 spot, string claimed) ClaimedPlace(int level)
         {
@@ -147,12 +150,18 @@ namespace ChooGuard.App.Fps.Emergency
             int busiest = int.MinValue;
             foreach (var candidate in world.Points.Zones)
             {
+                if (StationWorld.IsOutdoorZone(candidate.id) || candidate.id == "tracks") continue;
                 var walkable = StationWorld.WalkableNear((candidate.min + candidate.max) * .5f, 30f);
+                if (!InsideBuilding(walkable)) continue;
                 if (!UnityEngine.AI.NavMesh.SamplePosition(walkable, out _, .5f, UnityEngine.AI.NavMesh.AllAreas)) continue;
                 int busy = crowd.People.Count(p => world.ZoneId(p.transform.position) == candidate.id) + world.Random.Next(6);
                 if (busy > busiest) { busiest = busy; zone = candidate; centre = walkable; }
             }
-            if (zone == null) return (PlayerPosition, "역 안 어딘가");
+            if (zone == null)
+            {
+                foreach (var point in world.Points.All) if (InsideBuilding(point.Position)) return (point.Position, "역사 내부 어딘가");
+                throw new System.InvalidOperationException("협박 신고의 역사 내부 수색 위치를 찾지 못했습니다.");
+            }
             return (centre, level < 2 ? "역 안 어딘가" : zone.label);
         }
 
@@ -160,6 +169,8 @@ namespace ChooGuard.App.Fps.Emergency
         {
             int level = Mathf.Clamp(Mathf.RoundToInt(magnitude * 4), 0, 4);
             var spot = Floor(StationWorld.OnNavMesh(seat.Position + Quaternion.Euler(0, seat.Yaw, 0) * Vector3.forward * .7f, 1f));
+            if (!InsideBuilding(spot)) spot = Floor(seat.Position);
+            if (!InsideBuilding(spot)) return;
             var substance = new SuspiciousSubstanceHazard("powder-" + ++serial, spot, level, art, root) { Where = world.Describe(spot) };
             substances.Add(substance);
             CordonMarker(substance, substance.View, "흰 가루");

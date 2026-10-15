@@ -12,7 +12,7 @@ namespace ChooGuard.App.Fps.Shell
     {
         /// <summary>견학: the guided shift — route marks, advice in the office's answers, only the radio lines that fit now, action names in prompts, one key press for handles.</summary>
         Guided,
-        /// <summary>표준: the office acknowledges without telling what to do next, the radio offers every report and request, prompts show what a thing is and its state, handles are worked by hand.</summary>
+        /// <summary>표준: route marks are on, the office acknowledges without telling what to do next, the radio offers every report and request, prompts show what a thing is and its state, handles are worked by hand.</summary>
         Standard,
         /// <summary>실전: as 표준, and the compass keeps only the player's own pings.</summary>
         Expert,
@@ -80,14 +80,14 @@ namespace ChooGuard.App.Fps.Shell
                 case GuidanceLevel.Expert:
                     return "길 안내 없음 · 역무실은 접수만 · 무전은 모든 보고·요청 · 대상 이름과 상태만 표시 · 나침반에는 내가 찍은 표시만";
                 default:
-                    return "길 안내 없음 · 역무실은 접수만 · 무전은 모든 보고·요청 · 대상 이름과 상태만 표시 · 손잡이는 E 누른 채 마우스로";
+                    return "길 안내 표시 · 역무실은 접수만 · 무전은 모든 보고·요청 · 대상 이름과 상태만 표시 · 손잡이는 E 누른 채 마우스로";
             }
         }
 
-        /// <summary>Route marks to a known incident (map line, floor marks, compass). Follows the preset (on only for 견학) until set.</summary>
+        /// <summary>Route marks to a known incident (map line, floor marks, compass). Defaults on for 견학 and 표준, off for 실전, until explicitly set.</summary>
         public static bool ShowRoute
         {
-            get => PlayerPrefs.HasKey(RouteKey) ? PlayerPrefs.GetInt(RouteKey) != 0 : Guidance == GuidanceLevel.Guided;
+            get => PlayerPrefs.HasKey(RouteKey) ? PlayerPrefs.GetInt(RouteKey) != 0 : Guidance != GuidanceLevel.Expert;
             set
             {
                 if (ShowRoute == value && PlayerPrefs.HasKey(RouteKey)) return;

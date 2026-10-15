@@ -1,0 +1,1 @@
+Published consolidated checkpoint1/current-project tree to origin/chore/checkpoint1-cleanup-20261015 and created open PR295 targeting develop. Original local branch and snapshot remain available. Current scene geometry was kept unchanged. Final remote receipt is also retained locally in .git/chooguard-publication/.

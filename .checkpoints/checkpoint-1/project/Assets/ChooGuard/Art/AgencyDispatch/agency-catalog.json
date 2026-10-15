@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-09-21",
+  "coordinateReferenceSystem": "EPSG:4326",
+  "scope": "Public response and medical-handoff institutions near the Busan Station–Nampo–North Port gameplay corridor",
+  "agencies": [
+    {
+      "id": "busan-jungbu-central-119",
+      "label": "중앙119안전센터",
+      "role": "fire_rescue_ems_response_base",
+      "address": "부산광역시 중구 중앙대로 110(중앙동4가)",
+      "lat": 35.1072071,
+      "lon": 129.0367023,
+      "sourceURLs": [
+        "https://119.busan.go.kr/jungbu/119jbintro01",
+        "https://www.openstreetmap.org/way/825455699",
+        "https://api.openstreetmap.org/api/0.6/map?bbox=129.0200,35.0900,129.0650,35.1270"
+      ],
+      "coordinateSource": "OpenStreetMap way 825455699 building geometry (timestamp 2025-02-05T02:58:57Z), cross-checked to the official center address; representative point is the mean of unique polygon vertices transformed from busan-openworld.json origin 35.1151,129.0417 to WGS84",
+      "confidence": "high",
+      "knownUnknown": {
+        "known": [
+          "Official Busan Fire page identifies the center, address, and public service area",
+          "The OSM fire-station building carries the same street address and house number"
+        ],
+        "unknown": [
+          "Current fleet and staffing",
+          "Incident-specific dispatch availability",
+          "Response time",
+          "Entrance or apparatus-bay coordinate"
+        ]
+      }
+    },
+    {
+      "id": "busan-jungbu-yeongju-police",
+      "label": "영주파출소",
+      "role": "police_response_base",
+      "address": "부산광역시 중구 동영로 77(영주동)",
+      "lat": 35.1119423,
+      "lon": 129.032198,
+      "sourceURLs": [
+        "https://www.bspolice.go.kr/jungbu/view.do?no=149",
+        "https://www.openstreetmap.org/way/825455453",
+        "https://api.openstreetmap.org/api/0.6/map?bbox=129.0200,35.0900,129.0650,35.1270"
+      ],
+      "coordinateSource": "OpenStreetMap way 825455453 building geometry (timestamp 2025-02-19T11:30:09Z), whose name and 동영로 77 address match the official Busan Police listing; representative point is the mean of unique polygon vertices transformed from busan-openworld.json origin 35.1151,129.0417 to WGS84",
+      "confidence": "high",
+      "knownUnknown": {
+        "known": [
+          "Official Busan Police page identifies the police post and street/lot address",
+          "The OSM police building carries the same street address and house number"
+        ],
+        "unknown": [
+          "Current fleet and staffing",
+          "Incident-specific dispatch availability",
+          "Response time",
+          "Vehicle entrance coordinate"
+        ]
+      }
+    },
+    {
+      "id": "busan-jungbu-choryang-119",
+      "label": "초량119안전센터",
+      "role": "fire_rescue_ems_response_base",
+      "address": "부산광역시 동구 중앙대로260번길 7(초량동)",
+      "lat": 35.1198176,
+      "lon": 129.0432261,
+      "sourceURLs": [
+        "https://119.busan.go.kr/jungbu/119jbintro05",
+        "https://119.busan.go.kr/jungbu/119jbinfo04",
+        "https://www.openstreetmap.org/way/825456385",
+        "https://api.openstreetmap.org/api/0.6/map?bbox=129.0200,35.0900,129.0650,35.1270"
+      ],
+      "coordinateSource": "OpenStreetMap way 825456385 building geometry (timestamp 2026-09-04T03:10:25Z), whose 부산광역시 동구 중앙대로260번길 7 address tags exactly match the official center address; representative point is the mean of 8 unique polygon vertices in WGS84",
+      "confidence": "high_address_geometry_match",
+      "knownUnknown": {
+        "known": [
+          "Official Busan Fire pages identify the center, address, and coverage around Choryang",
+          "The OSM building polygon carries the exact official street, house number, district, subdistrict, and postcode"
+        ],
+        "unknown": [
+          "The OSM building itself is address-tagged but unnamed, so the identity match depends on the unique exact-address cross-check",
+          "Entrance or apparatus-bay coordinate",
+          "Current fleet and staffing",
+          "Incident-specific dispatch availability",
+          "Response time"
+        ]
+      }
+    },
+    {
+      "id": "busan-maryknoll-emergency",
+      "label": "재단법인천주교부산교구유지재단 메리놀병원",
+      "role": "emergency_medical_handoff",
+      "address": "부산광역시 중구 중구로 121(대청동4가)",
+      "lat": 35.1074368,
+      "lon": 129.0321621,
+      "sourceURLs": [
+        "https://www.e-gen.or.kr/egen/holiday_medical.do?addrhosp=&addrroad=&checkToday=Y&colnum=&currentPageNum=3&day=&displaysize=50&dongCode=&emergencyViewYn=Y&emogdesc=&emogdstr=1215&emogemdv=&gugunCode=110&holiday=&hospitalY=Y&lat=&loca=12&lon=&pharmacyY=&searchType=general&sidoCode=26&trtPrtCod=",
+        "https://www.maryknoll.co.kr/02_intro/09.php?cate=order3",
+        "https://www.hira.or.kr/ra/hosp/hospInfoAjax.do?ykiho=21100012",
+        "https://www.openstreetmap.org/way/759425307",
+        "https://api.openstreetmap.org/api/0.6/map?bbox=129.0200,35.0900,129.0650,35.1270"
+      ],
+      "coordinateSource": "OpenStreetMap way 759425307 named 메리놀병원 (timestamp 2025-11-25T08:36:16Z), cross-checked to the institution and national emergency-medical listings at 중구로 121; representative point is the mean of 14 unique hospital-polygon vertices in WGS84",
+      "confidence": "medium_named_geometry_official_address_crosscheck",
+      "knownUnknown": {
+        "known": [
+          "The national E-GEN listing classifies it as a regional emergency medical institution and general hospital with an emergency room",
+          "Hospital and HIRA pages independently publish the same street address",
+          "The OSM polygon is explicitly named 메리놀병원 and tagged as both amenity=hospital and healthcare=hospital"
+        ],
+        "unknown": [
+          "The OSM hospital polygon does not itself carry street-address tags",
+          "Emergency-room or ambulance entrance coordinate",
+          "Real-time emergency-room acceptance status",
+          "Capacity and travel time"
+        ]
+      }
+    }
+  ],
+  "usageBoundary": "Game-world dispatch and arrival anchors only. Do not represent these records as live dispatch, fleet, capacity, availability, or response-time data; do not initiate real-world calls from the game."
+}

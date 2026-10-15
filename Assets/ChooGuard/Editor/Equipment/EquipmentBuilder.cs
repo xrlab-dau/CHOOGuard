@@ -114,20 +114,14 @@ namespace ChooGuard.Editor
 
         /// <summary>
         /// Writes only proposals with evidence for the exact object and site location. Geometry and regulatory spacing
-        /// never supply that evidence. Verified entries are ordered by id, positions rounded to a centimetre, and angles
-        /// to a tenth of a degree, so two runs give identical bytes, then the catalog is refreshed.
+        /// never supply that evidence. Verified entries are ordered by id and exact validated poses are preserved, then the catalog is refreshed.
         /// </summary>
         public static void WritePlacements(string group, string note, IEnumerable<EquipmentPlacement> items)
         {
             EmergencySceneBuilder.EnsureFolder(Root);
             var proposed = items.ToArray();
-            var ordered = proposed.Where(i => i.HasPlacementEvidence).OrderBy(i => i.id, StringComparer.Ordinal).ToArray();
+            var ordered = proposed.Where(VerifiedPlacement).OrderBy(i => i.id, StringComparer.Ordinal).ToArray();
             int unverified = proposed.Length - ordered.Length;
-            foreach (var item in ordered)
-            {
-                item.position = new Vector3(Mathf.Round(item.position.x * 100) / 100, Mathf.Round(item.position.y * 100) / 100, Mathf.Round(item.position.z * 100) / 100);
-                item.rotation = new Vector3(Mathf.Round(item.rotation.x * 10) / 10, Mathf.Round(item.rotation.y * 10) / 10, Mathf.Round(item.rotation.z * 10) / 10);
-            }
             var duplicate = ordered.GroupBy(i => i.id).FirstOrDefault(g => g.Count() > 1);
             if (duplicate != null) throw new InvalidOperationException(group + ": id 가 겹칩니다 " + duplicate.Key);
             if (unverified > 0)
@@ -137,6 +131,13 @@ namespace ChooGuard.Editor
             AssetDatabase.ImportAsset(PlacementPath(group));
             RefreshCatalog();
             Debug.Log("CG_EQUIPMENT_PLACEMENTS group=" + group + " verified=" + ordered.Length + " unverified_omitted=" + unverified);
+        }
+
+        private static bool VerifiedPlacement(EquipmentPlacement item)
+        {
+            if (item == null || !ChooGuard.Editor.Twin.MeasuredTwinImport.VerifyAgainstManifest(item, out _)) return false;
+            var model = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabRoot + "/" + item.prefab + ".prefab");
+            return item.verification.ValidateModelDimensions(model, out _);
         }
 
         /// <summary>Collects every placement file and prefab under <see cref="Root"/> into the catalog and points EmergencyArt at it.</summary>

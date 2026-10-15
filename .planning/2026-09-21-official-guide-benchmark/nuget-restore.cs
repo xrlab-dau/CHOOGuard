@@ -1,1 +1,0 @@
-NugetForUnity.Configuration.ConfigurationManager.LoadNugetConfigFile();NugetForUnity.PackageRestorer.Restore(false);UnityEditor.AssetDatabase.Refresh();return "Configured source restore completed";

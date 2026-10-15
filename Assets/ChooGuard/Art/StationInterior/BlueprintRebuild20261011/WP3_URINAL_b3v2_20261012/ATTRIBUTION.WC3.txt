@@ -1,0 +1,46 @@
+ATTRIBUTION for WP3 restroom fixture assets (2026-10-12)
+
+Basic toilet with seat and lid on flushometer by Yaiyeondurising (Sketchfab user 5Life)
+  source: https://sketchfab.com/3d-models/basic-toilet-with-seat-and-lid-on-flushometer-305bf8147f004b7f8579ebe2507dac61
+  license: CC-BY-SA-4.0 https://creativecommons.org/licenses/by-sa/4.0/
+  used in: WC3_TOILET_FLUSHOMETER_BODY, WC3_TOILET_FLUSHOMETER_LID
+  changes: glTF Y-up coordinates copied to Unity axes (no mirror compensation), uniform scale 0.804 (seat top 0.44 m), split into BODY (bowl, seat, flush valve) and LID parts, 4 coplanar normal-less triangles dropped, materials replaced by private StationLit recipes, no texture; mesh repacked as fullchannels-v1
+  ShareAlike: the adapted model files listed above are distributed under CC-BY-SA-4.0 as well.
+
+urinal by photon (that one larry) (Sketchfab user Professor_E12)
+  source: https://sketchfab.com/3d-models/urinal-59958cb4c31b4be08b516189bf8aa690
+  license: CC-BY-4.0 https://creativecommons.org/licenses/by/4.0/
+  used in: WC3_URINAL_WALLHUNG_EXPOSED_VALVE
+  changes: axes copied, scale 1.0, translated so the rim is 0.60 m above the floor and the back plane is z=0, split into ceramic bowl / chrome valve / stainless strainer by texture-sampled component classification, textures not used, materials replaced
+
+Sims Style Basic Public Toilet Set by Yaiyeondurising (Sketchfab user 5Life)
+  source: https://sketchfab.com/3d-models/sims-style-basic-public-toilet-set-43b122833da4454f96225a0d25d0bbcb
+  license: CC-BY-SA-4.0 https://creativecommons.org/licenses/by-sa/4.0/
+  used in: WC3_SINK_WALLHUNG_LAVATORY_ALT
+  changes: first of 7 sinks extracted (basin + faucet), rotated 180 deg about Y so the wall side is z=0, rim set to 0.80 m, materials replaced, mesh repacked
+  ShareAlike: the adapted model files listed above are distributed under CC-BY-SA-4.0 as well.
+
+Bathroom sink by CreativeTrio (Poly Pizza)
+  source: https://poly.pizza/m/7yXd2z5Kvp
+  license: CC0-1.0 https://creativecommons.org/publicdomain/zero/1.0/
+  used in: WC3_SINK_COUNTER_BASIN
+  changes: brown cabinet triangles (22) removed by texture-colour classification, top slab + faucet kept, wall plane z=0, counter top at 0.80 m, texture not used (CC0, no obligation)
+
+Procedural stall partitions (WC3_PARTITION_*) are created in this lane from no third-party model.
+Reference only, nothing derived: Cubicle Without Toilet (5Life, CC-BY-SA-4.0) https://sketchfab.com/3d-models/cubicle-without-toilet-114a3170351f413e8af4b0e596237dac
+
+----------------------------------------------------------------------
+v2 install note (2026-10-12, WP3 packet-b3 v2; user decision D16: CC-BY-SA 4.0 toilet 305bf814 accepted)
+This file is copied unchanged into each installed WP3 asset folder that contains meshes derived from the third-party models above
+(WP3_BASE_b3v2_20261012, WP3_URINAL_b3v2_20261012, WP3_GATED_b3v2_20261012).
+
+ShareAlike scope (CC-BY-SA-4.0, "Basic toilet with seat and lid on flushometer" by Yaiyeondurising / 5Life):
+  - SA applies to the adapted toilet mesh only: the WC3_TOILET_FLUSHOMETER_BODY geometry baked (rotation about Y + translation, no other change)
+    into every part whose id contains "_TOILET" (MAIN1F_NEW_WC_*_TOILET_* and *_ACCESSIBLE_TOILET, *_NEBOX_TOILET, *_SEBOX_TOILET):
+    28 instances in WP3 BASE and 1 instance in WP3 GATED. Those mesh assets are adaptations and are offered under CC-BY-SA-4.0.
+  - The WC3_TOILET_FLUSHOMETER_LID and WC3_SINK_WALLHUNG_LAVATORY_ALT adaptations are not used by any installed part.
+  - SA does not extend to other parts (procedural partitions/walls/trims/signs/floor patch), to the private StationLit materials
+    (no texture or material from the source model is used), to the scene file or to the rest of the project.
+CC-BY-4.0 (urinal by photon / Professor_E12): attribution above applies to the 16 urinal parts in WP3 URINAL (MAIN1F_NEW_WC_*_URINAL_*).
+CC0-1.0 (Bathroom sink by CreativeTrio): no obligation; credited for the 4 basin-counter parts in WP3 BASE (MAIN1F_NEW_WC_*_COUNTER_*BASIN).
+Legal adequacy of this notice has not been reviewed by counsel.

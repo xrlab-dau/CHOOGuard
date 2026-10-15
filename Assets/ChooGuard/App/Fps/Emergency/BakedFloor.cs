@@ -17,6 +17,8 @@ namespace ChooGuard.App.Fps.Emergency
         public static readonly Vector3 Shift = new Vector3(2048f, 0, 0);
 
         private NavMeshDataInstance instance;
+        private readonly List<NavMeshLinkInstance> walkingLinks = new List<NavMeshLinkInstance>();
+        private readonly StationWalkingRouteEntry[] walkingRoutes = StationWalkingRoutes.Load();
         private readonly NavMeshPath path = new NavMeshPath();
         private readonly Vector3[] corners = new Vector3[128];
 
@@ -25,6 +27,16 @@ namespace ChooGuard.App.Fps.Emergency
             if (data == null) throw new ArgumentNullException(nameof(data));
             instance = NavMesh.AddNavMeshData(data, Shift, Quaternion.identity);
             if (!instance.valid) throw new InvalidOperationException("기준 바닥(navmesh 사본)을 올리지 못했습니다.");
+            try
+            {
+                foreach (var route in walkingRoutes)
+                {
+                    var data0 = route.LinkData(); data0.startPosition += Shift; data0.endPosition += Shift;
+                    var link = NavMesh.AddLink(data0); if (!NavMesh.IsLinkValid(link)) throw new InvalidOperationException("기준 보행 경로를 잇지 못했습니다: " + route.id);
+                    walkingLinks.Add(link);
+                }
+            }
+            catch { Dispose(); throw; }
         }
 
         /// <summary>The walkable point nearest <paramref name="position"/> within <paramref name="radius"/>, or false (then <paramref name="floor"/> is <paramref name="position"/>).</summary>
@@ -45,12 +57,29 @@ namespace ChooGuard.App.Fps.Emergency
             int count = path.GetCornersNonAlloc(corners);
             if (count == 0 || count >= corners.Length) return false;
             int first = into.Count > 0 && (into[into.Count - 1] - (corners[0] - Shift)).sqrMagnitude < .01f ? 1 : 0;
-            for (int i = first; i < count; i++) into.Add(corners[i] - Shift);
+            for (int i = first; i < count; i++)
+            {
+                if (i > 0)
+                    foreach (var route in walkingRoutes)
+                        if (route.Matches(corners[i - 1] - Shift, corners[i] - Shift, out bool reverse))
+                        {
+                            var measured = route.Direction(reverse);
+                            // Include both exact canonical endpoints. Attachment
+                            // corners connect physically to them; skipping them
+                            // would diagonally cut the first/last railing corner.
+                            for (int j = 0; j < measured.Length; j++)
+                                if (into.Count == 0 || (into[into.Count - 1] - measured[j]).sqrMagnitude > 1e-10f) into.Add(measured[j]);
+                            break;
+                        }
+                into.Add(corners[i] - Shift);
+            }
             return true;
         }
 
         public void Dispose()
         {
+            foreach (var link in walkingLinks) if (NavMesh.IsLinkValid(link)) NavMesh.RemoveLink(link);
+            walkingLinks.Clear();
             if (instance.valid) instance.Remove();
         }
     }

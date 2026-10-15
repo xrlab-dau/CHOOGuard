@@ -1,0 +1,52 @@
+# Findings
+
+Source authority: original blueprints and explicit user blueprint interpretations. Photos/video provide appearance only. MAIN and MH have separate frames. Existing 4F topology remains unresolved, no inference authorized.
+
+Memory check found only an Aside REPL usage note; no CHOOGuard history. Verify current CLI behavior.
+
+Prior exact evidence: 3F guide is a cartogram, current official 5F room sketch is cropped 1118x633, same SHA across five room modals. EKACEM 2012 extension PDF already held, historical B1/5F and max31.85m only; no current4F office polygons or floor elevations. Prior 3F R25DD20227617-0 drainage lead has no annex; prior4F six-query negative is bounded only.
+Aside listTabs() is unavailable; openTab(url) works currently. Use explicit returned page in every call.
+
+Queriesq01–04: exact floor-number searches chiefly wrong buildings; known EKACEMPDF only on general extension query. No new originals. Explore actual project designers, official plan index and tenant annexes next.
+
+Queriesq05–10: publisher listing KUNWON2007–2008Review includes BusanStation extension, designer-primary search worth following. q09 new public goods-shop construction notice candidate; q06 operator2025 disclosure index search snippet says BusanStation floorplans requested and non-disclosed (must inspect original before treating as evidence).
+
+Queriesq11–14: AURIC identified [SpecialReport] High-speedRail BusanStation dn121819; related2011projectreport byLeeByungchan/KimHangi/KimKyeonghui (Architecture55(3),201103) is distinct candidate. Official KorailRetail 3F/foodcourt indexed searches returned no results. Proceed to original article/architect pages and newgoodsnotice.
+
+Primary originalpage review: AURIC2004dn121819 is2pages188–189, title highspeedBusanStation, architectKunwon, builder극동건설. Related2011article link must follow. Goodsnotice actual text identifies R26BK01658098-000,2026-07-30,BusanKTXmatchinghall33m2, [붙임]설계도서 explicitly includes drawings. Pursue officialKorailRetail corresponding notice.
+
+AURIC original2004page exposes actualPDF-view link files/auricpdf.pdf?num=121819&db=CMAG, and actual2011related link dn174796. No download yet; fetch originalpublicUI link once and inspect signature/content. Goodsnotice needs different official 입찰board, boardType4 is tenant recruitment. Kunwon official design navigation acquired, inspect Project forms.
+
+AURIC2004UI-derivedPDF link returnedHTTP404HTML5077B; rejected as PDF and renamed .html. No architectural original acquired. Do not repeat this endpoint. Inspect publisher-primary AIK2011 and designer actual project search. Retail official tenderboard exactnav is bbs/selectBbsList.do?bbsId=BBSMSTR_000000000027; boardType46 commercial operator may hold3Ffoodcourt annexes.
+
+Queriesq15–20:3Ftenant/operator exactterms no new annexevidence. q18captured beforecontentloaded and therefore markedinsufficient, not negative. q20HannoWeber1996BusanIntegratedStation competitionPDF exists; historical unbuiltproposal likely, must not apply tocurrentstation. New actual sourcefile candidate kept separate from currentarchitecture.
+
+Actual officialKorailRetail tender search returns62Busan notices. Latest2026goods construction nttId100081621 and electrical100081620;2023KorailLounge100079965;2022matchinghallstores;2021firstfloorstores. This is independent new annex lane, not re-downloading prior leasePDFs. Designer officialKTXBusanStation project32 says1996.09,B1/5FL44,874.85m2; imageryreview pending. AURICdownloadhandler actually routes through cart_cmag.asp; originalrawPDFstring404 was incompleteUI resolution. Follow real handler once; no accesscontrol bypass.
+
+Designer9originalJPEGs1200x675 acquired and contact-sheet directlyreviewed: exterior/lobby/boarding-escalator/platform photos only, no floorplan. They are historicalappearance references, not structural controls. TendernativeDOMclick triggered realnavigation then expected execution-context loss; use observedformaction selectBbsDetail.do with exactIDs, no furtherclickretry.
+
+Important actualofficialindex page2–4:2018-12-19 부산역3층맞이방전문점(푸드코트)소방설비공사100045068 and1F+5Fmeetingroomconstruction100045066;2018-01-26 3Fstore100041854;2017-02-07 3F2stores100038714;2018MDplan100041922. Follow actualarchives for fullannexes. Floorlabelconventions must be checked from actualplan not title.
+
+New metric publictext controls, historical2018: official1F5Fconstruction100045066 lists1Fstore1 10600×15300 H5115mm,store2 8370×15300 H5115mm;5Froom1 8130×7790 H3000mm,room2 7250×11860 H3000mm. Currentroom identities not yet matched. 3F2018store100041854 lists27300×16610 H3650mm;3F2017twostores100038714 lists13300×6580 and27400×8400 H3650mm. No genericwholefloorY inference.
+
+Five novel public official tender archives acquired via Aside browser; ZIP signatures and testzip pass. Exact original hashes, PDF page inventory and acquisition receipts are retained in upper-tenders-extraction.json, goods-2026-extraction.json and per-archive JSON. Actual images reviewed: 2018 1F p2 whole base plan (I-101), 2018 5F p2 broad office/core/open-void base plan (P-101), goods2026 p5 context and p8 dimensioned5500x6000 store plan. Source dates:2018.11 drawings/2018-12-19 publication; goods cover2026.07 with inner2026.05 dates. These are source controls; current FBX registration remains separate work.
+
+3F archives:2018 fire14p;2018 store11p plus separate location/design2p;2017 stores17p. Empty extracted text does not mean scanned: vector drawings are present and font encoding prevents text extraction. 2017 p3 context visually resembles current2F MAIN WC+retail band; exact floor identity unresolved, must not blindly install as current3F. 2018 separate location p1 explicitly shows3F L-shaped restaurant wing. Worker9337 owns detailed3F trace and registration; this lane owns acquisition, chronology, identity qualification and4Fsearch.
+
+Queriesq21–24 yield two unreviewed promising public leads:2024 notice20240334034-000 부산역4층(부고열소)내부개수에따른소방공사, and university-hosted architecture March2011 magazine candidate1026345059.pdf. Follow original public attachments, not paid/login endpoints.
+
+Correction after direct actual-page review: the 2017 p3 resemblance to2F was a weak visual hypothesis and is NOT accepted classification. The separate2018 location/design p1 explicitly shows3F L-wing; rotating2017 p3 90degrees appears to match its long right-side wing (WC,outer three-panel strip,inner two stores,escalators). Ground9337 independently owns final source-region identity. Root and9337 notified of correction immediately.
+2011 universityPDF is3pages only, noBusan text hit; Google snippet included magazine contents but fullprojectreport is not established. Actual3page images rendered for inspection.
+
+Actual5Freview p2/P-101: historical2018.11 entire baseplan of office/core sector contains explicitOPEN at frontcurvedfacade and large rearvoid, EPS/PS stair+paired elevators, offices/501교육장/전산교육장, shaded newmeetingrooms. Diagram extends beyond previous cropped official guide but is NOT asserted wholebuildingextent. p3/P-102 dated2018.08 existingroomplan has CH2400 finish and CH4230 slab annotation; p5/P-104 structureplan includes proposed CH3000 next to columns. Official current5Fguide has512/533/532/531/530 numbers and corridor partitions differing from2018labels. Core+curvedfacade are correspondence candidates only; room-number mapping and registration unqualified. Existing/proposed heights must remain separate, never genericwholefloorheight.
+2011universityPDF directactual3pageinspection: photoessay aboutLasVegasClevelandClinic, Korean/Englishmagazinecontents. Busanreport appearsONLY incontents atp89. NoBusanarchitectural drawing acquired. ReceiptSHA912d98f252be65038ef5e00457053559b0278fbe477e524a930c4a7c6208e5ef excludedfromusableblueprints.
+
+Actual4FofficialG2Bnotice located:20240431396-000 title부산역4층(부고열소)내부개수에따른전기공사,2024-04-18 19:08:31; publicUIsearchoneexactmatch. Body lists relatedfire20240334034-000. G2B currentUIlegacydetail loading/attachments remainunderreview, notclaimedmissingyet. Electricpublicaggregator text says electronicdesignreview atG2B>공사>입찰공고. No4Fgeometryinference from meretitle.
+
+4Foriginalpublicannexes acquiredviaactualG2Bviewerdownloadanchor: fireHWP224768B SHA333d7463c540e7a2a3be5b03157c66374a7c03370ef6e1236f4be98da2cfd585; electricalXLSM486121B SHA5cf36eeb56ee2414a1e01640528e41b6311d7b3507dd2e60d4afacabe5d89fac; electricalspecHWP208896B. Macroexecutionnone. FireHWP68pagesaccordingofficialviewerXML; textidentifies4Faddress and15drawinglist asSEPARATEANNEX. Actual16embeddedimagescontactsheetreview:nonefloorplan,onlytemplatecorners/schedule/emergencyorganizationalchart. ElectricalXLSM29sheetsincludinghiddenbudget/phasing;onlyimage1iscover,actualreviewed. This narrowsmissingdrawingannex,notarchitecturalplanacquisition. Pursue4Farchitecture기타공사notice.
+
+1Fscopeclarification: p2literal전체배치도_1F is entirelayoutforretailproject, actualpagecoverspartialMAINsector, notcomplete1Fbuildingextent. Earlierwhole-baseplan shorthand clarified to root and1Fregistrationowner; pageedges notexteriorwalls.
+
+4Fnewqualifiedpartialgeometrysource: official20231147064-001 architectureZIP1720267B SHAaa7a3e86ced2a69dc3daa45423535f38563fa4e0d371d632be190720a87e0f29 contains3files(HWP+2XLSX),noPDF. HWPsource550fdd1... explicitlyMAINstationbody4Fcrewoffice/dormrefurb896m2 and35designsheetsSEPARATEANNEX; actual23embeddedimagesreviewed onlytemplate/textcharts,notfloorplans. QuantityXLSX43cda332... actual내부산출서 diagrams30uniqueimages/31anchors mapto30namedroomgroups and33부대공사 (image11reused). Source-date20231002; dimensions,area/perimeter/finishheight anddoor6types present. Actualdrawingimageinspection andrelationship/anchor binding stored4f-measured-room-controls.json/md +4f-quantity-image-room-bindings.json. Noassembledadjacency/placement/registration/current-asbuilt asserted.
+
+Final authority corrections: 2018location/design PDF is mixed content: p1 embedded914×831locationdiagram plusannotations, notfullyvectorarchitecture; p2 proposed1500×858rendering. Original4F000 actualUIfile rows were acquired, not insufficient; its ZIP8621da8... differs fromchangedaa7a3e8... onlyatcontainerlevel—all3membersnames/SHAidentical. Originalpublication2023-11-29 17:12:19,changed2023-12-01 15:47:51. Noassembled35-sheetannex in either.4Fcoverage nowPARTIAL_MEASURED_ROOM_CONTROLS, notno4Fgeometrydata. Fullboundedhandoff sealed inHANDOFF.md; nofurthertenderrepeatsearch perrootstopinstruction.

@@ -93,7 +93,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void ShutterCaught(FireShutterPoint shutter, GameObject who)
         {
             var person = who.GetComponent<Passenger>();
-            if (person == null || person.Hurt) return;
+            if (person == null || person.Hurt || !InsideBuilding(person.transform.position)) return;
             shutter.Operate(FireShutterPoint.Command.Stop, "끼임");
             var casualty = AddCasualty(person, "방화셔터에 끼임", "방화셔터에 끼인", "caught under the fire shutter", "방화셔터 아래에 끼인 승객", 2);
             casualty.Told = " 방화셔터 아래에 사람이 끼었어요! 빨리 와 주세요.";
