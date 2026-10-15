@@ -1,5 +1,7 @@
 """Force Text must be verified against LFS contents, not trusted pointers."""
+import base64
 import hashlib
+import os
 import subprocess
 import sys
 import tempfile
@@ -53,32 +55,114 @@ class LfsTextAssetsTests(unittest.TestCase):
             result = lfs.resolve_lfs_text_assets({"a.unity": pointer(oid, len(data))}, "tip")
         self.assertFalse(result["a.unity"].startswith(b"%YAML"))
 
-    def test_missing_object_fetches_only_needed_text_category(self):
+    def test_missing_shared_object_smudges_exact_pointer_once_without_ref_scan(self):
         data = b"%YAML 1.1\nnew"
         oid = hashlib.sha256(data).hexdigest()
         calls = []
 
         def run(args, **kwargs):
-            calls.append(args)
+            calls.append((args, kwargs))
             if args == ["git", "lfs", "env"]:
                 return self.env()
+            self.assertEqual(args, ["git", "-c", "lfs.fetchinclude=", "-c", "lfs.fetchexclude=",
+                                    "-c", "lfs.skipdownloaderrors=false", "lfs", "smudge", "--", "Scene [1], v2.unity"])
+            self.assertEqual(kwargs["input"], pointer(oid, len(data)))
+            self.assertEqual(kwargs["stdout"], subprocess.DEVNULL)
+            self.assertEqual(kwargs["stderr"], subprocess.DEVNULL)
+            self.assertEqual(kwargs["timeout"], 180)
+            self.assertNotIn("GIT_LFS_SKIP_SMUDGE", kwargs["env"])
+            self.assertNotIn("GIT_LFS_SKIP_DOWNLOAD_ERRORS", kwargs["env"])
+            self.assertEqual(kwargs["env"]["LFS_TEST_KEEP"], "kept")
             self.object(data)
             return subprocess.CompletedProcess(args, 0, b"", b"")
 
-        with mock.patch.object(lfs.subprocess, "run", side_effect=run):
-            result = lfs.resolve_lfs_text_assets({"Scene [1], v2.unity": pointer(oid, len(data))}, "exact-sha")
-        self.assertEqual(result["Scene [1], v2.unity"], b"%YAML 1.")
-        self.assertIn("--include=*.unity", calls[1])
-        self.assertEqual(calls[1][-2:], ["origin", "exact-sha"])
-        self.assertNotIn("checkout", calls[1])
+        heads = {"Scene [1], v2.unity": pointer(oid, len(data)), "checkpoint/Scene.unity": pointer(oid, len(data))}
+        with mock.patch.object(lfs.subprocess, "run", side_effect=run), mock.patch.dict(os.environ, {
+            "GIT_LFS_SKIP_SMUDGE": "1", "GIT_LFS_SKIP_DOWNLOAD_ERRORS": "1", "LFS_TEST_KEEP": "kept",
+        }):
+            result = lfs.resolve_lfs_text_assets(heads, "exact-sha")
+        self.assertEqual(result, {path: b"%YAML 1." for path in heads})
+        self.assertEqual(len(calls), 2)  # env and one exact-object download
+        self.assertNotIn("exact-sha", calls[1][0])
+        self.assertNotIn("fetch", calls[1][0])
+        self.assertNotIn("checkout", calls[1][0])
 
-    def test_failed_fetch_and_still_missing_object_fail_closed(self):
+    def test_failed_smudge_and_still_missing_object_fail_closed(self):
         oid = "a" * 64
         for code in (0, 1):
             with self.subTest(code=code), mock.patch.object(lfs.subprocess, "run", side_effect=[
                 self.env(), subprocess.CompletedProcess([], code, b"", b"")
             ]), self.assertRaises(lfs.LfsTextAssetError):
                 lfs.resolve_lfs_text_assets({"a.unity": pointer(oid, 8)}, "tip")
+
+    def test_ci_auth_is_process_scoped_and_preserves_existing_git_configuration(self):
+        data = b"%YAML 1.1\n"
+        oid = hashlib.sha256(data).hexdigest()
+        token = "test-ci-session"
+
+        def run(args, **kwargs):
+            if args == ["git", "lfs", "env"]:
+                return self.env()
+            self.assertNotIn(token, " ".join(args))
+            env = kwargs["env"]
+            self.assertEqual(env["GIT_CONFIG_COUNT"], "2")
+            self.assertEqual(env["GIT_CONFIG_KEY_0"], "lfs.storage")
+            self.assertEqual(env["GIT_CONFIG_VALUE_0"], "existing-cache")
+            self.assertEqual(env["GIT_CONFIG_KEY_1"], "http.https://github.com/.extraheader")
+            encoded = env["GIT_CONFIG_VALUE_1"].removeprefix("AUTHORIZATION: basic ")
+            self.assertEqual(base64.b64decode(encoded), ("x-access-token:" + token).encode())
+            self.object(data)
+            return subprocess.CompletedProcess(args, 0, b"", b"")
+
+        with mock.patch.dict(os.environ, {"GITHUB_TOKEN": token, "GIT_CONFIG_COUNT": "1",
+                                         "GIT_CONFIG_KEY_0": "lfs.storage", "GIT_CONFIG_VALUE_0": "existing-cache"}), \
+                mock.patch.object(lfs.subprocess, "run", side_effect=run):
+            lfs.resolve_lfs_text_assets({"a.unity": pointer(oid, len(data))}, "tip")
+            self.assertEqual(os.environ["GIT_CONFIG_COUNT"], "1")
+            self.assertNotIn("GIT_CONFIG_KEY_1", os.environ)
+
+    def test_download_errors_include_path_and_exit_without_raw_output(self):
+        heads = {"Assets/Scene.unity": pointer("a" * 64, 8)}
+        with mock.patch.object(lfs.subprocess, "run", side_effect=[
+            self.env(), subprocess.CompletedProcess([], 7, b"secret-out", b"secret-error"),
+        ]):
+            with self.assertRaisesRegex(lfs.LfsTextAssetError, r"Assets/Scene\.unity \(exit 7\)") as raised:
+                lfs.resolve_lfs_text_assets(heads, "tip")
+        self.assertNotIn("secret", str(raised.exception))
+        for error, message in ((subprocess.TimeoutExpired("git", 180), "timed out after 180s"),
+                               (OSError("secret-system-error"), "command unavailable")):
+            with self.subTest(error=error), mock.patch.object(lfs.subprocess, "run", side_effect=[self.env(), error]):
+                with self.assertRaises(lfs.LfsTextAssetError) as raised:
+                    lfs.resolve_lfs_text_assets(heads, "tip")
+                self.assertIn(message, str(raised.exception))
+                self.assertIn("Assets/Scene.unity", str(raised.exception))
+                self.assertNotIn("secret", str(raised.exception))
+
+    def test_downloaded_object_hash_size_and_binary_content_are_checked(self):
+        for data, stored, declared_size, error in (
+            (b"%YAML 1.1\n", b"corrupt", 10, "SHA-256 mismatch"),
+            (b"%YAML 1.1\n", b"%YAML 1.1\n", 1, "size mismatch"),
+            (b"\x00\x00UnityFS", b"\x00\x00UnityFS", 9, None),
+        ):
+            with self.subTest(error=error):
+                oid = hashlib.sha256(data).hexdigest()
+                target = self.storage / oid[:2] / oid[2:4] / oid
+                target.unlink(missing_ok=True)
+
+                def run(args, **kwargs):
+                    if args == ["git", "lfs", "env"]:
+                        return self.env()
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes(stored)
+                    return subprocess.CompletedProcess(args, 0, b"", b"")
+
+                with mock.patch.object(lfs.subprocess, "run", side_effect=run):
+                    if error:
+                        with self.assertRaisesRegex(lfs.LfsTextAssetError, error):
+                            lfs.resolve_lfs_text_assets({"a.unity": pointer(oid, declared_size)}, "tip")
+                    else:
+                        result = lfs.resolve_lfs_text_assets({"a.unity": pointer(oid, declared_size)}, "tip")
+                        self.assertFalse(result["a.unity"].startswith(b"%YAML"))
 
     def test_unavailable_lfs_command_is_an_explicit_verification_error(self):
         heads = {"a.unity": pointer("a" * 64, 8)}

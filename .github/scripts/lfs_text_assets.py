@@ -5,8 +5,9 @@ declared size and SHA-256 before handing its prefix to the policy checker.
 """
 from __future__ import annotations
 
+import base64
 import hashlib
-import posixpath
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -45,25 +46,47 @@ def resolve_lfs_text_assets(heads: dict[str, bytes], rev: str) -> dict[str, byte
     def location(oid: str) -> Path:
         return storage / oid[:2] / oid[2:4] / oid
 
-    if any(not location(oid).is_file() for oid, _ in pointers.values()):
-        # Extension patterns avoid interpreting commas/brackets in asset names.
-        # Download only affected Force Text categories, never all art assets.
-        include = ",".join(sorted({"*" + posixpath.splitext(path)[1] for path in pointers}))
+    def download(path: str) -> None:
+        # Smudge the exact commit's pointer rather than enumerating every LFS
+        # path at the ref. Output goes nowhere; Git LFS retains its cached object.
+        download_env = os.environ.copy()
+        download_env.pop("GIT_LFS_SKIP_SMUDGE", None)
+        download_env.pop("GIT_LFS_SKIP_DOWNLOAD_ERRORS", None)
+        token = download_env.get("GITHUB_TOKEN")
+        if token:
+            # checkout deliberately removes persisted credentials. Expose the
+            # existing read-only CI token only to this GitHub HTTPS operation,
+            # without putting it in argv or writing repository configuration.
+            try:
+                count = int(download_env.get("GIT_CONFIG_COUNT", "0"))
+            except ValueError as exc:
+                raise LfsTextAssetError("Invalid process Git configuration; LFS serialization is unverified") from exc
+            if count < 0:
+                raise LfsTextAssetError("Invalid process Git configuration; LFS serialization is unverified")
+            encoded = base64.b64encode(("x-access-token:" + token).encode()).decode("ascii")
+            download_env[f"GIT_CONFIG_KEY_{count}"] = "http.https://github.com/.extraheader"
+            download_env[f"GIT_CONFIG_VALUE_{count}"] = "AUTHORIZATION: basic " + encoded
+            download_env["GIT_CONFIG_COUNT"] = str(count + 1)
         try:
-            fetched = subprocess.run(
-                ["git", "-c", "lfs.fetchrecentalways=false", "lfs", "fetch",
-                 "--include=" + include, "--exclude=", "origin", rev],
-                capture_output=True, timeout=180, check=False,
+            smudged = subprocess.run(
+                ["git", "-c", "lfs.fetchinclude=", "-c", "lfs.fetchexclude=",
+                 "-c", "lfs.skipdownloaderrors=false", "lfs", "smudge", "--", path],
+                input=heads[path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                env=download_env, timeout=180, check=False,
             )
-        except (OSError, subprocess.TimeoutExpired) as exc:
-            raise LfsTextAssetError("Fetching Force Text LFS objects failed; serialization is unverified") from exc
-        if fetched.returncode:
-            raise LfsTextAssetError("Fetching Force Text LFS objects failed; serialization is unverified")
+        except subprocess.TimeoutExpired as exc:
+            raise LfsTextAssetError(f"LFS download timed out after 180s for {path}; serialization is unverified") from exc
+        except OSError as exc:
+            raise LfsTextAssetError(f"LFS download command unavailable for {path}; serialization is unverified") from exc
+        if smudged.returncode:
+            raise LfsTextAssetError(f"LFS download failed for {path} (exit {smudged.returncode}); serialization is unverified")
 
     resolved = dict(heads)
     cached = {}
     for path, (oid, expected_size) in pointers.items():
         if oid not in cached:
+            if not location(oid).is_file():
+                download(path)
             digest, size, prefix = hashlib.sha256(), 0, b""
             try:
                 with location(oid).open("rb") as stream:
