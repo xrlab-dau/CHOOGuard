@@ -111,10 +111,14 @@ namespace ChooGuard.App.Fps.Emergency
         /// True when a request of about <paramref name="estimatedTokens"/> input tokens may start now: the lane has an
         /// in-flight slot, and the minute still has room after what the lanes above it have reserved and not yet used.
         /// </summary>
-        public bool CanSend(JevLane lane, float now, long estimatedTokens = 0)
+        public bool CanSend(JevLane lane, float now, long estimatedTokens = 0) => BlockReason(lane, now, estimatedTokens) == JevSendBlock.None;
+        public int InFlight(JevLane lane) => lanes[(int)lane].InFlight;
+        public int MaxInFlight(JevLane lane) => lanes[(int)lane].MaxInFlight;
+
+        public JevSendBlock BlockReason(JevLane lane, float now, long estimatedTokens = 0)
         {
             var own = lanes[(int)lane];
-            if (own.InFlight >= own.MaxInFlight) return false;
+            if (own.InFlight >= own.MaxInFlight) return JevSendBlock.InFlight;
             int requests = 0, held = 0;
             long tokens = 0, heldTokens = 0;
             for (int i = 0; i < lanes.Length; i++)
@@ -127,7 +131,8 @@ namespace ChooGuard.App.Fps.Emergency
                 held += Math.Max(0, other.ReservedRequests - other.WindowRequests);
                 heldTokens += Math.Max(0, other.ReservedTokens - other.WindowTokens);
             }
-            return requests + held < MaxRequestsPerMinute && tokens + heldTokens + estimatedTokens <= MaxTokensPerMinute;
+            return requests + held < MaxRequestsPerMinute && tokens + heldTokens < MaxTokensPerMinute && tokens + heldTokens + estimatedTokens <= MaxTokensPerMinute
+                ? JevSendBlock.None : JevSendBlock.Budget;
         }
 
         /// <summary>A request starts: it takes an in-flight slot and its estimated tokens count against the minute at once.</summary>

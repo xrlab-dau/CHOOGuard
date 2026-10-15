@@ -119,9 +119,11 @@ namespace ChooGuard.App.Fps.Emergency
         public bool Available => key != null && !disabled;
         /// <summary>The server refused the key (401/403): it stays off for this shift.</summary>
         public bool Rejected => disabled;
-        public string Status { get; private set; }
-        /// <summary>Failed requests since the last answer (0 while JEV answers).</summary>
-        public int FailuresInARow { get; private set; }
+        public string Status => Available ? connection.Summary(Time.realtimeSinceStartup, LastModel) : initialStatus;
+        /// <summary>Largest per-lane failure streak; an unrelated lane's answer does not hide an outage.</summary>
+        public int FailuresInARow => Math.Max(connection.Failures(JevLane.Director), Math.Max(connection.Failures(JevLane.CrowdUrgent), connection.Failures(JevLane.CrowdRoutine)));
+        public int FailuresInARowOf(JevLane lane) => connection.Failures(lane);
+        public string StatusOf(JevLane lane) => Available ? connection.Describe(lane, Time.realtimeSinceStartup) : initialStatus;
         public string LastModel { get; private set; } = "";
         /// <summary>Requests, tokens and dollars of all lanes together: the last minute's rate and the shift's totals.</summary>
         public JevUsage Usage => budget.Usage(Time.realtimeSinceStartup);
@@ -135,12 +137,16 @@ namespace ChooGuard.App.Fps.Emergency
 
         private readonly string key, authorization;
         private readonly JevBudget budget = new JevBudget();
+        private readonly JevConnection connection = new JevConnection();
+        private string initialStatus;
+        private long requestSequence;
         private readonly List<Cost> mainThread = new List<Cost>();
         private bool disabled;
         private readonly string logPath;
         private readonly object logLock = new object();
         private long logBytes;
         private int pendingRequests;
+        private readonly int[] preparingByLane = new int[3];
 
         public JevClient(string runLogPath)
         {
@@ -149,14 +155,31 @@ namespace ChooGuard.App.Fps.Emergency
             Source = source;
             logPath = runLogPath;
             TrimRunLogs(runLogPath);
-            Status = source == JevKeySource.Off ? "JEV 꺼짐(TYPESAFE_API_KEY=off) · 비상상황을 만들지 않음" :
+            initialStatus = source == JevKeySource.Off ? "JEV 꺼짐(TYPESAFE_API_KEY=off) · 비상상황을 만들지 않음" :
                 key == null ? "JEV 키 없음 · 비상상황을 만들 수 없음" :
                 JevKey.KnownFor(key) == JevKeyCheck.Rejected ? "JEV 키 거부 · 타이틀의 JEV 연결에서 다시 입력" : "JEV 연결 준비";
             if (key != null && JevKey.KnownFor(key) == JevKeyCheck.Rejected) disabled = true;
         }
 
         /// <summary>True when a request of <paramref name="lane"/> may be sent now under the lane's in-flight limit and the shared budget.</summary>
-        public bool CanSend(JevLane lane) => Available && budget.CanSend(lane, Time.realtimeSinceStartup);
+        public bool CanSend(JevLane lane) => CanSend(lane, 0);
+
+        private bool CanSend(JevLane lane, long estimatedTokens, bool ownPreparation = false)
+        {
+            if (!Available) return false;
+            float now = Time.realtimeSinceStartup;
+            if (!connection.CanSend(lane, now)) { connection.Blocked(lane, JevSendBlock.RetryDelay); return false; }
+            int outstanding = budget.InFlight(lane) + preparingByLane[(int)lane] - (ownPreparation ? 1 : 0);
+            int limit = connection.Serial(lane) ? 1 : budget.MaxInFlight(lane);
+            if (outstanding >= limit)
+            {
+                connection.Blocked(lane, JevSendBlock.InFlight);
+                return false;
+            }
+            var block = budget.BlockReason(lane, now, estimatedTokens);
+            connection.Blocked(lane, block);
+            return block == JevSendBlock.None;
+        }
 
         /// <summary>
         /// Warms every path a request takes while the shift loads, so the first requests do not meet cold code (~20 ms
@@ -207,21 +230,35 @@ namespace ChooGuard.App.Fps.Emergency
             Cost main = default;
             if (questions.Count == 0 || !CanSend(lane)) { done(null); yield break; }
             Interlocked.Increment(ref pendingRequests);
+            preparingByLane[(int)lane]++;
+            bool preparingSlot = true;
             bool recordingQueued = false;
+            JevBudget.Ticket ticket = null;
+            bool settled = false;
             try
             {
                 var preparing = Task.Run(() => { var text = Body(state, questions); return new Prepared(text, Encoding.UTF8.GetBytes(text)); });
                 main += span.Stop();
                 while (!preparing.IsCompleted) yield return null;
                 span = DirectorSpan.Begin();
-                if (preparing.IsFaulted) { mainThread.Add(main + span.Stop()); done(null); yield break; }
+                if (preparing.IsFaulted)
+                {
+                    connection.Observe(lane, ++requestSequence, JevFailure.Preparation, Time.realtimeSinceStartup);
+                    mainThread.Add(main + span.Stop()); done(null); yield break;
+                }
                 var prepared = preparing.Result;
                 long estimate = EstimateInputTokens(prepared.Bytes.Length);
-                if (!budget.CanSend(lane, Time.realtimeSinceStartup, estimate)) { mainThread.Add(main + span.Stop()); done(null); yield break; }
-                var ticket = budget.Begin(lane, Time.realtimeSinceStartup, estimate);
+                if (!CanSend(lane, estimate, ownPreparation: true)) { mainThread.Add(main + span.Stop()); done(null); yield break; }
+                ticket = budget.Begin(lane, Time.realtimeSinceStartup, estimate);
+                preparingByLane[(int)lane]--;
+                preparingSlot = false;
+                long sequence = ++requestSequence;
                 float started = Time.realtimeSinceStartup;
                 byte[] answerBytes = null;
                 long code;
+                bool transportSuccess, timedOut;
+                string transport;
+                float retryAfter;
                 using (var request = new UnityWebRequest(Endpoint, UnityWebRequest.kHttpVerbPOST))
                 {
                     request.uploadHandler = new UploadHandlerRaw(prepared.Bytes) { contentType = "application/json" };
@@ -234,7 +271,12 @@ namespace ChooGuard.App.Fps.Emergency
                     yield return sending;
                     span = DirectorSpan.Begin();
                     code = request.responseCode;
-                    if (request.result == UnityWebRequest.Result.Success) answerBytes = request.downloadHandler.data;
+                    transportSuccess = request.result == UnityWebRequest.Result.Success;
+                    transport = request.result.ToString();
+                    timedOut = request.error != null && (request.error.IndexOf("timed out", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        request.error.IndexOf("timeout", StringComparison.OrdinalIgnoreCase) >= 0);
+                    retryAfter = RetryAfter(request.GetResponseHeader("Retry-After"), DateTimeOffset.UtcNow);
+                    if (transportSuccess) answerBytes = request.downloadHandler.data;
                 }
                 Reply reply = null;
                 if (answerBytes != null)
@@ -246,31 +288,43 @@ namespace ChooGuard.App.Fps.Emergency
                     reply = parsing.IsFaulted ? null : parsing.Result;
                 }
                 var answers = reply?.Answers;
-                budget.End(ticket, reply?.InputTokens, reply?.OutputTokens ?? 0, answers == null);
+                float finished = Time.realtimeSinceStartup;
+                var failure = JevConnection.Classify(code, transportSuccess, timedOut, answers?.Count ?? 0, questions.Count);
+                budget.End(ticket, reply?.InputTokens, reply?.OutputTokens ?? 0, failure != JevFailure.None);
+                settled = true;
+                connection.Observe(lane, sequence, failure, finished, retryAfter, finished - started, Math.Max(2, TimeoutSeconds * .5f));
                 if (reply != null) LastModel = reply.Model;
                 bool refused = code == 401 || code == 403;
-                if (answers == null)
+                if (refused)
                 {
-                    FailuresInARow++;
-                    Status = refused ? "JEV 키 거부 · 타이틀의 JEV 연결에서 다시 입력" :
-                        code == 429 ? "JEV 요청 한도 · 잠시 뒤 다시 물음" : "JEV 응답 없음 · 다시 묻는 중";
-                    if (refused) { disabled = true; JevKey.Observed(key, JevKeyCheck.Rejected); }
+                    disabled = true;
+                    initialStatus = "JEV 키 거부 · 타이틀의 JEV 연결에서 다시 입력";
+                    JevKey.Observed(key, JevKeyCheck.Rejected);
                 }
-                else
+                else if (failure == JevFailure.None && !disabled)
                 {
-                    FailuresInARow = 0;
-                    Status = "JEV 연결됨 · " + LastModel;
                     JevKey.Observed(key, JevKeyCheck.Accepted);
                 }
-                WriteLog(purpose, lane, prepared.Text, questions, answers, code, Time.realtimeSinceStartup - started, reply?.InputTokens, LastModel);
+                WriteLog(purpose, lane, prepared.Text, questions, answers, code, finished - started, reply?.InputTokens, reply?.Model ?? "",
+                    failure, connection.RetryIn(lane, finished), transport);
                 recordingQueued = true;
                 mainThread.Add(main + span.Stop());
                 done(answers);
             }
             finally
             {
+                if (preparingSlot) preparingByLane[(int)lane]--;
+                if (ticket != null && !settled) budget.End(ticket, null, 0, true);
                 if (!recordingQueued) Interlocked.Decrement(ref pendingRequests);
             }
+        }
+
+        private static float RetryAfter(string value, DateTimeOffset now)
+        {
+            if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var seconds) && !float.IsNaN(seconds) && !float.IsInfinity(seconds))
+                return Math.Max(0, Math.Min(120, seconds));
+            return DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var date)
+                ? (float)Math.Max(0, Math.Min(120, (date - now).TotalSeconds)) : 0;
         }
 
         private sealed class Prepared
@@ -302,6 +356,10 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         public static string Body(object state, IReadOnlyList<JevChoice> questions)
         {
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var question in questions)
+                if (question == null || string.IsNullOrEmpty(question.Id) || !ids.Add(question.Id))
+                    throw new ArgumentException("JEV questions must have distinct nonempty IDs.", nameof(questions));
             var text = new StringBuilder(2048 + questions.Count * 700);
             using (var writer = new JsonTextWriter(new StringWriter(text, CultureInfo.InvariantCulture)))
             {
@@ -352,11 +410,11 @@ namespace ChooGuard.App.Fps.Emergency
             try
             {
                 var root = JObject.Parse(Encoding.UTF8.GetString(body));
-                var reply = new Reply { Model = (string)root["model"] ?? "" };
-                var usage = root["usage"];
-                if (usage != null) { reply.InputTokens = (long?)usage["input_tokens"]; reply.OutputTokens = (long?)usage["output_tokens"] ?? 0; }
+                var reply = new Reply { Model = root["model"]?.Type == JTokenType.String ? (string)root["model"] : "" };
+                var usage = root["usage"] as JObject;
+                if (usage != null) { reply.InputTokens = TokenCount(usage["input_tokens"]); reply.OutputTokens = TokenCount(usage["output_tokens"]) ?? 0; }
                 reply.Answers = Parse(root, questions);
-                return reply.Answers == null ? null : reply;
+                return reply;
             }
             catch (Exception) { return null; }
         }
@@ -373,25 +431,46 @@ namespace ChooGuard.App.Fps.Emergency
                 var probabilities = new Dictionary<string, float>();
                 if (question.IsScore)
                 {
-                    var score = (float?)answer["score"];
+                    var score = Number(answer["score"]);
                     // 척도 밖의 값은 받아들이지 않는다.
-                    if (score == null || score < 0 || score > question.Levels.Count - 1) continue;
+                    if (score == null || float.IsNaN(score.Value) || float.IsInfinity(score.Value) || score < 0 || score > question.Levels.Count - 1) continue;
                     if (answer["probabilities"] is JObject levels)
                         foreach (var pair in levels)
                             if (int.TryParse(pair.Key, NumberStyles.Integer, CultureInfo.InvariantCulture, out int level) && level >= 0 && level < question.Levels.Count)
-                                probabilities[pair.Key] = (float?)pair.Value ?? 0;
-                    result[question.Id] = new JevAnswer { Score = score.Value, Confidence = (float?)answer["confidence"] ?? 0, Probabilities = probabilities };
+                                if (Number(pair.Value) is float probability && probability >= 0 && probability <= 1)
+                                    probabilities[pair.Key] = probability;
+                    result[question.Id] = new JevAnswer { Score = score.Value, Confidence = Confidence(answer), Probabilities = probabilities };
                     continue;
                 }
-                var choice = (string)answer["choice"];
+                var choice = answer["choice"]?.Type == JTokenType.String ? (string)answer["choice"] : null;
                 // 후보 밖의 답은 받아들이지 않는다. 게임이 만든 후보만 실행된다.
                 if (choice == null || !question.Criteria.ContainsKey(choice)) continue;
                 if (answer["probabilities"] is JObject p)
                     foreach (var pair in p)
-                        if (question.Criteria.ContainsKey(pair.Key)) probabilities[pair.Key] = (float?)pair.Value ?? 0;
-                result[question.Id] = new JevAnswer { Choice = choice, Confidence = (float?)answer["confidence"] ?? 0, Probabilities = probabilities };
+                        if (question.Criteria.ContainsKey(pair.Key) && Number(pair.Value) is float probability && probability >= 0 && probability <= 1)
+                            probabilities[pair.Key] = probability;
+                result[question.Id] = new JevAnswer { Choice = choice, Confidence = Confidence(answer), Probabilities = probabilities };
             }
-            return result;
+            return result.Count == 0 ? null : result;
+        }
+
+        private static float? Number(JToken token)
+        {
+            if (token == null || (token.Type != JTokenType.Float && token.Type != JTokenType.Integer)) return null;
+            float value = (float)token;
+            return float.IsNaN(value) || float.IsInfinity(value) ? (float?)null : value;
+        }
+
+        private static float Confidence(JObject answer)
+        {
+            var value = Number(answer["confidence"]);
+            return value.HasValue && value >= 0 && value <= 1 ? value.Value : 0;
+        }
+
+        private static long? TokenCount(JToken token)
+        {
+            if (token?.Type != JTokenType.Integer || !long.TryParse(token.ToString(), out long value) || value < 0) return null;
+            return value;
         }
 
         /// <summary>
@@ -417,7 +496,8 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         /// <summary>One log entry as a line of text (built on a pool thread: serialising the request text and answers stays off the main thread).</summary>
-        private static string LogLine(string at, string purpose, JevLane lane, string requestText, IReadOnlyList<JevChoice> questions, Dictionary<string, JevAnswer> answers, long status, float seconds, long? inputTokens, string model)
+        private static string LogLine(string at, string purpose, JevLane lane, string requestText, IReadOnlyList<JevChoice> questions, Dictionary<string, JevAnswer> answers, long status, float seconds, long? inputTokens, string model,
+            JevFailure failure = JevFailure.None, float retryAfter = 0, string transport = "")
         {
             var entry = new JObject
             {
@@ -430,6 +510,11 @@ namespace ChooGuard.App.Fps.Emergency
                 ["input_tokens"] = inputTokens,
                 ["request"] = new JRaw(requestText),
                 ["answers"] = answers == null ? null : JToken.FromObject(answers),
+                ["failure_reason"] = failure.ToString(),
+                ["retry_after_seconds"] = Math.Round(retryAfter, 3),
+                ["transport_result"] = transport,
+                ["valid_answers"] = answers?.Count ?? 0,
+                ["expected_answers"] = questions.Count,
             };
             JObject metadata = null;
             for (int i = 0; i < questions.Count; i++)
@@ -444,7 +529,8 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         /// <summary>Appends one entry to the run log on a pool thread (building the line and writing the file stay off the main thread).</summary>
-        private void WriteLog(string purpose, JevLane lane, string requestText, IReadOnlyList<JevChoice> questions, Dictionary<string, JevAnswer> answers, long status, float seconds, long? inputTokens, string model)
+        private void WriteLog(string purpose, JevLane lane, string requestText, IReadOnlyList<JevChoice> questions, Dictionary<string, JevAnswer> answers, long status, float seconds, long? inputTokens, string model,
+            JevFailure failure, float retryAfter, string transport)
         {
             if (string.IsNullOrEmpty(logPath)) { Interlocked.Decrement(ref pendingRequests); return; }
             var at = DateTime.UtcNow.ToString("o");
@@ -452,7 +538,7 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 try
                 {
-                    var line = LogLine(at, purpose, lane, requestText, questions, answers, status, seconds, inputTokens, model);
+                    var line = LogLine(at, purpose, lane, requestText, questions, answers, status, seconds, inputTokens, model, failure, retryAfter, transport);
                     lock (logLock)
                     {
                         if (logBytes >= MaxRunLogBytes) return;

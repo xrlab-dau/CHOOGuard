@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -264,6 +265,9 @@ namespace ChooGuard.App.Fps.Emergency
             lastFocus = Focus(session.ShiftSeconds, out stateHash);
             if (SliceSpent) yield return true;
             float now = session.ShiftSeconds;
+            // A chosen transition needs the same Director slot as routine ratings.
+            // Draw first so a free slot goes to its magnitude before the next batch.
+            Integrate(now);
             if (!judging && !applying)
             {
                 var asking = DirectorSpan.Begin();
@@ -273,7 +277,6 @@ namespace ChooGuard.App.Fps.Emergency
                     beatRequested = true;
                 }
             }
-            Integrate(now);
         }
 
         /// <summary>
@@ -318,6 +321,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         private bool SendDue(float now, Dictionary<string, object> focus)
         {
+            if (applying) return false;
             bool needed = false;
             foreach (var candidate in candidates.Values)
                 if (Due(candidate, now, JudgmentLife)) { needed = true; break; }
@@ -370,16 +374,17 @@ namespace ChooGuard.App.Fps.Emergency
             }
             // 판단하는 사이 상황이 또 바뀌었으면 바로 다시 판단하고, 새로 생긴 후보가 있으면 다음 박동을 기다리지 않고 바로 묻는다.
             if (askedState != stateHash) nextBeat = 0;
-            if (!applying && lastFocus != null && AnyUnrated()) SendDue(session.ShiftSeconds, lastFocus);
             Integrate(session.ShiftSeconds);
+            if (!applying && lastFocus != null && AnyUnrated()) SendDue(session.ShiftSeconds, lastFocus);
             log.Director.Slice(DirectorRecord.SliceKind.Answer, span.Stop());
         }
 
         private void NoticeSilence()
         {
-            if (jev.FailuresInARow < 3 || session.ShiftSeconds < jevNoticeAt) return;
+            if ((!jev.Rejected && jev.FailuresInARowOf(JevLane.Director) < 3) || session.ShiftSeconds < jevNoticeAt) return;
             jevNoticeAt = session.ShiftSeconds + 90;
-            session.Hud.Toast(jev.Rejected ? "JEV 가 키를 거부했습니다 · 비상상황이 더 만들어지지 않습니다" : "JEV 응답이 없어 상황 전개를 기다리는 중입니다", 5f);
+            session.Hud.Toast(jev.Rejected ? "JEV 가 키를 거부했습니다 · 타이틀에서 다시 입력하세요" :
+                "사건 판단 대기 · " + jev.StatusOf(JevLane.Director) + " · Tab에서 연결 상태 확인", 5f);
         }
 
         // ── 추첨 ────────────────────────────────────────────────────────────
@@ -457,26 +462,79 @@ namespace ChooGuard.App.Fps.Emergency
             if (fresh == null) { log.Director.Vanish(chosen.Key, chosen.Scale != ImminenceScale.Development, false); return; }
             if (fresh.Levels == null) { Execute(fresh, .5f, candidates.Count, detail); return; }
             applying = true;
-            var question = new JevChoice
+            StartCoroutine(CompleteChosen(chosen, detail, RequestMagnitude));
+        }
+
+        private IEnumerator RequestMagnitude(Dictionary<string, object> focus, JevChoice question,
+            System.Action<Dictionary<string, JevAnswer>> done) =>
+            jev.Ask("magnitude", focus, new[] { question }, done, JevLane.Director);
+
+        /// <summary>
+        /// Keeps one already-drawn transition while its slot, budget or connection recovers.
+        /// Ratings cannot take its slot. Every attempt and the final answer recheck the live
+        /// subject; no event is made without JEV's magnitude. The request delegate allows
+        /// offline tests of this scheduling path without changing the production endpoint.
+        /// </summary>
+        private IEnumerator CompleteChosen(Candidate chosen, string detail,
+            System.Func<Dictionary<string, object>, JevChoice, System.Action<Dictionary<string, JevAnswer>>, IEnumerator> ask)
+        {
+            applying = true;
+            try
             {
-                Id = "magnitude",
-                Instructions = "This is now happening at Busan Station: " + fresh.Description + " How does it play out? Give each level the probability that it plays out that way for this person and place; the game draws one from your probabilities.",
-                Levels = fresh.Levels,
-            };
-            var focus = Focus(session.ShiftSeconds, out _);
-            StartCoroutine(jev.Ask("magnitude", focus, new[] { question }, answers =>
-            {
-                applying = false;
-                if (Stage == Phase.Ended) return;
-                // 크기를 JEV 가 답하지 않으면 이 전이는 일어나지 않는다.
-                if (answers == null || !answers.TryGetValue("magnitude", out var answer)) { log.Director.Round(false); NoticeSilence(); return; }
-                // 답이 오는 사이 세계가 바뀌었을 수 있다: 그 사람·물건이 아직 후보일 때만 일어난다.
-                var again = Fresh(chosen);
-                if (again == null) { log.Director.Vanish(chosen.Key, chosen.Scale != ImminenceScale.Development, true); return; }
-                int levels = question.Levels.Count, level = answer.DrawLevel(drawRandom, levels);
-                float magnitude = levels > 1 ? level / (float)(levels - 1) : .5f;
-                Execute(again, magnitude, candidates.Count, detail + " · 크기 " + (level + 1) + "/" + levels);
-            }, JevLane.Director));
+                while (Stage != Phase.Ended && jev.Available)
+                {
+                    var fresh = Fresh(chosen);
+                    if (fresh == null)
+                    {
+                        log.Director.Vanish(chosen.Key, chosen.Scale != ImminenceScale.Development, false);
+                        yield break;
+                    }
+                    if (fresh.Levels == null) { Execute(fresh, .5f, candidates.Count, detail); yield break; }
+                    if (session.Player.IsPaused || !jev.CanSend(JevLane.Director))
+                    {
+                        yield return new WaitForSecondsRealtime(.25f);
+                        continue;
+                    }
+                    var question = new JevChoice
+                    {
+                        Id = "magnitude",
+                        Instructions = "This is now happening at Busan Station: " + fresh.Description + " How does it play out? Give each level the probability that it plays out that way for this person and place; the game draws one from your probabilities.",
+                        Levels = fresh.Levels,
+                    };
+                    var focus = Focus(session.ShiftSeconds, out _);
+                    Dictionary<string, JevAnswer> answers = null;
+                    yield return ask(focus, question, reply => answers = reply);
+                    if (Stage == Phase.Ended || !jev.Available) yield break;
+                    if (answers == null || !answers.TryGetValue("magnitude", out var answer))
+                    {
+                        log.Director.Round(false);
+                        NoticeSilence();
+                        yield return new WaitForSecondsRealtime(.25f);
+                        continue;
+                    }
+                    // A removed or changed scale cannot consume an answer for the old subject.
+                    var again = Fresh(chosen);
+                    if (again == null || again.Levels == null || !again.Levels.SequenceEqual(question.Levels))
+                    {
+                        log.Director.Vanish(chosen.Key, chosen.Scale != ImminenceScale.Development, true);
+                        yield break;
+                    }
+                    // A manual pause must not apply a world transition behind the pause menu.
+                    while (session.Player.IsPaused && Stage != Phase.Ended && jev.Available) yield return null;
+                    if (Stage == Phase.Ended || !jev.Available) yield break;
+                    again = Fresh(chosen);
+                    if (again == null || again.Levels == null || !again.Levels.SequenceEqual(question.Levels))
+                    {
+                        log.Director.Vanish(chosen.Key, chosen.Scale != ImminenceScale.Development, true);
+                        yield break;
+                    }
+                    int levels = question.Levels.Count, level = answer.DrawLevel(drawRandom, levels);
+                    float magnitude = levels > 1 ? level / (float)(levels - 1) : .5f;
+                    Execute(again, magnitude, candidates.Count, detail + " · 크기 " + (level + 1) + "/" + levels);
+                    yield break;
+                }
+            }
+            finally { applying = false; }
         }
 
         /// <summary>

@@ -403,12 +403,23 @@ namespace ChooGuard.App.Fps.Emergency
                     if (candidate.Urgent ? urgentOpen : routineOpen) { first = candidate; break; }
                 if (first == null) return;
                 int capacity = first.Urgent ? UrgentBatch : RoutineBatch;
-                var batch = new List<Judgement>(capacity) { first };
-                string signature = Signature(first.Who);
-                for (int i = 1; i < ready.Count && batch.Count < capacity; i++)
-                    if (ready[i].Urgent == first.Urgent && Signature(ready[i].Who) == signature) batch.Add(ready[i]);
+                var batch = BuildBatch(ready, first, capacity, Signature);
                 Send(batch, first.Urgent);
             }
+        }
+
+        private static List<Judgement> BuildBatch(IReadOnlyList<Judgement> candidates, Judgement first, int capacity, Func<Passenger, string> signatureOf)
+        {
+            var batch = new List<Judgement>(capacity) { first };
+            string signature = signatureOf(first.Who);
+            // The open lane's first question can be in the middle of the priority list.
+            // Skip that actual item, rather than assuming it occupied index zero.
+            for (int i = 0; i < candidates.Count && batch.Count < capacity; i++)
+            {
+                var item = candidates[i];
+                if (!ReferenceEquals(item, first) && item.Urgent == first.Urgent && signatureOf(item.Who) == signature) batch.Add(item);
+            }
+            return batch;
         }
 
         private static int ByPriority(Judgement a, Judgement b)
