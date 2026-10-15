@@ -5,12 +5,6 @@ This offline tool does not train NeRF/Gaussian Splatting or certify building acc
 For CityGaussianV2, start with the official mesh extraction output (for example
 `fuse_post.ply`), not the Gaussian parameter PLY or COLMAP sparse points.
 
-For a photographic comparison baseline before choosing NeRF/GS, use
-[`colmap_mvs.py`](../../docs/reconstruction/COLMAP_BASELINE.md). It runs an installed
-COLMAP on a supplied registered model and produces a dense cloud and Poisson mesh
-in **unknown model units**. This is a separate pre-metric bundle: establish scale
-and axes before using the metre-based handoffs below.
-
 ## Install and run
 
 Use Python 3.12+ in a dedicated environment. No Unity licence, CUDA or paid service is
