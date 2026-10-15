@@ -13,8 +13,18 @@ from planlib import PlanError, digest, read_json, safe_path
 STORY_ID = "CS-EXEC.01.01"
 LEGACY_PATH = "docs/CHOOGuard_Story_Plan_v4/plan.json"
 PROGRESS_FIELDS = "storyId status acceptanceStatus acceptanceRef currentWork areas tests issues"
-# Pointers to the active direction documents added by #237; each must name an existing repository file (#245).
-PROGRESS_REFERENCES = "activeDirection activeEvidenceGraph transferReport"
+# Current pointers and retained legacy pointer support; every supplied reference must exist.
+PROGRESS_REFERENCES = ("activeDirection activeEvidenceGraph transferReport currentCheckpoint "
+                       "currentRequirements sourceEvidenceIndex evidenceRetirementRef")
+REFERENCE_LABELS = {
+    "activeDirection": "활성 방향",
+    "activeEvidenceGraph": "활성 증거 그래프",
+    "transferReport": "통로 복원 기록",
+    "currentCheckpoint": "현재 체크포인트",
+    "currentRequirements": "현재 요구사항",
+    "sourceEvidenceIndex": "보존된 원본 자료 색인",
+    "evidenceRetirementRef": "과거 증거 폐기·참조 전환 기록",
+}
 
 
 def require(condition, message):
@@ -175,6 +185,12 @@ def render(plan, state):
              "아래 영역과 legacy ID는 별도 활성 Story·승인·인계 단위가 아니다. ID는 정본의 원문 객체 전체를 참조한다.", "",
              "정본: " + link(plan["legacy"]["planPath"]),
              f"전환 digest: `{plan['legacy']['planDigest']}`", ""]
+    # Saved-state references do not imply that historical execution evidence was reverified.
+    lines.extend(["## 현재 정본·참조 상태", "",
+                  "체크포인트는 저장된 씬 상태이며 제품 수용이나 과거 시험의 재검증 근거가 아니다.", ""])
+    lines.extend("- " + REFERENCE_LABELS[key] + ": " + link(state[key])
+                 for key in PROGRESS_REFERENCES.split() if key in state)
+    lines.append("")
     progress = {area["areaId"]: area for area in state["areas"]}
     for area in plan["functionalAreas"]:
         current = progress[area["id"]]
