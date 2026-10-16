@@ -3,6 +3,10 @@ trigger: always_on
 description: FPS 비상상황은 정해진 목록에서 고르지 않는다. 지금 역 안의 특정 사람·물건에서 만든 원자 전이 후보 각각이 곧 일어날 정도를 JEV가 실시간으로 판단하고, 코드가 그 판단으로 시간에 따라 추첨해 매번 합성한다. 사건 종류·장소·시각·개수를 고정 가정하는 기능·시험을 만들지 않는다.
 ---
 
+## 2026-10-16 사용자 변경: 설치된 provider 경로
+
+사용자는 초기 비상조건 생성과 NPC 계획에 같은 구독 provider/account/model을 사용하도록 확정했다. 설치된 Seeded 경로는 전체 객체·관계·상태에서 upstream priors를1회 생성하고 로컬 인과 커널로 전개한다. 아래 JEV 키/실시간 평가 구현은 legacy 경로의 설명이며 현재 provider 통합을 되돌리는 규칙이 아니다. 사건 대본/종류/장소/시각을 고정하지 않고 실제 등록 객체와 지원 능력을 사용한다는 원칙은 유지한다. 현재 승인 설계는 `workers/simulator/docs/approved-play/`, 실제 설정과 제한은 `docs/current-station-play.md`를 따른다.
+
 # 하드룰 — 비상상황은 JEV가 합성한다 (2026-09-26 사용자 정정, 2026-09-29·09-30 재확인)
 
 > “jev가 고르는게 아니라 jev가 만드는거야 고른다는건 이미 정해진 비상상황이란거잖아” — 사용자 원문, [결정 원장 5차](../../docs/CHOOGuard_FPS_Prior_Research_20260925/DECISIONS_AND_DEVELOPMENT_STRUCTURE.md)

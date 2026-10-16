@@ -375,6 +375,18 @@ class AuthTests(unittest.TestCase):
         self.login();self.assertFalse(self.p.initial_remaining)
         self.assertFalse(self.p.cloud_enabled)
 
+    def test_live_station_initial_allowance_is_bounded_and_single_use(self):
+        self.enable();ordinary_limits=dict(self.p.limits)
+        self.fails('invalid_initial_allowance',lambda:self.p.session({'initial_world_allowance':{'input_tokens':s.MAX_INITIAL_INPUT_UNITS+1,'output_tokens':512}}))
+        self.p.session({'initial_world_allowance':{'input_tokens':s.MAX_INITIAL_INPUT_UNITS,'output_tokens':512}})
+        body=self.body(chooguard_purpose='initial_world',max_tokens=512,messages=[{'role':'user','content':'x'*766419}])
+        self.p.chat(body,self.p.generation)
+        self.assertEqual(1,self.p.initial_budget_used['requests'])
+        self.assertEqual(0,self.p.budget_used['requests']);self.assertEqual(ordinary_limits,self.p.limits)
+        before=len(self.transport.calls)
+        self.fails('initial_world_allowance_not_enabled',lambda:self.p.chat(body,self.p.generation))
+        self.assertEqual(before,len(self.transport.calls))
+
     def test_initial_allowance_explicit_arm_after_cloud_rotation(self):
         self.enable();self.p.session({'cloud_enabled':False})
         self.p.session({'cloud_enabled':True,'initial_world_allowance':{'input_tokens':192000,'output_tokens':512}})
@@ -414,6 +426,16 @@ class HttpTests(AuthTests):
         return status,json.loads(data) if fields.get('Content-Type','').startswith('application/json') else data.decode(),fields
 
     def native(self):return {'Authorization':'Bearer '+self.p.capability,'X-ChooGuard-Session':self.p.generation}
+
+    def test_http_complete_live_station_payload_passes_without_truncation(self):
+        self.enable();self.p.session({'initial_world_allowance':{'input_tokens':s.MAX_INITIAL_INPUT_UNITS,'output_tokens':512}})
+        content='x'*766419
+        body=self.body(chooguard_purpose='initial_world',max_tokens=512,messages=[{'role':'user','content':content}])
+        status,result,_=self.request('POST','/v1/chat/completions',body,self.native())
+        self.assertEqual(200,status,result)
+        sent=json.loads(next(call[3] for call in self.transport.calls if call[1]==s.RESOURCE+'/responses'))
+        self.assertEqual(content,sent['input'][0]['content'])
+        self.assertEqual(413,self.request('POST','/session',raw=b' '*524289,headers={'Cookie':'chooguard_ui='+self.p.ui_cookie,'Origin':self.p.endpoint})[0])
 
     def test_http_capability_host_origin_json_and_generation(self):
         self.assertEqual(401,self.request('GET','/status')[0]);self.assertEqual(200,self.request('GET','/status',headers=self.native())[0])

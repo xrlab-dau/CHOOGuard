@@ -21,3 +21,9 @@ Keep the restored OfficialStation_-부산역_5 wall faces. Resolve later overlap
 ## Checkpoint and cleanup state
 
 Current accepted snapshot: `.checkpoints/checkpoint-1/CHECKPOINT.json`; restore instructions: `.checkpoints/checkpoint-1/RESTORE.md`. Live writer authority is `.state/WRITER-AUTHORITY.json`. Read it before a Unity or Assets mutation; serialize writes under a scoped root/author lease. Current requirements: `.state/REQUIREMENTS.md`. Original drawings/photos/videos and accepted mapping: `source-evidence/INDEX.json`, `asset-library/`, `workers/twin/evidence/`. Historical completed `.planning` and worker output trees were explicitly retired by the user; do not automatically restore them from Git or recreate their data.
+
+## Current gameplay implementation
+
+The user's accepted provider plan is `workers/simulator/docs/approved-play/`. The installed `Assets/ChooGuard/Seeded` runtime uses the user's selected subscription provider/account/model for whole-world initial causal priors and NPC plans. Existing JEV-only composition implementation notes apply to the legacy path. Preserve full object/state/parent/relationship input and use the causal kernel, typed plans and NavMesh feedback. Read `docs/current-station-play.md` for actual implementation limits, default fixed seed20261016 and per-PC helper/login requirements.
+
+Keep FpsStation as the editing scene; explicitly open Bootstrap to test title mode selection and return to FpsStation afterwards. Do not rerun the dated installer on an already installed scene. Preserve current source geometry and asset GUIDs. Do not commit account files, capabilities, tokens or raw machine-local Runs.
