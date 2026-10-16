@@ -13,6 +13,7 @@ namespace ChooGuard.App.Fps.Shell
         public const string StationScene = "FpsStation";
         public const string EmergencyScene = "StationEmergency";
 
+        public static bool UsesProviderRuntime => Resources.Load<TextAsset>("SourceManifest") != null;
         public static bool Loading { get; private set; }
         public static bool OpenTutorialMenuOnTitle { get; private set; }
         public static void ConsumeTutorialMenuRequest() => OpenTutorialMenuOnTitle = false;
@@ -62,6 +63,7 @@ namespace ChooGuard.App.Fps.Shell
         private static void EnsureSessionForDirectStationPlay()
         {
             Loading = false;
+            if(GameObject.Find("CHOOGuard Provider Runtime")!=null)return;
             var active = SceneManager.GetActiveScene();
             if (active.name != StationScene || SceneManager.GetSceneByName(EmergencyScene).isLoaded) return;
             if (!UnityEngine.Application.CanStreamedLevelBeLoaded(EmergencyScene)) return;
@@ -114,8 +116,11 @@ namespace ChooGuard.App.Fps.Shell
                 while (!station.isDone) { Report(station.progress * .6f, "부산역 불러오는 중"); yield return null; }
                 // 처음 보는 화면 상태마다 셰이더를 만드느라 멈추지 않도록 미리 만든다(ShaderWarmup). 두 번째 실행부터는 금방 끝난다.
                 yield return ShaderWarmup.Run(p => Report(.6f + p * .25f, "화면 준비 중"));
-                var session = SceneManager.LoadSceneAsync(EmergencyScene, LoadSceneMode.Additive);
-                while (!session.isDone) { Report(.85f + session.progress * .15f, "근무 준비 중"); yield return null; }
+                if(GameObject.Find("CHOOGuard Provider Runtime")==null)
+                {
+                    var session = SceneManager.LoadSceneAsync(EmergencyScene, LoadSceneMode.Additive);
+                    while (!session.isDone) { Report(.85f + session.progress * .15f, "근무 준비 중"); yield return null; }
+                }
                 Report(1, "근무 시작");
                 yield return null;
                 Loading = false;

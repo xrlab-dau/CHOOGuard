@@ -137,6 +137,12 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void Start()
         {
+            if(GameObject.Find("CHOOGuard Provider Runtime")!=null){enabled=false;return;}
+            if(!UnityEngine.SceneManagement.SceneManager.GetSceneByName(SceneFlow.StationScene).isLoaded)
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(SceneFlow.StationScene,UnityEngine.SceneManagement.LoadSceneMode.Single);
+                enabled=false;return;
+            }
             if (KoreanFont == null) { Debug.LogError("[EmergencySession] 한국어 폰트가 없습니다.", this); enabled = false; return; }
             Player = FindFirstObjectByType<FirstPersonResponder>();
             if (Player == null) { Debug.LogError("[EmergencySession] FpsStation 의 역무원(FirstPersonResponder)을 찾지 못했습니다.", this); enabled = false; return; }

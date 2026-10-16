@@ -13,7 +13,7 @@ def page(nonce):
 <label><input id="cloud" type="checkbox">구독 모델 사용 / Use subscription model</label><button id="enable">구독 사용 선택 적용</button><button id="catalog">구독 계정의 모델 불러오기</button>
 <label>모델 <select id="model"><option value="">모델을 먼저 불러오세요</option></select></label><button id="choose">선택한 모델 사용</button>
 <p>체크하거나 모델을 고르는 것만으로는 저장되지 않습니다. 적용 버튼을 누른 뒤 위의 <strong>서버에 저장됨</strong> 안내를 확인하세요.</p>
-<label>초기 월드 1회 허용: 입력 예약 단위 <input id="initialInput" type="number" min="1" max="256000" value="192000"> 출력 토큰 상한 <input id="initialOutput" type="number" min="1" max="4096" value="2048"></label>
+<label>초기 월드 1회 허용: 입력 예약 단위 <input id="initialInput" type="number" min="1" max="1048576" value="1048576"> 출력 토큰 상한 <input id="initialOutput" type="number" min="1" max="4096" value="2048"></label>
 <button id="initial">구독으로 초기 월드 생성 1회 허용</button><p>이 버튼은 선택한 구독 모델의 초기 생성 1회 허용만 저장합니다. 실제 생성은 시뮬레이터에서 시작합니다. 실패한 요청도 허용을 사용합니다. 계정이나 모델을 바꾸면 다시 허용해야 합니다.</p>
 <button id="resume">사용량을 확인한 동일 계정으로 재시도 허용</button><button id="check">저장 상태 다시 확인</button>
 <p>일반 요청 한도: 12회, 입력 예약 12,000단위, 출력 3,000토큰. 실제 구독 사용량은 아래에 별도로 표시됩니다. 실패한 요청도 예약 한도를 사용합니다.</p>
@@ -56,7 +56,7 @@ def multi_page(nonce):
 <label>플레이할 단일 모델 <select id="model"><option value="">모델을 먼저 불러오세요</option></select></label>
 <label><input id="cloud" type="checkbox">선택한 모델의 내 구독 사용량 사용 허용</label><button id="choose">이 모델로 플레이 선택 적용</button>
 <p>플레이 중 선택을 바꾸면 기존 요청은 거부됩니다. 진행 중인 플레이를 중단하고 새 선택으로 다시 시작하세요. 다른 계정을 추가하거나 로그아웃하는 것은 현재 선택을 자동으로 바꾸지 않습니다.</p>
-<label>초기 월드 생성 1회 허용 · 입력 예약 단위 <input id="initialInput" type="number" min="1" max="256000" value="192000"> 출력 토큰 상한 <input id="initialOutput" type="number" min="1" max="4096" value="2048"></label>
+<label>초기 월드 생성 1회 허용 · 입력 예약 단위 <input id="initialInput" type="number" min="1" max="1048576" value="1048576"> 출력 토큰 상한 <input id="initialOutput" type="number" min="1" max="4096" value="2048"></label>
 <button id="initial">선택한 구독으로 초기 월드 생성 1회 허용</button><button id="resume">사용량을 확인한 동일 계정의 재시도 허용</button><button id="check">저장 상태 다시 확인</button>
 <p>일반 요청 기본 한도: 12회, 입력 예약 12,000단위, 출력 3,000토큰. 실패 요청도 예약을 소모합니다. 제공자의 실제 구독 사용량·모델별 배율 및 구독 한도가 별도로 적용됩니다. 이 화면은 모델 생성을 자동 실행하지 않습니다.</p>
 <div id="status" role="status"></div>

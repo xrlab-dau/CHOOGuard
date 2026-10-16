@@ -41,6 +41,7 @@ TERMINAL_REFRESH = {'invalid_grant','invalid_refresh_token','token_expired','ref
                     'refresh_token_invalidated','refresh_token_reused'}
 DEFAULT_BUDGET = {'requests':12,'input_tokens':12000,'output_tokens':3000}
 MAX_BUDGET = {'requests':24,'input_tokens':24000,'output_tokens':6000}
+MAX_INITIAL_INPUT_UNITS = 1048576  # One complete live-station request; UTF-8 reservation units.
 
 
 def compact(value):
@@ -424,7 +425,7 @@ class Provider:
                 if not enabled:raise Failure('enable_cloud_before_initial_allowance',403)
                 if not model:raise Failure('select_account_model_first',403)
                 if not isinstance(allowance,dict) or set(allowance)!={'input_tokens','output_tokens'}:raise Failure('complete_initial_allowance_required')
-                for key,maximum in (('input_tokens',256000),('output_tokens',4096)):
+                for key,maximum in (('input_tokens',MAX_INITIAL_INPUT_UNITS),('output_tokens',4096)):
                     if isinstance(allowance[key],bool) or not isinstance(allowance[key],int) or not 1<=allowance[key]<=maximum:raise Failure('invalid_initial_allowance')
             if changed or model!=self.selected_model or enabled!=self.cloud_enabled:self.rotate()
             if allowance is not None:self.initial_allowance=dict(allowance);self.initial_remaining=True
@@ -719,7 +720,8 @@ class Handler(BaseHTTPRequestHandler):
         if self.headers.get('Content-Type','').split(';')[0]!='application/json':raise Failure('json_content_type_required',415)
         try:length=int(self.headers.get('Content-Length','-1'))
         except ValueError:raise Failure('content_length_required',411) from None
-        if not 0<=length<=524288:raise Failure('request_body_too_large',413)
+        maximum=2097152 if self.path=='/v1/chat/completions' else 524288
+        if not 0<=length<=maximum:raise Failure('request_body_too_large',413)
         try:value=json.loads(self.rfile.read(length))
         except (ValueError,UnicodeError):raise Failure('invalid_json') from None
         if not isinstance(value,dict):raise Failure('json_object_required')

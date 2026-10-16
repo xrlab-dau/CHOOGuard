@@ -1,0 +1,53 @@
+{
+  "SchemaVersion": "chooguard.response.v1",
+  "Claim": "INFERRED_TRAINING",
+  "Provenance": "User-authorized inferred training workflow; no confidential railway manual or field validation",
+  "Confidence": 0.35,
+  "ObservationFreshSeconds": 20.0,
+  "ObservationRange": 12.0,
+  "NearbyPeopleRange": 8.0,
+  "ActionReach": 3.0,
+  "RouteFreshSeconds": 1.5,
+  "ProtectSeconds": 2.0,
+  "AssessSeconds": 4.0,
+  "AccessControlSeconds": 4.0,
+  "IsolationVerifySeconds": 2.0,
+  "SupportSeconds": 2.0,
+  "EscortSeconds": 4.0,
+  "HandoverSeconds": 2.0,
+  "MaxRecords": 16384,
+  "Channels": [
+    {
+      "Id": "face-to-face",
+      "Range": 4.0,
+      "AccessRange": 4.0,
+      "DelayMinSeconds": 0.5,
+      "DelayMaxSeconds": 1.5,
+      "LossProbability": 0.0
+    },
+    {
+      "Id": "radio",
+      "Range": 120.0,
+      "AccessRange": 2.4,
+      "DelayMinSeconds": 0.5,
+      "DelayMaxSeconds": 3.0,
+      "LossProbability": 0.03
+    },
+    {
+      "Id": "intercom",
+      "Range": 250.0,
+      "AccessRange": 2.4,
+      "DelayMinSeconds": 0.5,
+      "DelayMaxSeconds": 2.0,
+      "LossProbability": 0.01
+    },
+    {
+      "Id": "pa",
+      "Range": 50.0,
+      "AccessRange": 2.4,
+      "DelayMinSeconds": 0.5,
+      "DelayMaxSeconds": 2.0,
+      "LossProbability": 0.01
+    }
+  ]
+}

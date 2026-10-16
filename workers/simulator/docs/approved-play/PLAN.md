@@ -38,3 +38,7 @@
 - [provider 메뉴 설계](../native-provider-ui.md)
 
 SimWorld·Virtual Community·AgenticCache의 원리를 자체 구현에 적용한 설계이며 원 연구 엔진 전체 이식이나 현장 훈련 효과 검증을 뜻하지 않는다. 오래된 문서의 특정 객체 수/scene hash/검증 보류 상태는 해당 시점의 근거다. 현재 씬 입력을 대신하는 고정 스냅샷으로 사용하지 않는다.
+
+## 후속 소스코드 이관
+
+위 문서는 PR300에서 설계 문서만 넘긴 기록이다. 후속 구현 소스는 `Assets/ChooGuard/Seeded/`, 타이틀/씬 연결은 `Assets/ChooGuard/App/Fps/Shell/`, 구독 helper는 `workers/simulator/provider_auth/`에 있다. 실행 방법·실제 확인 범위·남은 고정 시드/플랫폼 제한은 [현재 역사 플레이 문서](../../../../docs/current-station-play.md)를 확인한다. 문서만의 승인과 각 구현/실행 결과는 계속 구분한다.
