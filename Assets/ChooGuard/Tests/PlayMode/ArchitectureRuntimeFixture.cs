@@ -17,7 +17,9 @@ namespace ChooGuard.Tests.PlayMode
     internal sealed class ArchitectureRuntimeFixture : IDisposable
     {
         internal readonly GameObject Root;
-        internal readonly Vector3 Origin = new Vector3(15000, 0, 15000);
+        // Keep centimetre/skin-width physics near the origin and below the
+        // station, rather than placing a small capsule15km from the float origin.
+        internal readonly Vector3 Origin = new Vector3(0, -100, 0);
         internal readonly BoxCollider Floor;
         internal readonly List<Collider> ApprovedFloors = new List<Collider>();
         internal readonly FirstPersonResponder Staff;
@@ -84,31 +86,47 @@ namespace ChooGuard.Tests.PlayMode
 
         internal void PlaceNavigatingBody(Vector3 point)
         {
-            body.enabled=false;body.Agent.enabled=false;body.transform.position=point;
+            body.Stop();body.enabled=false;body.Agent.enabled=false;body.Agent.updatePosition=true;body.transform.position=point;
             body.Agent.radius=.3f;body.Agent.height=1.72f;body.Agent.speed=1.3f;
             body.Agent.enabled=true;body.enabled=true;
             Assert.That(body.Agent.Warp(point),Is.True);Assert.That(body.OnNavMesh,Is.True);
         }
 
+        internal IEnumerator SettlePhysics()
+        {
+            Physics.SyncTransforms();
+            yield return new WaitForFixedUpdate();
+            Physics.SyncTransforms();
+        }
+
         internal IEnumerator Walk(StationWalkingRouteEntry route, bool reverse, bool expectedSuccess, float speed = 1.3f)
         {
             route.Validate(); var points = route.Direction(reverse); var finish = points.Last();
+            // Manual walker cases own the real body with its nav driver disabled.
+            // Publish new/changed fixture colliders before the first top-hit query.
+            body.enabled=false;body.Agent.enabled=false;body.Agent.updatePosition=false;
             body.transform.position = points[0] + Vector3.up * .04f;
-            body.GoTo(finish, speed); Physics.SyncTransforms();
+            body.GoTo(finish, speed);yield return SettlePhysics();
+            if(expectedSuccess)Assert.That(NativeLandingWalker.Floor(points[0],route,body.gameObject,out _),Is.True,
+                "The positive fixture start needs all nine exposed approved support hits");
             bool result = false, finished = false;
             var walker = NativeLandingWalker.Walk(body, route, points, finish, ok => { result = ok; finished = true; });
             var previous = body.transform.position; float largest = 0;
             try
             {
-                while (walker.MoveNext())
+                while (true)
                 {
+                    Physics.SyncTransforms();
+                    if(!walker.MoveNext())break;
                     var delta = body.transform.position - previous; delta.y = 0;
                     largest = Mathf.Max(largest, delta.magnitude); previous = body.transform.position;
                     yield return walker.Current;
                 }
             }
             finally { (walker as IDisposable)?.Dispose(); }
-            Assert.That(finished, Is.True); Assert.That(result, Is.EqualTo(expectedSuccess));
+            var outcome=body.GetComponent<NativeLandingWalkHandle>();
+            Assert.That(finished, Is.True); Assert.That(result, Is.EqualTo(expectedSuccess),
+                "Production walker phase="+outcome?.FailurePhase+"; failure="+outcome?.FailurePosition+"; actual="+body.transform.position+"; finish="+finish);
             Assert.That(largest, Is.LessThanOrEqualTo(NativeLandingWalker.MaxStep + .006f), "The real driver must not teleport across a blocker/hole");
             var apart = body.transform.position - finish; apart.y = 0;
             var handle = body.GetComponent<NativeLandingWalkHandle>(); Assert.That(handle, Is.Not.Null);
@@ -170,7 +188,7 @@ namespace ChooGuard.Tests.PlayMode
                 var panel = GameObject.CreatePrimitive(PrimitiveType.Cube); panel.name = "FixtureMeshAndCollider"; panel.transform.SetParent(pivot.transform, false);
                 panel.transform.localPosition = new Vector3(sliding ? 0 : -sign * .45f, 1.05f, 0);
                 panel.transform.localScale = new Vector3(.9f, 2.1f, .06f);
-                leaves.Add(new StationDoor.Leaf { Pivot = pivot.transform, Length = .9f, Swing = -sign * 90,
+                leaves.Add(new StationDoor.Leaf { Pivot = pivot.transform, Length = .9f, Swing = sliding ? 0 : -sign * 90,
                     Slide = sliding ? Vector3.right * sign : Vector3.zero });
             }
             door.Leaves = leaves.ToArray(); go.SetActive(true); return door;
@@ -178,7 +196,10 @@ namespace ChooGuard.Tests.PlayMode
 
         internal IEnumerator DoorRoundtrip(StationDoor door, bool crossOpening)
         {
-            yield return null;
+            yield return SettlePhysics();
+            foreach(var leaf in door.Leaves)
+                Assert.That(door.Kind==StationDoor.DoorKind.Sliding?Mathf.Abs(leaf.Swing)<.01f&&leaf.Slide.sqrMagnitude>0:Mathf.Abs(leaf.Swing)>0&&leaf.Slide==Vector3.zero,Is.True,
+                    "A fixture leaf must configure exactly one production motion channel");
             var filters = door.GetComponentsInChildren<MeshFilter>();
             var meshes = filters.Select(filter => filter.sharedMesh).ToArray();
             var vertices = meshes.Select(mesh => mesh.vertices).ToArray();

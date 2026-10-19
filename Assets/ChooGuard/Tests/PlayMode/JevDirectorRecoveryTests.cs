@@ -15,7 +15,7 @@ namespace ChooGuard.Tests.PlayMode
 {
     // These tests use candidates listed by the real station, with offline JEV replies.
     // They check delivery, not which incident is drawn or when one should occur.
-    public sealed class JevDirectorRecoveryTests
+    public sealed class JevDirectorRecoveryTests : RetainedEmergencySessionFixture
     {
         private const BindingFlags Members = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
         private EmergencySession shift;
@@ -35,35 +35,7 @@ namespace ChooGuard.Tests.PlayMode
             savedKey = Environment.GetEnvironmentVariable(JevKey.Variable);
             Environment.SetEnvironmentVariable(JevKey.Variable, "off");
             EmergencySession.NextSeed = 20261013;
-            // This suite exercises the retained JEV session, not the default provider session.
-            // Use reflection so its fixture does not add a Seeded assembly dependency to PlayModeTests.
-            var providerType = Type.GetType("ChooGuard.Seeded.Unity.PlatformSeededSimulator, ChooGuard.Seeded", true);
-            var defer = providerType.GetProperty("DeferPreparationForLegacyTests", BindingFlags.NonPublic | BindingFlags.Static);
-            Assert.That(defer, Is.Not.Null, "The explicit legacy-session test fixture must defer provider Awake.");
-            bool previousDefer = (bool)defer.GetValue(null);
-            int providerRoots = 0;
-            void DisableProvider(Scene scene, LoadSceneMode mode)
-            {
-                if (scene.name != SceneFlow.StationScene) return;
-                foreach (var root in scene.GetRootGameObjects())
-                {
-                    if (root.GetComponent(providerType) == null) continue;
-                    providerRoots++;
-                    root.SetActive(false); // Runtime instance only; preserve every saved geometry object.
-                }
-            }
-            defer.SetValue(null, true);
-            SceneManager.sceneLoaded += DisableProvider;
-            try
-            {
-                yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
-                Assert.That(providerRoots, Is.EqualTo(1), "Select the installed provider runtime explicitly before starting the legacy fixture.");
-            }
-            finally
-            {
-                SceneManager.sceneLoaded -= DisableProvider;
-                defer.SetValue(null, previousDefer);
-            }
+            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
             yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
             float end = Time.realtimeSinceStartup + 120;
             while ((EmergencySession.Current?.Incidents == null || EmergencySession.Current.Crowd == null) && Time.realtimeSinceStartup < end) yield return null;

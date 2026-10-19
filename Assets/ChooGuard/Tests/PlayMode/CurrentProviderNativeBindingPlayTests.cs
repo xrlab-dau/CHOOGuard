@@ -22,6 +22,38 @@ namespace ChooGuard.Tests.PlayMode
         static object Property(object target,string name)=>target.GetType().GetProperty(name,Members).GetValue(target);
         static object Field(object target,string name)=>target.GetType().GetField(name,Members).GetValue(target);
 
+        static bool IndexedSurface(int vertices,params uint[] indexCounts)
+        {
+            var adapterType=Type.GetType("ChooGuard.Seeded.Unity.StationWorldAdapter, ChooGuard.Seeded",true);
+            var method=adapterType.GetMethod("HasIndexedSourceGeometry",BindingFlags.Static|BindingFlags.NonPublic);
+            Assert.That(method,Is.Not.Null);
+            try{return (bool)method.Invoke(null,new object[]{vertices,indexCounts});}
+            catch(TargetInvocationException error) when(error.InnerException!=null)
+            {System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error.InnerException).Throw();throw;}
+        }
+        [Test]
+        public void NavigationSource_EmptyOrUnindexedBuffersCannotInventCollisionSurfaces()
+        {
+            Assert.That(IndexedSurface(0),Is.False);
+            Assert.That(IndexedSurface(0,0),Is.False);
+            Assert.That(IndexedSurface(0,0,0),Is.False);
+            Assert.That(IndexedSurface(3,0),Is.False,"Unreferenced vertices are not indexed source faces");
+        }
+        [Test]
+        public void NavigationSource_EmptySubmeshDoesNotDiscardAnotherIndexedSubmesh()
+        {
+            Assert.That(IndexedSurface(3,3),Is.True);
+            Assert.That(IndexedSurface(3,0,3,0),Is.True);
+            Assert.That(IndexedSurface(8,0,36),Is.True);
+        }
+        [Test]
+        public void NavigationSource_InconsistentIndexedVertexMetadataRemainsAnExplicitFailure()
+        {
+            Assert.Throws<InvalidOperationException>(()=>IndexedSurface(0,3));
+            Assert.Throws<ArgumentOutOfRangeException>(()=>IndexedSurface(-1,0));
+            Assert.Throws<ArgumentNullException>(()=>IndexedSurface(0,null));
+        }
+
         [UnityTest,Timeout(600000)]
         public IEnumerator ActualCurrentProvider_PreparesEveryNativeObjectIncludingInactivePrefabAndAlternativeLod()
         {
@@ -77,6 +109,20 @@ namespace ChooGuard.Tests.PlayMode
                 Assert.That(sourceIds.Add(id),Is.True,"Source identities must be unique.");Assert.That(records.Contains(id),Is.True);
                 Assert.That((bool)selfField.GetValue(identity),Is.EqualTo(native[identity.gameObject].self));
                 Assert.That((bool)hierarchyField.GetValue(identity),Is.EqualTo(native[identity.gameObject].hierarchy));
+            }
+            var navigation=(JObject)((JObject)Property(adapter,"Report"))["navigation"];
+            var zeroSurface=(JArray)navigation["zero_surface_source_meshes"];
+            Assert.That(zeroSurface,Is.Not.Null);
+            var expectedZeroSurface=identities.Where(identity=>(bool)hierarchyField.GetValue(identity))
+                .Where(identity=>identity.GetComponent<MeshFilter>()?.sharedMesh!=null&&identity.GetComponent<MeshRenderer>()?.enabled==true)
+                .Where(identity=>{var mesh=identity.GetComponent<MeshFilter>().sharedMesh;return Enumerable.Range(0,mesh.subMeshCount).All(sub=>mesh.GetIndexCount(sub)==0);}).ToArray();
+            CollectionAssert.AreEquivalent(expectedZeroSurface.Select(identity=>(string)idField.GetValue(identity)).ToArray(),zeroSurface.Values<JObject>().Select(row=>(string)row["object_id"]).ToArray());
+            var supportParents=new HashSet<GameObject>(((IEnumerable)Field(adapter,"supports")).Cast<GameObject>().Select(support=>support.transform.parent.gameObject));
+            foreach(var identity in expectedZeroSurface)
+            {
+                Assert.That(supportParents.Contains(identity.gameObject),Is.False,"No runtime collision surface may be invented for a source with no indexed primitives");
+                Assert.That(identity.GetComponent<MeshFilter>().sharedMesh,Is.SameAs(identityType.GetField("SourceMesh",Members).GetValue(identity)));
+                Assert.That(sourceIds.Contains((string)idField.GetValue(identity)),Is.True,"Empty source references remain bound and inventoried");
             }
             Assert.That(sourceIds.Any(id=>id.Contains(":prefab:")),Is.True,"The current full native census must retain resolved prefab-instance identities.");
             Assert.That(records.Contains("unity:7518d664dafa749f2b6d5cba42bb798c:461453"),Is.False,"The explicitly retired WC door must never be rebound or restored.");

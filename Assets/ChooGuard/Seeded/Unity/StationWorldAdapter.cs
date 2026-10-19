@@ -246,7 +246,7 @@ namespace ChooGuard.Seeded.Unity
             if(!Prepared)throw new InvalidOperationException("Prepare source geometry first");
             if(navigationAttempted)return;navigationAttempted=true;
             ActivateGeometry();
-            int sourceSolid=0,added=0;var unreadable=new JArray();
+            int sourceSolid=0,added=0;var unreadable=new JArray();var zeroSurfaceMeshes=new JArray();var zeroSurfaceNavInputs=new JArray();
             var sources=new List<NavMeshBuildSource>();bool hasBounds=false,hasSavedSolidBounds=false;var bounds=new Bounds();var savedSolidBounds=new Bounds();
             var savedSolids=new List<Collider>();var savedDomainCounts=new Dictionary<string,int>(StringComparer.Ordinal);
             foreach(var identity in SourceIdentities.OrderBy(x=>x.ObjectId,StringComparer.Ordinal))
@@ -263,8 +263,10 @@ namespace ChooGuard.Seeded.Unity
                 if(filter!=null&&filter.sharedMesh!=null&&renderer!=null&&renderer.enabled)
                 {
                     var mesh=filter.sharedMesh;
+                    var indexCounts=SourceIndexCounts(mesh);bool hasSurface=HasIndexedSourceGeometry(mesh.vertexCount,indexCounts);
+                    if(!hasSurface)zeroSurfaceMeshes.Add(new JObject{["object_id"]=identity.ObjectId,["source_path"]=identity.SourcePath,["mesh_name"]=mesh.name,["mesh_filter_file_id"]=Registry.Objects[identity.ObjectId].Components.Single(c=>c.Type=="MeshFilter").FileId,["vertex_count"]=mesh.vertexCount,["submesh_index_counts"]=new JArray(indexCounts),["saved_solid_colliders"]=colliders.Length,["source_reference_preserved"]=mesh==identity.SourceMesh,["qualification"]="Zero indexed primitives provide no source surface; inventory/render reference retained, no collision surface invented."});
                     if(!mesh.isReadable)unreadable.Add(identity.ObjectId);
-                    if(mesh.isReadable&&colliders.Length==0&&!renderOnlyAlternatives.Contains(identity.ObjectId))
+                    if(mesh.isReadable&&hasSurface&&colliders.Length==0&&!renderOnlyAlternatives.Contains(identity.ObjectId))
                     {
                         var support=new GameObject("Exact source-mesh collision support");support.transform.SetParent(go.transform,false);
                         var collider=support.AddComponent<MeshCollider>();collider.sharedMesh=mesh;collider.convex=false;
@@ -286,6 +288,16 @@ namespace ChooGuard.Seeded.Unity
             }
             else NavMeshBuilder.CollectSources(instance.transform,~0,NavMeshCollectGeometry.PhysicsColliders,0,new List<NavMeshBuildMarkup>(),sources);
             sources.RemoveAll(s=>!(s.component is Collider c)||c.isTrigger||c is CharacterController||renderOnlyAlternatives.Contains(ResolveSourceObject(c))||(!LiveMode&&c.GetComponentInParent<SnapshotObjectIdentity>()?.GeometryDomain!="station"));
+            // A zero-primitive source has no navigation surface. This also handles any saved
+            // empty MeshCollider without deleting or modifying its native component/reference.
+            for(int i=sources.Count-1;i>=0;i--)
+            {
+                var source=sources[i];if(source.shape!=NavMeshBuildSourceShape.Mesh)continue;
+                if(!(source.sourceObject is Mesh mesh))throw new InvalidOperationException("Collected mesh navigation source has no source Mesh");
+                var indexCounts=SourceIndexCounts(mesh);if(HasIndexedSourceGeometry(mesh.vertexCount,indexCounts))continue;
+                zeroSurfaceNavInputs.Add(new JObject{["object_id"]=ResolveSourceObject(source.component),["mesh_name"]=mesh.name,["vertex_count"]=mesh.vertexCount,["submesh_index_counts"]=new JArray(indexCounts),["qualification"]="No indexed primitive exists; native collider/reference remains unchanged."});
+                sources.RemoveAt(i);
+            }
             if(!hasBounds||sources.Count==0)throw new InvalidOperationException("No readable active station source geometry for navigation");
             if(LiveMode&&!hasSavedSolidBounds)throw new InvalidOperationException("No active saved solid source colliders qualify a current navigation extent");
             bool hasRegion=false;var regionBounds=new Bounds();float firstFloorLevel=0;
@@ -321,9 +333,9 @@ namespace ChooGuard.Seeded.Unity
             if(stationNavigation==null)throw new InvalidOperationException("Station source geometry NavMesh build failed");
             stationNavigationInstance=NavMesh.AddNavMeshData(stationNavigation);
             if(!stationNavigationInstance.valid)throw new InvalidOperationException("Station NavMesh registration failed");
-            NavigationHash=Stable.Hash(Registry.Fingerprint+(LiveMode?"|station-saved-solid-extent-nav-v2|":"|station-geometry-nav-v1|")+string.Join("|",sources.Select(s=>ResolveSourceObject(s.component)).OrderBy(x=>x,StringComparer.Ordinal)));
+            NavigationHash=Stable.Hash(Registry.Fingerprint+(LiveMode?"|station-saved-solid-extent-indexed-nav-v3|":"|station-geometry-indexed-nav-v2|")+string.Join("|",sources.Select(s=>ResolveSourceObject(s.component)).OrderBy(x=>x,StringComparer.Ordinal)));
             Activated=true;
-            Report["navigation"]=new JObject{["source_geometry_bounds"]=BoundsJson(bounds),["all_source_geometry_bounds"]=BoundsJson(allSourceBounds),["saved_solid_source_bounds"]=hasSavedSolidBounds?BoundsJson(savedSolidBounds):null,["saved_solid_domains"]=JObject.FromObject(savedDomainCounts),["required_current_floor_supports"]=floorIds.Count,["candidate_region_ids"]=new JArray(regionIds),["first_floor_candidate_level"]=firstFloorLevel,["mesh_sources"]=sources.Count,["saved_solid_colliders"]=sourceSolid,["explicit_mesh_collision_supports"]=added,["unreadable_mesh_objects"]=unreadable,["runtime_supports_outside_qualified_extent"]=outsideSupportIds,["render_only_alternative_lod_excluded"]=new JArray(renderOnlyAlternatives),["live_bounds_scope"]="Union of all active saved solid colliders across station/platform/train; rendered-only supports do not enlarge qualified navigation extent",["outside_extent_claim"]="All source geometry and exact-mesh collision supports are retained. Exterior without saved physical support is unqualified for navigation; source presence is not walking-floor proof.",["hash"]=NavigationHash,["existing_platform_car04_navigation_preserved"]=true,["coverage_claim"]="Current source collider navigation inside the saved physical extent; disconnected islands remain disconnected. No floor or cross-floor connector is invented."};
+            Report["navigation"]=new JObject{["source_geometry_bounds"]=BoundsJson(bounds),["all_source_geometry_bounds"]=BoundsJson(allSourceBounds),["saved_solid_source_bounds"]=hasSavedSolidBounds?BoundsJson(savedSolidBounds):null,["saved_solid_domains"]=JObject.FromObject(savedDomainCounts),["required_current_floor_supports"]=floorIds.Count,["candidate_region_ids"]=new JArray(regionIds),["first_floor_candidate_level"]=firstFloorLevel,["mesh_sources"]=sources.Count,["saved_solid_colliders"]=sourceSolid,["explicit_mesh_collision_supports"]=added,["unreadable_mesh_objects"]=unreadable,["zero_surface_source_meshes"]=zeroSurfaceMeshes,["zero_surface_collected_nav_inputs"]=zeroSurfaceNavInputs,["runtime_supports_outside_qualified_extent"]=outsideSupportIds,["render_only_alternative_lod_excluded"]=new JArray(renderOnlyAlternatives),["live_bounds_scope"]="Union of all active saved solid colliders across station/platform/train; rendered-only supports do not enlarge qualified navigation extent",["outside_extent_claim"]="All source geometry and exact-mesh collision supports are retained. Exterior without saved physical support is unqualified for navigation; source presence is not walking-floor proof.",["hash"]=NavigationHash,["existing_platform_car04_navigation_preserved"]=true,["coverage_claim"]="Current source collider navigation inside the saved physical extent; disconnected islands remain disconnected. No floor or cross-floor connector is invented."};
             QualifyStationPlaces();
         }
 
@@ -477,6 +489,18 @@ namespace ChooGuard.Seeded.Unity
         public static bool MatrixNear(Matrix4x4 a,Matrix4x4 b,float tolerance)
         {for(int r=0;r<4;r++)for(int c=0;c<4;c++)if(float.IsNaN(a[r,c])||float.IsInfinity(a[r,c])||Mathf.Abs(a[r,c]-b[r,c])>tolerance)return false;return true;}
         static JObject BoundsJson(Bounds b)=>new JObject{["center"]=new JArray(b.center.x,b.center.y,b.center.z),["size"]=new JArray(b.size.x,b.size.y,b.size.z)};
+        static uint[] SourceIndexCounts(Mesh mesh)
+        {return Enumerable.Range(0,mesh.subMeshCount).Select(sub=>mesh.GetIndexCount(sub)).ToArray();}
+        // Metadata qualification only: do not reinterpret topology, fabricate triangles,
+        // change a source buffer or treat readable-but-empty mesh data as a solid surface.
+        static bool HasIndexedSourceGeometry(int vertexCount,uint[] submeshIndexCounts)
+        {
+            if(vertexCount<0)throw new ArgumentOutOfRangeException(nameof(vertexCount));
+            if(submeshIndexCounts==null)throw new ArgumentNullException(nameof(submeshIndexCounts));
+            bool indexed=submeshIndexCounts.Any(count=>count>0);
+            if(indexed&&vertexCount==0)throw new InvalidOperationException("Indexed source mesh has no vertices");
+            return indexed;
+        }
         static bool ContainsBounds(Bounds outer,Bounds inner,float tolerance)
         {var low=outer.min-Vector3.one*tolerance;var high=outer.max+Vector3.one*tolerance;return inner.min.x>=low.x&&inner.min.y>=low.y&&inner.min.z>=low.z&&inner.max.x<=high.x&&inner.max.y<=high.y&&inner.max.z<=high.z;}
     }

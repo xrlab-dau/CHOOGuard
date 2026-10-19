@@ -32,7 +32,7 @@ namespace ChooGuard.Tests.PlayMode
         {
             using(var fixture=new ArchitectureRuntimeFixture())
             {
-                var owner=fixture.OwnedNavigationRoute();var route=owner.Entry;
+                var owner=fixture.OwnedNavigationRoute();var route=owner.Entry;yield return fixture.SettlePhysics();
                 foreach(bool reverse in new[]{false,true})
                 {
                     Assert.That(NavMesh.SamplePosition(reverse?route.End:route.Start,out var from,.12f,NavMesh.AllAreas),Is.True);
@@ -50,7 +50,8 @@ namespace ChooGuard.Tests.PlayMode
                         yield return null;
                     }
                     Assert.That(dispatched,Is.True,"The real PersonBody must dispatch its owned link");
-                    Assert.That(body.OnNavMesh&&!body.NoRoute&&!body.Scripted&&body.Riding==null,Is.True);
+                    Assert.That(body.OnNavMesh&&!body.NoRoute&&!body.Scripted&&body.Riding==null,Is.True,
+                        "Owned walk outcome: nav="+body.OnNavMesh+"; noRoute="+body.NoRoute+"; scripted="+body.Scripted+"; closed="+owner.Closed+"; phase="+body.GetComponent<NativeLandingWalkHandle>()?.FailurePhase);
                     Assert.That(Vector3.Distance(body.transform.position,to.position),Is.LessThan(.2f));
                     Assert.That(largest,Is.LessThan(.2f),"A physical route must not jump between endpoints");
                 }
@@ -65,7 +66,7 @@ namespace ChooGuard.Tests.PlayMode
             }
             using(var fixture=new ArchitectureRuntimeFixture())
             {
-                var owner=fixture.OwnedNavigationRoute();var route=owner.Entry;
+                var owner=fixture.OwnedNavigationRoute();var route=owner.Entry;yield return fixture.SettlePhysics();
                 fixture.Box("BlockedOwnedWalkFixture",new Vector3(0,1,-.6f),new Vector3(2,2,2));Physics.SyncTransforms();
                 Assert.That(NavMesh.SamplePosition(route.Start,out var from,.12f,NavMesh.AllAreas),Is.True);
                 fixture.PlaceNavigatingBody(from.position);var body=fixture.Body;
