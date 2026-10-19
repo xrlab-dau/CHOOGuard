@@ -46,9 +46,12 @@ namespace ChooGuard.Tests.EditMode
                 Assert.That(ArchitecturalCorrectionRegistry.CompleteChannelDigest(target),Is.EqualTo(entry.replacement_digest));
                 Assert.That(FloorGuideLayoutRegistry.ResolveGuideStageForRebuild(source,entry.source_asset),Is.SameAs(target));
                 Assert.That(FloorGuideLayoutRegistry.ResolveGuideStageForRebuild(target,entry.source_asset),Is.SameAs(target));
+                // Reviewed corner/profile edits change the face frame. Each state's
+                // complete digest above pins its own normals/tangents; raw and
+                // deformed frames must not be assumed equal. Prove both reject drift.
+                AssertNormalAndTangentDriftRejected(entry,source);
+                AssertNormalAndTangentDriftRejected(entry,target);
                 if(entry.source_asset.Contains("/1F_public/Kit_Clad_"))continue;
-                Assert.That(target.normals.Take(source.vertexCount),Is.EqualTo(source.normals));
-                Assert.That(target.tangents.Take(source.vertexCount),Is.EqualTo(source.tangents));
                 for(int channel=0;channel<8;channel++)
                 {
                     var before=new System.Collections.Generic.List<Vector4>();var after=new System.Collections.Generic.List<Vector4>();
@@ -66,6 +69,54 @@ namespace ChooGuard.Tests.EditMode
                 Assert.Throws<InvalidDataException>(()=>FloorGuideLayoutRegistry.ResolveGuideStageForRebuild(mesh,selected.source_asset));
             }
             finally { UnityEngine.Object.DestroyImmediate(mesh); }
+        }
+        static void AssertNormalAndTangentDriftRejected(Entry entry,Mesh original)
+        {
+            string before=ArchitecturalCorrectionRegistry.CompleteChannelDigest(original);
+            foreach(bool normal in new[]{true,false})
+            {
+                var changed=UnityEngine.Object.Instantiate(original);
+                try
+                {
+                    if(normal)
+                    {
+                        var values=changed.normals;Assert.That(values.Length,Is.EqualTo(changed.vertexCount));
+                        values[0]+=Vector3.right*.01f;changed.normals=values;
+                    }
+                    else
+                    {
+                        var values=changed.tangents;Assert.That(values.Length,Is.EqualTo(changed.vertexCount));
+                        values[0]+=new Vector4(.01f,0,0,0);changed.tangents=values;
+                    }
+                    Assert.That(ArchitecturalCorrectionRegistry.CompleteChannelDigest(changed),Is.Not.EqualTo(before));
+                    Assert.Throws<InvalidDataException>(()=>FloorGuideLayoutRegistry.ResolveGuideStageForRebuild(changed,entry.source_asset),
+                        entry.source_asset+(normal?" normal drift":" tangent drift"));
+                }
+                finally{UnityEngine.Object.DestroyImmediate(changed);}
+                Assert.That(ArchitecturalCorrectionRegistry.CompleteChannelDigest(original),Is.EqualTo(before));
+            }
+        }
+        [Test]
+        public void ReviewedUnit6CornerNormalAndTangentFollowItsChangedFaceWithOriginalUV()
+        {
+            var entry=Entries().Single(row=>row.source_asset.EndsWith("/shops_1F/Kit_Joint.asset",StringComparison.Ordinal));
+            var source=AssetDatabase.LoadAssetAtPath<Mesh>(entry.baseline_asset);
+            var target=AssetDatabase.LoadAssetAtPath<Mesh>(entry.replacement_asset);
+            const int corner=732;var indices=target.triangles;var vertices=target.vertices;var uv=target.uv;int checkedFaces=0;
+            Assert.That(target.normals[corner],Is.Not.EqualTo(source.normals[corner]),"The reviewed moved corner changes its neighbouring face frame");
+            for(int at=0;at<indices.Length;at+=3)
+            {
+                int a=indices[at],b=indices[at+1],c=indices[at+2];if(a!=corner&&b!=corner&&c!=corner)continue;
+                var ab=vertices[b]-vertices[a];var ac=vertices[c]-vertices[a];var normal=Vector3.Cross(ab,ac).normalized;
+                var duv=uv[b]-uv[a];var dvc=uv[c]-uv[a];float determinant=duv.x*dvc.y-duv.y*dvc.x;
+                Assert.That(determinant,Is.Not.Zero);
+                var tangent=((ab*dvc.y-ac*duv.y)/determinant).normalized;
+                Assert.That(Vector3.Dot(normal,target.normals[corner].normalized),Is.GreaterThan(.999999f));
+                Assert.That(Vector3.Dot(tangent,((Vector3)target.tangents[corner]).normalized),Is.GreaterThan(.999999f));
+                foreach(int vertex in new[]{a,b,c})Assert.That(uv[vertex],Is.EqualTo(source.uv[vertex]));
+                Assert.That(target.tangents[corner].w,Is.EqualTo(source.tangents[corner].w));checkedFaces++;
+            }
+            Assert.That(checkedFaces,Is.EqualTo(2));
         }
         [Test]
         public void EightRearShopStagesRejectUnreviewedNativeSourceChanges()

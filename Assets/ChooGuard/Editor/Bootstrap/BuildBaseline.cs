@@ -49,25 +49,27 @@ namespace ChooGuard.Editor.Bootstrap
             if (indexes.Length != 1 || indexes[0].i + 1 >= args.Length) throw new ArgumentException("Invalid argument " + name);
             return args[indexes[0].i + 1];
         }
-        public static string SourceTreeDigest()
+        public static string SourceTreeDigest() => SourceTreeDigestAt(ProjectRoot);
+        private static string SourceTreeDigestAt(string root)
         {
-            var root = ProjectRoot;
             var files = new[] { "Assets", "Packages", "ProjectSettings" }.SelectMany(folder => Directory.GetFiles(Path.Combine(root, folder), "*", SearchOption.AllDirectories))
                 .Concat(new[] { Path.Combine(root, "docs/build/baseline.schema.json") }).Select(path => new { path, relative = path.Substring(root.Length + 1).Replace('\\', '/') }).OrderBy(x => x.relative, StringComparer.Ordinal);
             var text = string.Concat(files.Select(x => x.relative + "\0" + HashFile(x.path) + "\n"));
             using (var algorithm = SHA256.Create()) return BitConverter.ToString(algorithm.ComputeHash(Encoding.UTF8.GetBytes(text))).Replace("-", "").ToLowerInvariant();
         }
         private static HostInfo Host() => new HostInfo { name = Application.platform.ToString(), version = SystemInfo.operatingSystem, architecture = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString() };
-        private static BuildReceipt NewReceipt(string target) => new BuildReceipt
+        private static BuildReceipt NewReceipt(string target) => NewReceiptAt(target, ProjectRoot);
+        private static BuildReceipt NewReceiptAt(string target, string evidenceRoot) => new BuildReceipt
         {
             runId = DateTime.UtcNow.ToString("yyyyMMddTHHmmssfffffffZ") + "-" + Guid.NewGuid().ToString("N").Substring(0, 6),
-            sourceTreeDigest = SourceTreeDigest(), editorVersion = Application.unityVersion,
-            packageLockSha256 = HashFile(Path.Combine(ProjectRoot, "Packages/packages-lock.json")), host = Host(), requestedTarget = target
+            sourceTreeDigest = SourceTreeDigestAt(evidenceRoot), editorVersion = Application.unityVersion,
+            packageLockSha256 = HashFile(Path.Combine(evidenceRoot, "Packages/packages-lock.json")), host = Host(), requestedTarget = target
         };
-        private static FileHash SaveReceipt(BuildReceipt receipt)
+        private static FileHash SaveReceipt(BuildReceipt receipt) => SaveReceiptAt(receipt, ProjectRoot);
+        private static FileHash SaveReceiptAt(BuildReceipt receipt, string evidenceRoot)
         {
             var relative = "docs/build/evidence/CS-BOOT.01.01/" + receipt.runId + "/build-receipt.json";
-            var path = Path.Combine(ProjectRoot, relative);
+            var path = Path.Combine(evidenceRoot, relative);
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             using (var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write))
             using (var writer = new StreamWriter(stream, new UTF8Encoding(false))) writer.Write(JsonUtility.ToJson(receipt, true) + "\n");
@@ -146,22 +148,26 @@ namespace ChooGuard.Editor.Bootstrap
             return new BuildRequest { Target = (BuildTarget)Enum.Parse(typeof(BuildTarget), targetName), Output = output };
         }
         public static void Build() => BuildFromArguments(Environment.GetCommandLineArgs());
-        private static void BuildFromArguments(string[] args)
+        private static void BuildFromArguments(string[] args) => BuildFromArgumentsAt(args, ProjectRoot);
+        // The negative host fixture supplies a complete tiny evidence tree, not a cached or invented
+        // project digest. Public build entrypoints always use the actual ProjectRoot above.
+        private static void BuildFromArgumentsAt(string[] args, string evidenceRoot)
         {
             // Boundary failures produce neither a receipt nor a build output. This preflight is not a
             // filesystem race lock; the caller must keep its scratch directory under its own control.
             var request = ValidateBuildArguments(args);
             var supported = BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, request.Target);
             var windowsHost = Application.platform == RuntimePlatform.WindowsEditor;
-            var receipt = NewReceipt(request.Target.ToString());
             if (!supported || (request.Target == BuildTarget.StandaloneWindows64 && !windowsHost))
             {
-                receipt.reason = "Module supported=" + supported + "; host=" + Application.platform +
+                var notRunReceipt = NewReceiptAt(request.Target.ToString(), evidenceRoot);
+                notRunReceipt.reason = "Module supported=" + supported + "; host=" + Application.platform +
                     "; Windows host available=" + windowsHost + "; no validator, build, target fallback or installation.";
-                var reference = SaveReceipt(receipt);
+                var reference = SaveReceiptAt(notRunReceipt, evidenceRoot);
                 Debug.Log("CG_BOOT_BUILD_NOT_RUN: " + reference.path);
                 return;
             }
+            var receipt = NewReceiptAt(request.Target.ToString(), evidenceRoot);
             BuildReport built = null;
             try
             {
@@ -175,10 +181,10 @@ namespace ChooGuard.Editor.Bootstrap
             }
             catch
             {
-                SaveReceipt(receipt);
+                SaveReceiptAt(receipt, evidenceRoot);
                 throw;
             }
-            var saved = SaveReceipt(receipt);
+            var saved = SaveReceiptAt(receipt, evidenceRoot);
             Debug.Log("CG_BOOT_BUILD_SUCCEEDED: " + request.Output + "; receipt=" + saved.path);
         }
         // Private result seam: tests supply simulated outcomes, never fabricated BuildReport objects.
