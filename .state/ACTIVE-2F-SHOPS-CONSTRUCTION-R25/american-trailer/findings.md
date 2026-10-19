@@ -1,0 +1,17 @@
+# Findings
+
+Current authority read. Old neighborhood is navigation only; actual R19 native return/facade/column faces are metric anchors. Pharmacy owns north neighbor. Source photography not yet visually checked.
+
+Downloaded42 exact-branch source photos (2024/2025/2026). Original type=w2000 did not decode; changed to supported w966. Current localCAD includes Main accepted floor, Official5 and platform cladding. Need direct visual interpretation.
+
+Directly viewed two branch contact sheets: 2026 storefront dark gray fascia with white script letters + central American flag/trailer logo. Open front, no seating. South/photo-left glass-door drinks refrigerator + low glass produce cabinet. Front stainless prep with clear bins of citrus, orange/red cuttingboard and black/chrome manual citrus presses. Photo-right customer kiosk on countertop, behind are undercounter cabinets and rear production zone. Overhead illuminated menu panels. Printed wall copy not a proxy object.
+
+Directly inspected full2026 front/prep photos and2025 overview contact sheet. Confirmed manual vertical press (two chrome uprights, black pressing head and lever), two citrus reamers/jugs, clear GN fruit bins front, red board behind. 2026 June fascia photo rectified for source-only tracing; white script/vehicle mask inspected. Photo-right kiosk distinct from production. CAD actualnativefront return endpoints re-read from R19 object1413895473 atY8.4: (-61.01859347064644,48.13220250844756) to(-60.996829352749,52.574653116984834); south divider facade actualbend(-64.33962319524883,34.22497779376522), north actualjoint(-64.40723035904642,40.83953224743903).
+
+Inspected downloadedfree model previews: juicer0cab is electriccanister and rejected (does not replace manualleverpress). Blender28a2 moderncountertop and coffee bab05 + grinder8f7f familymatch only; materialadaptation required. ValidCC-BY downloads completed. Counter andthreelemonpress previews staged. Computed footprint20.72985MODELm2 with exactnativebasis saved; .03m inwardbuffer and storesouth/northcontentinsets preserve neighbors and hall. Root explicitly accepts exactphoto3Dmanualpress supplement.
+
+Freecounter/threecitrusmodelpreviews inspected: squeezer-c(OrangeSqueezer bySonidosEnArmonia,CC-BY) is the matchingmanualverticalleverfamily and acquired. Includes base/press/lever actualgeometry; sourcephoto-specificsteelbase/upright adaptation remainsMODEL. Counter50a9 is fullindustrialkitchen; own derivative extractsactualstraightlowercabinet faces only, no sourcefloor/rack/unrelatedreturn. Otherhandheldsqueezer previews excluded. All stagedoutsideAssets.
+
+FreeOrange1.337milliontriangles rejected asoverlydense; downloadedHQlemon15,226trianglesCCBY afterpreviewactualrind inspection. Limitedfinalsearchfor game-readyorange; highdensitysource is not imported. Mesh/PBRpacketgenerated389partswithnoText. Sourceimportstaging filenames made per-material unique so originalrenderer-specifictexturesremainfrozen.
+
+Directlyviewedfruitpreviews: selectedfreeorangefruit920triangles(polyplant3d) isactuallyhalf-orange, usedonlyasactualcutfruitonredboard. WholeorangeCC0modelsretainwholefruitshape. HQlemonscanprovidedfourindividualbodies; ownexportretainsoneoriginalbody(1190vertices), excludesextraduplicatelines. NoScene/sourcegeometrydecimation. Lowcaseusesactualtomato/saladfoodmeshesincups. Rightcountershortenedtoleaveabout.64m ownfrontstaffopeningbetweencentralprep andkiosk.

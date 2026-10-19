@@ -1,0 +1,7 @@
+# Findings
+
+R27 exact old attachment identities are known, but current cmm returns missing-page HTML and legacy fileDown2 returns empty bytes. R28 compares one known-current working control and seeks published exact G2B notice IDs without guessing.
+
+SUCCESS: full modern Chrome document headers recovered both exact old originals, while current map control returned exact retained SHA20819af2637603ef5ca5165eaa1a04aef5d21be09a5b80649a8c4fd16bc7ba4e. North2018 design ZIP9,472,789bytes and Lounge2023 architecture ZIP5,620,738bytes now actually acquired with ZIP magic and extracted original files. Prior R27 empty/HTML responses are transport failures superseded by this recovery, not proven external file loss.
+
+Recovered SIX actual original ZIP packages within15targetedrequests: 2018north convenience architecture21pages+electrical12pages+15page material specification and bills; 2023Lounge architectural/mechanical41pages+separate electrical package; 2017centralchain; 2016chain/info; 2022specialist. North2018 material spec explicitly says facade same color as adjacentPascucci, independently supporting current north branch relationship. Source north floorplan/elevations/RCP and Lounge layout/kitchen/elevations source pages visually viewed. Lounge drawing index contains a stale Yongsan template entry; cover saysBUSAN and actual sheets sayBusan. Retain this title-template qualification. These are construction-design epochs, not measured2026asbuilt.

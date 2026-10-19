@@ -44,6 +44,13 @@ jobs:
       build: ${{ steps.decide.outputs.build }}
       reason: ${{ steps.decide.outputs.reason }}
     steps:
+      - name: Check out the CI gate script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          filter: blob:none
+          sparse-checkout: .github
+          persist-credentials: false
+
       - id: decide
         name: Decide what runs
         env:
@@ -56,15 +63,17 @@ jobs:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           BEFORE: ${{ github.event.before }}
           AFTER: ${{ github.sha }}
           OS_INPUT: ${{ inputs.os }}
           BUILD_INPUT: ${{ inputs.build }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          # The Unity project plus the files its EditMode tests read from the repository root (fixtures, the assembly
-          # contract, build receipts). Keep in sync with the project checkout in the tests job.
-          unity_paths='^(Assets|Packages|ProjectSettings|content|docs/build|docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts)/'
+          # Compare immutable Git subtree IDs, independent of PR diff readiness,
+          # changed_files metadata, missing pagination links or truncated file lists.
+          # unity_tree_inputs.py keeps the same narrow test inputs as the project checkout.
           all='["windows","macos","linux"]'
           # Pull requests cover the team's development OSes; Linux runs on develop, nightly and release tags.
           pr='["windows","macos"]'
@@ -76,12 +85,11 @@ jobs:
           elif [[ $EVENT == pull_request && $PR_REPO != "$REPO" ]]; then
             reason="pull requests from forks receive no licence secrets"
           elif [[ $EVENT == pull_request ]]; then
-            # The files API stops at 3000 entries, and GitHub refuses to list the files of a diff it cannot generate in
-            # time (HTTP 422 "this diff is taking too long to generate"); either way the change is treated as touching Unity.
-            if ! files=$(gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" --jq '.[].filename'); then
-              echo "::notice title=Unity lane gate::GitHub could not list the pull request's files; treating it as touching Unity"
+            if ! changed=$(python3 .github/scripts/unity_tree_inputs.py "$REPO" "$PR_BASE_SHA" "$PR_HEAD_SHA"); then
+              echo "::notice title=Unity lane gate::Git input tree comparison unavailable; treating the pull request as touching Unity"
               tests=$pr
-            elif grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 3000 )); then
+            elif [[ -n $changed ]]; then
+              echo "Unity input tree changed: $changed"
               tests=$pr
             else
               reason="the pull request does not touch the Unity project or its test inputs"
@@ -92,10 +100,11 @@ jobs:
             if [[ $BEFORE =~ ^0+$ ]]; then
               tests=$all build=true
             else
-              if ! files=$(gh api "repos/$REPO/compare/$BEFORE...$AFTER" --jq '.files[].filename'); then
-                echo "::notice title=Unity lane gate::GitHub could not compare the push; treating it as touching Unity"
+              if ! changed=$(python3 .github/scripts/unity_tree_inputs.py "$REPO" "$BEFORE" "$AFTER"); then
+                echo "::notice title=Unity lane gate::Git input tree comparison unavailable; treating the push as touching Unity"
                 tests=$all build=true
-              elif grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 300 )); then
+              elif [[ -n $changed ]]; then
+                echo "Unity input tree changed: $changed"
                 tests=$all build=true
               else
                 reason="the push does not touch the Unity project or its test inputs"
@@ -147,8 +156,13 @@ jobs:
           sparse-checkout: .github
           persist-credentials: false
 
+      - name: Enable long Windows paths before project checkout
+        if: matrix.os == 'windows'
+        working-directory: ${{ github.workspace }}
+        run: git config --global core.longpaths true
+
       # Test inputs outside Assets come along (content/fixtures, the assembly contract, docs/build receipts);
-      # the gate's unity_paths lists the same directories.
+      # unity_tree_inputs.py INPUTS lists the same directories.
       - name: Check out the project
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -162,6 +176,13 @@ jobs:
             docs/build
             docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts
           persist-credentials: false
+
+      - name: Hydrate tracked Unity project LFS objects
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          py=$(command -v python3 || command -v python)
+          "$py" .github/scripts/hydrate_unity_lfs.py
 
       - id: unity
         uses: ./.github/actions/setup-unity
@@ -288,6 +309,13 @@ jobs:
             Packages
             ProjectSettings
           persist-credentials: false
+
+      - name: Hydrate tracked Unity project LFS objects
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          py=$(command -v python3 || command -v python)
+          "$py" .github/scripts/hydrate_unity_lfs.py
 
       - id: unity
         uses: ./.github/actions/setup-unity

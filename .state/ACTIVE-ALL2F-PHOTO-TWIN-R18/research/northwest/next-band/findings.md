@@ -1,0 +1,3 @@
+# Findings
+
+The two selected public long faces continue the same structural row after fixed column248739979. They use actual face triangles/endpoints and the extracted adjacent donor profile, with continued first-payload rib phase. CurrentOctober2026 AmericanTrailer original confirms the plain charcoal fascia/dense vertical rib morphology; source vents and lower tenants remain unqualified. Historical pharmacy source supports shared profile only. The final WC-adjacent portion of1327299834 is excluded using conservative current metadata bounds, pending exact owned WC surface data. Neither the first payload nor any current object/source Asset was modified.

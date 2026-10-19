@@ -1,0 +1,3 @@
+# Findings
+
+Sixnativefitoutworkregions complete. AllownerOfficialStation_-부산역_0 object127163917. Fourindividualspaces splitbyactualcentralfrontjambgapdatum, not equalarea. Flowers/Boksoon useopposingnativewallfaces+southwalllineintersections andactualfloorfrontedge. Redboxesonlylocationcues; centralpassage/shafts/circulationremainoutsidework.

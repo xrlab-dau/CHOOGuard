@@ -1,0 +1,1 @@
+Completedlatestsourcecapture, oneboundedwestworker, SEexactconstructions, blueonlyPDF/DXF/JSONandPreviewopenexit0. Awaitinguserreview. NoSceneorAssetschanges.

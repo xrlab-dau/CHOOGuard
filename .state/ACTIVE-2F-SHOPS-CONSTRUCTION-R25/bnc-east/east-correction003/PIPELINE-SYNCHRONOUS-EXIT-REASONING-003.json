@@ -1,0 +1,120 @@
+{
+  "purpose": "Bounded SAME NONCE completion observer for current UNKNOWN, not geometryQA",
+  "sources": [
+    {
+      "path": "Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/Dispatcher.cs",
+      "sha256": "4f6bd0ebff3d12e47084e4fbcffc02a074bbcdde77aaa082e1d1a45d79f078ee",
+      "ranges": [
+        {
+          "lines_1based": [
+            29,
+            38
+          ],
+          "text": "        public void Initialize()\n        {\n            if (m_IsInitialized)\n                return;\n\n            m_MainThreadId = Thread.CurrentThread.ManagedThreadId;\n            m_IsInitialized = true;\n\n#if UNITY_EDITOR\n            UnityEditor.EditorApplication.update += ProcessWorkQueue;"
+        },
+        {
+          "lines_1based": [
+            73,
+            103
+          ],
+          "text": "        public T Invoke<T>(Func<T> function, int timeoutMs = 60000)\n        {\n            if (!m_IsInitialized)\n                throw new InvalidOperationException(\"Dispatcher must be initialized first\");\n\n            if (IsMainThread())\n                return function();\n\n            var workItem = new WorkItem<T>(function);\n            m_WorkQueue.Enqueue(workItem);\n\n            var startTime = DateTime.UtcNow;\n            var task = workItem.TaskCompletionSource.Task;\n\n            while (!task.IsCompleted)\n            {\n                if ((DateTime.UtcNow - startTime).TotalMilliseconds > timeoutMs)\n                {\n                    // No-op if execution already started on the main thread — only prevents a\n                    // still-queued item from running after we've reported the timeout.\n                    workItem.TryCancel();\n                    throw new TimeoutException($\"Main thread operation timed out after {timeoutMs}ms\");\n                }\n\n                Thread.Sleep(1);\n            }\n\n            if (task.IsFaulted)\n                throw task.Exception?.GetBaseException() ?? new Exception(\"Unknown error\");\n\n            if (task.IsCanceled)"
+        },
+        {
+          "lines_1based": [
+            178,
+            180
+          ],
+          "text": "        public bool IsMainThread()\n        {\n            return m_MainThreadId != -1 && Thread.CurrentThread.ManagedThreadId == m_MainThreadId;"
+        },
+        {
+          "lines_1based": [
+            187,
+            210
+          ],
+          "text": "        public void ProcessWorkQueue(int maxItemsPerFrame)\n        {\n            int processedCount = 0;\n\n            while (processedCount < maxItemsPerFrame && m_WorkQueue.TryDequeue(out var workItem))\n            {\n                try\n                {\n                    workItem.Execute();\n                }\n                catch (Exception ex)\n                {\n                    Debug.LogError($\"Dispatcher work item failed: {ex.Message}\");\n                    workItem.SetException(ex);\n                }\n\n                processedCount++;\n            }\n        }\n\n        /// <summary>Process queued work items, up to a default limit of 10 per call.</summary>\n        public void ProcessWorkQueue()\n        {\n            ProcessWorkQueue(10);"
+        },
+        {
+          "lines_1based": [
+            220,
+            230
+          ],
+          "text": "            /// <summary>Marks the item canceled if it hasn't started executing yet. Returns false\n            /// (no-op) once <see cref=\"Execute\"/> has already claimed it.</summary>\n            public bool TryCancel() => Interlocked.CompareExchange(ref m_State, Canceled, Pending) == Pending;\n\n            public void Execute()\n            {\n                if (Interlocked.CompareExchange(ref m_State, Started, Pending) != Pending)\n                    return; // Canceled before it could start.\n\n                ExecuteCore();\n            }"
+        },
+        {
+          "lines_1based": [
+            280,
+            291
+          ],
+          "text": "            protected override void ExecuteCore()\n            {\n                try\n                {\n                    var result = m_Function();\n                    TaskCompletionSource.SetResult(result);\n                }\n                catch (Exception ex)\n                {\n                    TaskCompletionSource.SetException(ex);\n                }\n            }"
+        }
+      ]
+    },
+    {
+      "path": "Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Editor/Commands/Scripts/RunScriptCommand.cs",
+      "sha256": "87b26e15719c9203ec3367f559897d5bafcdeac6e00a2e1500f3220dec8ccba9",
+      "ranges": [
+        {
+          "lines_1based": [
+            41,
+            46
+          ],
+          "text": "        /// <summary>Upper bound on a single run's timeout — 24 hours, matching the <c>eval</c> cap (CLI-335).</summary>\n        private const int MaxTimeoutMs = 86_400_000;\n\n        [CliCommand(\"run_script\",\n            \"Compile a project C# file in memory (no domain reload) and execute a named static entry point. \" +\n            \"The builder-pattern path for bulk construction. Still arbitrary code execution — shares eval's capability gate.\","
+        },
+        {
+          "lines_1based": [
+            215,
+            257
+          ],
+          "text": "            var execSw = Stopwatch.StartNew();\n            object returnValue = null;\n            try\n            {\n                returnValue = method.Invoke(null, callArgs);\n\n                // A Task/Task<T>-returning entry point must be awaited — otherwise the call\n                // reports success the moment the first await yields, and any exception in the\n                // async work is never observed. Awaited ASYNCHRONOUSLY (never a blocking\n                // GetResult()): this command runs on the main thread, and an entry point's awaits\n                // resume on the Unity SynchronizationContext — i.e. this same thread — so a\n                // blocking wait here deadlocks the whole Editor permanently. Awaiting instead\n                // returns control to the editor loop at this point (the server unwraps the\n                // command's own Task off the main thread), letting those continuations pump.\n                // The wait is bounded by what remains of timeout_ms; on expiry the task keeps\n                // running detached, like an abandoned eval. Task<T> exposes Result via reflection\n                // (an `async Task` materializes as Task<VoidTaskResult>, whose Result carries no\n                // value — treat it as null).\n                if (returnValue is Task task)\n                {\n                    var remainingMs = (int)Math.Max(0, timeoutMs - total.ElapsedMilliseconds);\n                    var completed = await Task.WhenAny(task, Task.Delay(remainingMs));\n                    if (completed != task)\n                    {\n                        execSw.Stop();\n                        return RunScriptResponse.Fail(\n                            \"Timeout\",\n                            $\"The entry point's Task did not complete within the {timeoutMs}ms budget \" +\n                            $\"({remainingMs}ms remained after the synchronous part). The task keeps running detached and \" +\n                            \"its effects may still land; raise timeout_ms if it legitimately needs longer.\",\n                            total.ElapsedMilliseconds,\n                            compilation.Diagnostics,\n                            compileSw.ElapsedMilliseconds,\n                            execSw.ElapsedMilliseconds,\n                            assemblyName);\n                    }\n\n                    await task; // a faulted task throws the entry point's own exception here\n                    var resultProperty = task.GetType().GetProperty(\"Result\");\n                    returnValue = resultProperty != null && resultProperty.PropertyType.FullName != \"System.Threading.Tasks.VoidTaskResult\"\n                        ? resultProperty.GetValue(task)\n                        : null;\n                }"
+        },
+        {
+          "lines_1based": [
+            277,
+            285
+          ],
+          "text": "            execSw.Stop();\n\n            return RunScriptResponse.Ok(\n                SerializeResult(returnValue),\n                assemblyName,\n                compileSw.ElapsedMilliseconds,\n                execSw.ElapsedMilliseconds,\n                total.ElapsedMilliseconds,\n                compilation.Diagnostics);"
+        }
+      ]
+    },
+    {
+      "path": "Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/BasePipelineServer.cs",
+      "sha256": "9ca1a7aeb810ca20da132a477050aa5fc3fba68741be4970784cf82ba7d70b87",
+      "ranges": [
+        {
+          "lines_1based": [
+            2488,
+            2509
+          ],
+          "text": "            if (command.MainThreadRequired)\n            {\n                // Execute on the main thread using THIS server's dispatcher.\n                if (m_Dispatcher.IsMainThread())\n                {\n                    raw = ExecuteCommandDirect(command, parameters);\n                }\n                else\n                {\n                    // If the command declares its own int \"timeout\" parameter (e.g. eval/eval_file),\n                    // honor it as the wait budget instead of the caller-provided dispatcher budget\n                    // (UUM-148641) — that's the only mechanism that actually enforces such a\n                    // command's requested deadline end-to-end, in both directions: a request below\n                    // the dispatcher default must time out early, not wait it out. Detached jobs\n                    // are the one exception: they pass an unbounded budget (CLI-335) and rely on\n                    // cooperative cancellation, so the requested value must not re-bound them.\n                    var requestedTimeoutMs = ResolveRequestedTimeoutMs(command, parameters);\n                    var waitBudgetMs = dispatcherTimeoutMs == UnboundedJobDispatcherTimeoutMs\n                        ? dispatcherTimeoutMs\n                        : requestedTimeoutMs ?? dispatcherTimeoutMs;\n                    raw = await Task.Run(() => m_Dispatcher.Invoke(() => ExecuteCommandDirect(command, parameters), waitBudgetMs));\n                }"
+        },
+        {
+          "lines_1based": [
+            2556,
+            2573
+          ],
+          "text": "        /// <summary>\n        /// Commands declared as `async Task`/`Task&lt;T&gt;` return their Task from reflection Invoke.\n        /// Await it here (on the calling background thread, leaving the main thread free to pump the\n        /// dispatcher) so the actual value is serialized rather than the Task itself, and so a faulted\n        /// command surfaces its real exception to the request handler instead of being masked when\n        /// Newtonsoft reads Task.Result during serialization.\n        /// </summary>\n        private static async Task<object> UnwrapResult(object result)\n        {\n            if (result is Task task)\n            {\n                await task.ConfigureAwait(false);\n                // Task&lt;T&gt; exposes a Result property; non-generic Task does not.\n                var resultProperty = task.GetType().GetProperty(\"Result\");\n                return resultProperty?.GetValue(task);\n            }\n\n            return result;"
+        },
+        {
+          "lines_1based": [
+            1375,
+            1406
+          ],
+          "text": "        private async Task ExecuteGated(string executionId, Func<Task> body, Func<bool> preStartCheck = null)\n        {\n            Progress.BeginExecutionCount();\n            try\n            {\n                await m_ExecGate.WaitAsync();\n                try\n                {\n                    if (preStartCheck != null && !preStartCheck())\n                        return;\n\n                    Progress.BeginExecution(executionId);\n                    try\n                    {\n                        await body();\n                    }\n                    finally\n                    {\n                        Progress.EndExecution(executionId);\n                    }\n                }\n                finally\n                {\n                    m_ExecGate.Release();\n                }\n            }\n            finally\n            {\n                Progress.EndExecutionCount();\n            }\n        }\n"
+        }
+      ]
+    }
+  ],
+  "proof_scope": [
+    "RunScript command MainThreadRequired=true; server calls Dispatcher.Invoke for it.",
+    "Dispatcher is initialized mainthread and pumped via EditorApplication.update; queuework.Execute sequential within onepump.",
+    "Own frozen StoreBuilderR25.Apply returns string, not Task; method.Invoke executes its full body synchronously, Taskbranchfalse.",
+    "Own receiptwrite only follows saved=true and all native updates; exactsuccessful tail then pure managed JSON string return with no Editor API, await, Task or pumping.",
+    "Observercallback must firsthardpin same nonce,frozensourceSHA and exactcomplete terminalreceiptSHA. Afterterminal filecompletedandparseable, sameUnity mainthreadcallback cannot occur duringearlier AssetDatabase calls becausepreconditionwasnotyettrue.",
+    "Originaltimeoutresponse must remain unmodified; observerprovesmutableownbodyexited, notoriginaltransportinnerSuccess."
+  ],
+  "limitations": [
+    "Dispatcher has NO explicit recursion/reentrancyguard. Do not claim global nonreentrancy from queuedexecution alone. Editor AssetDatabase operations could pump nestedcallbacks beforeterminalreceipt.",
+    "Progressidle is insufficient: ExecuteGated finally decrementscountaftertransporttimeout evenwhilemainthreadbodycontinues.",
+    "No new writer or mutation authorized by evidence alone; rootboundedrecoverymaintains exact ACTIVE nonce untilobserverreturn."
+  ]
+}

@@ -1,0 +1,12 @@
+The usercorrects formerpremise: currentboothglass/doors/framesareacceptedspatialboundaries, notobsoletefrontage. My017Bdeactivation must be undone. Source-nativewholebuildingremap no longerdetermines boothshell. HistoricalS13planningtree is currentlyabsent aftercleanup; do notrestoreit. Newactivework stateonlyhere.
+
+028prepared directinterioronly: currentacceptedboothentry/perimeterfixed. Sourcephotographsidentifyseparatebeverage/staffniche andcook/washapertures; kitchenlining/equipment occupies eastinterior ratherthan tinyfrontcounter. Existing5ownservice/storagegroups relocate byfunction;40oldgenericdiningroots replaced with31sharedphoto-sourcefurnitureinstances and208editableparts. Newmaterial/meshassets scopedownfolder; originalsharedassets untouched. NoScene028applyyet.
+
+Actual028APPLIED_SAVED_SETTLED_SUCCESS 2026-10-19T03:53:48.4662130Z:208newpartmeshes +31sharedsourcefurnitureinstances /887generatedinteriorGameObjects,5ownservice/storagegroupsrelocatedandactivated,40oldgenericdiningrootsdeactivatedinplaceasreplacedinterior. Fixedboothshell/native/floor/columns/WC/otherstores/originalsharedassetsunchangedby028. Currentreceipt APPLIED-PHOTO-INTERIOR-028.json; original027restorationremains. NoQA/tests/probes/reopen/captures.
+
+
+029 NEW DIRECT USER AUTHORITY: Hidden kitchen inference is now expressly authorized, superseding the earlier source-only limit for interior equipment. Accepted shell, current kitchen separation, dining and native geometry stay fixed. Inferred equipment/layout must be recorded separately from photo-confirmed028 elements. No retired013 kitchen replay.
+
+029 manufacturer dimension research recorded in KITCHEN-LAYOUT-DECISIONS-029.json. Design uses accepted east kitchen and avoids fixed R03/R04C19 columns. Cold-front/prep clearance1.20m, prep/hot-line approximately1.7m, rice/prep1.4m are MODEL design clearances, not regulations or field measurements. Only one prior028 own solid wash top is replaced by open basin; current wash spray, table supports, hood and dish rack remain.
+
+2026-10-19T04:07:21.731861+00:00 Actual029 APPLIED_SAVED_SETTLED_SUCCESS: 25 own equipment assemblies /232 editable mesh groups /272 GameObjects. Native receipt APPLIED-FUNCTIONAL-KITCHEN-029.json. Only former own028 solid wash worktop deactivated in place; basin keeps same footprint, faucet/legs/lip/bowls preserved. No original/shared asset or shell/partition/dining mutations. NoQA/tests/probes/reopen/captures. User-authorized inferred equipment remains MODEL.

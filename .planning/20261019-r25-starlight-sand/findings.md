@@ -1,0 +1,11 @@
+# Findings
+- Current STORE-TASK requires actual downloaded free physical assets and solid source-outline sign; research-only is incomplete.
+- Root corrected original 50-page railway goods PDF SITE zero-based=4, FLOOR=7, CEILING=10, FACADE=13, ELEVATION=14. SITE relevant to Starlight adjacency only; railway 33sqm does not apply.
+- R19 native references fixed; old red candidate is navigation only.
+- Directly opened full current branch mine6409 00/01/07, wcw93 00/06. Fascia navy; white physical Korean letters and starlogo; front central sliding glass portal; warm reclaimed vertical wood side displays; low rear wide two-tier lit glass counter. Dense bar/round cookies, colored rectangular gift cartons, navy tins, POS. Rear glazed grid source-visible; hidden kitchen not observed.
+- SITE4 explicitly labels Goods / 부산별빛샌드 / OliveYoung and separate booth islands. Native018 remains fixed inside Starlight front-right/source-left bay.
+- Original Starlight interior drawing search returned no qualifying design; SITE relationship and actual photos are usable evidence.
+- Downloaded Bakery Display Case (mmcmindes, CC BY4) from verified public source and Objaverse mirror; source preview opened. Clear glazed physical case matches current rear display role; own warm wood/frame adaptation required.
+- Cookie/biscuit source yezenzeynberekat and Tin source plaggy have no public mirror path. Did not use unavailable downloads. Downloaded Biscuit (Hannah Sapiee, CC BY4) as source alternative, preview opened.
+- Successfully downloaded Fig Financier (alban, CC BY4; scanned rectangular pastry), Chocolate Chip Cookie (Ziaraallman_3D, CC BY4), Gift box (Multipainkiller Studio, CC BY4) and Biscuit Tin (rhcreations, CC BY4). Direct source previews opened. Biscuit Tin has tall round vintage form unlike current rectangular boxes; excluded from construction. FigFinancier/cookie source derivatives will be scoped own meshes; exact brand SKU and dimensions remain MODEL.
+- Extracted actual storefront Korean/star/English contours from wcw93 full00 into closed front/back/side solid meshes. Source masks viewed; actual letter holes retained; no font/TMP/flat logo plane.

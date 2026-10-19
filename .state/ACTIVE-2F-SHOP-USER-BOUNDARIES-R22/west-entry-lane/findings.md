@@ -1,0 +1,3 @@
+# R22 west entry conclusions
+
+Red143/142/148 marks locate a narrow western facade row, not the old wide R20 boxes. Actual current native return atqx~-61.01, qY48.13–52.57 defines a front plane that can be extended south. The north return/through access qY48.1–52.88 and east hall approach remain outside all shop work. Rear lines intersect current Main exterior; Kijang terminates on the actual diagonal frame point instead of retaining a rectangular exterior protrusion. Tenant divisions use perpendiculars through actual cladding/bend points and remain MODEL/dashed. Pharmacy/American/Kijang respectively21.17/21.32/7.52sqm review models. No Scene, Asset, authority, or shared CAD modifications.

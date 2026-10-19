@@ -1,0 +1,7 @@
+# Findings
+
+2018 original sources are design-era, not automatic current as-built. Migrate source semantic layout into current accepted booth; source floor and native objects remain fixed.
+
+Viewed original architectural p7 and full 2024 daytour/jihui images. Original source explicitly has two public automatic door faces, 2.96m shop ceiling and rear walk-in cooler/storage; current packet only has one end entrance, ceiling tile centers3.09m and four independent rear cabinets, no BOH. Field photos corroborate acoustic finish grid, cassette, paired sliding glazing on front and return, rear orange band/open fastfood and glazed drink bank. Current immutable booth7.08x5.932m is very close to original7x5.9m; migrate fixtures into it without changing boundary.
+
+Viewed architecture12/16/17 and electrical06/08. Original rear elevation distinguishes four-door walk-in cooler, adjacent1.955m FASTFOOD open case, small rear staff access, novelty/freezer area and three-color backpaint band. Opposite original side entry corresponds to current east return. Original electrical panel LP-CVS on rear staff wall; powered equipment sockets and circuits documented. Do not recreate scene Light components from lighting plan. Exact source7x5.9 dimensions do not authorize expanding the accepted7.08x5.932 shell. Current front glazing has no actual opening despite source/current sliding-entry evidence; own glazing/door parts may be locally replaced to1800mm clear fronts without native/floor edits.

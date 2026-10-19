@@ -1,0 +1,7 @@
+# R25 approved specialist shops
+
+1. COMPLETE for the five precise R24 blue regions: source branch binding, individual editable booths and source-visible interiors actually applied/saved. Gijang, eastStoryway, Soban, eastBnC, Subway.
+2. COMPLETE latest user physical-model/sign corrections for those five: downloaded free model instances replacing label proxies; actual photo-outline solid signs with no TMP storefront brand text. Actual receipts indexed in ACTUAL-SAVED-STORES-INDEX-R25.json. Exact-source hidden detail remains qualified, no measured99percent claim.
+3. PARTIAL_APPLIED_SAVED: 29 selected stores actually applied/saved; no active construction writers or ordinary queued stores. Selected southwest Krispy25 remains source-identity unresolved and NOT APPLIED; the bounded primary-source followup is finished without a current branch/native-room binding. Four unmarked older proposals stay excluded.
+4. COMPLETE for the 29 saved stores and scoped followups: actual C180 calls settled/released, including exact Banwoldang001 exit reconciliation; SW Storyway entry lower remnant removed to existing floorY7.0. Native/floor/column/WC/transport/1F/other-store/user-deletion boundaries preserved. User validates, no agentQA.
+5. INCOMPLETE for all selected stores: southwest25 source identity/current fitout remains unresolved. Hidden BOH, assetSKU and unmeasured dimensions remain qualified in each source/basis/completion packet. Saved modeling is not user confirmation or surveyed99percent fidelity.

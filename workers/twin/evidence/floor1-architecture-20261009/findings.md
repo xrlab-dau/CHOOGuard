@@ -1,4 +1,0 @@
-Current baseline after-frontage provided by root. Retained March 2026 source camera reconstruction provides approximate model-relative projection, not field-certified dimensions.
-
-- Actual floor1 footage shows a glass storefront and Life4Cuts structure to escalator left. Current inferred public1f BOH/notch stair Room wall faces 48/54/72/204/205 project across that photographed region in frames106/123/133. This is a candidate conflict only: require actual multi-view stationary structure depth before clipping.
-- Official 2024 Korail Retail 1F lease-plan PDF explicitly asks confirmation of exact shop position/door direction; map useful for topology, not print-coordinate scale certification. It shows BOH/stair/elevator zones between shops; projection conflict cannot be resolved by deleting whole room blindly.
