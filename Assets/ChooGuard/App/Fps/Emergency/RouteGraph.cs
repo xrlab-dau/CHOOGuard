@@ -141,11 +141,18 @@ namespace ChooGuard.App.Fps.Emergency
         public int EdgeCount => edges.Count;
         /// <summary>The bake's own account of what cannot reach what (twin defects, written when the file was made).</summary>
         public string Report { get; private set; }
+        /// <summary>Unmodified historical inventory retained separately from current runtime nodes.</summary>
+        public string OriginalSourceJson {get;private set;}
+        internal void RetainSource(TextAsset source) { OriginalSourceJson=source.text; }
 
         public static RouteGraph Load(TextAsset asset, IReadOnlyList<Escalator> escalators, IReadOnlyList<StationWalkingRoute> walkingRoutes = null)
         {
             if (asset == null) throw new ArgumentNullException(nameof(asset));
-            var file = JsonUtility.FromJson<File>(asset.text);
+            return Load(JsonUtility.FromJson<File>(asset.text),escalators,walkingRoutes);
+        }
+
+        public static RouteGraph Load(File file,IReadOnlyList<Escalator> escalators,IReadOnlyList<StationWalkingRoute> walkingRoutes=null)
+        {
             if (file == null || file.version != Version || file.positions == null || file.labels == null || file.from == null || file.to == null || file.length == null || file.link == null
                 || file.positions.Length != file.labels.Length * 3 || file.from.Length != file.to.Length || file.from.Length != file.length.Length || file.from.Length != file.link.Length)
                 throw new InvalidOperationException("StationRoutes.json 구조 오류 (version " + Version + " 필요) — ChooGuard/Emergency/Bake route graph 로 다시 만드세요.");

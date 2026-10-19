@@ -10,6 +10,58 @@ namespace ChooGuard.Tests.PlayMode
 {
     public sealed class PlatformEscalatorMotionTests
     {
+        [Test]
+        public void EmptyControllerAndRideStubsCannotBindAnActualCatalogDrive()
+        {
+            var root = new GameObject("No source geometry binding fixture"); root.SetActive(false);
+            var driveObject = new GameObject("Exact catalog drive fixture");
+            try
+            {
+                var motion = root.AddComponent<EscalatorMotion>();
+                var rideObject = new GameObject("Retained trigger stub"); rideObject.transform.SetParent(root.transform, false);
+                rideObject.AddComponent<BoxCollider>().isTrigger = true;
+                var ride = rideObject.AddComponent<EscalatorRide>();
+                var binding = root.AddComponent<EscalatorDriveBinding>(); binding.lane_id = "source-less-fixture-lane";
+                var drive = driveObject.AddComponent<Escalator>(); drive.enabled = false;
+                drive.Setup(new StationPoints.EscalatorEntry { id = binding.lane_id, path = new[] { Vector3.zero, Vector3.forward } });
+                Assert.That(binding.Bind(new[] { drive }), Is.False, "A trigger and an empty motion component are not physical source machinery.");
+                Assert.That(binding.Bound, Is.False); Assert.That(binding.Issue, Is.EqualTo("missing_operable_parts"));
+                Assert.That(motion.Drive, Is.Null); Assert.That(ride.Drive, Is.Null); Assert.That(ride.WorldVelocity, Is.EqualTo(Vector3.zero));
+                var run = root.AddComponent<PlatformEscalatorRun>();
+                run.Treads = new Transform[3]; run.ObservedOrigins = new[] { Vector3.zero, Vector3.forward, Vector3.forward * 2 };
+                run.SourcePitch = 1; run.ExposureAxis = Vector3.forward; run.ExposureMinimum = 0; run.ExposureMaximum = 2;
+                Assert.That(binding.Bind(new[] { drive }), Is.False, "An all-null retained tread array is explicitly absent source.");
+                Assert.That(run.SourceAvailable, Is.False); Assert.That(run.IsBound, Is.False); Assert.That(run.AnimatedOriginalPartCount, Is.Zero);
+                Assert.That(binding.Bound, Is.False); Assert.That(motion.Drive, Is.Null); Assert.That(ride.Drive, Is.Null);
+                Assert.That(root.GetComponentsInChildren<MeshFilter>(true), Is.Empty, "Refusal must not create replacement machinery.");
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); UnityEngine.Object.DestroyImmediate(driveObject); }
+        }
+
+        [Test]
+        public void PartialSourceLossRetainsTheStrictMissingTreadFailure()
+        {
+            var root = new GameObject("Partial source loss fixture"); root.SetActive(false);
+            var driveObject = new GameObject("Exact catalog drive fixture"); var mesh = new Mesh();
+            mesh.vertices = new[] { Vector3.zero, Vector3.right, Vector3.forward }; mesh.triangles = new[] { 0, 1, 2 };
+            try
+            {
+                var motion = root.AddComponent<EscalatorMotion>(); var run = root.AddComponent<PlatformEscalatorRun>();
+                var tread = new GameObject("Only one retained tread"); tread.transform.SetParent(root.transform, false);
+                tread.AddComponent<MeshFilter>().sharedMesh = mesh; tread.AddComponent<MeshRenderer>();
+                run.Treads = new[] { tread.transform, null }; run.ObservedOrigins = new[] { Vector3.zero, Vector3.forward };
+                run.SourcePitch = 1; run.ExposureAxis = Vector3.forward; run.ExposureMinimum = 0; run.ExposureMaximum = 1;
+                var binding = root.AddComponent<EscalatorDriveBinding>(); binding.lane_id = "partial-source-fixture-lane";
+                var drive = driveObject.AddComponent<Escalator>(); drive.enabled = false;
+                drive.Setup(new StationPoints.EscalatorEntry { id = binding.lane_id, path = new[] { Vector3.zero, Vector3.forward } });
+                var error = Assert.Throws<System.InvalidOperationException>(() => binding.Bind(new[] { drive }));
+                Assert.That(error.Message, Is.EqualTo("Native source tread geometry is missing at index 1"));
+                Assert.That(binding.Bound, Is.False); Assert.That(motion.Drive, Is.Null);
+                Assert.That(root.GetComponentsInChildren<MeshFilter>(true).Length, Is.EqualTo(1));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); UnityEngine.Object.DestroyImmediate(driveObject); UnityEngine.Object.DestroyImmediate(mesh); }
+        }
+
         [UnityTest]
         public IEnumerator NativeTreadsMoveStopAndResumeWithTheSameRideDriveAndRestoreOnDisable()
         {

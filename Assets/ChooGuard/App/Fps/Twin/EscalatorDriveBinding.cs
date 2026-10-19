@@ -24,8 +24,22 @@ namespace ChooGuard.App.Fps.Twin
                     match = lane;
                 }
             if (match == null) return Unbind("missing_lane_id");
-            if (GetComponentsInChildren<EscalatorRide>(true).Length == 0 && GetComponentsInChildren<EscalatorMotion>(true).Length == 0)
-                return Unbind("missing_operable_parts");
+            // Controller/trigger stubs can survive source removal. They are not
+            // operable machinery: bind only supplied tread geometry or an authored
+            // motion channel. Platform Prepare retains its strict partial-loss guard.
+            bool operable = false;
+            foreach (var run in GetComponentsInChildren<PlatformEscalatorRun>(true))
+            {
+                run.Prepare();
+                if (!run.SourceAvailable || !run.IsBound) return Unbind("missing_operable_parts");
+                operable = true;
+            }
+            foreach (var motion in GetComponentsInChildren<EscalatorMotion>(true))
+            {
+                if (motion.Drive == null) motion.RebuildBindings();
+                operable |= motion.AnimatedPartCount > 0 || motion.AnimatedSurfaceCount > 0;
+            }
+            if (!operable) return Unbind("missing_operable_parts");
             match.BindDrive(transform);
             Bound = true; Issue = ""; return true;
         }

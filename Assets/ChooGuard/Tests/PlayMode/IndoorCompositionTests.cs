@@ -8,6 +8,7 @@ using ChooGuard.App.Fps.Emergency;
 using ChooGuard.App.Fps.Equipment;
 using ChooGuard.App.Fps.Shell;
 using NUnit.Framework;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
@@ -48,6 +49,98 @@ namespace ChooGuard.Tests.PlayMode
         private static string Text(object transition, string field) => (string)Field(transition, field);
         private static object[] Origins(IncidentDirector director) => ((IEnumerable)typeof(IncidentDirector).GetMethod("Origins", Members).Invoke(director, null)).Cast<object>().ToArray();
 
+        private static string HierarchyPath(Transform value) => value.parent == null ? value.name : HierarchyPath(value.parent) + "/" + value.name;
+
+        private static void AssertCurrentSourceLaneBindings(StationWorld world)
+        {
+            // The catalog describes 21 logical routes. The current saved model has
+            // nine source-backed runs, three empty controller stubs and nine absent
+            // owners. Qualify every ID independently; never create replacement drives.
+            var contract = Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText("content/fixtures/architecture/current-source-lane-bindings.json"));
+            var rows = ((Newtonsoft.Json.Linq.JArray)contract["lanes"]).ToArray();
+            var source = Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText((string)contract["source_parts_fixture"]));
+            using (var sha = System.Security.Cryptography.SHA256.Create())
+                Assert.That(BitConverter.ToString(sha.ComputeHash(System.IO.File.ReadAllBytes((string)contract["source_parts_fixture"]))).Replace("-", "").ToLowerInvariant(),
+                    Is.EqualTo((string)contract["source_parts_fixture_sha256"]));
+            var pins = ((Newtonsoft.Json.Linq.JArray)source["parts"]).Where(pin => (string)pin["category"] == "escalator_tread_component").ToArray();
+            CollectionAssert.AreEquivalent(world.Points.Escalators.Select(entry => entry.id), rows.Select(row => (string)row["lane_id"]));
+            CollectionAssert.AreEquivalent(world.Points.Escalators.Select(entry => entry.id), world.Escalators.Select(lane => lane.Entry.id));
+            Assert.That(rows.Select(row => (string)row["lane_id"]).Distinct().Count(), Is.EqualTo(rows.Length));
+            var bindings = UnityEngine.Object.FindObjectsByType<ChooGuard.App.Fps.Twin.EscalatorDriveBinding>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            var rides = UnityEngine.Object.FindObjectsByType<ChooGuard.Circulation.EscalatorRide>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            var motions = UnityEngine.Object.FindObjectsByType<ChooGuard.Circulation.EscalatorMotion>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            CollectionAssert.AreEquivalent(rows.Where(row => (string)row["state"] != "catalog_only").Select(row => (string)row["lane_id"]), bindings.Select(binding => binding.lane_id));
+            CollectionAssert.AreEquivalent(bindings.SelectMany(binding => binding.GetComponentsInChildren<ChooGuard.Circulation.EscalatorRide>(true)), rides);
+            CollectionAssert.AreEquivalent(bindings.SelectMany(binding => binding.GetComponentsInChildren<ChooGuard.Circulation.EscalatorMotion>(true)), motions);
+            var supported = rows.Where(row => (string)row["state"] == "source_present").ToArray();
+            CollectionAssert.AreEquivalent(supported.Select(row => (string)row["lane_id"]), bindings.Where(binding => binding.Bound).Select(binding => binding.lane_id));
+            CollectionAssert.AreEquivalent(pins.Select(pin => (string)pin["source_id"]), supported.SelectMany(row => row["retained_tread_source_ids"].Values<string>()));
+            foreach (var row in rows)
+            {
+                string id = (string)row["lane_id"], state = (string)row["state"];
+                var lanePins = pins.Where(pin => ((string)pin["path"]).Split('/')[2] == id).ToArray();
+                if (state == "catalog_only")
+                {
+                    Assert.That(bindings.Any(binding => binding.lane_id == id), Is.False, id);
+                    Assert.That(lanePins, Is.Empty, id);
+                    continue;
+                }
+                var binding = bindings.Single(value => value.lane_id == id);
+                Assert.That(HierarchyPath(binding.transform).Normalize(), Is.EqualTo(((string)row["binding_path"]).Normalize()));
+                var run = binding.GetComponent<ChooGuard.Circulation.PlatformEscalatorRun>();
+                var motion = binding.GetComponent<ChooGuard.Circulation.EscalatorMotion>();
+                Assert.That(run, Is.Not.Null, id); Assert.That(motion, Is.Not.Null, id);
+                var ownRides = binding.GetComponentsInChildren<ChooGuard.Circulation.EscalatorRide>(true);
+                Assert.That(ownRides.Length, Is.EqualTo((int)row["ride_volumes"]), id);
+                if (state == "empty_source_controller")
+                {
+                    Assert.That(lanePins, Is.Empty, id);
+                    Assert.That(run.Treads.All(tread => tread == null), Is.True, id);
+                    Assert.That(binding.GetComponentsInChildren<MeshFilter>(true), Is.Empty, id);
+                    Assert.That(run.SourceAvailable, Is.False, id); Assert.That(run.IsBound, Is.False, id);
+                    Assert.That(run.AnimatedOriginalPartCount, Is.Zero, id);
+                    Assert.That(motion.AnimatedPartCount + motion.AnimatedSurfaceCount, Is.Zero, id);
+                    Assert.That(binding.Bound, Is.False, id); Assert.That(binding.Issue, Is.EqualTo("missing_operable_parts"), id);
+                    Assert.That(motion.Drive, Is.Null, id);
+                    foreach (var ride in ownRides) { Assert.That(ride.Drive, Is.Null, id); Assert.That(ride.WorldVelocity, Is.EqualTo(Vector3.zero), id); }
+                    continue;
+                }
+                Assert.That(state, Is.EqualTo("source_present"), "Every source state needs an explicit contract: " + id);
+                Assert.That(lanePins.Length, Is.EqualTo(41), id);
+                Assert.That(run.SourceAvailable, Is.True, id); Assert.That(run.IsBound, Is.True, id);
+                Assert.That(run.AnimatedOriginalPartCount, Is.EqualTo(lanePins.Length), id);
+                Assert.That(run.Treads.Length, Is.EqualTo(lanePins.Length), id);
+                CollectionAssert.AreEquivalent(run.Treads.Select(tread => tread.GetComponent<ChooGuard.App.Fps.Twin.SourcePartIdentity>().SourceId), row["retained_tread_source_ids"].Values<string>());
+                var actualDrive = world.Escalators.Single(lane => lane.Entry.id == id);
+                Assert.That(binding.Bound, Is.True, id); Assert.That(motion.Drive, Is.SameAs(actualDrive), id);
+                foreach (var ride in ownRides) Assert.That(ride.Drive, Is.SameAs(actualDrive), id);
+                // At the exact retained source phase, each original mesh is restored;
+                // verify identity and channel pins, then let the common drive continue.
+                run.ApplyDistance(0);
+                foreach (var pin in lanePins)
+                {
+                    var tread = run.Treads.Single(part => part.GetComponent<ChooGuard.App.Fps.Twin.SourcePartIdentity>().SourceId == (string)pin["source_id"]);
+                    Assert.That(HierarchyPath(tread).Normalize(), Is.EqualTo(((string)pin["path"]).Normalize()));
+                    var identity = tread.GetComponent<ChooGuard.App.Fps.Twin.SourcePartIdentity>();
+                    Assert.That(identity.SourcePath.Normalize(), Is.EqualTo(((string)pin["source_path"]).Normalize()));
+                    Assert.That(identity.SourceDefinition.Normalize(), Is.EqualTo(((string)pin["source_definition"]).Normalize()));
+                    Assert.That(identity.PreservedTriangles, Is.EqualTo((int)pin["preserved_triangles"]));
+                    var mesh = tread.GetComponent<MeshFilter>().sharedMesh;
+                    Assert.That(mesh, Is.Not.Null); Assert.That(mesh.vertexCount, Is.EqualTo((int)pin["vertex_count"]));
+                    Assert.That(mesh.triangles.Length / 3, Is.EqualTo((int)pin["preserved_triangles"]));
+#if UNITY_EDITOR
+                    Assert.That(mesh, Is.SameAs(SourceGeometryContractFixtures.Mesh(pin)), id);
+#endif
+                }
+            }
+            foreach (var lane in world.Escalators)
+            {
+                lane.Stop("test-only stop");
+                foreach (var ride in rides.Where(ride => ReferenceEquals(ride.Drive, lane))) Assert.That(ride.WorldVelocity, Is.EqualTo(Vector3.zero));
+                Assert.That(lane.Restart(out var reason), Is.True, reason);
+            }
+        }
+
         [UnityTest, Timeout(240000)]
         public IEnumerator LiveOriginsStayInside_ExpiredLocationsAreRejected_AndDifferentSourcesCanShareAKind()
         {
@@ -63,29 +156,7 @@ namespace ChooGuard.Tests.PlayMode
             var director = session.Incidents;
             Assert.That(director.InsideBuilding(session.Player.transform.position), Is.True, "The actual safe indoor spawn must be a valid incident site.");
 
-            var rides = UnityEngine.Object.FindObjectsByType<ChooGuard.Circulation.EscalatorRide>(FindObjectsSortMode.None);
-            var bindings = UnityEngine.Object.FindObjectsByType<ChooGuard.App.Fps.Twin.EscalatorDriveBinding>(FindObjectsSortMode.None);
-            Assert.That(bindings.Length, Is.EqualTo(21), "All installed source lanes must bind during a real shift, without test-created replacement drives.");
-            CollectionAssert.AreEquivalent(session.World.Escalators.Select(e => e.Entry.id), bindings.Select(b => b.lane_id));
-            Assert.That(rides.Length, Is.GreaterThan(105), "The 105 platform volumes and preserved concourse/ground volumes must all remain available.");
-            foreach (var ride in rides) Assert.That(ride.Drive, Is.Not.Null, "Every installed ride volume must use the actual shift's lane drive.");
-            var motions = UnityEngine.Object.FindObjectsByType<ChooGuard.Circulation.EscalatorMotion>(FindObjectsSortMode.None);
-            Assert.That(motions.Length, Is.EqualTo(21));
-            foreach (var binding in bindings)
-            {
-                var motion = binding.GetComponent<ChooGuard.Circulation.EscalatorMotion>();
-                Assert.That(motion, Is.Not.Null, binding.lane_id);
-                Assert.That(motion.Drive, Is.SameAs(session.World.Escalators.Single(e => e.Entry.id == binding.lane_id)), binding.lane_id);
-                var platform = binding.GetComponent<ChooGuard.Circulation.PlatformEscalatorRun>();
-                if (platform != null) Assert.That(platform.AnimatedOriginalPartCount, Is.EqualTo(41));
-                else Assert.That(motion.AnimatedSurfaceCount, Is.GreaterThan(0));
-            }
-            foreach (var lane in session.World.Escalators)
-            {
-                lane.Stop("test-only stop");
-                foreach (var ride in rides.Where(r => ReferenceEquals(r.Drive, lane))) Assert.That(ride.WorldVelocity, Is.EqualTo(Vector3.zero));
-                Assert.That(lane.Restart(out var restartReason), Is.True, restartReason);
-            }
+            AssertCurrentSourceLaneBindings(session.World);
 
             var outside = session.World.Points.Zones.First(z => StationWorld.IsOutdoorZone(z.id));
             var outsidePosition = (outside.min + outside.max) * .5f;

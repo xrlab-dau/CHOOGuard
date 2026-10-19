@@ -38,6 +38,57 @@ namespace ChooGuard.App.Fps.Emergency
             public string Slot;
         }
 
+        public sealed class CurrentBinding
+        {
+            public Point Source { get; internal set; }
+            public Point Runtime { get; internal set; }
+            public string Status { get; internal set; }
+            public string Evidence { get; internal set; }
+            public bool Bound => Runtime!=null;
+        }
+        public IReadOnlyList<CurrentBinding> CurrentBindings {get;private set;} = Array.Empty<CurrentBinding>();
+        public IReadOnlyList<Point> SourceAll {get;private set;}
+        public string SourceSha256 {get;private set;}
+
+        internal StationPoints WithCurrentBindings(IReadOnlyList<CurrentBinding> partition)
+        {
+            if(partition==null||partition.Count!=all.Count)throw new InvalidOperationException("Current point source partition is incomplete");
+            var ids=new HashSet<string>();
+            var view=new StationPoints { Zones=Zones, Escalators=Escalators, Elevators=Elevators,
+                Platforms=Platforms, Train=Train, SourceAll=all.AsReadOnly(), SourceSha256=SourceSha256,
+                CurrentBindings=partition };
+            for(int i=0;i<all.Count;i++)
+            {
+                var row=partition[i];
+                if(row==null||row.Source!=all[i]||!ids.Add(row.Source.Id)||string.IsNullOrWhiteSpace(row.Evidence))
+                    throw new InvalidOperationException("Current point source partition identity/provenance differs");
+                if(row.Bound)
+                {
+                    if(row.Status!="BOUND_MODEL_COMPUTED_WALKABLE"||row.Runtime.Id!=row.Source.Id)
+                        throw new InvalidOperationException("Invalid current point binding");
+                    view.all.Add(row.Runtime);
+                    if(!view.byKind.TryGetValue(row.Runtime.Kind,out var list))view.byKind[row.Runtime.Kind]=list=new List<Point>();
+                    list.Add(row.Runtime);
+                }
+                else if(row.Status!="UNBOUND_PROVEN_NO_CURRENT_FLOOR")
+                    throw new InvalidOperationException("Uncertain physical support cannot be silently discarded: "+row.Source.Id);
+            }
+            if(view.Of(PointKind.Exit).Count!=Of(PointKind.Exit).Count)
+                throw new InvalidOperationException("A source exit is not qualified in the current world");
+            return view;
+        }
+
+        internal StationPoints RoutingView(IReadOnlyList<Escalator> supplied)
+        {
+            var ids=new HashSet<string>(System.Linq.Enumerable.Select(supplied,x=>x.Entry.id));
+            var view=new StationPoints { Zones=Zones, Elevators=Elevators, Platforms=Platforms, Train=Train,
+                Escalators=System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Where(Escalators,e=>ids.Contains(e.id))),
+                SourceAll=SourceAll,SourceSha256=SourceSha256,CurrentBindings=CurrentBindings };
+            view.all.AddRange(all);
+            foreach(var row in byKind)view.byKind.Add(row.Key,new List<Point>(row.Value));
+            return view;
+        }
+
         private readonly List<Point> all = new List<Point>();
         private readonly Dictionary<PointKind, List<Point>> byKind = new Dictionary<PointKind, List<Point>>();
 
@@ -71,6 +122,9 @@ namespace ChooGuard.App.Fps.Emergency
                 list.Add(point);
             }
             if (points.Of(PointKind.Exit).Count == 0) throw new InvalidOperationException("출입 지점이 없습니다.");
+            points.SourceAll=points.all.AsReadOnly();
+            using(var hash=System.Security.Cryptography.SHA256.Create())
+                points.SourceSha256=BitConverter.ToString(hash.ComputeHash(asset.bytes)).Replace("-","").ToLowerInvariant();
             return points;
         }
 

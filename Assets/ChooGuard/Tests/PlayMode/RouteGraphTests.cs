@@ -45,10 +45,27 @@ namespace ChooGuard.Tests.PlayMode
         [UnityTest, Timeout(600000)]
         public IEnumerator BakedGraph_SitsOnTheNavmeshAndJoinsEveryPlaceToAnExitWithoutTheElevator()
         {
+            var historicalRoutes=Resources.Load<TextAsset>(StationWorld.RoutesResource);
+            var historicalRouteBytes=historicalRoutes.bytes;
             EmergencySession shift = null;
             yield return StartShift(s => shift = s);
             var world = shift.World;
             var graph = world.Paths.Graph;
+            Assert.That(world.UsesCurrentSourceNavigation,Is.True);
+            Assert.That(world.SourcePoints.All.Count,Is.EqualTo(1449),"All1445 original non-exit records and4 exits remain source inventory");
+            Assert.That(world.Points.CurrentBindings.Count,Is.EqualTo(world.SourcePoints.All.Count));
+            Assert.That(world.Points.CurrentBindings.Select(r=>r.Source.Id).Distinct().Count(),Is.EqualTo(world.SourcePoints.All.Count));
+            for(int i=0;i<world.SourcePoints.All.Count;i++)
+            {
+                var row=world.Points.CurrentBindings[i];Assert.That(row.Source,Is.SameAs(world.SourcePoints.All[i]));
+                Assert.That(row.Evidence,Is.Not.Null.And.Not.Empty);
+                Assert.That(row.Status,Is.EqualTo(row.Bound?"BOUND_MODEL_COMPUTED_WALKABLE":"UNBOUND_PROVEN_NO_CURRENT_FLOOR"));
+            }
+            Assert.That(world.Points.All,Is.EquivalentTo(world.Points.CurrentBindings.Where(r=>r.Bound).Select(r=>r.Runtime)));
+            Assert.That(world.Points.All.Count+world.Points.CurrentBindings.Count(r=>!r.Bound),Is.EqualTo(1449));
+            Assert.That(world.Points.Of(PointKind.Exit).Count,Is.EqualTo(world.SourcePoints.Of(PointKind.Exit).Count));
+            Assert.That(graph.OriginalSourceJson,Is.EqualTo(historicalRoutes.text));
+            CollectionAssert.AreEqual(historicalRouteBytes,historicalRoutes.bytes,"Runtime graph derivation must preserve the original resource");
             Assert.That(graph.Nodes.Count, Is.GreaterThan(200), "the baked route graph is empty");
 
             var off = graph.Nodes.Where(node => !NavMesh.SamplePosition(node.Position, out _, .6f, NavMesh.AllAreas)).ToList();

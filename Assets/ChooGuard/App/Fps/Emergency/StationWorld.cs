@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -40,21 +41,39 @@ namespace ChooGuard.App.Fps.Emergency
         private NavMeshDataInstance navmesh;
         private readonly NavMeshData navmeshData;
         private BakedFloor baked;
+        private CurrentStationNavigation currentNavigation;
+        public StationPoints SourcePoints {get;}
+        public bool UsesCurrentSourceNavigation=>currentNavigation!=null;
         private readonly GameObject links;
         private readonly HashSet<string> takenSlots = new HashSet<string>();
         private readonly HashSet<StationPoints.Point> takenPlaces = new HashSet<StationPoints.Point>();
         private readonly NavMeshPath scratch = new NavMeshPath();
         private readonly Vector3[] corners = new Vector3[256];
 
-        public StationWorld(EmergencyArt art, int seed, Transform parent = null)
+        /// <summary>Explicit current-scene production entry point; failures never fall back to the cached world.</summary>
+        public static StationWorld FromCurrentScene(EmergencyArt art,int seed,Transform parent)
+        {
+            if(parent==null)throw new ArgumentNullException(nameof(parent));
+            return new StationWorld(art,seed,parent,true);
+        }
+
+        /// <summary>Isolated supplied-data world (for catalog/reservation callers); no current-scene migration is inferred.</summary>
+        public StationWorld(EmergencyArt art,int seed,Transform parent=null):this(art,seed,parent,false) { }
+
+        private StationWorld(EmergencyArt art,int seed,Transform parent,bool useCurrentSource)
         {
             if (art == null || art.WorldNavMesh == null || art.StationData == null) throw new ArgumentException("EmergencyArt 의 navmesh·역 자료가 없습니다.");
             var walkingEntries = StationWalkingRoutes.Load(); // Validate before nav/transport registration.
             Seed = seed;
             Random = new System.Random(seed);
             Points = StationPoints.Load(art.StationData);
-            navmeshData = art.WorldNavMesh;
-            navmesh = NavMesh.AddNavMeshData(navmeshData);
+            SourcePoints=Points;
+            var routes = Resources.Load<TextAsset>(RoutesResource) ?? throw new ArgumentException("경로 그래프(Resources/"+RoutesResource+".json)가 없습니다.");
+            // Validate retained source inventory before any navigation/link registration.
+            RouteGraph.Load(routes,Array.Empty<Escalator>());
+            if(!useCurrentSource) { navmeshData=art.WorldNavMesh;navmesh=NavMesh.AddNavMeshData(navmeshData); }
+            try
+            {
             if (parent != null)
             {
                 links = new GameObject("승강 설비");
@@ -66,11 +85,11 @@ namespace ChooGuard.App.Fps.Emergency
                     var go = new GameObject(entry.label);
                     go.transform.SetParent(links.transform, false);
                     var escalator = go.AddComponent<Escalator>();
-                    escalator.Setup(entry);
+                    escalator.Setup(entry,!useCurrentSource);
                     escalator.AddStopButtons(stops);
                     Escalators.Add(escalator);
                 }
-                foreach (var entry in Points.Elevators)
+                foreach (var entry in useCurrentSource?Array.Empty<StationPoints.ElevatorEntry>():Points.Elevators)
                 {
                     var go = new GameObject(entry.label);
                     go.transform.SetParent(links.transform, false);
@@ -78,7 +97,7 @@ namespace ChooGuard.App.Fps.Emergency
                     elevator.Setup(entry);
                     Elevators.Add(elevator);
                 }
-                foreach (var entry in walkingEntries)
+                foreach (var entry in useCurrentSource?Array.Empty<StationWalkingRouteEntry>():walkingEntries)
                 {
                     var go = new GameObject(entry.label); go.transform.SetParent(links.transform, false);
                     var walking = go.AddComponent<StationWalkingRoute>(); walking.Setup(entry); WalkingRoutes.Add(walking);
@@ -86,10 +105,45 @@ namespace ChooGuard.App.Fps.Emergency
                 foreach (var binding in UnityEngine.Object.FindObjectsByType<ChooGuard.App.Fps.Twin.EscalatorDriveBinding>(FindObjectsInactive.Include, FindObjectsSortMode.None))
                     binding.Bind(Escalators);
             }
-            // 길 안내: navmesh 와 함께 구워 둔 경로 그래프(에디터 ChooGuard/Emergency/Bake route graph)를 읽는다. 에스컬레이터 변은 위에서 만든 에스컬레이터에 묶인다.
-            var routes = Resources.Load<TextAsset>(RoutesResource) ?? throw new ArgumentException("경로 그래프(Resources/" + RoutesResource + ".json)가 없습니다: 에디터 메뉴 ChooGuard/Emergency/Bake route graph 로 만드세요.");
-            Paths = new PathService(this, RouteGraph.Load(routes, Escalators, WalkingRoutes));
+            if(useCurrentSource)
+            {
+                var sourceScene=UnityEngine.SceneManagement.SceneManager.GetSceneByPath(CurrentStationNavigation.StationPath);
+                var bindings=UnityEngine.Object.FindObjectsByType<ChooGuard.App.Fps.Twin.EscalatorDriveBinding>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+                    .Where(binding=>binding.gameObject.scene==sourceScene).ToArray();
+                var suppliedIds=new HashSet<string>(bindings.Where(binding=>binding.Bound).Select(binding=>binding.lane_id),StringComparer.Ordinal);
+                currentNavigation=CurrentStationNavigation.Acquire(SourcePoints,bindings);
+                navmeshData=currentNavigation.Data;
+                foreach(var entry in Points.Elevators)
+                {
+                    foreach(var stop in entry.stops)
+                        if(!NavMesh.SamplePosition(stop.door,out var hit,.6f,NavMesh.AllAreas)||Mathf.Abs(hit.position.y-stop.door.y)>.35f)
+                            throw new InvalidOperationException("Current source elevator landing is not on its own storey: "+entry.id+"/"+stop.floor);
+                    var go=new GameObject(entry.label);go.transform.SetParent(links.transform,false);
+                    var elevator=go.AddComponent<Elevator>();elevator.Setup(entry);Elevators.Add(elevator);
+                }
+                foreach(var escalator in Escalators)escalator.SetNavigationAvailable(suppliedIds.Contains(escalator.Entry.id));
+                foreach(var entry in walkingEntries)
+                {
+                    // Metadata alone is insufficient: every current source-footprint sample
+                    // must still stand on its approved exposed owner before a link is added.
+                    for(int i=1;i<entry.path.Length;i++)
+                    {
+                        int samples=Mathf.Max(1,Mathf.CeilToInt(Vector3.Distance(entry.path[i-1],entry.path[i])/.25f));
+                        for(int j=0;j<=samples;j++)
+                            if(!NativeLandingWalker.Floor(Vector3.Lerp(entry.path[i-1],entry.path[i],j/(float)samples),entry,null,out _))
+                                throw new InvalidOperationException("Current physical walking-route support is absent: "+entry.id);
+                    }
+                    var go=new GameObject(entry.label);go.transform.SetParent(links.transform,false);
+                    var walking=go.AddComponent<StationWalkingRoute>();walking.Setup(entry);WalkingRoutes.Add(walking);
+                }
+                Points=currentNavigation.BindPoints(SourcePoints,art.WorldNavMesh);
+                Paths=new PathService(this,CurrentStationRouteBuilder.Build(Points,
+                    Escalators.Where(e=>e.NavigationAvailable).ToArray(),WalkingRoutes,routes));
+            }
+            else Paths=new PathService(this,RouteGraph.Load(routes,Escalators,WalkingRoutes));
             PersonBody.Paths = Paths;
+            }
+            catch {Dispose();throw;}
         }
 
         public void Dispose()
@@ -98,6 +152,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (links != null) UnityEngine.Object.Destroy(links);
             baked?.Dispose();
             if (navmesh.valid) navmesh.Remove();
+            currentNavigation?.Release();currentNavigation=null;
         }
 
         public float Range(float min, float max) => min + (float)Random.NextDouble() * (max - min);
@@ -297,7 +352,7 @@ namespace ChooGuard.App.Fps.Emergency
             var trainPlatform = Points.Train?.platform;
             foreach (var escalator in Escalators)
             {
-                if (escalator.Closed || !escalator.Entry.id.StartsWith("esc-well", StringComparison.Ordinal)) continue;
+                if (!escalator.NavigationAvailable || escalator.Closed || !escalator.Entry.id.StartsWith("esc-well", StringComparison.Ordinal)) continue;
                 var bottom = escalator.Entry.up ? escalator.Start : escalator.End;
                 if (Points.PlatformAt(bottom, 1.5f)?.id != trainPlatform) continue;
                 // 맞이방에서 닿는 우물만(남측 게이트 쪽은 트윈에서 끊겨 있다): 윗 계단참이 맞이방과 이어진 곳.
@@ -487,7 +542,7 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var escalator in Escalators)
             {
                 var entry = escalator.Entry;
-                if (!entry.stairs) continue;
+                if (!escalator.NavigationAvailable || !entry.stairs) continue;
                 var along = entry.stairsBottom - entry.stairsTop;
                 float t = Mathf.Clamp01(Vector3.Dot(position - entry.stairsTop, along) / Mathf.Max(along.sqrMagnitude, 1e-4f));
                 float d = Vector3.Distance(position, entry.stairsTop + along * t);

@@ -67,9 +67,10 @@ namespace ChooGuard.App.Fps.Emergency
         private float[] distance;
         private float length;
 
-        public void Setup(StationPoints.EscalatorEntry entry)
+        public void Setup(StationPoints.EscalatorEntry entry, bool sourceNavigationAvailable = true)
         {
             Entry = entry;
+            NavigationAvailable = sourceNavigationAvailable;
             distance = new float[entry.path.Length];
             for (int i = 1; i < entry.path.Length; i++) distance[i] = distance[i - 1] + Vector3.Distance(entry.path[i - 1], entry.path[i]);
             length = distance[distance.Length - 1];
@@ -93,8 +94,19 @@ namespace ChooGuard.App.Fps.Emergency
             TravelDistance += BeltSpeed * (double)deltaSeconds;
         }
 
+        /// <summary>Logical controls remain available; only supplied physical machinery grants a path link.</summary>
+        public bool NavigationAvailable { get; private set; } = true;
+        public bool HasNavigationLink => NavMesh.IsLinkValid(link);
+        public void SetNavigationAvailable(bool available)
+        {
+            NavigationAvailable=available;
+            if(!available) { if(NavMesh.IsLinkValid(link))NavMesh.RemoveLink(link); }
+            else if(!Closed&&!EntryBarred&&!NavMesh.IsLinkValid(link))AddLink();
+        }
+
         private void AddLink()
         {
+            if(!NavigationAvailable||Closed||EntryBarred||NavMesh.IsLinkValid(link))return;
             link = NavMesh.AddLink(new NavMeshLinkData { startPosition = Start, endPosition = End, width = 0, bidirectional = false, area = 3, costModifier = -1 });
             if (NavMesh.IsLinkValid(link)) NavMesh.SetLinkOwner(link, this);
         }

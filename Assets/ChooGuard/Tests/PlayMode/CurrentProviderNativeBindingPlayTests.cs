@@ -173,8 +173,11 @@ namespace ChooGuard.Tests.PlayMode
             var zeroSurface=(JArray)navigation["zero_surface_source_meshes"];
             Assert.That(zeroSurface,Is.Not.Null);
             var expectedZeroSurface=identities.Where(identity=>(bool)hierarchyField.GetValue(identity))
-                .Where(identity=>identity.GetComponent<MeshFilter>()?.sharedMesh!=null&&identity.GetComponent<MeshRenderer>()?.enabled==true)
-                .Where(identity=>{var mesh=identity.GetComponent<MeshFilter>().sharedMesh;return Enumerable.Range(0,mesh.subMeshCount).All(sub=>mesh.GetIndexCount(sub)==0);}).ToArray();
+                .Where(identity=>{
+                    if(!identity.TryGetComponent<MeshFilter>(out var filter)||!identity.TryGetComponent<MeshRenderer>(out var renderer))return false;
+                    var mesh=filter.sharedMesh;
+                    return mesh!=null&&renderer.enabled&&Enumerable.Range(0,mesh.subMeshCount).All(sub=>mesh.GetIndexCount(sub)==0);
+                }).ToArray();
             CollectionAssert.AreEquivalent(expectedZeroSurface.Select(identity=>(string)idField.GetValue(identity)).ToArray(),zeroSurface.Values<JObject>().Select(row=>(string)row["object_id"]).ToArray());
             var supportParents=new HashSet<GameObject>(((IEnumerable)Field(adapter,"supports")).Cast<GameObject>().Select(support=>support.transform.parent.gameObject));
             foreach(var identity in expectedZeroSurface)

@@ -173,7 +173,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (Art == null) { Debug.LogError("[EmergencySession] EmergencyArt 가 연결되지 않았습니다. ChooGuard/Emergency/Build session scene and title 을 실행하세요.", this); return; }
             int seed = NextSeed != 0 ? NextSeed : Seed != 0 ? Seed : Environment.TickCount & 0x7fffffff;
             NextSeed = 0;
-            World = new StationWorld(Art, seed, transform);
+            World = StationWorld.FromCurrentScene(Art, seed, transform);
             Map.SetLandmarks(World.Points);
             GameSettings.RouteChanged += OnSettingsChanged;
             Facilities.StationSignals.FireAlarm = false;
