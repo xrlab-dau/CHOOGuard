@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ChooGuard.App.Fps.Shell;
+using ChooGuard.Circulation;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using UnityEngine;
@@ -54,12 +55,62 @@ namespace ChooGuard.Tests.PlayMode
             Assert.Throws<ArgumentNullException>(()=>IndexedSurface(0,null));
         }
 
+        static HashSet<GameObject> OwnedRuntimeBoundaries(GameObject[] anchors,Dictionary<GameObject,(bool self,bool hierarchy)> captured)
+        {
+            var derived=new HashSet<GameObject>();
+            var runs=anchors.SelectMany(root=>root.GetComponentsInChildren<PlatformEscalatorRun>(true)).ToArray();
+            foreach(var run in runs)
+            {
+                Assert.That(captured.ContainsKey(run.gameObject),Is.True);
+                var boundary=Field(run,"boundary");
+                if(!run.SourceAvailable)
+                {
+                    Assert.That(run.IsBound,Is.False);Assert.That(boundary,Is.Null);
+                    Assert.That(run.AnimatedOriginalPartCount,Is.Zero);
+                    continue;
+                }
+                Assert.That(run.IsBound,Is.True);Assert.That(boundary,Is.Not.Null);
+                Assert.That(run.CurrentPhase,Is.Zero,"Capture occurs before any bound drive advances source treads");
+                var parts=((Array)Field(run,"parts")).Cast<object>().ToArray();
+                Assert.That(parts.Length,Is.EqualTo(run.Treads.Length));Assert.That(parts.Length,Is.GreaterThanOrEqualTo(2));
+                CollectionAssert.AreEqual(run.Treads,parts.Select(part=>(Transform)Field(part,"Transform")).ToArray());
+                var sourcePart=parts[run.Up?parts.Length-1:0];
+                var sourceTransform=(Transform)Field(sourcePart,"Transform");
+                var sourceFilter=(MeshFilter)Field(sourcePart,"Filter");var sourceRenderer=(Renderer)Field(sourcePart,"Renderer");
+                var original=(Mesh)Field(sourcePart,"Original");
+                Assert.That(captured.ContainsKey(sourceTransform.gameObject),Is.True);
+                Assert.That(original,Is.Not.Null);Assert.That(original.isReadable,Is.True);
+                Assert.That(sourceFilter.sharedMesh,Is.SameAs(original));
+                var transform=(Transform)Field(boundary,"Transform");var go=transform.gameObject;
+                Assert.That(captured.ContainsKey(go),Is.True);Assert.That(transform.parent,Is.SameAs(run.transform));
+                Assert.That(run.Treads.Contains(transform),Is.False);Assert.That(transform.childCount,Is.Zero);
+                Assert.That(go.GetComponents<Collider>(),Is.Empty);
+                CollectionAssert.AreEquivalent(new[]{typeof(Transform),typeof(MeshFilter),typeof(MeshRenderer)},go.GetComponents<Component>().Select(component=>component.GetType()).ToArray());
+                Assert.That(go.activeSelf,Is.False);Assert.That(go.activeInHierarchy,Is.False);
+                Assert.That(captured[go].self,Is.False);Assert.That(captured[go].hierarchy,Is.False);
+                Assert.That(transform.localPosition,Is.EqualTo(Vector3.zero));
+                Assert.That(transform.localRotation,Is.EqualTo(sourceTransform.localRotation));
+                Assert.That(transform.localScale,Is.EqualTo(sourceTransform.localScale));
+                var filter=go.GetComponent<MeshFilter>();var renderer=go.GetComponent<MeshRenderer>();
+                Assert.That(Field(boundary,"Filter"),Is.SameAs(filter));Assert.That(Field(boundary,"Renderer"),Is.SameAs(renderer));
+                Assert.That(Field(boundary,"Original"),Is.SameAs(original));Assert.That(filter.sharedMesh,Is.SameAs(original));
+                CollectionAssert.AreEqual(sourceRenderer.sharedMaterials,renderer.sharedMaterials);
+                Assert.That(renderer.shadowCastingMode,Is.EqualTo(sourceRenderer.shadowCastingMode));
+                Assert.That(renderer.receiveShadows,Is.EqualTo(sourceRenderer.receiveShadows));
+                Assert.That(renderer.renderingLayerMask,Is.EqualTo(sourceRenderer.renderingLayerMask));
+                Assert.That(derived.Add(go),Is.True,"Each derived boundary belongs to exactly one actual controller");
+            }
+            Assert.That(derived.Count,Is.EqualTo(runs.Count(run=>run.SourceAvailable)));
+            return derived;
+        }
+
         [UnityTest,Timeout(600000)]
         public IEnumerator ActualCurrentProvider_PreparesEveryNativeObjectIncludingInactivePrefabAndAlternativeLod()
         {
             var providerType=Type.GetType(RetainedEmergencySessionFixture.ProviderTypeName,true);
             Component provider=null;object adapter=null;Scene scene=default;
             GameObject[] anchors=null;string[] anchorIds=null;
+            var captured=new Dictionary<GameObject,(bool self,bool hierarchy)>();
             var native=new Dictionary<GameObject,(bool self,bool hierarchy)>();
             using(deferral=new ProviderAwakeDeferral(providerType))
             {
@@ -81,10 +132,18 @@ namespace ChooGuard.Tests.PlayMode
                 {
                     Assert.That(anchor.scene,Is.EqualTo(scene));Assert.That(anchor.transform.parent,Is.Null);
                     foreach(var transform in anchor.GetComponentsInChildren<Transform>(true))
-                        native.Add(transform.gameObject,(transform.gameObject.activeSelf,transform.gameObject.activeInHierarchy));
+                        captured.Add(transform.gameObject,(transform.gameObject.activeSelf,transform.gameObject.activeInHierarchy));
                 }
             }
             deferral=null;
+            // Awake-derived leaves are independently accounted for by actual owner references.
+            // Every other captured object remains subject to the exact saved-native bijection.
+            var derived=OwnedRuntimeBoundaries(anchors,captured);
+            foreach(var entry in captured)if(!derived.Contains(entry.Key))native.Add(entry.Key,entry.Value);
+            Assert.That(native.Keys.Intersect(derived),Is.Empty);
+            Assert.That(captured.Count,Is.EqualTo(native.Count+derived.Count));
+            Assert.That(new HashSet<GameObject>(native.Keys.Concat(derived)).SetEquals(captured.Keys),Is.True);
+            TestContext.WriteLine("Captured source objects="+native.Count+"; independently owned runtime boundaries="+derived.Count+"; total="+captured.Count);
             Assert.That(native.Count,Is.GreaterThan(0));Assert.That(native.Values.Any(flags=>!flags.hierarchy),Is.True,"Inactive native objects must remain in the source census.");
             var seed=providerType.GetField("InitialSeed",Members);
             if(string.IsNullOrEmpty((string)seed.GetValue(provider)))seed.SetValue(provider,"20261020");

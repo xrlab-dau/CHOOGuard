@@ -24,8 +24,10 @@ namespace ChooGuard.Tests.PlayMode
         bool subscribed;
         readonly List<GameObject> ownedPlayers=new List<GameObject>();
 
-        [SetUp]
-        public void SelectRetainedEmergencySession()
+        // Unity's outer enumerable setup runs before regular NUnit setup. Install
+        // this hook in the inherited enumerable stage, before derived scene loads.
+        [UnitySetUp]
+        public IEnumerator SelectRetainedEmergencySession()
         {
             try
             {
@@ -34,6 +36,7 @@ namespace ChooGuard.Tests.PlayMode
                 SceneManager.sceneLoaded+=SelectRetainedSessionAfterStationLoad;subscribed=true;
             }
             catch{ReleaseRetainedEmergencySession();throw;}
+            yield break;
         }
 
         void SelectRetainedSessionAfterStationLoad(Scene scene,LoadSceneMode mode)
@@ -72,7 +75,7 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(responder.PlayerCamera,Is.SameAs(camera));
         }
 
-        [TearDown]
+        // Called only on setup failure or after the final inherited Unity cleanup.
         public void ReleaseRetainedEmergencySession()
         {
             try{if(subscribed)SceneManager.sceneLoaded-=SelectRetainedSessionAfterStationLoad;}
@@ -82,17 +85,21 @@ namespace ChooGuard.Tests.PlayMode
         [UnityTearDown]
         public IEnumerator ReleaseOwnedRetainedResponder()
         {
-            // Derived UnityTearDown runs first. Suites with only NUnit cleanup can
-            // still have a live shift: unload it before destroying its owned player.
-            var emergency=SceneManager.GetSceneByName(SceneFlow.EmergencyScene);
-            if(ownedPlayers.Any(player=>player!=null)&&emergency.isLoaded)
+            try
             {
-                var station=SceneManager.GetSceneByName(SceneFlow.StationScene);
-                SceneManager.SetActiveScene(station.isLoaded?station:SceneManager.CreateScene("RetainedSessionSupportScratch"));
-                yield return SceneManager.UnloadSceneAsync(emergency);
+                // Derived UnityTearDown runs first. Keep the selector installed through
+                // it and this owned cleanup; regular NUnit teardown runs too early.
+                var emergency=SceneManager.GetSceneByName(SceneFlow.EmergencyScene);
+                if(ownedPlayers.Any(player=>player!=null)&&emergency.isLoaded)
+                {
+                    var station=SceneManager.GetSceneByName(SceneFlow.StationScene);
+                    SceneManager.SetActiveScene(station.isLoaded?station:SceneManager.CreateScene("RetainedSessionSupportScratch"));
+                    yield return SceneManager.UnloadSceneAsync(emergency);
+                }
+                foreach(var player in ownedPlayers)if(player!=null)UnityEngine.Object.Destroy(player);
+                ownedPlayers.Clear();yield return null;
             }
-            foreach(var player in ownedPlayers)if(player!=null)UnityEngine.Object.Destroy(player);
-            ownedPlayers.Clear();yield return null;
+            finally{ReleaseRetainedEmergencySession();}
         }
     }
 
