@@ -1,4 +1,6 @@
 """Unity test verdicts: the results XML and the editor exit code must agree."""
+import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -82,6 +84,22 @@ class VerdictTests(unittest.TestCase):
                          ("EditMode", r"D:\a\_temp/unity/EditMode-results.xml", "0"))
         self.assertEqual(unity_results.parse_spec("PlayMode:/tmp/unity/PlayMode-results.xml:"),
                          ("PlayMode", "/tmp/unity/PlayMode-results.xml", ""))
+
+    def test_cli_reports_korean_failure_under_a_windows_legacy_output_encoding(self):
+        xml = self.xml(FAILING.replace("Closes", "출입문닫기").replace("Expected: True", "예상: 참"))
+        summary = Path(self.dir.name) / "summary.md"
+        env = {**os.environ, "PYTHONIOENCODING": "cp1252", "GITHUB_STEP_SUMMARY": str(summary)}
+        result = subprocess.run(
+            [sys.executable, str(Path(unity_results.__file__)), f"PlayMode:{xml}:2"],
+            env=env, capture_output=True, check=False,
+        )
+        self.assertEqual(result.returncode, 1)
+        output = result.stdout.decode("utf-8")
+        self.assertIn("ChooGuard.Doors.출입문닫기", output)
+        self.assertIn("예상: 참", output)
+        self.assertIn("1 test(s) failed", output)
+        self.assertNotIn(b"UnicodeEncodeError", result.stderr)
+        self.assertIn("출입문닫기", summary.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

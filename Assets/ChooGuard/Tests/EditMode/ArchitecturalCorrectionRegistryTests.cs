@@ -27,14 +27,14 @@ namespace ChooGuard.Tests.EditMode
         [TestCase("Kit_Frame_Canopy_Dark")]
         [TestCase("Kit_Clad_wall_painted_gypsum_fine")]
         [TestCase("Kit_Fascia_Kit_Paint_1E2226")]
-        public void IdenticalSourceReturnsTheSavedCorrectionWithoutChangingItsNativeMesh(string leaf)
+        public void IdenticalStructuralStageReturnsSavedCorrectionWithoutChangingSourceMesh(string leaf)
         {
             var entry = Entry(leaf); string path = entry.source_asset;
             var original = AssetDatabase.LoadAssetAtPath<Mesh>(path);
             var generated = UnityEngine.Object.Instantiate(original); string originalDigest = ArchitecturalCorrectionRegistry.ChannelDigest(original);
             try
             {
-                var actual = ArchitecturalCorrectionRegistry.ResolveForRebuild(generated, path, entry.owner, Frame(entry));
+                var actual = ArchitecturalCorrectionRegistry.ResolveStructuralStageForRebuild(generated, path, entry.owner, Frame(entry));
                 Assert.That(actual, Is.SameAs(AssetDatabase.LoadAssetAtPath<Mesh>(entry.replacement_asset)));
                 Assert.That(ArchitecturalCorrectionRegistry.ChannelDigest(original), Is.EqualTo(originalDigest));
                 Assert.That(actual.triangles, Is.Not.EqualTo(original.triangles));
@@ -48,7 +48,7 @@ namespace ChooGuard.Tests.EditMode
             try
             {
                 var uv = mesh.uv; uv[0] += Vector2.one * .01f; mesh.uv = uv;
-                Assert.Throws<InvalidDataException>(() => ArchitecturalCorrectionRegistry.ResolveForRebuild(mesh,
+                Assert.Throws<InvalidDataException>(() => ArchitecturalCorrectionRegistry.ResolveStructuralStageForRebuild(mesh,
                     entry.source_asset, entry.owner, Frame(entry)));
             }
             finally { UnityEngine.Object.DestroyImmediate(mesh); }
@@ -58,7 +58,7 @@ namespace ChooGuard.Tests.EditMode
         {
             var entry = Entry("Kit_Frame_Canopy_Dark"); var frame = Frame(entry); frame[0,3] += .01f;
             var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(entry.source_asset);
-            Assert.Throws<InvalidDataException>(() => ArchitecturalCorrectionRegistry.ResolveForRebuild(mesh,
+            Assert.Throws<InvalidDataException>(() => ArchitecturalCorrectionRegistry.ResolveStructuralStageForRebuild(mesh,
                 entry.source_asset, entry.owner, frame));
         }
     }

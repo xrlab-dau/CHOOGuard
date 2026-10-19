@@ -221,9 +221,18 @@ jobs:
           UNITY_PROJECT: ${{ github.workspace }}/${{ env.PROJECT }}
         run: .github/scripts/unity_ci.sh test EditMode
 
+      - id: editverdict
+        name: EditMode verdict
+        if: always() && steps.activate.outcome == 'success'
+        env:
+          EDIT_EXIT: ${{ steps.editmode.outputs.exit_code }}
+        run: |
+          py=$(command -v python3 || command -v python)
+          "$py" .github/scripts/unity_results.py "EditMode:$RUNNER_TEMP/unity/EditMode-results.xml:$EDIT_EXIT"
+
       - id: playmode
         name: PlayMode tests
-        if: always() && steps.activate.outcome == 'success'
+        if: always() && steps.activate.outcome == 'success' && steps.editverdict.outcome == 'success'
         timeout-minutes: 60
         env:
           UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
@@ -233,7 +242,7 @@ jobs:
       # CS-BOOT.01.01's real build (BuildBaseline: validator, Development player of the Bootstrap scene, receipt with
       # output hashes) inside the same activation. BuildBaseline builds macOS and Windows targets, each on its own host.
       - name: Bootstrap build (BuildBaseline)
-        if: steps.activate.outcome == 'success' && matrix.os != 'linux' && (github.event_name == 'schedule' || inputs.bootstrap)
+        if: steps.activate.outcome == 'success' && steps.editverdict.outcome == 'success' && matrix.os != 'linux' && (github.event_name == 'schedule' || inputs.bootstrap)
         timeout-minutes: 60
         env:
           UNITY_EDITOR: ${{ steps.unity.outputs.editor }}

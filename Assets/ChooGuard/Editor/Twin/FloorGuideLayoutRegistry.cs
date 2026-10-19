@@ -93,8 +93,12 @@ namespace ChooGuard.Editor.Twin
                 (string)policy["baseline_asset"]!=FixtureShopCollider || (string)row["source_digest"]!=(string)policy["baseline_complete_digest"])
                 throw new InvalidDataException("Unreviewed guide source preprocessing");
             string ordinalFile=(string)policy["ordinal_source"];
-            if(ordinalFile!=".planning/2026-10-08-interior-runtime-completion/architecture-kitshop-overlap.json" ||
-                !File.Exists(ordinalFile) || FileDigest(ordinalFile)!=(string)policy["ordinal_source_sha256"] ||
+            if(ordinalFile!=".planning/2026-10-08-interior-runtime-completion/architecture-kitshop-overlap.json")
+                throw new InvalidDataException("Pinned historical partition identity changed");
+            bool maintained=!File.Exists(ordinalFile);
+            if(maintained)ordinalFile="content/fixtures/architecture/retained-shop-collision-partition.json";
+            string ordinalHash=maintained?"ef291fe2df2524bb7539297d492332ed4e9bf1e044a1e697f5266f4d6c0b5f42":(string)policy["ordinal_source_sha256"];
+            if(!File.Exists(ordinalFile) || FileDigest(ordinalFile)!=ordinalHash ||
                 !File.Exists(RawShopCollider) || FileDigest(RawShopCollider)!=(string)policy["raw_source_file_sha256"] ||
                 !File.Exists(FixtureShopCollider) || FileDigest(FixtureShopCollider)!=(string)policy["baseline_file_sha256"])
                 throw new InvalidDataException("Pinned shop partition authority changed");
@@ -109,6 +113,10 @@ namespace ChooGuard.Editor.Twin
                 ArchitecturalCorrectionRegistry.CompleteChannelDigest(baseline)!=(string)policy["baseline_complete_digest"])
                 throw new InvalidDataException("Pinned raw or baseline shop collision changed");
             var ordinals=JObject.Parse(File.ReadAllText(ordinalFile));
+            if(maintained&&((string)ordinals["schema"]!="chooguard.maintained-retained-shop-collision-partition.v1"||
+                (string)ordinals["kit_mesh"]["complete_channels_sha256"]!=(string)policy["raw_source_complete_digest"]||
+                (string)ordinals["baseline_mesh"]["complete_channels_sha256"]!=(string)policy["baseline_complete_digest"]))
+                throw new InvalidDataException("Maintained partition fixture identity changed");
             if((string)ordinals["kit_owner"]!=(string)policy["owner"] || (string)ordinals["kit_mesh"]["asset"]!=RawShopCollider)
                 throw new InvalidDataException("Shop collision ordinal owner changed");
             var removed=ordinals["duplicate_kit_triangle_ordinals"].ToObject<int[]>();
@@ -211,10 +219,17 @@ namespace ChooGuard.Editor.Twin
             Mesh installedComposite;
             if (NamcheonSourceFrontRegistry.TryResolveInstalled(generated, sourceAsset, out installedComposite)) return installedComposite;
             if (LockerPlacementWithholdingRegistry.TryResolveInstalled(generated, sourceAsset, out installedComposite)) return installedComposite;
-            if (!File.Exists(Registry)) return LockerPlacementWithholdingRegistry.VerifyCompositeBaseline(NamcheonSourceFrontRegistry.VerifyCompositeBaseline(generated, sourceAsset), sourceAsset);
+            return LockerPlacementWithholdingRegistry.VerifyCompositeBaseline(
+                NamcheonSourceFrontRegistry.VerifyCompositeBaseline(ResolveGuideStageForRebuild(generated, sourceAsset), sourceAsset), sourceAsset);
+        }
+        // Deterministic guide stage, independent of retired downstream construction packets.
+        // The normal builder entry points retain their installed-composite validation chain.
+        public static Mesh ResolveGuideStageForRebuild(Mesh generated, string sourceAsset)
+        {
+            if (!File.Exists(Registry)) return generated;
             var rows = ((JArray)JObject.Parse(File.ReadAllText(Registry))["meshes"])
                 .Where(r => (string)r["source_asset"] == sourceAsset).ToArray();
-            if (rows.Length == 0) return LockerPlacementWithholdingRegistry.VerifyCompositeBaseline(NamcheonSourceFrontRegistry.VerifyCompositeBaseline(generated, sourceAsset), sourceAsset);
+            if (rows.Length == 0) return generated;
             if (rows.Length != 1) throw new InvalidDataException("Ambiguous guide layout source");
             var row = rows[0];
             generated = PreprocessForRebuild(generated, row, sourceAsset);
@@ -222,14 +237,14 @@ namespace ChooGuard.Editor.Twin
             if (replacement == null || ArchitecturalCorrectionRegistry.CompleteChannelDigest(replacement) != (string)row["replacement_digest"])
                 throw new InvalidDataException("Saved floor guide layout changed or missing");
             if (ArchitecturalCorrectionRegistry.CompleteChannelDigest(generated) == (string)row["replacement_digest"])
-                return LockerPlacementWithholdingRegistry.VerifyCompositeBaseline(NamcheonSourceFrontRegistry.VerifyCompositeBaseline(replacement, sourceAsset), sourceAsset);
+                return replacement;
             // A source plan can be replayed at its old coordinates or the reviewed new coordinates.
             // Vertex attributes and topology must still identify the same original authored batch.
             var original = AssetDatabase.LoadAssetAtPath<Mesh>((string)row["baseline_asset"] ?? sourceAsset);
             if (original == null || ArchitecturalCorrectionRegistry.CompleteChannelDigest(original) != (string)row["source_digest"])
                 throw new InvalidDataException("Original floor guide layout source changed");
             if(ProvenTriangleReorder(row,original,generated,ArchitecturalCorrectionRegistry.CompleteChannelDigest(generated)))
-                return LockerPlacementWithholdingRegistry.VerifyCompositeBaseline(NamcheonSourceFrontRegistry.VerifyCompositeBaseline(replacement, sourceAsset), sourceAsset);
+                return replacement;
             var oldVertices = original.vertices; var newVertices = replacement.vertices; var actual = generated.vertices;
             if (actual.Length != oldVertices.Length || generated.subMeshCount != original.subMeshCount)
                 throw new InvalidDataException("Guide layout source topology changed");
@@ -251,7 +266,7 @@ namespace ChooGuard.Editor.Twin
                     throw new InvalidDataException("Guide layout source vertex attributes changed");
             }
             finally { UnityEngine.Object.DestroyImmediate(attributeCheck); }
-            return LockerPlacementWithholdingRegistry.VerifyCompositeBaseline(NamcheonSourceFrontRegistry.VerifyCompositeBaseline(replacement, sourceAsset), sourceAsset);
+            return replacement;
         }
         public static void WithholdDuplicateDoor(ChooGuard.App.Fps.Facilities.StationDoor door)
         {

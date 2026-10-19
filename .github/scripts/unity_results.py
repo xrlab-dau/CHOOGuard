@@ -124,4 +124,8 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
+    # Actions consumes UTF-8, while Windows may default redirected Python output
+    # to cp1252. Keep non-ASCII test names/messages readable in failed verdicts.
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     sys.exit(main(sys.argv[1:]))

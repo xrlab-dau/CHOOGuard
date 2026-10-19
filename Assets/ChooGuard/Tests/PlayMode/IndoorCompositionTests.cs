@@ -14,7 +14,7 @@ using UnityEngine.TestTools;
 
 namespace ChooGuard.Tests.PlayMode
 {
-    public sealed class IndoorCompositionTests
+    public sealed class IndoorCompositionTests : RetainedEmergencySessionFixture
     {
         private const BindingFlags Members = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
         private string savedKey;

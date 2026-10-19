@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using ChooGuard.App.Fps;
 using ChooGuard.App.Fps.Equipment;
+using ChooGuard.App.Fps.Twin;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.AI;
@@ -309,14 +310,23 @@ namespace ChooGuard.Tests.PlayMode
             made.Add(catalog);
             catalog.Prefabs = new[] { prefab };
             catalog.Placements = new[] { new TextAsset("{\"group\":\"test\",\"items\":[{\"id\":\"sh-test\",\"kind\":\"sprinkler_head\",\"label\":\"헤드\",\"zone\":\"hall2f\",\"prefab\":\"SprinklerHead\",\"placementEvidence\":\"test fixture only: head at (0,5,0)\",\"position\":{\"x\":0,\"y\":5,\"z\":0},\"rotation\":{\"x\":0,\"y\":0,\"z\":0},\"data\":\"valve=v1;floor=2\"}]}") };
+            // Synthetic numeric proof belongs only to this test fixture; no field claim is made.
+            var placements = JsonUtility.FromJson<EquipmentPlacementFile>(catalog.Placements[0].text);
+            placements.items[0].verification = SyntheticSprinklerProof(placements.items[0]);
+            catalog.Placements = new[] { new TextAsset(JsonUtility.ToJson(placements)) };
             var cameraObject = new GameObject("시험 카메라", typeof(Camera));
             made.Add(cameraObject);
             cameraObject.tag = "MainCamera";
             cameraObject.transform.position = new Vector3(0, 2, 3);
             var parent = new GameObject("설비 시험");
             made.Add(parent);
-            EquipmentSpawner.Spawn(catalog, parent.transform);
-            var head = EquipmentRegistry.Find("sh-test").GetComponent<SprinklerHeadPoint>();
+            var report = EquipmentSpawner.Spawn(catalog, parent.transform);
+            Assert.That(report.Placed, Is.EqualTo(1), "The culling fixture must pass the same structured placement gate as production.");
+            Assert.That(report.Unverified, Is.Zero);
+            Assert.That(report.Skipped, Is.Zero);
+            var placed = EquipmentRegistry.Find("sh-test");
+            Assert.That(placed, Is.Not.Null);
+            var head = placed.GetComponent<SprinklerHeadPoint>();
             head.Bind();
             var intact = head.transform.Find("Body").GetComponent<Renderer>();
             var frame = head.transform.Find(EquipmentSpawner.LiveChild + "/Burst").GetComponent<Renderer>();
@@ -333,6 +343,28 @@ namespace ChooGuard.Tests.PlayMode
 
             head.Replace();
             Assert.That(intact.enabled, Is.True, "헤드를 갈면 다시 온전하다");
+        }
+
+        // Matches the actual .03m synthetic sphere/cube, including the inactive Live child.
+        // Production placement imports still require retained independent physical evidence.
+        private static PlacementVerification SyntheticSprinklerProof(EquipmentPlacement item)
+        {
+            var proof = new PlacementVerification
+            {
+                object_id = item.id, status = "validated", validation_id = "synthetic-sprinkler-runtime-fixture", capture_epoch = "test-only",
+                coordinate_frame_id = "test-unity", handedness = "unity_left_handed_y_up", measurement_basis = "independent_field_survey",
+                manifest_sha256 = new string('a', 64), target_max_error_m = .02f, validated_rotation = item.rotation,
+                fit_control_ids = new[] { "fit-a", "fit-b", "fit-c" },
+                sources = new[] {
+                    new PlacementVerification.EvidenceSource { id = "survey", role = "field_survey", path = "synthetic-survey", sha256 = new string('a', 64), captured_at = "2026-10-08T00:00:00Z", capture_epoch = "test-only" },
+                    new PlacementVerification.EvidenceSource { id = "capture", role = "field_capture", path = "synthetic-photo", sha256 = new string('a', 64), captured_at = "2026-10-08T00:00:00Z", capture_epoch = "test-only" }
+                },
+                checks = new[] { new PlacementVerification.PositionCheck { id = "holdout", object_id = item.id, role = "holdout", predicted_position = item.position, measured_position = item.position, uncertainty_m = .002f, evidence_source_ids = new[] { "survey" } } },
+                dimension_checks = new PlacementVerification.DimensionCheck[3]
+            };
+            for (int i = 0; i < 3; i++)
+                proof.dimension_checks[i] = new PlacementVerification.DimensionCheck { id = "size-" + i, object_id = item.id, axis = new[] { "x", "y", "z" }[i], predicted_length_m = .03f, measured_length_m = .03f, uncertainty_m = .002f, evidence_source_ids = new[] { "survey" } };
+            return proof;
         }
 
         // ── 노출 배관 ──

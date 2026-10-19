@@ -16,7 +16,7 @@ namespace ChooGuard.Tests.PlayMode
     // 길 안내(PathService)는 요청을 처리하는 순간 몸이 걷지 못하면(에스컬레이터를 타는 중, 앉는 중, 발밑 길이 잠깐 사라짐) 그 요청을
     // 버린다. 새 길을 기다리는 몸을 아무도 다시 묻지 않으면 그 자리에 서 버린다(CI macOS 2026-09-30: 대피하던 승객이 20 s 동안
     // planning=True 로 서 있었다). 걸을 수 있게 되면 요청이 다시 줄을 서야 한다.
-    public sealed class PathRequestTests
+    public sealed class PathRequestTests : RetainedEmergencySessionFixture
     {
         private string savedKey;
 

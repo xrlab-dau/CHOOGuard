@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -61,7 +63,9 @@ namespace ChooGuard.Seeded
         readonly JObject data;
         public string FileId {get;private set;} public int ClassId {get;private set;} public string Type {get;private set;} public bool? Enabled {get;private set;}
         public JObject Data => (JObject)data.DeepClone();
-        internal WorldObjectComponent(JObject row){data=(JObject)row.DeepClone();FileId=(string)row["fileId"];ClassId=(int)row["classId"];Type=(string)row["type"];Enabled=(bool?)row["enabled"];}
+        // Parse owns this tree; public Data remains a defensive snapshot.
+        internal JObject OwnedData=>data;
+        internal WorldObjectComponent(JObject row){data=row;FileId=(string)row["fileId"];ClassId=(int)row["classId"];Type=(string)row["type"];Enabled=(bool?)row["enabled"];}
     }
     public sealed class WorldObjectRecord
     {
@@ -75,6 +79,8 @@ namespace ChooGuard.Seeded
         public IReadOnlyList<WorldObjectComponent> Components {get;private set;}
         public IReadOnlyList<WorldObjectBinding> SourceBindings {get;internal set;}
         public JObject GeometryProvenance=>(JObject)data["geometryProvenance"].DeepClone();
+        public JObject LiveBinding=>data["liveBinding"] is JObject binding?(JObject)binding.DeepClone():null;
+        public string NativeGlobalObjectId=>(string)data["globalObjectId"];
         public JObject Data=>(JObject)data.DeepClone();
         public ObjectBounds WorldBounds {get;internal set;}
         public bool BoundsSupported => WorldBounds!=null;
@@ -82,16 +88,18 @@ namespace ChooGuard.Seeded
         public bool MaterialCapabilitiesSupported => false;
         internal WorldObjectRecord(JObject row)
         {
-            data=(JObject)row.DeepClone();Id=(string)row["id"];SceneFileId=(string)row["sceneFileId"];ParentId=(string)row["parentId"];
+            // This row belongs exclusively to Parse; components reference its same owned tree.
+            data=row;Id=(string)row["id"];SceneFileId=(string)row["sceneFileId"];ParentId=(string)row["parentId"];
             Name=(string)row["name"];Path=(string)row["path"];Layer=(int)row["layer"];Tag=(string)row["tag"];
             ActiveSelf=(bool)row["activeSelf"];ActiveInHierarchy=(bool)row["activeInHierarchy"];PhysicalEligible=(bool)row["physicalEligible"];
             lp=Values(row["localTransform"]["position"]);lr=Values(row["localTransform"]["rotation"]);ls=Values(row["localTransform"]["scale"]);
             wp=Values(row["worldTransform"]["position"]);wr=Values(row["worldTransform"]["rotation"]);ws=Values(row["worldTransform"]["lossyScale"]);wm=Values(row["worldTransform"]["localToWorldMatrix4x4"]);
-            Components=Array.AsReadOnly(((JArray)row["components"]).Cast<JObject>().OrderBy(c=>(string)c["fileId"],StringComparer.Ordinal).Select(c=>new WorldObjectComponent(c)).ToArray());
+            Components=Array.AsReadOnly(((JArray)row["components"]).Cast<JObject>().Select(c=>new WorldObjectComponent(c)).ToArray());
             SourceBindings=Array.AsReadOnly(new WorldObjectBinding[0]);
         }
         static double[] Values(JToken token)=>token.Select(t=>(double)t).ToArray();
         internal double[] Matrix=>wm;
+        internal void WriteCanonicalTo(JsonWriter writer)=>WorldObjectRegistry.WriteCanonical(writer,data,true);
     }
     public sealed class WorldObjectRegistryReport
     {
@@ -124,23 +132,33 @@ namespace ChooGuard.Seeded
         readonly WorldObjectBinding[] bindings;
         readonly Dictionary<string,string> physicalIdentities;
         readonly BvhNode spatialRoot;
-        public string SnapshotSha256 {get;private set;} public string SceneSha256 {get;private set;} public string SceneGuid {get;private set;}
+        public string SnapshotSha256 {get;private set;} public string SceneSha256 {get;private set;} public string BoundSceneSha256 {get;private set;} public string SceneGuid {get;private set;}
         public string ScenePath {get;private set;} public string SnapshotId {get;private set;} public string Fingerprint {get;private set;}
         public string CacheKey=>Stable.Hash(CacheVersion+"|"+SnapshotSha256+"|"+Fingerprint);
         public IReadOnlyDictionary<string,WorldObjectRecord> Objects {get;private set;}
         public IReadOnlyList<WorldObjectBinding> SourceBindings {get;private set;}
         public WorldObjectRegistryReport Report {get;private set;}
         public IReadOnlyList<string> UnsupportedCapabilities {get;private set;}
-        WorldObjectRegistry(SortedDictionary<string,WorldObjectRecord> records,JObject root,string snapshotHash,WorldObjectBinding[] associations)
+        WorldObjectRegistry(SortedDictionary<string,WorldObjectRecord> records,JObject root,string snapshotHash,WorldObjectBinding[] associations,string boundSceneSha256)
         {
-            objects=records;Objects=new ReadOnlyDictionary<string,WorldObjectRecord>(objects);bindings=associations;SourceBindings=Array.AsReadOnly(bindings);
+            BoundSceneSha256=boundSceneSha256;objects=records;Objects=new ReadOnlyDictionary<string,WorldObjectRecord>(objects);bindings=associations;SourceBindings=Array.AsReadOnly(bindings);
             physicalIdentities=PhysicalIdentities(associations);
             var source=root["sourceSnapshot"];SnapshotSha256=snapshotHash;SceneSha256=(string)source["sceneSha256"];SceneGuid=(string)source["sceneGuid"];ScenePath=(string)source["scenePath"];SnapshotId=(string)source["snapshotId"];
             children=objects.Values.Where(o=>o.ParentId!=null).GroupBy(o=>o.ParentId,StringComparer.Ordinal).ToDictionary(g=>g.Key,g=>g.Select(o=>o.Id).OrderBy(x=>x,StringComparer.Ordinal).ToArray(),StringComparer.Ordinal);
             foreach(var group in bindings.GroupBy(b=>b.ObjectId,StringComparer.Ordinal))objects[group.Key].SourceBindings=Array.AsReadOnly(group.OrderBy(b=>b.EntityId,StringComparer.Ordinal).ToArray());
-            var canonical=new JObject{{"schemaVersion",SchemaVersion},{"sceneSha256",SceneSha256},{"sceneGuid",SceneGuid},{"frame",root["frame"].DeepClone()},
-                {"objects",new JArray(records.Values.Select(o=>CanonicalObject(o.Data)))},{"sourceBindings",new JArray(bindings.Select(b=>b.Json()))}};
-            Fingerprint=Stable.Hash(Canonical(canonical).ToString(Formatting.None));
+            // Same canonical properties/values/order as the former token-tree implementation.
+            // Stream them once instead of duplicating the complete inventory several times.
+            Fingerprint=HashJson(writer=>
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("frame");WriteCanonical(writer,root["frame"]);
+                writer.WritePropertyName("objects");writer.WriteStartArray();foreach(var record in records.Values)record.WriteCanonicalTo(writer);writer.WriteEndArray();
+                writer.WritePropertyName("sceneGuid");writer.WriteValue(SceneGuid);
+                writer.WritePropertyName("sceneSha256");writer.WriteValue(SceneSha256);
+                writer.WritePropertyName("schemaVersion");writer.WriteValue(SchemaVersion);
+                writer.WritePropertyName("sourceBindings");writer.WriteStartArray();foreach(var binding in bindings)WriteCanonical(writer,binding.Json());writer.WriteEndArray();
+                writer.WriteEndObject();
+            });
             var indexed=objects.Values.Where(o=>o.PhysicalEligible&&o.BoundsSupported).ToArray();spatialRoot=Build(indexed,0,indexed.Length);
             Report=new WorldObjectRegistryReport{ObjectCount=objects.Count,ActiveCount=objects.Values.Count(o=>o.ActiveInHierarchy),PhysicalEligibleCount=objects.Values.Count(o=>o.PhysicalEligible),IndexedColliderObjectCount=indexed.Length,UnsupportedBoundsCount=objects.Values.Count(o=>o.PhysicalEligible&&!o.BoundsSupported),BoundObjectCount=bindings.Select(b=>b.ObjectId).Distinct(StringComparer.Ordinal).Count()};
             UnsupportedCapabilities=Array.AsReadOnly(new[]{"material-properties","combustion-and-fire","electrical-failure","structural-failure","thermal-failure","operability","exact-mesh-contact","visibility-occlusion"});
@@ -149,6 +167,15 @@ namespace ChooGuard.Seeded
         static bool Hash(string text)=>text!=null&&text.Length==64&&text.All(c=>(c>='0'&&c<='9')||(c>='a'&&c<='f'));
         static bool Guid(string text)=>text!=null&&text.Length==32&&text.All(c=>(c>='0'&&c<='9')||(c>='a'&&c<='f'));
         static bool FileId(string text)=>!string.IsNullOrEmpty(text)&&text!="0"&&text.All(c=>c>='0'&&c<='9');
+        static string SourceIdentity(JObject row,string sceneGuid,string fileId)
+        {
+            string prefab=(string)row["prefabInstanceId"]??"0";
+            Require(prefab=="0"||FileId(prefab),"explicit native prefab identity required");
+            string native=(string)row["globalObjectId"];
+            if(native!=null)Require(native=="GlobalObjectId_V1-2-"+sceneGuid+"-"+fileId+"-"+prefab,"native GlobalObjectId mismatch");
+            if(prefab!="0")Require(native!=null,"prefab identity requires full native provenance");
+            return "unity:"+sceneGuid+":"+fileId+(prefab=="0"?"":":prefab:"+prefab);
+        }
         static bool RelativePath(string path)=>!string.IsNullOrWhiteSpace(path)&&!System.IO.Path.IsPathRooted(path)&&!path.Contains('\\')&&!path.Split('/').Any(p=>p==".."||p==".")&&!path.Contains(":");
         static void String(JObject row,string key,bool empty=false){Require(row[key]?.Type==JTokenType.String&&(empty||!string.IsNullOrWhiteSpace((string)row[key])),key+" string required");}
         static void Bool(JObject row,string key){Require(row[key]?.Type==JTokenType.Boolean,key+" Boolean required");}
@@ -168,10 +195,10 @@ namespace ChooGuard.Seeded
         static void Quaternion(double[] q,string label){Require(Math.Abs(q.Sum(x=>x*x)-1)<Tolerance,label+" normalized quaternion required");}
 
         /// <summary>Expected hashes must be supplied from the separately pinned import manifest, not read from this payload.</summary>
-        public static WorldObjectRegistry Parse(string json,string expectedSnapshotSha256,string expectedSceneSha256)
+        public static WorldObjectRegistry Parse(string json,string expectedSnapshotSha256,string expectedSceneSha256,string expectedBoundSceneSha256=null)
         {
-            Require(!string.IsNullOrWhiteSpace(json)&&Hash(expectedSnapshotSha256)&&Hash(expectedSceneSha256),"snapshot and externally pinned hashes required");
-            Require(Stable.Hash(json)==expectedSnapshotSha256,"snapshot SHA256 mismatch");
+            Require(!string.IsNullOrWhiteSpace(json)&&Hash(expectedSnapshotSha256)&&Hash(expectedSceneSha256)&&(expectedBoundSceneSha256==null||Hash(expectedBoundSceneSha256)),"snapshot and externally pinned hashes required");
+            Require(HashText(json)==expectedSnapshotSha256,"snapshot SHA256 mismatch");
             JObject root;
             try{using(var sr=new StringReader(json))using(var reader=new JsonTextReader(sr){DateParseHandling=DateParseHandling.None,MaxDepth=128}){root=JObject.Load(reader,new JsonLoadSettings{DuplicatePropertyNameHandling=DuplicatePropertyNameHandling.Error});Require(!reader.Read(),"trailing JSON input");}}
             catch(JsonException e){throw new ArgumentException("Registry: invalid JSON",e);}
@@ -188,7 +215,7 @@ namespace ChooGuard.Seeded
                 var row=token as JObject;Require(row!=null,"object row required");
                 foreach(var key in new[]{"id","sceneFileId","name","path","tag"})String(row,key,key=="name"||key=="tag");
                 string id=(string)row["id"],fid=(string)row["sceneFileId"];
-                Require(FileId(fid)&&id=="unity:"+(string)source["sceneGuid"]+":"+fid&&!records.ContainsKey(id),"duplicate or mismatched stable object ID");
+                Require(FileId(fid)&&id==SourceIdentity(row,(string)source["sceneGuid"],fid)&&!records.ContainsKey(id),"duplicate or mismatched stable object ID");
                 Require(row["parentId"]!=null&&(row["parentId"].Type==JTokenType.Null||row["parentId"].Type==JTokenType.String),"parentId required");
                 foreach(var key in new[]{"activeSelf","activeInHierarchy","physicalEligible"})Bool(row,key);
                 Require(row["layer"]?.Type==JTokenType.Integer&&(int)row["layer"]>=0&&(int)row["layer"]<=31,"Unity layer 0..31 required");
@@ -203,7 +230,7 @@ namespace ChooGuard.Seeded
                 foreach(var cToken in comps)
                 {
                     var c=cToken as JObject;Require(c!=null,"component row required");String(c,"fileId");String(c,"type");
-                    Require(FileId((string)c["fileId"])&&allComponentIds.Add((string)c["fileId"]),"duplicate component fileID");
+                    Require(FileId((string)c["fileId"])&&allComponentIds.Add(SourceIdentity(c,(string)source["sceneGuid"],(string)c["fileId"])),"duplicate component fileID");
                     Require(c["classId"]?.Type==JTokenType.Integer&&c["enabled"]!=null&&(c["enabled"].Type==JTokenType.Null||c["enabled"].Type==JTokenType.Boolean),"component class/enabled required");
                     if(IsCollider(c)){Bool(c,"isTrigger");Require(c["enabled"].Type==JTokenType.Boolean,"collider enabled required");}
                     if(c["localBounds"]!=null&&c["localBounds"].Type!=JTokenType.Null){Numbers(c["localBounds"]["center"],3,"bounds center");Require(Numbers(c["localBounds"]["size"],3,"bounds size").All(x=>x>=0),"negative bounds size");}
@@ -255,7 +282,7 @@ namespace ChooGuard.Seeded
                 if(evidence["sceneFileId"]!=null)Require((string)evidence["sceneFileId"]==records[b.ObjectId].SceneFileId,"binding scene fileID mismatch");
                 if(evidence["coveragePath"]!=null||evidence["coverageSha256"]!=null)Require(RelativePath((string)evidence["coveragePath"])&&Hash((string)evidence["coverageSha256"]),"binding coverage evidence malformed");
             }
-            return new WorldObjectRegistry(records,root,expectedSnapshotSha256,associations.OrderBy(b=>b.ObjectId,StringComparer.Ordinal).ThenBy(b=>b.EntityId,StringComparer.Ordinal).ToArray());
+            return new WorldObjectRegistry(records,root,expectedSnapshotSha256,associations.OrderBy(b=>b.ObjectId,StringComparer.Ordinal).ThenBy(b=>b.EntityId,StringComparer.Ordinal).ToArray(),expectedBoundSceneSha256);
         }
 
         static WorldObjectBinding ParseBinding(JObject b)
@@ -279,7 +306,7 @@ namespace ChooGuard.Seeded
             if(!o.PhysicalEligible)return null;ObjectBounds result=null;
             foreach(var component in o.Components)
             {
-                var c=component.Data;if(!IsCollider(c)||component.Enabled!=true||(bool)c["isTrigger"])continue;
+                var c=component.OwnedData;if(!IsCollider(c)||component.Enabled!=true||(bool)c["isTrigger"])continue;
                 if(c["worldBounds"]==null||c["worldBounds"].Type==JTokenType.Null)continue;
                 Require(new[]{"serialized-mesh-aabb","serialized-box","serialized-sphere","serialized-capsule","native-collider-aabb"}.Contains((string)c["boundsEvidence"]),"qualified collider bounds evidence required");
                 var bounds=Bounds(c["worldBounds"]);
@@ -304,7 +331,7 @@ namespace ChooGuard.Seeded
         {Require(objects.ContainsKey(objectId)&&!string.IsNullOrEmpty(stream),"registered object/stream required");return Stable.Unit(seed,CacheVersion+"|"+stream,tick,objectId,draw);}
         public void VerifySources(Func<string,byte[]> readBytes)
         {
-            Require(readBytes!=null,"source resolver required");Require(HashBytes(readBytes(ScenePath))==SceneSha256,"scene bytes mismatch");
+            Require(readBytes!=null,"source resolver required");var sceneBytesHash=HashBytes(readBytes(ScenePath));Require(sceneBytesHash==SceneSha256||(BoundSceneSha256!=null&&sceneBytesHash==BoundSceneSha256),"scene bytes mismatch");
             foreach(var group in bindings.GroupBy(b=>b.EvidencePath,StringComparer.Ordinal))
             {var hashes=group.Select(b=>b.EvidenceSha256).Distinct(StringComparer.Ordinal).ToArray();Require(hashes.Length==1&&HashBytes(readBytes(group.Key))==hashes[0],"binding evidence bytes mismatch");}
             foreach(var group in bindings.Select(b=>b.Data["evidence"]).Where(e=>e["coveragePath"]!=null).GroupBy(e=>(string)e["coveragePath"],StringComparer.Ordinal))
@@ -327,14 +354,14 @@ namespace ChooGuard.Seeded
             foreach(var pair in metadata)Require(!world.Fields.ContainsKey(pair.Key)||world.Fields[pair.Key]==pair.Value,"source digest metadata mismatch");
             foreach(var o in objects.Values)
             {
-                Entity found;WorldObjectBinding binding;byObject.TryGetValue(o.Id,out binding);
+                Entity found;WorldObjectBinding binding;byObject.TryGetValue(o.Id,out binding);var position=o.WorldPosition;
                 string parent=binding!=null?binding.EntityId:o.ParentId;
                 if(world.Entities.TryGetValue(o.Id,out found))
                 {
-                    Require(found.Kind=="source-object"&&found.ParentId==parent&&found.Has("source-input")&&found.Has("render-only")&&found.Has(marker)&&found.X==o.WorldPosition[0]&&found.Y==o.WorldPosition[1]&&found.Z==o.WorldPosition[2]
+                    Require(found.Kind=="source-object"&&found.ParentId==parent&&found.Has("source-input")&&found.Has("render-only")&&found.Has(marker)&&found.X==position[0]&&found.Y==position[1]&&found.Z==position[2]
                         &&found.Get("source.active-self")== (o.ActiveSelf?1:0)&&found.Get("source.active-hierarchy")== (o.ActiveInHierarchy?1:0)&&found.Get("source.physical-eligible")== (o.PhysicalEligible?1:0)&&found.Get("source.bounds-supported")== (o.BoundsSupported?1:0),"source object collision or stale inventory: "+o.Id);existing++;continue;
                 }
-                var e=new Entity{Id=o.Id,ParentId=parent,Kind="source-object",X=o.WorldPosition[0],Y=o.WorldPosition[1],Z=o.WorldPosition[2]};
+                var e=new Entity{Id=o.Id,ParentId=parent,Kind="source-object",X=position[0],Y=position[1],Z=position[2]};
                 foreach(var tag in new[]{"source-input","render-only","decoration",marker})e.Tags.Add(tag);
                 e.Set("source.active-self",o.ActiveSelf?1:0);e.Set("source.active-hierarchy",o.ActiveInHierarchy?1:0);e.Set("source.physical-eligible",o.PhysicalEligible?1:0);e.Set("source.bounds-supported",o.BoundsSupported?1:0);
                 if(binding!=null)e.Links.Add(binding.EntityId);pending.Add(e);
@@ -401,8 +428,42 @@ namespace ChooGuard.Seeded
             var obj=token as JObject;if(obj!=null){var result=new JObject();foreach(var p in obj.Properties().OrderBy(p=>p.Name,StringComparer.Ordinal))result[p.Name]=Canonical(p.Value);return result;}
             var array=token as JArray;return array!=null?new JArray(array.Select(Canonical)):token.DeepClone();
         }
-        static JObject CanonicalObject(JObject row)
-        {row["components"]=new JArray(((JArray)row["components"]).OrderBy(c=>(string)c["fileId"],StringComparer.Ordinal));row["sourceBindings"]=new JArray();return row;}
+        // This writer does not modify the privately owned input tree. The optional source
+        // object projection exactly matches CanonicalObject: sorted components, empty bindings.
+        internal static void WriteCanonical(JsonWriter writer,JToken token,bool sourceObject=false)
+        {
+            if(token is JObject obj)
+            {
+                writer.WriteStartObject();
+                foreach(var property in obj.Properties().OrderBy(p=>p.Name,StringComparer.Ordinal))
+                {
+                    writer.WritePropertyName(property.Name);
+                    if(sourceObject&&property.Name=="components")
+                    {writer.WriteStartArray();foreach(var component in ((JArray)property.Value).OrderBy(c=>(string)c["fileId"],StringComparer.Ordinal))WriteCanonical(writer,component);writer.WriteEndArray();}
+                    else if(sourceObject&&property.Name=="sourceBindings"){writer.WriteStartArray();writer.WriteEndArray();}
+                    else WriteCanonical(writer,property.Value);
+                }
+                writer.WriteEndObject();return;
+            }
+            if(token is JArray array){writer.WriteStartArray();foreach(var value in array)WriteCanonical(writer,value);writer.WriteEndArray();return;}
+            token.WriteTo(writer);
+        }
+        static string HashJson(Action<JsonWriter> write)
+        {
+            using(var sha=SHA256.Create())using(var sink=new CryptoStream(Stream.Null,sha,CryptoStreamMode.Write))
+            using(var text=new StreamWriter(sink,new UTF8Encoding(false),4096,true))
+            using(var writer=new JsonTextWriter(text){Formatting=Formatting.None,CloseOutput=false})
+            {write(writer);writer.Flush();text.Flush();sink.FlushFinalBlock();return Hex(sha.Hash);}
+        }
+        static string HashText(string value)
+        {
+            // StreamWriter's encoder retains split surrogate pairs and uses the same
+            // replacement fallback as Encoding.UTF8.GetBytes in Stable.Hash.
+            using(var sha=SHA256.Create())using(var sink=new CryptoStream(Stream.Null,sha,CryptoStreamMode.Write))
+            using(var text=new StreamWriter(sink,new UTF8Encoding(false),4096,true))
+            {text.Write(value);text.Flush();sink.FlushFinalBlock();return Hex(sha.Hash);}
+        }
+        static string Hex(byte[] bytes)=>BitConverter.ToString(bytes).Replace("-","").ToLowerInvariant();
         static double[] Identity()=>new[]{1.0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1};
         static double ColumnLength(double[] m,int column)=>Math.Sqrt(m[column]*m[column]+m[4+column]*m[4+column]+m[8+column]*m[8+column]);
         static double[] Multiply(double[] a,double[] b)

@@ -11,7 +11,7 @@ using UnityEngine.TestTools;
 
 namespace ChooGuard.Tests.PlayMode
 {
-    public sealed class CrowdPlanTests
+    public sealed class CrowdPlanTests : RetainedEmergencySessionFixture
     {
         private string savedKey;
         private Passenger traveller;

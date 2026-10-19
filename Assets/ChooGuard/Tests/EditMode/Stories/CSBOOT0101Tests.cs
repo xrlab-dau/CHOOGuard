@@ -14,6 +14,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -566,6 +567,52 @@ namespace ChooGuard.Tests.EditMode.Stories
             finally { GraphicsSettings.defaultRenderPipeline = previous; }
             Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.True);
         }
+        [Test]
+        public void QualityOverride_RejectsMissingOrUnownedPipelineAndRestoresTheApprovedOverride()
+        {
+            var level = QualitySettings.GetQualityLevel();
+            var previous = QualitySettings.renderPipeline;
+            var renderer = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(BootstrapProject.RendererPath);
+            var unowned = UniversalRenderPipelineAsset.Create(renderer);
+            try
+            {
+                QualitySettings.renderPipeline = null;
+                Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.False, "A missing quality asset is not an owned override");
+                QualitySettings.renderPipeline = unowned;
+                Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.False, "A matching renderer does not make a transient pipeline owned");
+            }
+            finally
+            {
+                QualitySettings.SetQualityLevel(level, false);
+                QualitySettings.renderPipeline = previous;
+                Object.DestroyImmediate(unowned);
+            }
+            Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.True);
+        }
+
+        [TestCase(BootstrapProject.PipelinePath)]
+        [TestCase(BootstrapValidator.OptimizedPipelinePath)]
+        public void OwnedPipeline_RejectsRendererDriftAndRestoresTheReference(string path)
+        {
+            var pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(path);
+            Assert.That(pipeline, Is.Not.Null, path);
+            var serialized = new SerializedObject(pipeline);
+            var reference = Required(serialized, "m_RendererDataList").GetArrayElementAtIndex(0);
+            var previous = reference.objectReferenceValue;
+            try
+            {
+                reference.objectReferenceValue = null;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.False, path);
+            }
+            finally
+            {
+                reference.objectReferenceValue = previous;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+            }
+            Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.True);
+        }
+
         [Test]
         public void OwnedUrpGlobal_HasClosedVolumeDependenciesAndNoExcludedDefaults()
         {

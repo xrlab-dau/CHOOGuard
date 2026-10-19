@@ -33,13 +33,17 @@ namespace ChooGuard.Seeded.Unity
         readonly Dictionary<string,Transform> objects=new Dictionary<string,Transform>(StringComparer.Ordinal);
         readonly Dictionary<Transform,string> physicalIds=new Dictionary<Transform,string>();
         readonly List<GameObject> supports=new List<GameObject>();
+        readonly HashSet<GameObject> supportSet=new HashSet<GameObject>();
         readonly List<(string id,Vector3 feet,string floor,int triangle,bool support,string collider)> places=new List<(string,Vector3,string,int,bool,string)>();
         readonly HashSet<string> floorIds=new HashSet<string>(StringComparer.Ordinal);
         readonly HashSet<string> regionIds=new HashSet<string>(StringComparer.Ordinal);
+        readonly HashSet<string> renderOnlyAlternatives=new HashSet<string>(StringComparer.Ordinal);
         GameObject instance;
         string manifestHash="",geometrySceneHash="";
         NavMeshData stationNavigation;
         NavMeshDataInstance stationNavigationInstance;
+        Bounds qualifiedNavigationBounds;
+        bool hasQualifiedNavigationBounds;
 
         // The current saved snapshot owns all station/platform/KTX geometry. No raw
         // platform or train prefab is instantiated alongside it.
@@ -56,16 +60,23 @@ namespace ChooGuard.Seeded.Unity
             geometrySceneHash=(string)manifest["geometrySceneSha256"];
             if(geometrySceneHash==null||geometrySceneHash.Length!=64||geometrySceneHash.Any(c=>!(c>='0'&&c<='9')&&!(c>='a'&&c<='f')))
                 throw new InvalidOperationException("Frozen geometry scene SHA256 required");
-            Registry=WorldObjectRegistry.Parse(SnapshotInventory.text,(string)manifest["inventorySha256"],(string)manifest["sourceSceneSha256"]);
+            Registry=WorldObjectRegistry.Parse(SnapshotInventory.text,(string)manifest["inventorySha256"],(string)manifest["sourceSceneSha256"],(string)manifest["boundSceneSha256"]);
+            renderOnlyAlternatives.Clear();
+            foreach(var token in manifest["renderOnlyAlternativeLodObjectIds"]??new JArray())
+            {
+                string id=(string)token;
+                if(!Registry.Objects.ContainsKey(id)||!renderOnlyAlternatives.Add(id)||
+                   (bool?)Registry.Objects[id].GeometryProvenance["renderOnlyAlternativeLod"]!=true)
+                    throw new InvalidOperationException("Unqualified alternative LOD identity: "+id);
+            }
             if (LiveMode)
             {
-                if (LiveObjects.Length != LiveObjectIds.Length || LiveObjects.Length != Registry.Objects.Count)
-                    throw new InvalidOperationException("Current scene reference coverage differs from inventory");
+                var current=ResolveLiveReferences(manifest);
                 string trainId = (string)manifest["runtimeRoots"]["ktx"];
                 var platformIds = manifest["runtimeRoots"]["platforms"].Values<string>().ToArray();
-                for (int i = 0; i < LiveObjects.Length; i++)
+                foreach(var source in Registry.Objects.Values)
                 {
-                    var go = LiveObjects[i]; string id = LiveObjectIds[i];
+                    string id=source.Id;var go=current[id];
                     if (go == null || !Registry.Objects.TryGetValue(id, out var record) || objects.ContainsKey(id))
                         throw new InvalidOperationException("Missing current scene object: " + id);
                     // Runtime records reflect live geometry; stale saved correspondences must not be silently reused.
@@ -81,7 +92,7 @@ namespace ChooGuard.Seeded.Unity
                     var renderer=go.GetComponent<MeshRenderer>(); identity.SourceHasRenderer=renderer!=null;
                     identity.SourceMaterials=renderer!=null?renderer.sharedMaterials:Array.Empty<Material>();
                     identity.SourceColliders=go.GetComponents<Collider>();
-                    identity.SourceColliderFileIds=record.Components.Where(c=>c.Type.EndsWith("Collider",StringComparison.Ordinal)).Select(c=>c.FileId).ToArray();
+                    identity.SourceColliderFileIds=record.Components.Where(c=>c.Type.EndsWith("Collider",StringComparison.Ordinal)||c.Type=="CharacterController").Select(c=>c.FileId).ToArray();
                     identity.GeometryDomain=record.Path==Registry.Objects[trainId].Path||record.Path.StartsWith(Registry.Objects[trainId].Path+"/",StringComparison.Ordinal)?"ktx":
                         platformIds.Any(pid=>record.Path==Registry.Objects[pid].Path||record.Path.StartsWith(Registry.Objects[pid].Path+"/",StringComparison.Ordinal))?"platform":"station";
                     liveIdentities.Add(identity);objects.Add(id,go.transform);physicalIds.Add(go.transform,id);
@@ -125,6 +136,71 @@ namespace ChooGuard.Seeded.Unity
             {
                 DestroyOwned(parent);instance=null;objects.Clear();physicalIds.Clear();throw;
             }
+        }
+
+        Dictionary<string,GameObject> ResolveLiveReferences(JObject manifest)
+        {
+            if(LiveObjects.Length!=LiveObjectIds.Length)throw new InvalidOperationException("Current root reference arrays differ");
+            var result=new Dictionary<string,GameObject>(StringComparer.Ordinal);
+            string schema=(string)manifest["liveBindingSchema"];
+            if(schema==null)
+            {
+                if(LiveObjects.Length!=Registry.Objects.Count)throw new InvalidOperationException("Current scene reference coverage differs from inventory");
+                for(int i=0;i<LiveObjects.Length;i++)
+                {
+                    if(LiveObjects[i]==null||result.ContainsKey(LiveObjectIds[i]))throw new InvalidOperationException("Missing/repeated current scene object: "+LiveObjectIds[i]);
+                    result.Add(LiveObjectIds[i],LiveObjects[i]);
+                }
+            }
+            else
+            {
+                if(schema!="chooguard.live-root-child-indices.v1")throw new InvalidOperationException("Unsupported current scene correspondence");
+#if UNITY_EDITOR
+                // Scene metadata and its external manifest have separate hashes; the manifest is
+                // not embedded into Scene bytes, so this check has no self-hash cycle.
+                if(Registry.BoundSceneSha256==null)throw new InvalidOperationException("Bound current Scene hash is required");
+                string savedPath=System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath,"..",Registry.ScenePath));
+                using(var stream=System.IO.File.OpenRead(savedPath))
+                using(var hash=System.Security.Cryptography.SHA256.Create())
+                    if(BitConverter.ToString(hash.ComputeHash(stream)).Replace("-","").ToLowerInvariant()!=Registry.BoundSceneSha256)
+                        throw new InvalidOperationException("Current saved Scene differs from pinned runtime correspondence");
+#endif
+                var anchors=new Dictionary<string,GameObject>(StringComparer.Ordinal);
+                for(int i=0;i<LiveObjects.Length;i++)
+                {
+                    if(LiveObjects[i]==null||LiveObjects[i].transform.parent!=null||anchors.ContainsKey(LiveObjectIds[i]))
+                        throw new InvalidOperationException("Missing/repeated current root anchor");
+                    anchors.Add(LiveObjectIds[i],LiveObjects[i]);
+                }
+                var expected=manifest["liveBindingRoots"].Values<string>().ToArray();
+                if(expected.Length!=anchors.Count||expected.Distinct(StringComparer.Ordinal).Count()!=expected.Length||expected.Any(id=>!anchors.ContainsKey(id)))
+                    throw new InvalidOperationException("Current root anchor coverage differs");
+                var seen=new HashSet<GameObject>();
+                foreach(var record in Registry.Objects.Values)
+                {
+                    var binding=record.LiveBinding;
+                    if(binding==null||!anchors.TryGetValue((string)binding["rootObjectId"],out var anchor)||!(binding["childIndices"] is JArray indices))
+                        throw new InvalidOperationException("Missing native correspondence: "+record.Id);
+                    Transform node=anchor.transform;
+                    foreach(var token in indices)
+                    {
+                        if(token.Type!=JTokenType.Integer||(long)token<0||(long)token>=node.childCount)
+                            throw new InvalidOperationException("Native child correspondence changed: "+record.Id);
+                        node=node.GetChild((int)token);
+                    }
+                    var go=node.gameObject;
+                    if(!seen.Add(go)||go.name!=record.Name||go.layer!=record.Layer||go.tag!=record.Tag||
+                       go.activeSelf!=record.ActiveSelf||go.activeInHierarchy!=record.ActiveInHierarchy||
+                       !MatrixNear(go.transform.localToWorldMatrix,Matrix(record.WorldMatrix4x4.Select(value=>(float)value).ToArray()),.002f))
+                        throw new InvalidOperationException("Current saved identity/pose differs: "+record.Id);
+                    result.Add(record.Id,go);
+                }
+                foreach(var record in Registry.Objects.Values)
+                    if(record.ParentId!=null&&result[record.Id].transform.parent!=result[record.ParentId].transform)
+                        throw new InvalidOperationException("Current native parent differs: "+record.Id);
+            }
+            if(result.Count!=Registry.Objects.Count)throw new InvalidOperationException("Incomplete current source correspondence");
+            return result;
         }
 
         public void ActivateGeometry()
@@ -171,23 +247,28 @@ namespace ChooGuard.Seeded.Unity
             if(navigationAttempted)return;navigationAttempted=true;
             ActivateGeometry();
             int sourceSolid=0,added=0;var unreadable=new JArray();
-            var sources=new List<NavMeshBuildSource>();bool hasBounds=false;var bounds=new Bounds();
+            var sources=new List<NavMeshBuildSource>();bool hasBounds=false,hasSavedSolidBounds=false;var bounds=new Bounds();var savedSolidBounds=new Bounds();
+            var savedSolids=new List<Collider>();var savedDomainCounts=new Dictionary<string,int>(StringComparer.Ordinal);
             foreach(var identity in SourceIdentities.OrderBy(x=>x.ObjectId,StringComparer.Ordinal))
             {
                 if(!identity.SourceActiveInHierarchy||(!LiveMode&&identity.GeometryDomain!="station"))continue;
                 var go=identity.gameObject;
-                var colliders=go.GetComponents<Collider>().Where(c=>c.enabled&&!c.isTrigger&&!(c is CharacterController)).ToArray();
+                var colliders=(LiveMode?identity.SourceColliders:go.GetComponents<Collider>()).Where(c=>c!=null&&c.enabled&&!c.isTrigger&&!(c is CharacterController)).ToArray();
                 sourceSolid+=colliders.Length;
+                savedSolids.AddRange(colliders);
+                savedDomainCounts.TryGetValue(identity.GeometryDomain,out var previousCount);savedDomainCounts[identity.GeometryDomain]=previousCount+colliders.Length;
+                foreach(var collider in colliders)
+                {if(!hasSavedSolidBounds){savedSolidBounds=collider.bounds;hasSavedSolidBounds=true;}else savedSolidBounds.Encapsulate(collider.bounds);}
                 var filter=go.GetComponent<MeshFilter>();var renderer=go.GetComponent<MeshRenderer>();
                 if(filter!=null&&filter.sharedMesh!=null&&renderer!=null&&renderer.enabled)
                 {
                     var mesh=filter.sharedMesh;
-                    if(!mesh.isReadable){unreadable.Add(identity.ObjectId);continue;}
-                    if(colliders.Length==0)
+                    if(!mesh.isReadable)unreadable.Add(identity.ObjectId);
+                    if(mesh.isReadable&&colliders.Length==0&&!renderOnlyAlternatives.Contains(identity.ObjectId))
                     {
                         var support=new GameObject("Exact source-mesh collision support");support.transform.SetParent(go.transform,false);
                         var collider=support.AddComponent<MeshCollider>();collider.sharedMesh=mesh;collider.convex=false;
-                        supports.Add(support);physicalIds[support.transform]=identity.ObjectId;added++;
+                        supports.Add(support);supportSet.Add(support);physicalIds[support.transform]=identity.ObjectId;added++;
                     }
                     if(!hasBounds){bounds=renderer.bounds;hasBounds=true;}else bounds.Encapsulate(renderer.bounds);
                 }
@@ -204,8 +285,9 @@ namespace ChooGuard.Seeded.Unity
                 }
             }
             else NavMeshBuilder.CollectSources(instance.transform,~0,NavMeshCollectGeometry.PhysicsColliders,0,new List<NavMeshBuildMarkup>(),sources);
-            sources.RemoveAll(s=>!(s.component is Collider c)||c.isTrigger||c is CharacterController||(!LiveMode&&c.GetComponentInParent<SnapshotObjectIdentity>()?.GeometryDomain!="station"));
+            sources.RemoveAll(s=>!(s.component is Collider c)||c.isTrigger||c is CharacterController||renderOnlyAlternatives.Contains(ResolveSourceObject(c))||(!LiveMode&&c.GetComponentInParent<SnapshotObjectIdentity>()?.GeometryDomain!="station"));
             if(!hasBounds||sources.Count==0)throw new InvalidOperationException("No readable active station source geometry for navigation");
+            if(LiveMode&&!hasSavedSolidBounds)throw new InvalidOperationException("No active saved solid source colliders qualify a current navigation extent");
             bool hasRegion=false;var regionBounds=new Bounds();float firstFloorLevel=0;
             foreach(var id in regionIds.OrderBy(x=>x,StringComparer.Ordinal))
             {
@@ -213,17 +295,35 @@ namespace ChooGuard.Seeded.Unity
                 foreach(var renderer in region.GetComponentsInChildren<Renderer>(false))
                 {if(!hasRegion){regionBounds=renderer.bounds;hasRegion=true;}else regionBounds.Encapsulate(renderer.bounds);}
             }
-            if(hasRegion&&!LiveMode)bounds=new Bounds(new Vector3(regionBounds.center.x,firstFloorLevel+1.35f,regionBounds.center.z),new Vector3(regionBounds.size.x+2,3.3f,regionBounds.size.z+2));
+            var allSourceBounds=bounds;
+            if(LiveMode){bounds=savedSolidBounds;bounds.Expand(new Vector3(2,1,2));}
+            else if(hasRegion)bounds=new Bounds(new Vector3(regionBounds.center.x,firstFloorLevel+1.35f,regionBounds.center.z),new Vector3(regionBounds.size.x+2,3.3f,regionBounds.size.z+2));
             else bounds.Expand(new Vector3(2,1,2));
+            if(LiveMode)
+            {
+                foreach(var collider in savedSolids)
+                    if(!ContainsBounds(bounds,collider.bounds,.002f))throw new InvalidOperationException("Qualified saved source collider falls outside navigation build bounds");
+                foreach(var domain in new[]{"station","platform","ktx"})
+                    if(!savedDomainCounts.TryGetValue(domain,out var count)||count==0)throw new InvalidOperationException("Required current saved physical domain absent: "+domain);
+                foreach(var id in floorIds)
+                {
+                    if(!objects.TryGetValue(id,out var floor))throw new InvalidOperationException("Required current floor identity absent: "+id);
+                    var identity=floor.GetComponent<SnapshotObjectIdentity>();
+                    if(identity==null||!identity.SourceActiveInHierarchy||!identity.SourceColliders.Any(c=>c!=null&&c.enabled&&!c.isTrigger&&!(c is CharacterController)&&ContainsBounds(bounds,c.bounds,.002f)))
+                        throw new InvalidOperationException("Required current floor has no qualified saved solid support: "+id);
+                }
+            }
+            qualifiedNavigationBounds=bounds;hasQualifiedNavigationBounds=LiveMode;
+            var outsideSupportIds=new JArray(supports.Where(s=>!ContainsBounds(bounds,s.GetComponent<Collider>().bounds,.002f)).Select(s=>ResolveSourceObject(s.GetComponent<Collider>())).OrderBy(id=>id,StringComparer.Ordinal));
             var settings=NavMesh.GetSettingsByID(0);settings.agentRadius=.28f;settings.agentHeight=1.72f;settings.agentClimb=.28f;settings.agentSlope=36;
             settings.overrideVoxelSize=true;settings.voxelSize=.10f;settings.overrideTileSize=true;settings.tileSize=256;settings.minRegionArea=.5f;
             stationNavigation=NavMeshBuilder.BuildNavMeshData(settings,sources,bounds,Vector3.zero,Quaternion.identity);
             if(stationNavigation==null)throw new InvalidOperationException("Station source geometry NavMesh build failed");
             stationNavigationInstance=NavMesh.AddNavMeshData(stationNavigation);
             if(!stationNavigationInstance.valid)throw new InvalidOperationException("Station NavMesh registration failed");
-            NavigationHash=Stable.Hash(Registry.Fingerprint+"|station-geometry-nav-v1|"+string.Join("|",sources.Select(s=>ResolveSourceObject(s.component)).OrderBy(x=>x,StringComparer.Ordinal)));
+            NavigationHash=Stable.Hash(Registry.Fingerprint+(LiveMode?"|station-saved-solid-extent-nav-v2|":"|station-geometry-nav-v1|")+string.Join("|",sources.Select(s=>ResolveSourceObject(s.component)).OrderBy(x=>x,StringComparer.Ordinal)));
             Activated=true;
-            Report["navigation"]=new JObject{["source_geometry_bounds"]=BoundsJson(bounds),["candidate_region_ids"]=new JArray(regionIds),["first_floor_candidate_level"]=firstFloorLevel,["mesh_sources"]=sources.Count,["saved_solid_colliders"]=sourceSolid,["explicit_mesh_collision_supports"]=added,["unreadable_mesh_objects"]=unreadable,["hash"]=NavigationHash,["existing_platform_car04_navigation_preserved"]=true,["coverage_claim"]="Current source collider navigation; disconnected islands remain disconnected. No floor or cross-floor connector is invented."};
+            Report["navigation"]=new JObject{["source_geometry_bounds"]=BoundsJson(bounds),["all_source_geometry_bounds"]=BoundsJson(allSourceBounds),["saved_solid_source_bounds"]=hasSavedSolidBounds?BoundsJson(savedSolidBounds):null,["saved_solid_domains"]=JObject.FromObject(savedDomainCounts),["required_current_floor_supports"]=floorIds.Count,["candidate_region_ids"]=new JArray(regionIds),["first_floor_candidate_level"]=firstFloorLevel,["mesh_sources"]=sources.Count,["saved_solid_colliders"]=sourceSolid,["explicit_mesh_collision_supports"]=added,["unreadable_mesh_objects"]=unreadable,["runtime_supports_outside_qualified_extent"]=outsideSupportIds,["render_only_alternative_lod_excluded"]=new JArray(renderOnlyAlternatives),["live_bounds_scope"]="Union of all active saved solid colliders across station/platform/train; rendered-only supports do not enlarge qualified navigation extent",["outside_extent_claim"]="All source geometry and exact-mesh collision supports are retained. Exterior without saved physical support is unqualified for navigation; source presence is not walking-floor proof.",["hash"]=NavigationHash,["existing_platform_car04_navigation_preserved"]=true,["coverage_claim"]="Current source collider navigation inside the saved physical extent; disconnected islands remain disconnected. No floor or cross-floor connector is invented."};
             QualifyStationPlaces();
         }
 
@@ -260,10 +360,29 @@ namespace ChooGuard.Seeded.Unity
         void QualifyStationPlaces()
         {
             places.Clear();var candidates=new List<(Vector3 feet,string floor,int triangle,bool support,string collider)>();int tested=0,blocked=0;
+            var candidateCells=new Dictionary<(int x,int y,int z),List<Vector3>>();
+            bool AlreadyCandidate(Vector3 feet)
+            {
+                int x=Mathf.FloorToInt(feet.x),y=Mathf.FloorToInt(feet.y),z=Mathf.FloorToInt(feet.z);
+                for(int dx=-1;dx<=1;dx++)for(int dy=-1;dy<=1;dy++)for(int dz=-1;dz<=1;dz++)
+                    if(candidateCells.TryGetValue((x+dx,y+dy,z+dz),out var near)&&near.Any(other=>(other-feet).sqrMagnitude<.01f))return true;
+                if(!candidateCells.TryGetValue((x,y,z),out var own)){own=new List<Vector3>();candidateCells.Add((x,y,z),own);}own.Add(feet);return false;
+            }
             foreach(var id in (regionIds.Count>0?regionIds:floorIds).OrderBy(x=>x,StringComparer.Ordinal))
             {
                 if(!objects.TryGetValue(id,out var region))continue;
                 var renderers=region.GetComponentsInChildren<Renderer>(false);if(renderers.Length==0)continue;var bounds=renderers[0].bounds;foreach(var r in renderers)bounds.Encapsulate(r.bounds);
+                if(LiveMode&&hasQualifiedNavigationBounds)
+                {
+                    // Regions generate candidates only where the saved physical source
+                    // qualifies a NavMesh extent. Far rendered-only bounds cannot consume
+                    // the candidate budget before current station floors are reached.
+                    var low=bounds.min;var high=bounds.max;
+                    low.x=Mathf.Max(low.x,qualifiedNavigationBounds.min.x);low.z=Mathf.Max(low.z,qualifiedNavigationBounds.min.z);
+                    high.x=Mathf.Min(high.x,qualifiedNavigationBounds.max.x);high.z=Mathf.Min(high.z,qualifiedNavigationBounds.max.z);
+                    if(low.x>high.x||low.z>high.z)continue;
+                    bounds.SetMinMax(low,high);
+                }
                 // A bounded world grid is only a candidate generator. Every accepted
                 // point must hit the explicit current floor collider and clear a body.
                 for(float x=Mathf.Ceil(bounds.min.x/6)*6;x<=bounds.max.x&&tested<20000;x+=6)
@@ -273,7 +392,7 @@ namespace ChooGuard.Seeded.Unity
                         {
                             var desired=new Vector3(x,level+.02f,z);
                             if(TryStationSpawn(desired,out var feet,out var source,out var triangle,out var support,out var collider))
-                            {if(!candidates.Any(c=>(c.feet-feet).sqrMagnitude<.01f))candidates.Add((feet,source,triangle,support,collider));}
+                            {if(!AlreadyCandidate(feet))candidates.Add((feet,source,triangle,support,collider));}
                             else blocked++;
                         }
                     }
@@ -309,7 +428,7 @@ namespace ChooGuard.Seeded.Unity
             floorId=ResolveSourceObject(floor.collider);if(string.IsNullOrEmpty(floorId)||!objects.ContainsKey(floorId)||objects[floorId].GetComponent<SnapshotObjectIdentity>().GeometryDomain!="station")return false;
             if(regionIds.Count==0&&!floorIds.Contains(floorId))return false;
             if(Physics.CheckCapsule(nav.position+Vector3.up*.30f,nav.position+Vector3.up*1.42f,.28f,~(1<<2),QueryTriggerInteraction.Ignore))return false;
-            triangle=floor.triangleIndex;generatedSupport=supports.Contains(floor.collider.gameObject);
+            triangle=floor.triangleIndex;generatedSupport=supportSet.Contains(floor.collider.gameObject);
             var identity=objects[floorId].GetComponent<SnapshotObjectIdentity>();
             if(generatedSupport)colliderFileId=Registry.Objects[floorId].Components.First(c=>c.Type=="MeshFilter").FileId;
             else{int index=Array.IndexOf(identity.SourceColliders,floor.collider);if(index<0)return false;colliderFileId=identity.SourceColliderFileIds[index];}
@@ -346,9 +465,10 @@ namespace ChooGuard.Seeded.Unity
         {
             if(stationNavigationInstance.valid)stationNavigationInstance.Remove();
             if(stationNavigation!=null)DestroyOwned(stationNavigation);stationNavigation=null;
+            foreach(var support in supports)if(support!=null)DestroyOwned(support);supports.Clear();supportSet.Clear();
             if(instance!=null&&!LiveMode)DestroyOwned(instance.transform.parent.gameObject);instance=null;
             foreach(var identity in liveIdentities)if(identity!=null)DestroyOwned(identity);liveIdentities.Clear();
-            objects.Clear();physicalIds.Clear();supports.Clear();places.Clear();floorIds.Clear();regionIds.Clear();Activated=false;navigationAttempted=false;NavigationHash="absent";TrainVisual=null;OfficialFrame=null;PlatformSourceRoots=Array.Empty<GameObject>();
+            objects.Clear();physicalIds.Clear();places.Clear();floorIds.Clear();regionIds.Clear();renderOnlyAlternatives.Clear();hasQualifiedNavigationBounds=false;Activated=false;navigationAttempted=false;NavigationHash="absent";TrainVisual=null;OfficialFrame=null;PlatformSourceRoots=Array.Empty<GameObject>();
         }
         void OnDestroy(){Dispose();}
         static void DestroyOwned(UnityEngine.Object value){if(value==null)return;if(Application.isPlaying)UnityEngine.Object.Destroy(value);else UnityEngine.Object.DestroyImmediate(value);}
@@ -357,5 +477,7 @@ namespace ChooGuard.Seeded.Unity
         public static bool MatrixNear(Matrix4x4 a,Matrix4x4 b,float tolerance)
         {for(int r=0;r<4;r++)for(int c=0;c<4;c++)if(float.IsNaN(a[r,c])||float.IsInfinity(a[r,c])||Mathf.Abs(a[r,c]-b[r,c])>tolerance)return false;return true;}
         static JObject BoundsJson(Bounds b)=>new JObject{["center"]=new JArray(b.center.x,b.center.y,b.center.z),["size"]=new JArray(b.size.x,b.size.y,b.size.z)};
+        static bool ContainsBounds(Bounds outer,Bounds inner,float tolerance)
+        {var low=outer.min-Vector3.one*tolerance;var high=outer.max+Vector3.one*tolerance;return inner.min.x>=low.x&&inner.min.y>=low.y&&inner.min.z>=low.z&&inner.max.x<=high.x&&inner.max.y<=high.y&&inner.max.z<=high.z;}
     }
 }

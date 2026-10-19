@@ -13,7 +13,7 @@ using UnityEngine.TestTools;
 
 namespace ChooGuard.Tests.PlayMode
 {
-    public sealed class CitizenEscortTests
+    public sealed class CitizenEscortTests : RetainedEmergencySessionFixture
     {
         private string savedKey;
         private int savedSeed, savedCaptureRate;

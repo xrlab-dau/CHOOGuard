@@ -15,7 +15,7 @@ namespace ChooGuard.Tests.PlayMode
 {
     // 경로 그래프(Resources/StationRoutes.json)는 navmesh 와 함께 구워 둔 자료다. navmesh 나 역 자료를 다시 구웠는데 그래프를 다시 굽지
     // 않으면 사람들이 길을 못 찾거나 엉뚱한 곳을 향한다: 그때 이 시험이 깨진다(다시 굽기: ChooGuard/Emergency/Bake route graph).
-    public sealed class RouteGraphTests
+    public sealed class RouteGraphTests : RetainedEmergencySessionFixture
     {
         private string savedKey;
 

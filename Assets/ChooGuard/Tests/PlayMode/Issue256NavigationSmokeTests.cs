@@ -18,7 +18,7 @@ namespace ChooGuard.Tests.PlayMode
     // 길 안내는 플레이어가 아는 것과 구워 둔 역만으로 그려야 한다: 불이 깎은 navmesh·잠긴 문·닫힌 에스컬레이터·경로 그래프의 실시간 막힘은
     // 아직 모르는 위험이다. 이 시험은 그 소비자 관점 불변식을 본다(경로 모양·도착·대상), 문구나 화면 구조는 보지 않는다.
     // 합성된 사건이 없는 실행(JEV off)에서 위험은 시험이 직접 만든다: 규칙 시험이라 특정 Hazard 를 만들어도 된다.
-    public sealed class Issue256NavigationSmokeTests
+    public sealed class Issue256NavigationSmokeTests : RetainedEmergencySessionFixture
     {
         private const BindingFlags Members = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
