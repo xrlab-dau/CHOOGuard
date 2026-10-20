@@ -304,6 +304,31 @@ namespace ChooGuard.App.Fps.Emergency
             return measured.Select(row=>row.lane).ToList();
         }
 
+        internal StationWalkingRouteEntry BindCurrentWalkingRoute(StationWalkingRouteEntry source)
+        {
+            source.Validate();
+            var observedOwners=new HashSet<string>(StringComparer.Ordinal);
+            bool CurrentOwner(Collider collider)
+            {
+                if(collider==null||collider.gameObject.scene!=scene||!newFloorSources.Contains(collider))return false;
+                observedOwners.Add(PathOf(collider.transform));return true;
+            }
+            for(int i=1;i<source.path.Length;i++)
+            {
+                int samples=Mathf.Max(1,Mathf.CeilToInt(Vector3.Distance(source.path[i-1],source.path[i])/.25f));
+                for(int j=0;j<=samples;j++)
+                    if(!NativeLandingWalker.Floor(Vector3.Lerp(source.path[i-1],source.path[i],j/(float)samples),source,null,CurrentOwner,out _))
+                        throw new InvalidOperationException("Current physical walking-route support is absent: "+source.id);
+            }
+            // Preserve the complete historical route and exact endpoint/polyline
+            // coordinates. Bind only current required-floor owners actually exposed
+            // by the unchanged nine-ray normal/height/spread checks at this path.
+            var bound=source.WithCurrentFloorOwners(observedOwners);
+            physicalReport.Add("CURRENT_WALKING_ROUTE_SOURCE "+source.id+"; unchanged source points="+source.path.Length+
+                "; observed approved current floor owners="+string.Join("|",observedOwners.OrderBy(owner=>owner,StringComparer.Ordinal)));
+            return bound;
+        }
+
         internal void RequireCurrentElevatorSupport(StationPoints.ElevatorStop stop,string identity)
         {
             // A catalog door cannot move to a nearby clear patch simply because a

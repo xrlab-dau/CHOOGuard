@@ -32,6 +32,19 @@ namespace ChooGuard.App.Fps.Emergency
                     throw new InvalidOperationException("Invalid same-floor route point: " + id);
             if (Vector3.Distance(Start, End) < .1f || Length > 40f) throw new InvalidOperationException("Invalid native walking route bounds: " + id);
         }
+        internal StationWalkingRouteEntry WithCurrentFloorOwners(IEnumerable<string> exposedCurrentOwners)
+        {
+            Validate();
+            if(exposedCurrentOwners==null)throw new ArgumentNullException(nameof(exposedCurrentOwners));
+            var owners=new SortedSet<string>(floorOwners,StringComparer.Ordinal);
+            foreach(var owner in exposedCurrentOwners)
+            {
+                if(string.IsNullOrWhiteSpace(owner))throw new InvalidOperationException("Blank current exposed floor authority: "+id);
+                owners.Add(owner);
+            }
+            return new StationWalkingRouteEntry {id=id,label=label,proof=proof,physicalVerified=physicalVerified,
+                path=(Vector3[])path.Clone(),floorOwners=new List<string>(owners).ToArray()};
+        }
         public NavMeshLinkData LinkData(int agentType = 0) => new NavMeshLinkData
         {
             startPosition = Start, endPosition = End, width = 0, bidirectional = true,
@@ -142,7 +155,14 @@ namespace ChooGuard.App.Fps.Emergency
         {
             string p = t.name; while (t.parent != null) { t = t.parent; p = t.name + "/" + p; } return p;
         }
-        public static bool Floor(Vector3 staged, StationWalkingRouteEntry route, GameObject actor, out float height)
+        public static bool Floor(Vector3 staged, StationWalkingRouteEntry route, GameObject actor, out float height) =>
+            Floor(staged,route,actor,null,out height);
+
+        // Current-source binding may recognize only an actual exposed collider from
+        // the independently installed required-floor registry. The ordinary public
+        // walking policy continues to use its exact route owner paths alone.
+        internal static bool Floor(Vector3 staged, StationWalkingRouteEntry route, GameObject actor,
+            Func<Collider,bool> currentSourceOwner,out float height)
         {
             height = float.NegativeInfinity;
             float lowest = float.PositiveInfinity;
@@ -155,7 +175,9 @@ namespace ChooGuard.App.Fps.Emergency
                 RaycastHit top = default; bool found = false;
                 foreach (var hit in hits)
                     if (hit.collider.gameObject != actor && hit.collider.GetComponentInParent<PersonBody>() == null && (!found || hit.distance < top.distance)) { top = hit; found = true; }
-                if (!found || top.normal.y < .9f || Array.IndexOf(route.floorOwners, Path(top.collider.transform)) < 0) return false;
+                if (!found || top.normal.y < .9f) return false;
+                if (Array.IndexOf(route.floorOwners, Path(top.collider.transform)) < 0 &&
+                    (currentSourceOwner == null || !currentSourceOwner(top.collider))) return false;
                 height = Mathf.Max(height, top.point.y);
                 lowest = Mathf.Min(lowest, top.point.y);
             }

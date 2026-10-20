@@ -129,17 +129,9 @@ namespace ChooGuard.App.Fps.Emergency
                     elevator.SetNavigationAvailable(true,"BOUND_CURRENT_ELEVATOR_SOURCE");
                 }
                 foreach(var escalator in Escalators)escalator.SetNavigationAvailable(suppliedIds.Contains(escalator.Entry.id));
-                foreach(var entry in walkingEntries)
+                foreach(var source in walkingEntries)
                 {
-                    // Metadata alone is insufficient: every current source-footprint sample
-                    // must still stand on its approved exposed owner before a link is added.
-                    for(int i=1;i<entry.path.Length;i++)
-                    {
-                        int samples=Mathf.Max(1,Mathf.CeilToInt(Vector3.Distance(entry.path[i-1],entry.path[i])/.25f));
-                        for(int j=0;j<=samples;j++)
-                            if(!NativeLandingWalker.Floor(Vector3.Lerp(entry.path[i-1],entry.path[i],j/(float)samples),entry,null,out _))
-                                throw new InvalidOperationException("Current physical walking-route support is absent: "+entry.id);
-                    }
+                    var entry=currentNavigation.BindCurrentWalkingRoute(source);
                     var go=new GameObject(entry.label);go.transform.SetParent(links.transform,false);
                     var walking=go.AddComponent<StationWalkingRoute>();walking.Setup(entry);WalkingRoutes.Add(walking);
                 }
