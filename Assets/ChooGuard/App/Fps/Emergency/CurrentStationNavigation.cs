@@ -24,6 +24,7 @@ namespace ChooGuard.App.Fps.Emergency
         readonly List<string> physicalReport=new List<string>();
         List<NavMeshBuildSource> collectedSources;
         NavMeshBuildSettings collectedSettings;
+        WalkingMachineBox[] boundWalkingMachines;
         NavMeshDataInstance instance;
         public NavMeshData Data {get;private set;}
         public IReadOnlyList<string> PhysicalReport=>physicalReport;
@@ -238,6 +239,8 @@ namespace ChooGuard.App.Fps.Emergency
                 LoadExplicitCurrentFloorSources();
                 Physics.SyncTransforms();
                 var lanes=MeasureBoundLanes(catalog,bindings,train);
+                boundWalkingMachines=lanes.Select(lane=>new WalkingMachineBox(lane.Id,
+                    Matrix4x4.TRS(lane.BoxCentre,lane.BoxRotation,Vector3.one).inverse,lane.BoxSize)).ToArray();
                 var sources=StationNavigationRecipe.Collect(scene,bounds,train,namedBelts,lanes,true);
                 if(sources.Count==0)throw new InvalidOperationException("No actual current navigation sources");
                 collectedSources=sources;collectedSettings=CurrentSourceSettings();
@@ -334,28 +337,179 @@ namespace ChooGuard.App.Fps.Emergency
             return measured.Select(row=>row.lane).ToList();
         }
 
+        internal readonly struct WalkingMachineBox
+        {
+            public readonly string Id;
+            public readonly Matrix4x4 Inverse;
+            public readonly Vector3 Half;
+            public WalkingMachineBox(string id,Matrix4x4 inverse,Vector3 size)
+            {
+                if(string.IsNullOrWhiteSpace(id)||!SourceFrameResolved(inverse)||size.x<=0||size.y<=0||size.z<=0||
+                    float.IsNaN(size.x)||float.IsNaN(size.y)||float.IsNaN(size.z)||float.IsInfinity(size.x)||float.IsInfinity(size.y)||float.IsInfinity(size.z))
+                    throw new InvalidOperationException("Current bound machinery frame is unresolved");
+                Id=id;Inverse=inverse;
+                // Actual source-derived NotWalkable box plus the unchanged walking
+                // controller radius. No source/modifier extent is reduced.
+                Half=size*.5f+Vector3.one*NativeLandingWalker.Radius;
+            }
+            public bool Intersects(Vector3 from,Vector3 to,out float first,out float last)
+            {
+                var a=Inverse.MultiplyPoint3x4(from);var b=Inverse.MultiplyPoint3x4(to);
+                first=0;last=1;
+                for(int axis=0;axis<3;axis++)
+                {
+                    float start=a[axis],delta=b[axis]-start,half=Half[axis];
+                    if(Mathf.Abs(delta)<1e-8f){if(start< -half||start>half)return false;continue;}
+                    float low=(-half-start)/delta,high=(half-start)/delta;
+                    if(low>high){var swap=low;low=high;high=swap;}
+                    first=Mathf.Max(first,low);last=Mathf.Min(last,high);
+                    if(first>last)return false;
+                }
+                return first<=last;
+            }
+        }
+
+        static Vector3 WalkingPointAt(IReadOnlyList<Vector3> path,float[] distances,float at)
+        {
+            for(int i=1;i<path.Count;i++)
+                if(at<=distances[i]&&distances[i]>distances[i-1])
+                    return Vector3.Lerp(path[i-1],path[i],(at-distances[i-1])/(distances[i]-distances[i-1]));
+            return path[path.Count-1];
+        }
+
+        internal static Vector3[] CurrentPublicWalkingPath(IReadOnlyList<Vector3> source,IReadOnlyList<WalkingMachineBox> machines,out string proof)
+        {
+            if(source==null||source.Count<3||machines==null)throw new InvalidOperationException("Current walking source inventory is incomplete");
+            foreach(var point in source)
+                if(float.IsNaN(point.x)||float.IsNaN(point.y)||float.IsNaN(point.z)||float.IsInfinity(point.x)||float.IsInfinity(point.y)||float.IsInfinity(point.z))
+                    throw new InvalidOperationException("Current walking source point is nonfinite");
+            var distances=new float[source.Count];
+            var intervals=new List<(float first,float last)>();var observed=new List<string>();var observedFrames=new SortedSet<string>(StringComparer.Ordinal);
+            for(int i=1;i<source.Count;i++)
+            {
+                float length=Vector3.Distance(source[i-1],source[i]);distances[i]=distances[i-1]+length;
+                if(length<1e-8f)continue;
+                foreach(var machine in machines)
+                    if(machine.Intersects(source[i-1],source[i],out var first,out var last))
+                    {
+                        intervals.Add((distances[i-1]+first*length,distances[i-1]+last*length));
+                        observedFrames.Add(machine.Id+"/inverse="+ProbeMatrix(machine.Inverse)+"/expandedHalf="+ProbePosition(machine.Half));
+                        observed.Add(machine.Id+"/sourceSegment="+(i-1)+"/t=["+first.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+","+
+                            last.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+"]");
+                    }
+            }
+            float total=distances[distances.Length-1],begin=0,end=total;
+            var merged=new List<(float first,float last)>();
+            foreach(var interval in intervals.OrderBy(row=>row.first).ThenBy(row=>row.last))
+            {
+                if(merged.Count==0||interval.first>merged[merged.Count-1].last+1e-5f)merged.Add(interval);
+                else{var prior=merged[merged.Count-1];merged[merged.Count-1]=(prior.first,Mathf.Max(prior.last,interval.last));}
+            }
+            // Only source-qualified contiguous machinery END caps may be removed.
+            // A crossing in the public interior cannot become an artificial shortcut.
+            if(merged.Count!=0)
+            {
+                if(merged[0].first<=1e-5f)begin=merged[0].last+.001f;
+                if(merged[merged.Count-1].last>=total-1e-5f)end=merged[merged.Count-1].first-.001f;
+                foreach(var interval in merged)
+                    if(interval.last>begin&&interval.first<end)
+                        throw new InvalidOperationException("Current walking source crosses bound machinery in its public interior");
+            }
+            if(end-begin<.1f)throw new InvalidOperationException("Current walking source has no continuous public interval outside bound machinery");
+            var result=new List<Vector3>{WalkingPointAt(source,distances,begin)};
+            for(int i=1;i<source.Count-1;i++)if(distances[i]>begin&&distances[i]<end)result.Add(source[i]);
+            result.Add(WalkingPointAt(source,distances,end));
+            if(Vector3.Distance(result[0],result[result.Count-1])<.1f)
+                throw new InvalidOperationException("Current walking public endpoints are not distinct");
+            proof="MODEL_CURRENT_PUBLIC_WALK_SOURCE; originalChainage="+total.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+
+                "; retainedChainage=["+begin.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+","+end.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+
+                "]; completeBoundSourceFrames="+machines.Count+"; sourceBoundArea1PlusControllerRadius="+NativeLandingWalker.Radius+
+                "; endcapOutwardMargin=.001; exactSourceFrames={"+string.Join(" | ",observedFrames)+"}; exactSourceIntervals={"+string.Join(" | ",observed)+"}; raw source retained, no machinery traversed as public walking";
+            return result.ToArray();
+        }
+
+        static bool WalkingActor(Collider collider)=>collider.GetComponentInParent<PersonBody>()!=null;
+
+        void RequireCurrentWalkingClearance(Vector3 feet,string identity)
+        {
+            var bottom=feet+Vector3.up*(NativeLandingWalker.Radius+.03f);
+            var top=feet+Vector3.up*(NativeLandingWalker.Height-NativeLandingWalker.Radius);
+            var blocker=Physics.OverlapCapsule(bottom,top,NativeLandingWalker.Radius,~0,QueryTriggerInteraction.Ignore)
+                .FirstOrDefault(collider=>!WalkingActor(collider));
+            if(blocker!=null)throw new InvalidOperationException("Current public walking capsule is blocked: "+identity+"; feet="+ProbePosition(feet)+"; "+ProbeCollider(blocker));
+        }
+
+        void RequireCurrentWalkingSweep(Vector3 from,Vector3 to,string identity)
+        {
+            var motion=to-from;float distance=motion.magnitude;
+            if(distance<=1e-6f)return;
+            var bottom=from+Vector3.up*(NativeLandingWalker.Radius+.03f);
+            var top=from+Vector3.up*(NativeLandingWalker.Height-NativeLandingWalker.Radius);
+            var blocker=Physics.CapsuleCastAll(bottom,top,NativeLandingWalker.Radius,motion/distance,distance,~0,QueryTriggerInteraction.Ignore)
+                .FirstOrDefault(hit=>!WalkingActor(hit.collider));
+            // Additive-scene solids remain obstacles to the actual controller.
+            // This conservative certificate is not CC step/gravity execution.
+            if(blocker.collider!=null)throw new InvalidOperationException("Current public walking continuous capsule sweep is blocked: "+identity+
+                "; from="+ProbePosition(from)+"; to="+ProbePosition(to)+"; "+ProbeHit(blocker));
+        }
+
+        void RequireCurrentPublicWalkingPath(StationWalkingRouteEntry source,IReadOnlyList<Vector3> path,WalkingMachineBox[] machines,
+            Func<Collider,bool> currentOwner,string identity)
+        {
+            Vector3? prior=null;
+            for(int i=1;i<path.Count;i++)
+            {
+                foreach(var machine in machines)if(machine.Intersects(path[i-1],path[i],out _,out _))
+                    throw new InvalidOperationException("Current public walking segment still crosses bound machinery: "+identity+"; source="+machine.Id);
+                int count=Mathf.Max(1,Mathf.CeilToInt(Vector3.Distance(path[i-1],path[i])/NativeLandingWalker.MaxStep));
+                for(int step=0;step<=count;step++)
+                {
+                    var staged=Vector3.Lerp(path[i-1],path[i],step/(float)count);
+                    if(!NativeLandingWalker.Floor(staged,source,null,currentOwner,collider=>collider.gameObject.scene==scene,out var height))
+                        throw new InvalidOperationException("Current public walking nine-ray floor is absent: "+identity+"; staged="+ProbePosition(staged));
+                    var feet=new Vector3(staged.x,height,staged.z);RequireCurrentWalkingClearance(feet,identity);
+                    if(prior.HasValue)RequireCurrentWalkingSweep(prior.Value,feet,identity);
+                    prior=feet;
+                }
+            }
+        }
+
+        Vector3 CurrentWalkingAnchor(Vector3 source,string identity)
+        {
+            bool found=NavMesh.SamplePosition(source,out var hit,.12f,NavMesh.AllAreas);
+            if(!found||Mathf.Abs(hit.position.y-source.y)>.15f)
+                throw new InvalidOperationException("Current public walking endpoint lacks strict Nav attachment: "+identity+"; source="+ProbePosition(source)+
+                    "; sampleRadius=.12; maxYDelta=.15; found="+found+(found?"; hit="+ProbePosition(hit.position):""));
+            return hit.position;
+        }
+
         internal StationWalkingRouteEntry BindCurrentWalkingRoute(StationWalkingRouteEntry source)
         {
             source.Validate();
+            var machines=boundWalkingMachines??throw new InvalidOperationException("Current bound source machinery domains are absent");
+            var publicPath=CurrentPublicWalkingPath(source.path,machines,out var trimProof);
             var observedOwners=new HashSet<string>(StringComparer.Ordinal);
             bool CurrentOwner(Collider collider)
             {
                 if(collider==null||collider.gameObject.scene!=scene||!newFloorSources.Contains(collider))return false;
                 observedOwners.Add(PathOf(collider.transform));return true;
             }
-            for(int i=1;i<source.path.Length;i++)
-            {
-                int samples=Mathf.Max(1,Mathf.CeilToInt(Vector3.Distance(source.path[i-1],source.path[i])/.25f));
-                for(int j=0;j<=samples;j++)
-                    if(!NativeLandingWalker.Floor(Vector3.Lerp(source.path[i-1],source.path[i],j/(float)samples),source,null,CurrentOwner,out _))
-                        throw new InvalidOperationException("Current physical walking-route support is absent: "+source.id);
-            }
-            // Preserve the complete historical route and exact endpoint/polyline
-            // coordinates. Bind only current required-floor owners actually exposed
-            // by the unchanged nine-ray normal/height/spread checks at this path.
-            var bound=source.WithCurrentFloorOwners(observedOwners);
-            physicalReport.Add("CURRENT_WALKING_ROUTE_SOURCE "+source.id+"; unchanged source points="+source.path.Length+
-                "; observed approved current floor owners="+string.Join("|",observedOwners.OrderBy(owner=>owner,StringComparer.Ordinal)));
+            // Both endpoints are checked before any owned walking link exists.
+            // Missing navigation never authorizes a trim or a broader/sideways probe.
+            var failures=new List<Exception>();Vector3 start=default,end=default;
+            try{start=CurrentWalkingAnchor(publicPath[0],source.id+"/start; "+trimProof);}
+            catch(InvalidOperationException cause){failures.Add(cause);}
+            try{end=CurrentWalkingAnchor(publicPath[publicPath.Length-1],source.id+"/end; "+trimProof);}
+            catch(InvalidOperationException cause){failures.Add(cause);}
+            if(failures.Count!=0)throw new InvalidOperationException(string.Join(" | ",failures.Select(cause=>cause.Message)),new AggregateException(failures));
+            var current=new List<Vector3>{start};
+            foreach(var point in publicPath)if((current[current.Count-1]-point).sqrMagnitude>1e-10f)current.Add(point);
+            if((current[current.Count-1]-end).sqrMagnitude>1e-10f)current.Add(end);
+            RequireCurrentPublicWalkingPath(source,current,machines,CurrentOwner,source.id);
+            var bound=source.WithCurrentFloorOwners(observedOwners).WithCurrentPublicPath(current.ToArray(),trimProof+
+                "; strict currentNav=.12/.15; complete public owner9-ray/.3m1.72m capsule and continuous sweep; no side probe/floor/link invented");
+            physicalReport.Add("CURRENT_WALKING_ROUTE_SOURCE "+source.id+"; original points="+source.path.Length+"; current public points="+bound.path.Length+
+                "; "+bound.CurrentSourceProof+"; observed approved current floor owners="+string.Join("|",observedOwners.OrderBy(owner=>owner,StringComparer.Ordinal)));
             return bound;
         }
 
@@ -1062,7 +1216,7 @@ namespace ChooGuard.App.Fps.Emergency
             if(instance.valid)instance.Remove();
             if(Data!=null){UnityEngine.Object.Destroy(Data);Data=null;}
             foreach(var support in supports)if(support!=null)UnityEngine.Object.Destroy(support);
-            supports.Clear();collectedSources=null;
+            supports.Clear();collectedSources=null;boundWalkingMachines=null;
         }
     }
     internal sealed class CurrentStationNavigationLifetime : MonoBehaviour

@@ -36,7 +36,8 @@ namespace ChooGuard.App.Fps.Emergency
         /// The walkable floor as baked, untouched by anything the session does (a fire or a locked door carving the live navmesh, a closed link). Features that
         /// must not read hidden world state, like the staff member's guidance, walk it. Added the first time it is asked for.
         /// </summary>
-        public BakedFloor Baked => baked ??= new BakedFloor(navmeshData);
+        public BakedFloor Baked => baked ??= UsesCurrentSourceNavigation
+            ?new BakedFloor(navmeshData,WalkingRoutes.Select(route=>route.Entry).ToArray()):new BakedFloor(navmeshData);
 
         private NavMeshDataInstance navmesh;
         private readonly NavMeshData navmeshData;
@@ -129,9 +130,18 @@ namespace ChooGuard.App.Fps.Emergency
                     elevator.SetNavigationAvailable(true,"BOUND_CURRENT_ELEVATOR_SOURCE");
                 }
                 foreach(var escalator in Escalators)escalator.SetNavigationAvailable(suppliedIds.Contains(escalator.Entry.id));
+                // Derive every public route against current Data before registering
+                // any walking link; no route may borrow another new link as authority.
+                var currentWalking=new List<StationWalkingRouteEntry>();var walkingFailures=new List<Exception>();
                 foreach(var source in walkingEntries)
                 {
-                    var entry=currentNavigation.BindCurrentWalkingRoute(source);
+                    try{currentWalking.Add(currentNavigation.BindCurrentWalkingRoute(source));}
+                    catch(InvalidOperationException cause){walkingFailures.Add(cause);}
+                }
+                if(walkingFailures.Count!=0)throw new InvalidOperationException("Current public walking-route binding failed: "+
+                    string.Join(" | ",walkingFailures.Select(cause=>cause.Message)),new AggregateException(walkingFailures));
+                foreach(var entry in currentWalking)
+                {
                     var go=new GameObject(entry.label);go.transform.SetParent(links.transform,false);
                     var walking=go.AddComponent<StationWalkingRoute>();walking.Setup(entry);WalkingRoutes.Add(walking);
                 }

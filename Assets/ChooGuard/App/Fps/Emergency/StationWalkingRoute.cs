@@ -16,6 +16,9 @@ namespace ChooGuard.App.Fps.Emergency
         public Vector3[] path;
         // Exact collider paths from the proof packet, not broad name exemptions.
         public string[] floorOwners;
+        IReadOnlyList<Vector3> sourcePath;
+        public IReadOnlyList<Vector3> SourcePath=>sourcePath??Array.AsReadOnly((Vector3[])path.Clone());
+        public string CurrentSourceProof {get;private set;}
         public Vector3 Start => path[0];
         public Vector3 End => path[path.Length - 1];
         public float Length
@@ -43,7 +46,18 @@ namespace ChooGuard.App.Fps.Emergency
                 owners.Add(owner);
             }
             return new StationWalkingRouteEntry {id=id,label=label,proof=proof,physicalVerified=physicalVerified,
-                path=(Vector3[])path.Clone(),floorOwners=new List<string>(owners).ToArray()};
+                path=(Vector3[])path.Clone(),floorOwners=new List<string>(owners).ToArray(),sourcePath=sourcePath,CurrentSourceProof=CurrentSourceProof};
+        }
+        internal StationWalkingRouteEntry WithCurrentPublicPath(Vector3[] publicPath,string evidence)
+        {
+            Validate();
+            if(publicPath==null||string.IsNullOrWhiteSpace(evidence))
+                throw new InvalidOperationException("Current public walking path/provenance is incomplete: "+id);
+            var retained=SourcePath;var original=new Vector3[retained.Count];for(int i=0;i<original.Length;i++)original[i]=retained[i];
+            var entry=new StationWalkingRouteEntry {id=id,label=label,proof=proof,physicalVerified=physicalVerified,
+                path=(Vector3[])publicPath.Clone(),floorOwners=(string[])floorOwners.Clone(),
+                sourcePath=Array.AsReadOnly(original),CurrentSourceProof=evidence};
+            entry.Validate();return entry;
         }
         public NavMeshLinkData LinkData(int agentType = 0) => new NavMeshLinkData
         {
@@ -163,6 +177,10 @@ namespace ChooGuard.App.Fps.Emergency
         // walking policy continues to use its exact route owner paths alone.
         internal static bool Floor(Vector3 staged, StationWalkingRouteEntry route, GameObject actor,
             Func<Collider,bool> currentSourceOwner,out float height)
+            =>Floor(staged,route,actor,currentSourceOwner,null,out height);
+
+        internal static bool Floor(Vector3 staged,StationWalkingRouteEntry route,GameObject actor,
+            Func<Collider,bool> currentSourceOwner,Func<Collider,bool> currentSourceEligible,out float height)
         {
             height = float.NegativeInfinity;
             float lowest = float.PositiveInfinity;
@@ -175,7 +193,7 @@ namespace ChooGuard.App.Fps.Emergency
                 RaycastHit top = default; bool found = false;
                 foreach (var hit in hits)
                     if (hit.collider.gameObject != actor && hit.collider.GetComponentInParent<PersonBody>() == null && (!found || hit.distance < top.distance)) { top = hit; found = true; }
-                if (!found || top.normal.y < .9f) return false;
+                if (!found || currentSourceEligible!=null&&!currentSourceEligible(top.collider) || top.normal.y < .9f) return false;
                 if (Array.IndexOf(route.floorOwners, Path(top.collider.transform)) < 0 &&
                     (currentSourceOwner == null || !currentSourceOwner(top.collider))) return false;
                 height = Mathf.Max(height, top.point.y);
