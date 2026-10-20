@@ -62,7 +62,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         // The coarse cell survey is useful, but is not a connected-component proof.
         // A failed point alone gets a complete directed native witness to an existing
-        // qualified exit. It is only a graph representation: no source pose, floor,
+        // exit-reachable draft seed. It is only a graph representation: no source pose, floor,
         // body clearance, native area, or runtime point qualification is changed.
         void AttachEveryCurrentPoint(Draft draft,StationPoints points)
         {
@@ -87,9 +87,11 @@ namespace ChooGuard.App.Fps.Emergency
                     TryEdge(draft,points,path,corners,index,other,true,trace);
                     if(draft.Edges.Count>before&&++attached==3)break;
                 }
-                bool reachesExit=HasFootExit(draft,index,exits);
+                var exitReachable=FootExitReachable(draft,exits);
+                bool reachesExit=exitReachable[index];
+                var seeds=Enumerable.Range(0,draft.Positions.Count).Where(i=>i!=index&&exitReachable[i]).ToArray();
                 if(!reachesExit)trace.Add("coarse-no-foot-exit", "coarseAttachments="+attached);
-                if(reachesExit||TryAttachWitness(draft,points,path,corners,index,exits,trace))continue;
+                if(reachesExit||TryAttachWitness(draft,points,path,corners,index,seeds,trace))continue;
                 // A failed transaction never publishes corner nodes or edges. This
                 // source may have coarse edges to a dead end. Remove ALL its new
                 // directed edges before removing/reusing the node index. No partial
@@ -107,36 +109,45 @@ namespace ChooGuard.App.Fps.Emergency
         // Exactly the current draft's Evacuation admission: directions are real
         // arcs; elevator/missing/closed/barred owners do not establish exit reach.
         // Stopped but unbarred escalators retain the existing walked-stairs rule.
-        bool HasFootExit(Draft draft,int source,int[] exits)
+        bool HasFootExit(Draft draft,int source,int[] exits)=>FootExitReachable(draft,exits)[source];
+
+        // A direct long native query can exhaust its search-node budget. Roots are
+        // therefore ALL existing nodes with a certified directed Evacuation chain,
+        // not only distant exits. Reverse graph reach is exact, not a proximity or
+        // connected-component guess; closed/unknown/elevator owners cannot seed it.
+        bool[] FootExitReachable(Draft draft,int[] exits)
         {
-            var goals=new HashSet<int>(exits);var seen=new HashSet<int>();var pending=new Stack<int>();
-            var outgoing=new List<int>[draft.Positions.Count];
+            var reverse=new List<int>[draft.Positions.Count];
             foreach(var edge in draft.Edges)
                 if(edge.link.Length==0||(edge.link!=RouteGraph.ElevatorLink&&FootOwnerAvailable(edge.link)))
-                    (outgoing[edge.from]??=new List<int>()).Add(edge.to);
-            pending.Push(source);seen.Add(source);
+                    (reverse[edge.to]??=new List<int>()).Add(edge.from);
+            var seen=new bool[draft.Positions.Count];var pending=new Stack<int>();
+            foreach(int exit in exits){seen[exit]=true;pending.Push(exit);}
             while(pending.Count>0)
             {
-                int node=pending.Pop();if(goals.Contains(node))return true;
-                if(outgoing[node]==null)continue;
-                foreach(int next in outgoing[node])if(seen.Add(next))pending.Push(next);
+                int node=pending.Pop();if(reverse[node]==null)continue;
+                foreach(int prior in reverse[node])if(!seen[prior]){seen[prior]=true;pending.Push(prior);}
             }
-            return false;
+            return seen;
         }
 
-        bool TryAttachWitness(Draft draft,StationPoints points,NavMeshPath path,Vector3[] corners,int source,int[] exits,AttachmentTrace trace)
+        bool TryAttachWitness(Draft draft,StationPoints points,NavMeshPath path,Vector3[] corners,int source,int[] seeds,AttachmentTrace trace)
         {
-            foreach(int exit in exits.OrderBy(i=>(draft.Positions[i]-draft.Positions[source]).sqrMagnitude))
+            var targets=seeds.Where(i=>i!=source).Distinct().OrderBy(i=>(draft.Positions[i]-draft.Positions[source]).sqrMagnitude).ThenBy(i=>i).ToArray();
+            trace.Add("witness-foot-exit-seeds","certifiedDirectedSeeds="+targets.Length);
+            foreach(int exit in targets)
             {
                 int mask=NavMesh.AllAreas&~(1<<StationWorld.ElevatorArea);
-                if(!NavMesh.CalculatePath(draft.Positions[source],draft.Positions[exit],mask,path)||path.status!=NavMeshPathStatus.PathComplete)
-                {trace.Add("witness-incomplete","exit="+draft.Labels[exit]+" status="+path.status);continue;}
+                bool found=NavMesh.CalculatePath(draft.Positions[source],draft.Positions[exit],mask,path);
+                trace.Add("witness-query-"+(found?"true":"false"));trace.Add("witness-status-"+path.status);
+                if(!found||path.status!=NavMeshPathStatus.PathComplete)
+                {trace.Add("witness-incomplete","seed="+exit+":"+draft.Labels[exit]+" status="+path.status+" query="+found+" source="+Exact(draft.Positions[source])+" target="+Exact(draft.Positions[exit]));continue;}
                 int count=path.GetCornersNonAlloc(corners);
-                if(count<2||count>=corners.Length){trace.Add("witness-empty-or-truncated","exit="+draft.Labels[exit]+" corners="+count);continue;}
+                if(count<2||count>=corners.Length){trace.Add("witness-empty-or-truncated","seed="+exit+":"+draft.Labels[exit]+" corners="+count);continue;}
                 // Every subsequent native call reuses the same path/buffer. Keep the
                 // complete witness first; no forward result implies a reverse edge.
                 var witness=new Vector3[count];Array.Copy(corners,witness,count);
-                trace.Add("witness-complete","exit="+draft.Labels[exit]+" corners="+count+" source="+Exact(draft.Positions[source])+" target="+Exact(draft.Positions[exit]));
+                trace.Add("witness-complete","seed="+exit+":"+draft.Labels[exit]+" corners="+count+" source="+Exact(draft.Positions[source])+" target="+Exact(draft.Positions[exit]));
                 if(witness.Any(p=>!Finite(p))||Vector3.Distance(witness[0],draft.Positions[source])>.6f||
                     Vector3.Distance(witness[count-1],draft.Positions[exit])>.6f)
                 {trace.Add("witness-endpoint-or-finite");continue;}
@@ -144,7 +155,7 @@ namespace ChooGuard.App.Fps.Emergency
                 for(int segment=1;segment<count&&complete;segment++)
                 {
                     if(!TryWitnessSeam(staged,points,witness[segment-1],witness[segment],out int seamFrom,out int seamTo,out bool seam,out string reason))
-                    {trace.Add(reason,"exit="+draft.Labels[exit]+" segment="+(segment-1)+" from="+Exact(witness[segment-1])+" to="+Exact(witness[segment]));complete=false;break;}
+                    {trace.Add(reason,"seed="+exit+":"+draft.Labels[exit]+" segment="+(segment-1)+" from="+Exact(witness[segment-1])+" to="+Exact(witness[segment]));complete=false;break;}
                     if(seam)
                     {
                         complete=AppendGround(staged,points,path,corners,ref current,staged.Positions[seamFrom],seamFrom,trace);
