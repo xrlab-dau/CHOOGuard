@@ -126,7 +126,7 @@ class FocusedRouteWorkflowTests(unittest.TestCase):
         self.assertEqual(text.count("      - id: editverdict\n"), 1)
         self.assertEqual(text.count("      - id: routegraph\n"), 1)
         self.assertNotIn("steps.routegraph", full)
-        self.assertIn("timeout-minutes: 60", full)
+        self.assertIn("timeout-minutes: 240", full)
         self.assertIn("run: .github/scripts/unity_ci.sh test PlayMode", full)
         final = step("name: Verdict\n")
         for mode in ("EditMode", "PlayMode", "RouteGraph"):

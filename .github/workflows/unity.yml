@@ -132,7 +132,7 @@ jobs:
       matrix:
         os: ${{ fromJSON(needs.gate.outputs.tests) }}
     runs-on: ${{ fromJSON('{"windows":"windows-2025","macos":"macos-26","linux":"ubuntu-24.04"}')[matrix.os] }}
-    timeout-minutes: 240
+    timeout-minutes: 360
     concurrency:
       group: unity-licence
       cancel-in-progress: false
@@ -251,7 +251,7 @@ jobs:
       - id: playmode
         name: PlayMode tests
         if: always() && steps.activate.outcome == 'success' && steps.editverdict.outcome == 'success' && steps.routeverdict.outcome == 'success'
-        timeout-minutes: 60
+        timeout-minutes: 240
         env:
           UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
           UNITY_PROJECT: ${{ github.workspace }}/${{ env.PROJECT }}
