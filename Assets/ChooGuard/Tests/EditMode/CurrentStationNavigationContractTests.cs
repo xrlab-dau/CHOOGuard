@@ -51,7 +51,7 @@ namespace ChooGuard.Tests.EditMode
                 var row=Set(new StationPoints.CurrentBinding(),"Source",point);Set(row,"Runtime",runtime);
                 Set(row,"Status","BOUND_MODEL_COMPUTED_WALKABLE");Set(row,"Evidence","Controlled metadata fixture; no physical/Scene proof");return row;
             }).ToArray();
-            var physical=(StationPoints)Call(source,"WithCurrentBindings",bindings);
+            var physical=(StationPoints)Call(source,"WithCurrentBindings",(object)bindings);
             admitted=physical.All.ToDictionary(point=>point.Id,point=>"CERTIFIED_CURRENT_MODEL_FOOT_DESTINATION; controlled software fixture");
             pending=new Dictionary<string,string>();
             required=physical.Of(PointKind.Exit).Select(exit=>
