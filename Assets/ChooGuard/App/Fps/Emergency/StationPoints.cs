@@ -78,10 +78,12 @@ namespace ChooGuard.App.Fps.Emergency
             return view;
         }
 
-        internal StationPoints RoutingView(IReadOnlyList<Escalator> supplied)
+        internal StationPoints RoutingView(IReadOnlyList<Escalator> supplied,IReadOnlyList<Elevator> elevators)
         {
             var ids=new HashSet<string>(System.Linq.Enumerable.Select(supplied,x=>x.Entry.id));
-            var view=new StationPoints { Zones=Zones, Elevators=Elevators, Platforms=Platforms, Train=Train,
+            var elevatorIds=new HashSet<string>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Where(elevators,e=>e.NavigationAvailable),e=>e.Entry.id));
+            var view=new StationPoints { Zones=Zones, Platforms=Platforms, Train=Train,
+                Elevators=System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Where(Elevators,e=>elevatorIds.Contains(e.id))),
                 Escalators=System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Where(Escalators,e=>ids.Contains(e.id))),
                 SourceAll=SourceAll,SourceSha256=SourceSha256,CurrentBindings=CurrentBindings };
             view.all.AddRange(all);

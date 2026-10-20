@@ -20,10 +20,10 @@ namespace ChooGuard.App.Fps.Emergency
         CurrentStationRouteBuilder(IReadOnlyList<StationWalkingRoute> walking)
         { walkingRoutes=walking.Select(w=>w.Entry).ToArray(); }
 
-        internal static RouteGraph Build(StationPoints current,IReadOnlyList<Escalator> supplied,
+        internal static RouteGraph Build(StationPoints current,IReadOnlyList<Escalator> supplied,IReadOnlyList<Elevator> elevators,
             IReadOnlyList<StationWalkingRoute> walking,TextAsset original)
         {
-            var points=current.RoutingView(supplied);
+            var points=current.RoutingView(supplied,elevators);
             var builder=new CurrentStationRouteBuilder(walking);
             var draft=builder.Sample(points);builder.Connect(draft,points);builder.Prune(draft);
             builder.AttachEveryCurrentPoint(draft,points);

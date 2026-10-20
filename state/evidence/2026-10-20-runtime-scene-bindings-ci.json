@@ -69,15 +69,23 @@
     "latest_candidate_inputs": [
       {
         "path": "Assets/ChooGuard/App/Fps/Emergency/CurrentStationNavigation.cs",
-        "sha256": "516427063ca752507dd788117a800a2bfb059dcabb4163e4fd57800105d1eb4f"
+        "sha256": "64ab4327be9250151986b388af107d49c7050d5d3e1c96f523b49e556da45484"
       },
       {
-        "path": "Assets/ChooGuard/App/Fps/Emergency/StationNavigationGeometry.cs",
-        "sha256": "80d6960f397fc7df581328c880a613bde253d21ccc7bf6d354922db9d12fdd5d"
+        "path": "Assets/ChooGuard/App/Fps/Emergency/CurrentStationRouteBuilder.cs",
+        "sha256": "acc308f54a44300c3d1e5aa921d2c17b2e00ec622ce0dce379f1124b30941ab0"
       },
       {
-        "path": "Assets/ChooGuard/Presentation/Circulation/PlatformEscalatorRun.cs",
-        "sha256": "e43ddebdccb5f75ff4ec36de0c7f5c279a42489265bf4c9db985017d5b061505"
+        "path": "Assets/ChooGuard/App/Fps/Emergency/StationLinks.cs",
+        "sha256": "43d38716f1a1ab99d89c8a7bf94264e5fe353e22fd8e4f2a74704019b87527f8"
+      },
+      {
+        "path": "Assets/ChooGuard/App/Fps/Emergency/StationPoints.cs",
+        "sha256": "57ea18c1bfe1d8910d30a862ee0c6cb5b8e3100b784b588ca40660f8c2f0c9a1"
+      },
+      {
+        "path": "Assets/ChooGuard/App/Fps/Emergency/StationWorld.cs",
+        "sha256": "0c773e1c90b35c97f652d13095f23cc827dcd44ce99a50404da474713c1c97d8"
       }
     ]
   },
@@ -87,7 +95,8 @@
     "legacy_fixture_lifecycle": 27,
     "ci_script_unit_tests": 90,
     "bound_original_tread_geometry_and_accessor": 226,
-    "focused_ci_boundary_and_verdict": 38
+    "focused_ci_boundary_and_verdict": 38,
+    "current_elevator_source_availability_owned_links_routing": 77
   },
   "navigation_saved_solid_sources": {
     "colliders": 9671,
@@ -140,5 +149,18 @@
     "partial_source_loss_remains_error": true,
     "logical_stop_restart_catalog_controls_preserved": true
   },
-  "legacy_independent_jev_scenarios": "Independent completed incidents use fresh shifts; the same client, budget, connection and usage accounting are retained. Existing rejection, stale-response, cancellation and count assertions remain."
+  "legacy_independent_jev_scenarios": "Independent completed incidents use fresh shifts; the same client, budget, connection and usage accounting are retained. Existing rejection, stale-response, cancellation and count assertions remain.",
+  "source_qualified_elevator_bindings": {
+    "catalog_banks": 1,
+    "catalog_stops": 2,
+    "raw_catalog_and_stop_coordinates_preserved": true,
+    "qualification": "Complete unique authored current-scene elevator StationDoor/Cabin/CarId bank; exact stop footprint/clearance plus unchanged0.6mNav/0.35mstorey guard required before navigation availability.",
+    "zero_current_matching_stop_sources": "Explicit UNBOUND logical control; not a claim that no elevator exterior mesh exists.",
+    "partial_ambiguous_or_invalid_bound_bank": "ERROR; no partial source fallback.",
+    "unavailable_service": "No owned navigation links, derived routing stops/edges or current-source RideUnseen fallback. Stop/resume cannot grant source availability.",
+    "supplied_data_constructor_semantics": "Preserved; synthetic retained-data fixtures remain explicit separate path.",
+    "source_model_geometry_created_moved_removed": false,
+    "native_current_qualification_verdict": "PENDING ACTUAL FINAL HEAD CI; this is prepared code/evidence, not a runtime pass.",
+    "pending_stopped_state_applies_on_bind": true
+  }
 }

@@ -115,11 +115,18 @@ namespace ChooGuard.App.Fps.Emergency
                 navmeshData=currentNavigation.Data;
                 foreach(var entry in Points.Elevators)
                 {
-                    foreach(var stop in entry.stops)
-                        if(!NavMesh.SamplePosition(stop.door,out var hit,.6f,NavMesh.AllAreas)||Mathf.Abs(hit.position.y-stop.door.y)>.35f)
-                            throw new InvalidOperationException("Current source elevator landing is not on its own storey: "+entry.id+"/"+stop.floor);
+                    // Preserve the complete logical catalog/control even when its
+                    // historical coordinates have no supplied current machinery.
                     var go=new GameObject(entry.label);go.transform.SetParent(links.transform,false);
-                    var elevator=go.AddComponent<Elevator>();elevator.Setup(entry);Elevators.Add(elevator);
+                    var elevator=go.AddComponent<Elevator>();elevator.Setup(entry,false);Elevators.Add(elevator);
+                    if(!elevator.TryBindCurrentSource(sourceScene))continue;
+                    foreach(var stop in entry.stops)
+                    {
+                        currentNavigation.RequireCurrentElevatorSupport(stop,entry.id+"/"+stop.floor);
+                        bool found=NavMesh.SamplePosition(stop.door,out var hit,.6f,NavMesh.AllAreas);
+                        Elevator.RequireCurrentLanding(found,hit.position.y-stop.door.y,entry.id+"/"+stop.floor);
+                    }
+                    elevator.SetNavigationAvailable(true,"BOUND_CURRENT_ELEVATOR_SOURCE");
                 }
                 foreach(var escalator in Escalators)escalator.SetNavigationAvailable(suppliedIds.Contains(escalator.Entry.id));
                 foreach(var entry in walkingEntries)
@@ -138,7 +145,7 @@ namespace ChooGuard.App.Fps.Emergency
                 }
                 Points=currentNavigation.BindPoints(SourcePoints,art.WorldNavMesh);
                 Paths=new PathService(this,CurrentStationRouteBuilder.Build(Points,
-                    Escalators.Where(e=>e.NavigationAvailable).ToArray(),WalkingRoutes,routes));
+                    Escalators.Where(e=>e.NavigationAvailable).ToArray(),Elevators,WalkingRoutes,routes));
             }
             else Paths=new PathService(this,RouteGraph.Load(routes,Escalators,WalkingRoutes));
             PersonBody.Paths = Paths;

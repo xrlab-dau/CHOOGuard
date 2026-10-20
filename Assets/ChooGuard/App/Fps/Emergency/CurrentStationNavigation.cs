@@ -304,6 +304,16 @@ namespace ChooGuard.App.Fps.Emergency
             return measured.Select(row=>row.lane).ToList();
         }
 
+        internal void RequireCurrentElevatorSupport(StationPoints.ElevatorStop stop,string identity)
+        {
+            // A catalog door cannot move to a nearby clear patch simply because a
+            // navigation radius finds it. Keep the exact source pose and require
+            // its own current saved-collider footprint and standing clearance.
+            if(!Footprint(stop.door,null,out _,out var evidence))
+                throw new InvalidOperationException("Current source elevator landing has no exposed physical support/clearance: "+identity);
+            physicalReport.Add("BOUND_CURRENT_ELEVATOR_LANDING "+identity+"; "+evidence);
+        }
+
         internal static string BindingDecision(bool provenAbsent,bool physicalSupported,bool currentNavSupported)
         {
             if(provenAbsent)
@@ -393,7 +403,7 @@ namespace ChooGuard.App.Fps.Emergency
             // The old cache is only an independent partial classification reference;
             // actual current footprint+clearance are mandatory. Explicit current floors
             // independently extend that reference where the old cache is missing.
-            bool corroborated=reference.Sample(floor,.6f,out var old)&&Mathf.Abs(old.y-floor.y)<.35f;
+            bool corroborated=reference!=null&&reference.Sample(floor,.6f,out var old)&&Mathf.Abs(old.y-floor.y)<.35f;
             var bottom=floor+Vector3.up*(.28f+.03f);var top=floor+Vector3.up*(1.8f-.28f);
             foreach(var collider in Physics.OverlapCapsule(bottom,top,.28f,~0,QueryTriggerInteraction.Ignore))
                 if(collider.gameObject.scene==scene&&!StationNavigationRecipe.Excluded(collider,trainSource,namedBeltsSource)&&collider.GetComponentInParent<FirstPersonResponder>()==null&&
