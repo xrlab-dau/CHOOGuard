@@ -230,9 +230,27 @@ jobs:
           py=$(command -v python3 || command -v python)
           "$py" .github/scripts/unity_results.py "EditMode:$RUNNER_TEMP/unity/EditMode-results.xml:$EDIT_EXIT"
 
+      - id: routegraph
+        name: Focused RouteGraph test
+        if: always() && steps.activate.outcome == 'success' && steps.editverdict.outcome == 'success'
+        timeout-minutes: 15
+        env:
+          UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
+          UNITY_PROJECT: ${{ github.workspace }}/${{ env.PROJECT }}
+        run: .github/scripts/unity_ci.sh routegraph
+
+      - id: routeverdict
+        name: Focused RouteGraph verdict
+        if: always() && steps.activate.outcome == 'success' && steps.editverdict.outcome == 'success'
+        env:
+          ROUTE_EXIT: ${{ steps.routegraph.outputs.exit_code }}
+        run: |
+          py=$(command -v python3 || command -v python)
+          "$py" .github/scripts/unity_results.py "RouteGraph:$RUNNER_TEMP/unity/RouteGraph-results.xml:$ROUTE_EXIT"
+
       - id: playmode
         name: PlayMode tests
-        if: always() && steps.activate.outcome == 'success' && steps.editverdict.outcome == 'success'
+        if: always() && steps.activate.outcome == 'success' && steps.editverdict.outcome == 'success' && steps.routeverdict.outcome == 'success'
         timeout-minutes: 60
         env:
           UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
@@ -263,11 +281,13 @@ jobs:
         env:
           EDIT_EXIT: ${{ steps.editmode.outputs.exit_code }}
           PLAY_EXIT: ${{ steps.playmode.outputs.exit_code }}
+          ROUTE_EXIT: ${{ steps.routegraph.outputs.exit_code }}
         run: |
           py=$(command -v python3 || command -v python)
           "$py" .github/scripts/unity_results.py \
             "EditMode:$RUNNER_TEMP/unity/EditMode-results.xml:$EDIT_EXIT" \
-            "PlayMode:$RUNNER_TEMP/unity/PlayMode-results.xml:$PLAY_EXIT"
+            "PlayMode:$RUNNER_TEMP/unity/PlayMode-results.xml:$PLAY_EXIT" \
+            "RouteGraph:$RUNNER_TEMP/unity/RouteGraph-results.xml:$ROUTE_EXIT"
 
       - name: Remove credentials from logs
         if: always()

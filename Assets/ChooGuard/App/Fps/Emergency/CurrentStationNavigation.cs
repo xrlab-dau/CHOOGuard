@@ -149,6 +149,23 @@ namespace ChooGuard.App.Fps.Emergency
                         for(int i=0;i<16;i++)writer.Write(matrix[i]);
                         writer.Write(run.Up);writer.Write(run.SourcePitch);writer.Write(run.ExposureMinimum);writer.Write(run.ExposureMaximum);
                         foreach(var p in run.ObservedOrigins){writer.Write(p.x);writer.Write(p.y);writer.Write(p.z);}
+                        for(int part=0;part<run.Treads.Length;part++)
+                        {
+                            var tread=run.Treads[part];var rotation=tread.localRotation;var scale=tread.localScale;
+                            writer.Write(rotation.x);writer.Write(rotation.y);writer.Write(rotation.z);writer.Write(rotation.w);
+                            writer.Write(scale.x);writer.Write(scale.y);writer.Write(scale.z);
+                            var mesh=run.GetOriginalSourceMesh(part);
+                            if(!mesh.isReadable)return null;
+                            writer.Write(mesh.GetInstanceID());
+                            if(seen.Add(mesh))
+                            {
+                                var vertices=mesh.vertices;writer.Write(vertices.Length);
+                                foreach(var vertex in vertices){writer.Write(vertex.x);writer.Write(vertex.y);writer.Write(vertex.z);}
+                                writer.Write(mesh.subMeshCount);
+                                for(int sub=0;sub<mesh.subMeshCount;sub++)
+                                {writer.Write((int)mesh.GetTopology(sub));var indices=mesh.GetIndices(sub);writer.Write(indices.Length);foreach(int index in indices)writer.Write(index);}
+                            }
+                        }
                     }
                 }
                 writer.Flush();crypto.FlushFinalBlock();return BitConverter.ToString(hash.Hash).Replace("-","").ToLowerInvariant();
@@ -227,35 +244,64 @@ namespace ChooGuard.App.Fps.Emergency
 
         List<StationNavigationGeometry.Lane> MeasureBoundLanes(StationPoints catalog,IReadOnlyList<EscalatorDriveBinding> bindings,Transform train)
         {
-            var lanes=new List<StationNavigationGeometry.Lane>();
-            var actual=bindings.Where(b=>b.Bound).Select(binding=> {
+            var measured=new List<(string well,StationNavigationGeometry.Lane lane,StationNavigationGeometry.SourceTreadFootprint footprint)>();
+            foreach(var binding in bindings.Where(b=>b.Bound))
+            {
                 var entry=catalog.Escalators.Single(e=>e.id==binding.lane_id);
                 var runs=binding.GetComponentsInChildren<PlatformEscalatorRun>(true);
                 if(runs.Length!=1||!runs[0].SourceAvailable||!runs[0].IsBound)
                     throw new InvalidOperationException("Bound lane has no unique complete physical source tread run: "+entry.id);
                 var run=runs[0];
                 var origins=run.ObservedOrigins.Select(run.transform.TransformPoint).ToArray();
-                if(origins.Length<2)throw new InvalidOperationException("Current source tread origins absent: "+entry.id);
+                if(origins.Length<2||origins.Length!=run.Treads.Length||run.Up!=entry.up)
+                    throw new InvalidOperationException("Current source tread origins/direction are inconsistent: "+entry.id);
+                var indexed=new List<float>();
+                for(int part=0;part<run.Treads.Length;part++)
+                {
+                    var tread=run.Treads[part];
+                    if(tread==null||tread.parent!=run.transform)
+                        throw new InvalidOperationException("Observed source tread parent changed: "+entry.id);
+                    var mesh=run.GetOriginalSourceMesh(part);
+                    if(!mesh.isReadable)throw new InvalidOperationException("Current native tread source buffer is unreadable: "+entry.id);
+                    // Motion changes only local position/visible clipped buffers. Measure
+                    // the retained original buffer at its captured observed origin without
+                    // moving the source or borrowing an animated boundary derivative.
+                    var matrix=run.transform.localToWorldMatrix*Matrix4x4.TRS(run.ObservedOrigins[part],tread.localRotation,tread.localScale);
+                    var vertices=mesh.vertices;int before=indexed.Count;
+                    for(int sub=0;sub<mesh.subMeshCount;sub++)
+                    {
+                        var indices=mesh.GetIndices(sub);
+                        if(indices.Length==0)continue;
+                        if(mesh.GetTopology(sub)!=MeshTopology.Triangles||indices.Length%3!=0)
+                            throw new InvalidOperationException("Native tread source is not indexed triangles: "+entry.id);
+                        foreach(int index in indices)
+                        {
+                            if(index<0||index>=vertices.Length)throw new InvalidOperationException("Native tread source index out of range: "+entry.id);
+                            var point=matrix.MultiplyPoint3x4(vertices[index]);indexed.Add(point.x);indexed.Add(point.y);indexed.Add(point.z);
+                        }
+                    }
+                    if(indexed.Count==before)throw new InvalidOperationException("Native tread source has no indexed surface: "+entry.id);
+                }
                 var high=origins.OrderByDescending(p=>p.y).First();var low=origins.OrderBy(p=>p.y).First();
+                var footprint=new StationNavigationGeometry.SourceTreadFootprint(indexed.ToArray(),high.x,high.z,low.x,low.z);
+                var lane=StationNavigationGeometry.SourceTreadLane(entry.id,entry.label,entry.up,entry.from,entry.to,footprint);
                 string well=entry.id.Substring("esc-".Length);
                 if(well.EndsWith("-0",StringComparison.Ordinal)||well.EndsWith("-1",StringComparison.Ordinal))well=well.Substring(0,well.Length-2);
-                return (entry,high,low,well);
-            }).ToArray();
-            foreach(var group in actual.GroupBy(x=>x.well))
-            {
-                var high=group.Aggregate(Vector3.zero,(sum,x)=>sum+x.high)/group.Count();
-                var low=group.Aggregate(Vector3.zero,(sum,x)=>sum+x.low)/group.Count();
-                var up=high-low;up.y=0;up.Normalize();var side=new Vector3(up.z,0,-up.x);
-                var ordered=group.OrderBy(x=>Vector3.Dot((x.high+x.low)*.5f,side)).ToArray();
-                var down=ordered.Select(x=>!x.entry.up).ToArray();
-                var measured=new StationNavigationGeometry.WellSurvey(train).WellLanes(group.Key,group.Key,"",
-                    new Vector2(high.x,high.z),new Vector2(low.x,low.z),down,physicalReport).ToArray();
-                if(measured.Length!=group.Count()||!measured.Select(x=>x.Id).OrderBy(x=>x,StringComparer.Ordinal)
-                    .SequenceEqual(group.Select(x=>x.entry.id).OrderBy(x=>x,StringComparer.Ordinal)))
-                    throw new InvalidOperationException("Current source belt/stair footprints are not measurable: "+group.Key);
-                lanes.AddRange(measured);
+                measured.Add((well,lane,footprint));
+                physicalReport.Add("BOUND_SOURCE_TREAD_MODIFIER "+entry.id+"; original meshes="+run.Treads.Length+
+                    "; indexed vertices="+indexed.Count/3+"; source width="+lane.Width+"; bounds="+lane.BoxCentre+" / "+lane.BoxSize);
             }
-            return lanes;
+            // The legacy Editor survey still rediscovers whole historical wells. Runtime
+            // already has exact physical source bindings and must not rediscover missing
+            // machinery or demand that unrelated cross-section lanes equal that set.
+            var survey=new StationNavigationGeometry.WellSurvey(train);
+            foreach(var group in measured.GroupBy(row=>row.well))if(group.Count()==1)
+            {
+                var row=group.Single();
+                survey.BoundLaneStairs(row.lane,row.footprint,
+                    collider=>collider.gameObject.scene==scene&&!StationNavigationRecipe.Excluded(collider,train,namedBeltsSource),physicalReport);
+            }
+            return measured.Select(row=>row.lane).ToList();
         }
 
         internal static string BindingDecision(bool provenAbsent,bool physicalSupported,bool currentNavSupported)

@@ -42,6 +42,16 @@ namespace ChooGuard.Circulation
         public int AnimatedOriginalPartCount => parts.Length;
         public bool HasInventedReturnRoute => false;
 
+        /// <summary>Borrowed immutable source buffer; ownership remains with this run and its source asset.</summary>
+        public Mesh GetOriginalSourceMesh(int index)
+        {
+            if (!prepared || !SourceAvailable) throw new InvalidOperationException("An available prepared native source run is required");
+            if (index < 0 || index >= parts.Length) throw new ArgumentOutOfRangeException(nameof(index));
+            var original = parts[index].Original;
+            if (original == null) throw new InvalidOperationException("Retained original native tread mesh was lost");
+            return original;
+        }
+
         private void Awake() { if (Application.isPlaying) Prepare(); }
         private void OnEnable() { if (Application.isPlaying) Prepare(); }
         private void LateUpdate() { if (!sourceAbsent) ApplyMotion(); }

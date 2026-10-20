@@ -21,6 +21,74 @@ namespace ChooGuard.App.Fps.Emergency
             public Vector3 StairsCentre, StairsSize;
         }
 
+        /// <summary>Exact indexed original source triangles, in the placed world frame. No hull/plane or surface interpolation.</summary>
+        public sealed class SourceTreadFootprint
+        {
+            readonly float[] triangles;
+            public readonly float AxisX,AxisZ,SideX,SideZ;
+            public readonly float MinimumAlong,MaximumAlong,MinimumSide,MaximumSide,MinimumY,MaximumY;
+            public SourceTreadFootprint(float[] indexedWorldVertices,float highX,float highZ,float lowX,float lowZ)
+            {
+                if(indexedWorldVertices==null||indexedWorldVertices.Length==0||indexedWorldVertices.Length%9!=0)
+                    throw new ArgumentException("A complete indexed original tread triangle buffer is required");
+                if(!Finite(highX)||!Finite(highZ)||!Finite(lowX)||!Finite(lowZ))throw new ArgumentException("Finite observed source endpoints required");
+                double dx=(double)highX-lowX,dz=(double)highZ-lowZ,length=Math.Sqrt(dx*dx+dz*dz);
+                if(length<=.001)throw new ArgumentException("Distinct actual observed source endpoints required");
+                AxisX=(float)(dx/length);AxisZ=(float)(dz/length);SideX=AxisZ;SideZ=-AxisX;
+                triangles=(float[])indexedWorldVertices.Clone();
+                float amin=float.PositiveInfinity,amax=float.NegativeInfinity,smin=amin,smax=amax,ymin=amin,ymax=amax;
+                bool hasExposedFace=false;
+                for(int i=0;i<triangles.Length;i+=3)
+                {
+                    float x=triangles[i],y=triangles[i+1],z=triangles[i+2];
+                    if(!Finite(x)||!Finite(y)||!Finite(z))throw new ArgumentException("Non-finite original source vertex");
+                    float along=x*AxisX+z*AxisZ,side=x*SideX+z*SideZ;
+                    amin=Math.Min(amin,along);amax=Math.Max(amax,along);smin=Math.Min(smin,side);smax=Math.Max(smax,side);ymin=Math.Min(ymin,y);ymax=Math.Max(ymax,y);
+                }
+                for(int i=0;i<triangles.Length;i+=9)
+                {
+                    double ax=triangles[i+3]-triangles[i],az=triangles[i+5]-triangles[i+2];
+                    double bx=triangles[i+6]-triangles[i],bz=triangles[i+8]-triangles[i+2];
+                    hasExposedFace|=Math.Abs(ax*bz-bx*az)>1e-10;
+                }
+                if(!hasExposedFace||amax-amin<=.001f||smax-smin<=.001f)
+                    throw new InvalidOperationException("Original tread triangles do not contain an exposed surface footprint");
+                MinimumAlong=amin;MaximumAlong=amax;MinimumSide=smin;MaximumSide=smax;MinimumY=ymin;MaximumY=ymax;
+            }
+            static bool Finite(float value)=>!float.IsNaN(value)&&!float.IsInfinity(value);
+            public bool TryTop(float x,float z,out float y)
+            {
+                if(!Finite(x)||!Finite(z))throw new ArgumentException("Finite source query required");
+                double best=double.NegativeInfinity;
+                for(int i=0;i<triangles.Length;i+=9)
+                {
+                    double ax=triangles[i+3]-triangles[i],az=triangles[i+5]-triangles[i+2];
+                    double bx=triangles[i+6]-triangles[i],bz=triangles[i+8]-triangles[i+2];
+                    double det=ax*bz-bx*az;
+                    if(Math.Abs(det)<=1e-10)continue;
+                    double qx=(double)x-triangles[i],qz=(double)z-triangles[i+2];
+                    double u=(qx*bz-bx*qz)/det,v=(ax*qz-qx*az)/det;
+                    if(u< -1e-6||v< -1e-6||u+v>1+1e-6)continue;
+                    double height=triangles[i+1]+u*(triangles[i+4]-triangles[i+1])+v*(triangles[i+7]-triangles[i+1]);
+                    best=Math.Max(best,height);
+                }
+                y=(float)best;return !double.IsNegativeInfinity(best);
+            }
+        }
+
+        public static Lane SourceTreadLane(string id,string label,bool upward,string from,string to,SourceTreadFootprint footprint)
+        {
+            if(footprint==null)throw new ArgumentNullException(nameof(footprint));
+            float along=(footprint.MinimumAlong+footprint.MaximumAlong)*.5f,side=(footprint.MinimumSide+footprint.MaximumSide)*.5f;
+            var lane=new Lane {Id=id,Label=label,Up=upward,From=from,To=to,Width=footprint.MaximumSide-footprint.MinimumSide};
+            // Preserve the canonical modifier padding, using actual original source
+            // extents rather than fixed storey heights or a reconstructed centreline.
+            lane.BoxCentre=new Vector3(footprint.AxisX*along+footprint.SideX*side,(footprint.MinimumY+footprint.MaximumY)*.5f+.6f,footprint.AxisZ*along+footprint.SideZ*side);
+            lane.BoxRotation=Quaternion.LookRotation(new Vector3(footprint.AxisX,0,footprint.AxisZ),Vector3.up);
+            lane.BoxSize=new Vector3(lane.Width+.25f,footprint.MaximumY-footprint.MinimumY+3.4f,footprint.MaximumAlong-footprint.MinimumAlong+.3f);
+            return lane;
+        }
+
         public sealed class MeshEscalator
         {
             public string Id, Label;
@@ -164,6 +232,52 @@ namespace ChooGuard.App.Fps.Emergency
                 result.Add((mc - b * mt, b, group.Average(i => hits[i].width)));
             }
             return result;
+        }
+
+        /// <summary>Same saved-collider cross-section criteria as the canonical survey, anchored to an explicitly bound source tread surface.</summary>
+        public void BoundLaneStairs(Lane lane,SourceTreadFootprint footprint,Func<Collider,bool> eligible,List<string> log)
+        {
+            if(lane==null||footprint==null||eligible==null||log==null)throw new ArgumentNullException("Current source stair measurement inputs");
+            const float step=.05f,reach=4.5f;
+            int count=Mathf.RoundToInt(2*reach/step)+1;
+            var heights=new float[count];var hits=new List<(float centre,float width,float t)>();
+            float middleSide=(footprint.MinimumSide+footprint.MaximumSide)*.5f;
+            float length=footprint.MaximumAlong-footprint.MinimumAlong;
+            for(float fraction=.2f;fraction<=.801f;fraction+=.075f)
+            {
+                float along=footprint.MinimumAlong+length*fraction;
+                float x=footprint.AxisX*along+footprint.SideX*middleSide,z=footprint.AxisZ*along+footprint.SideZ*middleSide;
+                if(!footprint.TryTop(x,z,out float sourceY))throw new InvalidOperationException("Bound original tread cross-section lacks an actual indexed surface: "+lane.Id);
+                for(int i=0;i<count;i++)
+                {
+                    float offset=-reach+i*step;
+                    var ray=new Vector3(x+footprint.SideX*offset,sourceY+1.9f,z+footprint.SideZ*offset);
+                    float top=float.NaN;
+                    foreach(var hit in Physics.RaycastAll(ray,Vector3.down,3.1f,~0,QueryTriggerInteraction.Ignore))
+                    {
+                        if(!eligible(hit.collider))continue;
+                        if(float.IsNaN(top)||hit.point.y>top)top=hit.point.y;
+                    }
+                    heights[i]=top;
+                }
+                for(int i=0;i<count;)
+                {
+                    if(float.IsNaN(heights[i])){i++;continue;}
+                    int j=i;while(j+1<count&&!float.IsNaN(heights[j+1])&&Mathf.Abs(heights[j+1]-heights[j])<.05f)j++;
+                    float width=(j-i+1)*step,h=heights[i],left=float.NegativeInfinity,right=float.NegativeInfinity;
+                    for(int k=Mathf.Max(0,i-3);k<i;k++)if(!float.IsNaN(heights[k]))left=Mathf.Max(left,heights[k]);
+                    for(int k=j+1;k<=Mathf.Min(count-1,j+3);k++)if(!float.IsNaN(heights[k]))right=Mathf.Max(right,heights[k]);
+                    if(left>h+.3f&&right>h+.3f&&width>1.3f&&width<=2.4f)
+                        hits.Add((-reach+(i+j)*.5f*step,width,length*fraction));
+                    i=j+1;
+                }
+            }
+            var stairs=Clusters(hits,2);
+            if(stairs.Count==0){log.Add(lane.Id+": current saved-collider cross-sections contain no qualified adjacent stair cluster");return;}
+            var stair=stairs.OrderBy(candidate=>Mathf.Abs(candidate.a+candidate.b*length*.5f)).First();
+            lane.StairsCentre=lane.BoxCentre+new Vector3(footprint.SideX,0,footprint.SideZ)*(stair.a+stair.b*length*.5f);
+            lane.StairsSize=new Vector3(stair.width,lane.BoxSize.y,lane.BoxSize.z+.6f);
+            log.Add(lane.Id+": adjacent stairs measured from current saved colliders; width="+stair.width+"; sections="+hits.Select(hit=>hit.t).Distinct().Count());
         }
 
         public IEnumerable<Lane> WellLanes(string id, string platform, string where, Vector2 high2, Vector2 low2, bool[] down, List<string> log)
