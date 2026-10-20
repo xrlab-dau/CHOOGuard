@@ -24,12 +24,13 @@ namespace ChooGuard.App.Fps.Emergency
         { walkingOwners=walking;escalatorOwners=escalators;walkingRoutes=walking.Select(w=>w.Entry).ToArray(); }
 
         internal static RouteGraph Build(StationPoints current,IReadOnlyList<Escalator> supplied,IReadOnlyList<Elevator> elevators,
-            IReadOnlyList<StationWalkingRoute> walking,TextAsset original)
+            IReadOnlyList<StationWalkingRoute> walking,TextAsset original,
+            Func<StationPoints.CurrentBinding,StationPoints.CurrentRequalificationBatch> requalify=null)
         {
             var points=current.RoutingView(supplied,elevators);
             var builder=new CurrentStationRouteBuilder(walking,supplied);
             var draft=builder.Sample(points);builder.Connect(draft,points);builder.Prune(draft);
-            builder.AttachEveryCurrentPoint(draft,points);
+            var requalifications=builder.AttachEveryCurrentPoint(draft,points,requalify);
             var file=new RouteGraph.File {version=RouteGraph.Version,
                 positions=draft.Positions.SelectMany(p=>new[]{Mathf.RoundToInt(p.x*100),Mathf.RoundToInt(p.y*100),Mathf.RoundToInt(p.z*100)}).ToArray(),
                 labels=draft.Labels.ToArray(),from=draft.Edges.Select(e=>e.from).ToArray(),to=draft.Edges.Select(e=>e.to).ToArray(),
@@ -45,6 +46,7 @@ namespace ChooGuard.App.Fps.Emergency
             foreach(var point in points.All)
                 if(!fields.Any(f=>f.Reaches(graph.ByLabel(point.Id))))
                     throw new InvalidOperationException("Current physically qualified point has no actual foot-exit route: "+point.Id);
+            current.CommitCurrentRequalifications(requalifications);
             return graph;
         }
 
@@ -57,20 +59,25 @@ namespace ChooGuard.App.Fps.Emergency
                 reasons[reason]=reasons.TryGetValue(reason,out int count)?count+1:1;
                 if(detail!=null&&details.Count<8)details.Add(detail);
             }
-            public override string ToString()=>string.Join(",",reasons.Select(p=>p.Key+"="+p.Value))+"; "+string.Join(" | ",details);
+            public string Counts()=>string.Join(",",reasons.Select(p=>p.Key+"="+p.Value));
+            public string FirstDetail=>details.Count==0?"":details[0];
+            public string Examples(int count)=>string.Join(" | ",details.Take(count));
+            public override string ToString()=>Counts()+"; "+string.Join(" | ",details);
         }
 
         // The coarse cell survey is useful, but is not a connected-component proof.
         // A failed point alone gets a complete directed native witness to an existing
-        // exit-reachable draft seed. It is only a graph representation: no source pose, floor,
-        // body clearance, native area, or runtime point qualification is changed.
-        void AttachEveryCurrentPoint(Draft draft,StationPoints points)
+        // exit-reachable draft seed. Failure-only standing alternatives retain the exact
+        // original proposal set and full physical/Nav guards; raw source pose and
+        // native geometry/areas are never changed.
+        List<StationPoints.CurrentRequalification> AttachEveryCurrentPoint(Draft draft,StationPoints points,
+            Func<StationPoints.CurrentBinding,StationPoints.CurrentRequalificationBatch> requalify=null)
         {
             int baseline=draft.Positions.Count;
             var path=new NavMeshPath();var corners=new Vector3[512];
             var exits=points.Of(PointKind.Exit).Select(e=>Find(draft,e.Id)).ToArray();
             if(exits.Length==0||exits.Any(i=>i<0))throw new InvalidOperationException("Current graph has no complete qualified exit seeds");
-            var failures=new List<string>();
+            var failures=new List<string>();var requalifications=new List<StationPoints.CurrentRequalification>();
             foreach(var point in points.All)
             {
                 if(point.Kind==PointKind.Exit)continue;
@@ -92,6 +99,8 @@ namespace ChooGuard.App.Fps.Emergency
                 var seeds=Enumerable.Range(0,draft.Positions.Count).Where(i=>i!=index&&exitReachable[i]).ToArray();
                 if(!reachesExit)trace.Add("coarse-no-foot-exit", "coarseAttachments="+attached);
                 if(reachesExit||TryAttachWitness(draft,points,path,corners,index,seeds,trace))continue;
+                string alternativeAudit="requalification=NOT_CONFIGURED";
+                if(requalify!=null&&TryRequalify(draft,points,path,corners,index,edgesBefore,exits,requalify,requalifications,out alternativeAudit))continue;
                 // A failed transaction never publishes corner nodes or edges. This
                 // source may have coarse edges to a dead end. Remove ALL its new
                 // directed edges before removing/reusing the node index. No partial
@@ -100,10 +109,54 @@ namespace ChooGuard.App.Fps.Emergency
                 draft.Positions.RemoveAt(index);draft.Labels.RemoveAt(index);
                 int sourceIndex=points.SourceAll.ToList().FindIndex(p=>p.Id==point.Id);
                 failures.Add(point.Id+" sourceIndex="+sourceIndex+" source="+(sourceIndex>=0?Exact(points.SourceAll[sourceIndex].Position):"UNKNOWN")+" current="+Exact(point.Position)+
-                    " baselineCandidates="+candidates.Length+"; "+trace);
+                    " baselineCandidates="+candidates.Length+"; "+trace+"; "+alternativeAudit);
             }
             if(failures.Count>0)throw new InvalidOperationException("Current source points cannot attach by complete actual foot paths; failures="+
                 failures.Count+" (all failed points; at most eight detailed witnesses per point):\n"+string.Join("\n",failures));
+            return requalifications;
+        }
+
+        bool TryRequalify(Draft draft,StationPoints points,NavMeshPath path,Vector3[] corners,int source,int edgesBefore,int[] exits,
+            Func<StationPoints.CurrentBinding,StationPoints.CurrentRequalificationBatch> requalify,
+            List<StationPoints.CurrentRequalification> pending,out string audit)
+        {
+            string id=draft.Labels[source];
+            var binding=points.CurrentBindings.Single(row=>row.Source.Id==id&&row.Bound);
+            var batch=requalify(binding); // returns only AFTER historical Nav lease disposal
+            if(batch==null||batch.Alternatives==null)throw new InvalidOperationException("Current standing candidate batch is absent");
+            var staged=Copy(draft);
+            // The old source node is isolated before ANY alternate position is used.
+            // Reuse this clean context: failed witness attempts never mutate it.
+            staged.Edges.RemoveRange(edgesBefore,staged.Edges.Count-edgesBefore);
+            var reachable=FootExitReachable(staged,exits);
+            var seeds=Enumerable.Range(0,staged.Positions.Count).Where(i=>i!=source&&reachable[i]).ToArray();
+            var attempts=new List<(StationPoints.CurrentRequalification candidate,int[] seeds,AttachmentTrace trace)>();
+            foreach(var candidate in batch.Alternatives)
+            {
+                if(candidate==null||!ReferenceEquals(candidate.Binding,binding)||!ReferenceEquals(candidate.ExpectedRuntime,binding.Runtime)||
+                    !candidate.ExpectedPosition.Equals(draft.Positions[source])||!Finite(candidate.Position))
+                    throw new InvalidOperationException("Current standing candidate identity/old pose differs");
+                var ordered=seeds.OrderBy(i=>(staged.Positions[i]-candidate.Position).sqrMagnitude).ThenBy(i=>i).ToArray();
+                var trace=new AttachmentTrace();trace.Add("requalification-target-set","totalCertifiedDirectedSeeds="+ordered.Length);
+                attempts.Add((candidate,ordered,trace));
+            }
+            // Same complete candidate×seed space, fair nearest-rank scheduling:
+            // late original proposals get their nearest positive witness before an
+            // earlier bad pose exhausts thousands of unrelated seed queries.
+            for(int rank=0;rank<seeds.Length;rank++)
+                foreach(var attempt in attempts)
+                {
+                    var candidate=attempt.candidate;int seed=attempt.seeds[rank];
+                    staged.Positions[source]=candidate.Position;
+                    if(!TryAttachWitness(staged,points,path,corners,source,new[]{seed},attempt.trace,false))continue;
+                    candidate.Evidence+="; CERTIFIED_CURRENT_TYPED_FOOT_EXIT_CHAIN; selectedCertifiedSeed="+seed+":"+staged.Labels[seed]+
+                        "; seedAnchor="+Exact(staged.Positions[seed])+"; nearestSeedRank="+rank+"; "+attempt.trace;
+                    Commit(draft,staged);pending.Add(candidate);audit="";return true;
+                }
+            audit=batch.Audit+"; ALLqualifiedPoseConnectivityOutcomes={"+string.Join(" | ",attempts.Select(attempt=>
+                "proposalIndex="+attempt.candidate.ProposalIndex+"; qualifiedPose="+Exact(attempt.candidate.Position)+"; totalCertifiedDirectedSeeds="+
+                attempt.seeds.Length+"; "+attempt.trace.Counts()+"; examples="+attempt.trace.Examples(2)))+"}";
+            return false;
         }
 
         // Exactly the current draft's Evacuation admission: directions are real
@@ -131,10 +184,10 @@ namespace ChooGuard.App.Fps.Emergency
             return seen;
         }
 
-        bool TryAttachWitness(Draft draft,StationPoints points,NavMeshPath path,Vector3[] corners,int source,int[] seeds,AttachmentTrace trace)
+        bool TryAttachWitness(Draft draft,StationPoints points,NavMeshPath path,Vector3[] corners,int source,int[] seeds,AttachmentTrace trace,bool recordTargetSet=true)
         {
             var targets=seeds.Where(i=>i!=source).Distinct().OrderBy(i=>(draft.Positions[i]-draft.Positions[source]).sqrMagnitude).ThenBy(i=>i).ToArray();
-            trace.Add("witness-foot-exit-seeds","certifiedDirectedSeeds="+targets.Length);
+            if(recordTargetSet)trace.Add("witness-foot-exit-seeds","certifiedDirectedSeeds="+targets.Length);
             foreach(int exit in targets)
             {
                 int mask=NavMesh.AllAreas&~(1<<StationWorld.ElevatorArea);

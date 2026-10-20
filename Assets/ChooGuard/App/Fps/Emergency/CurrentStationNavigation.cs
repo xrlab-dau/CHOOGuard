@@ -1500,6 +1500,59 @@ namespace ChooGuard.App.Fps.Emergency
             }
         }
 
+        static List<Vector3> CurrentPointProposals(StationPoints.Point source,BakedFloor reference)
+        {
+            var candidates=new List<Vector3>{source.Position};
+            if(reference.Sample(source.Position,2f,out var prior)&&Mathf.Abs(prior.y-source.Position.y)<.35f)candidates.Add(prior);
+            for(float radius=.25f;radius<=2.001f;radius+=.25f)
+                for(int step=0;step<16;step++)candidates.Add(source.Position+Quaternion.Euler(0,step*22.5f,0)*Vector3.forward*radius);
+            return candidates;
+        }
+
+        // Called ONLY after the selected standing pose exhausts certified seeds.
+        // The complete bounded batch is materialized while the historical reference
+        // is owned here. Its lease is disposed BEFORE any caller connectivity query.
+        internal StationPoints.CurrentRequalificationBatch RequalifyCurrentStandingPoint(StationPoints.CurrentBinding binding,NavMeshData originalReference)
+        {
+            if(binding==null||!binding.Bound||binding.Source.Kind==PointKind.Exit||binding.Status!="BOUND_MODEL_COMPUTED_WALKABLE")
+                throw new InvalidOperationException("Only an existing bound non-exit standing point can be requalified");
+            Physics.SyncTransforms();RequireCurrentSourceQueryReady();
+            var alternatives=new List<StationPoints.CurrentRequalification>();var outcomes=new List<string>();
+            var probes=new PointProbeReport();var seen=new HashSet<Vector3>{binding.Runtime.Position};
+            int count;
+            using(var reference=new BakedFloor(originalReference))
+            {
+                var candidates=binding.AuthorizedProposals;
+                if(candidates==null||(candidates.Count!=129&&candidates.Count!=130)||!candidates[0].Equals(binding.Source.Position))
+                    throw new InvalidOperationException("Original authorized standing proposals were not captured");
+                count=candidates.Count;
+                for(int index=0;index<candidates.Count;index++)
+                {
+                    var proposal=candidates[index];probes.Candidates++;
+                    string identity=index+":"+ProbePosition(proposal);
+                    if(!Footprint(proposal,reference,out var supported,out string proof,probes,"candidate"))
+                    {outcomes.Add(identity+":physical-rejected");continue;}
+                    bool sampled=NavMesh.SamplePosition(supported,out var hit,.6f,NavMesh.AllAreas);
+                    if(!sampled){outcomes.Add(identity+":nav-sample-missing");continue;}
+                    if(Mathf.Abs(hit.position.y-supported.y)>.35f){outcomes.Add(identity+":nav-same-storey-rejected");continue;}
+                    if(!Footprint(hit.position,reference,out var corroborated,out string navProof,probes,"nav"))
+                    {outcomes.Add(identity+":nav-physical-rejected");continue;}
+                    if(Vector3.Distance(corroborated,hit.position)>.35f){outcomes.Add(identity+":nav-corroboration-distance-rejected");continue;}
+                    if(!seen.Add(hit.position)){outcomes.Add(identity+":already-exhausted-identical-pose="+ProbePosition(hit.position));continue;}
+                    outcomes.Add(identity+":qualified="+ProbePosition(hit.position));
+                    alternatives.Add(new StationPoints.CurrentRequalification{Binding=binding,ExpectedSource=binding.Source,ExpectedRuntime=binding.Runtime,
+                        ExpectedSourceMetadata=StationPoints.CaptureCurrentPointMetadata(binding.Source),ExpectedRuntimeMetadata=StationPoints.CaptureCurrentPointMetadata(binding.Runtime),
+                        ExpectedProposals=binding.AuthorizedProposals,ExpectedId=binding.Source.Id,ExpectedStatus=binding.Status,ExpectedEvidence=binding.Evidence,
+                        ExpectedPosition=binding.Runtime.Position,ExpectedSourcePosition=binding.Source.Position,Position=hit.position,Proposal=proposal,ProposalIndex=index,
+                        Evidence=binding.Evidence+"; REQUALIFIED_CURRENT_STANDING_POSE; exactOriginalProposalIndex="+index+"; proposal="+ProbePosition(proposal)+
+                            "; previousRuntime="+ProbePosition(binding.Runtime.Position)+"; currentRuntime="+ProbePosition(hit.position)+
+                            "; unchangedRawSource="+ProbePosition(binding.Source.Position)+"; physical="+proof+"; navCorroboration="+navProof});
+                }
+            }
+            return new StationPoints.CurrentRequalificationBatch{Alternatives=alternatives.AsReadOnly(),Audit="authorizedProposalCount="+count+
+                "; uniqueNewQualifiedPoses="+alternatives.Count+"; ALLproposalOutcomes={"+string.Join(" | ",outcomes)+"}; "+probes.Describe()};
+        }
+
         internal StationPoints BindPoints(StationPoints catalog,NavMeshData originalReference)
         {
             var witness=Resources.Load<TextAsset>("CurrentStationPointSources");
@@ -1540,12 +1593,7 @@ namespace ChooGuard.App.Fps.Emergency
                     throw new InvalidOperationException("Unknown current source witness disposition: "+source.Id);
                 bool absent=disposition=="PROVEN_NO_CURRENT_FLOOR";
                 if(absent&&string.IsNullOrWhiteSpace((string)row["evidence"]))throw new InvalidOperationException("Absent-floor source witness is empty");
-                var candidates=new List<Vector3>{source.Position};
-                if(reference.Sample(source.Position,2f,out var prior)&&Mathf.Abs(prior.y-source.Position.y)<.35f)candidates.Add(prior);
-                // Same-storey candidate probes propose actual physical points. Their failure
-                // never proves absence: unwitnessed/uncertain points fail closed below.
-                for(float radius=.25f;radius<=2.001f;radius+=.25f)
-                    for(int step=0;step<16;step++)candidates.Add(source.Position+Quaternion.Euler(0,step*22.5f,0)*Vector3.forward*radius);
+                var candidates=CurrentPointProposals(source,reference);
                 var probes=new PointProbeReport();attempted=i+1;
                 bool physical=false,nav=false;Vector3 feet=source.Position;string evidence="";
                 foreach(var candidate in candidates)
@@ -1581,7 +1629,7 @@ namespace ChooGuard.App.Fps.Emergency
                 }
                 var runtime=nav?new StationPoints.Point{Id=source.Id,Label=source.Label,Zone=source.Zone,Kind=source.Kind,
                     Position=feet,Anchor=source.Anchor,Yaw=source.Yaw,Slot=source.Slot}:null;
-                result.Add(new StationPoints.CurrentBinding{Source=source,Runtime=runtime,Status=status,
+                result.Add(new StationPoints.CurrentBinding{Source=source,Runtime=runtime,Status=status,AuthorizedProposals=Array.AsReadOnly(candidates.ToArray()),
                     Evidence=absent?(string)row["evidence"]:sourceSupportAbsent?unavailableProof:evidence+"; projection="+(feet-source.Position).ToString("F5")});
             }
             // BakedFloor's shifted old-reference copy is now removed. Diagnostics

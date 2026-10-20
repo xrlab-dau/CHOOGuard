@@ -49,7 +49,66 @@ namespace ChooGuard.App.Fps.Emergency
             public string Status { get; internal set; }
             public string Evidence { get; internal set; }
             public bool Bound => Runtime!=null;
+            internal IReadOnlyList<Vector3> AuthorizedProposals {get;set;}
         }
+        internal sealed class CurrentRequalification
+        {
+            internal CurrentBinding Binding;
+            internal Point ExpectedSource,ExpectedRuntime,ExpectedSourceMetadata,ExpectedRuntimeMetadata;
+            internal IReadOnlyList<Vector3> ExpectedProposals;
+            internal string ExpectedId,ExpectedStatus,ExpectedEvidence;
+            internal Vector3 ExpectedPosition,ExpectedSourcePosition;
+            internal Vector3 Position,Proposal;
+            internal int ProposalIndex;
+            internal string Evidence;
+        }
+        internal sealed class CurrentRequalificationBatch
+        {
+            internal IReadOnlyList<CurrentRequalification> Alternatives;
+            internal string Audit;
+        }
+
+        // World.Points, byKind, CurrentBindings and RoutingView share Runtime Point
+        // objects. Validate the WHOLE graph's receipt set before the first write;
+        // retain these exact aliases and change only standing pose + evidence.
+        internal void CommitCurrentRequalifications(IReadOnlyList<CurrentRequalification> changes)
+        {
+            var seen=new HashSet<CurrentBinding>();
+            foreach(var change in changes)
+            {
+                if(change==null||change.Binding==null||!seen.Add(change.Binding)||
+                    !System.Linq.Enumerable.Contains(CurrentBindings,change.Binding)||
+                    !ReferenceEquals(change.Binding.Source,change.ExpectedSource)||
+                    !ReferenceEquals(change.Binding.Runtime,change.ExpectedRuntime)||
+                    ReferenceEquals(change.ExpectedSource,change.ExpectedRuntime)||
+                    !System.Linq.Enumerable.Contains(SourceAll,change.ExpectedSource)||
+                    change.Binding.Source.Id!=change.ExpectedId||change.Binding.Runtime==null||
+                    change.Binding.Runtime.Id!=change.ExpectedId||change.Binding.Runtime.Kind!=change.Binding.Source.Kind||
+                    change.Binding.Source.Kind==PointKind.Exit||change.Binding.Status!=change.ExpectedStatus||
+                    change.ExpectedStatus!="BOUND_MODEL_COMPUTED_WALKABLE"||change.Binding.Evidence!=change.ExpectedEvidence||
+                    !change.Binding.Runtime.Position.Equals(change.ExpectedPosition)||
+                    !change.Binding.Source.Position.Equals(change.ExpectedSourcePosition)||
+                    !SameCurrentPointMetadata(change.Binding.Source,change.ExpectedSourceMetadata)||
+                    !SameCurrentPointMetadata(change.Binding.Runtime,change.ExpectedRuntimeMetadata)||
+                    !ReferenceEquals(change.Binding.AuthorizedProposals,change.ExpectedProposals)||change.ExpectedProposals==null||
+                    change.ProposalIndex<0||change.ProposalIndex>=change.ExpectedProposals.Count||
+                    !change.Proposal.Equals(change.ExpectedProposals[change.ProposalIndex])||
+                    string.IsNullOrWhiteSpace(change.Evidence)||!FiniteStandingPosition(change.Position))
+                    throw new InvalidOperationException("Current standing-pose transaction is stale, incomplete or changes source identity");
+            }
+            // No query, callback or yield occurs in this assignment-only phase.
+            foreach(var change in changes)
+            {
+                change.Binding.Runtime.Position=change.Position;
+                change.Binding.Evidence=change.Evidence;
+            }
+        }
+        internal static Point CaptureCurrentPointMetadata(Point point)=>new Point{Id=point.Id,Label=point.Label,Zone=point.Zone,Kind=point.Kind,
+            Position=point.Position,Anchor=point.Anchor,Yaw=point.Yaw,Slot=point.Slot};
+        static bool SameCurrentPointMetadata(Point point,Point expected)=>expected!=null&&point.Id==expected.Id&&point.Label==expected.Label&&point.Zone==expected.Zone&&
+            point.Kind==expected.Kind&&point.Anchor.Equals(expected.Anchor)&&point.Yaw.Equals(expected.Yaw)&&point.Slot==expected.Slot;
+        static bool FiniteStandingPosition(Vector3 p)=>!float.IsNaN(p.x)&&!float.IsInfinity(p.x)&&!float.IsNaN(p.y)&&!float.IsInfinity(p.y)&&!float.IsNaN(p.z)&&!float.IsInfinity(p.z);
+
         public IReadOnlyList<CurrentBinding> CurrentBindings {get;private set;} = Array.Empty<CurrentBinding>();
         public IReadOnlyList<Point> SourceAll {get;private set;}
         public string SourceSha256 {get;private set;}

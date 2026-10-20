@@ -157,7 +157,8 @@ namespace ChooGuard.App.Fps.Emergency
                 }
                 Points=currentNavigation.BindPoints(SourcePoints,art.WorldNavMesh);
                 Paths=new PathService(this,CurrentStationRouteBuilder.Build(Points,
-                    Escalators.Where(e=>e.NavigationAvailable).ToArray(),Elevators,WalkingRoutes,routes));
+                    Escalators.Where(e=>e.NavigationAvailable).ToArray(),Elevators,WalkingRoutes,routes,
+                    binding=>currentNavigation.RequalifyCurrentStandingPoint(binding,art.WorldNavMesh)));
             }
             else Paths=new PathService(this,RouteGraph.Load(routes,Escalators,WalkingRoutes));
             PersonBody.Paths = Paths;
