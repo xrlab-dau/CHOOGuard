@@ -165,7 +165,7 @@ class SizeApiGateTests(unittest.TestCase):
         run("git", "add", "-A")
         run("git", "commit", "-q", "-m", "change")
 
-    def check_response(self, sizes=None, *, truncated=False, error=None, raw=None):
+    def check_response(self, sizes=None, *, truncated=False, error=None, raw=None, expected_requests=None, retry_delays=()):
         tree = {"truncated": truncated, "tree": [
             {"path": path, "type": "blob", "size": size}
             for path, size in (sizes or {}).items()
@@ -176,9 +176,11 @@ class SizeApiGateTests(unittest.TestCase):
         env["GITHUB_TOKEN"] = "test-token"
         with mock.patch.dict(os.environ, env, clear=True), \
              mock.patch.object(policy.urllib.request, "urlopen", return_value=response, side_effect=error) as request, \
+             mock.patch("github_tree_sizes.time.sleep") as sleep, \
              redirect_stdout(output):
             result = policy.main(["--base", self.base, "--head", "HEAD", "--event", "push", "--repo", "owner/repo"])
-        self.assertEqual(request.call_count, 2 if truncated else 1)
+        self.assertEqual(request.call_count, expected_requests if expected_requests is not None else (2 if truncated else 1))
+        self.assertEqual([call.args[0] for call in sleep.call_args_list], list(retry_delays))
         return result, output.getvalue()
 
     def assert_size_failure(self, result, output):
@@ -188,9 +190,10 @@ class SizeApiGateTests(unittest.TestCase):
         self.assertNotIn("| `large-files` | ✅ pass |", output)
 
     def test_api_errors_fail_the_gate(self):
-        for error in (policy.urllib.error.URLError("offline"), TimeoutError("timeout")):
+        for error, attempts, delays in ((policy.urllib.error.URLError("offline"), 1, ()),
+                                        (TimeoutError("timeout"), 3, (1, 2))):
             with self.subTest(error=type(error).__name__):
-                result, output = self.check_response(error=error)
+                result, output = self.check_response(error=error, expected_requests=attempts, retry_delays=delays)
                 self.assert_size_failure(result, output)
                 self.assertIn("unavailable", output.lower())
 
