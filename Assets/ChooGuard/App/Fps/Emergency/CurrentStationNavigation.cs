@@ -430,13 +430,196 @@ namespace ChooGuard.App.Fps.Emergency
 
         static bool WalkingActor(Collider collider)=>collider.GetComponentInParent<PersonBody>()!=null;
 
+        internal sealed class CurrentWalkingClearanceFailure : InvalidOperationException
+        {
+            public readonly bool StaticCurrentSource;
+            public CurrentWalkingClearanceFailure(string message,bool staticCurrentSource):base(message)
+            {StaticCurrentSource=staticCurrentSource;}
+        }
+
+        bool IsCurrentStaticWalkingBlocker(Collider collider)
+        {
+            if(collider==null||collider.gameObject.scene!=scene||!collider.enabled||!collider.gameObject.activeInHierarchy||
+                collider.attachedRigidbody!=null||WalkingActor(collider)||!(collider is MeshCollider mesh)||mesh.sharedMesh==null||mesh.convex)return false;
+            var matrix=collider.transform.localToWorldMatrix;
+            return collectedSources!=null&&collectedSources.Any(source=>source.component==collider&&source.shape==NavMeshBuildSourceShape.Mesh&&
+                source.sourceObject==mesh.sharedMesh&&Enumerable.Range(0,16).All(i=>source.transform[i]==matrix[i]));
+        }
+
+        string DescribeWalkingFloorHits(Vector3 feet)
+        {
+            var rows=new List<string>();
+            for(int ray=-1;ray<8;ray++)
+            {
+                var offset=ray<0?Vector3.zero:new Vector3(Mathf.Cos(ray*Mathf.PI/4),0,Mathf.Sin(ray*Mathf.PI/4))*.24f;
+                var hits=Physics.RaycastAll(feet+offset+Vector3.up*.75f,Vector3.down,1.5f,~0,QueryTriggerInteraction.Ignore)
+                    .Where(hit=>!WalkingActor(hit.collider)).OrderBy(hit=>hit.distance).ToArray();
+                rows.Add("ray="+ray+"; "+(hits.Length==0?"NO_HIT":ProbeHit(hits[0])));
+            }
+            return "diagnostic exposed-floor hits at actual capsule feet={"+string.Join(" | ",rows)+"}; no new authority/filter";
+        }
+
+        CurrentWalkingClearanceFailure WalkingBodyFailure(string message,Collider[] blockers,Vector3 from,Vector3 to)
+        {
+            bool qualified=blockers.Length!=0&&blockers.All(IsCurrentStaticWalkingBlocker);
+            var details=blockers.Take(8).Select(collider=>ProbeCollider(collider)+"; boundsMin="+ProbePosition(collider.bounds.min)+
+                "; boundsMax="+ProbePosition(collider.bounds.max)+"; matrix="+ProbeMatrix(collider.transform.localToWorldMatrix)+
+                (collider is MeshCollider mesh?"; mesh="+(mesh.sharedMesh==null?"NULL":mesh.sharedMesh.name)+"; convex="+mesh.convex:
+                    "; source shape has no qualified static mesh identity"));
+            return new CurrentWalkingClearanceFailure(message+"; allBlockingShapes="+blockers.Length+"; allExactStaticCollectedSource="+qualified+
+                "; bodyRadius="+NativeLandingWalker.Radius+"; bodyHeight="+NativeLandingWalker.Height+"; bottomMargin=.03; from="+ProbePosition(from)+
+                "; to="+ProbePosition(to)+"; blockers={"+string.Join(" | ",details)+"}; omittedBlockers="+Mathf.Max(0,blockers.Length-8)+
+                "; overlap/sweep does not identify cooked triangle or penetration depth; nonconvex ClosestPoint not queried; no skin/radius exemption; "+
+                DescribeWalkingFloorHits(from),qualified);
+        }
+
+        static void WalkingDiscInterval(Vector3 from,Vector3 to,Vector3 centre,double radius,List<(double first,double last)> into)
+        {
+            double dx=(double)to.x-from.x,dz=(double)to.z-from.z,x=(double)from.x-centre.x,z=(double)from.z-centre.z;
+            double a=dx*dx+dz*dz,b=2*(x*dx+z*dz),c=x*x+z*z-radius*radius;
+            if(a<=1e-20){if(c<=0)into.Add((0,1));return;}
+            double determinant=b*b-4*a*c;if(determinant<0)return;
+            double root=Math.Sqrt(determinant),first=Math.Max(0,(-b-root)/(2*a)),last=Math.Min(1,(-b+root)/(2*a));
+            if(first<=last)into.Add((first,last));
+        }
+
+        static bool WalkingLinearBand(double start,double delta,double low,double high,ref double first,ref double last)
+        {
+            if(Math.Abs(delta)<=1e-20)return start>=low&&start<=high;
+            double a=(low-start)/delta,b=(high-start)/delta;
+            if(a>b){double swap=a;a=b;b=swap;}
+            first=Math.Max(first,a);last=Math.Min(last,b);return first<=last;
+        }
+
+        internal static bool WalkingSegmentWithinSourceCorridor(Vector3 from,Vector3 to,IReadOnlyList<Vector3> source,float reach)
+        {
+            // Exact interval union of projected source-segment capsules covers the
+            // ENTIRE candidate segment, including concave source corners. This is
+            // only a negative locality bound, never floor/clearance authority.
+            if(source==null||source.Count<2||reach<=1e-5f)return false;
+            double radius=(double)reach-1e-5;var intervals=new List<(double first,double last)>();
+            for(int i=1;i<source.Count;i++)
+            {
+                var a=source[i-1];var b=source[i];
+                WalkingDiscInterval(from,to,a,radius,intervals);WalkingDiscInterval(from,to,b,radius,intervals);
+                double ex=(double)b.x-a.x,ez=(double)b.z-a.z,length=ex*ex+ez*ez;
+                if(length<=1e-20)continue;
+                double px=(double)from.x-a.x,pz=(double)from.z-a.z,dx=(double)to.x-from.x,dz=(double)to.z-from.z;
+                double first=0,last=1,limit=radius*Math.Sqrt(length);
+                if(WalkingLinearBand(px*ex+pz*ez,dx*ex+dz*ez,0,length,ref first,ref last)&&
+                    WalkingLinearBand(ex*pz-ez*px,ex*dz-ez*dx,-limit,limit,ref first,ref last))intervals.Add((first,last));
+            }
+            double covered=0;
+            foreach(var interval in intervals.OrderBy(row=>row.first).ThenBy(row=>row.last))
+            {
+                if(interval.first>covered+1e-12)return false;
+                covered=Math.Max(covered,interval.last);if(covered>=1)return true;
+            }
+            return false;
+        }
+
+        internal static Vector3[] RequireWalkingRefitGeometry(IReadOnlyList<Vector3> source,IReadOnlyList<Vector3> corners,
+            Vector3 start,Vector3 end,out string proof)
+        {
+            if(source==null||source.Count<2||corners==null||corners.Count<2||corners.Count>=512)
+                throw new InvalidOperationException("Current walking refit source/corners are incomplete/truncated");
+            foreach(var point in source.Concat(corners).Concat(new[]{start,end}))
+                if(float.IsNaN(point.x)||float.IsNaN(point.y)||float.IsNaN(point.z)||float.IsInfinity(point.x)||float.IsInfinity(point.y)||float.IsInfinity(point.z))
+                    throw new InvalidOperationException("Current walking refit has unresolved coordinates");
+            if(Vector3.Distance(corners[0],start)>.12f||Vector3.Distance(corners[corners.Count-1],end)>.12f)
+                throw new InvalidOperationException("Current walking refit changed its strict source-bound anchors");
+            float reach=NativeLandingWalker.Radius+.12f,minY=source.Min(point=>point.y)-.35f,maxY=source.Max(point=>point.y)+.35f;
+            var current=new List<Vector3>{start};
+            foreach(var point in corners)
+            {
+                if(float.IsNaN(point.x)||float.IsNaN(point.y)||float.IsNaN(point.z)||float.IsInfinity(point.x)||float.IsInfinity(point.y)||float.IsInfinity(point.z)||point.y<minY||point.y>maxY)
+                    throw new InvalidOperationException("Current walking refit left its source storey or has unresolved coordinates");
+                if((current[current.Count-1]-point).sqrMagnitude>1e-10f)current.Add(point);
+            }
+            if((current[current.Count-1]-end).sqrMagnitude>1e-10f)current.Add(end);
+            if(current.Count==2)current.Insert(1,Vector3.Lerp(start,end,.5f));
+            float sourceLength=0,length=0;
+            for(int i=1;i<source.Count;i++)sourceLength+=Vector3.Distance(source[i-1],source[i]);
+            for(int i=1;i<current.Count;i++)
+            {
+                if(!WalkingSegmentWithinSourceCorridor(current[i-1],current[i],source,reach))
+                    throw new InvalidOperationException("Current walking refit left the complete source-local body/anchor corridor");
+                length+=Vector3.Distance(current[i-1],current[i]);
+            }
+            if(length>sourceLength+2*reach)throw new InvalidOperationException("Current walking refit exceeds its source-tied local length budget");
+            proof="currentFineNavSourceLocalRefit; NEGATIVE_MODEL_LOCALITY_AND_LENGTH_CEILINGS_ONLY_NOT_MEASURED_OR_POSITIVE_CORRIDOR; "+
+                "caps grant no floor/body/Nav qualification; sameExactAnchors; sourceLength="+sourceLength.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+
+                "; currentLength="+length.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+"; maxAdditionalLength="+2*reach+
+                "; whole-segment XZ distance to retained source <= controllerRadius+.12 ("+reach+"); sourceYBand=["+minY+","+maxY+"]; corners="+current.Count;
+            return current.ToArray();
+        }
+
+        internal static void RequireNoOpenWalkingOwners(IReadOnlyList<StationWalkingRoute> owners)
+        {
+            var open=owners.Where(owner=>owner!=null&&!owner.Closed).ToArray();
+            if(open.Length!=0)throw new InvalidOperationException("Current walking refit cannot borrow existing owned walking links: "+
+                string.Join(" | ",open.Select(owner=>owner.Entry.id+"/instance="+owner.GetInstanceID())));
+        }
+
+        static string DescribeWalkingCurve(IReadOnlyList<Vector3> points)=>"count="+(points==null?-1:points.Count)+"; ["+
+            (points==null?"NOT_RUN":string.Join(" | ",points.Select(ProbePosition)))+"]";
+
+        Vector3[] CurrentWalkingRefit(IReadOnlyList<Vector3> primary,StationWalkingRouteEntry source,WalkingMachineBox[] machines,
+            Func<Collider,bool> currentOwner,out string proof)
+        {
+            proof="";var start=primary[0];var end=primary[primary.Count-1];
+            var forward=new NavMeshPath();var reverse=new NavMeshPath();bool forwardFound=false,reverseFound=false;
+            int forwardCount=0,reverseCount=0;Vector3[] forwardCorners=null,reverseCorners=null,candidate=null;
+            try
+            {
+                RequireNoOpenWalkingOwners(UnityEngine.Object.FindObjectsByType<StationWalkingRoute>(FindObjectsInactive.Include,FindObjectsSortMode.None));
+                forwardFound=NavMesh.CalculatePath(start,end,NavMesh.AllAreas,forward);
+                reverseFound=NavMesh.CalculatePath(end,start,NavMesh.AllAreas,reverse);
+                var buffer=new Vector3[512];
+                forwardCount=forward.GetCornersNonAlloc(buffer);forwardCorners=buffer.Take(Mathf.Clamp(forwardCount,0,buffer.Length)).ToArray();
+                reverseCount=reverse.GetCornersNonAlloc(buffer);reverseCorners=buffer.Take(Mathf.Clamp(reverseCount,0,buffer.Length)).ToArray();
+                if(!forwardFound||forward.status!=NavMeshPathStatus.PathComplete||!reverseFound||reverse.status!=NavMeshPathStatus.PathComplete)
+                    throw new InvalidOperationException("One current walking refit attempt has no complete bidirectional native path");
+                if(forwardCount<2||forwardCount>=buffer.Length||reverseCount<2||reverseCount>=buffer.Length)
+                    throw new InvalidOperationException("Current walking refit corners incomplete/truncated");
+                candidate=RequireWalkingRefitGeometry(primary,forwardCorners,start,end,out proof);
+                var backward=RequireWalkingRefitGeometry(primary,reverseCorners,end,start,out var reverseProof);
+                foreach(var path in new[]{candidate,backward})
+                {
+                    foreach(var corner in path)CurrentWalkingAnchor(corner,source.id+"/current-refit-corner");
+                    for(int i=1;i<path.Length;i++)
+                        if(NavMesh.Raycast(path[i-1],path[i],out var boundary,NavMesh.AllAreas))
+                            throw new InvalidOperationException("Current walking refit borrowed off-mesh/transport or crossed a Nav boundary; from="+
+                                ProbePosition(path[i-1])+"; to="+ProbePosition(path[i])+"; boundary="+ProbePosition(boundary.position)+"; mask="+boundary.mask);
+                }
+                // The .28m Nav profile never substitutes for the unchanged .3m body.
+                // Validate the SAME chosen curve in both physical traversal directions.
+                RequireCurrentPublicWalkingPath(source,candidate,machines,currentOwner,source.id+"/current-refit-forward");
+                RequireCurrentPublicWalkingPath(source,candidate.Reverse().ToArray(),machines,currentOwner,source.id+"/current-refit-reverse");
+                proof+="; reverseNative={"+reverseProof+"}; no pre-existing walking links; every native segment surface-continuous; complete owner9/capsule/sweep both directions";
+                return candidate;
+            }
+            catch(Exception cause) when(!(cause is OutOfMemoryException))
+            {
+                var bounds=new Bounds(primary[0],Vector3.zero);foreach(var point in primary)bounds.Encapsulate(point);
+                bounds.Expand(new Vector3(2*(NativeLandingWalker.Radius+.12f),.7f,2*(NativeLandingWalker.Radius+.12f)));
+                throw new InvalidOperationException("Current source-local walking refit failed: "+source.id+
+                    "; SAME anchors="+ProbePosition(start)+" -> "+ProbePosition(end)+"; primary={"+DescribeWalkingCurve(primary)+
+                    "}; forward="+forwardFound+"/"+forward.status+"; forwardCornerCount="+forwardCount+"; forward={"+DescribeWalkingCurve(forwardCorners)+
+                    "}; reverse="+reverseFound+"/"+reverse.status+"; reverseCornerCount="+reverseCount+"; reverse={"+DescribeWalkingCurve(reverseCorners)+
+                    "}; candidate={"+DescribeWalkingCurve(candidate)+"}; sourceLocalNegativeBoundsMin="+ProbePosition(bounds.min)+
+                    "; sourceLocalNegativeBoundsMax="+ProbePosition(bounds.max)+"; entire-segment source-polyline distance <=.3+.12; "+
+                    "sourceYBand=sourceMin/Max+-.35; length<=sourceLength+2*(.3+.12); "+proof+"; finalCause="+cause.Message,cause);
+            }
+        }
+
         void RequireCurrentWalkingClearance(Vector3 feet,string identity)
         {
             var bottom=feet+Vector3.up*(NativeLandingWalker.Radius+.03f);
             var top=feet+Vector3.up*(NativeLandingWalker.Height-NativeLandingWalker.Radius);
-            var blocker=Physics.OverlapCapsule(bottom,top,NativeLandingWalker.Radius,~0,QueryTriggerInteraction.Ignore)
-                .FirstOrDefault(collider=>!WalkingActor(collider));
-            if(blocker!=null)throw new InvalidOperationException("Current public walking capsule is blocked: "+identity+"; feet="+ProbePosition(feet)+"; "+ProbeCollider(blocker));
+            var blockers=Physics.OverlapCapsule(bottom,top,NativeLandingWalker.Radius,~0,QueryTriggerInteraction.Ignore)
+                .Where(collider=>!WalkingActor(collider)).ToArray();
+            if(blockers.Length!=0)throw WalkingBodyFailure("Current public walking capsule is blocked: "+identity,blockers,feet,feet);
         }
 
         void RequireCurrentWalkingSweep(Vector3 from,Vector3 to,string identity)
@@ -445,12 +628,10 @@ namespace ChooGuard.App.Fps.Emergency
             if(distance<=1e-6f)return;
             var bottom=from+Vector3.up*(NativeLandingWalker.Radius+.03f);
             var top=from+Vector3.up*(NativeLandingWalker.Height-NativeLandingWalker.Radius);
-            var blocker=Physics.CapsuleCastAll(bottom,top,NativeLandingWalker.Radius,motion/distance,distance,~0,QueryTriggerInteraction.Ignore)
-                .FirstOrDefault(hit=>!WalkingActor(hit.collider));
-            // Additive-scene solids remain obstacles to the actual controller.
-            // This conservative certificate is not CC step/gravity execution.
-            if(blocker.collider!=null)throw new InvalidOperationException("Current public walking continuous capsule sweep is blocked: "+identity+
-                "; from="+ProbePosition(from)+"; to="+ProbePosition(to)+"; "+ProbeHit(blocker));
+            var blockers=Physics.CapsuleCastAll(bottom,top,NativeLandingWalker.Radius,motion/distance,distance,~0,QueryTriggerInteraction.Ignore)
+                .Where(hit=>!WalkingActor(hit.collider)).Select(hit=>hit.collider).Distinct().ToArray();
+            // All nonactor solids remain blockers. No skin/radius exemption is used.
+            if(blockers.Length!=0)throw WalkingBodyFailure("Current public walking continuous capsule sweep is blocked: "+identity,blockers,from,to);
         }
 
         void RequireCurrentPublicWalkingPath(StationWalkingRouteEntry source,IReadOnlyList<Vector3> path,WalkingMachineBox[] machines,
@@ -505,8 +686,21 @@ namespace ChooGuard.App.Fps.Emergency
             var current=new List<Vector3>{start};
             foreach(var point in publicPath)if((current[current.Count-1]-point).sqrMagnitude>1e-10f)current.Add(point);
             if((current[current.Count-1]-end).sqrMagnitude>1e-10f)current.Add(end);
-            RequireCurrentPublicWalkingPath(source,current,machines,CurrentOwner,source.id);
-            var bound=source.WithCurrentFloorOwners(observedOwners).WithCurrentPublicPath(current.ToArray(),trimProof+
+            string currentProof="original source-public curve passed unchanged";
+            try{RequireCurrentPublicWalkingPath(source,current,machines,CurrentOwner,source.id);}
+            catch(CurrentWalkingClearanceFailure original) when(original.StaticCurrentSource)
+            {
+                // One geometry-qualified correspondence repair; foreign/dynamic,
+                // floor/anchor/schema failures never enter this branch. Preserve a
+                // passing primary curve and keep the original cause if refit fails.
+                observedOwners.Clear();
+                try{current=CurrentWalkingRefit(current,source,machines,CurrentOwner,out currentProof).ToList();
+                    currentProof+="; source-body-invalid primary={"+original.Message+"}";}
+                catch(InvalidOperationException refit)
+                {throw new InvalidOperationException("Current source walking refit failed: "+source.id+"; original={"+original.Message+"}; oneRefit={"+
+                    refit.Message+"}",new AggregateException(original,refit));}
+            }
+            var bound=source.WithCurrentFloorOwners(observedOwners).WithCurrentPublicPath(current.ToArray(),trimProof+"; "+currentProof+
                 "; strict currentNav=.12/.15; complete public owner9-ray/.3m1.72m capsule and continuous sweep; no side probe/floor/link invented");
             physicalReport.Add("CURRENT_WALKING_ROUTE_SOURCE "+source.id+"; original points="+source.path.Length+"; current public points="+bound.path.Length+
                 "; "+bound.CurrentSourceProof+"; observed approved current floor owners="+string.Join("|",observedOwners.OrderBy(owner=>owner,StringComparer.Ordinal)));

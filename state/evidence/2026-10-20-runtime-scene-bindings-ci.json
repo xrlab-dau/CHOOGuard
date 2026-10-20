@@ -67,9 +67,7 @@
     "all_candidate_csharp_inputs_included": true,
     "source_manifest_sha256": "3f738244acd6cc17d980834b74855a28b1fff8e9851b2c06ebf5a516c7e11b01",
     "latest_candidate_inputs": [
-      "Assets/ChooGuard/App/Fps/Emergency/BakedFloor.cs",
       "Assets/ChooGuard/App/Fps/Emergency/CurrentStationNavigation.cs",
-      "Assets/ChooGuard/App/Fps/Emergency/StationWalkingRoute.cs",
       "Assets/ChooGuard/App/Fps/Emergency/StationWorld.cs"
     ]
   },
@@ -117,6 +115,11 @@
       "source_routes": 2,
       "bound_machinery_domains": 9,
       "scope": "Exact extracted production clipping/strict anchors/raw snapshots/typed consumers/collision eligibility/BakedFloor lifetime in isolated System DTOs; no Unity/game DLL execution."
+    },
+    "bounded_current_source_walking_interior_refit": {
+      "checks": 194,
+      "status": "PASS",
+      "scope": "Extracted production whole-segment locality geometry, typed static-source control, strict native path control, unchanged full body queries, raw/current consumers and owned link lifetime in isolated System DTOs. No Unity/game DLL execution."
     }
   },
   "navigation_saved_solid_sources": {
@@ -216,20 +219,31 @@
   },
   "current_walking_route_owner_bindings": {
     "raw_routes_and_coordinates": "Original walking JSON and per-entry read-only SourcePath retained unchanged; runtime public path derives from current source exclusion boundaries.",
-    "current_runtime_copy": "Only contiguous source machinery end caps may be separated at exact original-polyline intersections with all9 current NotWalkable OBBs expanded by the unchanged .3m walking-controller radius plus1mm outward end margin. Interior crossings, no public remainder or missing Nav are errors; no route is silently dropped.",
+    "current_runtime_copy": "Preserve a passing current public curve exactly. Original JSON and SourcePath remain fixed. Exact contiguous machinery-end clipping is retained; only an actual typed exact-static-source body blocker permits one bounded current-Nav interior correspondence attempt between the same strict source-bound anchors.",
     "confirmed_old_owner_omission": "C173 approved floor 16, GO251127183 / Collider251127185",
     "legacy_public_policy": "Unchanged",
     "source_geometry_created_moved_removed": false,
-    "native_final_head_ci_verdict": "PENDING: actual current attachments/capsules/sweeps/controller traversal and all-active-point foot-exit routing required.",
+    "native_final_head_ci_verdict": "PENDING actual final-head attachments, complete physical route, native controller traversal and all-active-point foot-exit CI.",
     "current_attachment": "Strict .12m Nav sample/.15m same-storey delta at the retained source-polyline ends, before any current walking link is registered. Any tiny Nav attachment connector also passes the full physical-path certificate.",
     "current_physical_certificate": "Exact exposed source-scene floor ownership/nine-ray normal-height-spread policy, .3m radius/1.72m height standing capsule and conservative continuous capsule sweep. Foreign nonactor solid blockers remain errors; no actor/trigger grants of source-floor support.",
     "typed_consumers": "Current Start/End/Direction/Matches/LinkData/cost use the same current path; StationWorld.Baked receives these same current entries. Default legacy BakedFloor and original-reference BindPoints retain raw-route loading.",
     "actual_source_evidence": "n56 raw start strict .12m query ball lies wholly inside its actual source-derived NotWalkable frame; complete2rawroutes/9sourceframes audit finds only an expanded initial n56 interval0..0.901179m, no interior crossing; s1 outsideall9. Frame rectangle is not a per-triangle contact claim.",
     "machinery_modifiers_reduced_or_fake_walking_links_added": false,
-    "prior_actual_point_stage": "5189 macOS actual focus passed all1449 source point binding stage including wait122/214; then failed at the old n56 walking endpoint. This is not a whole RouteGraph pass."
+    "prior_actual_point_stage": "5189 macOS actual focus passed all1449 source point binding stage including wait122/214; then failed at the old n56 walking endpoint. This is not a whole RouteGraph pass.",
+    "bounded_current_nav_interior_refit": {
+      "trigger": "Every actual unchanged capsule/sweep blocker must be an active current-scene static nonconvex MeshCollider with exact collected component, sharedMesh and full matrix identity. Other failures are errors.",
+      "native_path": "One complete nontruncated bidirectional current fine-Nav attempt; exact same anchors; source-storey band; every segment surface raycast continuous with no off-mesh or transport borrowing; no existing open walking owners.",
+      "negative_model_admission_caps": "Whole-segment projected distance <= controller radius .3 plus strict anchor reach .12 = .42m; length <= primary curve length plus .84m. These are negative software locality ceilings, NOT measured passage/corridor dimensions or positive floor/body/Nav proof.",
+      "final_positive_certificate": "Same chosen curve in both physical directions passes unchanged actual source owner-nine-ray floor, all9 machinery exclusions, .3m radius/1.72m body capsule and continuous capsule sweeps. All nonactor solid blockers, including foreign scenes, still block.",
+      "failure": "No retry loop, route omission, source change, collision waiver or anchor relocation. Aggregate original blocker and exact single-refit native corners/status/caps/final physical cause.",
+      "owner_lifetime": "Clear failed-primary owner evidence; StationWorld.Dispose synchronously closes only its own walking links before deferred Destroy. Foreign owners only block refit and are never closed.",
+      "source_interference_evidence": "Actual CI found Native5 body interference after successful nine-ray floor. Pinned original mesh has an elevated side face .298765588m from the .3m capsule axis; later fixed-Y7 source context reaches about .04975m penetration. Cooked contact triangle/depth and alternative passage remain unverified.",
+      "native_feasibility": "PENDING final-head actual remote CI. A nominal .28m Nav agent path never substitutes for full .3m walking-body clearance."
+    },
+    "prior_actual_current_binding": "f264 macOS EditMode657/655pass/0fail/2existing skips; n56 static route binding returned before s1 capsule failure. New f264 point-binding stage was NOT_REACHED; prior5189 all1449 binding passage remains prior-run evidence only."
   },
   "current_point_qualification_diagnostics": {
-    "scope": "Diagnostics only; actual physical point binding failure remains unresolved.",
+    "scope": "Failure-only point diagnostics; final-head physical binding remains subject to actual CI.",
     "failure_limit": 8,
     "remaining_rows": "Explicitly NOT_RUN if bounded prefix stops early",
     "reported_context": [
@@ -242,7 +256,7 @@
     "binding_decision_and_absence_witnesses": "Unchanged",
     "partial_runtime_view_or_graph_on_any_failure": false,
     "source_geometry_or_point_records_changed": false,
-    "native_final_head_ci_verdict": "PENDING_DIAGNOSTIC_EXECUTION"
+    "native_final_head_ci_verdict": "PENDING final-head actual CI; f264 stopped earlier at walking binding."
   },
   "current_source_point_bindings": {
     "raw_point_records": 1449,

@@ -158,6 +158,9 @@ namespace ChooGuard.App.Fps.Emergency
         public void Dispose()
         {
             if (PersonBody.Paths == Paths) PersonBody.Paths = null;
+            // Remove only this world's walking links synchronously. Destroy is
+            // deferred; a same-frame replacement world must not borrow old owners.
+            foreach(var walking in WalkingRoutes)if(walking!=null)walking.Close();
             if (links != null) UnityEngine.Object.Destroy(links);
             baked?.Dispose();
             if (navmesh.valid) navmesh.Remove();
