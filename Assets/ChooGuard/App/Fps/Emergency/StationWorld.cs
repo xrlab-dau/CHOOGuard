@@ -24,6 +24,8 @@ namespace ChooGuard.App.Fps.Emergency
         public readonly List<Escalator> Escalators = new List<Escalator>();
         public readonly List<Elevator> Elevators = new List<Elevator>();
         public readonly List<StationWalkingRoute> WalkingRoutes = new List<StationWalkingRoute>();
+        public IReadOnlyList<StationWalkingRouteEntry> SourceWalkingRoutes {get;}
+        public IReadOnlyList<StationWalkingRouteBinding> WalkingRouteBindings {get;}=Array.Empty<StationWalkingRouteBinding>();
 
         /// <summary>
         /// Closed-off discs (cordons, fires, fallen objects, lowered shutters) as the crowd and the paths see them: the truth, not what the staff member
@@ -65,6 +67,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (art == null || art.WorldNavMesh == null || art.StationData == null) throw new ArgumentException("EmergencyArt 의 navmesh·역 자료가 없습니다.");
             var walkingEntries = StationWalkingRoutes.Load(); // Validate before nav/transport registration.
+            SourceWalkingRoutes=Array.AsReadOnly(walkingEntries);
             Seed = seed;
             Random = new System.Random(seed);
             Points = StationPoints.Load(art.StationData);
@@ -132,14 +135,21 @@ namespace ChooGuard.App.Fps.Emergency
                 foreach(var escalator in Escalators)escalator.SetNavigationAvailable(suppliedIds.Contains(escalator.Entry.id));
                 // Derive every public route against current Data before registering
                 // any walking link; no route may borrow another new link as authority.
-                var currentWalking=new List<StationWalkingRouteEntry>();var walkingFailures=new List<Exception>();
+                var currentWalking=new List<StationWalkingRouteEntry>();var walkingBindings=new List<StationWalkingRouteBinding>();
+                var walkingFailures=new List<Exception>();
                 foreach(var source in walkingEntries)
                 {
-                    try{currentWalking.Add(currentNavigation.BindCurrentWalkingRoute(source));}
+                    try
+                    {
+                        var binding=currentNavigation.BindCurrentWalkingRoute(source);walkingBindings.Add(binding);
+                        if(binding.Qualified)currentWalking.Add(binding.CurrentEntry);
+                    }
                     catch(InvalidOperationException cause){walkingFailures.Add(cause);}
                 }
                 if(walkingFailures.Count!=0)throw new InvalidOperationException("Current public walking-route binding failed: "+
                     string.Join(" | ",walkingFailures.Select(cause=>cause.Message)),new AggregateException(walkingFailures));
+                StationWalkingRouteBinding.RequireCompletePartition(walkingEntries,walkingBindings);
+                WalkingRouteBindings=walkingBindings.AsReadOnly();
                 foreach(var entry in currentWalking)
                 {
                     var go=new GameObject(entry.label);go.transform.SetParent(links.transform,false);

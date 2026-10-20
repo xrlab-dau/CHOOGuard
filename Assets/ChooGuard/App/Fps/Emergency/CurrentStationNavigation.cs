@@ -446,6 +446,11 @@ namespace ChooGuard.App.Fps.Emergency
             {StaticCurrentSource=staticCurrentSource;}
         }
 
+        internal sealed class CurrentWalkingSurfaceRejection : InvalidOperationException
+        {
+            internal CurrentWalkingSurfaceRejection(string evidence,Exception cause=null):base(evidence,cause) { }
+        }
+
         internal sealed class CurrentWalkingSourceIdentity
         {
             internal readonly int CollectedIndex;
@@ -826,7 +831,7 @@ namespace ChooGuard.App.Fps.Emergency
                     foreach(var corner in path)CurrentWalkingAnchor(corner,source.id+"/current-refit-corner");
                     for(int i=1;i<path.Length;i++)
                         if(NavMesh.Raycast(path[i-1],path[i],out var boundary,NavMesh.AllAreas))
-                            throw new InvalidOperationException("Current walking refit borrowed off-mesh/transport or crossed a Nav boundary; from="+
+                            throw new CurrentWalkingSurfaceRejection("Current walking refit borrowed off-mesh/transport or crossed a Nav boundary; from="+
                                 ProbePosition(path[i-1])+"; to="+ProbePosition(path[i])+"; boundary="+ProbePosition(boundary.position)+"; mask="+boundary.mask);
                 }
                 // The .28m Nav profile never substitutes for the unchanged .3m body.
@@ -840,13 +845,15 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 var bounds=new Bounds(primary[0],Vector3.zero);foreach(var point in primary)bounds.Encapsulate(point);
                 bounds.Expand(new Vector3(2*(NativeLandingWalker.Radius+.12f),.7f,2*(NativeLandingWalker.Radius+.12f)));
-                throw new InvalidOperationException("Current source-local walking refit failed: "+source.id+
+                string evidence="Current source-local walking refit failed: "+source.id+
                     "; SAME anchors="+ProbePosition(start)+" -> "+ProbePosition(end)+"; primary={"+DescribeWalkingCurve(primary)+
                     "}; forward="+forwardFound+"/"+forward.status+"; forwardCornerCount="+forwardCount+"; forward={"+DescribeWalkingCurve(forwardCorners)+
                     "}; reverse="+reverseFound+"/"+reverse.status+"; reverseCornerCount="+reverseCount+"; reverse={"+DescribeWalkingCurve(reverseCorners)+
                     "}; candidate={"+DescribeWalkingCurve(candidate)+"}; sourceLocalNegativeBoundsMin="+ProbePosition(bounds.min)+
                     "; sourceLocalNegativeBoundsMax="+ProbePosition(bounds.max)+"; entire-segment source-polyline distance <=.3+.12; "+
-                    "sourceYBand=sourceMin/Max+-.35; length<=sourceLength+2*(.3+.12); "+proof+"; finalCause="+cause.Message,cause);
+                    "sourceYBand=sourceMin/Max+-.35; length<=sourceLength+2*(.3+.12); "+proof+"; finalCause="+cause.Message;
+                if(cause is CurrentWalkingSurfaceRejection)throw new CurrentWalkingSurfaceRejection(evidence,cause);
+                throw new InvalidOperationException(evidence,cause);
             }
         }
 
@@ -901,7 +908,7 @@ namespace ChooGuard.App.Fps.Emergency
             return hit.position;
         }
 
-        internal StationWalkingRouteEntry BindCurrentWalkingRoute(StationWalkingRouteEntry source)
+        internal StationWalkingRouteBinding BindCurrentWalkingRoute(StationWalkingRouteEntry source)
         {
             source.Validate();
             var machines=boundWalkingMachines??throw new InvalidOperationException("Current bound source machinery domains are absent");
@@ -933,6 +940,14 @@ namespace ChooGuard.App.Fps.Emergency
                 observedOwners.Clear();
                 try{current=CurrentWalkingRefit(current,source,machines,CurrentOwner,out currentProof).ToList();
                     currentProof+="; source-body-invalid primary={"+original.Message+"}";}
+                catch(CurrentWalkingSurfaceRejection rejection)
+                {
+                    var unavailable=new StationWalkingRouteBinding(source,original,rejection);
+                    physicalReport.Add("UNBOUND_SOURCE_OBSTRUCTED_WALKING_CANDIDATE "+source.id+
+                        "; complete historical source retained; exact static-current-source body interference; one alternative UNQUALIFIED_NAV_SURFACE_BOUNDARY; "+
+                        "no claim that the physical corridor/passage is absent");
+                    return unavailable;
+                }
                 catch(InvalidOperationException refit)
                 {throw new InvalidOperationException("Current source walking refit failed: "+source.id+"; original={"+original.Message+"}; oneRefit={"+
                     refit.Message+"}",new AggregateException(original,refit));}
@@ -941,7 +956,7 @@ namespace ChooGuard.App.Fps.Emergency
                 "; strict currentNav=.12/.15; complete public owner9-ray/.3m1.72m capsule and continuous sweep; no side probe/floor/link invented");
             physicalReport.Add("CURRENT_WALKING_ROUTE_SOURCE "+source.id+"; original points="+source.path.Length+"; current public points="+bound.path.Length+
                 "; "+bound.CurrentSourceProof+"; observed approved current floor owners="+string.Join("|",observedOwners.OrderBy(owner=>owner,StringComparer.Ordinal)));
-            return bound;
+            return new StationWalkingRouteBinding(source,bound);
         }
 
         internal void RequireCurrentElevatorSupport(StationPoints.ElevatorStop stop,string identity)

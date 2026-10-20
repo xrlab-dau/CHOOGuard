@@ -47,11 +47,54 @@ namespace ChooGuard.Tests.PlayMode
         {
             var historicalRoutes=Resources.Load<TextAsset>(StationWorld.RoutesResource);
             var historicalRouteBytes=historicalRoutes.bytes;
+            var historicalWalking=Resources.Load<TextAsset>(StationWalkingRoutes.Resource);
+            var historicalWalkingBytes=historicalWalking.bytes;
+            var rawWalking=StationWalkingRoutes.Load();
             EmergencySession shift = null;
             yield return StartShift(s => shift = s);
             var world = shift.World;
             var graph = world.Paths.Graph;
             Assert.That(world.UsesCurrentSourceNavigation,Is.True);
+            Assert.That(rawWalking.Length,Is.EqualTo(2),"Both historical walking candidates remain source inventory, not a current-placement approval");
+            Assert.That(world.SourceWalkingRoutes.Count,Is.EqualTo(rawWalking.Length));
+            CollectionAssert.AreEqual(rawWalking.Select(route=>route.id),world.SourceWalkingRoutes.Select(route=>route.id));
+            Assert.That(world.WalkingRouteBindings.Count,Is.EqualTo(rawWalking.Length));
+            CollectionAssert.AreEqual(rawWalking.Select(route=>route.id),world.WalkingRouteBindings.Select(row=>row.SourceId));
+            CollectionAssert.AreEquivalent(world.WalkingRouteBindings.Where(row=>row.Qualified).Select(row=>row.SourceId),
+                world.WalkingRoutes.Select(owner=>owner.Entry.id),"Only and every qualified candidate has a current owned walking link");
+            Assert.That(world.WalkingRouteBindings.Single(row=>row.SourceId=="esc-well-n-56-low-apron").Qualified,Is.True,
+                "The supported current north apron must retain its strict physical binding");
+            var currentIds=new HashSet<string>(world.WalkingRoutes.Select(owner=>owner.Entry.id),StringComparer.Ordinal);
+            foreach(var row in world.WalkingRouteBindings)
+            {
+                var original=rawWalking.Single(route=>route.id==row.SourceId);
+                CollectionAssert.AreEqual(original.SourcePath,row.SourcePath,"Complete original candidate path/pose remains audit inventory");
+                Assert.That(row.SourceEvidence,Is.Not.Null.And.Not.Empty);
+                if(row.Qualified)
+                {
+                    Assert.That(row.Status,Is.EqualTo(StationWalkingRouteBindingStatus.BOUND_CURRENT_SOURCE));
+                    Assert.That(row.CurrentEntry,Is.SameAs(world.WalkingRoutes.Single(owner=>owner.Entry.id==row.SourceId).Entry));
+                    Assert.That(row.CurrentEntry.CurrentSourceProof,Is.Not.Null.And.Not.Empty);
+                }
+                else
+                {
+                    Assert.That(row.Status,Is.EqualTo(StationWalkingRouteBindingStatus.UNBOUND_SOURCE_OBSTRUCTED));
+                    Assert.That(row.CurrentEntry,Is.Null);
+                    Assert.That(row.SourceEvidence,Does.Contain("allExactStaticCollectedSource=True"),"A query miss/unknown cannot retire a source candidate");
+                    Assert.That(row.AlternativeEvidence,Does.StartWith("UNQUALIFIED_NAV_SURFACE_BOUNDARY;"));
+                    Assert.That(graph.Nodes.Any(node=>node.Label!=null&&node.Label.StartsWith(StationWalkingRoutes.LinkPrefix+row.SourceId+":",StringComparison.Ordinal)),Is.False,
+                        "An unbound historical candidate cannot leave current typed graph endpoints");
+                }
+                Debug.Log("CURRENT_WALKING_CANDIDATE "+row.SourceId+"; status="+row.Status+"; source={"+row.SourceEvidence+"}; alternative={"+row.AlternativeEvidence+"}");
+            }
+            var edgeField=typeof(RouteGraph).GetField("edges",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+            Assert.That(edgeField,Is.Not.Null);
+            var currentEdges=(IEnumerable<RouteGraph.Edge>)edgeField.GetValue(graph);
+            var missingField=typeof(RouteGraph.Edge).GetField("Missing",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+            Assert.That(missingField,Is.Not.Null);
+            Assert.That(currentEdges.All(edge=>!(bool)missingField.GetValue(edge)),Is.True,"No unresolved/unavailable typed source link may remain in the current derived graph");
+            Assert.That(currentEdges.All(edge=>edge.Walking==null||currentIds.Contains(edge.Walking.Entry.id)),Is.True,
+                "No current graph edge may borrow an unbound historical walking owner");
             Assert.That(world.SourcePoints.All.Count,Is.EqualTo(1449),"All1445 original non-exit records and4 exits remain source inventory");
             Assert.That(world.Points.CurrentBindings.Count,Is.EqualTo(world.SourcePoints.All.Count));
             Assert.That(world.Points.CurrentBindings.Select(r=>r.Source.Id).Distinct().Count(),Is.EqualTo(world.SourcePoints.All.Count));
@@ -103,6 +146,20 @@ namespace ChooGuard.Tests.PlayMode
                 if (!reaches) cut.Add(point.Id + " " + point.Position.ToString("F1"));
             }
             Assert.That(cut, Is.Empty, cut.Count + " places cannot reach any exit on foot on the route graph: " + string.Join(", ", cut.Take(8)));
+
+            var reference=world.Baked;
+            var referenceRoutesField=typeof(BakedFloor).GetField("walkingRoutes",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+            var referenceLinksField=typeof(BakedFloor).GetField("walkingLinks",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+            Assert.That(referenceRoutesField,Is.Not.Null);Assert.That(referenceLinksField,Is.Not.Null);
+            var referenceRoutes=(StationWalkingRouteEntry[])referenceRoutesField.GetValue(reference);
+            var referenceLinks=(List<NavMeshLinkInstance>)referenceLinksField.GetValue(reference);
+            CollectionAssert.AreEquivalent(currentIds,referenceRoutes.Select(route=>route.id),"Current guidance reference owns only the same qualified entries");
+            Assert.That(referenceLinks.Count,Is.EqualTo(currentIds.Count));
+            Assert.That(referenceLinks.All(link=>NavMesh.IsLinkValid(link)),Is.True);
+            CollectionAssert.AreEqual(historicalWalkingBytes,historicalWalking.bytes,"Runtime qualification preserves the entire original walking Resource, including historical review metadata");
+            // This case checks current static qualification/ownership and the graph.
+            // Existing isolated NativeWalkingRoutePlayTests retain actual CC coverage;
+            // no current-scene dynamic traversal result is inferred from that fixture.
 
             var scratch = SceneManager.CreateScene("RouteGraphScratch");
             SceneManager.SetActiveScene(scratch);
