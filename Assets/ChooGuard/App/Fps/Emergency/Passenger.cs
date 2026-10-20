@@ -1176,7 +1176,7 @@ namespace ChooGuard.App.Fps.Emergency
                 ? " hasPath=" + agent.hasPath + " status=" + agent.pathStatus + " stopped=" + agent.isStopped + " remaining=" + agent.remainingDistance.ToString("0.0") + " speed=" + agent.velocity.magnitude.ToString("0.0") + " link=" + agent.isOnOffMeshLink
                 : "";
             return "at=" + Where(transform.position) + " (" + World.Area(transform.position) + ") goal=" + Where(Body.Goal) + " onNavMesh=" + Body.OnNavMesh + at + " planning=" + Body.Planning + " noRoute=" + Body.NoRoute +
-                " step=" + Body.Step + "/" + Body.Chain.Count + " leg=" + leg + "/" + legs.Count + " seat=" + Body.Seat + " riding=" + (Body.Riding != null);
+                " step=" + Body.Step + "/" + Body.Chain.Count + " leg=" + leg + "/" + legs.Count + " seat=" + Body.Seat + " riding=" + (Body.Riding != null) + Body.RouteRecoveryState;
         }
 
         private static string Where(Vector3 v) => "(" + v.x.ToString("0.0") + ", " + v.y.ToString("0.0") + ", " + v.z.ToString("0.0") + ")";

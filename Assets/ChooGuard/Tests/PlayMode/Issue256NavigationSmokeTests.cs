@@ -410,6 +410,10 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(worldGuide.Visible, Is.True, "the dotted route must appear on the floor without opening the map");
             var route = shift.GuidePath.ToList();
             var message = shift.GuideMessage;
+            var knownTargetScene = fire.Scene;
+            float knownTargetIntensity = fire.Intensity;
+            float knownTargetSmoke = fire.SmokeRadius;
+            float knownTargetApproach = fire.ApproachRadius;
 
             // 경로 위에 놓인, 보이지 않는 곳의 위험과 닫힘: 화면은 그대로여야 한다.
             var origin = shift.Player.transform.position;
@@ -424,9 +428,17 @@ namespace ChooGuard.Tests.PlayMode
             HazardRegistry.Add(unseen);
             world.Closed.Add((PointAlong(route, .3f), 4f, "아직 모르는 통제 구역"));
             foreach (var escalator in world.Escalators) escalator.Close();
-            yield return Carved(shift, unseen.Position);
+            // 실제 carve는 기다리되, 이미 아는 화재의 성장까지 비교 입력을 바꾸지는 않는다.
+            bool directorWasEnabled = director.enabled;
+            director.enabled = false;
+            try { yield return Carved(shift, unseen.Position); }
+            finally { director.enabled = directorWasEnabled; }
             // 기다리는 동안 역무원이 밀려 움직였더라도 같은 자리에서 다시 묻는다(비교하는 것은 모르는 위험의 영향뿐이다).
             Place(shift, origin);
+            Assert.That(fire.Scene.Equals(knownTargetScene), Is.True, "precondition: the known target scene changed while waiting for an unseen obstacle");
+            Assert.That(fire.Intensity, Is.EqualTo(knownTargetIntensity), "precondition: the known fire grew while waiting for an unseen obstacle");
+            Assert.That(fire.SmokeRadius, Is.EqualTo(knownTargetSmoke), "precondition: known smoke changed while waiting for an unseen obstacle");
+            Assert.That(fire.ApproachRadius, Is.EqualTo(knownTargetApproach), "precondition: the known target approach ring changed while waiting for an unseen obstacle");
             shift.RefreshGuide();
             Assert.That(shift.GuideStatus, Is.EqualTo(EmergencySession.GuideState.Guiding));
             Assert.That(shift.GuideMessage, Is.EqualTo(message), "what the map says changed because of something the staff member does not know");

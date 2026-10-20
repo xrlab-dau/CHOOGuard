@@ -11,6 +11,8 @@ namespace ChooGuard.App.Fps.Emergency
     internal sealed class CurrentStationRouteBuilder : IDisposable
     {
         const float Cell=16f,Band=1f,Reach=32f,Vertical=4.5f,Detour=1.6f,Slack=8f;
+        const int OptionalWitnessSeedLimit=4;
+        const string OptionalWitnessPolicy="historical-model-local-constructive-witness-v1; nearestCertifiedSeedsPerPose=4; locality=existing32mReach";
         readonly StationWalkingRouteEntry[] walkingRoutes;
         readonly IReadOnlyList<StationWalkingRoute> walkingOwners;
         readonly IReadOnlyList<Escalator> escalatorOwners;
@@ -42,7 +44,7 @@ namespace ChooGuard.App.Fps.Emergency
             var admitted=new Dictionary<string,string>();
             foreach(var point in points.All)if(!pending.ContainsKey(point.Id))
                 admitted.Add(point.Id,"CERTIFIED_CURRENT_MODEL_FOOT_DESTINATION; exactHistoricalCatalog="+current.SourceSha256+
-                    "; roleAndSeatedAnchorCorrespondence=PROVISIONAL_MODEL; actualDirectedExitChain=true");
+                    "; roleAndSeatedAnchorCorrespondence=PROVISIONAL_MODEL; actualDirectedExitChain=true; optionalProposalPolicy="+OptionalWitnessPolicy);
             var destinations=current.CaptureCurrentDestinations(admitted,pending);
             var prospective=current.WithCurrentDestinations(destinations,required);
             var file=new RouteGraph.File {version=RouteGraph.Version,
@@ -51,7 +53,7 @@ namespace ChooGuard.App.Fps.Emergency
                 length=draft.Edges.Select(e=>Mathf.RoundToInt(e.length*100)).ToArray(),link=draft.Edges.Select(e=>e.link).ToArray(),
                 report="Current source MODEL walkability; "+current.All.Count+" geometry-bound source points of "+current.SourceAll.Count+
                     "; active MODEL destinations="+prospective.All.Count+"; pending correspondence="+pending.Count+
-                    "; "+current.CurrentBindings.Count(r=>!r.Bound)+" physically unbound. Historical catalog/roles/Anchor provisional; edges are current actual paths."};
+                    "; "+current.CurrentBindings.Count(r=>!r.Bound)+" physically unbound. Historical catalog/roles/Anchor provisional; edges are current actual paths; optionalProposalPolicy="+OptionalWitnessPolicy};
             var graph=RouteGraph.Load(file,supplied,walking);graph.RetainSource(original);
             foreach(var node in graph.Nodes)
                 if(!NavMesh.SamplePosition(node.Position,out _, .6f,NavMesh.AllAreas))
@@ -160,11 +162,28 @@ namespace ChooGuard.App.Fps.Emergency
             public override string ToString()=>Counts()+"; "+string.Join(" | ",details)+ImportantDetails();
         }
 
-        // The coarse cell survey is useful, but is not a connected-component proof.
-        // A failed point alone gets a complete directed native witness to an existing
-        // exit-reachable draft seed. Failure-only standing alternatives retain the exact
-        // original proposal set and full physical/Nav guards; raw source pose and
-        // native geometry/areas are never changed.
+        // Historical MODEL destinations have a uniform finite constructive search,
+        // not an exhaustive connectivity/disconnection decision. Mandatory actual
+        // owner endpoints above keep their full witness search. Each optional pose
+        // proposes only four nearby already-certified roots; a proposal grants nothing
+        // without the unchanged complete typed/ground/exit-chain checks.
+        static int[] OptionalWitnessSeeds(Draft draft,int source,Vector3 position,IEnumerable<int> certified,AttachmentTrace trace)
+        {
+            if(!Finite(position)||source<0||source>=draft.Positions.Count||draft.Labels.Count!=draft.Positions.Count)
+                throw new InvalidOperationException("Optional witness source metadata is invalid");
+            var all=certified.Where(i=>i!=source).Distinct().ToArray();
+            if(all.Any(i=>i<0||i>=draft.Positions.Count||!Finite(draft.Positions[i])||draft.Labels[i]==null))
+                throw new InvalidOperationException("Optional witness seed metadata is invalid");
+            var local=all.Where(i=>Vector3.Distance(position,draft.Positions[i])<=Reach)
+                .OrderBy(i=>(draft.Positions[i]-position).sqrMagnitude)
+                .ThenBy(i=>draft.Labels[i],StringComparer.Ordinal)
+                .ThenBy(i=>draft.Positions[i].x).ThenBy(i=>draft.Positions[i].y).ThenBy(i=>draft.Positions[i].z).ThenBy(i=>i).ToArray();
+            var selected=local.Take(OptionalWitnessSeedLimit).ToArray();
+            trace.Add("optional-constructive-proposals",OptionalWitnessPolicy+"; totalCertifiedDirectedSeeds="+all.Length+
+                "; eligibleLocalSeeds="+local.Length+"; selectedSeeds="+selected.Length+
+                "; unproposedSeedsAreNotDisconnectionEvidence=true");
+            return selected;
+        }
         List<StationPoints.CurrentRequalification> AttachEveryCurrentPoint(Draft draft,StationPoints points,
             out Dictionary<string,string> pending,
             Func<StationPoints.CurrentBinding,StationPoints.CurrentRequalificationBatch> requalify=null)
@@ -192,9 +211,11 @@ namespace ChooGuard.App.Fps.Emergency
                 }
                 var exitReachable=FootExitReachable(draft,exits);
                 bool reachesExit=exitReachable[index];
-                var seeds=Enumerable.Range(0,draft.Positions.Count).Where(i=>i!=index&&exitReachable[i]).ToArray();
-                if(!reachesExit)trace.Add("coarse-no-foot-exit", "coarseAttachments="+attached);
-                if(reachesExit||TryAttachWitness(draft,points,path,corners,index,seeds,trace))continue;
+                if(reachesExit)continue;
+                trace.Add("coarse-no-foot-exit", "coarseAttachments="+attached);
+                var seeds=OptionalWitnessSeeds(draft,index,point.Position,
+                    Enumerable.Range(0,draft.Positions.Count).Where(i=>exitReachable[i]),trace);
+                if(TryAttachWitness(draft,points,path,corners,index,seeds,trace))continue;
                 string alternativeAudit="requalification=NOT_CONFIGURED";
                 if(requalify!=null&&TryRequalify(draft,points,path,corners,index,edgesBefore,exits,requalify,requalifications,out alternativeAudit))continue;
                 // A failed transaction never publishes corner nodes or edges. This
@@ -205,7 +226,7 @@ namespace ChooGuard.App.Fps.Emergency
                 draft.Positions.RemoveAt(index);draft.Labels.RemoveAt(index);
                 int sourceIndex=points.SourceAll.ToList().FindIndex(p=>p.Id==point.Id);
                 pending.Add(point.Id,"PENDING_HISTORICAL_MODEL_CORRESPONDENCE; exactCatalog="+points.SourceSha256+
-                    "; geometryBindingAndRoleAnchorRetained=true; nonadmissionIsNotAbsenceOrDisconnection; "+point.Id+" sourceIndex="+sourceIndex+" source="+(sourceIndex>=0?Exact(points.SourceAll[sourceIndex].Position):"UNKNOWN")+" current="+Exact(point.Position)+
+                    "; geometryBindingAndRoleAnchorRetained=true; nonadmissionIsNotAbsenceOrDisconnection; declaredOptionalProposalPolicy="+OptionalWitnessPolicy+"; "+point.Id+" sourceIndex="+sourceIndex+" source="+(sourceIndex>=0?Exact(points.SourceAll[sourceIndex].Position):"UNKNOWN")+" current="+Exact(point.Position)+
                     " baselineCandidates="+candidates.Length+"; "+trace+"; "+alternativeAudit);
             }
             return requalifications;
@@ -232,16 +253,17 @@ namespace ChooGuard.App.Fps.Emergency
                 if(candidate==null||!ReferenceEquals(candidate.Binding,binding)||!ReferenceEquals(candidate.ExpectedRuntime,binding.Runtime)||
                     !candidate.ExpectedPosition.Equals(draft.Positions[source])||!Finite(candidate.Position))
                     throw new InvalidOperationException("Current standing candidate identity/old pose differs");
-                var ordered=seeds.OrderBy(i=>(staged.Positions[i]-candidate.Position).sqrMagnitude).ThenBy(i=>i).ToArray();
-                var trace=new AttachmentTrace();trace.Add("requalification-target-set","totalCertifiedDirectedSeeds="+ordered.Length);
+                var trace=new AttachmentTrace();
+                var ordered=OptionalWitnessSeeds(staged,source,candidate.Position,seeds,trace);
                 attempts.Add((candidate,ordered,trace));
             }
-            // Same complete candidate×seed space, fair nearest-rank scheduling:
-            // late original proposals get their nearest positive witness before an
-            // earlier bad pose exhausts thousands of unrelated seed queries.
-            for(int rank=0;rank<seeds.Length;rank++)
+            // Every fully qualified original standing proposal gets the same finite
+            // local-root policy. Fair rank scheduling preserves late proposals without
+            // exhausting unrelated graph roots for each pose.
+            for(int rank=0;rank<OptionalWitnessSeedLimit;rank++)
                 foreach(var attempt in attempts)
                 {
+                    if(rank>=attempt.seeds.Length)continue;
                     var candidate=attempt.candidate;int seed=attempt.seeds[rank];
                     staged.Positions[source]=candidate.Position;
                     if(!TryAttachWitness(staged,points,path,corners,source,new[]{seed},attempt.trace,false))continue;
@@ -249,8 +271,8 @@ namespace ChooGuard.App.Fps.Emergency
                         "; seedAnchor="+Exact(staged.Positions[seed])+"; nearestSeedRank="+rank+"; "+attempt.trace;
                     Commit(draft,staged);pending.Add(candidate);audit="";return true;
                 }
-            audit=batch.Audit+"; ALLqualifiedPoseConnectivityOutcomes={"+string.Join(" | ",attempts.Select(attempt=>
-                "proposalIndex="+attempt.candidate.ProposalIndex+"; qualifiedPose="+Exact(attempt.candidate.Position)+"; totalCertifiedDirectedSeeds="+
+            audit=batch.Audit+"; declaredOptionalProposalPolicy="+OptionalWitnessPolicy+"; DECLAREDqualifiedPoseConnectivityOutcomes={"+string.Join(" | ",attempts.Select(attempt=>
+                "proposalIndex="+attempt.candidate.ProposalIndex+"; qualifiedPose="+Exact(attempt.candidate.Position)+"; selectedLocalCertifiedSeeds="+
                 attempt.seeds.Length+"; "+attempt.trace.Counts()+"; examples="+attempt.trace.Examples(2)))+"}";
             return false;
         }
