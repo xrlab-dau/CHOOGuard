@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -11,20 +12,22 @@ namespace ChooGuard.App.Fps.Emergency
     {
         const float Cell=16f,Band=1f,Reach=32f,Vertical=4.5f,Detour=1.6f,Slack=8f;
         readonly StationWalkingRouteEntry[] walkingRoutes;
+        readonly IReadOnlyList<StationWalkingRoute> walkingOwners;
+        readonly IReadOnlyList<Escalator> escalatorOwners;
         sealed class Draft
         {
             public readonly List<Vector3> Positions=new List<Vector3>();
             public readonly List<string> Labels=new List<string>();
             public readonly List<(int from,int to,float length,string link)> Edges=new List<(int,int,float,string)>();
         }
-        CurrentStationRouteBuilder(IReadOnlyList<StationWalkingRoute> walking)
-        { walkingRoutes=walking.Select(w=>w.Entry).ToArray(); }
+        CurrentStationRouteBuilder(IReadOnlyList<StationWalkingRoute> walking,IReadOnlyList<Escalator> escalators)
+        { walkingOwners=walking;escalatorOwners=escalators;walkingRoutes=walking.Select(w=>w.Entry).ToArray(); }
 
         internal static RouteGraph Build(StationPoints current,IReadOnlyList<Escalator> supplied,IReadOnlyList<Elevator> elevators,
             IReadOnlyList<StationWalkingRoute> walking,TextAsset original)
         {
             var points=current.RoutingView(supplied,elevators);
-            var builder=new CurrentStationRouteBuilder(walking);
+            var builder=new CurrentStationRouteBuilder(walking,supplied);
             var draft=builder.Sample(points);builder.Connect(draft,points);builder.Prune(draft);
             builder.AttachEveryCurrentPoint(draft,points);
             var file=new RouteGraph.File {version=RouteGraph.Version,
@@ -45,27 +48,205 @@ namespace ChooGuard.App.Fps.Emergency
             return graph;
         }
 
+        sealed class AttachmentTrace
+        {
+            readonly SortedDictionary<string,int> reasons=new SortedDictionary<string,int>();
+            readonly List<string> details=new List<string>();
+            public void Add(string reason,string detail=null)
+            {
+                reasons[reason]=reasons.TryGetValue(reason,out int count)?count+1:1;
+                if(detail!=null&&details.Count<8)details.Add(detail);
+            }
+            public override string ToString()=>string.Join(",",reasons.Select(p=>p.Key+"="+p.Value))+"; "+string.Join(" | ",details);
+        }
+
+        // The coarse cell survey is useful, but is not a connected-component proof.
+        // A failed point alone gets a complete directed native witness to an existing
+        // qualified exit. It is only a graph representation: no source pose, floor,
+        // body clearance, native area, or runtime point qualification is changed.
         void AttachEveryCurrentPoint(Draft draft,StationPoints points)
         {
             int baseline=draft.Positions.Count;
             var path=new NavMeshPath();var corners=new Vector3[512];
+            var exits=points.Of(PointKind.Exit).Select(e=>Find(draft,e.Id)).ToArray();
+            if(exits.Length==0||exits.Any(i=>i<0))throw new InvalidOperationException("Current graph has no complete qualified exit seeds");
+            var failures=new List<string>();
             foreach(var point in points.All)
             {
                 if(point.Kind==PointKind.Exit)continue;
+                var trace=new AttachmentTrace();
                 var candidates=Enumerable.Range(0,baseline).Where(i=>Mathf.Abs(draft.Positions[i].y-point.Position.y)<2.5f)
                     .OrderBy(i=>(draft.Positions[i]-point.Position).sqrMagnitude).ToArray();
+                int edgesBefore=draft.Edges.Count;
                 int index=draft.Positions.Count;draft.Positions.Add(point.Position);draft.Labels.Add(point.Id);
                 int attached=0;
                 foreach(int other in candidates)
                 {
-                    if(Vector3.Distance(point.Position,draft.Positions[other])>Reach)break;
+                    if(Vector3.Distance(point.Position,draft.Positions[other])>Reach){trace.Add("coarse-outside-reach");break;}
                     int before=draft.Edges.Count;
-                    TryEdge(draft,points,path,corners,index,other,true);
+                    TryEdge(draft,points,path,corners,index,other,true,trace);
                     if(draft.Edges.Count>before&&++attached==3)break;
                 }
-                if(attached==0)throw new InvalidOperationException("Current source point cannot attach by an actual NavMesh path: "+point.Id);
+                bool reachesExit=HasFootExit(draft,index,exits);
+                if(!reachesExit)trace.Add("coarse-no-foot-exit", "coarseAttachments="+attached);
+                if(reachesExit||TryAttachWitness(draft,points,path,corners,index,exits,trace))continue;
+                // A failed transaction never publishes corner nodes or edges. This
+                // source may have coarse edges to a dead end. Remove ALL its new
+                // directed edges before removing/reusing the node index. No partial
+                // graph can escape the aggregate or contaminate later source rows.
+                draft.Edges.RemoveRange(edgesBefore,draft.Edges.Count-edgesBefore);
+                draft.Positions.RemoveAt(index);draft.Labels.RemoveAt(index);
+                int sourceIndex=points.SourceAll.ToList().FindIndex(p=>p.Id==point.Id);
+                failures.Add(point.Id+" sourceIndex="+sourceIndex+" source="+(sourceIndex>=0?Exact(points.SourceAll[sourceIndex].Position):"UNKNOWN")+" current="+Exact(point.Position)+
+                    " baselineCandidates="+candidates.Length+"; "+trace);
             }
+            if(failures.Count>0)throw new InvalidOperationException("Current source points cannot attach by complete actual foot paths; failures="+
+                failures.Count+" (all failed points; at most eight detailed witnesses per point):\n"+string.Join("\n",failures));
         }
+
+        // Exactly the current draft's Evacuation admission: directions are real
+        // arcs; elevator/missing/closed/barred owners do not establish exit reach.
+        // Stopped but unbarred escalators retain the existing walked-stairs rule.
+        bool HasFootExit(Draft draft,int source,int[] exits)
+        {
+            var goals=new HashSet<int>(exits);var seen=new HashSet<int>();var pending=new Stack<int>();
+            var outgoing=new List<int>[draft.Positions.Count];
+            foreach(var edge in draft.Edges)
+                if(edge.link.Length==0||(edge.link!=RouteGraph.ElevatorLink&&FootOwnerAvailable(edge.link)))
+                    (outgoing[edge.from]??=new List<int>()).Add(edge.to);
+            pending.Push(source);seen.Add(source);
+            while(pending.Count>0)
+            {
+                int node=pending.Pop();if(goals.Contains(node))return true;
+                if(outgoing[node]==null)continue;
+                foreach(int next in outgoing[node])if(seen.Add(next))pending.Push(next);
+            }
+            return false;
+        }
+
+        bool TryAttachWitness(Draft draft,StationPoints points,NavMeshPath path,Vector3[] corners,int source,int[] exits,AttachmentTrace trace)
+        {
+            foreach(int exit in exits.OrderBy(i=>(draft.Positions[i]-draft.Positions[source]).sqrMagnitude))
+            {
+                int mask=NavMesh.AllAreas&~(1<<StationWorld.ElevatorArea);
+                if(!NavMesh.CalculatePath(draft.Positions[source],draft.Positions[exit],mask,path)||path.status!=NavMeshPathStatus.PathComplete)
+                {trace.Add("witness-incomplete","exit="+draft.Labels[exit]+" status="+path.status);continue;}
+                int count=path.GetCornersNonAlloc(corners);
+                if(count<2||count>=corners.Length){trace.Add("witness-empty-or-truncated","exit="+draft.Labels[exit]+" corners="+count);continue;}
+                // Every subsequent native call reuses the same path/buffer. Keep the
+                // complete witness first; no forward result implies a reverse edge.
+                var witness=new Vector3[count];Array.Copy(corners,witness,count);
+                trace.Add("witness-complete","exit="+draft.Labels[exit]+" corners="+count+" source="+Exact(draft.Positions[source])+" target="+Exact(draft.Positions[exit]));
+                if(witness.Any(p=>!Finite(p))||Vector3.Distance(witness[0],draft.Positions[source])>.6f||
+                    Vector3.Distance(witness[count-1],draft.Positions[exit])>.6f)
+                {trace.Add("witness-endpoint-or-finite");continue;}
+                var staged=Copy(draft);int current=source;bool complete=true;
+                for(int segment=1;segment<count&&complete;segment++)
+                {
+                    if(!TryWitnessSeam(staged,points,witness[segment-1],witness[segment],out int seamFrom,out int seamTo,out bool seam,out string reason))
+                    {trace.Add(reason,"exit="+draft.Labels[exit]+" segment="+(segment-1)+" from="+Exact(witness[segment-1])+" to="+Exact(witness[segment]));complete=false;break;}
+                    if(seam)
+                    {
+                        complete=AppendGround(staged,points,path,corners,ref current,staged.Positions[seamFrom],seamFrom,trace);
+                        if(complete)current=seamTo; // exact existing directed owner arc, never a generic substitute
+                    }
+                    else complete=AppendGround(staged,points,path,corners,ref current,witness[segment],-1,trace);
+                }
+                if(complete)complete=AppendGround(staged,points,path,corners,ref current,staged.Positions[exit],exit,trace);
+                if(!complete)continue;
+                Commit(draft,staged);return true;
+            }
+            return false;
+        }
+
+        // Every known seam is represented by its already registered exact owner
+        // endpoints/arc. Ambiguous, closed, reversed one-way or missing owners fail.
+        bool TryWitnessSeam(Draft draft,StationPoints points,Vector3 from,Vector3 to,out int a,out int b,out bool seam,out string reason)
+        {
+            a=b=-1;seam=false;reason="";var matches=new List<(int a,int b,string link)>();
+            foreach(var entry in walkingRoutes)
+                if(entry.Matches(from,to,out bool reverse))matches.Add((Find(draft,StationWalkingRoutes.LinkPrefix+entry.id+(reverse?":end":":start")),
+                    Find(draft,StationWalkingRoutes.LinkPrefix+entry.id+(reverse?":start":":end")),StationWalkingRoutes.LinkPrefix+entry.id));
+            foreach(var entry in points.Escalators)
+            {
+                bool forward=Near(from,entry.path[0])&&Near(to,entry.path[entry.path.Length-1]);
+                bool reverse=Near(to,entry.path[0])&&Near(from,entry.path[entry.path.Length-1]);
+                if(forward||reverse)matches.Add((Find(draft,entry.id+(forward?":start":":end")),Find(draft,entry.id+(forward?":end":":start")),entry.id));
+            }
+            foreach(var entry in points.Elevators)
+                for(int i=0;i<entry.stops.Length;i++)for(int j=0;j<entry.stops.Length;j++)
+                    if(i!=j&&Near(from,entry.stops[i].door)&&Near(to,entry.stops[j].door)){reason="witness-elevator-forbidden";return false;}
+            if(matches.Count==0)return true;
+            if(matches.Count!=1){reason="witness-ambiguous-owner";return false;}
+            var match=matches[0];a=match.a;b=match.b;seam=true;
+            if(a<0||b<0||!draft.Edges.Any(e=>e.from==match.a&&e.to==match.b&&e.link==match.link)||!FootOwnerAvailable(match.link))
+            {reason="witness-owner-arc-unavailable";return false;}
+            return true;
+        }
+
+        bool FootOwnerAvailable(string link)
+        {
+            if(link.StartsWith(StationWalkingRoutes.LinkPrefix,StringComparison.Ordinal))
+                return walkingOwners.Count(w=>StationWalkingRoutes.LinkPrefix+w.Entry.id==link)==1&&
+                    walkingOwners.Any(w=>StationWalkingRoutes.LinkPrefix+w.Entry.id==link&&!w.Closed);
+            return escalatorOwners.Count(e=>e.Entry.id==link)==1&&escalatorOwners.Any(e=>e.Entry.id==link&&!e.Closed&&!e.EntryBarred);
+        }
+
+        bool AppendGround(Draft staged,StationPoints points,NavMeshPath path,Vector3[] corners,ref int current,Vector3 target,int existing,AttachmentTrace trace)
+        {
+            var from=staged.Positions[current];
+            int steps=Mathf.Max(1,Mathf.CeilToInt(Vector3.Distance(from,target)/Cell));
+            for(int step=1;step<=steps;step++)
+            {
+                var position=Vector3.Lerp(from,target,(float)step/steps);
+                int next=step==steps&&existing>=0?existing:staged.Positions.Count;
+                if(next==current)continue;
+                if(!Finite(position)||!NavMesh.SamplePosition(position,out _, .6f,NavMesh.AllAreas))
+                {trace.Add("witness-corner-off-nav");return false;}
+                if(next==staged.Positions.Count){staged.Positions.Add(position);staged.Labels.Add("");}
+                if(!GroundEdge(staged.Positions[current],staged.Positions[next],points,path,corners,out float length,out string reason))
+                {trace.Add(reason,"from="+Exact(staged.Positions[current])+" to="+Exact(staged.Positions[next]));return false;}
+                staged.Edges.Add((current,next,length,""));
+                // Reverse is independently queried/costed. Failure grants no reverse.
+                if(GroundEdge(staged.Positions[next],staged.Positions[current],points,path,corners,out float back,out _))staged.Edges.Add((next,current,back,""));
+                current=next;
+            }
+            return true;
+        }
+
+        bool GroundEdge(Vector3 from,Vector3 to,StationPoints points,NavMeshPath path,Vector3[] corners,out float length,out string reason)
+        {
+            length=0;reason="";
+            if(Vector3.Distance(from,to)>Reach){reason="witness-edge-reach";return false;}
+            if(!Walk(from,to,points,path,corners,true,out length,out string link)||link.Length>0){reason="witness-edge-walk-or-owner";return false;}
+            int count=path.GetCornersNonAlloc(corners);
+            if(!Finite(from)||!Finite(to)||float.IsNaN(length)||float.IsInfinity(length)||
+                corners.Take(count).Any(p=>!Finite(p))||Vector3.Distance(corners[0],from)>.6f||Vector3.Distance(corners[count-1],to)>.6f)
+            {reason="witness-ground-endpoint-or-finite";return false;}
+            for(int i=1;i<count;i++)
+            {
+                if(!TryWitnessSeam(new Draft(),points,corners[i-1],corners[i],out _,out _,out bool seam,out _)||seam)
+                {reason="witness-ground-crosses-owner";return false;}
+                // A complete native path can traverse off-mesh links. A generic
+                // ground arc additionally needs uninterrupted walk polygons; true
+                // (including an outer edge/mask zero) is never waived or snapped.
+                if(NavMesh.Raycast(corners[i-1],corners[i],out _,NavMesh.AllAreas&~(1<<StationWorld.ElevatorArea)))
+                {reason="witness-ground-boundary-or-unknown-link";return false;}
+            }
+            return true;
+        }
+
+        static Draft Copy(Draft source)
+        {
+            var result=new Draft();result.Positions.AddRange(source.Positions);result.Labels.AddRange(source.Labels);result.Edges.AddRange(source.Edges);return result;
+        }
+        static void Commit(Draft target,Draft source)
+        {
+            target.Positions.Clear();target.Positions.AddRange(source.Positions);target.Labels.Clear();target.Labels.AddRange(source.Labels);
+            target.Edges.Clear();target.Edges.AddRange(source.Edges);
+        }
+        static bool Finite(Vector3 p)=>!float.IsNaN(p.x)&&!float.IsInfinity(p.x)&&!float.IsNaN(p.y)&&!float.IsInfinity(p.y)&&!float.IsNaN(p.z)&&!float.IsInfinity(p.z);
+        static string Exact(Vector3 p)=>"["+p.x.ToString("R",CultureInfo.InvariantCulture)+","+p.y.ToString("R",CultureInfo.InvariantCulture)+","+p.z.ToString("R",CultureInfo.InvariantCulture)+"]";
 
         private Draft Sample(StationPoints points)
         {
@@ -186,39 +367,39 @@ namespace ChooGuard.App.Fps.Emergency
         private int Find(Draft draft, string label) => draft.Labels.IndexOf(label);
 
         /// <summary>Adds a→b when the navmesh walks there without a big detour, and b→a: the same walk when it uses no one-way link, else the way back is walked separately.</summary>
-        private void TryEdge(Draft draft, StationPoints points, NavMeshPath path, Vector3[] corners, int a, int b, bool ratio)
+        private void TryEdge(Draft draft, StationPoints points, NavMeshPath path, Vector3[] corners, int a, int b, bool ratio,AttachmentTrace trace=null)
         {
-            if (!Walk(draft.Positions[a], draft.Positions[b], points, path, corners, ratio, out float length, out string link)) return;
+            if (!Walk(draft.Positions[a], draft.Positions[b], points, path, corners, ratio, out float length, out string link,trace)) return;
             draft.Edges.Add((a, b, length, link));
             if (Walk(draft.Positions[b], draft.Positions[a], points, path, corners, ratio, out float back, out string backLink)) draft.Edges.Add((b, a, back, backLink));
         }
 
-        private bool Walk(Vector3 from, Vector3 to, StationPoints points, NavMeshPath path, Vector3[] corners, bool ratio, out float length, out string link)
+        private bool Walk(Vector3 from, Vector3 to, StationPoints points, NavMeshPath path, Vector3[] corners, bool ratio, out float length, out string link,AttachmentTrace trace=null)
         {
             length = 0;
             link = "";
-            if (!NavMesh.CalculatePath(from, to, NavMesh.AllAreas, path) || path.status != NavMeshPathStatus.PathComplete) return false;
+            if (!NavMesh.CalculatePath(from, to, NavMesh.AllAreas, path) || path.status != NavMeshPathStatus.PathComplete) {trace?.Add("coarse-native-incomplete");return false;}
             int count = path.GetCornersNonAlloc(corners);
-            if(count==0||count>=corners.Length)return false;
+            if(count==0||count>=corners.Length){trace?.Add("coarse-empty-or-truncated");return false;}
             for (int i = 1; i < count; i++)
             {
                 // A measured walk is its dedicated endpoint↔endpoint graph arc.
                 // Excluding generic crossings prevents a composite path from losing
                 // a second walking owner or an existing transport-link closure.
-                if (walkingRoutes.Any(w => w.Matches(corners[i - 1], corners[i], out _))) return false;
+                if (walkingRoutes.Any(w => w.Matches(corners[i - 1], corners[i], out _))) {trace?.Add("coarse-dedicated-walking-seam");return false;}
                 length += Vector3.Distance(corners[i - 1], corners[i]);
             }
-            if (ratio && length > Vector3.Distance(from, to) * Detour + Slack) return false;
+            if (ratio && length > Vector3.Distance(from, to) * Detour + Slack) {trace?.Add("coarse-detour");return false;}
             for (int i = 0; i + 1 < count; i++)
             {
                 foreach (var escalator in points.Escalators)
                     if (Near(corners[i], escalator.path[0]) && Near(corners[i + 1], escalator.path[escalator.path.Length - 1]))
-                    { if(link.Length>0&&link!=escalator.id)return false;link=escalator.id; }
+                    { if(link.Length>0&&link!=escalator.id){trace?.Add("coarse-composite-owner");return false;}link=escalator.id; }
                 foreach (var elevator in points.Elevators)
                     for (int stop = 0; stop < elevator.stops.Length; stop++)
                         for (int other = 0; other < elevator.stops.Length; other++)
                             if (stop != other && Near(corners[i], elevator.stops[stop].door) && Near(corners[i + 1], elevator.stops[other].door))
-                            { if(link.Length>0&&link!=RouteGraph.ElevatorLink)return false;link=RouteGraph.ElevatorLink; }
+                            { if(link.Length>0&&link!=RouteGraph.ElevatorLink){trace?.Add("coarse-composite-owner");return false;}link=RouteGraph.ElevatorLink; }
             }
             return true;
         }
