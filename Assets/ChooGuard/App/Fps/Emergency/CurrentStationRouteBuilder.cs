@@ -27,32 +27,119 @@ namespace ChooGuard.App.Fps.Emergency
         { walkingOwners=walking;escalatorOwners=escalators;walkingRoutes=walking.Select(w=>w.Entry).ToArray(); }
 
         internal static RouteGraph Build(StationPoints current,IReadOnlyList<Escalator> supplied,IReadOnlyList<Elevator> elevators,
-            IReadOnlyList<StationWalkingRoute> walking,TextAsset original,
+            IReadOnlyList<StationWalkingRoute> walking,TextAsset original,out StationPoints active,
             Func<StationPoints.CurrentBinding,StationPoints.CurrentRequalificationBatch> requalify=null)
         {
+            active=null;current.RequireCurrentModelOrigin();
             var points=current.RoutingView(supplied,elevators);
             using(var builder=new CurrentStationRouteBuilder(walking,supplied))
             {
             var draft=builder.Sample(points);builder.Connect(draft,points);builder.Prune(draft);
-            var requalifications=builder.AttachEveryCurrentPoint(draft,points,requalify);
+            // Actual owner landing obligations precede optional historical MODEL
+            // destination admission. Failure cannot retire an owner/landing.
+            var required=builder.RequireCurrentOwnerEndpoints(draft,points,elevators);
+            var requalifications=builder.AttachEveryCurrentPoint(draft,points,out var pending,requalify);
+            var admitted=new Dictionary<string,string>();
+            foreach(var point in points.All)if(!pending.ContainsKey(point.Id))
+                admitted.Add(point.Id,"CERTIFIED_CURRENT_MODEL_FOOT_DESTINATION; exactHistoricalCatalog="+current.SourceSha256+
+                    "; roleAndSeatedAnchorCorrespondence=PROVISIONAL_MODEL; actualDirectedExitChain=true");
+            var destinations=current.CaptureCurrentDestinations(admitted,pending);
+            var prospective=current.WithCurrentDestinations(destinations,required);
             var file=new RouteGraph.File {version=RouteGraph.Version,
                 positions=draft.Positions.SelectMany(p=>new[]{Mathf.RoundToInt(p.x*100),Mathf.RoundToInt(p.y*100),Mathf.RoundToInt(p.z*100)}).ToArray(),
                 labels=draft.Labels.ToArray(),from=draft.Edges.Select(e=>e.from).ToArray(),to=draft.Edges.Select(e=>e.to).ToArray(),
                 length=draft.Edges.Select(e=>Mathf.RoundToInt(e.length*100)).ToArray(),link=draft.Edges.Select(e=>e.link).ToArray(),
-                report="Current source MODEL walkability; "+current.All.Count+" bound source points of "+current.SourceAll.Count+
-                    "; "+current.CurrentBindings.Count(r=>!r.Bound)+" explicitly witnessed UNBOUND. Historical graph immutable; edges are current actual paths."};
+                report="Current source MODEL walkability; "+current.All.Count+" geometry-bound source points of "+current.SourceAll.Count+
+                    "; active MODEL destinations="+prospective.All.Count+"; pending correspondence="+pending.Count+
+                    "; "+current.CurrentBindings.Count(r=>!r.Bound)+" physically unbound. Historical catalog/roles/Anchor provisional; edges are current actual paths."};
             var graph=RouteGraph.Load(file,supplied,walking);graph.RetainSource(original);
             foreach(var node in graph.Nodes)
                 if(!NavMesh.SamplePosition(node.Position,out _, .6f,NavMesh.AllAreas))
                     throw new InvalidOperationException("Derived current graph node is off the current NavMesh: "+node.Label);
             var fields=points.Of(PointKind.Exit).Select(e=>graph.Toward(graph.ByLabel(e.Id),RouteProfile.Evacuation,
                 Array.Empty<(Vector3,float)>(),Time.time)).ToArray();
-            foreach(var point in points.All)
-                if(!fields.Any(f=>f.Reaches(graph.ByLabel(point.Id))))
-                    throw new InvalidOperationException("Current physically qualified point has no actual foot-exit route: "+point.Id);
+            foreach(var endpoint in required)
+            {
+                var node=graph.ByLabel(endpoint.Label);
+                if(node==null||!Finite(node.Position)||Vector3.Distance(node.Position,endpoint.SourcePosition)>endpoint.MaxAttachmentDistance||
+                    Mathf.Abs(node.Position.y-endpoint.SourcePosition.y)>endpoint.MaxAttachmentHeight||!fields.Any(f=>f.Reaches(node)))
+                    throw new InvalidOperationException("Required current owner endpoint has no exact actual foot-exit attachment: "+endpoint.Label);
+                endpoint.GraphPosition=node.Position;
+            }
+            foreach(var point in prospective.All)
+            {
+                var node=graph.ByLabel(point.Id);
+                var change=requalifications.SingleOrDefault(row=>row.ExpectedId==point.Id);
+                var standing=change==null?point.Position:change.Position;
+                if(node==null||Vector3.Distance(node.Position,standing)>.6f||Mathf.Abs(node.Position.y-standing.y)>.35f||
+                    !fields.Any(f=>f.Reaches(node)))
+                    throw new InvalidOperationException("Current active MODEL destination has no exact actual foot-exit route: "+point.Id);
+            }
+            foreach(var id in pending.Keys)if(graph.ByLabel(id)!=null)
+                throw new InvalidOperationException("Pending destination leaked into current graph: "+id);
+            // Complete ledger, mandatory ownership, non-vacuity and graph guards
+            // all precede the existing validate-all/assignment-only pose commit.
             current.CommitCurrentRequalifications(requalifications);
+            active=prospective;
             return graph;
             }
+        }
+
+        IReadOnlyList<StationPoints.CurrentRequiredEndpoint> RequireCurrentOwnerEndpoints(Draft draft,StationPoints points,IReadOnlyList<Elevator> elevators)
+        {
+            var required=new List<StationPoints.CurrentRequiredEndpoint>();var labels=new HashSet<string>();var owners=new HashSet<string>();
+            void Add(string label,string owner,Vector3 source,bool measured=false)
+            {
+                int index=Find(draft,label);bool exit=owner.StartsWith("current-exit:",StringComparison.Ordinal);
+                float distanceLimit=measured?.12f:exit?.6f:3f,heightLimit=measured?.15f:exit?.35f:1.5f;
+                if(!labels.Add(label)||index<0||draft.Labels.Count(value=>value==label)!=1||!Finite(source)||
+                    Vector3.Distance(source,draft.Positions[index])>distanceLimit||
+                    Mathf.Abs(source.y-draft.Positions[index].y)>heightLimit)
+                    throw new InvalidOperationException("Current source owner endpoint lacks its exact attachment: "+label+" source="+Exact(source));
+                required.Add(new StationPoints.CurrentRequiredEndpoint{Label=label,Owner=owner,SourcePosition=source,GraphPosition=draft.Positions[index],
+                    MaxAttachmentDistance=distanceLimit,MaxAttachmentHeight=heightLimit,
+                    Evidence="COMPLETE_CURRENT_OWNER_ENDPOINT_INVENTORY; currentOwner=true; existingAttachmentLimitsRetained=true; graphEgressNotFloorBodyOrCCCertificate=true"});
+            }
+            foreach(var exit in points.Of(PointKind.Exit))Add(exit.Id,"current-exit:"+exit.Id,exit.Position);
+            foreach(var owner in escalatorOwners)
+            {
+                var entry=owner.Entry;
+                if(!owner.NavigationAvailable||!owners.Add(entry.id)||!points.Escalators.Any(row=>ReferenceEquals(row,entry))||entry.path==null||entry.path.Length<2)
+                    throw new InvalidOperationException("Current source escalator owner inventory differs");
+                Add(entry.id+":start",entry.id,entry.path[0]);Add(entry.id+":end",entry.id,entry.path[entry.path.Length-1]);
+                // Parallel catalog stair coordinates are retained by Sample/Connect;
+                // tread-owner binding alone does not establish a current stair owner.
+            }
+            if(points.Escalators.Count!=escalatorOwners.Count)throw new InvalidOperationException("Current source escalator endpoint inventory is incomplete");
+            foreach(var owner in walkingOwners)
+            {
+                var entry=owner.Entry;
+                if(owner.Closed||!owners.Add(StationWalkingRoutes.LinkPrefix+entry.id))throw new InvalidOperationException("Current walking owner inventory differs");
+                Add(StationWalkingRoutes.LinkPrefix+entry.id+":start",StationWalkingRoutes.LinkPrefix+entry.id,entry.Start,true);
+                Add(StationWalkingRoutes.LinkPrefix+entry.id+":end",StationWalkingRoutes.LinkPrefix+entry.id,entry.End,true);
+            }
+            foreach(var entry in points.Elevators)
+            {
+                if(elevators.Count(owner=>owner.NavigationAvailable&&ReferenceEquals(owner.Entry,entry))!=1||!owners.Add(entry.id))
+                    throw new InvalidOperationException("Current source elevator owner inventory differs");
+                for(int i=0;i<entry.stops.Length;i++)Add(entry.id+":"+i,entry.id,entry.stops[i].door);
+            }
+            if(elevators.Count(owner=>owner.NavigationAvailable)!=points.Elevators.Count)
+                throw new InvalidOperationException("Current source elevator endpoint inventory is incomplete");
+            var exits=points.Of(PointKind.Exit).Select(exit=>Find(draft,exit.Id)).ToArray();var path=new NavMeshPath();var corners=new Vector3[512];var failures=new List<string>();
+            foreach(var endpoint in required)
+            {
+                int index=Find(draft,endpoint.Label);var reachable=FootExitReachable(draft,exits);
+                if(!reachable[index])
+                {
+                    var seeds=Enumerable.Range(0,draft.Positions.Count).Where(i=>i!=index&&reachable[i]).ToArray();var trace=new AttachmentTrace();
+                    if(!TryAttachWitness(draft,points,path,corners,index,seeds,trace))
+                    {failures.Add(endpoint.Label+" owner="+endpoint.Owner+" source="+Exact(endpoint.SourcePosition)+" graph="+Exact(endpoint.GraphPosition)+"; "+trace);continue;}
+                }
+                endpoint.Evidence+="; CERTIFIED_CURRENT_DIRECTED_EVACUATION_EXIT_CHAIN";
+            }
+            if(failures.Count>0)throw new InvalidOperationException("Required current source owner endpoints lack actual foot egress (before MODEL admission):\n"+string.Join("\n",failures));
+            return required.AsReadOnly();
         }
 
         sealed class AttachmentTrace
@@ -79,13 +166,14 @@ namespace ChooGuard.App.Fps.Emergency
         // original proposal set and full physical/Nav guards; raw source pose and
         // native geometry/areas are never changed.
         List<StationPoints.CurrentRequalification> AttachEveryCurrentPoint(Draft draft,StationPoints points,
+            out Dictionary<string,string> pending,
             Func<StationPoints.CurrentBinding,StationPoints.CurrentRequalificationBatch> requalify=null)
         {
             int baseline=draft.Positions.Count;
             var path=new NavMeshPath();var corners=new Vector3[512];
             var exits=points.Of(PointKind.Exit).Select(e=>Find(draft,e.Id)).ToArray();
             if(exits.Length==0||exits.Any(i=>i<0))throw new InvalidOperationException("Current graph has no complete qualified exit seeds");
-            var failures=new List<string>();var requalifications=new List<StationPoints.CurrentRequalification>();
+            pending=new Dictionary<string,string>();var requalifications=new List<StationPoints.CurrentRequalification>();
             foreach(var point in points.All)
             {
                 if(point.Kind==PointKind.Exit)continue;
@@ -116,11 +204,10 @@ namespace ChooGuard.App.Fps.Emergency
                 draft.Edges.RemoveRange(edgesBefore,draft.Edges.Count-edgesBefore);
                 draft.Positions.RemoveAt(index);draft.Labels.RemoveAt(index);
                 int sourceIndex=points.SourceAll.ToList().FindIndex(p=>p.Id==point.Id);
-                failures.Add(point.Id+" sourceIndex="+sourceIndex+" source="+(sourceIndex>=0?Exact(points.SourceAll[sourceIndex].Position):"UNKNOWN")+" current="+Exact(point.Position)+
+                pending.Add(point.Id,"PENDING_HISTORICAL_MODEL_CORRESPONDENCE; exactCatalog="+points.SourceSha256+
+                    "; geometryBindingAndRoleAnchorRetained=true; nonadmissionIsNotAbsenceOrDisconnection; "+point.Id+" sourceIndex="+sourceIndex+" source="+(sourceIndex>=0?Exact(points.SourceAll[sourceIndex].Position):"UNKNOWN")+" current="+Exact(point.Position)+
                     " baselineCandidates="+candidates.Length+"; "+trace+"; "+alternativeAudit);
             }
-            if(failures.Count>0)throw new InvalidOperationException("Current source points cannot attach by complete actual foot paths; failures="+
-                failures.Count+" (all failed points; at most eight detailed witnesses per point):\n"+string.Join("\n",failures));
             return requalifications;
         }
 
@@ -203,19 +290,25 @@ namespace ChooGuard.App.Fps.Emergency
                 bool found=NavMesh.CalculatePath(draft.Positions[source],draft.Positions[exit],mask,path);
                 var ordinaryStatus=path.status; // explicit short queries reuse path below
                 trace.Add("witness-query-"+(found?"true":"false"));trace.Add("witness-status-"+ordinaryStatus);
-                if(!found||ordinaryStatus!=NavMeshPathStatus.PathComplete)
+                if(!found||(ordinaryStatus!=NavMeshPathStatus.PathComplete&&ordinaryStatus!=NavMeshPathStatus.PathPartial))
+                    throw new InvalidOperationException("Native witness query is invalid; cannot classify a destination: "+ordinaryStatus);
+                if(ordinaryStatus!=NavMeshPathStatus.PathComplete)
                 {
                     if(found&&ordinaryStatus==NavMeshPathStatus.PathPartial&&TryExplicitWitness(draft,points,path,corners,source,exit,trace))return true;
                     trace.Add("witness-incomplete","seed="+exit+":"+draft.Labels[exit]+" status="+ordinaryStatus+" query="+found+" source="+Exact(draft.Positions[source])+" target="+Exact(draft.Positions[exit]));continue;}
                 int count=path.GetCornersNonAlloc(corners);
-                if(count<2||count>=corners.Length){trace.Add("witness-empty-or-truncated","seed="+exit+":"+draft.Labels[exit]+" corners="+count);continue;}
+                if(count==1&&Finite(corners[0])&&Vector3.Distance(corners[0],draft.Positions[source])<=.6f&&
+                    Vector3.Distance(corners[0],draft.Positions[exit])<=.6f&&Mathf.Abs(corners[0].y-draft.Positions[source].y)<=.35f&&
+                    Mathf.Abs(corners[0].y-draft.Positions[exit].y)<=.35f)
+                {trace.Add("witness-one-corner-no-certified-chain");continue;}
+                if(count<2||count>=corners.Length)throw new InvalidOperationException("Native witness is empty/truncated: "+count);
                 // Every subsequent native call reuses the same path/buffer. Keep the
                 // complete witness first; no forward result implies a reverse edge.
                 var witness=new Vector3[count];Array.Copy(corners,witness,count);
                 trace.Add("witness-complete","seed="+exit+":"+draft.Labels[exit]+" corners="+count+" source="+Exact(draft.Positions[source])+" target="+Exact(draft.Positions[exit]));
                 if(witness.Any(p=>!Finite(p))||Vector3.Distance(witness[0],draft.Positions[source])>.6f||
                     Vector3.Distance(witness[count-1],draft.Positions[exit])>.6f)
-                {trace.Add("witness-endpoint-or-finite");continue;}
+                    throw new InvalidOperationException("Native witness endpoint/nonfinite metadata differs");
                 var staged=Copy(draft);int current=source;bool complete=true;
                 for(int segment=1;segment<count&&complete;segment++)
                 {
@@ -256,8 +349,10 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 if(step.OffMesh)
                 {
-                    if(!TryWitnessSeam(staged,points,step.From,step.To,out int a,out int b,out bool known,out string reason)||!known)
-                    {trace.Add("explicit-unknown-or-unavailable-owner");trace.Important("explicit-owner-rejection",reason+" from="+Exact(step.From)+" to="+Exact(step.To));return false;}
+                    bool available=TryWitnessSeam(staged,points,step.From,step.To,out int a,out int b,out bool known,out string reason);
+                    if(!known||a<0||b<0)throw new InvalidOperationException("Explicit native OffMesh has no complete resolved typed owner endpoints");
+                    if(!available)
+                    {trace.Add("explicit-unavailable-directed-owner");trace.Important("explicit-owner-rejection",reason+" from="+Exact(step.From)+" to="+Exact(step.To));return false;}
                     if(!AppendGround(staged,points,path,corners,ref current,staged.Positions[a],a,trace))return false;
                     current=b; // exact existing directed typed arc, never native adjacency alone
                 }
@@ -285,7 +380,7 @@ namespace ChooGuard.App.Fps.Emergency
                 for(int i=0;i<entry.stops.Length;i++)for(int j=0;j<entry.stops.Length;j++)
                     if(i!=j&&Near(from,entry.stops[i].door)&&Near(to,entry.stops[j].door)){reason="witness-elevator-forbidden";return false;}
             if(matches.Count==0)return true;
-            if(matches.Count!=1){reason="witness-ambiguous-owner";return false;}
+            if(matches.Count!=1)throw new InvalidOperationException("Native witness has ambiguous typed owners");
             var match=matches[0];a=match.a;b=match.b;seam=true;
             if(a<0||b<0||!draft.Edges.Any(e=>e.from==match.a&&e.to==match.b&&e.link==match.link)||!FootOwnerAvailable(match.link))
             {reason="witness-owner-arc-unavailable";return false;}
@@ -310,7 +405,7 @@ namespace ChooGuard.App.Fps.Emergency
                 int next=step==steps&&existing>=0?existing:staged.Positions.Count;
                 if(next==current)continue;
                 if(!Finite(position)||!NavMesh.SamplePosition(position,out _, .6f,NavMesh.AllAreas))
-                {trace.Add("witness-corner-off-nav");return false;}
+                    throw new InvalidOperationException("Native witness corner is nonfinite/off current NavMesh");
                 if(next==staged.Positions.Count){staged.Positions.Add(position);staged.Labels.Add("");}
                 if(!GroundEdge(staged.Positions[current],staged.Positions[next],points,path,corners,out float length,out string reason,trace))
                 {trace.Add(reason,"from="+Exact(staged.Positions[current])+" to="+Exact(staged.Positions[next]));return false;}
@@ -330,7 +425,7 @@ namespace ChooGuard.App.Fps.Emergency
             int count=path.GetCornersNonAlloc(corners);
             if(!Finite(from)||!Finite(to)||float.IsNaN(length)||float.IsInfinity(length)||
                 corners.Take(count).Any(p=>!Finite(p))||Vector3.Distance(corners[0],from)>.6f||Vector3.Distance(corners[count-1],to)>.6f)
-            {reason="witness-ground-endpoint-or-finite";return false;}
+                throw new InvalidOperationException("Native short path endpoint/nonfinite metadata differs");
             for(int i=1;i<count;i++)
             {
                 if(!TryWitnessSeam(new Draft(),points,corners[i-1],corners[i],out _,out _,out bool seam,out _)||seam)
@@ -492,9 +587,13 @@ namespace ChooGuard.App.Fps.Emergency
         {
             length = 0;
             link = "";
-            if (!NavMesh.CalculatePath(from, to, NavMesh.AllAreas, path) || path.status != NavMeshPathStatus.PathComplete) {trace?.Add("coarse-native-incomplete");return false;}
+            bool found=NavMesh.CalculatePath(from,to,NavMesh.AllAreas,path);
+            if(!found||path.status==NavMeshPathStatus.PathInvalid)throw new InvalidOperationException("Native short path query is invalid");
+            if(path.status==NavMeshPathStatus.PathPartial){trace?.Add("coarse-native-incomplete");return false;}
+            if(path.status!=NavMeshPathStatus.PathComplete)throw new InvalidOperationException("Unknown native short path status");
             int count = path.GetCornersNonAlloc(corners);
-            if(count==0||count>=corners.Length){trace?.Add("coarse-empty-or-truncated");return false;}
+            if(count==0||count>=corners.Length||corners.Take(count).Any(p=>!Finite(p)))
+                throw new InvalidOperationException("Native short path is empty/truncated/nonfinite");
             for (int i = 1; i < count; i++)
             {
                 // A measured walk is its dedicated endpoint↔endpoint graph arc.

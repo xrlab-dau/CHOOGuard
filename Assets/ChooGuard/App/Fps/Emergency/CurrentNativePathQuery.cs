@@ -73,10 +73,13 @@ namespace ChooGuard.App.Fps.Emergency
             }
             while(status==PathQueryStatus.InProgress);
             evidence+="; terminal="+status+"; iterations="+iterations+"; updates="+updates;
+            if(status==(PathQueryStatus.Success|PathQueryStatus.PartialResult))return Incomplete(ref evidence,"terminal-partial-corridor");
             if(status!=PathQueryStatus.Success)return Reject(ref evidence,"terminal-not-exact-Success");
             status=query.EndFindPath(out int size); // Exactly once.
             evidence+="; end="+status+"; polygonCount="+size;
-            if(status!=PathQueryStatus.Success||size<=0||size>NodePool)return Reject(ref evidence,"end-incomplete");
+            if(size<=0||size>NodePool)return Reject(ref evidence,"invalid-end-size");
+            if(status==(PathQueryStatus.Success|PathQueryStatus.PartialResult))return Incomplete(ref evidence,"end-partial-corridor");
+            if(status!=PathQueryStatus.Success)return Reject(ref evidence,"end-not-exact-Success");
             using(var polygons=new NativeArray<PolygonId>(size,Allocator.Persistent))
             {
                 int copied=query.GetPathResult(new NativeSlice<PolygonId>(polygons));
@@ -140,7 +143,11 @@ namespace ChooGuard.App.Fps.Emergency
             if(ground&&left.Equals(right))return false;
             midpoint=(left+right)*.5f;return Finite(midpoint);
         }
-        static bool Reject(ref string evidence,string reason){evidence+="; rejected="+reason;return false;}
+        // Only this typed expected outcome is ordinary non-admission. Invalid,
+        // stale, malformed or API-error states must abort the whole construction.
+        static bool Incomplete(ref string evidence,string reason){evidence+="; outcome=EXPECTED_INCOMPLETE_CORRIDOR; rejected="+reason;return false;}
+        static bool Reject(ref string evidence,string reason)
+        {evidence+="; outcome=HARD_NATIVE_QUERY_FAILURE; rejected="+reason;throw new InvalidOperationException(evidence);}
         static bool Finite(float value)=>!float.IsNaN(value)&&!float.IsInfinity(value);
         static bool Finite(Vector3 p)=>Finite(p.x)&&Finite(p.y)&&Finite(p.z);
         static string Exact(Vector3 p)=>"["+p.x.ToString("R",CultureInfo.InvariantCulture)+","+p.y.ToString("R",CultureInfo.InvariantCulture)+","+p.z.ToString("R",CultureInfo.InvariantCulture)+"]";

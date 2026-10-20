@@ -72,6 +72,7 @@ namespace ChooGuard.App.Fps.Emergency
             Random = new System.Random(seed);
             Points = StationPoints.Load(art.StationData);
             SourcePoints=Points;
+            if(useCurrentSource)SourcePoints.RequireCurrentModelOrigin(); // before current Nav/source queries
             var routes = Resources.Load<TextAsset>(RoutesResource) ?? throw new ArgumentException("경로 그래프(Resources/"+RoutesResource+".json)가 없습니다.");
             // Validate retained source inventory before any navigation/link registration.
             RouteGraph.Load(routes,Array.Empty<Escalator>());
@@ -133,6 +134,11 @@ namespace ChooGuard.App.Fps.Emergency
                     elevator.SetNavigationAvailable(true,"BOUND_CURRENT_ELEVATOR_SOURCE");
                 }
                 foreach(var escalator in Escalators)escalator.SetNavigationAvailable(suppliedIds.Contains(escalator.Entry.id));
+                var actualOwners=Escalators.Where(owner=>owner.NavigationAvailable).ToArray();
+                if(bindings.Where(binding=>binding.Bound).GroupBy(binding=>binding.lane_id).Any(group=>group.Count()!=1)||
+                    actualOwners.Select(owner=>owner.Entry.id).Distinct().Count()!=actualOwners.Length||
+                    !suppliedIds.SetEquals(actualOwners.Select(owner=>owner.Entry.id)))
+                    throw new InvalidOperationException("Actual source-bound machinery and current owner inventory differ");
                 // Derive every public route against current Data before registering
                 // any walking link; no route may borrow another new link as authority.
                 var currentWalking=new List<StationWalkingRouteEntry>();var walkingBindings=new List<StationWalkingRouteBinding>();
@@ -155,10 +161,11 @@ namespace ChooGuard.App.Fps.Emergency
                     var go=new GameObject(entry.label);go.transform.SetParent(links.transform,false);
                     var walking=go.AddComponent<StationWalkingRoute>();walking.Setup(entry);WalkingRoutes.Add(walking);
                 }
-                Points=currentNavigation.BindPoints(SourcePoints,art.WorldNavMesh);
-                Paths=new PathService(this,CurrentStationRouteBuilder.Build(Points,
-                    Escalators.Where(e=>e.NavigationAvailable).ToArray(),Elevators,WalkingRoutes,routes,
-                    binding=>currentNavigation.RequalifyCurrentStandingPoint(binding,art.WorldNavMesh)));
+                var physical=currentNavigation.BindPoints(SourcePoints,art.WorldNavMesh);
+                var graph=CurrentStationRouteBuilder.Build(physical,actualOwners,Elevators,WalkingRoutes,routes,out var active,
+                    binding=>currentNavigation.RequalifyCurrentStandingPoint(binding,art.WorldNavMesh));
+                Points=active;
+                Paths=new PathService(this,graph);
             }
             else Paths=new PathService(this,RouteGraph.Load(routes,Escalators,WalkingRoutes));
             PersonBody.Paths = Paths;
@@ -177,6 +184,8 @@ namespace ChooGuard.App.Fps.Emergency
             if (navmesh.valid) navmesh.Remove();
             currentNavigation?.Release();currentNavigation=null;
         }
+
+        public void RequireActiveDestination(StationPoints.Point point)=>Points.RequireActiveDestination(point);
 
         public float Range(float min, float max) => min + (float)Random.NextDouble() * (max - min);
         public bool Chance(float probability) => Random.NextDouble() < probability;
@@ -224,6 +233,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void ReleaseSeat(StationPoints.Point seat)
         {
+            RequireActiveDestination(seat);
             if (seat != null) takenSlots.Remove(seat.Slot);
         }
 
@@ -248,12 +258,14 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void ReleasePlace(StationPoints.Point point)
         {
+            RequireActiveDestination(point);
             if (point != null) takenPlaces.Remove(point);
         }
 
         /// <summary>Random city exit (for routine arrivals and departures).</summary>
         public StationPoints.Point RandomExit(StationPoints.Point except = null)
         {
+            RequireActiveDestination(except);
             var exits = Points.Of(PointKind.Exit);
             for (int attempt = 0; attempt < 8; attempt++)
             {

@@ -137,6 +137,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Starts the person mid-routine at their current spot (population present at shift start).</summary>
         public void StartAt(Activity activity, StationPoints.Point at, float seconds)
         {
+            Crowd?.World?.RequireActiveDestination(at);
             place = at;
             stepSeconds = seconds;
             switch (activity)
@@ -520,6 +521,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Walks to <paramref name="toward"/> and leaves (a greeter and the passenger they met).</summary>
         public void LeaveWith(StationPoints.Point toward)
         {
+            Crowd?.World?.RequireActiveDestination(toward);
             ReleasePlace();
             exit = toward;
             WalkTo(toward.Position, Activity.Leave, walkSpeed * .95f);
@@ -842,6 +844,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Staff instruction or public announcement to leave through <paramref name="toward"/>.</summary>
         public void Instruct(StationPoints.Point toward, bool direct)
         {
+            Crowd?.World?.RequireActiveDestination(toward);
             if (Hurt || Hostile || Current == Activity.OnTrack || Current == Activity.Evacuate) return;
             Instructed = true;
             exit = toward;
@@ -1087,6 +1090,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Restrained and led out by the police: walks to <paramref name="toward"/> and leaves the station.</summary>
         public void LedAway(StationPoints.Point toward)
         {
+            Crowd?.World?.RequireActiveDestination(toward);
             exit = toward;
             WalkTo(toward.Position, Activity.Leave, Mathf.Min(walkSpeed, 1.1f));
         }
@@ -1281,6 +1285,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         internal void EndEscort(StationPoints.Point reached)
         {
+            Crowd?.World?.RequireActiveDestination(reached);
             // An injury/reflex that ended the escort owns the resulting pose and activity.
             if (Current != Activity.Escorted) return;
             Body.Stop();

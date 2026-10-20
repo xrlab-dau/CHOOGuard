@@ -1,6 +1,8 @@
 #if UNITY_INCLUDE_TESTS
 using System;
 using System.Reflection;
+using System.Linq;
+using System.Collections.Generic;
 using ChooGuard.App.Fps.Emergency;
 using NUnit.Framework;
 using UnityEngine;
@@ -30,6 +32,73 @@ namespace ChooGuard.Tests.EditMode
             var type=typeof(StationWorld).Assembly.GetType("ChooGuard.App.Fps.Emergency.CurrentStationNavigation",true);
             return (string)type.GetMethod("BindingDecision",BindingFlags.Static|BindingFlags.NonPublic)
                 .Invoke(null,new object[]{absent,physical,nav});
+        }
+
+        static object Call(StationPoints points,string method,params object[] args)=>typeof(StationPoints)
+            .GetMethod(method,BindingFlags.Instance|BindingFlags.NonPublic).Invoke(points,args);
+        static T Set<T>(T value,string property,object data)
+        {value.GetType().GetProperty(property,BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic).SetValue(value,data);return value;}
+        static StationPoints PhysicalCatalog(out Dictionary<string,string> admitted,out Dictionary<string,string> pending,
+            out List<StationPoints.CurrentRequiredEndpoint> required)
+        {
+            var asset=new TextAsset(System.IO.File.ReadAllText(System.IO.Path.Combine(UnityEngine.Application.dataPath,"ChooGuard/Art/Emergency/station-points.json")));
+            StationPoints source;try{source=StationPoints.Load(asset);}finally{UnityEngine.Object.DestroyImmediate(asset);}
+            Call(source,"RequireCurrentModelOrigin");
+            var bindings=source.All.Select(point=>
+            {
+                var runtime=new StationPoints.Point{Id=point.Id,Kind=point.Kind,Label=point.Label,Zone=point.Zone,
+                    Position=point.Position,Anchor=point.Anchor,Yaw=point.Yaw,Slot=point.Slot};
+                var row=Set(new StationPoints.CurrentBinding(),"Source",point);Set(row,"Runtime",runtime);
+                Set(row,"Status","BOUND_MODEL_COMPUTED_WALKABLE");Set(row,"Evidence","Controlled metadata fixture; no physical/Scene proof");return row;
+            }).ToArray();
+            var physical=(StationPoints)Call(source,"WithCurrentBindings",bindings);
+            admitted=physical.All.ToDictionary(point=>point.Id,point=>"CERTIFIED_CURRENT_MODEL_FOOT_DESTINATION; controlled software fixture");
+            pending=new Dictionary<string,string>();
+            required=physical.Of(PointKind.Exit).Select(exit=>
+            {
+                var row=Set(new StationPoints.CurrentRequiredEndpoint(),"Label",exit.Id);Set(row,"Owner","current-exit:"+exit.Id);
+                Set(row,"SourcePosition",exit.Position);Set(row,"GraphPosition",exit.Position);Set(row,"Evidence","Controlled endpoint fixture");return row;
+            }).ToList();
+            return physical;
+        }
+
+        [Test]
+        public void PendingIsAnOrthogonalCompleteAuditAndNeverAnOperationalPoint()
+        {
+            var physical=PhysicalCatalog(out var admitted,out var pending,out var required);
+            var row=physical.CurrentBindings.First(binding=>binding.Source.Kind==PointKind.Chair);var before=row.Runtime;
+            admitted.Remove(row.Source.Id);pending.Add(row.Source.Id,"PENDING_HISTORICAL_MODEL_CORRESPONDENCE; controlled expected nonadmission");
+            var ledger=(IReadOnlyList<StationPoints.CurrentDestination>)Call(physical,"CaptureCurrentDestinations",admitted,pending);
+            var active=(StationPoints)Call(physical,"WithCurrentDestinations",ledger,required);
+            Assert.That(ledger.Count,Is.EqualTo(1449));Assert.That(active.SourceAll,Is.SameAs(physical.SourceAll));
+            Assert.That(row.Bound,Is.True);Assert.That(row.Runtime,Is.SameAs(before));
+            Assert.That(active.CurrentBindings,Is.SameAs(physical.CurrentBindings));
+            Assert.That(active.All.Contains(before),Is.False);Assert.That(active.All.Count+1,Is.EqualTo(physical.All.Count));
+            Assert.Throws<InvalidOperationException>(()=>active.RequireActiveDestination(before));
+            Assert.Throws<InvalidOperationException>(()=>active.RequireActiveDestination(new StationPoints.Point{Id=active.All[0].Id}));
+            Assert.DoesNotThrow(()=>active.RequireActiveDestination(active.All[0]));Assert.DoesNotThrow(()=>active.RequireActiveDestination(null));
+            foreach(var kind in physical.All.Select(point=>point.Kind).Distinct())Assert.That(active.Of(kind),Is.Not.Empty);
+        }
+
+        [TestCase("clone")][TestCase("anchor")][TestCase("stale-anchor")][TestCase("origin")][TestCase("kind-collapse")][TestCase("required-exit")]
+        public void StaleUnknownAndVacuousAdmissionFailsBeforePublishingAnyView(string mutation)
+        {
+            var physical=PhysicalCatalog(out var admitted,out var pending,out var required);
+            var row=physical.CurrentBindings.First(binding=>binding.Source.Kind==PointKind.Chair);
+            var before=row.Runtime;var oldPosition=before.Position;var oldEvidence=row.Evidence;
+            if(mutation=="anchor")before.Anchor+=Vector3.right;
+            if(mutation=="kind-collapse")foreach(var point in physical.Of(PointKind.Chair))
+            {admitted.Remove(point.Id);pending.Add(point.Id,"PENDING_HISTORICAL_MODEL_CORRESPONDENCE; controlled expected nonadmission");}
+            var ledger=(IReadOnlyList<StationPoints.CurrentDestination>)Call(physical,"CaptureCurrentDestinations",admitted,pending);
+            if(mutation=="clone")Set(row,"Runtime",new StationPoints.Point{Id=before.Id,Kind=before.Kind,Label=before.Label,Zone=before.Zone,
+                Position=before.Position,Anchor=before.Anchor,Yaw=before.Yaw,Slot=before.Slot});
+            if(mutation=="stale-anchor")before.Anchor+=Vector3.right;
+            if(mutation=="origin")Set(physical,"SourceSha256","unknown");
+            if(mutation=="required-exit")required.Clear();
+            var failure=Assert.Throws<TargetInvocationException>(()=>Call(physical,"WithCurrentDestinations",ledger,required));
+            Assert.That(failure.InnerException,Is.TypeOf<InvalidOperationException>());
+            Assert.That(before.Position,Is.EqualTo(oldPosition));Assert.That(row.Evidence,Is.EqualTo(oldEvidence));
+            Assert.That(physical.CurrentDestinations,Is.Empty,"Failed validation cannot publish a partial admission ledger");
         }
 
         [Test]

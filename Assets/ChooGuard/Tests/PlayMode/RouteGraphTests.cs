@@ -110,8 +110,43 @@ namespace ChooGuard.Tests.PlayMode
                         "Unavailable modeled endpoints require independent complete current-source support evidence");
                 else Assert.That(row.Status,Is.EqualTo("UNBOUND_PROVEN_NO_CURRENT_FLOOR"));
             }
-            Assert.That(world.Points.All,Is.EquivalentTo(world.Points.CurrentBindings.Where(r=>r.Bound).Select(r=>r.Runtime)));
-            Assert.That(world.Points.All.Count+world.Points.CurrentBindings.Count(r=>!r.Bound),Is.EqualTo(1449));
+            var destinations=world.Points.CurrentDestinations;
+            Assert.That(destinations.Count,Is.EqualTo(1449),"Every raw row needs a separate operational admission row");
+            for(int i=0;i<destinations.Count;i++)
+            {
+                var row=destinations[i];Assert.That(row.Physical,Is.SameAs(world.Points.CurrentBindings[i]));
+                Assert.That(row.Source,Is.SameAs(world.SourcePoints.All[i]));Assert.That(row.Evidence,Is.Not.Null.And.Not.Empty);
+                if(!row.Physical.Bound)Assert.That(row.Status,Is.EqualTo(StationPoints.NoPhysicalDestination));
+                else
+                {
+                    Assert.That(row.Runtime,Is.SameAs(row.Physical.Runtime),"Pending retains its positive physical Runtime");
+                    Assert.That(row.Status,Is.EqualTo(StationPoints.ModelActiveDestination).Or.EqualTo(StationPoints.PendingDestination));
+                    Assert.That(row.Runtime.Anchor,Is.EqualTo(row.Source.Anchor));Assert.That(row.Runtime.Yaw,Is.EqualTo(row.Source.Yaw));
+                    Assert.That(row.Runtime.Slot,Is.EqualTo(row.Source.Slot));Assert.That(row.Runtime.Kind,Is.EqualTo(row.Source.Kind));
+                    if(row.Active)Assert.That(row.Evidence,Does.StartWith("CERTIFIED_CURRENT_MODEL_FOOT_DESTINATION;"));
+                    else
+                    {
+                        Assert.That(row.Source.Kind,Is.Not.EqualTo(PointKind.Exit));
+                        Assert.That(row.Evidence,Does.StartWith("PENDING_HISTORICAL_MODEL_CORRESPONDENCE;"));
+                        Assert.That(graph.ByLabel(row.Source.Id),Is.Null,"Pending is retained in audit, never a graph target");
+                        Assert.Throws<InvalidOperationException>(()=>world.RequireActiveDestination(row.Runtime));
+                    }
+                }
+            }
+            Assert.That(world.Points.All,Is.EquivalentTo(destinations.Where(row=>row.Active).Select(row=>row.Runtime)));
+            Assert.That(world.Points.All.Count+destinations.Count(row=>row.Status==StationPoints.PendingDestination)+
+                world.Points.CurrentBindings.Count(row=>!row.Bound),Is.EqualTo(1449));
+            foreach(var group in world.Points.CurrentBindings.Where(row=>row.Bound).GroupBy(row=>row.Source.Kind))
+                Assert.That(world.Points.Of(group.Key),Is.Not.Empty,"No physically positive functional kind may silently collapse: "+group.Key);
+            var expectedRequired=world.Points.Of(PointKind.Exit).Select(exit=>exit.Id).ToList();
+            foreach(var owner in world.Escalators.Where(owner=>owner.NavigationAvailable))
+            {expectedRequired.Add(owner.Entry.id+":start");expectedRequired.Add(owner.Entry.id+":end");}
+            foreach(var owner in world.WalkingRoutes)
+            {expectedRequired.Add(StationWalkingRoutes.LinkPrefix+owner.Entry.id+":start");expectedRequired.Add(StationWalkingRoutes.LinkPrefix+owner.Entry.id+":end");}
+            foreach(var owner in world.Elevators.Where(owner=>owner.NavigationAvailable))
+                for(int i=0;i<owner.Entry.stops.Length;i++)expectedRequired.Add(owner.Entry.id+":"+i);
+            CollectionAssert.AreEquivalent(expectedRequired,world.Points.RequiredCurrentEndpoints.Select(row=>row.Label));
+            Assert.That(world.Points.RequiredCurrentEndpoints.Select(row=>row.Label).Distinct().Count(),Is.EqualTo(expectedRequired.Count));
             Assert.That(world.SourcePoints.Of(PointKind.Exit).Count,Is.EqualTo(4),"All four original modeled Exit records remain immutable source inventory");
             Assert.That(world.Points.SourceAll.Count(p=>p.Kind==PointKind.Exit),Is.EqualTo(4));
             Assert.That(world.Points.Of(PointKind.Exit),Is.Not.Empty,"The current world requires a physically qualified active exit");
@@ -127,25 +162,22 @@ namespace ChooGuard.Tests.PlayMode
             var exits = world.Points.Of(PointKind.Exit).Select(exit => graph.ByLabel(exit.Id)).ToList();
             Assert.That(exits, Has.None.Null, "every exit needs a node in the route graph");
             var fields = exits.Select(exit => graph.Toward(exit, RouteProfile.Evacuation, Array.Empty<(Vector3, float)>(), Time.time)).ToList();
-            var cut = new List<string>();
-            var skip = new List<RouteGraph.Node>();
-            foreach (var point in world.Points.All)
+            foreach(var point in world.Points.All)
             {
-                if (point.Kind == PointKind.Exit) continue;
-                var from = StationWorld.OnNavMesh(point.Position, 2f);
-                // 발밑 노드가 막다른 곳이면 다음 노드로 본다(PathService 와 같은 규칙).
-                skip.Clear();
-                bool reaches = false;
-                for (int attempt = 0; attempt < 3 && !reaches; attempt++)
-                {
-                    var node = graph.Nearest(from, skip);
-                    if (node == null) break;
-                    skip.Add(node);
-                    reaches = fields.Any(field => field.Reaches(node));
-                }
-                if (!reaches) cut.Add(point.Id + " " + point.Position.ToString("F1"));
+                var node=graph.ByLabel(point.Id);Assert.That(node,Is.Not.Null,point.Id+" exact active label is required");
+                Assert.That(Vector3.Distance(node.Position,point.Position),Is.LessThanOrEqualTo(.6f));
+                Assert.That(Mathf.Abs(node.Position.y-point.Position.y),Is.LessThanOrEqualTo(.35f));
+                Assert.That(fields.Any(field=>field.Reaches(node)),Is.True,point.Id+" must reach an exit on foot");
             }
-            Assert.That(cut, Is.Empty, cut.Count + " places cannot reach any exit on foot on the route graph: " + string.Join(", ", cut.Take(8)));
+            foreach(var endpoint in world.Points.RequiredCurrentEndpoints)
+            {
+                var node=graph.ByLabel(endpoint.Label);Assert.That(node,Is.Not.Null);
+                Assert.That(endpoint.MaxAttachmentDistance,Is.GreaterThan(0));Assert.That(endpoint.MaxAttachmentHeight,Is.GreaterThan(0));
+                Assert.That(Vector3.Distance(node.Position,endpoint.SourcePosition),Is.LessThanOrEqualTo(endpoint.MaxAttachmentDistance));
+                Assert.That(Mathf.Abs(node.Position.y-endpoint.SourcePosition.y),Is.LessThanOrEqualTo(endpoint.MaxAttachmentHeight));
+                Assert.That(fields.Any(field=>field.Reaches(node)),Is.True,"Mandatory source owner cannot be retired: "+endpoint.Label);
+                Assert.That(endpoint.Evidence,Does.Contain("CERTIFIED_CURRENT_DIRECTED_EVACUATION_EXIT_CHAIN"));
+            }
 
             var reference=world.Baked;
             var referenceRoutesField=typeof(BakedFloor).GetField("walkingRoutes",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);

@@ -227,6 +227,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         public StationPoints.Point SafeExit(Vector3 from, Vector3? avoid, float clearance, StationPoints.Point except = null)
         {
+            world.RequireActiveDestination(except);
             StationPoints.Point best = null, farthest = null;
             float bestCost = float.PositiveInfinity, farthestDistance = -1;
             var candidates = Starts(from, null);
