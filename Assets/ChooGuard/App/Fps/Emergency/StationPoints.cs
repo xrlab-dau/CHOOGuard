@@ -43,6 +43,7 @@ namespace ChooGuard.App.Fps.Emergency
             public const string CurrentSourceUnavailableStatus="UNAVAILABLE_CURRENT_SOURCE_SUPPORT";
             public const string CurrentSourceEmptyEvidence="COMPLETE_CURRENT_SOURCE_SUPPORT_VOLUME_EMPTY;";
             public const string CurrentSourceFloorEvidence="COMPLETE_CURRENT_SOURCE_CENTER_CONTACT_DOMAIN_EMPTY;";
+            public const string CurrentSourceFootprintEvidence="COMPLETE_CURRENT_SOURCE_REQUIRED_FOOTPRINTS_UNSUPPORTED;";
             public Point Source { get; internal set; }
             public Point Runtime { get; internal set; }
             public string Status { get; internal set; }
@@ -76,8 +77,9 @@ namespace ChooGuard.App.Fps.Emergency
                 else if(row.Status==CurrentBinding.CurrentSourceUnavailableStatus)
                 {
                     if(!row.Evidence.StartsWith(CurrentBinding.CurrentSourceEmptyEvidence,StringComparison.Ordinal)&&
-                        !row.Evidence.StartsWith(CurrentBinding.CurrentSourceFloorEvidence,StringComparison.Ordinal))
-                        throw new InvalidOperationException("Unavailable current point lacks complete source-volume evidence: "+row.Source.Id);
+                        !row.Evidence.StartsWith(CurrentBinding.CurrentSourceFloorEvidence,StringComparison.Ordinal)&&
+                        !row.Evidence.StartsWith(CurrentBinding.CurrentSourceFootprintEvidence,StringComparison.Ordinal))
+                        throw new InvalidOperationException("Unavailable current point lacks complete source-support evidence: "+row.Source.Id);
                 }
                 else if(row.Status!="UNBOUND_PROVEN_NO_CURRENT_FLOOR")
                     throw new InvalidOperationException("Uncertain physical support cannot be silently discarded: "+row.Source.Id);

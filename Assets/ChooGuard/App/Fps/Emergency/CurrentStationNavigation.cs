@@ -22,6 +22,8 @@ namespace ChooGuard.App.Fps.Emergency
         readonly HashSet<Collider> newFloorSources=new HashSet<Collider>();
         readonly Dictionary<string,List<Transform>> paths=new Dictionary<string,List<Transform>>(StringComparer.Ordinal);
         readonly List<string> physicalReport=new List<string>();
+        List<NavMeshBuildSource> collectedSources;
+        NavMeshBuildSettings collectedSettings;
         NavMeshDataInstance instance;
         public NavMeshData Data {get;private set;}
         public IReadOnlyList<string> PhysicalReport=>physicalReport;
@@ -211,7 +213,8 @@ namespace ChooGuard.App.Fps.Emergency
                 var lanes=MeasureBoundLanes(catalog,bindings,train);
                 var sources=StationNavigationRecipe.Collect(scene,bounds,train,namedBelts,lanes,true);
                 if(sources.Count==0)throw new InvalidOperationException("No actual current navigation sources");
-                Data=NavMeshBuilder.BuildNavMeshData(StationNavigationRecipe.Settings(),sources,bounds,Vector3.zero,Quaternion.identity);
+                collectedSources=sources;collectedSettings=StationNavigationRecipe.Settings();
+                Data=NavMeshBuilder.BuildNavMeshData(collectedSettings,sources,bounds,Vector3.zero,Quaternion.identity);
                 if(Data==null)throw new InvalidOperationException("Current physical source navigation build failed");
                 instance=NavMesh.AddNavMeshData(Data);
                 if(!instance.valid)throw new InvalidOperationException("Current source navigation registration failed");
@@ -358,6 +361,8 @@ namespace ChooGuard.App.Fps.Emergency
             readonly SortedDictionary<string,int> counts=new SortedDictionary<string,int>(StringComparer.Ordinal);
             readonly SortedDictionary<string,string> examples=new SortedDictionary<string,string>(StringComparer.Ordinal);
             public int Candidates;
+            public readonly HashSet<Collider> FloorSources=new HashSet<Collider>();
+            public readonly List<Vector3> ClearFloorPositions=new List<Vector3>();
             public bool NeedsExample(string stage)=>!examples.ContainsKey(stage);
             public bool Has(string stage)=>counts.ContainsKey(stage);
             public void Record(string stage,string detail=null)
@@ -572,8 +577,22 @@ namespace ChooGuard.App.Fps.Emergency
                 Mathf.Abs(Vector3.Dot(b.normalized,c.normalized))<1e-5f; // Sheared/ambiguous physics shape stays UNKNOWN.
         }
 
-        bool SourceHasNoCenterContact(Collider collider,CenterSupportDomain domain,Dictionary<Mesh,SourceMeshBuffers> buffers,
-            PointProbeReport probes,ref int triangles)
+        internal readonly struct SourceFace
+        {
+            public readonly Vector3 A,B,C;
+            public SourceFace(Vector3 a,Vector3 b,Vector3 c){A=a;B=b;C=c;}
+        }
+
+        static void AddSourceFace(List<SourceFace> faces,Bounds? volume,Vector3 a,Vector3 b,Vector3 c)
+        {
+            foreach(var v in new[]{a,b,c})
+                if(float.IsNaN(v.x)||float.IsInfinity(v.x)||float.IsNaN(v.y)||float.IsInfinity(v.y)||float.IsNaN(v.z)||float.IsInfinity(v.z))
+                    throw new InvalidOperationException("Nonfinite current world source face");
+            var bounds=new Bounds(a,Vector3.zero);bounds.Encapsulate(b);bounds.Encapsulate(c);
+            if(!volume.HasValue||volume.Value.Intersects(bounds))faces.Add(new SourceFace(a,b,c));
+        }
+
+        bool CollectSourceFaces(Collider collider,Bounds? volume,Dictionary<Mesh,SourceMeshBuffers> buffers,List<SourceFace> faces,ref int triangles)
         {
             var matrix=collider.transform.localToWorldMatrix;
             if(!SourceFrameResolved(matrix))return false;
@@ -585,8 +604,8 @@ namespace ChooGuard.App.Fps.Emergency
                 foreach(var indices in source.Indices)for(int i=0;i<indices.Length;i+=3)
                 {
                     triangles++;
-                    if(domain.MayContainCenterContact(matrix.MultiplyPoint3x4(source.Vertices[indices[i]]),
-                        matrix.MultiplyPoint3x4(source.Vertices[indices[i+1]]),matrix.MultiplyPoint3x4(source.Vertices[indices[i+2]])))return false;
+                    AddSourceFace(faces,volume,matrix.MultiplyPoint3x4(source.Vertices[indices[i]]),
+                        matrix.MultiplyPoint3x4(source.Vertices[indices[i+1]]),matrix.MultiplyPoint3x4(source.Vertices[indices[i+2]]));
                 }
                 return true;
             }
@@ -605,15 +624,39 @@ namespace ChooGuard.App.Fps.Emergency
                     corners[i]=matrix.MultiplyPoint3x4(box.center+Vector3.Scale(size,new Vector3((i&1)==0?-.5f:.5f,(i&2)==0?-.5f:.5f,(i&4)==0?-.5f:.5f)));
                     bounds.Encapsulate(corners[i]);
                 }
-                // Exact nonsheared primitive shape plus observed physics-bound parity;
-                // padded broad bounds alone are never treated as an exact floor face.
+                // Source-to-physics primitive frame parity is required; a broad AABB
+                // alone cannot certify the rotated/reflected primitive's exact faces.
                 if(Vector3.Distance(bounds.min,box.bounds.min)>.0005f||Vector3.Distance(bounds.max,box.bounds.max)>.0005f)return false;
-                int[] faces={0,1,3,0,3,2,4,6,7,4,7,5,0,4,5,0,5,1,2,3,7,2,7,6,0,2,6,0,6,4,1,5,7,1,7,3};
-                for(int i=0;i<faces.Length;i+=3)
-                {triangles++;if(domain.MayContainCenterContact(corners[faces[i]],corners[faces[i+1]],corners[faces[i+2]]))return false;}
+                int[] indices={0,1,3,0,3,2,4,6,7,4,7,5,0,4,5,0,5,1,2,3,7,2,7,6,0,2,6,0,6,4,1,5,7,1,7,3};
+                for(int i=0;i<indices.Length;i+=3)
+                {triangles++;AddSourceFace(faces,volume,corners[indices[i]],corners[indices[i+1]],corners[indices[i+2]]);}
                 return true;
             }
             return false; // Convex/curved/terrain/other source has no exact face proof here.
+        }
+
+        internal static bool RequiredFootprintsHaveNoSource(IReadOnlyList<Vector3> candidates,IReadOnlyList<SourceFace> faces,out string witness)
+        {
+            // Negative-only necessary-condition proof. Every ACTUAL candidate must
+            // lack at least one required ray contact in COMPLETE resolved geometry.
+            // Positive/ambiguous faces remain possible, regardless of orientation.
+            var missing=new List<string>();
+            for(int i=0;i<candidates.Count;i++)
+            {
+                bool deficient=false;
+                for(int ray=-1;ray<8;ray++)
+                {
+                    var offset=ray<0?Vector3.zero:new Vector3(Mathf.Cos(ray*Mathf.PI/4),0,Mathf.Sin(ray*Mathf.PI/4))*.28f;
+                    var center=candidates[i]+offset;
+                    var contact=new CenterSupportDomain(center,new[]{center}); // allowed hitY +/- .35, padded1mm
+                    if(faces.Any(face=>contact.MayContainCenterContact(face.A,face.B,face.C)))continue;
+                    missing.Add(i+":"+ray);deficient=true;break;
+                }
+                if(!deficient){witness="candidate="+i+" has potential source contacts for all nine required rays";return false;}
+            }
+            if(candidates.Count==0)throw new InvalidOperationException("Current source candidate cohort is empty");
+            witness="everyActualCandidateHasMissingNecessaryRay=true; candidate:missingRay={"+string.Join(",",missing)+"}";
+            return true;
         }
 
         bool CurrentSourceSupportAbsent(Vector3 source,IReadOnlyList<Vector3> candidates,PointProbeReport probes,string identity,
@@ -638,13 +681,27 @@ namespace ChooGuard.App.Fps.Emergency
             probes.Record("source-volume/nonempty","eligibleCookedColliders="+eligible.Length+"; first="+ProbeCollider(eligible[0]));
             if(observedFloor)return false; // A blocked or Nav-missing supported floor cannot become unavailable.
             var domain=new CenterSupportDomain(source,candidates);int triangles=0;
+            var faces=new List<SourceFace>();
             foreach(var collider in eligible)
-                if(!SourceHasNoCenterContact(collider,domain,buffers,probes,ref triangles))
-                {probes.Record("center-domain/unknown-or-potential-contact",ProbeCollider(collider)+"; "+domain.Describe());return false;}
-            proof=StationPoints.CurrentBinding.CurrentSourceFloorEvidence+" "+identity+"; sourceScene="+scene.path+
-                "; broadEligibleCookedColliders="+eligible.Length+"; completeSourceTriangles="+triangles+"; "+domain.Describe()+
-                "; no possible center-ray surface contact; no normals/slope/winding qualification; current modeled endpoint unavailable; no real-world public-exit closure claim";
-            probes.Record("center-domain/no-source-contact",proof);return true;
+                if(!CollectSourceFaces(collider,volume,buffers,faces,ref triangles))
+                {probes.Record("source-faces/unresolved",ProbeCollider(collider));return false;}
+            // Each source buffer is scanned once. Only faces intersecting the complete
+            // padded ray envelope are retained for this point's synchronous proof.
+            if(!faces.Any(face=>domain.MayContainCenterContact(face.A,face.B,face.C)))
+            {
+                proof=StationPoints.CurrentBinding.CurrentSourceFloorEvidence+" "+identity+"; sourceScene="+scene.path+
+                    "; broadEligibleCookedColliders="+eligible.Length+"; completeSourceTriangles="+triangles+"; "+domain.Describe()+
+                    "; no possible center-ray surface contact; no normals/slope/winding qualification; current modeled endpoint unavailable; no real-world public-exit closure claim";
+                probes.Record("center-domain/no-source-contact",proof);return true;
+            }
+            probes.Record("center-domain/potential-contact",domain.Describe());
+            if(!RequiredFootprintsHaveNoSource(candidates,faces,out var gaps))
+            {probes.Record("required-footprints/potential-or-unknown",gaps);return false;}
+            proof=StationPoints.CurrentBinding.CurrentSourceFootprintEvidence+" "+identity+"; sourceScene="+scene.path+
+                "; broadEligibleCookedColliders="+eligible.Length+"; completeSourceTriangles="+triangles+"; retainedEnvelopeFaces="+faces.Count+
+                "; candidates="+candidates.Count+"; "+gaps+"; all orientations; each necessary ray contact padded1mm in XZ and allowed hitY; "+
+                "only the exact authorized candidate footprints are unavailable; no continuous-floor absence or real-world closure claim";
+            probes.Record("required-footprints/complete-source-deficiency",proof);return true;
         }
 
         internal static string CurrentBindingDecision(bool provenAbsent,bool sourceSupportAbsent,bool physicalSupported,bool currentNavSupported)
@@ -656,6 +713,164 @@ namespace ChooGuard.App.Fps.Emergency
                 if(!provenAbsent)return StationPoints.CurrentBinding.CurrentSourceUnavailableStatus;
             }
             return BindingDecision(provenAbsent,physicalSupported,currentNavSupported);
+        }
+
+        static Vector3 ClosestSegmentPoint(Vector3 point,Vector3 a,Vector3 b)
+        {
+            var edge=b-a;float length=edge.sqrMagnitude;
+            return length<=1e-16f?a:a+edge*Mathf.Clamp01(Vector3.Dot(point-a,edge)/length);
+        }
+
+        internal static Vector3 ClosestTrianglePoint(Vector3 point,Vector3 a,Vector3 b,Vector3 c)
+        {
+            var ab=b-a;var ac=c-a;
+            if(Vector3.Cross(ab,ac).sqrMagnitude<=1e-16f)
+            {
+                var choices=new[]{ClosestSegmentPoint(point,a,b),ClosestSegmentPoint(point,b,c),ClosestSegmentPoint(point,c,a)};
+                return choices.OrderBy(v=>(v-point).sqrMagnitude).First();
+            }
+            var ap=point-a;float d1=Vector3.Dot(ab,ap),d2=Vector3.Dot(ac,ap);
+            if(d1<=0&&d2<=0)return a;
+            var bp=point-b;float d3=Vector3.Dot(ab,bp),d4=Vector3.Dot(ac,bp);
+            if(d3>=0&&d4<=d3)return b;
+            float vc=d1*d4-d3*d2;
+            if(vc<=0&&d1>=0&&d3<=0)return a+ab*(d1/(d1-d3));
+            var cp=point-c;float d5=Vector3.Dot(ab,cp),d6=Vector3.Dot(ac,cp);
+            if(d6>=0&&d5<=d6)return c;
+            float vb=d5*d2-d1*d6;
+            if(vb<=0&&d2>=0&&d6<=0)return a+ac*(d2/(d2-d6));
+            float va=d3*d6-d5*d4;
+            if(va<=0&&(d4-d3)>=0&&(d5-d6)>=0)return b+(c-b)*((d4-d3)/((d4-d3)+(d5-d6)));
+            float divisor=1f/(va+vb+vc);
+            return a+ab*(vb*divisor)+ac*(vc*divisor);
+        }
+
+        static string ProbeMatrix(Matrix4x4 matrix)=>"["+string.Join(",",Enumerable.Range(0,16)
+            .Select(i=>matrix[i].ToString("R",System.Globalization.CultureInfo.InvariantCulture)))+"]";
+
+        string DescribeCollectedSource(NavMeshBuildSource source)
+        {
+            string geometry="";
+            if(source.sourceObject is Mesh mesh)
+            {
+                long indices=0;double area=0;bool triangleBuffers=mesh.isReadable;
+                for(int sub=0;sub<mesh.subMeshCount;sub++)indices+=(long)mesh.GetIndexCount(sub);
+                if(triangleBuffers)
+                {
+                    var vertices=mesh.vertices;
+                    for(int sub=0;sub<mesh.subMeshCount;sub++)
+                    {
+                        if(mesh.GetTopology(sub)!=MeshTopology.Triangles){triangleBuffers=false;break;}
+                        var parts=mesh.GetIndices(sub);
+                        for(int i=0;i+2<parts.Length;i+=3)
+                        {
+                            var a=source.transform.MultiplyPoint3x4(vertices[parts[i]]);
+                            var b=source.transform.MultiplyPoint3x4(vertices[parts[i+1]]);
+                            var c=source.transform.MultiplyPoint3x4(vertices[parts[i+2]]);
+                            area+=Vector3.Cross(b-a,c-a).magnitude*.5;
+                        }
+                    }
+                }
+                geometry="; mesh="+mesh.name+"; meshRunLocalInstance="+mesh.GetInstanceID()+"; readable="+mesh.isReadable+
+                    "; vertices="+mesh.vertexCount+"; submeshes="+mesh.subMeshCount+"; indices="+indices+
+                    "; allFaceAreaWorld="+(triangleBuffers?area.ToString("R",System.Globalization.CultureInfo.InvariantCulture):"UNKNOWN")+
+                    "; geometric area only, not Recast retained area";
+            }
+            return "shape="+source.shape+"; area="+source.area+"; size="+ProbePosition(source.size)+"; matrix="+ProbeMatrix(source.transform)+geometry;
+        }
+
+        string DiagnosticOwnerBelow(Vector3 point)
+        {
+            var hits=Physics.RaycastAll(point+Vector3.up*.75f,Vector3.down,1.5f,~0,QueryTriggerInteraction.Ignore)
+                .Where(h=>h.collider.gameObject.scene==scene&&!StationNavigationRecipe.Excluded(h.collider,trainSource,namedBeltsSource)&&
+                    h.collider.GetComponentInParent<FirstPersonResponder>()==null&&h.collider.GetComponentInParent<PersonBody>()==null)
+                .OrderBy(h=>h.distance).ToArray();
+            return hits.Length==0?"no exposed eligible source hit":ProbeHit(hits[0]);
+        }
+
+        static string DescribeSettings(NavMeshBuildSettings settings)
+        {
+            var invariant=System.Globalization.CultureInfo.InvariantCulture;
+            return "agentTypeID="+settings.agentTypeID+"; agentRadius="+settings.agentRadius.ToString("R",invariant)+
+                "; agentHeight="+settings.agentHeight.ToString("R",invariant)+"; agentClimb="+settings.agentClimb.ToString("R",invariant)+
+                "; agentSlope="+settings.agentSlope.ToString("R",invariant)+"; minRegionArea="+settings.minRegionArea.ToString("R",invariant)+
+                "; overrideVoxelSize="+settings.overrideVoxelSize+"; voxelSize="+settings.voxelSize.ToString("R",invariant)+
+                "; overrideTileSize="+settings.overrideTileSize+"; tileSize="+settings.tileSize+"; buildHeightMesh="+settings.buildHeightMesh;
+        }
+
+        void DescribeMissingNavigation(PointProbeReport probes,NavMeshTriangulation triangulation)
+        {
+            probes.Record("nav-diagnostic/settings","DIAGNOSTIC ONLY; original-reference lease disposed; actual current recipe="+
+                DescribeSettings(collectedSettings)+"; buildBoundsMin="+ProbePosition(Bounds.min)+"; buildBoundsMax="+ProbePosition(Bounds.max)+
+                "; collectedSources="+(collectedSources==null?-1:collectedSources.Count)+"; actualClearSupportedPoses="+probes.ClearFloorPositions.Count+
+                "; no counter-bake, changed candidate, binding fallback or settings change");
+            if(probes.ClearFloorPositions.Count==0)throw new InvalidOperationException("Supported Nav-missing diagnostics lack actual clear supported pose");
+            int floorIndex=0;
+            foreach(var floor in probes.FloorSources.OrderBy(c=>c.GetInstanceID()))
+            {
+                var exact=collectedSources.Where(source=>source.component==floor).ToArray();
+                var sameObject=collectedSources.Where(source=>source.component!=null&&source.component.gameObject==floor.gameObject).ToArray();
+                probes.Record("nav-diagnostic/floor-source-"+floorIndex,ProbeCollider(floor)+"; exactCollectedComponentMatches="+exact.Length+
+                    "; sameGameObjectMatches="+sameObject.Length+"; sourceBoundsMin="+ProbePosition(floor.bounds.min)+"; sourceBoundsMax="+ProbePosition(floor.bounds.max)+
+                    "; exact descriptors={"+string.Join(" | ",exact.Select(DescribeCollectedSource))+"}");
+                floorIndex++;
+            }
+            int modifierIndex=0;
+            foreach(var modifier in collectedSources.Where(source=>source.shape==NavMeshBuildSourceShape.ModifierBox))
+            {
+                var inverse=modifier.transform.inverse;var local=new Bounds(Vector3.zero,modifier.size);
+                int inside=probes.ClearFloorPositions.Count(point=>local.Contains(inverse.MultiplyPoint3x4(point)));
+                // Only descriptor/intersection evidence: this is not clearance or a
+                // positive navigation decision. Modifier frames are rigid canonical boxes.
+                var diagnosticMargin=local;diagnosticMargin.Expand(1.2f);
+                int nearby=probes.ClearFloorPositions.Count(point=>diagnosticMargin.Contains(inverse.MultiplyPoint3x4(point)));
+                probes.Record("nav-diagnostic/modifier-"+modifierIndex,DescribeCollectedSource(modifier)+"; actualSupportedPosesInside="+inside+
+                    "; insideExpandedByDiagnostic0.6m="+nearby);
+                modifierIndex++;
+            }
+            var positions=probes.ClearFloorPositions;
+            float nearest=float.PositiveInfinity;int nearestTriangle=-1,nearCount=0;Vector3 nearestPoint=default,nearestSupported=default;
+            var window=new Bounds(positions[0],Vector3.zero);foreach(var point in positions)window.Encapsulate(point);window.Expand(16f);
+            for(int i=0;i+2<triangulation.indices.Length;i+=3)
+            {
+                var a=triangulation.vertices[triangulation.indices[i]];var b=triangulation.vertices[triangulation.indices[i+1]];var c=triangulation.vertices[triangulation.indices[i+2]];
+                var bounds=new Bounds(a,Vector3.zero);bounds.Encapsulate(b);bounds.Encapsulate(c);
+                if(!Bounds.Intersects(bounds)||!window.Intersects(bounds))continue;
+                bool near=false;
+                foreach(var supported in positions)
+                {
+                    var point=ClosestTrianglePoint(supported,a,b,c);
+                    if(Mathf.Abs(point.y-supported.y)>.35f)continue;
+                    float distance=Vector3.Distance(point,supported);
+                    if(distance<=8)near=true;
+                    if(distance<nearest){nearest=distance;nearestTriangle=i/3;nearestPoint=point;nearestSupported=supported;}
+                }
+                if(near)nearCount++;
+            }
+            probes.Record("nav-diagnostic/registered-triangulation","DIAGNOSTIC ONLY; global registered coarse triangulation after old-reference removal; "+
+                "public API supplies no NavMeshData/Collider ownership; current Data ownership NOT inferred; totalTriangles="+triangulation.indices.Length/3+
+                "; sameStoreyWithin8mTriangles="+nearCount+"; closestSameStoreyDistance="+nearest.ToString("R",System.Globalization.CultureInfo.InvariantCulture));
+            if(nearestTriangle>=0)
+            {
+                int i=nearestTriangle*3;var a=triangulation.vertices[triangulation.indices[i]];var b=triangulation.vertices[triangulation.indices[i+1]];var c=triangulation.vertices[triangulation.indices[i+2]];
+                probes.Record("nav-diagnostic/nearest-triangle","globalTriangleIndex="+nearestTriangle+"; area="+triangulation.areas[nearestTriangle]+
+                    "; A="+ProbePosition(a)+"; B="+ProbePosition(b)+"; C="+ProbePosition(c)+"; closest="+ProbePosition(nearestPoint)+
+                    "; actualSupported="+ProbePosition(nearestSupported)+"; Ydelta="+(nearestPoint.y-nearestSupported.y).ToString("R",System.Globalization.CultureInfo.InvariantCulture)+
+                    "; nearestPointPhysicalSampleOnly={"+DiagnosticOwnerBelow(nearestPoint)+"}; this sample does not identify the whole triangle's source owner");
+            }
+            var samplePoses=new List<Vector3>{positions[0]};
+            if(nearestTriangle>=0&&Vector3.Distance(positions[0],nearestSupported)>1e-6f)samplePoses.Add(nearestSupported);
+            for(int p=0;p<samplePoses.Count;p++)
+            {
+                var details=new List<string>();
+                foreach(float radius in new[]{.6f,1f,2f,4f,8f})
+                {
+                    bool found=NavMesh.SamplePosition(samplePoses[p],out var hit,radius,NavMesh.AllAreas);
+                    details.Add("radius="+radius+"; found="+found+(found?"; hit="+ProbePosition(hit.position)+"; distance="+hit.distance+
+                        "; Ydelta="+(hit.position.y-samplePoses[p].y)+"; areaMask="+hit.mask:""));
+                }
+                probes.Record("nav-diagnostic/native-samples-"+p,"DIAGNOSTIC ONLY; actual supported="+ProbePosition(samplePoses[p])+"; {"+string.Join(" | ",details)+"}");
+            }
         }
 
         internal StationPoints BindPoints(StationPoints catalog,NavMeshData originalReference)
@@ -675,6 +890,7 @@ namespace ChooGuard.App.Fps.Emergency
             if(rows==null||rows.Count!=catalog.All.Count)throw new InvalidOperationException("Source point witness partition is incomplete");
             var result=new List<StationPoints.CurrentBinding>();
             var failures=new PointBindingFailures();int attempted=0;
+            var pending=new List<(string identity,PointProbeReport probes,InvalidOperationException cause,bool navMissing)>();
             // Settle source transforms once before the synchronous qualification scan.
             // No yield, simulation step or source mutation occurs between its queries.
             Physics.SyncTransforms();
@@ -730,16 +946,33 @@ namespace ChooGuard.App.Fps.Emergency
                 try{status=CurrentBindingDecision(absent,sourceSupportAbsent,physical,nav);}
                 catch(InvalidOperationException cause)
                 {
-                    failures.Add("sourceIndex="+i+"; id="+source.Id+"; kind="+source.Kind+"; zone="+source.Zone+
+                    pending.Add(("sourceIndex="+i+"; id="+source.Id+"; kind="+source.Kind+"; zone="+source.Zone+
                         "; sourcePosition="+ProbePosition(source.Position)+"; disposition="+disposition+
-                        "; walkableFootprint="+physical+"; currentNav="+nav,probes,cause);
-                    if(failures.Full)break;
+                        "; walkableFootprint="+physical+"; currentNav="+nav,probes,cause,physical&&!nav));
+                    if(pending.Count==PointBindingFailures.Limit)break;
                     continue;
                 }
                 var runtime=nav?new StationPoints.Point{Id=source.Id,Label=source.Label,Zone=source.Zone,Kind=source.Kind,
                     Position=feet,Anchor=source.Anchor,Yaw=source.Yaw,Slot=source.Slot}:null;
                 result.Add(new StationPoints.CurrentBinding{Source=source,Runtime=runtime,Status=status,
                     Evidence=absent?(string)row["evidence"]:sourceSupportAbsent?unavailableProof:evidence+"; projection="+(feet-source.Position).ToString("F5")});
+            }
+            // BakedFloor's shifted old-reference copy is now removed. Diagnostics
+            // cannot add candidates, qualify points, change Data or return a view.
+            NavMeshTriangulation? triangulation=null;
+            foreach(var failure in pending)
+            {
+                if(failure.navMissing)
+                {
+                    try
+                    {
+                        if(!triangulation.HasValue)triangulation=NavMesh.CalculateTriangulation();
+                        DescribeMissingNavigation(failure.probes,triangulation.Value);
+                    }
+                    catch(Exception diagnosticError) when(!(diagnosticError is OutOfMemoryException))
+                    {failure.probes.Record("nav-diagnostic/unavailable",diagnosticError.GetType().Name+": "+diagnosticError.Message);}
+                }
+                failures.Add(failure.identity,failure.probes,failure.cause);
             }
             failures.ThrowIfAny(attempted,catalog.All.Count);
             return catalog.WithCurrentBindings(result.AsReadOnly());
@@ -752,6 +985,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             floor=staged;evidence="";float low=float.PositiveInfinity,high=float.NegativeInfinity;
             bool allNew=true;var owners=new HashSet<string>();
+            var floorSources=probes==null?null:new HashSet<Collider>();
             var observed=probes!=null&&probes.NeedsExample(phase+"/floor-complete")?new List<string>():null;
             for(int i=-1;i<8;i++)
             {
@@ -768,12 +1002,13 @@ namespace ChooGuard.App.Fps.Emergency
                 if(Mathf.Abs(hit.point.y-staged.y)>.35f)
                 {probes?.Record(phase+"/floor-height-rejected","nineRaysComplete=false; staged="+ProbePosition(staged)+"; ray="+i+"; "+ProbeHit(hit));return false;}
                 low=Mathf.Min(low,hit.point.y);high=Mathf.Max(high,hit.point.y);
-                allNew&=newFloorSources.Contains(hit.collider);owners.Add(PathOf(hit.collider.transform));
+                allNew&=newFloorSources.Contains(hit.collider);owners.Add(PathOf(hit.collider.transform));floorSources?.Add(hit.collider);
                 observed?.Add(ProbeFloorHit(i,hit));
             }
             if(high-low>.35f)
             {probes?.Record(phase+"/floor-spread-rejected","nineRaysComplete=true; staged="+ProbePosition(staged)+"; low="+low.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+"; high="+high.ToString("R",System.Globalization.CultureInfo.InvariantCulture));return false;}
             floor.y=high;
+            if(floorSources!=null)foreach(var collider in floorSources)probes.FloorSources.Add(collider);
             probes?.Record(phase+"/floor-complete",observed==null?null:"nineRaysComplete=true; staged="+ProbePosition(staged)+"; floor="+ProbePosition(floor)+"; actualHits={"+string.Join(" | ",observed)+"}");
             // The old cache is only an independent partial classification reference;
             // actual current footprint+clearance are mandatory. Explicit current floors
@@ -785,6 +1020,7 @@ namespace ChooGuard.App.Fps.Emergency
                     collider.GetComponentInParent<PersonBody>()==null)
                 {probes?.Record(phase+"/clearance-blocked","nineRaysComplete=true; floor="+ProbePosition(floor)+"; capsuleBottom="+ProbePosition(bottom)+"; capsuleTop="+ProbePosition(top)+"; radius=.28; "+ProbeCollider(collider));return false;}
             probes?.Record(phase+"/clearance-complete");
+            if(phase=="candidate"&&probes!=null)probes.ClearFloorPositions.Add(floor);
             evidence="MODEL_COMPUTED_WALKABLE; current9-ray .28m footprint; 1.8m clearance; source="+string.Join("|",owners.OrderBy(x=>x,StringComparer.Ordinal))+
                 "; independentReference="+(allNew?"explicit current floor provenance":corroborated?"old area/walkability corroborated by current geometry":"independent actual source geometry; old cache has no corroboration");
             return true;
@@ -799,7 +1035,7 @@ namespace ChooGuard.App.Fps.Emergency
             if(instance.valid)instance.Remove();
             if(Data!=null){UnityEngine.Object.Destroy(Data);Data=null;}
             foreach(var support in supports)if(support!=null)UnityEngine.Object.Destroy(support);
-            supports.Clear();
+            supports.Clear();collectedSources=null;
         }
     }
     internal sealed class CurrentStationNavigationLifetime : MonoBehaviour

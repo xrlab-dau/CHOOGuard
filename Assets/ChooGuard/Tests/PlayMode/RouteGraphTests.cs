@@ -62,8 +62,9 @@ namespace ChooGuard.Tests.PlayMode
                 if(row.Bound)Assert.That(row.Status,Is.EqualTo("BOUND_MODEL_COMPUTED_WALKABLE"));
                 else if(row.Status==StationPoints.CurrentBinding.CurrentSourceUnavailableStatus)
                     Assert.That(row.Evidence.StartsWith(StationPoints.CurrentBinding.CurrentSourceEmptyEvidence,StringComparison.Ordinal)||
-                        row.Evidence.StartsWith(StationPoints.CurrentBinding.CurrentSourceFloorEvidence,StringComparison.Ordinal),Is.True,
-                        "Unavailable modeled endpoints require independent complete cooked-source volume evidence");
+                        row.Evidence.StartsWith(StationPoints.CurrentBinding.CurrentSourceFloorEvidence,StringComparison.Ordinal)||
+                        row.Evidence.StartsWith(StationPoints.CurrentBinding.CurrentSourceFootprintEvidence,StringComparison.Ordinal),Is.True,
+                        "Unavailable modeled endpoints require independent complete current-source support evidence");
                 else Assert.That(row.Status,Is.EqualTo("UNBOUND_PROVEN_NO_CURRENT_FLOOR"));
             }
             Assert.That(world.Points.All,Is.EquivalentTo(world.Points.CurrentBindings.Where(r=>r.Bound).Select(r=>r.Runtime)));
