@@ -67,7 +67,9 @@
     "all_candidate_csharp_inputs_included": true,
     "source_manifest_sha256": "3f738244acd6cc17d980834b74855a28b1fff8e9851b2c06ebf5a516c7e11b01",
     "latest_candidate_inputs": [
-      "Assets/ChooGuard/App/Fps/Emergency/CurrentStationNavigation.cs"
+      "Assets/ChooGuard/App/Fps/Emergency/CurrentStationNavigation.cs",
+      "Assets/ChooGuard/App/Fps/Emergency/StationPoints.cs",
+      "Assets/ChooGuard/Tests/PlayMode/RouteGraphTests.cs"
     ]
   },
   "isolated_checks": {
@@ -91,6 +93,12 @@
       "checks": 109,
       "status": "PASS",
       "scope": "System-only exact extracted methods and baseline differential replay; no Unity engine execution."
+    },
+    "current_source_point_correspondence": {
+      "checks": 2698,
+      "status": "PASS",
+      "candidate_ray_segments_enclosed": 1170,
+      "scope": "Exact extracted source methods in isolated System DTOs; no Unity engine execution."
     }
   },
   "navigation_saved_solid_sources": {
@@ -181,5 +189,24 @@
     "partial_runtime_view_or_graph_on_any_failure": false,
     "source_geometry_or_point_records_changed": false,
     "native_final_head_ci_verdict": "PENDING_DIAGNOSTIC_EXECUTION"
+  },
+  "current_source_point_bindings": {
+    "raw_point_records": 1449,
+    "raw_exit_records": 4,
+    "existing_static_absence_witness_records": 39,
+    "raw_records_poses_static_witnesses_scene_assets_nav_graph_changed": false,
+    "current_unavailable_proof": [
+      "Complete actual cooked-source candidate-ray volume empty",
+      "Complete actual eligible overlapping source shapes have no possible center-ray surface contact in the full candidate center/height domain"
+    ],
+    "point_query_exhaustion_alone_proves_absence": false,
+    "unknown_or_potential_contact": "Error; never silently unavailable",
+    "supported_but_clearance_blocked_or_nav_missing": "Error; never unavailable",
+    "positive_qualification": "Original footprint/standing clearance/.6m Nav/.35m height guards unchanged",
+    "active_exit_targets": "Every and only physically qualified current exits; at least one required",
+    "all_active_points_require_physical_foot_exit_reachability": true,
+    "legacy_raw_current_equality_premise": "Original CityExits and Wait records were old-Nav-derived modeled candidates; complete raw inventory is retained separately from the current qualified routing view.",
+    "real_world_exit_closure_inferred": false,
+    "native_final_head_ci_verdict": "PENDING"
   }
 }

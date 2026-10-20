@@ -359,6 +359,7 @@ namespace ChooGuard.App.Fps.Emergency
             readonly SortedDictionary<string,string> examples=new SortedDictionary<string,string>(StringComparer.Ordinal);
             public int Candidates;
             public bool NeedsExample(string stage)=>!examples.ContainsKey(stage);
+            public bool Has(string stage)=>counts.ContainsKey(stage);
             public void Record(string stage,string detail=null)
             {
                 counts.TryGetValue(stage,out var count);counts[stage]=count+1;
@@ -422,6 +423,241 @@ namespace ChooGuard.App.Fps.Emergency
                 "; collider="+hit.collider.GetType().Name+"; runLocalInstanceId="+hit.collider.GetInstanceID();
         }
 
+        internal static Bounds CandidateRayVolume(IReadOnlyList<Vector3> candidates)
+        {
+            if(candidates==null||candidates.Count==0)throw new InvalidOperationException("Current source candidate region is empty");
+            var volume=new Bounds(candidates[0],Vector3.zero);
+            foreach(var candidate in candidates)
+            {
+                if(float.IsNaN(candidate.x)||float.IsInfinity(candidate.x)||float.IsNaN(candidate.y)||float.IsInfinity(candidate.y)||
+                    float.IsNaN(candidate.z)||float.IsInfinity(candidate.z))
+                    throw new InvalidOperationException("Current source candidate region is not finite");
+                for(int ray=-1;ray<8;ray++)
+                {
+                    // Exactly the existing Footprint ray origins and full1.5m segments,
+                    // including the ACTUAL optional old-reference candidate and its Y.
+                    var offset=ray<0?Vector3.zero:new Vector3(Mathf.Cos(ray*Mathf.PI/4),0,Mathf.Sin(ray*Mathf.PI/4))*.28f;
+                    var start=candidate+offset+Vector3.up*.75f;
+                    volume.Encapsulate(start);volume.Encapsulate(start+Vector3.down*1.5f);
+                }
+            }
+            // Outward1mm is solely conservative proof padding: it never moves a
+            // candidate, increases a query radius, or qualifies any walking surface.
+            volume.Expand(.002f);
+            return volume;
+        }
+
+        int RequireCurrentSourceQueryReady()
+        {
+            var physicsScene=scene.GetPhysicsScene();
+            if(!physicsScene.IsValid()||physicsScene!=Physics.defaultPhysicsScene)
+                throw new InvalidOperationException("Current source requires the same valid default PhysicsScene used by its ray/volume queries");
+            int count=0;
+            foreach(var root in scene.GetRootGameObjects())foreach(var collider in root.GetComponentsInChildren<Collider>())
+            {
+                if(collider==null||!collider.enabled||!collider.gameObject.activeInHierarchy||
+                    StationNavigationRecipe.Excluded(collider,trainSource,namedBeltsSource)||
+                    collider.GetComponentInParent<FirstPersonResponder>()!=null||collider.GetComponentInParent<PersonBody>()!=null)continue;
+                if(collider is MeshCollider mesh&&mesh.sharedMesh==null)
+                    throw new InvalidOperationException("Current source collider has unresolved mesh geometry: "+ProbeCollider(collider));
+                if(collider is TerrainCollider terrain&&terrain.terrainData==null)
+                    throw new InvalidOperationException("Current source collider has unresolved terrain geometry: "+ProbeCollider(collider));
+                var bounds=collider.bounds;var min=bounds.min;var max=bounds.max;
+                if(float.IsNaN(min.x)||float.IsInfinity(min.x)||float.IsNaN(min.y)||float.IsInfinity(min.y)||float.IsNaN(min.z)||float.IsInfinity(min.z)||
+                    float.IsNaN(max.x)||float.IsInfinity(max.x)||float.IsNaN(max.y)||float.IsInfinity(max.y)||float.IsNaN(max.z)||float.IsInfinity(max.z)||
+                    min.x>max.x||min.y>max.y||min.z>max.z)
+                    throw new InvalidOperationException("Current source collider has unresolved physical bounds: "+ProbeCollider(collider));
+                count++;
+            }
+            if(count==0)throw new InvalidOperationException("No complete eligible current source collider census");
+            return count;
+        }
+
+        // Necessary center-ray contact only. Considering ALL face orientations avoids
+        // any assumption about interpolated normals, winding, backfaces or mirror parity.
+        internal sealed class CenterSupportDomain
+        {
+            struct Vertex
+            {
+                public double X,Y,Z;
+                public Vertex(double x,double y,double z){X=x;Y=y;Z=z;}
+            }
+            readonly double x,z,radiusSquared,minY,maxY;
+            public CenterSupportDomain(Vector3 source,IReadOnlyList<Vector3> candidates)
+            {
+                if(candidates==null||candidates.Count==0)throw new InvalidOperationException("No complete center-support domain");
+                x=source.x;z=source.z;double radius=0;minY=double.PositiveInfinity;maxY=double.NegativeInfinity;
+                foreach(var candidate in candidates)
+                {
+                    if(!Finite(candidate))throw new InvalidOperationException("Nonfinite center-support domain");
+                    double dx=candidate.x-x,dz=candidate.z-z;radius=Math.Max(radius,Math.Sqrt(dx*dx+dz*dz));
+                    minY=Math.Min(minY,candidate.y);maxY=Math.Max(maxY,candidate.y);
+                }
+                if(!Finite(source))throw new InvalidOperationException("Nonfinite source center");
+                radiusSquared=(radius+.001)*(radius+.001);minY-=.351;maxY+=.351;
+            }
+            static bool Finite(Vector3 value)=>!float.IsNaN(value.x)&&!float.IsInfinity(value.x)&&
+                !float.IsNaN(value.y)&&!float.IsInfinity(value.y)&&!float.IsNaN(value.z)&&!float.IsInfinity(value.z);
+            static List<Vertex> Clip(List<Vertex> polygon,double height,bool above)
+            {
+                var result=new List<Vertex>();if(polygon.Count==0)return result;
+                var prior=polygon[polygon.Count-1];bool priorIn=above?prior.Y>=height:prior.Y<=height;
+                foreach(var current in polygon)
+                {
+                    bool inside=above?current.Y>=height:current.Y<=height;
+                    if(inside!=priorIn)
+                    {
+                        double t=(height-prior.Y)/(current.Y-prior.Y);
+                        result.Add(new Vertex(prior.X+(current.X-prior.X)*t,height,prior.Z+(current.Z-prior.Z)*t));
+                    }
+                    if(inside)result.Add(current);prior=current;priorIn=inside;
+                }
+                return result;
+            }
+            public bool MayContainCenterContact(Vector3 a,Vector3 b,Vector3 c)
+            {
+                if(!Finite(a)||!Finite(b)||!Finite(c))throw new InvalidOperationException("Nonfinite actual source face");
+                if(Math.Max(a.y,Math.Max(b.y,c.y))<minY||Math.Min(a.y,Math.Min(b.y,c.y))>maxY)return false;
+                double left=Math.Min(a.x,Math.Min(b.x,c.x)),right=Math.Max(a.x,Math.Max(b.x,c.x));
+                double back=Math.Min(a.z,Math.Min(b.z,c.z)),front=Math.Max(a.z,Math.Max(b.z,c.z));
+                double dx=Math.Max(left-x,Math.Max(0,x-right)),dz=Math.Max(back-z,Math.Max(0,z-front));
+                if(dx*dx+dz*dz>radiusSquared)return false;
+                var polygon=Clip(Clip(new List<Vertex>{new Vertex(a.x,a.y,a.z),new Vertex(b.x,b.y,b.z),new Vertex(c.x,c.y,c.z)},minY,true),maxY,false);
+                if(polygon.Count==0)return false;
+                bool positive=false,negative=false;double area=0;
+                for(int i=0;i<polygon.Count;i++)
+                {
+                    var u=polygon[i];var v=polygon[(i+1)%polygon.Count];
+                    double ux=u.X-x,uz=u.Z-z,vx=v.X-x,vz=v.Z-z;
+                    double ex=vx-ux,ez=vz-uz,length=ex*ex+ez*ez;
+                    double t=length==0?0:Math.Max(0,Math.Min(1,-(ux*ex+uz*ez)/length));
+                    double qx=ux+t*ex,qz=uz+t*ez;
+                    if(qx*qx+qz*qz<=radiusSquared)return true;
+                    double cross=ux*vz-uz*vx;area+=cross;
+                    positive|=cross>1e-12;negative|=cross< -1e-12;
+                }
+                return Math.Abs(area)>1e-12&&!(positive&&negative); // Disc center inside the entire projected polygon.
+            }
+            public string Describe()=>"centerXZ=["+x.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+","+
+                z.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+"]; radius="+Math.Sqrt(radiusSquared).ToString("R",System.Globalization.CultureInfo.InvariantCulture)+
+                "; minY="+minY.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+"; maxY="+maxY.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+
+                "; all actual candidate center-ray contacts enclosed; ALL face orientations considered";
+        }
+
+        sealed class SourceMeshBuffers
+        {
+            public readonly Vector3[] Vertices;
+            public readonly int[][] Indices;
+            public SourceMeshBuffers(Mesh mesh)
+            {
+                Vertices=mesh.vertices;Indices=new int[mesh.subMeshCount][];
+                foreach(var v in Vertices)if(float.IsNaN(v.x)||float.IsInfinity(v.x)||float.IsNaN(v.y)||float.IsInfinity(v.y)||float.IsNaN(v.z)||float.IsInfinity(v.z))
+                    throw new InvalidOperationException("Nonfinite current source mesh buffer");
+                for(int sub=0;sub<Indices.Length;sub++)
+                {
+                    var indices=mesh.GetIndices(sub);Indices[sub]=indices;
+                    if(indices.Length!=0&&(mesh.GetTopology(sub)!=MeshTopology.Triangles||indices.Length%3!=0))
+                        throw new InvalidOperationException("Unresolved current source surface topology");
+                    foreach(int index in indices)if(index<0||index>=Vertices.Length)throw new InvalidOperationException("Invalid current source triangle index");
+                }
+            }
+        }
+
+        static bool SourceFrameResolved(Matrix4x4 matrix)
+        {
+            for(int i=0;i<16;i++)if(float.IsNaN(matrix[i])||float.IsInfinity(matrix[i]))return false;
+            var a=matrix.MultiplyVector(Vector3.right);var b=matrix.MultiplyVector(Vector3.up);var c=matrix.MultiplyVector(Vector3.forward);
+            if(a.sqrMagnitude<=1e-16f||b.sqrMagnitude<=1e-16f||c.sqrMagnitude<=1e-16f)return false;
+            return Mathf.Abs(Vector3.Dot(a.normalized,b.normalized))<1e-5f&&Mathf.Abs(Vector3.Dot(a.normalized,c.normalized))<1e-5f&&
+                Mathf.Abs(Vector3.Dot(b.normalized,c.normalized))<1e-5f; // Sheared/ambiguous physics shape stays UNKNOWN.
+        }
+
+        bool SourceHasNoCenterContact(Collider collider,CenterSupportDomain domain,Dictionary<Mesh,SourceMeshBuffers> buffers,
+            PointProbeReport probes,ref int triangles)
+        {
+            var matrix=collider.transform.localToWorldMatrix;
+            if(!SourceFrameResolved(matrix))return false;
+            if(collider is MeshCollider meshCollider)
+            {
+                var mesh=meshCollider.sharedMesh;
+                if(mesh==null||meshCollider.convex||!mesh.isReadable)return false;
+                if(!buffers.TryGetValue(mesh,out var source))buffers[mesh]=source=new SourceMeshBuffers(mesh);
+                foreach(var indices in source.Indices)for(int i=0;i<indices.Length;i+=3)
+                {
+                    triangles++;
+                    if(domain.MayContainCenterContact(matrix.MultiplyPoint3x4(source.Vertices[indices[i]]),
+                        matrix.MultiplyPoint3x4(source.Vertices[indices[i+1]]),matrix.MultiplyPoint3x4(source.Vertices[indices[i+2]])))return false;
+                }
+                return true;
+            }
+            if(collider is BoxCollider box)
+            {
+                if(matrix.determinant<=0)return false;
+                var frame=box.transform.rotation;
+                foreach(var axis in new[]{Vector3.right,Vector3.up,Vector3.forward})
+                    if(Mathf.Abs(Vector3.Dot(matrix.MultiplyVector(axis).normalized,frame*axis))<.99999f)return false;
+                var size=box.size;
+                if(size.x<=0||size.y<=0||size.z<=0||float.IsNaN(size.x)||float.IsNaN(size.y)||float.IsNaN(size.z)||
+                    float.IsInfinity(size.x)||float.IsInfinity(size.y)||float.IsInfinity(size.z))return false;
+                var corners=new Vector3[8];var bounds=new Bounds(matrix.MultiplyPoint3x4(box.center),Vector3.zero);
+                for(int i=0;i<8;i++)
+                {
+                    corners[i]=matrix.MultiplyPoint3x4(box.center+Vector3.Scale(size,new Vector3((i&1)==0?-.5f:.5f,(i&2)==0?-.5f:.5f,(i&4)==0?-.5f:.5f)));
+                    bounds.Encapsulate(corners[i]);
+                }
+                // Exact nonsheared primitive shape plus observed physics-bound parity;
+                // padded broad bounds alone are never treated as an exact floor face.
+                if(Vector3.Distance(bounds.min,box.bounds.min)>.0005f||Vector3.Distance(bounds.max,box.bounds.max)>.0005f)return false;
+                int[] faces={0,1,3,0,3,2,4,6,7,4,7,5,0,4,5,0,5,1,2,3,7,2,7,6,0,2,6,0,6,4,1,5,7,1,7,3};
+                for(int i=0;i<faces.Length;i+=3)
+                {triangles++;if(domain.MayContainCenterContact(corners[faces[i]],corners[faces[i+1]],corners[faces[i+2]]))return false;}
+                return true;
+            }
+            return false; // Convex/curved/terrain/other source has no exact face proof here.
+        }
+
+        bool CurrentSourceSupportAbsent(Vector3 source,IReadOnlyList<Vector3> candidates,PointProbeReport probes,string identity,
+            Dictionary<Mesh,SourceMeshBuffers> buffers,out string proof)
+        {
+            proof="";var volume=CandidateRayVolume(candidates);
+            var overlaps=Physics.OverlapBox(volume.center,volume.extents,Quaternion.identity,~0,QueryTriggerInteraction.Ignore);
+            if(overlaps==null||overlaps.Any(c=>c==null))throw new InvalidOperationException("Current source overlap evidence is incomplete: "+identity);
+            var eligible=overlaps.Where(c=>c.gameObject.scene==scene&&!StationNavigationRecipe.Excluded(c,trainSource,namedBeltsSource)&&
+                c.GetComponentInParent<FirstPersonResponder>()==null&&c.GetComponentInParent<PersonBody>()==null).ToArray();
+            bool observedFloor=probes.Has("candidate/floor-complete");
+            if(eligible.Length==0)
+            {
+                if(observedFloor)throw new InvalidOperationException("Observed current floor contradicts complete empty source-volume evidence: "+identity);
+                proof=StationPoints.CurrentBinding.CurrentSourceEmptyEvidence+" "+identity+"; sourceScene="+scene.path+
+                    "; min="+ProbePosition(volume.min)+"; max="+ProbePosition(volume.max)+"; candidates="+candidates.Count+
+                    "; Physics.OverlapBox complete; eligibleCookedColliders=0; rawOverlaps="+overlaps.Length+
+                    "; mask=all; triggers=Ignore; canonical source/actor exclusions; whole candidate-ray volume+1mm; "+
+                    "current modeled endpoint unavailable; no real-world public-exit closure claim";
+                probes.Record("source-volume/empty",proof);return true;
+            }
+            probes.Record("source-volume/nonempty","eligibleCookedColliders="+eligible.Length+"; first="+ProbeCollider(eligible[0]));
+            if(observedFloor)return false; // A blocked or Nav-missing supported floor cannot become unavailable.
+            var domain=new CenterSupportDomain(source,candidates);int triangles=0;
+            foreach(var collider in eligible)
+                if(!SourceHasNoCenterContact(collider,domain,buffers,probes,ref triangles))
+                {probes.Record("center-domain/unknown-or-potential-contact",ProbeCollider(collider)+"; "+domain.Describe());return false;}
+            proof=StationPoints.CurrentBinding.CurrentSourceFloorEvidence+" "+identity+"; sourceScene="+scene.path+
+                "; broadEligibleCookedColliders="+eligible.Length+"; completeSourceTriangles="+triangles+"; "+domain.Describe()+
+                "; no possible center-ray surface contact; no normals/slope/winding qualification; current modeled endpoint unavailable; no real-world public-exit closure claim";
+            probes.Record("center-domain/no-source-contact",proof);return true;
+        }
+
+        internal static string CurrentBindingDecision(bool provenAbsent,bool sourceSupportAbsent,bool physicalSupported,bool currentNavSupported)
+        {
+            if(sourceSupportAbsent)
+            {
+                if(physicalSupported||currentNavSupported)
+                    throw new InvalidOperationException("Current positive support/navigation contradicts the complete current-source support-absence evidence");
+                if(!provenAbsent)return StationPoints.CurrentBinding.CurrentSourceUnavailableStatus;
+            }
+            return BindingDecision(provenAbsent,physicalSupported,currentNavSupported);
+        }
+
         internal StationPoints BindPoints(StationPoints catalog,NavMeshData originalReference)
         {
             var witness=Resources.Load<TextAsset>("CurrentStationPointSources");
@@ -439,6 +675,13 @@ namespace ChooGuard.App.Fps.Emergency
             if(rows==null||rows.Count!=catalog.All.Count)throw new InvalidOperationException("Source point witness partition is incomplete");
             var result=new List<StationPoints.CurrentBinding>();
             var failures=new PointBindingFailures();int attempted=0;
+            // Settle source transforms once before the synchronous qualification scan.
+            // No yield, simulation step or source mutation occurs between its queries.
+            Physics.SyncTransforms();
+            int eligibleSourceCount=RequireCurrentSourceQueryReady();
+            // Only meshes needed by failed physical probes are read; buffers live for
+            // this synchronous scan, with no scene/frame/persistent proof cache.
+            var sourceBuffers=new Dictionary<Mesh,SourceMeshBuffers>();
             using(var reference=new BakedFloor(originalReference))
             for(int i=0;i<catalog.All.Count;i++)
             {
@@ -480,8 +723,11 @@ namespace ChooGuard.App.Fps.Emergency
                     probes.Record("nav/qualified");
                     feet=hit.position;evidence+="; nav corroboration="+navProof;nav=true;break;
                 }
+                bool sourceSupportAbsent=CurrentSourceSupportAbsent(source.Position,candidates,probes,
+                    "sourceIndex="+i+"; sourceId="+source.Id+"; sourceCatalog="+catalog.SourceSha256+
+                    "; completeEligibleSourceColliders="+eligibleSourceCount,sourceBuffers,out var unavailableProof);
                 string status;
-                try{status=BindingDecision(absent,physical,nav);}
+                try{status=CurrentBindingDecision(absent,sourceSupportAbsent,physical,nav);}
                 catch(InvalidOperationException cause)
                 {
                     failures.Add("sourceIndex="+i+"; id="+source.Id+"; kind="+source.Kind+"; zone="+source.Zone+
@@ -493,7 +739,7 @@ namespace ChooGuard.App.Fps.Emergency
                 var runtime=nav?new StationPoints.Point{Id=source.Id,Label=source.Label,Zone=source.Zone,Kind=source.Kind,
                     Position=feet,Anchor=source.Anchor,Yaw=source.Yaw,Slot=source.Slot}:null;
                 result.Add(new StationPoints.CurrentBinding{Source=source,Runtime=runtime,Status=status,
-                    Evidence=absent?(string)row["evidence"]:evidence+"; projection="+(feet-source.Position).ToString("F5")});
+                    Evidence=absent?(string)row["evidence"]:sourceSupportAbsent?unavailableProof:evidence+"; projection="+(feet-source.Position).ToString("F5")});
             }
             failures.ThrowIfAny(attempted,catalog.All.Count);
             return catalog.WithCurrentBindings(result.AsReadOnly());

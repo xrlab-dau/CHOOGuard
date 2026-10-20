@@ -40,6 +40,9 @@ namespace ChooGuard.App.Fps.Emergency
 
         public sealed class CurrentBinding
         {
+            public const string CurrentSourceUnavailableStatus="UNAVAILABLE_CURRENT_SOURCE_SUPPORT";
+            public const string CurrentSourceEmptyEvidence="COMPLETE_CURRENT_SOURCE_SUPPORT_VOLUME_EMPTY;";
+            public const string CurrentSourceFloorEvidence="COMPLETE_CURRENT_SOURCE_CENTER_CONTACT_DOMAIN_EMPTY;";
             public Point Source { get; internal set; }
             public Point Runtime { get; internal set; }
             public string Status { get; internal set; }
@@ -64,17 +67,25 @@ namespace ChooGuard.App.Fps.Emergency
                     throw new InvalidOperationException("Current point source partition identity/provenance differs");
                 if(row.Bound)
                 {
-                    if(row.Status!="BOUND_MODEL_COMPUTED_WALKABLE"||row.Runtime.Id!=row.Source.Id)
+                    if(row.Status!="BOUND_MODEL_COMPUTED_WALKABLE"||row.Runtime.Id!=row.Source.Id||row.Runtime.Kind!=row.Source.Kind)
                         throw new InvalidOperationException("Invalid current point binding");
                     view.all.Add(row.Runtime);
                     if(!view.byKind.TryGetValue(row.Runtime.Kind,out var list))view.byKind[row.Runtime.Kind]=list=new List<Point>();
                     list.Add(row.Runtime);
                 }
+                else if(row.Status==CurrentBinding.CurrentSourceUnavailableStatus)
+                {
+                    if(!row.Evidence.StartsWith(CurrentBinding.CurrentSourceEmptyEvidence,StringComparison.Ordinal)&&
+                        !row.Evidence.StartsWith(CurrentBinding.CurrentSourceFloorEvidence,StringComparison.Ordinal))
+                        throw new InvalidOperationException("Unavailable current point lacks complete source-volume evidence: "+row.Source.Id);
+                }
                 else if(row.Status!="UNBOUND_PROVEN_NO_CURRENT_FLOOR")
                     throw new InvalidOperationException("Uncertain physical support cannot be silently discarded: "+row.Source.Id);
             }
-            if(view.Of(PointKind.Exit).Count!=Of(PointKind.Exit).Count)
-                throw new InvalidOperationException("A source exit is not qualified in the current world");
+            // Original modeled endpoints remain in SourceAll/CurrentBindings. Only
+            // physically qualified current exits may become walking/evacuation targets.
+            if(view.Of(PointKind.Exit).Count==0)
+                throw new InvalidOperationException("No physically qualified current exit is available");
             return view;
         }
 

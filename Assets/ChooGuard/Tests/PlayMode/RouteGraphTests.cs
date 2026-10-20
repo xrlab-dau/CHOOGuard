@@ -59,11 +59,20 @@ namespace ChooGuard.Tests.PlayMode
             {
                 var row=world.Points.CurrentBindings[i];Assert.That(row.Source,Is.SameAs(world.SourcePoints.All[i]));
                 Assert.That(row.Evidence,Is.Not.Null.And.Not.Empty);
-                Assert.That(row.Status,Is.EqualTo(row.Bound?"BOUND_MODEL_COMPUTED_WALKABLE":"UNBOUND_PROVEN_NO_CURRENT_FLOOR"));
+                if(row.Bound)Assert.That(row.Status,Is.EqualTo("BOUND_MODEL_COMPUTED_WALKABLE"));
+                else if(row.Status==StationPoints.CurrentBinding.CurrentSourceUnavailableStatus)
+                    Assert.That(row.Evidence.StartsWith(StationPoints.CurrentBinding.CurrentSourceEmptyEvidence,StringComparison.Ordinal)||
+                        row.Evidence.StartsWith(StationPoints.CurrentBinding.CurrentSourceFloorEvidence,StringComparison.Ordinal),Is.True,
+                        "Unavailable modeled endpoints require independent complete cooked-source volume evidence");
+                else Assert.That(row.Status,Is.EqualTo("UNBOUND_PROVEN_NO_CURRENT_FLOOR"));
             }
             Assert.That(world.Points.All,Is.EquivalentTo(world.Points.CurrentBindings.Where(r=>r.Bound).Select(r=>r.Runtime)));
             Assert.That(world.Points.All.Count+world.Points.CurrentBindings.Count(r=>!r.Bound),Is.EqualTo(1449));
-            Assert.That(world.Points.Of(PointKind.Exit).Count,Is.EqualTo(world.SourcePoints.Of(PointKind.Exit).Count));
+            Assert.That(world.SourcePoints.Of(PointKind.Exit).Count,Is.EqualTo(4),"All four original modeled Exit records remain immutable source inventory");
+            Assert.That(world.Points.SourceAll.Count(p=>p.Kind==PointKind.Exit),Is.EqualTo(4));
+            Assert.That(world.Points.Of(PointKind.Exit),Is.Not.Empty,"The current world requires a physically qualified active exit");
+            CollectionAssert.AreEquivalent(world.Points.CurrentBindings.Where(r=>r.Bound&&r.Source.Kind==PointKind.Exit).Select(r=>r.Source.Id),
+                world.Points.Of(PointKind.Exit).Select(p=>p.Id),"Every and only qualified current Exit becomes an active target");
             Assert.That(graph.OriginalSourceJson,Is.EqualTo(historicalRoutes.text));
             CollectionAssert.AreEqual(historicalRouteBytes,historicalRoutes.bytes,"Runtime graph derivation must preserve the original resource");
             Assert.That(graph.Nodes.Count, Is.GreaterThan(200), "the baked route graph is empty");
