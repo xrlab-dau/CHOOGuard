@@ -8,12 +8,15 @@ using UnityEngine.AI;
 namespace ChooGuard.App.Fps.Emergency
 {
     /// <summary>Current physical NavMesh graph; immutable historical graph is retained as source inventory.</summary>
-    internal sealed class CurrentStationRouteBuilder
+    internal sealed class CurrentStationRouteBuilder : IDisposable
     {
         const float Cell=16f,Band=1f,Reach=32f,Vertical=4.5f,Detour=1.6f,Slack=8f;
         readonly StationWalkingRouteEntry[] walkingRoutes;
         readonly IReadOnlyList<StationWalkingRoute> walkingOwners;
         readonly IReadOnlyList<Escalator> escalatorOwners;
+        CurrentNativePathQuery explicitQuery;
+        void ResetExplicitQuery(){explicitQuery?.Dispose();explicitQuery=null;}
+        public void Dispose()=>ResetExplicitQuery();
         sealed class Draft
         {
             public readonly List<Vector3> Positions=new List<Vector3>();
@@ -28,7 +31,8 @@ namespace ChooGuard.App.Fps.Emergency
             Func<StationPoints.CurrentBinding,StationPoints.CurrentRequalificationBatch> requalify=null)
         {
             var points=current.RoutingView(supplied,elevators);
-            var builder=new CurrentStationRouteBuilder(walking,supplied);
+            using(var builder=new CurrentStationRouteBuilder(walking,supplied))
+            {
             var draft=builder.Sample(points);builder.Connect(draft,points);builder.Prune(draft);
             var requalifications=builder.AttachEveryCurrentPoint(draft,points,requalify);
             var file=new RouteGraph.File {version=RouteGraph.Version,
@@ -48,12 +52,15 @@ namespace ChooGuard.App.Fps.Emergency
                     throw new InvalidOperationException("Current physically qualified point has no actual foot-exit route: "+point.Id);
             current.CommitCurrentRequalifications(requalifications);
             return graph;
+            }
         }
 
         sealed class AttachmentTrace
         {
             readonly SortedDictionary<string,int> reasons=new SortedDictionary<string,int>();
             readonly List<string> details=new List<string>();
+            readonly SortedDictionary<string,string> important=new SortedDictionary<string,string>();
+            public void Important(string key,string detail){if(!important.ContainsKey(key)&&important.Count<8)important.Add(key,detail);}
             public void Add(string reason,string detail=null)
             {
                 reasons[reason]=reasons.TryGetValue(reason,out int count)?count+1:1;
@@ -61,8 +68,9 @@ namespace ChooGuard.App.Fps.Emergency
             }
             public string Counts()=>string.Join(",",reasons.Select(p=>p.Key+"="+p.Value));
             public string FirstDetail=>details.Count==0?"":details[0];
-            public string Examples(int count)=>string.Join(" | ",details.Take(count));
-            public override string ToString()=>Counts()+"; "+string.Join(" | ",details);
+            public string Examples(int count)=>string.Join(" | ",details.Take(count))+ImportantDetails();
+            string ImportantDetails()=>"; reasonSpecific={"+string.Join(" | ",important.Select(p=>p.Key+":"+p.Value))+"}";
+            public override string ToString()=>Counts()+"; "+string.Join(" | ",details)+ImportantDetails();
         }
 
         // The coarse cell survey is useful, but is not a connected-component proof.
@@ -122,6 +130,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             string id=draft.Labels[source];
             var binding=points.CurrentBindings.Single(row=>row.Source.Id==id&&row.Bound);
+            ResetExplicitQuery(); // dispose BEFORE callback registers/removes its historical reference
             var batch=requalify(binding); // returns only AFTER historical Nav lease disposal
             if(batch==null||batch.Alternatives==null)throw new InvalidOperationException("Current standing candidate batch is absent");
             var staged=Copy(draft);
@@ -192,9 +201,12 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 int mask=NavMesh.AllAreas&~(1<<StationWorld.ElevatorArea);
                 bool found=NavMesh.CalculatePath(draft.Positions[source],draft.Positions[exit],mask,path);
-                trace.Add("witness-query-"+(found?"true":"false"));trace.Add("witness-status-"+path.status);
-                if(!found||path.status!=NavMeshPathStatus.PathComplete)
-                {trace.Add("witness-incomplete","seed="+exit+":"+draft.Labels[exit]+" status="+path.status+" query="+found+" source="+Exact(draft.Positions[source])+" target="+Exact(draft.Positions[exit]));continue;}
+                var ordinaryStatus=path.status; // explicit short queries reuse path below
+                trace.Add("witness-query-"+(found?"true":"false"));trace.Add("witness-status-"+ordinaryStatus);
+                if(!found||ordinaryStatus!=NavMeshPathStatus.PathComplete)
+                {
+                    if(found&&ordinaryStatus==NavMeshPathStatus.PathPartial&&TryExplicitWitness(draft,points,path,corners,source,exit,trace))return true;
+                    trace.Add("witness-incomplete","seed="+exit+":"+draft.Labels[exit]+" status="+ordinaryStatus+" query="+found+" source="+Exact(draft.Positions[source])+" target="+Exact(draft.Positions[exit]));continue;}
                 int count=path.GetCornersNonAlloc(corners);
                 if(count<2||count>=corners.Length){trace.Add("witness-empty-or-truncated","seed="+exit+":"+draft.Labels[exit]+" corners="+count);continue;}
                 // Every subsequent native call reuses the same path/buffer. Keep the
@@ -217,10 +229,42 @@ namespace ChooGuard.App.Fps.Emergency
                     else complete=AppendGround(staged,points,path,corners,ref current,witness[segment],-1,trace);
                 }
                 if(complete)complete=AppendGround(staged,points,path,corners,ref current,staged.Positions[exit],exit,trace);
-                if(!complete)continue;
+                if(!complete)
+                {
+                    // The well-formed ordinary curve was rejected, never waived.
+                    // A second same-endpoint corridor must independently certify
+                    // every short ground segment and exact directed owner arc.
+                    trace.Add("explicit-after-complete-materialization-rejection");
+                    if(TryExplicitWitness(draft,points,path,corners,source,exit,trace))return true;
+                    continue;
+                }
                 Commit(draft,staged);return true;
             }
             return false;
+        }
+
+        bool TryExplicitWitness(Draft draft,StationPoints points,NavMeshPath path,Vector3[] corners,int source,int target,AttachmentTrace trace)
+        {
+            explicitQuery??=new CurrentNativePathQuery();
+            int mask=NavMesh.AllAreas&~(1<<StationWorld.ElevatorArea);
+            if(!explicitQuery.TryCorridor(draft.Positions[source],draft.Positions[target],CurrentStationNavigation.CurrentSourceSettings().agentTypeID,mask,
+                out var steps,out string evidence))
+            {trace.Add("explicit-corridor-rejected");trace.Important("explicit-first-rejection",evidence);return false;}
+            trace.Add("explicit-complete-corridor");trace.Important("explicit-first-complete",evidence);
+            var staged=Copy(draft);int current=source;
+            foreach(var step in steps)
+            {
+                if(step.OffMesh)
+                {
+                    if(!TryWitnessSeam(staged,points,step.From,step.To,out int a,out int b,out bool known,out string reason)||!known)
+                    {trace.Add("explicit-unknown-or-unavailable-owner");trace.Important("explicit-owner-rejection",reason+" from="+Exact(step.From)+" to="+Exact(step.To));return false;}
+                    if(!AppendGround(staged,points,path,corners,ref current,staged.Positions[a],a,trace))return false;
+                    current=b; // exact existing directed typed arc, never native adjacency alone
+                }
+                else if(!AppendGround(staged,points,path,corners,ref current,step.To,-1,trace))return false;
+            }
+            if(!AppendGround(staged,points,path,corners,ref current,staged.Positions[target],target,trace))return false;
+            Commit(draft,staged);trace.Add("explicit-certified-short-chain");return true;
         }
 
         // Every known seam is represented by its already registered exact owner
@@ -268,7 +312,7 @@ namespace ChooGuard.App.Fps.Emergency
                 if(!Finite(position)||!NavMesh.SamplePosition(position,out _, .6f,NavMesh.AllAreas))
                 {trace.Add("witness-corner-off-nav");return false;}
                 if(next==staged.Positions.Count){staged.Positions.Add(position);staged.Labels.Add("");}
-                if(!GroundEdge(staged.Positions[current],staged.Positions[next],points,path,corners,out float length,out string reason))
+                if(!GroundEdge(staged.Positions[current],staged.Positions[next],points,path,corners,out float length,out string reason,trace))
                 {trace.Add(reason,"from="+Exact(staged.Positions[current])+" to="+Exact(staged.Positions[next]));return false;}
                 staged.Edges.Add((current,next,length,""));
                 // Reverse is independently queried/costed. Failure grants no reverse.
@@ -278,7 +322,7 @@ namespace ChooGuard.App.Fps.Emergency
             return true;
         }
 
-        bool GroundEdge(Vector3 from,Vector3 to,StationPoints points,NavMeshPath path,Vector3[] corners,out float length,out string reason)
+        bool GroundEdge(Vector3 from,Vector3 to,StationPoints points,NavMeshPath path,Vector3[] corners,out float length,out string reason,AttachmentTrace trace=null)
         {
             length=0;reason="";
             if(Vector3.Distance(from,to)>Reach){reason="witness-edge-reach";return false;}
@@ -294,8 +338,14 @@ namespace ChooGuard.App.Fps.Emergency
                 // A complete native path can traverse off-mesh links. A generic
                 // ground arc additionally needs uninterrupted walk polygons; true
                 // (including an outer edge/mask zero) is never waived or snapped.
-                if(NavMesh.Raycast(corners[i-1],corners[i],out _,NavMesh.AllAreas&~(1<<StationWorld.ElevatorArea)))
-                {reason="witness-ground-boundary-or-unknown-link";return false;}
+                if(NavMesh.Raycast(corners[i-1],corners[i],out var boundary,NavMesh.AllAreas&~(1<<StationWorld.ElevatorArea)))
+                {
+                    trace?.Important("first-ground-boundary","segment="+Exact(corners[i-1])+"->"+Exact(corners[i])+
+                        "; edgeInput="+Exact(from)+"->"+Exact(to)+"; mask="+boundary.mask+"; hit="+Exact(boundary.position)+
+                        "; normal="+Exact(boundary.normal)+"; distance="+boundary.distance.ToString("R",CultureInfo.InvariantCulture)+
+                        "; typedOwner=NONE_CONFIRMED_GENERIC_GROUND; trueCastRemainsHard=true");
+                    reason="witness-ground-boundary-or-unknown-link";return false;
+                }
             }
             return true;
         }
