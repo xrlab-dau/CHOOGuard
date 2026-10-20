@@ -23,6 +23,10 @@ namespace ChooGuard.App.Fps.Emergency
         readonly Dictionary<string,List<Transform>> paths=new Dictionary<string,List<Transform>>(StringComparer.Ordinal);
         readonly List<string> physicalReport=new List<string>();
         List<NavMeshBuildSource> collectedSources;
+        CurrentWalkingSourceIdentity[] capturedWalkingSources;
+        CurrentWalkingActualIdentity[] capturedActualWalkingSources;
+        NavMeshBuildSource[] originalWalkingNativeSources;
+        bool[] originalWalkingNativeHadOwners;
         NavMeshBuildSettings collectedSettings;
         WalkingMachineBox[] boundWalkingMachines;
         NavMeshDataInstance instance;
@@ -244,6 +248,11 @@ namespace ChooGuard.App.Fps.Emergency
                 var sources=StationNavigationRecipe.Collect(scene,bounds,train,namedBelts,lanes,true);
                 if(sources.Count==0)throw new InvalidOperationException("No actual current navigation sources");
                 collectedSources=sources;collectedSettings=CurrentSourceSettings();
+                capturedWalkingSources=CaptureCurrentWalkingSources(sources);
+                capturedActualWalkingSources=scene.GetRootGameObjects().SelectMany(root=>root.GetComponentsInChildren<Collider>(true))
+                    .Select(collider=>new CurrentWalkingActualIdentity(collider,StationNavigationRecipe.Excluded(collider,train,namedBelts))).ToArray();
+                originalWalkingNativeSources=sources.ToArray();
+                originalWalkingNativeHadOwners=sources.Select(source=>source.component!=null).ToArray();
                 Data=NavMeshBuilder.BuildNavMeshData(collectedSettings,sources,bounds,Vector3.zero,Quaternion.identity);
                 if(Data==null)throw new InvalidOperationException("Current physical source navigation build failed");
                 instance=NavMesh.AddNavMeshData(Data);
@@ -437,13 +446,234 @@ namespace ChooGuard.App.Fps.Emergency
             {StaticCurrentSource=staticCurrentSource;}
         }
 
+        internal sealed class CurrentWalkingSourceIdentity
+        {
+            internal readonly int CollectedIndex;
+            internal readonly NavMeshBuildSource NativeDescriptor;
+            internal readonly MeshCollider Collider;
+            internal readonly Mesh SharedMesh;
+            internal readonly Matrix4x4 ActualWorldMatrix;
+            internal readonly bool Enabled,Active,Trigger,Convex,Actor,HadAttachedRigidbody;
+            internal readonly Rigidbody AttachedRigidbody;
+            internal CurrentWalkingSourceIdentity(int index,NavMeshBuildSource source,MeshCollider collider)
+            {
+                CollectedIndex=index;NativeDescriptor=source;Collider=collider;SharedMesh=collider.sharedMesh;
+                ActualWorldMatrix=collider.transform.localToWorldMatrix;Enabled=collider.enabled;
+                Active=collider.gameObject.activeInHierarchy;Trigger=collider.isTrigger;Convex=collider.convex;Actor=WalkingActor(collider);
+                AttachedRigidbody=collider.attachedRigidbody;HadAttachedRigidbody=AttachedRigidbody!=null;
+            }
+        }
+
+        internal static CurrentWalkingSourceIdentity[] CaptureCurrentWalkingSources(IReadOnlyList<NavMeshBuildSource> sources)
+        {
+            // Capture the ACTUAL collider state in the same synchronous collect/build
+            // transaction. Native shape transforms are a separate representation;
+            // no API promises float-equality with Transform.localToWorldMatrix.
+            // Null native component metadata cannot acquire a guessed collider owner.
+            var result=new List<CurrentWalkingSourceIdentity>();
+            for(int i=0;i<sources.Count;i++)if(sources[i].component is MeshCollider collider)
+                result.Add(new CurrentWalkingSourceIdentity(i,sources[i],collider));
+            return result.ToArray();
+        }
+
+        static bool WalkingMatrixFinite(Matrix4x4 matrix)=>Enumerable.Range(0,16).All(i=>
+            !float.IsNaN(matrix[i])&&!float.IsInfinity(matrix[i]));
+
+        static bool WalkingNativeDescriptorEligible(CurrentWalkingSourceIdentity source,Collider collider)
+        {
+            var native=source.NativeDescriptor;
+            return source.Collider==collider&&source.SharedMesh!=null&&native.component==collider&&
+                native.shape==NavMeshBuildSourceShape.Mesh&&native.sourceObject==source.SharedMesh&&
+                WalkingMatrixFinite(native.transform)&&WalkingMatrixFinite(source.ActualWorldMatrix)&&
+                !float.IsNaN(native.size.x)&&!float.IsInfinity(native.size.x)&&
+                !float.IsNaN(native.size.y)&&!float.IsInfinity(native.size.y)&&
+                !float.IsNaN(native.size.z)&&!float.IsInfinity(native.size.z);
+        }
+
+        static bool WalkingCapturedStateEligible(CurrentWalkingSourceIdentity source)=>source.Enabled&&source.Active&&
+            !source.Trigger&&!source.Convex&&!source.Actor&&!source.HadAttachedRigidbody;
+
+        internal sealed class CurrentWalkingActualIdentity
+        {
+            internal readonly Collider Collider;
+            internal readonly Mesh SharedMesh;
+            internal readonly Matrix4x4 ActualWorldMatrix;
+            internal readonly Transform[] Ancestors;
+            internal readonly bool Enabled,Active,Trigger,Convex,Actor,HadAttachedRigidbody,Excluded;
+            internal CurrentWalkingActualIdentity(Collider collider,bool excluded)
+            {
+                Collider=collider;SharedMesh=(collider as MeshCollider)?.sharedMesh;ActualWorldMatrix=collider.transform.localToWorldMatrix;
+                Enabled=collider.enabled;Active=collider.gameObject.activeInHierarchy;Trigger=collider.isTrigger;
+                Convex=collider is MeshCollider mesh&&mesh.convex;Actor=WalkingActor(collider);
+                HadAttachedRigidbody=collider.attachedRigidbody!=null;Excluded=excluded;
+                var ancestors=new List<Transform>();for(var t=collider.transform;t!=null;t=t.parent)ancestors.Add(t);Ancestors=ancestors.ToArray();
+            }
+        }
+
+        static bool WalkingActualSnapshotEligible(CurrentWalkingActualIdentity source)=>source.Enabled&&source.Active&&!source.Trigger&&
+            !source.Convex&&!source.Actor&&!source.HadAttachedRigidbody&&!source.Excluded&&source.SharedMesh!=null&&WalkingMatrixFinite(source.ActualWorldMatrix);
+
+        internal static bool WalkingNativeAffinityEqual(NavMeshBuildSource original,NavMeshBuildSource scoped,Collider target)
+        {
+            // The ORIGINAL descriptor and every private native field remain intact.
+            // Normalize only the optional owner of a COPY of the scoped descriptor.
+            if(original.component!=null||scoped.component!=null&&scoped.component!=target)return false;
+            scoped.component=null;
+            return original.Equals(scoped);
+        }
+
+        bool TryNullOwnerWalkingAffinity(Collider collider,out string evidence)
+        {
+            evidence="NOT_RUN";
+            try
+            {
+                if(collider==null||collider.gameObject.scene!=scene||!(collider is MeshCollider mesh)||mesh.sharedMesh==null||
+                    !collider.enabled||!collider.gameObject.activeInHierarchy||collider.isTrigger||mesh.convex||
+                    collider.attachedRigidbody!=null||WalkingActor(collider)||StationNavigationRecipe.Excluded(collider,trainSource,namedBeltsSource))
+                {evidence="CURRENT_TARGET_NOT_ELIGIBLE; no scoped query";return false;}
+                if(capturedActualWalkingSources==null||originalWalkingNativeSources==null||originalWalkingNativeHadOwners==null||
+                    originalWalkingNativeHadOwners.Length!=originalWalkingNativeSources.Length)
+                {evidence="ORIGINAL_COLLECT_BUILD_SNAPSHOTS_MISSING; no scoped query";return false;}
+                if(capturedWalkingSources!=null&&capturedWalkingSources.Any(row=>row.Collider==collider))
+                {evidence="ORIGINAL_NATIVE_OWNER_WAS_KNOWN_BUT_DIRECT_CAPTURE_FAILED; no null-owner reinterpretation/scoped query";return false;}
+                var own=capturedActualWalkingSources.Where(row=>row.Collider==collider).ToArray();
+                if(own.Length!=1||!WalkingActualSnapshotEligible(own[0])||own[0].SharedMesh!=mesh.sharedMesh||
+                    !Enumerable.Range(0,16).All(i=>own[0].ActualWorldMatrix[i]==collider.transform.localToWorldMatrix[i]))
+                {evidence="ORIGINAL_ACTUAL_TARGET_NOT_UNIQUE_ELIGIBLE_UNCHANGED; snapshotCount="+own.Length+"; no scoped query";return false;}
+                var owner=own[0];
+                int actualOwners=capturedActualWalkingSources.Count(row=>WalkingActualSnapshotEligible(row)&&row.SharedMesh==owner.SharedMesh&&
+                    Enumerable.Range(0,16).All(i=>row.ActualWorldMatrix[i]==owner.ActualWorldMatrix[i]));
+                var originalSubtree=capturedActualWalkingSources.Where(row=>row.Enabled&&row.Active&&!row.Trigger&&!row.Excluded&&
+                    row.Ancestors.Contains(collider.transform)).ToArray();
+                var liveSubtree=collider.GetComponentsInChildren<Collider>(true).Where(row=>row.enabled&&row.gameObject.activeInHierarchy&&
+                    !StationNavigationRecipe.Excluded(row,trainSource,namedBeltsSource)).ToArray();
+                if(actualOwners!=1||originalSubtree.Length!=1||originalSubtree[0].Collider!=collider||liveSubtree.Length!=1||liveSubtree[0]!=collider)
+                {evidence="AMBIGUOUS_ACTUAL_OWNER_OR_SUBTREE; originalEquivalentOwners="+actualOwners+"; originalEligibleSubtree="+
+                    originalSubtree.Length+"; liveEligibleSubtree="+liveSubtree.Length+"; no scoped query";return false;}
+                var scoped=new List<NavMeshBuildSource>();
+                NavMeshBuilder.CollectSources(collider.transform,~0,NavMeshCollectGeometry.PhysicsColliders,0,new List<NavMeshBuildMarkup>(),scoped);
+                evidence="failure-only exact-target PhysicsColliders native affinity; scopedCount="+scoped.Count+"; originalEquivalentOwners="+actualOwners+
+                    "; originalEligibleSubtree="+originalSubtree.Length+"; liveEligibleSubtree="+liveSubtree.Length+"; scoped={"+
+                    string.Join(" || ",scoped.Select(row=>"component={"+WalkingComponentIdentity(row.component)+"}; object={"+WalkingObjectIdentity(row.sourceObject)+
+                        "}; shape="+row.shape+"; area="+row.area+"; generateLinks="+row.generateLinks+"; size="+ProbePosition(row.size)+"; nativeMatrix="+ProbeMatrix(row.transform)))+"}";
+                if(scoped.Count!=1)return false;
+                var candidate=scoped[0];
+                if(candidate.shape!=NavMeshBuildSourceShape.Mesh||candidate.sourceObject!=owner.SharedMesh||
+                    !WalkingMatrixFinite(candidate.transform)||Enumerable.Range(0,3).Any(i=>float.IsNaN(candidate.size[i])||float.IsInfinity(candidate.size[i]))||
+                    candidate.component!=null&&candidate.component!=collider)
+                {evidence+="; SCOPED_DESCRIPTOR_NOT_ADMISSIBLE";return false;}
+                var matches=originalWalkingNativeSources.Select((row,index)=>(row,index)).Where(item=>
+                    !originalWalkingNativeHadOwners[item.index]&&item.row.shape==NavMeshBuildSourceShape.Mesh&&item.row.sourceObject==owner.SharedMesh&&
+                    WalkingNativeAffinityEqual(item.row,candidate,collider)).ToArray();
+                evidence+="; exactOriginalDataDescriptorMatches="+matches.Length+"; originalIndices="+string.Join(",",matches.Select(item=>item.index))+
+                    "; exact full native struct equality covers all private flags; only scoped COPY optional component normalized; original never rewritten";
+                return matches.Length==1;
+            }
+            catch(Exception cause) when(!(cause is OutOfMemoryException))
+            {evidence+="; API_OR_METADATA_ERROR="+cause.GetType().FullName+":"+cause.Message+"; UNKNOWN_UNQUALIFIED";return false;}
+        }
+
         bool IsCurrentStaticWalkingBlocker(Collider collider)
         {
             if(collider==null||collider.gameObject.scene!=scene||!collider.enabled||!collider.gameObject.activeInHierarchy||
-                collider.attachedRigidbody!=null||WalkingActor(collider)||!(collider is MeshCollider mesh)||mesh.sharedMesh==null||mesh.convex)return false;
+                collider.isTrigger||collider.attachedRigidbody!=null||WalkingActor(collider)||!(collider is MeshCollider mesh)||mesh.sharedMesh==null||mesh.convex)return false;
             var matrix=collider.transform.localToWorldMatrix;
-            return collectedSources!=null&&collectedSources.Any(source=>source.component==collider&&source.shape==NavMeshBuildSourceShape.Mesh&&
-                source.sourceObject==mesh.sharedMesh&&Enumerable.Range(0,16).All(i=>source.transform[i]==matrix[i]));
+            return collectedSources!=null&&capturedWalkingSources!=null&&capturedWalkingSources.Any(source=>WalkingNativeDescriptorEligible(source,collider)&&
+                WalkingCapturedStateEligible(source)&&source.SharedMesh==mesh.sharedMesh&&
+                Enumerable.Range(0,16).All(i=>source.ActualWorldMatrix[i]==matrix[i]));
+        }
+
+        static string WalkingObjectIdentity(UnityEngine.Object value)=>value==null?"NULL_OR_DESTROYED":
+            value.GetType().FullName+"/runLocalInstance="+value.GetInstanceID()+"/name="+value.name;
+
+        static string WalkingComponentIdentity(Component value)=>value==null?"NULL_OR_DESTROYED":
+            WalkingObjectIdentity(value)+"/scene="+value.gameObject.scene.path+"/path="+PathOf(value.transform)+
+            "/active="+value.gameObject.activeInHierarchy;
+
+        static string WalkingMatrixDifferences(Matrix4x4 source,Matrix4x4 expected)
+        {
+            var differences=new List<string>();
+            for(int i=0;i<16;i++)if(source[i]!=expected[i])
+                differences.Add(i+":actual="+source[i].ToString("R",System.Globalization.CultureInfo.InvariantCulture)+
+                    "/expected="+expected[i].ToString("R",System.Globalization.CultureInfo.InvariantCulture)+
+                    "/actualBits="+BitConverter.ToString(BitConverter.GetBytes(source[i]))+
+                    "/expectedBits="+BitConverter.ToString(BitConverter.GetBytes(expected[i])));
+            return differences.Count==0?"NONE_EXACT_FLOAT_EQUAL":string.Join(" | ",differences);
+        }
+
+        string DescribeCurrentStaticWalkingBlocker(Collider collider)
+        {
+            // Failure-only evidence. Native descriptor-vs-actual matrices are
+            // observed independently; actual-vs-captured equality stays exact.
+            if(collider==null)return "staticSourceCriterion=NULL_COLLIDER; refit remains NOT_RUN";
+            var mesh=collider as MeshCollider;var expected=collider.transform.localToWorldMatrix;
+            var sources=collectedSources??new List<NavMeshBuildSource>();
+            var component=sources.Where(source=>source.component==collider).ToArray();
+            var shape=component.Where(source=>source.shape==NavMeshBuildSourceShape.Mesh).ToArray();
+            var geometry=shape.Where(source=>mesh!=null&&source.sourceObject==mesh.sharedMesh).ToArray();
+            var exact=geometry.Where(source=>Enumerable.Range(0,16).All(i=>source.transform[i]==expected[i])).ToArray();
+            var reasons=new List<string>();
+            if(collider.gameObject.scene!=scene)reasons.Add("FOREIGN_SCENE");
+            if(!collider.enabled)reasons.Add("COLLIDER_DISABLED");
+            if(!collider.gameObject.activeInHierarchy)reasons.Add("OBJECT_INACTIVE");
+            if(collider.isTrigger)reasons.Add("TRIGGER_COLLIDER");
+            if(collider.attachedRigidbody!=null)reasons.Add("ATTACHED_RIGIDBODY");
+            if(WalkingActor(collider))reasons.Add("PERSON_BODY_ACTOR");
+            if(mesh==null)reasons.Add("NOT_MESH_COLLIDER");
+            else{if(mesh.sharedMesh==null)reasons.Add("MISSING_SHARED_MESH");if(mesh.convex)reasons.Add("CONVEX_COLLIDER");}
+            if(collectedSources==null)reasons.Add("COLLECTED_SOURCES_NULL");
+            if(component.Length==0)reasons.Add("NO_EXACT_COMPONENT_DESCRIPTOR");
+            else if(shape.Length==0)reasons.Add("NO_EXACT_COMPONENT_MESH_SHAPE_DESCRIPTOR");
+            else if(geometry.Length==0)reasons.Add("NO_EXACT_COMPONENT_SHAPE_SHARED_MESH_DESCRIPTOR");
+            var captures=(capturedWalkingSources??Array.Empty<CurrentWalkingSourceIdentity>()).Where(source=>source.Collider==collider).ToArray();
+            int eligibleCaptures=captures.Count(source=>WalkingNativeDescriptorEligible(source,collider)&&WalkingCapturedStateEligible(source)&&
+                mesh!=null&&source.SharedMesh==mesh.sharedMesh&&Enumerable.Range(0,16).All(i=>source.ActualWorldMatrix[i]==expected[i]));
+            if(capturedWalkingSources==null)reasons.Add("COLLECT_BUILD_CAPTURE_NULL");
+            if(captures.Length==0)reasons.Add("NO_CAPTURED_EXACT_COLLIDER_IDENTITY");
+            else
+            {
+                if(eligibleCaptures==0)reasons.Add("NO_SINGLE_CAPTURE_SATISFIES_ALL_IDENTITY_STATIC_UNCHANGED_CRITERIA");
+                if(!captures.Any(source=>WalkingNativeDescriptorEligible(source,collider)))reasons.Add("CAPTURED_NATIVE_IDENTITY_OR_FINITE_DESCRIPTOR_FAILED");
+                if(!captures.Any(WalkingCapturedStateEligible))reasons.Add("CAPTURED_STATIC_FLAGS_FAILED");
+                if(!captures.Any(source=>source.SharedMesh==mesh.sharedMesh&&Enumerable.Range(0,16).All(i=>source.ActualWorldMatrix[i]==expected[i])))
+                    reasons.Add("ACTUAL_MESH_OR_FULL_MATRIX_CHANGED_SINCE_COLLECT_BUILD");
+            }
+            var capturedDetails=captures.Select(source=>"collectedIndex="+source.CollectedIndex+"; capturedMesh={"+WalkingObjectIdentity(source.SharedMesh)+
+                "}; capturedActualMatrix="+ProbeMatrix(source.ActualWorldMatrix)+"; CURRENT_VS_CAPTURED_ACTUAL_DIFFERENCES={"+
+                WalkingMatrixDifferences(expected,source.ActualWorldMatrix)+"}; capturedEnabled="+source.Enabled+"; capturedActive="+source.Active+
+                "; capturedTrigger="+source.Trigger+"; capturedConvex="+source.Convex+"; capturedActor="+source.Actor+"; capturedHadAttachedRigidbody="+source.HadAttachedRigidbody+
+                "; capturedRigidbody={"+WalkingComponentIdentity(source.AttachedRigidbody)+
+                "}; capturedNativeEligible="+WalkingNativeDescriptorEligible(source,collider)+"; capturedStaticEligible="+WalkingCapturedStateEligible(source)+
+                "; nativeMatrixFinite="+WalkingMatrixFinite(source.NativeDescriptor.transform)+"; capturedActualMatrixFinite="+WalkingMatrixFinite(source.ActualWorldMatrix)+
+                "; capturedNativeComponent={"+WalkingComponentIdentity(source.NativeDescriptor.component)+"}; capturedNativeObject={"+
+                WalkingObjectIdentity(source.NativeDescriptor.sourceObject)+"}; capturedNativeShape="+source.NativeDescriptor.shape+
+                "; capturedNativeMatrix="+ProbeMatrix(source.NativeDescriptor.transform));
+            var related=new List<string>();
+            for(int i=0;i<sources.Count;i++)
+            {
+                var source=sources[i];bool sameComponent=source.component==collider;
+                bool sameObject=source.component!=null&&source.component.gameObject==collider.gameObject;
+                bool sameMesh=mesh!=null&&mesh.sharedMesh!=null&&source.sourceObject==mesh.sharedMesh;
+                bool sameMatrix=Enumerable.Range(0,16).All(index=>source.transform[index]==expected[index]);
+                if(!sameComponent&&!sameObject&&!sameMesh&&!sameMatrix)continue;
+                related.Add("collectedIndex="+i+"; exactComponent="+sameComponent+"; sameGameObject="+sameObject+
+                    "; ORIGINAL_HAD_NATIVE_OWNER="+(originalWalkingNativeHadOwners==null||i>=originalWalkingNativeHadOwners.Length?"UNKNOWN":originalWalkingNativeHadOwners[i].ToString())+
+                    "; sameSharedMesh="+sameMesh+"; exactMatrix="+sameMatrix+"; shape="+source.shape+"; area="+source.area+
+                    "; component={"+WalkingComponentIdentity(source.component)+"}; sourceObject={"+WalkingObjectIdentity(source.sourceObject)+
+                    "}; size="+ProbePosition(source.size)+"; actualMatrix="+ProbeMatrix(source.transform)+
+                    "; fullMatrixDifferences={"+WalkingMatrixDifferences(source.transform,expected)+"}");
+            }
+            return "staticSourceCriteria={"+(reasons.Count==0?"ALL_EXACT_CRITERIA_TRUE":string.Join(" | ",reasons))+
+                "}; collectBuildIdentityPredicate="+IsCurrentStaticWalkingBlocker(collider)+"; sameScene="+(collider.gameObject.scene==scene)+
+                "; enabled="+collider.enabled+"; active="+collider.gameObject.activeInHierarchy+"; trigger="+collider.isTrigger+"; actor="+WalkingActor(collider)+
+                "; attachedRigidbody={"+WalkingComponentIdentity(collider.attachedRigidbody)+"}; expectedSharedMesh={"+
+                WalkingObjectIdentity(mesh==null?null:mesh.sharedMesh)+"}; expectedFullMatrix="+ProbeMatrix(expected)+
+                "; collectedTotal="+sources.Count+"; exactComponentCount="+component.Length+"; exactComponentMeshShapeCount="+shape.Length+
+                "; exactComponentShapeSharedMeshCount="+geometry.Length+"; nativeVsActualExactMatrixCount_DIAGNOSTIC_ONLY="+exact.Length+
+                "; collectBuildCaptures="+captures.Length+"; fullyEligibleCaptureCount="+eligibleCaptures+"; captures={"+string.Join(" || ",capturedDetails)+"}"+
+                "; ALL related collected descriptors="+related.Count+"; descriptors={"+string.Join(" || ",related)+
+                "}; related means exact component OR same GameObject OR same sharedMesh OR exact full matrix; no metadata/epsilon inference grants refit; "+
+                "qualification requires native exact component/shape/sharedMesh plus finite build descriptor AND unchanged captured actual collider mesh/fullmatrix/static state";
         }
 
         string DescribeWalkingFloorHits(Vector3 feet)
@@ -461,11 +691,18 @@ namespace ChooGuard.App.Fps.Emergency
 
         CurrentWalkingClearanceFailure WalkingBodyFailure(string message,Collider[] blockers,Vector3 from,Vector3 to)
         {
-            bool qualified=blockers.Length!=0&&blockers.All(IsCurrentStaticWalkingBlocker);
-            var details=blockers.Take(8).Select(collider=>ProbeCollider(collider)+"; boundsMin="+ProbePosition(collider.bounds.min)+
+            var resolutions=blockers.Select(collider=>
+            {
+                bool eligible=IsCurrentStaticWalkingBlocker(collider);string affinity="NOT_RUN_DIRECT_EXACT_NATIVE_OWNER_CAPTURE_SUCCEEDED";
+                if(!eligible)eligible=TryNullOwnerWalkingAffinity(collider,out affinity);
+                return (collider,eligible,affinity);
+            }).ToArray();
+            bool qualified=resolutions.Length!=0&&resolutions.All(row=>row.eligible);
+            var details=resolutions.Take(8).Select(row=>{var collider=row.collider;return ProbeCollider(collider)+"; boundsMin="+ProbePosition(collider.bounds.min)+
                 "; boundsMax="+ProbePosition(collider.bounds.max)+"; matrix="+ProbeMatrix(collider.transform.localToWorldMatrix)+
                 (collider is MeshCollider mesh?"; mesh="+(mesh.sharedMesh==null?"NULL":mesh.sharedMesh.name)+"; convex="+mesh.convex:
-                    "; source shape has no qualified static mesh identity"));
+                    "; source shape has no qualified static mesh identity")+"; sourceClassification={"+DescribeCurrentStaticWalkingBlocker(collider)+
+                    "}; nullOwnerAffinity={"+row.affinity+"}; finalSourceEligible="+row.eligible;});
             return new CurrentWalkingClearanceFailure(message+"; allBlockingShapes="+blockers.Length+"; allExactStaticCollectedSource="+qualified+
                 "; bodyRadius="+NativeLandingWalker.Radius+"; bodyHeight="+NativeLandingWalker.Height+"; bottomMargin=.03; from="+ProbePosition(from)+
                 "; to="+ProbePosition(to)+"; blockers={"+string.Join(" | ",details)+"}; omittedBlockers="+Mathf.Max(0,blockers.Length-8)+
@@ -1410,7 +1647,7 @@ namespace ChooGuard.App.Fps.Emergency
             if(instance.valid)instance.Remove();
             if(Data!=null){UnityEngine.Object.Destroy(Data);Data=null;}
             foreach(var support in supports)if(support!=null)UnityEngine.Object.Destroy(support);
-            supports.Clear();collectedSources=null;boundWalkingMachines=null;
+            supports.Clear();collectedSources=null;capturedWalkingSources=null;capturedActualWalkingSources=null;originalWalkingNativeSources=null;originalWalkingNativeHadOwners=null;boundWalkingMachines=null;
         }
     }
     internal sealed class CurrentStationNavigationLifetime : MonoBehaviour
