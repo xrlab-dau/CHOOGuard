@@ -92,6 +92,33 @@ namespace ChooGuard.App.Fps.Emergency
             if(leases==0)Dispose();
         }
 
+        internal static NavMeshBuildSettings CurrentSourceSettings()
+        {
+            // Current saved floors include a physically supported .651834m landing.
+            // Preserve the .28m agent and canonical source/area rules, but resolve
+            // its narrow walkable strip at seven voxels per radius and retain small
+            // regions. Physical qualification and every active point's exit route
+            // remain mandatory; retaining an island never grants connectivity.
+            var settings=StationNavigationRecipe.Settings();
+            settings.minRegionArea=0;
+            settings.overrideVoxelSize=true;settings.voxelSize=.04f;
+            return settings;
+        }
+
+        internal static void WriteCurrentSourceSettings(BinaryWriter writer,NavMeshBuildSettings settings)
+        {
+            // NavMeshBuildSettings exposes properties over private native fields;
+            // JsonUtility is not an exact settings identity. Include every public
+            // build/debug property plus a versioned current-source profile marker.
+            writer.Write("current-source-navigation-seven-voxels-retained-regions-v1");
+            writer.Write(settings.agentTypeID);writer.Write(settings.agentRadius);writer.Write(settings.agentHeight);
+            writer.Write(settings.agentSlope);writer.Write(settings.agentClimb);writer.Write(settings.ledgeDropHeight);
+            writer.Write(settings.maxJumpAcrossDistance);writer.Write(settings.minRegionArea);
+            writer.Write(settings.overrideVoxelSize);writer.Write(settings.voxelSize);
+            writer.Write(settings.overrideTileSize);writer.Write(settings.tileSize);writer.Write(settings.buildHeightMesh);
+            writer.Write(settings.maxJobWorkers);writer.Write(settings.preserveTilesOutsideBounds);writer.Write((int)settings.debug.flags);
+        }
+
         static string SourceKey(Scene scene,StationPoints catalog,IReadOnlyList<EscalatorDriveBinding> bindings)
         {
             if(!scene.IsValid()||!scene.isLoaded)throw new InvalidOperationException("Current station source scene absent");
@@ -109,7 +136,7 @@ namespace ChooGuard.App.Fps.Emergency
             using(var writer=new BinaryWriter(crypto,System.Text.Encoding.UTF8,true))
             {
                 writer.Write(scene.handle);writer.Write(catalog.SourceSha256);
-                writer.Write(JsonUtility.ToJson(StationNavigationRecipe.Settings()));
+                WriteCurrentSourceSettings(writer,CurrentSourceSettings());
                 var witness=Resources.Load<TextAsset>("CurrentStationPointSources");
                 writer.Write(witness==null?"absent":Hash(witness.bytes));
                 var seen=new HashSet<Mesh>();
@@ -213,7 +240,7 @@ namespace ChooGuard.App.Fps.Emergency
                 var lanes=MeasureBoundLanes(catalog,bindings,train);
                 var sources=StationNavigationRecipe.Collect(scene,bounds,train,namedBelts,lanes,true);
                 if(sources.Count==0)throw new InvalidOperationException("No actual current navigation sources");
-                collectedSources=sources;collectedSettings=StationNavigationRecipe.Settings();
+                collectedSources=sources;collectedSettings=CurrentSourceSettings();
                 Data=NavMeshBuilder.BuildNavMeshData(collectedSettings,sources,bounds,Vector3.zero,Quaternion.identity);
                 if(Data==null)throw new InvalidOperationException("Current physical source navigation build failed");
                 instance=NavMesh.AddNavMeshData(Data);

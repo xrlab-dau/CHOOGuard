@@ -67,9 +67,7 @@
     "all_candidate_csharp_inputs_included": true,
     "source_manifest_sha256": "3f738244acd6cc17d980834b74855a28b1fff8e9851b2c06ebf5a516c7e11b01",
     "latest_candidate_inputs": [
-      "Assets/ChooGuard/App/Fps/Emergency/CurrentStationNavigation.cs",
-      "Assets/ChooGuard/App/Fps/Emergency/StationPoints.cs",
-      "Assets/ChooGuard/Tests/PlayMode/RouteGraphTests.cs"
+      "Assets/ChooGuard/App/Fps/Emergency/CurrentStationNavigation.cs"
     ]
   },
   "isolated_checks": {
@@ -104,6 +102,11 @@
       "checks": 2719,
       "status": "PASS",
       "scope": "Exact extracted production methods in isolated System DTOs; no Unity/game DLL execution."
+    },
+    "current_source_profile_and_exact_settings_identity": {
+      "checks": 60,
+      "status": "PASS",
+      "scope": "Exact extracted production profile/settings writer in isolated System DTOs; all16 settings/debug properties affect fingerprint; no Unity/game DLL execution."
     }
   },
   "navigation_saved_solid_sources": {
@@ -131,7 +134,6 @@
     "mode": "OWNED_RUNTIME_DERIVATIVE_FROM_CURRENT_SAVED_PHYSICS_SOURCES",
     "original_navmesh_asset_unchanged": true,
     "original_routes_json_unchanged": true,
-    "canonical_geometry_settings_area_modifiers_and_editor_guards_preserved": true,
     "source_point_records": 1449,
     "source_non_exit_records": 1445,
     "source_exit_records": 4,
@@ -145,7 +147,38 @@
     "reuse": "Exact same loaded source scene, collider mesh buffers/poses/settings and bound lane source identity only; owned data released on source scene unload",
     "scope": "MODEL computed walkability, not field-measured as-built classification",
     "bound_lane_measurement": "Exact indexed original tread triangles at captured observed origins and current fixed source rotation/scale; no whole-well rediscovery or reconstruction of absent machinery. Modifier extents use actual 369 original source buffers.",
-    "bound_lane_cache_identity": "Original buffer vertices/indices, observed origins, rotation/scale and actual parent world transform enter the same-loaded-scene reuse key."
+    "bound_lane_cache_identity": "Original buffer vertices/indices, observed origins, rotation/scale and actual parent world transform enter the same-loaded-scene reuse key.",
+    "canonical_geometry_area_modifiers_and_editor_guards_preserved": true,
+    "legacy_editor_bake_settings_and_original_nav_asset_unchanged": true,
+    "current_source_precision_profile": {
+      "factory": "CurrentStationNavigation.CurrentSourceSettings",
+      "base": "Historical StationNavigationRecipe.Settings copied",
+      "only_value_changes": {
+        "voxelSize": {
+          "old": 0.12,
+          "current": 0.04
+        },
+        "minRegionArea": {
+          "old": 6,
+          "current": 0
+        }
+      },
+      "agent_radius": 0.28,
+      "agent_height": 1.8,
+      "agent_climb": 0.35,
+      "agent_slope_degrees": 36,
+      "coherent_native_builds": 1,
+      "counter_bakes_overlapping_patches_fake_links_or_source_geometry_changes": false,
+      "source_evidence": "Actual .651834m landing leaves .091834m after .28m radius clearance; below the coarse .12m voxel. Actual both-OS floor collection matched but current Nav was absent near two supported source points.",
+      "expected_2d_voxel_work_ratio": 9,
+      "actual_native_runtime_memory_and_connectivity": "UNVERIFIED; final-head remote CI authority"
+    },
+    "actual_settings_cache_identity": {
+      "format": "Versioned BinaryWriter values",
+      "covers": "All16 public build/debug properties",
+      "same_current_profile_factory_used_by_key_and_builder": true,
+      "JsonUtility_settings_serialization_removed": true
+    }
   },
   "source_qualified_escalator_bindings": {
     "catalog_records": 21,
@@ -230,8 +263,8 @@
         "Global registered triangle geometry after old-reference copy disposal",
         "Nearest physical samples, without triangle-source ownership inference"
       ],
-      "settings_counter_bakes_candidate_expansion_or_binding_fallback": false,
-      "unresolved": "Actual wait122/214 navigation cause remains unresolved; source area/width alone is not a native bake verdict."
+      "unresolved": "Latest accuracy profile is pending actual native bake, same-storey binding and every-active-point foot-exit CI. No raw current point is discarded to hide supported Nav missing.",
+      "diagnostic_counter_bakes_candidate_expansion_or_binding_fallback": false
     }
   }
 }
