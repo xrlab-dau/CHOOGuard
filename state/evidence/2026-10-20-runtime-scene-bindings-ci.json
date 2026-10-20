@@ -67,9 +67,7 @@
     "all_candidate_csharp_inputs_included": true,
     "source_manifest_sha256": "3f738244acd6cc17d980834b74855a28b1fff8e9851b2c06ebf5a516c7e11b01",
     "latest_candidate_inputs": [
-      "Assets/ChooGuard/App/Fps/Emergency/CurrentStationNavigation.cs",
-      "Assets/ChooGuard/App/Fps/Emergency/StationWalkingRoute.cs",
-      "Assets/ChooGuard/App/Fps/Emergency/StationWorld.cs"
+      "Assets/ChooGuard/App/Fps/Emergency/CurrentStationNavigation.cs"
     ]
   },
   "isolated_checks": {
@@ -88,6 +86,11 @@
       "old_owner_only_rejected_samples": 16,
       "approved_current_floor_hits": 123,
       "scope": "Exact source methods in isolated System DTOs with recorded saved-triangle ray evidence; no Unity engine execution."
+    },
+    "bounded_point_qualification_diagnostics": {
+      "checks": 109,
+      "status": "PASS",
+      "scope": "System-only exact extracted methods and baseline differential replay; no Unity engine execution."
     }
   },
   "navigation_saved_solid_sources": {
@@ -162,5 +165,21 @@
     "legacy_public_policy": "Unchanged",
     "source_geometry_created_moved_removed": false,
     "native_final_head_ci_verdict": "PENDING"
+  },
+  "current_point_qualification_diagnostics": {
+    "scope": "Diagnostics only; actual physical point binding failure remains unresolved.",
+    "failure_limit": 8,
+    "remaining_rows": "Explicitly NOT_RUN if bounded prefix stops early",
+    "reported_context": [
+      "source index/id/kind/zone/pose/disposition",
+      "floor ray/slope/height/spread",
+      "standing capsule blocker identity",
+      "Nav sample/same-storey/corroboration"
+    ],
+    "floor_clearance_nav_acceptance_and_candidate_search": "Unchanged",
+    "binding_decision_and_absence_witnesses": "Unchanged",
+    "partial_runtime_view_or_graph_on_any_failure": false,
+    "source_geometry_or_point_records_changed": false,
+    "native_final_head_ci_verdict": "PENDING_DIAGNOSTIC_EXECUTION"
   }
 }
