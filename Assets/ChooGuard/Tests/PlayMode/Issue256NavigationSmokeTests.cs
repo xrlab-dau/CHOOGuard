@@ -317,10 +317,11 @@ namespace ChooGuard.Tests.PlayMode
 
             // 다른 알려진 위험 안쪽에서 출발해도 길은 있다: 이미 들어와 있는 자리에서 나가는 길이 길이다.
             var platform = world.Points.Of(PointKind.PlatformWait)[0].Position;
+            var start = StationWorld.OnNavMesh(platform, 2f);
+            Assert.That(guide.Plan(start, target, route), Is.EqualTo(GuideRoute.Outcome.Route), "precondition: the same start and target must have a route before adding the other known hazard");
             var other = Fire(shift, "other", platform, .6f);
             other.SpreadSmoke(10f);
             guide.Hazards.Add(other);
-            var start = StationWorld.OnNavMesh(platform, 2f);
             Assert.That(other.Blocks(start), Is.True, "precondition: the staff member stands in the other hazard's danger");
             Assert.That(guide.Plan(start, target, route), Is.EqualTo(GuideRoute.Outcome.Route), "being inside one known hazard must not make the way to another vanish");
             Assert.That(route.Count, Is.GreaterThanOrEqualTo(2));

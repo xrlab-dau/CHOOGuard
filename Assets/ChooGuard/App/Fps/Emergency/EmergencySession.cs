@@ -168,6 +168,32 @@ namespace ChooGuard.App.Fps.Emergency
             StartWorld();
         }
 
+        // The station player survives an additive shift restart. Its avoidance
+        // capsule belongs to that player lifetime, not each EmergencySession.
+        // Reuse only an unchanged compatible capsule; never overwrite a foreign
+        // obstacle or hide an AddComponent failure.
+        internal static UnityEngine.AI.NavMeshObstacle EnsurePlayerObstacle(GameObject player)
+        {
+            if (player == null) throw new ArgumentNullException(nameof(player));
+            var obstacle = player.GetComponent<UnityEngine.AI.NavMeshObstacle>();
+            if (obstacle == null)
+            {
+                obstacle = player.AddComponent<UnityEngine.AI.NavMeshObstacle>();
+                if (obstacle == null || obstacle.gameObject != player)
+                    throw new InvalidOperationException("The station player's avoidance obstacle could not be added");
+                obstacle.shape = UnityEngine.AI.NavMeshObstacleShape.Capsule;
+                obstacle.radius = .3f;
+                obstacle.height = 1.8f;
+                obstacle.center = new Vector3(0, .9f, 0);
+                obstacle.carving = false;
+            }
+            if (obstacle.gameObject != player || !obstacle.enabled ||
+                obstacle.shape != UnityEngine.AI.NavMeshObstacleShape.Capsule || obstacle.radius != .3f ||
+                obstacle.height != 1.8f || !obstacle.center.Equals(new Vector3(0, .9f, 0)) || obstacle.carving)
+                throw new InvalidOperationException("The station player has an incompatible avoidance obstacle");
+            return obstacle;
+        }
+
         private void StartWorld()
         {
             if (Art == null) { Debug.LogError("[EmergencySession] EmergencyArt 가 연결되지 않았습니다. ChooGuard/Emergency/Build session scene and title 을 실행하세요.", this); return; }
@@ -192,12 +218,7 @@ namespace ChooGuard.App.Fps.Emergency
             Jev = new JevClient(System.IO.Path.Combine(logFolder, "jev-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss") + ".jsonl"));
             StartCoroutine(Jev.Warm());
             // 승객이 역무원을 사람으로 피해 가도록 한다(길찾기 장애물, 길을 깎지는 않는다).
-            var obstacle = Player.gameObject.AddComponent<UnityEngine.AI.NavMeshObstacle>();
-            obstacle.shape = UnityEngine.AI.NavMeshObstacleShape.Capsule;
-            obstacle.radius = .3f;
-            obstacle.height = 1.8f;
-            obstacle.center = new Vector3(0, .9f, 0);
-            obstacle.carving = false;
+            EnsurePlayerObstacle(Player.gameObject);
             Hands = gameObject.AddComponent<StaffHands>();
             Hands.Setup(this, Art);
             Incidents = gameObject.AddComponent<IncidentDirector>();

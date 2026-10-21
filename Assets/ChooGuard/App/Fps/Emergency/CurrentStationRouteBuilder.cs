@@ -32,6 +32,7 @@ namespace ChooGuard.App.Fps.Emergency
             IReadOnlyList<StationWalkingRoute> walking,TextAsset original,out StationPoints active,
             Func<StationPoints.CurrentBinding,StationPoints.CurrentRequalificationBatch> requalify=null)
         {
+            var duration=System.Diagnostics.Stopwatch.StartNew();
             active=null;current.RequireCurrentModelOrigin();
             var points=current.RoutingView(supplied,elevators);
             using(var builder=new CurrentStationRouteBuilder(walking,supplied))
@@ -83,6 +84,8 @@ namespace ChooGuard.App.Fps.Emergency
             // all precede the existing validate-all/assignment-only pose commit.
             current.CommitCurrentRequalifications(requalifications);
             active=prospective;
+            Debug.Log("CG_CURRENT_NAV_PHASE phase=current-graph; ms="+duration.ElapsedMilliseconds+"; physical="+current.All.Count+
+                "; active="+prospective.All.Count+"; pending="+pending.Count);
             return graph;
             }
         }

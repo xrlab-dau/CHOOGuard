@@ -72,6 +72,10 @@ namespace ChooGuard.Tests.PlayMode
 
         private IEnumerator RestartShiftForIndependentOrigin()
         {
+            var samePlayer = shift.Player;
+            var sameObstacle = samePlayer.GetComponent<UnityEngine.AI.NavMeshObstacle>();
+            Assert.That(sameObstacle, Is.Not.Null, "A started shift must have its player's avoidance capsule");
+            Assert.That(samePlayer.GetComponents<UnityEngine.AI.NavMeshObstacle>(), Has.Length.EqualTo(1));
             var sameClient = client;
             var sameBudget = budget;
             var sameConnection = connection;
@@ -86,6 +90,16 @@ namespace ChooGuard.Tests.PlayMode
             yield return SceneManager.UnloadSceneAsync(emergency);
             Assert.That(EmergencySession.Current, Is.Null, "The prior incident's shift must actually end before another origin is listed.");
             yield return LoadFreshShift();
+            Assert.That(shift.Player, Is.SameAs(samePlayer), "An additive restart retains the station player");
+            Assert.That(shift.Player.GetComponent<UnityEngine.AI.NavMeshObstacle>(), Is.SameAs(sameObstacle),
+                "Starting another shift must reuse the same player-lifetime obstacle");
+            Assert.That(shift.Player.GetComponents<UnityEngine.AI.NavMeshObstacle>(), Has.Length.EqualTo(1));
+            Assert.That(sameObstacle.enabled, Is.True);
+            Assert.That(sameObstacle.shape, Is.EqualTo(UnityEngine.AI.NavMeshObstacleShape.Capsule));
+            Assert.That(sameObstacle.radius, Is.EqualTo(.3f));
+            Assert.That(sameObstacle.height, Is.EqualTo(1.8f));
+            Assert.That(sameObstacle.center, Is.EqualTo(new Vector3(0, .9f, 0)));
+            Assert.That(sameObstacle.carving, Is.False);
             Set(director, "jev", client);
             Assert.That(director.Stage, Is.EqualTo(IncidentDirector.Phase.Calm));
             Assert.That(client, Is.SameAs(sameClient));

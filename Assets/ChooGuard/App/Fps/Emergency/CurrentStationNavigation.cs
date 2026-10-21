@@ -41,56 +41,54 @@ namespace ChooGuard.App.Fps.Emergency
         sealed class SceneLease
         {
             public int Handle;
-            public string Key;
             public CurrentStationNavigation Navigation;
             public CurrentStationNavigationLifetime Lifetime;
         }
         static readonly Dictionary<int,SceneLease> sameScene=new Dictionary<int,SceneLease>();
         SceneLease cachedLease;
         int leases=1;
-        bool sourceSceneRetired;
         internal static CurrentStationNavigation Acquire(StationPoints catalog,IReadOnlyList<EscalatorDriveBinding> bindings)
         {
             var scene=SceneManager.GetSceneByPath(StationPath);
-            string key=SourceKey(scene,catalog,bindings);
-            if(key!=null&&sameScene.TryGetValue(scene.handle,out var prior))
+            if(!scene.IsValid()||!scene.isLoaded)throw new InvalidOperationException("Current station source scene absent");
+            // Only one App current-world registration may be live, including a
+            // retired source scene whose owning World has not released its lease.
+            if(sameScene.Values.Any(entry=>entry.Navigation.leases!=0))
+                throw new InvalidOperationException("A current station navigation lease is already active");
+            if(sameScene.TryGetValue(scene.handle,out var prior))
             {
                 if(prior.Navigation.leases!=0)throw new InvalidOperationException("A current station navigation lease is already active");
-                if(prior.Key==key&&prior.Lifetime!=null&&prior.Navigation.Data!=null)
-                {
-                    prior.Navigation.instance=NavMesh.AddNavMeshData(prior.Navigation.Data);
-                    if(!prior.Navigation.instance.valid)throw new InvalidOperationException("Current source navigation re-registration failed");
-                    prior.Navigation.leases=1;return prior.Navigation;
-                }
                 prior.Navigation.Dispose();
-                if(prior.Lifetime!=null)UnityEngine.Object.Destroy(prior.Lifetime.gameObject);
-                sameScene.Remove(scene.handle);
             }
+            // Contexts and all source/provenance/physical/role queries are fresh.
+            // Only immutable self-contained native bake data can be memoized below.
             var navigation=new CurrentStationNavigation(catalog,bindings);
-            if(key!=null)
+            GameObject owner=null;
+            try
             {
-                var owner=new GameObject("Current station navigation lifetime");
+                owner=new GameObject("Current station navigation lifetime");
                 SceneManager.MoveGameObjectToScene(owner,scene);
                 var lifetime=owner.AddComponent<CurrentStationNavigationLifetime>();
-                var lease=new SceneLease{Handle=scene.handle,Key=key,Navigation=navigation,Lifetime=lifetime};
+                var lease=new SceneLease{Handle=scene.handle,Navigation=navigation,Lifetime=lifetime};
                 navigation.cachedLease=lease;lifetime.Navigation=navigation;sameScene[scene.handle]=lease;
+                return navigation;
             }
-            return navigation;
+            catch {navigation.Dispose();if(owner!=null)UnityEngine.Object.Destroy(owner);throw;}
         }
         internal void Release()
         {
             if(leases<=0)return;
             if(--leases!=0)return;
             if(instance.valid)instance.Remove();
-            if(cachedLease==null||sourceSceneRetired)Dispose();
-            // Otherwise the source-scene lifetime owns the immutable data until unload.
+            // No scene context, source snapshot or qualification result survives a
+            // World lease. A separate data-only cache may retain the immutable bake.
+            Dispose();
         }
 
         internal void RetireSourceScene()
         {
-            sourceSceneRetired=true;
-            if(cachedLease!=null&&sameScene.TryGetValue(cachedLease.Handle,out var active)&&ReferenceEquals(active,cachedLease))
-                sameScene.Remove(cachedLease.Handle);
+            // Owner destruction is not evidence that its World released the active
+            // native registration. Keep the same-scene exclusion until final Dispose.
             // An active World first removes its shifted BakedFloor copy in Dispose,
             // then releases the last lease. Data destruction therefore cannot precede
             // removal of a copy merely because source-scene OnDestroy ran first.
@@ -124,81 +122,194 @@ namespace ChooGuard.App.Fps.Emergency
             writer.Write(settings.maxJobWorkers);writer.Write(settings.preserveTilesOutsideBounds);writer.Write((int)settings.debug.flags);
         }
 
-        static string SourceKey(Scene scene,StationPoints catalog,IReadOnlyList<EscalatorDriveBinding> bindings)
+        sealed class ReusableBake
         {
-            if(!scene.IsValid()||!scene.isLoaded)throw new InvalidOperationException("Current station source scene absent");
-            var train=scene.GetRootGameObjects().SelectMany(g=>g.GetComponentsInChildren<Transform>(true))
-                .Single(t=>NativeLandingWalker.Path(t)==(catalog.Train?.root??"FPSWorld/KTXSource"));
-            var named=scene.GetRootGameObjects().SelectMany(g=>g.GetComponentsInChildren<Transform>(true))
-                .SingleOrDefault(t=>NativeLandingWalker.Path(t)=="FPSWorld/맞이방 · 에스컬레이터");
-            var colliders=scene.GetRootGameObjects().SelectMany(g=>g.GetComponentsInChildren<Collider>())
-                .Where(c=>c.enabled&&!StationNavigationRecipe.Excluded(c,train,named)).OrderBy(c=>c.GetInstanceID()).ToArray();
-            // No reuse claim can be made for a mesh whose actual source buffers are
-            // unavailable. In that case retain the ordinary owned-build lifetime.
-            if(colliders.OfType<MeshCollider>().Any(c=>c.sharedMesh!=null&&!c.sharedMesh.isReadable))return null;
+            internal string Key;
+            internal NavMeshData Data;
+            internal int Users;
+            internal bool Retired;
+        }
+        static ReusableBake retainedBake;
+        ReusableBake bakeLease;
+
+        static void RetireBake(ReusableBake entry)
+        {
+            if(entry==null)return;
+            entry.Retired=true;
+            if(entry.Users==0&&entry.Data!=null){UnityEngine.Object.Destroy(entry.Data);entry.Data=null;}
+        }
+        static void ReleaseBake(ReusableBake entry)
+        {
+            if(entry==null)return;
+            if(entry.Users<=0)throw new InvalidOperationException("Current source bake lease is already released");
+            entry.Users--;
+            if(entry.Retired&&entry.Users==0)RetireBake(entry);
+        }
+        static ReusableBake AcquireBake(string key,Func<NavMeshData> build,out bool hit)
+        {
+            hit=false;
+            if(key!=null&&retainedBake!=null&&!retainedBake.Retired&&retainedBake.Key==key&&retainedBake.Data!=null)
+            {retainedBake.Users++;hit=true;return retainedBake;}
+            // An unsuccessful build cannot replace an earlier valid immutable entry.
+            var data=build();
+            if(data==null)throw new InvalidOperationException("Current physical source navigation build failed");
+            var entry=new ReusableBake{Key=key,Data=data,Users=1,Retired=key==null};
+            if(key!=null){var prior=retainedBake;retainedBake=entry;RetireBake(prior);}
+            return entry;
+        }
+        static void ClearRetainedBake()
+        {var prior=retainedBake;retainedBake=null;RetireBake(prior);}
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetRetainedBake()
+        {
+            // Retired data still leased by a World survives until its shifted copy
+            // and owned registrations have been removed by normal World disposal.
+            ClearRetainedBake();
+            UnityEngine.Application.quitting-=ClearRetainedBake;UnityEngine.Application.quitting+=ClearRetainedBake;
+        }
+
+        static bool BakeFinite(float value)=>!float.IsNaN(value)&&!float.IsInfinity(value);
+        static void WriteBakeVector(BinaryWriter writer,Vector3 value)
+        {writer.Write(value.x);writer.Write(value.y);writer.Write(value.z);}
+        static void WriteBakeBounds(BinaryWriter writer,Bounds value)
+        {WriteBakeVector(writer,value.center);WriteBakeVector(writer,value.extents);}
+        static void WriteBakeMatrix(BinaryWriter writer,Matrix4x4 value)
+        {for(int i=0;i<16;i++)writer.Write(value[i]);}
+        static string BakeColliderIdentity(Collider collider)
+        {
+            // Stable hierarchy/component identity preserves ownership/alias structure,
+            // while excluding transient native instance and scene-handle numbers.
+            var parts=new List<string>();
+            for(var t=collider.transform;t!=null;t=t.parent)parts.Add(t.GetSiblingIndex()+":"+t.name);
+            parts.Reverse();
+            int slot=Array.IndexOf(collider.GetComponents<Component>(),collider);
+            return string.Join("/",parts)+"#"+slot+":"+collider.GetType().FullName;
+        }
+        static string BakeSourceEligibility(NavMeshBuildSource source,Scene sourceScene)
+        {
+            // Roundtrip every public field, then compare the complete native struct.
+            // Hidden/unresolved IDs or non-representable private flags are not erased.
+            var roundtrip=new NavMeshBuildSource{transform=source.transform,size=source.size,shape=source.shape,
+                area=source.area,sourceObject=source.sourceObject,component=source.component,generateLinks=source.generateLinks};
+            if(!roundtrip.Equals(source))return "unrepresented-native-source-fields";
+            if(!WalkingMatrixFinite(source.transform)||!BakeFinite(source.size.x)||!BakeFinite(source.size.y)||!BakeFinite(source.size.z))
+                return "nonfinite-native-source";
+            if(source.area<0||source.area>=32)return "unsupported-native-area";
+            // Automatic native links may contain transient owner identity. This cache
+            // does not infer that a zero jump/drop profile makes their IDs reusable.
+            if(source.generateLinks)return "native-generateLinks-metadata";
+            if(source.shape==NavMeshBuildSourceShape.ModifierBox)
+                return source.component==null&&source.sourceObject==null?null:"owned-or-object-modifier";
+            if(!(source.component is Collider collider))return "unresolved-native-collider-owner";
+            if(collider.gameObject.scene!=sourceScene||!collider.enabled||!collider.gameObject.activeInHierarchy||collider.isTrigger||collider.attachedRigidbody!=null)
+                return "nonstatic-or-different-current-source-owner";
+            if(source.shape==NavMeshBuildSourceShape.Mesh)
+            {
+                if(!(collider is MeshCollider meshCollider)||meshCollider.convex)return "unsupported-mesh-cooking-shape";
+                if(!(source.sourceObject is Mesh mesh)||meshCollider.sharedMesh!=mesh)return "different-native-mesh-owner";
+                return mesh.isReadable?null:"unreadable-native-source-mesh";
+            }
+            if(source.sourceObject!=null)return "unexpected-primitive-object";
+            if(source.shape==NavMeshBuildSourceShape.Box&&collider is BoxCollider)return null;
+            if(source.shape==NavMeshBuildSourceShape.Sphere&&collider is SphereCollider)return null;
+            if(source.shape==NavMeshBuildSourceShape.Capsule&&collider is CapsuleCollider)return null;
+            return "unsupported-native-source-shape";
+        }
+        static void WriteBakeCollider(BinaryWriter writer,Collider collider)
+        {
+            writer.Write(BakeColliderIdentity(collider));
+            writer.Write(collider.gameObject.layer);writer.Write(collider.gameObject.isStatic);
+            writer.Write(collider.enabled);writer.Write(collider.isTrigger);writer.Write(collider.gameObject.activeSelf);
+            writer.Write(collider.gameObject.activeInHierarchy);writer.Write(collider.contactOffset);
+            WriteBakeMatrix(writer,collider.transform.localToWorldMatrix);WriteBakeBounds(writer,collider.bounds);
+            if(collider is MeshCollider mesh){writer.Write(mesh.convex);writer.Write((int)mesh.cookingOptions);}
+            else if(collider is BoxCollider box){WriteBakeVector(writer,box.center);WriteBakeVector(writer,box.size);}
+            else if(collider is SphereCollider sphere){WriteBakeVector(writer,sphere.center);writer.Write(sphere.radius);}
+            else if(collider is CapsuleCollider capsule){WriteBakeVector(writer,capsule.center);writer.Write(capsule.radius);writer.Write(capsule.height);writer.Write(capsule.direction);}
+        }
+        sealed class BakeMeshUnavailable : Exception
+        {internal BakeMeshUnavailable(Exception cause):base("Cache mesh snapshot unavailable",cause) { }}
+        static T ReadBakeMesh<T>(Func<T> read)
+        {
+            try{return read();}
+            catch(UnityException error){throw new BakeMeshUnavailable(error);}
+            catch(InvalidOperationException error){throw new BakeMeshUnavailable(error);}
+            catch(NotSupportedException error){throw new BakeMeshUnavailable(error);}
+        }
+        static void WriteBakeBytes(BinaryWriter writer,Unity.Collections.NativeArray<byte> bytes,byte[] chunk)
+        {
+            writer.Write(bytes.Length);
+            for(int offset=0;offset<bytes.Length;offset+=chunk.Length)
+            {
+                int count=Math.Min(chunk.Length,bytes.Length-offset);
+                ReadBakeMesh(()=>{Unity.Collections.NativeArray<byte>.Copy(bytes,offset,chunk,0,count);return true;});writer.Write(chunk,0,count);
+            }
+        }
+        static void WriteBakeMesh(BinaryWriter writer,Mesh mesh,byte[] chunk)
+        {
+            writer.Write(ReadBakeMesh(()=>mesh.vertexCount));writer.Write((int)ReadBakeMesh(()=>mesh.indexFormat));WriteBakeBounds(writer,ReadBakeMesh(()=>mesh.bounds));
+            var attributes=ReadBakeMesh(()=>mesh.GetVertexAttributes());writer.Write(attributes.Length);
+            foreach(var attribute in attributes)
+            {writer.Write((int)attribute.attribute);writer.Write((int)attribute.format);writer.Write(attribute.dimension);writer.Write(attribute.stream);}
+            using(var snapshot=ReadBakeMesh(()=>Mesh.AcquireReadOnlyMeshData(mesh)))
+            {
+                var data=ReadBakeMesh(()=>snapshot[0]);int streams=ReadBakeMesh(()=>data.vertexBufferCount);writer.Write(streams);
+                for(int stream=0;stream<streams;stream++)
+                {writer.Write(ReadBakeMesh(()=>data.GetVertexBufferStride(stream)));WriteBakeBytes(writer,ReadBakeMesh(()=>data.GetVertexData<byte>(stream)),chunk);}
+                WriteBakeBytes(writer,ReadBakeMesh(()=>data.GetIndexData<byte>()),chunk);int submeshes=ReadBakeMesh(()=>data.subMeshCount);writer.Write(submeshes);
+                for(int sub=0;sub<submeshes;sub++)
+                {
+                    var descriptor=ReadBakeMesh(()=>data.GetSubMesh(sub));
+                    writer.Write(descriptor.indexStart);writer.Write(descriptor.indexCount);writer.Write((int)descriptor.topology);
+                    writer.Write(descriptor.baseVertex);writer.Write(descriptor.firstVertex);writer.Write(descriptor.vertexCount);
+                    WriteBakeBounds(writer,descriptor.bounds);
+                }
+            }
+        }
+        static string BakeInputKey(Scene sourceScene,NavMeshBuildSettings settings,List<NavMeshBuildSource> sources,Bounds bounds,out string eligibility)
+        {
+            eligibility="complete-owned-readable-input";
+            // Native height/debug/source-generated link metadata is intentionally not
+            // given a cross-owner equivalence contract by this small runtime cache.
+            if(settings.buildHeightMesh||(int)settings.debug.flags!=0)
+            {eligibility="native-height-or-debug-metadata";return null;}
+            for(int i=0;i<sources.Count;i++)
+            {
+                var reason=BakeSourceEligibility(sources[i],sourceScene);
+                if(reason!=null){eligibility="sourceIndex="+i+"; reason="+reason;return null;}
+            }
             using(var hash=SHA256.Create())
             using(var crypto=new CryptoStream(Stream.Null,hash,CryptoStreamMode.Write))
             using(var writer=new BinaryWriter(crypto,System.Text.Encoding.UTF8,true))
             {
-                writer.Write(scene.handle);writer.Write(catalog.SourceSha256);
-                WriteCurrentSourceSettings(writer,CurrentSourceSettings());
-                var witness=Resources.Load<TextAsset>("CurrentStationPointSources");
-                writer.Write(witness==null?"absent":Hash(witness.bytes));
-                var seen=new HashSet<Mesh>();
-                foreach(var collider in colliders)
+                writer.Write("current-nav-complete-build-input-v1");writer.Write(UnityEngine.Application.unityVersion);
+                WriteCurrentSourceSettings(writer,settings);WriteBakeBounds(writer,bounds);
+                WriteBakeVector(writer,Vector3.zero);writer.Write(0f);writer.Write(0f);writer.Write(0f);writer.Write(1f);
+                writer.Write(sources.Count);
+                var meshes=new Dictionary<Mesh,int>();var owners=new Dictionary<Component,int>();var chunk=new byte[65536];
+                foreach(var source in sources)
                 {
-                    writer.Write(collider.GetInstanceID());writer.Write(collider.GetType().FullName);
-                    var matrix=collider.transform.localToWorldMatrix;for(int i=0;i<16;i++)writer.Write(matrix[i]);
-                    if(collider is MeshCollider meshCollider)
+                    WriteBakeMatrix(writer,source.transform);WriteBakeVector(writer,source.size);
+                    writer.Write((int)source.shape);writer.Write(source.area);writer.Write(source.generateLinks);
+                    if(source.component==null)writer.Write(-1);
+                    else
                     {
-                        var mesh=meshCollider.sharedMesh;writer.Write(mesh==null?0:mesh.GetInstanceID());writer.Write(meshCollider.convex);
-                        if(mesh!=null&&seen.Add(mesh))
-                        {
-                            var vertices=mesh.vertices;writer.Write(vertices.Length);
-                            foreach(var vertex in vertices){writer.Write(vertex.x);writer.Write(vertex.y);writer.Write(vertex.z);}
-                            writer.Write(mesh.subMeshCount);
-                            for(int sub=0;sub<mesh.subMeshCount;sub++)
-                            {writer.Write((int)mesh.GetTopology(sub));var indices=mesh.GetIndices(sub);writer.Write(indices.Length);foreach(int index in indices)writer.Write(index);}
-                        }
+                        bool fresh=!owners.TryGetValue(source.component,out int alias);
+                        if(fresh){alias=owners.Count;owners.Add(source.component,alias);}
+                        writer.Write(alias);writer.Write(fresh);
+                        if(fresh)WriteBakeCollider(writer,(Collider)source.component);
                     }
-                    else if(collider is BoxCollider box)
-                    {writer.Write(box.center.x);writer.Write(box.center.y);writer.Write(box.center.z);writer.Write(box.size.x);writer.Write(box.size.y);writer.Write(box.size.z);}
-                    else if(collider is SphereCollider sphere)
-                    {writer.Write(sphere.center.x);writer.Write(sphere.center.y);writer.Write(sphere.center.z);writer.Write(sphere.radius);}
-                    else if(collider is CapsuleCollider capsule)
-                    {writer.Write(capsule.center.x);writer.Write(capsule.center.y);writer.Write(capsule.center.z);writer.Write(capsule.radius);writer.Write(capsule.height);writer.Write(capsule.direction);}
-                    else return null; // Terrain/other mutable geometry needs its own complete content identity.
-                }
-                foreach(var binding in bindings.Where(b=>b.Bound).OrderBy(b=>b.lane_id,StringComparer.Ordinal))
-                {
-                    writer.Write(binding.lane_id);var runs=binding.GetComponentsInChildren<PlatformEscalatorRun>(true);writer.Write(runs.Length);
-                    foreach(var run in runs)
+                    if(source.sourceObject==null)writer.Write(-1);
+                    else
                     {
-                        if(run.Treads==null||run.Treads.Length!=run.ObservedOrigins.Length||run.Treads.Any(t=>t==null||
-                            !t.TryGetComponent<MeshFilter>(out var f)||f.sharedMesh==null))
-                            throw new InvalidOperationException("Current bound source tread geometry became incomplete");
-                        writer.Write(run.SourceAvailable);writer.Write(run.IsBound);writer.Write(run.Treads.Length);
-                        foreach(var tread in run.Treads)writer.Write(tread.GetInstanceID());
-                        var matrix=run.transform.localToWorldMatrix;
-                        for(int i=0;i<16;i++)writer.Write(matrix[i]);
-                        writer.Write(run.Up);writer.Write(run.SourcePitch);writer.Write(run.ExposureMinimum);writer.Write(run.ExposureMaximum);
-                        foreach(var p in run.ObservedOrigins){writer.Write(p.x);writer.Write(p.y);writer.Write(p.z);}
-                        for(int part=0;part<run.Treads.Length;part++)
+                        var mesh=(Mesh)source.sourceObject;bool fresh=!meshes.TryGetValue(mesh,out int alias);
+                        if(fresh){alias=meshes.Count;meshes.Add(mesh,alias);}
+                        writer.Write(alias);writer.Write(fresh);
+                        if(fresh)
                         {
-                            var tread=run.Treads[part];var rotation=tread.localRotation;var scale=tread.localScale;
-                            writer.Write(rotation.x);writer.Write(rotation.y);writer.Write(rotation.z);writer.Write(rotation.w);
-                            writer.Write(scale.x);writer.Write(scale.y);writer.Write(scale.z);
-                            var mesh=run.GetOriginalSourceMesh(part);
-                            if(!mesh.isReadable)return null;
-                            writer.Write(mesh.GetInstanceID());
-                            if(seen.Add(mesh))
-                            {
-                                var vertices=mesh.vertices;writer.Write(vertices.Length);
-                                foreach(var vertex in vertices){writer.Write(vertex.x);writer.Write(vertex.y);writer.Write(vertex.z);}
-                                writer.Write(mesh.subMeshCount);
-                                for(int sub=0;sub<mesh.subMeshCount;sub++)
-                                {writer.Write((int)mesh.GetTopology(sub));var indices=mesh.GetIndices(sub);writer.Write(indices.Length);foreach(int index in indices)writer.Write(index);}
-                            }
+                            try{WriteBakeMesh(writer,mesh,chunk);}
+                            catch(BakeMeshUnavailable error)
+                            {eligibility="meshAlias="+alias+"; cache-snapshot-unavailable="+error.InnerException.GetType().FullName;return null;}
                         }
                     }
                 }
@@ -212,6 +323,7 @@ namespace ChooGuard.App.Fps.Emergency
             if(!scene.IsValid()||!scene.isLoaded)throw new InvalidOperationException("Current saved station source scene is absent");
             try
             {
+                var preparation=System.Diagnostics.Stopwatch.StartNew();
                 foreach(var root in scene.GetRootGameObjects())foreach(var t in root.GetComponentsInChildren<Transform>(true))
                 {
                     var path=PathOf(t);
@@ -245,7 +357,9 @@ namespace ChooGuard.App.Fps.Emergency
                 var lanes=MeasureBoundLanes(catalog,bindings,train);
                 boundWalkingMachines=lanes.Select(lane=>new WalkingMachineBox(lane.Id,
                     Matrix4x4.TRS(lane.BoxCentre,lane.BoxRotation,Vector3.one).inverse,lane.BoxSize)).ToArray();
+                var collection=System.Diagnostics.Stopwatch.StartNew();
                 var sources=StationNavigationRecipe.Collect(scene,bounds,train,namedBelts,lanes,true);
+                collection.Stop();
                 if(sources.Count==0)throw new InvalidOperationException("No actual current navigation sources");
                 collectedSources=sources;collectedSettings=CurrentSourceSettings();
                 capturedWalkingSources=CaptureCurrentWalkingSources(sources);
@@ -253,15 +367,32 @@ namespace ChooGuard.App.Fps.Emergency
                     .Select(collider=>new CurrentWalkingActualIdentity(collider,StationNavigationRecipe.Excluded(collider,train,namedBelts))).ToArray();
                 originalWalkingNativeSources=sources.ToArray();
                 originalWalkingNativeHadOwners=sources.Select(source=>source.component!=null).ToArray();
-                Data=NavMeshBuilder.BuildNavMeshData(collectedSettings,sources,bounds,Vector3.zero,Quaternion.identity);
-                if(Data==null)throw new InvalidOperationException("Current physical source navigation build failed");
+                var fingerprint=System.Diagnostics.Stopwatch.StartNew();
+                string key=BakeInputKey(scene,collectedSettings,sources,bounds,out string eligibility);
+                fingerprint.Stop();long bakeMilliseconds=0;
+                bakeLease=AcquireBake(key,()=>
+                {
+                    var bake=System.Diagnostics.Stopwatch.StartNew();
+                    var value=NavMeshBuilder.BuildNavMeshData(collectedSettings,sources,bounds,Vector3.zero,Quaternion.identity);
+                    bakeMilliseconds=bake.ElapsedMilliseconds;return value;
+                },out bool cacheHit);
+                Data=bakeLease.Data;
+                Debug.Log("CG_CURRENT_NAV_DATA cache="+(cacheHit?"HIT":key==null?"UNCACHEABLE":"MISS")+
+                    "; sources="+sources.Count+"; collectMs="+collection.ElapsedMilliseconds+"; fingerprintMs="+fingerprint.ElapsedMilliseconds+
+                    "; nativeBakeMs="+bakeMilliseconds+"; preparationMs="+preparation.ElapsedMilliseconds+
+                    "; eligibility="+eligibility+"; key="+(key??"NONE"));
                 instance=NavMesh.AddNavMeshData(Data);
                 if(!instance.valid)throw new InvalidOperationException("Current source navigation registration failed");
                 physicalReport.Add("MODEL_COMPUTED_WALKABILITY: current source collider bounds="+bounds+"; saved supports="+originals.Length+
                     "; exact source mesh supports="+supports.Count+"; physically bound belt modifiers="+lanes.Count+
                     "; sources="+sources.Count+". No source geometry, floor or connector is invented.");
             }
-            catch {Dispose();throw;}
+            catch
+            {
+                if(bakeLease!=null&&!instance.valid)
+                {if(ReferenceEquals(retainedBake,bakeLease))retainedBake=null;RetireBake(bakeLease);}
+                Dispose();throw;
+            }
         }
 
         Transform RequirePath(string path)
@@ -1555,6 +1686,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         internal StationPoints BindPoints(StationPoints catalog,NavMeshData originalReference)
         {
+            var duration=System.Diagnostics.Stopwatch.StartNew();
             var witness=Resources.Load<TextAsset>("CurrentStationPointSources");
             if(witness==null)throw new InvalidOperationException("Current source point partition witnesses absent");
             var data=JObject.Parse(witness.text);
@@ -1650,7 +1782,9 @@ namespace ChooGuard.App.Fps.Emergency
                 failures.Add(failure.identity,failure.probes,failure.cause);
             }
             failures.ThrowIfAny(attempted,catalog.All.Count);
-            return catalog.WithCurrentBindings(result.AsReadOnly());
+            var physicalView=catalog.WithCurrentBindings(result.AsReadOnly());
+            Debug.Log("CG_CURRENT_NAV_PHASE phase=physical-binding; ms="+duration.ElapsedMilliseconds+"; raw="+catalog.All.Count);
+            return physicalView;
         }
 
         bool Footprint(Vector3 staged,BakedFloor reference,out Vector3 floor,out string evidence)
@@ -1706,9 +1840,10 @@ namespace ChooGuard.App.Fps.Emergency
             leases=0;
             if(cachedLease!=null&&sameScene.TryGetValue(cachedLease.Handle,out var active)&&ReferenceEquals(active,cachedLease))
                 sameScene.Remove(cachedLease.Handle);
-            cachedLease=null;
+            var lifetime=cachedLease?.Lifetime;cachedLease=null;
+            if(lifetime!=null){lifetime.Navigation=null;UnityEngine.Object.Destroy(lifetime.gameObject);}
             if(instance.valid)instance.Remove();
-            if(Data!=null){UnityEngine.Object.Destroy(Data);Data=null;}
+            Data=null;var released=bakeLease;bakeLease=null;ReleaseBake(released);
             foreach(var support in supports)if(support!=null)UnityEngine.Object.Destroy(support);
             supports.Clear();collectedSources=null;capturedWalkingSources=null;capturedActualWalkingSources=null;originalWalkingNativeSources=null;originalWalkingNativeHadOwners=null;boundWalkingMachines=null;
         }

@@ -84,7 +84,14 @@
     "standingGuards": "nine-ray radius.28 floor footprint;1.8m body;Nav.6m/.35Y; physical proof repeated at Nav pose",
     "walkingGuards": "full .3m static-source body capsule and continuous sweep; exact source ownership; endpoint.12/.15Y",
     "geometryUnknownOrSupportedFloorNavMissing": "HARD_ERROR",
-    "scope": "MODEL computed physical standing and guarded navigation; not field measurement or dynamic controller traversal"
+    "scope": "MODEL computed physical standing and guarded navigation; not field measurement or dynamic controller traversal",
+    "dataMemoization": {
+      "scope": "One retained immutable NavMeshData entry only; every navigation context, actual source collection/snapshots, provenance, physical support, roles/owners/points, graph and native query epoch remain fresh. No graph/query/poly IDs/role/point/owner-result cache.",
+      "key": "Versioned ordered actual seven-field native source roundtrip; exact settings/build bounds/pose; complete readable vertex/index/submesh buffers/layout; stable component/mesh alias topology and collider shape/cooking/static metadata. No source input reordered or rewritten.",
+      "unsupported": "Unresolved-owner, unreadable, convex, unsupported/native-extra fields, generated-link/height/debug metadata use ordinary uncached build. Known cache mesh-read/snapshot unavailability also uses ordinary build; writer/hash/programming/OOM/build/physical/query errors remain hard.",
+      "lifetime": "Any still-active App current context blocks new current context even after owner destruction or source handle change. Retired data stays alive until final lease after shifted-copy/registration cleanup; reset/eviction/shutdown retire bounded retained entry.",
+      "measurement": "Current whole-station eligibility/cache hits/native bake equivalence/performance impact remain unmeasured before actual final-head CI. Timers report collection/fingerprint/native bake/physical binding/graph phases. Existing scene loading is also substantial; no exclusive timeout-cause claim."
+    }
   },
   "current_destinations": {
     "provenance": "Whole exact historical MODEL catalog, heterogeneous procedural and source-diagram additions. Historical origin does not itself certify current fixture correspondence; independent current mandatory source roles retain precedence. No failure-ID or kind-specific exclusion.",
@@ -154,39 +161,44 @@
     "distinct_references": 418,
     "all_candidate_csharp_inputs_included": true,
     "candidate_inputs": {
-      "Assets/ChooGuard/App/Fps/Emergency/CurrentStationRouteBuilder.cs": "3fe12e16c752e57d35df1e12ae7a3c8fdeade8c6bcfbd36379d068a8cbffd6b9",
-      "Assets/ChooGuard/App/Fps/Emergency/PersonBody.cs": "8f48b5479899e94583e2a7848a9b49be0ef4ca35ffc14b39f85e216c5f033058",
-      "Assets/ChooGuard/App/Fps/Emergency/Passenger.cs": "09123ef35de63b3633a608d2b5d2fcd2b7763d84ab69a6a47b5d1724faccdcbb",
-      "Assets/ChooGuard/Tests/PlayMode/PathRequestTests.cs": "e21d2f5c54e1b71b2fd55b7c3dd0b0a57b6862e911e5bd316be8266d7fb83c56",
-      "Assets/ChooGuard/Tests/PlayMode/Issue256NavigationSmokeTests.cs": "498a114162fa7dccd58606a96fc765dd0a433be2e823aee0c5d3bfa9a63ee62b"
+      "Assets/ChooGuard/App/Fps/Emergency/CurrentStationNavigation.cs": "bf89ca4a3ca71dc48a41b12194d9b3582153546755d12293f153feaa0dd7a3c3",
+      "Assets/ChooGuard/App/Fps/Emergency/CurrentStationRouteBuilder.cs": "637c324156408d953f88958cc280bda55b492aa48b3fa6153569b14cd6d792ee",
+      "Assets/ChooGuard/App/Fps/Emergency/EmergencySession.cs": "2684745f7a2f5e6a5035fe449f39b455069c62f245135048ae691af87435c791",
+      "Assets/ChooGuard/Tests/PlayMode/JevDirectorRecoveryTests.cs": "e025804098ec3ac6690f196d377c4e5b300834c24714f745ec41572f45d6fcd2",
+      "Assets/ChooGuard/App/Fps/Emergency/GuideRoute.cs": "dcdf61ab3bbd84faf3a5b4b8a50a27487106ecad2b4c2ae3803a192694c35ad9",
+      "Assets/ChooGuard/Tests/PlayMode/Issue256NavigationSmokeTests.cs": "3f0ae714670b1c405e3e0ad61b9c3a822cbe382ed2071af6376a26bc9ae866a7"
     },
-    "scope": "Exact immutable8a2f inputs with coherent five reviewed sourcecopies; all464sources/418actualreferences and all outputs verified. Semantic compiler only; no local Unity/Scene/native/productDLL execution.",
-    "source_manifest_sha256": "3f738244acd6cc17d980834b74855a28b1fff8e9851b2c06ebf5a516c7e11b01",
-    "source_manifest_entries_verified": 50,
-    "receipt_sha256": "61111609f8be8f8823b1b15c15a065805af566f0408411307384c72062c6d57c"
+    "sourceManifestEntriesVerified": 50,
+    "receipt_sha256": "c84e6e5109170edc78fa2adc5401d049bc19f8071698ceb4ae9938e1220eec51",
+    "root_input_review_sha256": "9890cdb93d278c9ac82e972be2ff664e9b52860f0137ca69542e27e26bd091a6",
+    "scope": "Compiler-only coherent exact six-assembly source snapshot. No product/Unity/native/NUnit DLL executed by this compiler proof."
   },
   "isolated_contracts": {
     "status": "PASS",
     "counts_by_scope": {
-      "builder_source_extracted_system_dto": 190,
-      "stopped_route_source_extracted_system_dto": 88,
-      "guide_fixture_source_preservation_and_arithmetic": 10
+      "cache_input_and_lifetime_source_extracted_system_dto": 107,
+      "player_obstacle_source_extracted_system_dto": 47,
+      "full_guide_source_controlled_system_dto": 29
     },
-    "scope": "Separate source-extracted controlled software proofs and source/arithmetic checks. Full Passenger/NUnit fixture files are byte-pinned/compiled; not executed by these proofs. Actual physical/native/fullcase outcomes require final head remoteCI.",
-    "receipt_sha256": "d7fd007e8ab6b32937f8020014f3df4d2fd003a7783f3e4335d36cd5f75b9045",
+    "scope": "Separate controlled software proofs. Native Unity mesh/data/physical/query/graph and NUnit fixtures are not executed by these checks. Timer-only Builder and NUnit fixture edits are byte-pinned and coherently compiled. Actual physical/native/fullcase outcomes require final head remote CI.",
+    "receipt_sha256": "285d487f01a8181e32156bf8d1fb07f7e749405743b5bbaa5810326906a94f44",
     "lane_receipt_sha256": {
-      "A": "0f8d638e4ac3ce1bc74acdc5fd0d4abe0fc04e44207947ae1aa8dfd4a74b5ba4",
-      "B": "bd1270b8303746db0e6330f6f17c9a34a4e9e2cef357945e3b02b7d5ba03772f",
-      "C": "76df9314de87c7ce95b643bf9e4bc92a42b5c4b6da0690fb6241092d471865b1"
-    },
-    "prior432": "Historical proof only; changed Builder/Passenger inputs mean prior wholeproductionproof is not claimed unchanged or rerun."
+      "A": "691964e1eb5306bc699a9b95690f8e5e5242a486ef08a5ec178f91eb5df2716a",
+      "B": "1c3e8e2d749c05171fa94a70ea82a1514bce22bbfeca1d6aea8cd772434987b4",
+      "C": "b99c98f353b20ae24dc92de026fe35a83639aab538aa6faed27abc0be177ccd3"
+    }
   },
   "source_evidence": {
     "wholeCatalogAndEndpointInventorySha256": "c17f8f726ab4915b3f3814574e6c996a59f9f6bc6ac61e0b3d50e18ea8a8b450",
     "fourHistoricalSourceRowsLineageSha256": "11736f07ca93a1fd276e266306a4cb0194f8f24b52eb6717cb57b72ec09dc6c3",
     "sourceGeometryChanged": false,
     "followup27_current_A_C_independent_review_sha256": "ed0ac4d8d539e24f89d823d8cba36e1b68c91d3096d08a646fbd981fda5143ec",
-    "followup27_current_B_root_source_review_sha256": "78cf368e2f35c25e3081431271331aa34a53187e7a7f62584a0aa6a4a112bf8e"
+    "followup27_current_B_root_source_review_sha256": "78cf368e2f35c25e3081431271331aa34a53187e7a7f62584a0aa6a4a112bf8e",
+    "followup28_A_source_freeze_sha256": "c9582937764f935e750bb9700128943a59ae98e64ee9a1782786f377d0f53922",
+    "followup28_A_bake_input_review_sha256": "205d8aa53e0999730dfeabc34f69e3a7cc2312f2eb2e75a8c8f6fc33f7c2c7d2",
+    "followup28_A_lifetime_review_sha256": "451bb850a48be34e9a7c38eab442cda2bbf888871c2dfcc113781b74b8728a22",
+    "followup28_B_root_review_sha256": "855290f2fc2cca1828919fa647fe3d7ee8925af3fda142be09c0c6fc8afcf5a7",
+    "followup28_C_root_review_sha256": "310a9cfcddafbb5b39dfabdb6c26066910657350f626e9ce05ee9f30c4f65193"
   },
   "reflection_test_helper_contracts": {
     "status": "PASS",
@@ -207,10 +219,20 @@
     "actualFailureLimit": "Original #93 CI record omits sidestep/laststopwriter/offNavtransition; exact native cause is unobserved. Maintained fixedstate regression avoids masking by optional MODEL selection changes."
   },
   "guide_fixture_isolation": {
-    "scope": "Existing Issue256 unseen-hazard route-invariance test only; no production guide/path rounding or tolerance change.",
+    "scope": "Prior existing Issue256 unseen-hazard route-invariance fixture-only input isolation remains unchanged. New contained-start production policy repair is recorded separately.",
     "sourceConfound": "Registered known Fire evolves during asynchronous unknown-obstacle carving, changing legitimate approach ring input.",
     "repair": "Temporarily suspend/restore automatic Director ticks in finally around actual Carved wait; assert exact known Scene/intensity/smoke/approach inputs before unchanged strict route comparison.",
     "preserve": "Actual unknown obstacle carving/unknownclosure/escalator intervention, original assertions/squared1e-6 tolerance/timeouts/settings/random checks.",
     "actualFailureLimit": "Actual point46 delta logged without before/after known inputs; growth is proven sourceconfound, not exclusive observed cause."
+  },
+  "player_obstacle_lifecycle": {
+    "actualCause": "Three prior native CI failures logged duplicate NavMeshObstacle Add on retained test player, then StartWorld null dereference. Player survives additive shift restart.",
+    "repair": "Configure only newly added exact-player component. Reuse compatible same-player enabled Capsule/.3 radius/1.8 height/(0,.9,0) center/noncarving with zero writes. Incompatible/disabled/owner/Add/API errors remain hard.",
+    "regression": "Existing restart paths additionally assert same player, same single obstacle and full relevant state; original requests/assertions/timeouts unchanged. Actual native outcomes pending final-head CI."
+  },
+  "guide_contained_start": {
+    "sourceGap": "Normal nearest-root helper examined at most six nearest roots before removing blocked roots. A contained start could lose all starts before existing escape validator. Controlled same-start/target baseline passes and old contained case fails. Actual prior CI did not log coordinates/branch; not proof of exclusive actual cause.",
+    "repair": "Only when sampled start is blocked, choose at most three nearest unblocked roots with unchanged same-storey/weighted/stable order and three indexed scans. Unchanged full floor lead and initial-escape/no-reentry/other-danger/known-owner checks remain mandatory. Ordinary starts/end-ring selection unchanged.",
+    "fixture": "Same original start/target baseline Route assertion before adding other hazard; original route/count/escape assertions and prior passing unseen-input-isolation method unchanged. Actual native outcome pending final-head CI."
   }
 }
