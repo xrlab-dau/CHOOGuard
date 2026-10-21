@@ -63,6 +63,31 @@ class CaptureTests(unittest.TestCase):
         self.rows[0]["director"] = {"rounds": 370, "unanswered_rounds": 377}
         self.assert_bad(self.check(), "director.unanswered_rounds")
 
+    def test_duplicate_summary_fields_cannot_hide_unanswered_rounds(self):
+        original = json.dumps(self.rows)
+        replacements = (
+            ('"unanswered_rounds": 0', '"unanswered_rounds": 377, "unanswered_rounds": 0'),
+            ('"unanswered_rounds": 0', r'"unanswered_rounds": 377, "unanswered_\u0072ounds": 0'),
+            ('"shift": 0', '"shift": 0, "shift": 0'),
+        )
+        for old, new in replacements:
+            with self.subTest(replacement=new):
+                self.summary.write_text(original.replace(old, new), encoding="utf-8")
+                self.assert_bad(validate(self.summary, 1), "cannot read summary")
+
+    def test_duplicate_log_fields_cannot_hide_failed_or_ambiguous_answers(self):
+        original = json.dumps(answered())
+        replacements = (
+            ('"http": 200', '"http": 504, "http": 200'),
+            ('"candidate": {"Score": 1}',
+             '"candidate": {"Score": 0}, "candidate": {"Score": 1}'),
+        )
+        for old, new in replacements:
+            with self.subTest(replacement=new):
+                text = original.replace(old, new) + "\n" + json.dumps(answered("crowd-routine")) + "\n"
+                (self.root / self.rows[0]["jsonl"]).write_text(text, encoding="utf-8")
+                self.assert_bad(self.check(), "JSONL line 1 is not valid JSON")
+
     def test_missing_legacy_fields_are_not_assumed_zero(self):
         original = copy.deepcopy(self.rows[0])
         for field in ("director", "requests", "keyPresent", "drained", "answeredByPurpose"):

@@ -14,7 +14,16 @@ def strict_json(text):
     def reject_constant(value):
         raise ValueError("non-finite JSON constant")
 
-    return json.loads(text, parse_constant=reject_constant)
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                # Member names may contain private question IDs or other source text.
+                raise ValueError("duplicate JSON object member")
+            result[key] = value
+        return result
+
+    return json.loads(text, parse_constant=reject_constant, object_pairs_hook=unique_object)
 
 
 def read_log(path):
