@@ -1,0 +1,8 @@
+# Findings
+Original 2022.12 design publicly issued January2023; current2026 photos retain cafe. Original plan equipment is design MODEL, not surveyed2026 asbuilt. Existing original 286part fitout owns only current R26 lounge hierarchy.
+
+Actual original page11 inspected: source18items are numbered products, including several220V consumers, 2filters, 2ice makers reuse. Main counterdepth950/rear910/aisle950 sums2810 withwalls to2890. Architecture41p available page6finish ceiling/p20..26furniture. Current2026ceiling open squaregrille sourcephoto supports architecture grid; no Light components.
+
+Current2026 photos inspected: actual white squaregrid ceiling, openfront, roundedchilledcase, whitefrontcounter, woodlower/glassseparator, espresso+rearappliances, blackbench/whitecantilever tables andwindowchairs. Originalp10layout cafeisLstrip surroundingStoryway; approved R24cell is constructionenvelope, not wholeoriginalrectangle. Source18fixturecount appliesactualcafe. Originalp20rearworktop has proper sink cutout and lower dishwasher/waterheater cutouts; sourcep21front has two refrigeratedtables sized1.806/1.506m, mustcreatehollowcounter, notsolidbox aroundequipment.
+
+Construction packet535newphysicalparts/131owncorrections/95obsoleteownapproximationremovals. Counters7.78/7.82m,950mmstaffaisle, source18fixturetypes, sourceexactserviceutilityconnections. Currentphoto3bluepitchers retainedasonepoweredblender+2sparepitchers, not3inventedpoweredmachines. Current curveddisplay rebuiltfloorstandingtooriginal1.5mheight/sourcecurrentcurvedprofile. Newrearworktop has original sink/rinser/knockbox/dipwell/icebin apertures. Licensefreeespresso/oven/sink/bunsassets reusedreadonly. NoLight/Text/TMP.

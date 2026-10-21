@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-19T09:00:08.008311+00:00",
+  "status": "ROOT_EXACT_ACTIVE_LEASE_READONLY_EXIT_OBSERVATION_AUTHORIZED",
+  "purpose": "Resolve actualunfinished nativeexecution before new userallsceneLightdeletion. This observes existingexecutionscopeexit, notSceneQA ornewwriter.",
+  "request": "r25-bnc-east-exact-branch-correction-003",
+  "nonce": "2fe6a838228845adb1a368cb77c58d4e",
+  "companion": ".state/SCENE-WORKER-C180/active-broker/observe_exact_bnc003_exit.py",
+  "companion_sha256": "f84ea631d6a29b10334f424f3d8e34626941722f211ee395903d8bc7321f1c94",
+  "source_reasoning": ".state/ACTIVE-2F-SHOPS-CONSTRUCTION-R25/bnc-east/east-correction003/PIPELINE-SYNCHRONOUS-EXIT-REASONING-003.json",
+  "source_reasoning_sha256": "dfb4fdf70f1b254b9c067cb22448c7ff25614c582b7ad118d190a9c91b32d59b",
+  "conditions": "Exactsyncfrozensource/terminalsavedreceiptSHA pinned beforecallback andreceiptSHA insidecallback. Same Pipeline mainthreadcallback afterterminalpureJObjectstringreturn tail; no generalnonreentrancyclaim. Fixedcallback doesonlyReadAllBytes/SHA/returnmarker, noUnityAPI/Scene/Assets mutations.",
+  "reservation": "Originalnonce remainsheld duringobservation, nosecondwriter/FIFOadvance untilactualsuccessfulcallback; callbackfailure/timeout keepsreservation. Noelapsedexpiry.",
+  "outcome": "Preserve originalrawunknownreceipt, record actualcallbackresponse. Reconcile executionexit as SETTLED_TRANSPORT_FAILURE + applicationSavedtrue, neverfabricateoriginalnative success. Normalrelease_settled only after actualexitobserved.",
+  "default_broker_unchanged": true
+}

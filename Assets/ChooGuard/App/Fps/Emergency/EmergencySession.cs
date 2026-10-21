@@ -168,12 +168,84 @@ namespace ChooGuard.App.Fps.Emergency
             StartWorld();
         }
 
+        // Native accessors need not return the exact requested float bits. Record
+        // the owned result after all original setters, then require that exact
+        // configuration and component on later additive shifts. The weak key is
+        // the managed player identity; loss of its record never adopts an obstacle.
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<GameObject, PlayerObstacleSnapshot>
+            playerObstacles = new System.Runtime.CompilerServices.ConditionalWeakTable<GameObject, PlayerObstacleSnapshot>();
+
+        private sealed class PlayerObstacleSnapshot
+        {
+            internal readonly GameObject Player;
+            internal readonly UnityEngine.AI.NavMeshObstacle Component;
+            internal readonly bool Enabled, Carving;
+            internal readonly UnityEngine.AI.NavMeshObstacleShape Shape;
+            internal readonly float Radius, Height;
+            internal readonly Vector3 Center;
+
+            internal PlayerObstacleSnapshot(GameObject player, UnityEngine.AI.NavMeshObstacle component)
+            {
+                Player = player; Component = component;
+                Enabled = component.enabled; Shape = component.shape;
+                Radius = component.radius; Height = component.height;
+                Center = component.center; Carving = component.carving;
+            }
+
+            private static bool Finite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
+            internal bool Valid => Enabled && Shape == UnityEngine.AI.NavMeshObstacleShape.Capsule && !Carving &&
+                Finite(Radius) && Radius > 0 && Finite(Height) && Height > 0 &&
+                Finite(Center.x) && Finite(Center.y) && Finite(Center.z);
+            internal bool SameConfiguration(PlayerObstacleSnapshot other) =>
+                Enabled == other.Enabled && Shape == other.Shape && Radius.Equals(other.Radius) &&
+                Height.Equals(other.Height) && Center.Equals(other.Center) && Carving == other.Carving;
+            private static string Number(float value) => value.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+            internal string Describe() => "enabled=" + Enabled + "; shape=" + Shape + "; radius=" + Number(Radius) +
+                "; height=" + Number(Height) + "; center=[" + Number(Center.x) + "," + Number(Center.y) + "," + Number(Center.z) + "]" +
+                "; carving=" + Carving;
+        }
+
+        internal static UnityEngine.AI.NavMeshObstacle EnsurePlayerObstacle(GameObject player)
+        {
+            if (player == null) throw new ArgumentNullException(nameof(player));
+            var obstacle = player.GetComponent<UnityEngine.AI.NavMeshObstacle>();
+            if (playerObstacles.TryGetValue(player, out var expected))
+            {
+                if (!ReferenceEquals(expected.Player, player) || expected.Component == null ||
+                    !ReferenceEquals(expected.Component, obstacle) || obstacle.gameObject != player)
+                    throw new InvalidOperationException("The station player's owned avoidance obstacle is missing or replaced; stage=reuse; " +
+                        "expected={" + expected.Describe() + "}; actualComponent=" + (obstacle == null ? "missing/destroyed" : "different component or owner"));
+                var actual = new PlayerObstacleSnapshot(player, obstacle);
+                if (!actual.Valid || !expected.SameConfiguration(actual))
+                    throw new InvalidOperationException("The station player's avoidance obstacle changed; stage=reuse; expected={" +
+                        expected.Describe() + "}; actual={" + actual.Describe() + "}");
+                return obstacle;
+            }
+            if (obstacle != null)
+                throw new InvalidOperationException("The station player has an unowned avoidance obstacle; stage=first; actual={" +
+                    new PlayerObstacleSnapshot(player, obstacle).Describe() + "}");
+            obstacle = player.AddComponent<UnityEngine.AI.NavMeshObstacle>();
+            if (obstacle == null || obstacle.gameObject != player)
+                throw new InvalidOperationException("The station player's avoidance obstacle could not be added; stage=first");
+            obstacle.shape = UnityEngine.AI.NavMeshObstacleShape.Capsule;
+            obstacle.radius = .3f;
+            obstacle.height = 1.8f;
+            obstacle.center = new Vector3(0, .9f, 0);
+            obstacle.carving = false;
+            var initial = new PlayerObstacleSnapshot(player, obstacle);
+            if (!initial.Valid)
+                throw new InvalidOperationException("The station player's new avoidance obstacle has invalid readback; stage=first; actual={" +
+                    initial.Describe() + "}");
+            playerObstacles.Add(player, initial);
+            return obstacle;
+        }
+
         private void StartWorld()
         {
             if (Art == null) { Debug.LogError("[EmergencySession] EmergencyArt 가 연결되지 않았습니다. ChooGuard/Emergency/Build session scene and title 을 실행하세요.", this); return; }
             int seed = NextSeed != 0 ? NextSeed : Seed != 0 ? Seed : Environment.TickCount & 0x7fffffff;
             NextSeed = 0;
-            World = new StationWorld(Art, seed, transform);
+            World = StationWorld.FromCurrentScene(Art, seed, transform);
             Map.SetLandmarks(World.Points);
             GameSettings.RouteChanged += OnSettingsChanged;
             Facilities.StationSignals.FireAlarm = false;
@@ -192,12 +264,7 @@ namespace ChooGuard.App.Fps.Emergency
             Jev = new JevClient(System.IO.Path.Combine(logFolder, "jev-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss") + ".jsonl"));
             StartCoroutine(Jev.Warm());
             // 승객이 역무원을 사람으로 피해 가도록 한다(길찾기 장애물, 길을 깎지는 않는다).
-            var obstacle = Player.gameObject.AddComponent<UnityEngine.AI.NavMeshObstacle>();
-            obstacle.shape = UnityEngine.AI.NavMeshObstacleShape.Capsule;
-            obstacle.radius = .3f;
-            obstacle.height = 1.8f;
-            obstacle.center = new Vector3(0, .9f, 0);
-            obstacle.carving = false;
+            EnsurePlayerObstacle(Player.gameObject);
             Hands = gameObject.AddComponent<StaffHands>();
             Hands.Setup(this, Art);
             Incidents = gameObject.AddComponent<IncidentDirector>();

@@ -1,0 +1,7 @@
+Sept2026 exact branch source directly opened 01,02,04; July2026 01. Primary fascia 부산국제시장단팥빵; 태성당 coexisting lightbox and product packaging. Open wood/brass two-level bread counter, chilled three-tier side display, stainless rear workcounter, black side grilles, overhead track spotlights. No glass-room front. Hawaiian shared south boundary received; south-side own scope only, native portal remains protected.
+
+July2026 full storefront00 directly viewed: black fascia, warm raised Korean letters/house logo; four overhead printed litmenu panels, left POS fluted counter, center two-level open display, right three-tier glasschiller, rear stainless workcounter/racks, no seating/wholeglassfront. Original exactbranchdesign search found no plans. Shop MODEL bounded by native038 row front,056north tangent south, Hawaiian face north;3.30m inferred shallow depth explicitly qualified.
+
+Source main fascia rectification and ink mask visually inspected: exact house/Korean lettering, holes retained. Staged own free source FBXs: bakerycase/POS, PolyHaven scannedbuns/PBR, KayKit oven/prepbench. Frozen build470physicalobjects,84sourceassetinstances including78scannedbuns. Explicitv4 peroriginalslot mappings. No runtimeQA.
+
+Wall-contact002: actual O36 verticalframe/glazing triangles and matchingsections support planeu≈0, not roof at-.25. O4nativeexternalportal profiles lie outside/west; Hawaiianindependententryv8.0482→9.2982 outside ownvspan. Rootconfirms no inferredBread aperture. Rigidtranslationonly, expected-5.7448m normal, actualrear targetu0.0002m.

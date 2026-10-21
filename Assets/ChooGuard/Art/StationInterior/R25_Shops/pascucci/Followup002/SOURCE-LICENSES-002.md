@@ -1,0 +1,3 @@
+Kenney Food Kit ice-cream-scoop-chocolate source mesh CC0 https://kenney.nl/assets/food-kit . Own photo-color/fitted gelato tray fill adaptation, original source unchanged.
+PolyHaven modern_arm_chair_01 CC0 https://polyhaven.com/a/modern_arm_chair_01 . Own red upholstery/black leg materials bound by exact originalFBX two material slots from SOURCE-FBX-MATERIAL-SLOTS-002.json. Generic freechair shape fitted to source visible red armchairs; exact productidentity not claimed.
+Menu/device printing is exactbranch source2026-09-23/10-05 fieldphotograph content, rectified only as surfaceprinting on own physical devices/frames/cards; no equipment proxy, no TMP or font standin.

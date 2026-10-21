@@ -1,0 +1,4 @@
+Exact authority: R25 USER-AUTHORITY and flowers structural neighborhood. Source23 꽃들. R22 navigation only; actual R19 Native0 shell controls. Memory single-writer guidance directly_supported by current WORK-COMMON.
+
+Directly viewed retained branch photographs: RYOKOU-20240315-FLOWERS-FRONT.jpg and PRIMARY-VIDEO-LOCAL-335s/340s. Real frontage is black fascia/louvres, glowing flower icon plus 꽃들; white two-tier front cabinets with central walk-in gap; tall back 2door flower fridge; right plant shelves and gift cases; downlights/track spots. Exact2026 fitout/hidden dimensions unverified. Web identifies official Instagram f_kkotdeul and 부산역2F. Generic 동대신동 꽃들 is excluded.
+Actual Native0 matching-level wall at section8.4 #464/465 x=-18.1966..-18.1778; opposite wall #500..503 x~-12.20; rear #520..523 y~-34.50. Existing floorfront is qy~-30.015. Derive via intersections; R18 former facade x~-25 is not new placement authority.

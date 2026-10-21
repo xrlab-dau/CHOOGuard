@@ -1,0 +1,184 @@
+{
+  "status": "CURRENT_RUNTIME_LAYOUT_SPECIFIED",
+  "modules": [
+    {
+      "name": "ChooGuard.Contracts",
+      "root": "Assets/ChooGuard/Contracts",
+      "path": "Assets/ChooGuard/Contracts/ChooGuard.Contracts.asmdef",
+      "references": [],
+      "engineReferences": false,
+      "editorOnly": false,
+      "owner": "CS-BOOT.02"
+    },
+    {
+      "name": "ChooGuard.Domain",
+      "root": "Assets/ChooGuard/Domain",
+      "path": "Assets/ChooGuard/Domain/ChooGuard.Domain.asmdef",
+      "references": [
+        "ChooGuard.Contracts"
+      ],
+      "engineReferences": false,
+      "editorOnly": false,
+      "owner": "CS-BOOT.02"
+    },
+    {
+      "name": "ChooGuard.Application",
+      "root": "Assets/ChooGuard/Application",
+      "path": "Assets/ChooGuard/Application/ChooGuard.Application.asmdef",
+      "references": [
+        "ChooGuard.Contracts",
+        "ChooGuard.Domain"
+      ],
+      "engineReferences": false,
+      "editorOnly": false,
+      "owner": "CS-BOOT.02"
+    },
+    {
+      "name": "ChooGuard.Content",
+      "root": "Assets/ChooGuard/Content",
+      "path": "Assets/ChooGuard/Content/ChooGuard.Content.asmdef",
+      "references": [
+        "ChooGuard.Contracts"
+      ],
+      "engineReferences": false,
+      "editorOnly": false,
+      "owner": "CS-BOOT.02"
+    },
+    {
+      "name": "ChooGuard.Persistence",
+      "root": "Assets/ChooGuard/Persistence",
+      "path": "Assets/ChooGuard/Persistence/ChooGuard.Persistence.asmdef",
+      "references": [
+        "ChooGuard.Contracts"
+      ],
+      "engineReferences": false,
+      "editorOnly": false,
+      "owner": "CS-BOOT.02"
+    },
+    {
+      "name": "ChooGuard.World",
+      "root": "Assets/ChooGuard/World",
+      "path": "Assets/ChooGuard/World/ChooGuard.World.asmdef",
+      "references": [
+        "ChooGuard.Contracts"
+      ],
+      "engineReferences": true,
+      "editorOnly": false,
+      "owner": "CS-BOOT.02"
+    },
+    {
+      "name": "ChooGuard.Presentation",
+      "root": "Assets/ChooGuard/Presentation",
+      "path": "Assets/ChooGuard/Presentation/ChooGuard.Presentation.asmdef",
+      "references": [
+        "ChooGuard.Contracts"
+      ],
+      "engineReferences": true,
+      "editorOnly": false,
+      "owner": "CS-BOOT.02"
+    },
+    {
+      "name": "ChooGuard.Experiments",
+      "root": "Assets/ChooGuard/Experiments",
+      "path": "Assets/ChooGuard/Experiments/ChooGuard.Experiments.asmdef",
+      "references": [
+        "ChooGuard.Contracts"
+      ],
+      "engineReferences": false,
+      "editorOnly": false,
+      "owner": "CS-BOOT.02"
+    },
+    {
+      "name": "ChooGuard.Scenarios",
+      "root": "Assets/ChooGuard/Scenarios",
+      "path": "Assets/ChooGuard/Scenarios/ChooGuard.Scenarios.asmdef",
+      "references": [
+        "ChooGuard.Contracts"
+      ],
+      "engineReferences": false,
+      "editorOnly": false,
+      "owner": "CS-BOOT.02"
+    },
+    {
+      "name": "ChooGuard.Simulation",
+      "root": "Assets/ChooGuard/Simulation",
+      "path": "Assets/ChooGuard/Simulation/ChooGuard.Simulation.asmdef",
+      "references": [
+        "ChooGuard.Contracts"
+      ],
+      "engineReferences": false,
+      "editorOnly": false,
+      "owner": "CS-BOOT.02"
+    },
+    {
+      "name": "ChooGuard.Authoring",
+      "root": "Assets/ChooGuard/Authoring",
+      "path": "Assets/ChooGuard/Authoring/ChooGuard.Authoring.asmdef",
+      "references": [
+        "ChooGuard.Contracts"
+      ],
+      "engineReferences": false,
+      "editorOnly": false,
+      "owner": "CS-BOOT.02"
+    },
+    {
+      "name": "ChooGuard.Seeded",
+      "root": "Assets/ChooGuard/Seeded",
+      "path": "Assets/ChooGuard/Seeded/ChooGuard.Seeded.asmdef",
+      "references": [
+        "Unity.Newtonsoft.Json",
+        "Unity.InputSystem",
+        "Unity.TextMeshPro",
+        "UnityEngine.UI",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Core.Runtime"
+      ],
+      "engineReferences": true,
+      "editorOnly": false,
+      "owner": "CURRENT_STATION_RUNTIME_38182"
+    },
+    {
+      "name": "ChooGuard.App",
+      "root": "Assets/ChooGuard/App",
+      "path": "Assets/ChooGuard/App/ChooGuard.App.asmdef",
+      "references": [
+        "ChooGuard.Contracts",
+        "ChooGuard.Domain",
+        "ChooGuard.Application",
+        "ChooGuard.Content",
+        "ChooGuard.Persistence",
+        "ChooGuard.World",
+        "ChooGuard.Presentation",
+        "ChooGuard.Experiments",
+        "ChooGuard.Scenarios",
+        "ChooGuard.Simulation",
+        "ChooGuard.Authoring",
+        "ChooGuard.Seeded"
+      ],
+      "engineReferences": true,
+      "editorOnly": false,
+      "owner": "CS-BOOT.02"
+    },
+    {
+      "name": "ChooGuard.Editor",
+      "root": "Assets/ChooGuard/Editor",
+      "path": "Assets/ChooGuard/Editor/ChooGuard.Editor.asmdef",
+      "references": [
+        "ChooGuard.Contracts",
+        "ChooGuard.App",
+        "ChooGuard.World",
+        "ChooGuard.Presentation",
+        "ChooGuard.Seeded",
+        "Unity.Newtonsoft.Json"
+      ],
+      "engineReferences": true,
+      "editorOnly": true,
+      "owner": "CS-BOOT.02"
+    }
+  ],
+  "rule": "모든 제품 C#은 가장 깊은 root의 assembly 소속. custom assembly에서 Assembly-CSharp 참조 금지. UnityEditor 코드는 Editor-only 경계. 외부 assembly 이름은 새 package lock에서 검증.",
+  "historical_bootstrap_contract": "docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts/assembly-layout.json",
+  "upstream_runtime_revision": "38182a1a405238e90c8e3c371ca9dfdcef28f2d1",
+  "published_source_revision": "092ef8ee428f518ac82ba217b9407fa8bc65b0f9",
+  "qualification": "Current14productionmodules+2testboundaries. Historicalv3contract retained unchanged; Seeded remains engine-backed runtime and nine pure modules remain strict."
+}

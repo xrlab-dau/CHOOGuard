@@ -76,9 +76,16 @@ namespace ChooGuard.Tests.PlayMode
         public void CabinAndPassengerMoveThroughMidpointWithoutChangingLandingIdentityEarly()
         {
             Rig();
-            var body = Part(root.transform, "승객", Vector3.zero).gameObject.AddComponent<PersonBody>();
+            var passenger = Part(root.transform, "승객", Vector3.zero).gameObject;
+            // This carriage fixture has no walking NavMesh. Configure the required
+            // agent while inactive, before its first enable can try to bind one.
+            passenger.SetActive(false);
+            var body = passenger.AddComponent<PersonBody>();
             body.GetComponent<NavMeshAgent>().enabled = false;
             body.transform.position = carriage.Cabin.TransformPoint(new Vector3(.2f, 0, 1));
+            passenger.SetActive(true);
+            Assert.That(body.Agent, Is.SameAs(body.GetComponent<NavMeshAgent>()));
+            Assert.That(body.Agent.enabled, Is.False);
             Vector3 initial = body.transform.position;
             var rider = new ElevatorCar.Rider { Body = body, Cabin = 0, To = 1, Spot = new Vector3(.2f, 0, 1) };
             car.Riders.Add(rider);

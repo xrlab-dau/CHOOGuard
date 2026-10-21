@@ -1,0 +1,21 @@
+{
+  "schema": "BNC_EAST_003_EXACT_TERMINAL_SOURCE_PROVENANCE",
+  "utc": "2026-10-19T08:57:56.582189+00:00",
+  "request": "r25-bnc-east-exact-branch-correction-003",
+  "grant_nonce": "2fe6a838228845adb1a368cb77c58d4e",
+  "thread": "classic:/root/r25_bnc_east",
+  "scope": "C180_R25_BNC_EAST_SOURCE_CORRECTION_003",
+  "frozen_source": ".state/SCENE-WORKER-C180/sources/r25-bnc-east-exact-branch-correction-003--0f68760a96fc49ccb527a2138da76cf6/000__ApplyEastCorrection003.cs",
+  "frozen_source_sha256": "8782f21349a60b620e65dc27fc03a04d3f76a4af392eec29afc99cd62ad08956",
+  "original_raw_transport_receipt": ".state/SCENE-WORKER-C180/results/r25-bnc-east-exact-branch-correction-003--0f68760a96fc49ccb527a2138da76cf6.json",
+  "raw_transport_sha256": "a7b1fde5103fe3f85b5ee077d036eab684a43cdf3f85c6d197807e5a14b9dc25",
+  "applied_receipt": ".state/ACTIVE-2F-SHOPS-CONSTRUCTION-R25/bnc-east/east-correction003/APPLIED-EAST-BRANCH-CORRECTION-003.json",
+  "applied_receipt_sha256": "ef697798362d43623c2ff691c970855ffdf702080aac5770751f9860a1690b34",
+  "native_method": "public static string Apply() synchronous",
+  "method_async_or_task": false,
+  "terminal_tail_start_line_1based": 111,
+  "terminal_tail": "   string output=\".state/ACTIVE-2F-SHOPS-CONSTRUCTION-R25/\"+StoreKey+\"/east-correction003/APPLIED-EAST-BRANCH-CORRECTION-003.json\";File.WriteAllText(Root+\"/\"+output,receipt.ToString());return new JObject{[\"status\"]=receipt[\"status\"],[\"store_key\"]=StoreKey,[\"object_count\"]=applied.Count,[\"receipt\"]=output}.ToString();\n  }catch{if(!saved){Undo.RevertAllDownToGroup(undo);foreach(string ap in CreatedAssets.AsEnumerable().Reverse())AssetDatabase.DeleteAsset(ap);}throw;}\n }\n}",
+  "actual_facts": "Own receipt written after successful SaveScene and saved=true, after all239GlobalObjectIDs/UndoCollapse/Repaint; next statement is synchronous JSON string return. Catch doesno rollback when saved=true; no mutation/yield follows receiptwrite on successpath.",
+  "requested_recovery": "Root authorized SAME ACTIVE nonce mainthreadcallback after this exact terminalreceipt; preserve rawunknownresponse; reconcile as application_saved with observedmutablebodyexit, not originaltransportnativeSuccess.",
+  "new_light_components_in_packet": 0
+}

@@ -1,0 +1,9 @@
+# Findings
+
+Current custom model uses counterenclosure outerR3.12m/countertopR3.22m, originalspecifiedcounterR3.50; current canopyR3.06m vsoriginalR2.50; currentnominalcanopytop3.68m vsoriginaloverall3.10. Needcurrentphotocorroboration before historicrescale.
+
+Whole original2016p13 and BDI actualNov2025photos694/695 inspected. Currentfield confirms same centeredwavecounter but blackannularcanopy/truss/hangingdisplays alter sourceproposalfinish. Sourcep13After floorplan7000diamcounter,5000diamcanopy; before3280diam is olddifferentstationdesk, mustnotadopt. Neednestedverticaldimensionsread carefullybeforecorrection.
+
+Inspected authenticp14A,p15B,p16section. P14staffcabinetinnerdimension882 isNOTtotalcounterheight; p15B850highcabinet similarlysubassembly. P16labels1200/900/300andaccessfloor; these cannot simply beadded into a claimedcurrentcounterheight. Needp13completefrontbaseline/canopyrelativelevels beforemetricdecision. Currentphoto wavecounterfrontsamefamily, sourceBefore3280mmcounterunrelated.
+
+Derived current/primarycontradictions: currentcounter6.44capdia andcanopy6.12dia arealmostequal, whileNov2025wholephotocanopyis visiblysmaller andsameoriginalcounterfamily is clear. Original7000counter/5000canopymetriccore is a defensibleSOURCE_MODEL (notcalibrated2025measurement). CountertopFFL1200p13 is300plinth+900body; original3100overallincludes300canopy+2500middle+300base; middleincludes1600gap+900counter. Do notadoptoldoverallheight ontochangedblacktruss/screens. CurrenttwoPOSparentsradius2.283/2.290 lieinsidepublictopinnerR2.40 atY1.078, whilecurrentprivateworktoptop.785; packet movesownterminalparents tosupportednewtop. SourcecounterfrontKORAIL exists inoriginalandfieldbutcurrentown150partlist lacksit: preparednewclosedsourceglyphasset only.

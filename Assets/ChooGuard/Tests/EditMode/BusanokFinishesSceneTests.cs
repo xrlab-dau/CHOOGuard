@@ -2,85 +2,60 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using ChooGuard.Editor.Twin;
-
 namespace ChooGuard.Tests.EditMode
 {
     public sealed class BusanokFinishesSceneTests
     {
-        [Serializable] sealed class Dependency { public string owner; }
-        [Serializable] sealed class Entry { public string owner,source_asset;public Dependency[] companions,collider_companions; }
-        [Serializable] sealed class Registry { public Entry[] entries; }
-        [Test]
-        public void SavedTenantFinishesPreserveOtherShopsAndSupportAcrossTheSourceFloorCut()
+        static void SameChannels(Mesh source,Mesh result)
         {
-            var saved=EditorSceneManager.GetSceneManagerSetup();
-            EditorSceneManager.OpenScene("Assets/ChooGuard/Scenes/FpsStation.unity");
-            try
+            Assert.That(result.vertices,Is.EqualTo(source.vertices));Assert.That(result.normals,Is.EqualTo(source.normals));
+            Assert.That(result.tangents,Is.EqualTo(source.tangents));Assert.That(result.colors,Is.EqualTo(source.colors));
+            for(int channel=0;channel<8;channel++){var a=new List<Vector4>();var b=new List<Vector4>();source.GetUVs(channel,a);result.GetUVs(channel,b);Assert.That(b,Is.EqualTo(a));}
+        }
+        [Test]
+        public void CanonicalCeilingInstallerRequiresItsExactActiveMaterialAndUnmovedSourceCompanion()
+        {
+            using(var fixture=new CanonicalStructuralDependencyFixture("/Box_Majibang_ShopCeiling.asset"))
             {
-                var entries=JsonUtility.FromJson<Registry>(File.ReadAllText(ArchitecturalCorrectionRegistry.Registry)).entries;
-                var floorEntry=entries.Single(e=>e.source_asset.EndsWith("/Box_Majibang_3F_L.asset",StringComparison.Ordinal));
-                var ceilingEntry=entries.Single(e=>e.source_asset.EndsWith("/Box_Majibang_ShopCeiling.asset",StringComparison.Ordinal));
-                var floor=GameObject.Find(floorEntry.owner).GetComponent<MeshFilter>();
-                var ceiling=GameObject.Find(ceilingEntry.owner).GetComponent<MeshFilter>();
-                var wood=GameObject.Find(floorEntry.companions.Single().owner).GetComponent<MeshFilter>();
-                var sourceFloor=AssetDatabase.LoadAssetAtPath<Mesh>(floorEntry.source_asset);
-                var sourceCeiling=AssetDatabase.LoadAssetAtPath<Mesh>(ceilingEntry.source_asset);
-                var floorCollision=floor.GetComponent<MeshCollider>();
-                var woodCollision=GameObject.Find(floorEntry.collider_companions.Single().owner).GetComponent<MeshCollider>();
-                Assert.That(floorCollision.sharedMesh,Is.SameAs(floor.sharedMesh));
-                Assert.That(woodCollision.sharedMesh,Is.SameAs(wood.sharedMesh));
-                Assert.That(floor.sharedMesh.vertices.Take(sourceFloor.vertexCount),Is.EqualTo(sourceFloor.vertices));
-                Assert.That(floor.sharedMesh.normals.Take(sourceFloor.vertexCount),Is.EqualTo(sourceFloor.normals));
-                Assert.That(floor.sharedMesh.tangents.Take(sourceFloor.tangents.Length),Is.EqualTo(sourceFloor.tangents));
-                for(int u=0;u<8;u++)
-                {
-                    var original=new List<Vector4>();var kept=new List<Vector4>();
-                    sourceFloor.GetUVs(u,original);floor.sharedMesh.GetUVs(u,kept);
-                    Assert.That(kept.Take(original.Count),Is.EqualTo(original));
-                }
-                Assert.That(ceiling.sharedMesh.triangles,Is.EqualTo(sourceCeiling.triangles.Skip(6)));
-                Assert.That(ceiling.sharedMesh.vertices,Is.EqualTo(sourceCeiling.vertices));
-                var shadow=ceiling.transform.Find(ceiling.name+"_ShadowCaster").GetComponent<MeshFilter>();
-                Assert.That(shadow.sharedMesh,Is.SameAs(ceiling.sharedMesh));
-                Physics.SyncTransforms();
-                int insideProbes=0,outsideProbes=0;
-                foreach(float x in new[]{26.501f,26.55f,29f,31.5f,33f,36.45f,36.499f})
-                foreach(float z in new[]{-2.349f,-2.3f,0f,2.2f,4.5f,6.7f,6.749f})
-                {
-                    var point=floor.transform.TransformPoint(new Vector3(x,12.2f,z));
-                    var ray=new Ray(point+Vector3.up*.25f,Vector3.down);
-                    Assert.That(woodCollision.Raycast(ray,out var hit,.35f),Is.True,$"Missing tenant support at native {x},{z}");
-                    Assert.That(Vector3.Distance(hit.point,point),Is.LessThan(.0002f));
-                    Assert.That(floorCollision.Raycast(ray,out _,.35f),Is.False,"Tenant finish must transfer support without duplicate top faces");
-                    insideProbes++;
-                }
-                var vertices=sourceFloor.vertices;var triangles=sourceFloor.triangles;
-                for(int ordinal=0;ordinal<triangles.Length/3;ordinal++)
-                {
-                    if(ordinal==16||ordinal==18)continue;
-                    var a=vertices[triangles[ordinal*3]];var b=vertices[triangles[ordinal*3+1]];var c=vertices[triangles[ordinal*3+2]];
-                    if(Mathf.Abs(a.y-12.2f)>.00001f||Mathf.Abs(b.y-12.2f)>.00001f||Mathf.Abs(c.y-12.2f)>.00001f)continue;
-                    var point=floor.transform.TransformPoint((a+b+c)/3f);var ray=new Ray(point+Vector3.up*.25f,Vector3.down);
-                    Assert.That(floorCollision.Raycast(ray,out var hit,.35f),Is.True,"Unchanged concourse source support missing");
-                    Assert.That(Vector3.Distance(hit.point,point),Is.LessThan(.0002f));outsideProbes++;
-                }
-                Assert.That(insideProbes,Is.EqualTo(49));Assert.That(outsideProbes,Is.GreaterThanOrEqualTo(3));
-                Func<Mesh> resolve=()=>ArchitecturalCorrectionRegistry.ResolveForRebuild(sourceFloor,floorEntry.source_asset,floorEntry.owner,floor.transform.localToWorldMatrix);
-                Assert.That(resolve(),Is.SameAs(floor.sharedMesh));
-                try{woodCollision.enabled=false;Assert.Throws<InvalidDataException>(()=>resolve());}finally{woodCollision.enabled=true;}
-                Assert.That(ArchitecturalCorrectionRegistry.ResolveForRebuild(sourceCeiling,ceilingEntry.source_asset,ceilingEntry.owner,ceiling.transform.localToWorldMatrix),Is.SameAs(ceiling.sharedMesh));
+                Assert.That(fixture.Resolve(),Is.SameAs(fixture.Target));
+                var surface=fixture.Surfaces.Single();var renderer=surface.GetComponent<MeshRenderer>();
+                try{renderer.enabled=false;Assert.Throws<InvalidDataException>(()=>fixture.Resolve());}finally{renderer.enabled=true;}
+                try{surface.gameObject.SetActive(false);Assert.Throws<InvalidDataException>(()=>fixture.Resolve());}finally{surface.gameObject.SetActive(true);}
+                var position=surface.transform.position;
+                try{surface.transform.position=position+Vector3.up*.001f;Assert.Throws<InvalidDataException>(()=>fixture.Resolve());}finally{surface.transform.position=position;}
+                var original=renderer.sharedMaterial;var other=new Material(original);
+                try{renderer.sharedMaterial=other;Assert.Throws<InvalidDataException>(()=>fixture.Resolve());}
+                finally{renderer.sharedMaterial=original;UnityEngine.Object.DestroyImmediate(other);}
+                Assert.That(fixture.Resolve(),Is.SameAs(fixture.Target));
             }
-            finally
-            {
-                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
-                if(saved.Any(s=>s.isLoaded)&&saved.Count(s=>s.isActive)==1&&saved.Where(s=>s.isLoaded).All(s=>!string.IsNullOrEmpty(s.path)))
-                    EditorSceneManager.RestoreSceneManagerSetup(saved);
-            }
+        }
+        [Test]
+        public void NativeCeilingInstallerRetainsEveryOtherSourceFaceAndOriginalChannel()
+        {
+            var source=AssetDatabase.LoadAssetAtPath<Mesh>("Assets/ChooGuard/Art/StationInterior/Majibang/Box_Majibang_ShopCeiling.asset");
+            string before=ArchitecturalCorrectionRegistry.CompleteChannelDigest(source);
+            var result=BusanokFinishesSetup.RetainNativeCeiling(source);
+            try{SameChannels(source,result);Assert.That(result.triangles,Is.EqualTo(source.triangles.Skip(6)));Assert.That(ArchitecturalCorrectionRegistry.CompleteChannelDigest(source),Is.EqualTo(before));}
+            finally{UnityEngine.Object.DestroyImmediate(result);}
+            var changed=UnityEngine.Object.Instantiate(source);
+            try{var vertices=changed.vertices;vertices[0]+=Vector3.up*.01f;changed.vertices=vertices;Assert.Throws<InvalidDataException>(()=>BusanokFinishesSetup.RetainNativeCeiling(changed));}
+            finally{UnityEngine.Object.DestroyImmediate(changed);}
+        }
+        [Test]
+        public void SupersededPublicFloorUsesTheExplicitCanonicalOmissionContract()
+        {
+            var rows=(JArray)JObject.Parse(File.ReadAllText(ArchitecturalCorrectionRegistry.Registry))["entries"];
+            var row=rows.Single(entry=>((string)entry["source_asset"]).EndsWith("/Box_Majibang_3F_L.asset",StringComparison.Ordinal));
+            Assert.That((string)row["upper_native_operation"],Is.EqualTo("retire_entire_superseded_legacy_public_architectural_surface"));
+            Assert.That((string)row["upper_native_collision_policy"]["action"],Is.EqualTo("omit_on_rebuild"));
+            var retained=AssetDatabase.LoadAssetAtPath<Mesh>((string)row["replacement_asset"]);
+            Assert.That(retained.triangles,Is.Empty);Assert.That(UpperRetiredSurfaceCollisionGuard.HasNonDegenerateTriangle(retained),Is.False);
+            Assert.That(ArchitecturalCorrectionRegistry.CompleteChannelDigest(retained),Is.EqualTo((string)row["replacement_complete_channels_sha256"]));
         }
     }
 }

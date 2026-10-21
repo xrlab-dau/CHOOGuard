@@ -1,0 +1,8 @@
+# Findings
+Approved R24 cell2 boundary fixed, no source-map metrics. Navigation guide absent.
+
+Exa fresh402credits exceeded, fallbackweb+directNaver succeeded. New exactbranch: https://m.blog.naver.com/choiseula/223538014789 2024-08-06. Itscheckin Centraldaero206Busan2F matches. Downloaded57actualimages. Explicitlyexclude same-name G7buffet and Suyeongshops. Originaldesignsearchdidnotyetfindindividualarchitecturaldocs. Frontandinteriorphotos42/47/51/57 show threeglassfront, navyfascia, ownceiling, wooden spindlechairs/lightoakrecttables, white squaretilewall. Detailsbeingread.
+
+Directview42: Navyfrontfascia white raisedHangulyellowicon; centre slidingglass door, sidefixedglass, menu-panelright; lightwoodspindlechairs, lightwoodtopsblacklegs, beige-squarefloortiles, tilebacksplash; fridgewithdrinksbackleft, UVsterilizerwhitewallmountedaboveblack-basewater/utensilcabinet; yellowwovenpendantandwallfanright; mobilemenuTVfront-right. Images51/57aretrainNOTshop, excluded. Photo47squarewhiteglosswalltilevalidshopcontext. Hiddenkitchenplanabsent.
+
+R25qualityfollowupactualwebacquisition: objaverse public corpus +liveSketchfabmetadata licensed downloads RiceCooker-Toomy BY-SA4, RiceCooker-Candidate2(AyunFat) BY4, RiceCooker-Supor(jiuyue) BY4, GasStove-Lyskilde BY4, Sink-CGIME06 BY4, RestaurantKitchenSetPart1 soidev BY4, BasicBowl Blender3D BY4. Allsourcepreviewsdirectlyviewed; nofactcheckclaimsfromnamesalone. Candidate2blackcookerclosesttofieldblackshape, Toomy/Suporprofilemismatchheld. Gasstoveisdomesticoven, onlyderivedcooktop uppermeshuse, discardovenbody. Source392k sinkwillbeindependentcappedderivative, originalGLBfixed. KitchenutensilpartmodelspreservemeshwhilecleanPBRadaptedtoactualsite.

@@ -10,7 +10,7 @@ namespace ChooGuard.Tests.EditMode
 {
     public sealed class InteriorEnvelopeRepairTests
     {
-        [Serializable] sealed class MeshReceipt { public string asset; public string binary_sha256; }
+        [Serializable] sealed class MeshReceipt { public string asset; public string complete_channels_sha256; }
         [Serializable] sealed class PartitionReceipt
         {
             public MeshReceipt kit_mesh;
@@ -18,11 +18,11 @@ namespace ChooGuard.Tests.EditMode
             public int[] preserve_remaining_triangle_ordinals;
         }
         [Test]
-        public void ActualPartitionPreservesEveryUnrelatedFixtureTriangleAndOriginalChannels()
+        public void PinnedPartitionPreservesEveryUnrelatedFixtureTriangleAndCompleteChannels()
         {
-            var receipt = JsonUtility.FromJson<PartitionReceipt>(File.ReadAllText(".planning/2026-10-08-interior-runtime-completion/architecture-kitshop-overlap.json"));
+            var receipt = JsonUtility.FromJson<PartitionReceipt>(File.ReadAllText("content/fixtures/architecture/retained-shop-collision-partition.json"));
             var source = AssetDatabase.LoadAssetAtPath<Mesh>(receipt.kit_mesh.asset);
-            Assert.That(InteriorEnvelopeRepair.MeshDigest(source), Is.EqualTo(receipt.kit_mesh.binary_sha256));
+            Assert.That(ArchitecturalCorrectionRegistry.CompleteChannelDigest(source), Is.EqualTo(receipt.kit_mesh.complete_channels_sha256));
             var original = source.triangles;
             var result = InteriorEnvelopeRepair.KeepOtherTriangles(source, receipt.duplicate_kit_triangle_ordinals);
             try

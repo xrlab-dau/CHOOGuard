@@ -1,0 +1,7 @@
+{
+  "source_url": "https://www.korailretail.com/board/boardDetail.do?boardTypeNum=4&boardNum=100083825",
+  "functions": [
+    "function downFile(dirName, fileName, originName){\r\n\t\twindow.open(\"/board/fileDown2.do?dirName=\"+dirName+\"&fileName=\"+fileName+\"&originName=\"+encodeURI(originName)+\"\");\r\n\t}"
+  ],
+  "inference": "Published JS does raw dirname/fileName concatenation and encodeURI(originName), not extra/double encoding; matches previous endpoints. Minimal-UA versus full document request is the only new transport method tested."
+}

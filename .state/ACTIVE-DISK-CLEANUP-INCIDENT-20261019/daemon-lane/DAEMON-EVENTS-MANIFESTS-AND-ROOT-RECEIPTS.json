@@ -1,0 +1,305 @@
+{
+  "audit_utc": "2026-10-19T03:16:14.190266+00:00",
+  "current_config": {
+    "schema_version": 1,
+    "project_root": "/Users/um-yunsang/CHOOGuard",
+    "enabled": false,
+    "allowed_roots": [
+      "Logs",
+      ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14"
+    ],
+    "approved_manifests": [
+      {
+        "path": ".state/cleanup-daemon/retirements/expired-unity-prev-logs-20261019.json",
+        "sha256": "6b40e3d7cf89b022a94e02a54423f4b3067f043a2c2f6abb96d14d3d74b32000"
+      },
+      {
+        "path": ".state/cleanup-daemon/retirements/completed-r14-derived-intermediates-20261019.json",
+        "sha256": "0d97da40f69ae5e08f7741a4b0bdaaffcc774ff073dca8bf643504944b01b755"
+      }
+    ],
+    "recurring_expired_files": [
+      {
+        "path": "Logs/AssetImportWorker0-prev.log",
+        "quiet_seconds": 3600,
+        "reason": "Root approved previous Unity import log; exact leaf only, stable and closed before deletion."
+      },
+      {
+        "path": "Logs/AssetImportWorker1-prev.log",
+        "quiet_seconds": 3600,
+        "reason": "Root approved previous Unity import log; exact leaf only, stable and closed before deletion."
+      }
+    ],
+    "protected_paths": [
+      ".planning/2026-10-18-worker-direct-scene-apply-c180",
+      ".planning/2026-10-19-continuous-disk-cleanup",
+      ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14",
+      ".planning/2026-10-19-all2f-photo-location-digital-twin-r15",
+      ".planning/2026-10-19-aggressive-disk-recovery"
+    ],
+    "active_plans": [
+      ".planning/2026-10-19-continuous-disk-cleanup"
+    ],
+    "quiet_seconds": 3600,
+    "normal_free_bytes": 32212254720,
+    "critical_free_bytes": 12884901888,
+    "max_entries_per_cycle": 2000,
+    "max_files_per_cycle": 1000,
+    "max_bytes_per_cycle": 4294967296,
+    "max_seconds_per_cycle": 20,
+    "log_max_bytes": 524288,
+    "log_backups": 2
+  },
+  "last_four_cycles": [
+    {
+      "utc": "2026-10-19T02:56:41.686863+00:00",
+      "event": "cycle",
+      "mode": "apply",
+      "status": "complete",
+      "free_before_bytes": 4434407424,
+      "pressure": "critical",
+      "scanned": 9,
+      "eligible": 5,
+      "deleted_files": 5,
+      "deleted_logical_bytes": 472755,
+      "skipped": 4,
+      "errors": 0,
+      "skip_reasons": {
+        "recurring_absent": 2,
+        "already_absent": 2
+      },
+      "error_streak": 0,
+      "manifest_cursor": 1,
+      "recurring_observations": {},
+      "last_cycle_utc": "2026-10-19T02:56:41.686863+00:00",
+      "next_due_utc": "2026-10-19T03:01:41.686839+00:00",
+      "free_after_bytes": 4434759680,
+      "observed_free_delta_bytes": 352256,
+      "elapsed_seconds": 0.017,
+      "next_scheduler_seconds": 300,
+      "_log": ".state/cleanup-daemon/events.jsonl",
+      "_line": 21
+    },
+    {
+      "utc": "2026-10-19T03:01:41.702778+00:00",
+      "event": "cycle",
+      "mode": "apply",
+      "status": "complete",
+      "free_before_bytes": 12412301312,
+      "pressure": "critical",
+      "scanned": 9,
+      "eligible": 0,
+      "deleted_files": 0,
+      "deleted_logical_bytes": 0,
+      "skipped": 9,
+      "errors": 0,
+      "skip_reasons": {
+        "recurring_absent": 2,
+        "Protected current/source path": 5,
+        "already_absent": 2
+      },
+      "error_streak": 0,
+      "manifest_cursor": 0,
+      "recurring_observations": {},
+      "last_cycle_utc": "2026-10-19T03:01:41.702778+00:00",
+      "next_due_utc": "2026-10-19T03:06:41.702767+00:00",
+      "free_after_bytes": 12412301312,
+      "observed_free_delta_bytes": 0,
+      "elapsed_seconds": 0.005,
+      "next_scheduler_seconds": 300,
+      "_log": ".state/cleanup-daemon/events.jsonl",
+      "_line": 22
+    },
+    {
+      "utc": "2026-10-19T03:06:41.767114+00:00",
+      "event": "cycle",
+      "mode": "apply",
+      "status": "complete",
+      "free_before_bytes": 12377104384,
+      "pressure": "critical",
+      "scanned": 9,
+      "eligible": 0,
+      "deleted_files": 0,
+      "deleted_logical_bytes": 0,
+      "skipped": 9,
+      "errors": 0,
+      "skip_reasons": {
+        "recurring_absent": 2,
+        "already_absent": 2,
+        "Protected current/source path": 5
+      },
+      "error_streak": 0,
+      "manifest_cursor": 1,
+      "recurring_observations": {},
+      "last_cycle_utc": "2026-10-19T03:06:41.767114+00:00",
+      "next_due_utc": "2026-10-19T03:11:41.767095+00:00",
+      "free_after_bytes": 12377104384,
+      "observed_free_delta_bytes": 0,
+      "elapsed_seconds": 0.004,
+      "next_scheduler_seconds": 300,
+      "_log": ".state/cleanup-daemon/events.jsonl",
+      "_line": 23
+    },
+    {
+      "utc": "2026-10-19T03:11:41.807663+00:00",
+      "event": "cycle",
+      "mode": "apply",
+      "status": "native_writer_busy",
+      "free_before_bytes": 12211224576,
+      "pressure": "critical",
+      "scanned": 0,
+      "eligible": 0,
+      "deleted_files": 0,
+      "deleted_logical_bytes": 0,
+      "skipped": 0,
+      "errors": 0,
+      "skip_reasons": {},
+      "error_streak": 0,
+      "manifest_cursor": 0,
+      "recurring_observations": {},
+      "last_cycle_utc": "2026-10-19T03:11:41.807663+00:00",
+      "next_due_utc": "2026-10-19T03:16:41.807642+00:00",
+      "detail": "Active or pending C180 lease; cleanup yields",
+      "free_after_bytes": 12211224576,
+      "observed_free_delta_bytes": 0,
+      "elapsed_seconds": 0.001,
+      "next_scheduler_seconds": 300,
+      "_log": ".state/cleanup-daemon/events.jsonl",
+      "_line": 24
+    }
+  ],
+  "all_logged_deletions": [
+    {
+      "utc": "2026-10-18T20:58:14.482598+00:00",
+      "event": "deleted",
+      "path": "Logs/AssetImportWorker0-prev.log",
+      "manifest": "6b40e3d7cf89b022a94e02a54423f4b3067f043a2c2f6abb96d14d3d74b32000",
+      "logical_bytes": 7457267,
+      "_log": ".state/cleanup-daemon/events.jsonl",
+      "_line": 5
+    },
+    {
+      "utc": "2026-10-18T20:58:14.483980+00:00",
+      "event": "deleted",
+      "path": "Logs/AssetImportWorker1-prev.log",
+      "manifest": "6b40e3d7cf89b022a94e02a54423f4b3067f043a2c2f6abb96d14d3d74b32000",
+      "logical_bytes": 7568881,
+      "_log": ".state/cleanup-daemon/events.jsonl",
+      "_line": 6
+    },
+    {
+      "utc": "2026-10-19T02:56:41.695704+00:00",
+      "event": "deleted",
+      "path": ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/geometry/ACTUAL-CURRENT-STRUCTURAL-REGION-CONTEXT-R14.png",
+      "manifest": "0d97da40f69ae5e08f7741a4b0bdaaffcc774ff073dca8bf643504944b01b755",
+      "logical_bytes": 39048,
+      "_log": ".state/cleanup-daemon/events.jsonl",
+      "_line": 16
+    },
+    {
+      "utc": "2026-10-19T02:56:41.699159+00:00",
+      "event": "deleted",
+      "path": ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/source/PRIMARY-20240321-BUSAN-201-PAGE3.png",
+      "manifest": "0d97da40f69ae5e08f7741a4b0bdaaffcc774ff073dca8bf643504944b01b755",
+      "logical_bytes": 432347,
+      "_log": ".state/cleanup-daemon/events.jsonl",
+      "_line": 17
+    },
+    {
+      "utc": "2026-10-19T02:56:41.700938+00:00",
+      "event": "deleted",
+      "path": ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/research/root-search-0.json",
+      "manifest": "0d97da40f69ae5e08f7741a4b0bdaaffcc774ff073dca8bf643504944b01b755",
+      "logical_bytes": 474,
+      "_log": ".state/cleanup-daemon/events.jsonl",
+      "_line": 18
+    },
+    {
+      "utc": "2026-10-19T02:56:41.702320+00:00",
+      "event": "deleted",
+      "path": ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/research/root-search-1.json",
+      "manifest": "0d97da40f69ae5e08f7741a4b0bdaaffcc774ff073dca8bf643504944b01b755",
+      "logical_bytes": 458,
+      "_log": ".state/cleanup-daemon/events.jsonl",
+      "_line": 19
+    },
+    {
+      "utc": "2026-10-19T02:56:41.703673+00:00",
+      "event": "deleted",
+      "path": ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/research/root-search-2.json",
+      "manifest": "0d97da40f69ae5e08f7741a4b0bdaaffcc774ff073dca8bf643504944b01b755",
+      "logical_bytes": 428,
+      "_log": ".state/cleanup-daemon/events.jsonl",
+      "_line": 20
+    }
+  ],
+  "all_logged_R15_R17_deletions": [],
+  "registered_manifests": [
+    {
+      "path": ".state/cleanup-daemon/retirements/expired-unity-prev-logs-20261019.json",
+      "expected_sha256": "6b40e3d7cf89b022a94e02a54423f4b3067f043a2c2f6abb96d14d3d74b32000",
+      "actual_sha256": "6b40e3d7cf89b022a94e02a54423f4b3067f043a2c2f6abb96d14d3d74b32000",
+      "entries": [
+        "Logs/AssetImportWorker0-prev.log",
+        "Logs/AssetImportWorker1-prev.log"
+      ]
+    },
+    {
+      "path": ".state/cleanup-daemon/retirements/completed-r14-derived-intermediates-20261019.json",
+      "expected_sha256": "0d97da40f69ae5e08f7741a4b0bdaaffcc774ff073dca8bf643504944b01b755",
+      "actual_sha256": "0d97da40f69ae5e08f7741a4b0bdaaffcc774ff073dca8bf643504944b01b755",
+      "entries": [
+        ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/geometry/ACTUAL-CURRENT-STRUCTURAL-REGION-CONTEXT-R14.png",
+        ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/source/PRIMARY-20240321-BUSAN-201-PAGE3.png",
+        ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/research/root-search-0.json",
+        ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/research/root-search-1.json",
+        ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/research/root-search-2.json"
+      ]
+    }
+  ],
+  "preserved_manual_receipt_paths": [
+    {
+      "receipt": ".state/cleanup-daemon/ROOT-EMERGENCY-RETIRED-GENERATED-EXPORTS-20261019.json",
+      "utc": "2026-10-18T21:20:59.355979+00:00",
+      "recorded_paths": [
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/blue-cut-registration/geometry/CURRENT-CAD-WITH-ALL-BLUE-CUT-SOURCE-FRAGMENTS.json",
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/blue-cut-registration/structural-fit/geometry/STRUCTURALLY-REGISTERED-ALL-SOURCE-INK.json",
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/sectioned-source-overlap-20261019/geometry/SECTIONED-ORIGINAL-OVER-CURRENT-FIXED-2F-CAD.json",
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/vector-construction-overlay-20261019/cad/VECTOR-CONSTRUCTED-2F-PLAN-OVERLAY-NO-TEXT.dxf",
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/vector-construction-overlay-20261019/geometry/VECTOR-CONSTRUCTED-2F-OVERLAY.json",
+        ".planning/2026-10-19-east-wc-user-corrections-r4/east-author/ACTUAL-CURRENT-EAST-R4-CONSTRUCTION-GEOMETRY.json",
+        ".planning/2026-10-19-replace-2f-wc-from-current-1f/native-author/ACTUAL-SOURCE-TARGET-ENVELOPE-INPUT.json"
+      ],
+      "R15_R17_matches": []
+    },
+    {
+      "receipt": ".state/cleanup-daemon/ROOT-EMERGENCY-RETIRED-COMPLETED-RAW-SNAPSHOTS-20261019.json",
+      "utc": "2026-10-18T21:21:23.553436+00:00",
+      "recorded_paths": [
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/all-user-blue-crops-and-missing-columns-20261019/height-repair-r12/inputs/CURRENT-HEIGHT-REPAIR-INPUT-R12.json",
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/all-user-blue-crops-and-missing-columns-20261019/height-repair-r12/receipts/APPLIED-ALL-GENERATED-2F-WALL-HEIGHT-REPAIR-R12.json",
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/all-user-blue-crops-and-missing-columns-20261019/height-unification-r13/inputs/ACTUAL-REFERENCE-AND-2F-WALL-COLUMN-INPUT-R13.json",
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/all-user-blue-crops-and-missing-columns-20261019/height-unification-r13/receipts/ALL-CURRENT-2F-WALL-COLUMN-TOPS-COMPLETED-R13.json",
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/all-user-blue-crops-and-missing-columns-20261019/marked-lower-walls-to-2f-r5/receipts/APPLIED-MARKED-CURRENT-LOWER-WALLS-R5.json",
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/all-user-blue-crops-and-missing-columns-20261019/marked-lower-walls-to-2f-r5/source-live/CURRENT-MARKED-LOWER-WALL-SOURCES.json"
+      ],
+      "R15_R17_matches": []
+    },
+    {
+      "receipt": ".state/cleanup-daemon/ROOT-RETIRED-SUPERSEDED-DXF-20261019.json",
+      "utc": "2026-10-18T20:49:03.615156+00:00",
+      "recorded_paths": [
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/blue-cut-registration/cad/BLUE-CUT-ORIGINAL-OVER-CURRENT-2F-CAD-NO-TEXT.dxf",
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/blue-cut-registration/structural-fit/cad/STRUCTURALLY-FITTED-ORIGINAL-OVER-CURRENT-2F-CAD-NO-TEXT.dxf",
+        ".planning/2026-10-18-all-live-scene-original-2f-vector-cad/sectioned-source-overlap-20261019/cad/SECTIONED-ORIGINAL-2F-OVER-CURRENT-CAD-10PCT-NO-TEXT.dxf"
+      ],
+      "R15_R17_matches": []
+    }
+  ],
+  "current_aggressive_recovery_pointer": {
+    "utc": "2026-10-19T03:03:22.188601+00:00",
+    "status": "BOUNDED_AGGRESSIVE_DISK_RECOVERY_APPLIED",
+    "receipt": ".planning/2026-10-19-aggressive-disk-recovery/COMPLETED-DISK-RECOVERY.json",
+    "current_free_bytes": 12387401728
+  }
+}

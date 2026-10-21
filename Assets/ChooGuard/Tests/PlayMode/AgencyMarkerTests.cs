@@ -36,7 +36,7 @@ namespace ChooGuard.Tests.PlayMode
     /// 없기 때문**이고, 시험이 보는 것은 "지도에 무엇이 전달됐는가" — 플레이어가 보는 것과 같다.
     /// 못 찾은 멤버는 추측하지 않고 실패로 보고한다.
     /// </remarks>
-    public sealed class AgencyMarkerTests
+    public sealed class AgencyMarkerTests : RetainedEmergencySessionFixture
     {
         private const BindingFlags Members = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
         // 출동 상태 줄은 견학에서만 뜬다(#276 안내 수준). 사용자의 안내 설정을 그대로 되돌리려고 원래 값을 그대로 둔다.

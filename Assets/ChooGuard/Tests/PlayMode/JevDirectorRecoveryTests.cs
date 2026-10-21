@@ -15,7 +15,7 @@ namespace ChooGuard.Tests.PlayMode
 {
     // These tests use candidates listed by the real station, with offline JEV replies.
     // They check delivery, not which incident is drawn or when one should occur.
-    public sealed class JevDirectorRecoveryTests
+    public sealed class JevDirectorRecoveryTests : RetainedEmergencySessionFixture
     {
         private const BindingFlags Members = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
         private EmergencySession shift;
@@ -34,8 +34,23 @@ namespace ChooGuard.Tests.PlayMode
         {
             savedKey = Environment.GetEnvironmentVariable(JevKey.Variable);
             Environment.SetEnvironmentVariable(JevKey.Variable, "off");
-            EmergencySession.NextSeed = 20261013;
             yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
+            yield return LoadFreshShift();
+            // Only this disabled director receives a test client. Crowd/scene JEV stays off.
+            Environment.SetEnvironmentVariable(JevKey.Variable, "issue280-offline-test-key");
+            client = new JevClient(null);
+            Environment.SetEnvironmentVariable(JevKey.Variable, "off");
+            Set(director, "jev", client);
+            budget = (JevBudget)Field(client, "budget");
+            connection = (JevConnection)Field(client, "connection");
+        }
+
+        // A real shift permits one independent incident. Recovery sub-scenarios
+        // that need another origin must start another shift, not reset director state
+        // or reuse a consumed origin. Keep the same offline accounting objects.
+        private IEnumerator LoadFreshShift()
+        {
+            EmergencySession.NextSeed = 20261013;
             yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
             float end = Time.realtimeSinceStartup + 120;
             while ((EmergencySession.Current?.Incidents == null || EmergencySession.Current.Crowd == null) && Time.realtimeSinceStartup < end) yield return null;
@@ -53,13 +68,48 @@ namespace ChooGuard.Tests.PlayMode
             var roster = Activator.CreateInstance(rosterType, new object[] { director });
             foreach (var _ in (IEnumerable)Call(director, "OriginSteps", list, roster)) { }
             Call(director, "Reconcile", list);
-            // Only this disabled director receives a test client. Crowd/scene JEV stays off.
-            Environment.SetEnvironmentVariable(JevKey.Variable, "issue280-offline-test-key");
-            client = new JevClient(null);
-            Environment.SetEnvironmentVariable(JevKey.Variable, "off");
+        }
+
+        private IEnumerator RestartShiftForIndependentOrigin()
+        {
+            var samePlayer = shift.Player;
+            var sameObstacle = samePlayer.GetComponent<UnityEngine.AI.NavMeshObstacle>();
+            Assert.That(sameObstacle, Is.Not.Null, "A started shift must have its player's avoidance capsule");
+            Assert.That(samePlayer.GetComponents<UnityEngine.AI.NavMeshObstacle>(), Has.Length.EqualTo(1));
+            // Native readbacks are the owned configuration baseline, not a claim
+            // that the engine roundtrips setter literals with identical float bits.
+            float sameRadius = sameObstacle.radius, sameHeight = sameObstacle.height;
+            var sameCenter = sameObstacle.center;
+            var sameClient = client;
+            var sameBudget = budget;
+            var sameConnection = connection;
+            long requestsBefore = client.Usage.Requests;
+            director.StopAllCoroutines();
+            Set(director, "jev", shift.Jev);
+            var station = SceneManager.GetSceneByName(SceneFlow.StationScene);
+            var emergency = SceneManager.GetSceneByName(SceneFlow.EmergencyScene);
+            Assert.That(station.isLoaded, Is.True);
+            Assert.That(emergency.isLoaded, Is.True);
+            SceneManager.SetActiveScene(station);
+            yield return SceneManager.UnloadSceneAsync(emergency);
+            Assert.That(EmergencySession.Current, Is.Null, "The prior incident's shift must actually end before another origin is listed.");
+            yield return LoadFreshShift();
+            Assert.That(shift.Player, Is.SameAs(samePlayer), "An additive restart retains the station player");
+            Assert.That(shift.Player.GetComponent<UnityEngine.AI.NavMeshObstacle>(), Is.SameAs(sameObstacle),
+                "Starting another shift must reuse the same player-lifetime obstacle");
+            Assert.That(shift.Player.GetComponents<UnityEngine.AI.NavMeshObstacle>(), Has.Length.EqualTo(1));
+            Assert.That(sameObstacle.enabled, Is.True);
+            Assert.That(sameObstacle.shape, Is.EqualTo(UnityEngine.AI.NavMeshObstacleShape.Capsule));
+            Assert.That(sameObstacle.radius, Is.EqualTo(sameRadius));
+            Assert.That(sameObstacle.height, Is.EqualTo(sameHeight));
+            Assert.That(sameObstacle.center.Equals(sameCenter), Is.True);
+            Assert.That(sameObstacle.carving, Is.False);
             Set(director, "jev", client);
-            budget = (JevBudget)Field(client, "budget");
-            connection = (JevConnection)Field(client, "connection");
+            Assert.That(director.Stage, Is.EqualTo(IncidentDirector.Phase.Calm));
+            Assert.That(client, Is.SameAs(sameClient));
+            Assert.That(Field(client, "budget"), Is.SameAs(sameBudget));
+            Assert.That(Field(client, "connection"), Is.SameAs(sameConnection));
+            Assert.That(client.Usage.Requests, Is.EqualTo(requestsBefore), "Starting another world shift must not reset offline request accounting.");
         }
 
         [UnityTearDown]
@@ -107,9 +157,12 @@ namespace ChooGuard.Tests.PlayMode
         {
             var candidates = LiveCandidates();
             Assert.That(candidates.Length, Is.GreaterThanOrEqualTo(2), "Cover multiple real origin kinds, not one fixed incident.");
-            foreach (var candidate in candidates.Take(2))
+            var kinds = candidates.Take(2).Select(candidate => (string)Field(Field(candidate, "Transition"), "Kind")).ToArray();
+            for (int i = 0; i < kinds.Length; i++)
             {
-                if (Call(director, "Fresh", candidate) == null) continue;
+                if (i > 0) yield return RestartShiftForIndependentOrigin();
+                var candidate = LiveCandidates().Single(current => (string)Field(Field(current, "Transition"), "Kind") == kinds[i]);
+                Assert.That(Call(director, "Fresh", candidate), Is.Not.Null, "Each distinct origin kind must be exercised in its own live shift.");
                 var ticket = budget.Begin(JevLane.Director, Time.realtimeSinceStartup, 100);
                 int requests = 0, before = shift.Log.Events;
                 var pending = Chosen(candidate, (state, question, done) => { requests++; return Answer(question, done); });
@@ -154,6 +207,7 @@ namespace ChooGuard.Tests.PlayMode
                 Assert.That(Field(director, "applying"), Is.False);
             }
             finally { ((IDisposable)pending).Dispose(); }
+            yield return RestartShiftForIndependentOrigin();
             candidate = LiveCandidates().First();
             ticket = budget.Begin(JevLane.Director, Time.realtimeSinceStartup, JevBudget.MaxTokensPerMinute);
             budget.End(ticket, JevBudget.MaxTokensPerMinute, 0, false);
@@ -307,6 +361,7 @@ namespace ChooGuard.Tests.PlayMode
                 Assert.That(Field(director, "applying"), Is.False);
             }
             finally { ((IDisposable)pending).Dispose(); }
+            yield return RestartShiftForIndependentOrigin();
             var other = LiveCandidates().First();
             requests = 0;
             before = shift.Log.Events;

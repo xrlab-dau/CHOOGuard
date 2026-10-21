@@ -80,7 +80,16 @@ namespace ChooGuard.Seeded.Unity
         JArray navigationObservations;
         Material npcMaterial,toolMaterial,fireMaterial;
 
-        void Awake(){try{if(string.IsNullOrEmpty(InitialSeed))NewSeed();Prepare();}catch(Exception e){Status="역 준비 실패: "+e.Message;Debug.LogException(e);}}
+        // The explicit legacy fixture restores this nonserialized default-false seam in finally.
+        // It is always compiled: runtime assemblies need not define UNITY_INCLUDE_TESTS.
+        internal static bool DeferPreparationForLegacyTests { get; set; }
+
+        void Awake()
+        {
+            if (DeferPreparationForLegacyTests) return;
+            try{if(string.IsNullOrEmpty(InitialSeed))NewSeed();Prepare();}
+            catch(Exception e){Status="역 준비 실패: "+e.Message;Debug.LogException(e);}
+        }
         public void NewSeed()
         {
             if(Running)return;var bytes=new byte[8];using(var random=System.Security.Cryptography.RandomNumberGenerator.Create())random.GetBytes(bytes);

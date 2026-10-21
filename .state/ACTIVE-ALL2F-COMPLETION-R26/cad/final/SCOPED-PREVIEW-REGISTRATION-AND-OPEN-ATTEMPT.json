@@ -1,0 +1,30 @@
+{
+  "utc": "2026-10-19T11:43:31.880727+00:00",
+  "scope": "Preview app registration only; no globalLSreset/default-handler/credentials/Scenechanges",
+  "attempts": [
+    {
+      "command": [
+        "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister",
+        "-f",
+        "/System/Applications/Preview.app"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "failed to scan /System/Applications/Preview.app: -10822\n from spotlight"
+    },
+    {
+      "command": [
+        "/usr/bin/open",
+        "-a",
+        "/System/Applications/Preview.app",
+        "/Users/um-yunsang/CHOOGuard/.state/ACTIVE-ALL2F-COMPLETION-R26/cad/output-007/CURRENT-LIVE-2F-OBJECT-VECTOR-CAD-R26-NO-TEXT.pdf"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "The application /System/Applications/Preview.app cannot be opened for an unexpected reason, error=Error Domain=NSOSStatusErrorDomain Code=-10827 \"kLSNoExecutableErr: The executable is missing\" UserInfo={_LSLine=4277, _LSFunction=_LSOpenStuffCallLocal, _LSFile=LSOpenCore.mm, _LSErrorMessage=kLSNoExecutableErr}\n"
+    }
+  ],
+  "source_documentation": "https://developer.apple.com/documentation/coreservices/1446350-lsregisterurl",
+  "opened": false,
+  "window_visibility_not_captured": true
+}

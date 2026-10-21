@@ -16,6 +16,9 @@ namespace ChooGuard.App.Fps.Emergency
         public Vector3[] path;
         // Exact collider paths from the proof packet, not broad name exemptions.
         public string[] floorOwners;
+        IReadOnlyList<Vector3> sourcePath;
+        public IReadOnlyList<Vector3> SourcePath=>sourcePath??Array.AsReadOnly((Vector3[])path.Clone());
+        public string CurrentSourceProof {get;private set;}
         public Vector3 Start => path[0];
         public Vector3 End => path[path.Length - 1];
         public float Length
@@ -31,6 +34,30 @@ namespace ChooGuard.App.Fps.Emergency
                 if (float.IsNaN(p.x) || float.IsNaN(p.y) || float.IsNaN(p.z) || float.IsInfinity(p.x) || float.IsInfinity(p.y) || float.IsInfinity(p.z) || Mathf.Abs(p.y - Start.y) > .4f)
                     throw new InvalidOperationException("Invalid same-floor route point: " + id);
             if (Vector3.Distance(Start, End) < .1f || Length > 40f) throw new InvalidOperationException("Invalid native walking route bounds: " + id);
+        }
+        internal StationWalkingRouteEntry WithCurrentFloorOwners(IEnumerable<string> exposedCurrentOwners)
+        {
+            Validate();
+            if(exposedCurrentOwners==null)throw new ArgumentNullException(nameof(exposedCurrentOwners));
+            var owners=new SortedSet<string>(floorOwners,StringComparer.Ordinal);
+            foreach(var owner in exposedCurrentOwners)
+            {
+                if(string.IsNullOrWhiteSpace(owner))throw new InvalidOperationException("Blank current exposed floor authority: "+id);
+                owners.Add(owner);
+            }
+            return new StationWalkingRouteEntry {id=id,label=label,proof=proof,physicalVerified=physicalVerified,
+                path=(Vector3[])path.Clone(),floorOwners=new List<string>(owners).ToArray(),sourcePath=sourcePath,CurrentSourceProof=CurrentSourceProof};
+        }
+        internal StationWalkingRouteEntry WithCurrentPublicPath(Vector3[] publicPath,string evidence)
+        {
+            Validate();
+            if(publicPath==null||string.IsNullOrWhiteSpace(evidence))
+                throw new InvalidOperationException("Current public walking path/provenance is incomplete: "+id);
+            var retained=SourcePath;var original=new Vector3[retained.Count];for(int i=0;i<original.Length;i++)original[i]=retained[i];
+            var entry=new StationWalkingRouteEntry {id=id,label=label,proof=proof,physicalVerified=physicalVerified,
+                path=(Vector3[])publicPath.Clone(),floorOwners=(string[])floorOwners.Clone(),
+                sourcePath=Array.AsReadOnly(original),CurrentSourceProof=evidence};
+            entry.Validate();return entry;
         }
         public NavMeshLinkData LinkData(int agentType = 0) => new NavMeshLinkData
         {
@@ -50,6 +77,71 @@ namespace ChooGuard.App.Fps.Emergency
             var result = (Vector3[])path.Clone();
             if (reverse) Array.Reverse(result);
             return result;
+        }
+    }
+
+    public enum StationWalkingRouteBindingStatus { BOUND_CURRENT_SOURCE, UNBOUND_SOURCE_OBSTRUCTED }
+
+    /// <summary>Complete historical-candidate audit; unbound never means the physical passage is absent.</summary>
+    public sealed class StationWalkingRouteBinding
+    {
+        public string SourceId {get;}
+        public IReadOnlyList<Vector3> SourcePath {get;}
+        public StationWalkingRouteBindingStatus Status {get;}
+        public StationWalkingRouteEntry CurrentEntry {get;}
+        public string SourceEvidence {get;}
+        public string AlternativeEvidence {get;}
+        public bool Qualified=>Status==StationWalkingRouteBindingStatus.BOUND_CURRENT_SOURCE;
+
+        internal StationWalkingRouteBinding(StationWalkingRouteEntry source,StationWalkingRouteEntry current):this(source,current,null,null) { }
+        internal StationWalkingRouteBinding(StationWalkingRouteEntry source,
+            CurrentStationNavigation.CurrentWalkingClearanceFailure obstruction,CurrentStationNavigation.CurrentWalkingSurfaceRejection alternative):
+            this(source,null,RequireStaticSourceObstruction(obstruction),alternative?.Message??throw new ArgumentNullException(nameof(alternative))) { }
+        static string RequireStaticSourceObstruction(CurrentStationNavigation.CurrentWalkingClearanceFailure obstruction)
+        {
+            if(obstruction==null||!obstruction.StaticCurrentSource)throw new InvalidOperationException("Unknown/foreign/dynamic walking obstruction cannot unbind a source candidate");
+            return obstruction.Message;
+        }
+        private StationWalkingRouteBinding(StationWalkingRouteEntry source,StationWalkingRouteEntry current,
+            string sourceObstruction,string rejectedAlternative)
+        {
+            if(source==null)throw new ArgumentNullException(nameof(source));source.Validate();SourceId=source.id;
+            var raw=source.SourcePath;var copy=new Vector3[raw.Count];for(int i=0;i<copy.Length;i++)copy[i]=raw[i];SourcePath=Array.AsReadOnly(copy);
+            if(current!=null)
+            {
+                current.Validate();
+                if(current.id!=SourceId||current.SourcePath.Count!=copy.Length||string.IsNullOrWhiteSpace(current.CurrentSourceProof))
+                    throw new InvalidOperationException("Incomplete current walking source correspondence: "+SourceId);
+                for(int i=0;i<copy.Length;i++)if(!copy[i].Equals(current.SourcePath[i]))
+                    throw new InvalidOperationException("Current walking binding changed raw source path: "+SourceId);
+                if(sourceObstruction!=null||rejectedAlternative!=null)throw new InvalidOperationException("Ambiguous current walking binding: "+SourceId);
+                Status=StationWalkingRouteBindingStatus.BOUND_CURRENT_SOURCE;CurrentEntry=current;SourceEvidence=current.CurrentSourceProof;
+                AlternativeEvidence="NOT_NEEDED_OR_FULLY_QUALIFIED";
+            }
+            else
+            {
+                if(string.IsNullOrWhiteSpace(sourceObstruction)||string.IsNullOrWhiteSpace(rejectedAlternative))
+                    throw new InvalidOperationException("Unbound walking candidate lacks positive source obstruction and typed alternative rejection: "+SourceId);
+                Status=StationWalkingRouteBindingStatus.UNBOUND_SOURCE_OBSTRUCTED;SourceEvidence=sourceObstruction;
+                AlternativeEvidence="UNQUALIFIED_NAV_SURFACE_BOUNDARY; "+rejectedAlternative+
+                    "; this historical candidate has no qualified current route; alternative passage existence remains unqualified, not absent";
+            }
+        }
+
+        internal static void RequireCompletePartition(IReadOnlyList<StationWalkingRouteEntry> raw,IReadOnlyList<StationWalkingRouteBinding> bindings)
+        {
+            if(raw==null||bindings==null||raw.Count!=bindings.Count)throw new InvalidOperationException("Incomplete raw/current walking-candidate partition");
+            var ids=new HashSet<string>(StringComparer.Ordinal);
+            for(int i=0;i<raw.Count;i++)
+            {
+                raw[i].Validate();var row=bindings[i];
+                if(row==null||row.SourceId!=raw[i].id||!ids.Add(row.SourceId)||row.SourcePath.Count!=raw[i].SourcePath.Count)
+                    throw new InvalidOperationException("Walking-candidate identity/order/coverage mismatch");
+                for(int j=0;j<row.SourcePath.Count;j++)if(!row.SourcePath[j].Equals(raw[i].SourcePath[j]))
+                    throw new InvalidOperationException("Walking-candidate raw source pose changed: "+row.SourceId);
+                if(row.Status!=StationWalkingRouteBindingStatus.BOUND_CURRENT_SOURCE&&row.Status!=StationWalkingRouteBindingStatus.UNBOUND_SOURCE_OBSTRUCTED||
+                    row.Qualified!=(row.CurrentEntry!=null))throw new InvalidOperationException("Walking-candidate current availability mismatch: "+row.SourceId);
+            }
         }
     }
 
@@ -142,7 +234,18 @@ namespace ChooGuard.App.Fps.Emergency
         {
             string p = t.name; while (t.parent != null) { t = t.parent; p = t.name + "/" + p; } return p;
         }
-        public static bool Floor(Vector3 staged, StationWalkingRouteEntry route, GameObject actor, out float height)
+        public static bool Floor(Vector3 staged, StationWalkingRouteEntry route, GameObject actor, out float height) =>
+            Floor(staged,route,actor,null,out height);
+
+        // Current-source binding may recognize only an actual exposed collider from
+        // the independently installed required-floor registry. The ordinary public
+        // walking policy continues to use its exact route owner paths alone.
+        internal static bool Floor(Vector3 staged, StationWalkingRouteEntry route, GameObject actor,
+            Func<Collider,bool> currentSourceOwner,out float height)
+            =>Floor(staged,route,actor,currentSourceOwner,null,out height);
+
+        internal static bool Floor(Vector3 staged,StationWalkingRouteEntry route,GameObject actor,
+            Func<Collider,bool> currentSourceOwner,Func<Collider,bool> currentSourceEligible,out float height)
         {
             height = float.NegativeInfinity;
             float lowest = float.PositiveInfinity;
@@ -155,7 +258,9 @@ namespace ChooGuard.App.Fps.Emergency
                 RaycastHit top = default; bool found = false;
                 foreach (var hit in hits)
                     if (hit.collider.gameObject != actor && hit.collider.GetComponentInParent<PersonBody>() == null && (!found || hit.distance < top.distance)) { top = hit; found = true; }
-                if (!found || top.normal.y < .9f || Array.IndexOf(route.floorOwners, Path(top.collider.transform)) < 0) return false;
+                if (!found || currentSourceEligible!=null&&!currentSourceEligible(top.collider) || top.normal.y < .9f) return false;
+                if (Array.IndexOf(route.floorOwners, Path(top.collider.transform)) < 0 &&
+                    (currentSourceOwner == null || !currentSourceOwner(top.collider))) return false;
                 height = Mathf.Max(height, top.point.y);
                 lowest = Mathf.Min(lowest, top.point.y);
             }

@@ -1,0 +1,5 @@
+# Latest findings - amended
+
+Literal source247p5reads LetsKorail 여행센터 TravelCenter. Continuous252p5shows adjacentblue/frostedKORAILglazing andboarding/publicportal. Therefore theearlierclaim that251p5is a differentphysicalcorridor is withdrawn. Namcheon258andlaterSRcrew267do not establishthatcontradiction.
+
+W1901104302546andW1861119110515remainINSUFFICIENT atindividualcurrentreturnface/0.45mintervallevel; Batch05finishbinding remainswithdrawn. No broadenedR14/TravelCentre03withdrawal and no reinstatementauthority. SeeSOURCE-IDENTITY-ADDENDUM.json.

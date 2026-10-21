@@ -254,6 +254,39 @@ namespace ChooGuard.Editor.Twin
             Require(faces.Count==selected.Count,"Selected native source face missing");
             return new Prepared{Row=row,Source=reference,Mesh=mesh,Parent=parent,Local=local,Materials=materials,Selected=keep.Select(x=>x.ToArray()).ToArray(),Faces=faces.ToArray()};
         }
+        // Select only actual oriented faces in their original material submeshes.
+        // The full installer still requires its original authored-pose/source witness gates.
+        public static Mesh PreserveSourceFaceSelection(Mesh source,int[][] selected)
+        {
+            Require(source!=null&&source.isReadable&&selected!=null&&selected.Length==source.subMeshCount,
+                "Original readable source/submesh selection required");
+            Require(selected.All(part=>part!=null&&part.Length%3==0)&&selected.Sum(part=>part.Length)>0,
+                "Missing or incomplete source face selection");
+            for(int sub=0;sub<source.subMeshCount;sub++)
+            {
+                Require(source.GetTopology(sub)==MeshTopology.Triangles,"Original source must contain triangles");
+                var originals=source.GetTriangles(sub);var available=new Dictionary<string,int>();
+                for(int at=0;at<originals.Length;at+=3)
+                {
+                    string key=originals[at]+","+originals[at+1]+","+originals[at+2];
+                    available.TryGetValue(key,out int count);available[key]=count+1;
+                }
+                for(int at=0;at<selected[sub].Length;at+=3)
+                {
+                    string key=selected[sub][at]+","+selected[sub][at+1]+","+selected[sub][at+2];
+                    Require(available.TryGetValue(key,out int count)&&count>0,"Selected face is absent, repeated, reversed or moved across source submeshes");
+                    available[key]=count-1;
+                }
+            }
+            string attributes=Attributes(source);var mesh=UnityEngine.Object.Instantiate(source);
+            try
+            {
+                for(int sub=0;sub<selected.Length;sub++)mesh.SetTriangles(selected[sub],sub,false);
+                Require(Attributes(mesh)==attributes,"Partial source vertex attributes changed");
+                return mesh;
+            }
+            catch{UnityEngine.Object.DestroyImmediate(mesh);throw;}
+        }
         static void SetLocal(Transform transform,JToken row)
         {
             Matrix4x4 matrix=M(row["local_matrix_from_complete_counterpart"]),rotation=M(new JArray(
@@ -292,10 +325,9 @@ namespace ChooGuard.Editor.Twin
                 Folder(newAssetDirectory,folders);
                 foreach(var p in prepared)
                 {
-                    string id=(string)p.Row["source_id"],attributes=Attributes(p.Mesh);var mesh=UnityEngine.Object.Instantiate(p.Mesh);
+                    string id=(string)p.Row["source_id"],attributes=Attributes(p.Mesh);var mesh=PreserveSourceFaceSelection(p.Mesh,p.Selected);
                     transientMeshes.Add(mesh);
                     mesh.name=id+"_partial_absent_source_faces";
-                    for(int sub=0;sub<p.Selected.Length;sub++)mesh.SetTriangles(p.Selected[sub],sub,false);
                     Require(Attributes(mesh)==attributes,"Partial native mesh did not preserve all original vertex attributes");
                     Require(mesh.subMeshCount==p.Mesh.subMeshCount&&mesh.triangles.Length/3==(int)p.Row["restored_triangles"],"Partial native mesh face/submesh conservation failed");
                     string asset=AssetDatabase.GenerateUniqueAssetPath(newAssetDirectory+"/"+id+".asset");

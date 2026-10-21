@@ -11,7 +11,7 @@ using UnityEngine.TestTools;
 
 namespace ChooGuard.Tests.PlayMode
 {
-    public sealed class PlayerSpawnTests
+    public sealed class PlayerSpawnTests : RetainedEmergencySessionFixture
     {
         private string savedKey;
         private int savedSeed;

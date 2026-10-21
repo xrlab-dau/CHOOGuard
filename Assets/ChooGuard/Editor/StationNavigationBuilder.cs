@@ -42,17 +42,7 @@ namespace ChooGuard.Editor
 
         public static NavMeshBuildSettings Settings()
         {
-            var settings = NavMesh.GetSettingsByID(0);
-            settings.agentRadius = .28f;
-            settings.agentHeight = 1.8f;
-            settings.agentClimb = .35f;
-            settings.agentSlope = 36;
-            settings.overrideVoxelSize = true;
-            settings.voxelSize = .12f;
-            settings.overrideTileSize = true;
-            settings.tileSize = 256;
-            settings.minRegionArea = 6;
-            return settings;
+            return StationNavigationRecipe.Settings();
         }
 
         private static void RequireStation()
@@ -72,41 +62,13 @@ namespace ChooGuard.Editor
             var player = UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Fps.FirstPersonResponder>();
             var sources = new List<NavMeshBuildSource>();
             var worldBounds = SurveyBounds();
-            NavMeshBuilder.CollectSources(worldBounds, ~0, NavMeshCollectGeometry.PhysicsColliders, 0, new List<NavMeshBuildMarkup>(), sources);
-            int before = sources.Count;
-            sources.RemoveAll(s =>
-            {
-                var component = s.component;
-                if (component == null) return false;
-                // 열차는 움직인다. 에스컬레이터 벨트는 걷는 길이 아니라 탑승 링크로만 쓴다.
-                if (component.transform.IsChildOf(ktx)) return true;
-                if (namedEscalators != null && component.transform.IsChildOf(namedEscalators)) return true;
-                if (player != null && component.transform.IsChildOf(player.transform)) return true;
-                // 사람이 지나가는 문(자동 미닫이·공용 여닫이)은 길을 막지 않는다. 관계자 문·승강장 문·못 쓰는 문은 막고, 잠근 자동문은 실행 중에 길을 깎는다.
-                var door = component.GetComponentInParent<ChooGuard.App.Fps.Facilities.StationDoor>();
-                if (door != null && door.PassableByPeople) return true;
-                var collider = component as Collider;
-                return collider != null && collider.isTrigger;
-            });
-            foreach (var lane in lanes)
-            {
-                sources.Add(new NavMeshBuildSource
-                {
-                    shape = NavMeshBuildSourceShape.ModifierBox,
-                    transform = Matrix4x4.TRS(lane.BoxCentre, lane.BoxRotation, Vector3.one),
-                    size = lane.BoxSize,
-                    area = 1,
-                });
-                // 에스컬레이터 옆 계단은 따로 구역을 둬서 사람마다 계단·에스컬레이터·엘리베이터를 고를 수 있게 한다.
-                if (lane.StairsSize != Vector3.zero)
-                    sources.Add(new NavMeshBuildSource
-                    {
-                        shape = NavMeshBuildSourceShape.ModifierBox,
-                        transform = Matrix4x4.TRS(lane.StairsCentre, lane.BoxRotation, Vector3.one),
-                        size = lane.StairsSize,
-                        area = StationWorld.StairsArea,
-                    });
-            }
+            sources=StationNavigationRecipe.Collect(
+                SceneManager.GetSceneByPath(EmergencySceneBuilder.StationScenePath), worldBounds, ktx,
+                namedEscalators, lanes.Select(l=>new StationNavigationGeometry.Lane {
+                    Id=l.Id, Label=l.Label, From=l.From, To=l.To, Up=l.Up, Width=l.Width, Path=l.Path,
+                    BoxCentre=l.BoxCentre, BoxSize=l.BoxSize, BoxRotation=l.BoxRotation,
+                    StairsCentre=l.StairsCentre, StairsSize=l.StairsSize }).ToArray());
+            int before=sources.Count;
             var data = NavMeshBuilder.BuildNavMeshData(Settings(), sources, worldBounds, Vector3.zero, Quaternion.identity);
             if (data == null) throw new InvalidOperationException("navmesh bake produced no data");
             data.name = Path.GetFileNameWithoutExtension(NavMeshPath);
