@@ -68,14 +68,15 @@ class DiagnosticsTests(unittest.TestCase):
                 self.assertEqual(result["files"][0]["input_problems"], {"invalid_json": 1})
 
     def test_duplicate_private_key_is_rejected_without_echoing_it(self):
-        secret = "SENSITIVE_DUPLICATE_MEMBER"
-        text = json.dumps(complete())[:-1] + f', "{secret}": 1, "{secret}": 2}}\n'
+        # Synthetic member name: verify arbitrary input text never reaches CLI output.
+        member_marker = "DUPLICATE_MEMBER_TEST_MARKER"
+        text = json.dumps(complete())[:-1] + f', "{member_marker}": 1, "{member_marker}": 2}}\n'
         self.path.write_text(text, encoding="utf-8")
         script = Path(__file__).with_name("diagnose_jev.py")
         result = subprocess.run([sys.executable, str(script), str(self.path)], capture_output=True, text=True)
         self.assertEqual(result.returncode, 1)
         self.assertFalse(json.loads(result.stdout)["evidence_valid"])
-        self.assertNotIn(secret, result.stdout + result.stderr)
+        self.assertNotIn(member_marker, result.stdout + result.stderr)
 
     def test_invalid_numbers_and_answer_shapes_are_rejected(self):
         for changes in ({"http": True}, {"http": "200"}, {"http": 600}, {"http": 99},
