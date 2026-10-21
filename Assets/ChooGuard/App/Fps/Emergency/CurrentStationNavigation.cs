@@ -61,7 +61,8 @@ namespace ChooGuard.App.Fps.Emergency
                 prior.Navigation.Dispose();
             }
             // Contexts and all source/provenance/physical/role queries are fresh.
-            // Only immutable self-contained native bake data can be memoized below.
+            // Retained native data is never mutated while leased. Idle updates
+            // below use all fresh native inputs before a new registration.
             var navigation=new CurrentStationNavigation(catalog,bindings);
             GameObject owner=null;
             try
@@ -81,7 +82,8 @@ namespace ChooGuard.App.Fps.Emergency
             if(--leases!=0)return;
             if(instance.valid)instance.Remove();
             // No scene context, source snapshot or qualification result survives a
-            // World lease. A separate data-only cache may retain the immutable bake.
+            // World lease. Retained data can be updated only when idle, using
+            // all fresh native inputs before the next registration.
             Dispose();
         }
 
@@ -124,6 +126,9 @@ namespace ChooGuard.App.Fps.Emergency
 
         sealed class ReusableBake
         {
+            // Owned successful creation-request provenance, not a native Data getter.
+            internal readonly int CreatedAgentType;
+            internal ReusableBake(int createdAgentType){CreatedAgentType=createdAgentType;}
             internal string Key;
             internal NavMeshData Data;
             internal int Users;
@@ -145,17 +150,47 @@ namespace ChooGuard.App.Fps.Emergency
             entry.Users--;
             if(entry.Retired&&entry.Users==0)RetireBake(entry);
         }
-        static ReusableBake AcquireBake(string key,Func<NavMeshData> build,out bool hit)
+        static bool BakeTransformCompatible(NavMeshData data,Vector3 position,Quaternion rotation)
+        {return data!=null&&data.position.Equals(position)&&data.rotation.Equals(rotation);}
+        static bool BakeDataCompatible(ReusableBake entry,int agentType,Vector3 position,Quaternion rotation)
+        {return entry!=null&&entry.CreatedAgentType==agentType&&BakeTransformCompatible(entry.Data,position,rotation);}
+        static ReusableBake AcquireBake(string key,int agentType,Vector3 position,Quaternion rotation,
+            Func<NavMeshData> build,Func<NavMeshData,bool> update,out bool hit,out string operation)
         {
-            hit=false;
-            if(key!=null&&retainedBake!=null&&!retainedBake.Retired&&retainedBake.Key==key&&retainedBake.Data!=null)
-            {retainedBake.Users++;hit=true;return retainedBake;}
-            // An unsuccessful build cannot replace an earlier valid immutable entry.
+            hit=false;operation="BUILD_NEW";
+            var prior=retainedBake;
+            // A Data update must never mutate an active World's registration or its
+            // shifted reference. World disposal removes both before the final release.
+            if(prior!=null&&prior.Users!=0)
+                throw new InvalidOperationException("Current source bake data is still leased");
+            bool compatible=prior!=null&&!prior.Retired&&BakeDataCompatible(prior,agentType,position,rotation);
+            if(compatible&&key!=null&&prior.Key==key)
+            {prior.Users=1;hit=true;operation="EXACT_KEY_HIT";return prior;}
+            if(compatible)
+            {
+                // Native source hashing decides incremental reuse. In particular,
+                // manual-uncacheable sources ALWAYS run this complete-input update;
+                // no convex/cooked geometry equivalence is inferred here.
+                retainedBake=null;prior.Retired=true;
+                try
+                {
+                    if(!update(prior.Data))throw new InvalidOperationException("Current physical source navigation update failed");
+                    if(!BakeDataCompatible(prior,agentType,position,rotation))
+                        throw new InvalidOperationException("Updated current navigation data no longer matches its owned creation agent or build transform");
+                }
+                catch{RetireBake(prior);throw;}
+                prior.Key=key;prior.Users=1;prior.Retired=false;retainedBake=prior;
+                operation="NATIVE_INCREMENTAL_UPDATE";return prior;
+            }
+            // Preserve the original Build path (including empty/null semantics) for
+            // first use or incompatible agent/build transform. Failure preserves the
+            // earlier idle entry; it never publishes stale data as the new result.
             var data=build();
             if(data==null)throw new InvalidOperationException("Current physical source navigation build failed");
-            var entry=new ReusableBake{Key=key,Data=data,Users=1,Retired=key==null};
-            if(key!=null){var prior=retainedBake;retainedBake=entry;RetireBake(prior);}
-            return entry;
+            if(!BakeTransformCompatible(data,position,rotation))
+            {UnityEngine.Object.Destroy(data);throw new InvalidOperationException("New current navigation data has an incompatible build transform");}
+            var entry=new ReusableBake(agentType){Key=key,Data=data,Users=1};
+            retainedBake=entry;RetireBake(prior);return entry;
         }
         static void ClearRetainedBake()
         {var prior=retainedBake;retainedBake=null;RetireBake(prior);}
@@ -370,15 +405,20 @@ namespace ChooGuard.App.Fps.Emergency
                 var fingerprint=System.Diagnostics.Stopwatch.StartNew();
                 string key=BakeInputKey(scene,collectedSettings,sources,bounds,out string eligibility);
                 fingerprint.Stop();long bakeMilliseconds=0;
-                bakeLease=AcquireBake(key,()=>
+                bakeLease=AcquireBake(key,collectedSettings.agentTypeID,Vector3.zero,Quaternion.identity,()=>
                 {
                     var bake=System.Diagnostics.Stopwatch.StartNew();
                     var value=NavMeshBuilder.BuildNavMeshData(collectedSettings,sources,bounds,Vector3.zero,Quaternion.identity);
                     bakeMilliseconds=bake.ElapsedMilliseconds;return value;
-                },out bool cacheHit);
+                },data=>
+                {
+                    var bake=System.Diagnostics.Stopwatch.StartNew();
+                    bool updated=NavMeshBuilder.UpdateNavMeshData(data,collectedSettings,sources,bounds);
+                    bakeMilliseconds=bake.ElapsedMilliseconds;return updated;
+                },out bool cacheHit,out string nativeOperation);
                 Data=bakeLease.Data;
                 Debug.Log("CG_CURRENT_NAV_DATA cache="+(cacheHit?"HIT":key==null?"UNCACHEABLE":"MISS")+
-                    "; sources="+sources.Count+"; collectMs="+collection.ElapsedMilliseconds+"; fingerprintMs="+fingerprint.ElapsedMilliseconds+
+                    "; dataOperation="+nativeOperation+"; nativeUpdateIsNotProvenHashHit=true; sources="+sources.Count+"; collectMs="+collection.ElapsedMilliseconds+"; fingerprintMs="+fingerprint.ElapsedMilliseconds+
                     "; nativeBakeMs="+bakeMilliseconds+"; preparationMs="+preparation.ElapsedMilliseconds+
                     "; eligibility="+eligibility+"; key="+(key??"NONE"));
                 instance=NavMesh.AddNavMeshData(Data);

@@ -86,11 +86,13 @@
     "geometryUnknownOrSupportedFloorNavMissing": "HARD_ERROR",
     "scope": "MODEL computed physical standing and guarded navigation; not field measurement or dynamic controller traversal",
     "dataMemoization": {
-      "scope": "One retained immutable NavMeshData entry only; every navigation context, actual source collection/snapshots, provenance, physical support, roles/owners/points, graph and native query epoch remain fresh. No graph/query/poly IDs/role/point/owner-result cache.",
+      "scope": "One retained self-contained NavMeshData. Never mutate while leased/registered; only idle data can be incrementally updated. Every context, actual source collection/snapshots, provenance, physical support, roles/owners/points, graph and native query epoch remains fresh. No graph/query/poly/role/point/owner result cache.",
       "key": "Versioned ordered actual seven-field native source roundtrip; exact settings/build bounds/pose; complete readable vertex/index/submesh buffers/layout; stable component/mesh alias topology and collider shape/cooking/static metadata. No source input reordered or rewritten.",
-      "unsupported": "Unresolved-owner, unreadable, convex, unsupported/native-extra fields, generated-link/height/debug metadata use ordinary uncached build. Known cache mesh-read/snapshot unavailability also uses ordinary build; writer/hash/programming/OOM/build/physical/query errors remain hard.",
-      "lifetime": "Any still-active App current context blocks new current context even after owner destruction or source handle change. Retired data stays alive until final lease after shifted-copy/registration cleanup; reset/eviction/shutdown retire bounded retained entry.",
-      "measurement": "Current whole-station eligibility/cache hits/native bake equivalence/performance impact remain unmeasured before actual final-head CI. Timers report collection/fingerprint/native bake/physical binding/graph phases. Existing scene loading is also substantial; no exclusive timeout-cause claim."
+      "unsupported": "Conservative manual fingerprint eligibility unchanged. For manual-uncacheable input, every compatible idle reacquisition actually calls synchronous Unity UpdateNavMeshData with the complete fresh ordered sources/settings/bounds. Native source/settings hashes decide changed regions; no manually assumed cooked-hull equivalence or claimed native hash hit.",
+      "lifetime": "Any still-active App current context blocks new current context even after owner destruction/source handle change. Shifted/reference registrations removed before last data lease release; reset/eviction/shutdown retire after final user.",
+      "measurement": "Prior0889 Windows one initialization:9238sources, nativeBuild54901ms, physical11856ms, graph25256ms; manual cache UNCACHEABLE at first rejected source2704, exact owner/disjunct unlogged. No repeated reuse was observed in that failed focus. Current native incremental correctness/hash reuse/speed and timeout resolution remain pending actual CI.",
+      "initialAndIncompatible": "Original BuildNavMeshData path retained for first use/incompatible owned creation-agent request/public Data position/rotation. Creation agent is immutable owned Build-request provenance, not a native getter.",
+      "failure": "Active users block mutation. Native update false/throw detaches/retires data and remains hard; no stale fallback. Build null/throw/incompatible pose remains hard."
     }
   },
   "current_destinations": {
@@ -137,7 +139,7 @@
     "No field99percent identity or all future emergency behaviors certified.",
     "Positive MODEL standing/egress does not establish current functional fixture or seat-anchor semantic identity.",
     "Current scene dynamic CharacterController traversals and arbitrary PlayerSpawn egress not independently certified.",
-    "Runtime .04m bake memory/performance not separately measured; deprecated Unity API pinned to installed6.3."
+    "Runtime .04m memory and repeated incremental performance remain unmeasured; prior single-stage timings are recorded separately. Deprecated Unity API pinned to installed6.3."
   ],
   "compile_proof": {
     "assemblies": 6,
@@ -161,31 +163,32 @@
     "distinct_references": 418,
     "all_candidate_csharp_inputs_included": true,
     "candidate_inputs": {
-      "Assets/ChooGuard/App/Fps/Emergency/CurrentStationNavigation.cs": "bf89ca4a3ca71dc48a41b12194d9b3582153546755d12293f153feaa0dd7a3c3",
-      "Assets/ChooGuard/App/Fps/Emergency/CurrentStationRouteBuilder.cs": "637c324156408d953f88958cc280bda55b492aa48b3fa6153569b14cd6d792ee",
-      "Assets/ChooGuard/App/Fps/Emergency/EmergencySession.cs": "2684745f7a2f5e6a5035fe449f39b455069c62f245135048ae691af87435c791",
-      "Assets/ChooGuard/Tests/PlayMode/JevDirectorRecoveryTests.cs": "e025804098ec3ac6690f196d377c4e5b300834c24714f745ec41572f45d6fcd2",
-      "Assets/ChooGuard/App/Fps/Emergency/GuideRoute.cs": "dcdf61ab3bbd84faf3a5b4b8a50a27487106ecad2b4c2ae3803a192694c35ad9",
-      "Assets/ChooGuard/Tests/PlayMode/Issue256NavigationSmokeTests.cs": "3f0ae714670b1c405e3e0ad61b9c3a822cbe382ed2071af6376a26bc9ae866a7"
+      "Assets/ChooGuard/App/Fps/Emergency/CurrentStationNavigation.cs": "a6b2fa56d83867db31250831cfa5edf15a1a9bc9c47fa21a209854249af420bc",
+      "Assets/ChooGuard/App/Fps/Emergency/EmergencySession.cs": "d6105d01941e5bee265de3c4c9c00526fbc453ede12c17023124cad1ff898adf",
+      "Assets/ChooGuard/Tests/PlayMode/JevDirectorRecoveryTests.cs": "5c568dc211db41f432268c0a3db04915df0d4ee90a6ca93370ebf94f985657c1"
     },
     "sourceManifestEntriesVerified": 50,
-    "receipt_sha256": "c84e6e5109170edc78fa2adc5401d049bc19f8071698ceb4ae9938e1220eec51",
-    "root_input_review_sha256": "9890cdb93d278c9ac82e972be2ff664e9b52860f0137ca69542e27e26bd091a6",
-    "scope": "Compiler-only coherent exact six-assembly source snapshot. No product/Unity/native/NUnit DLL executed by this compiler proof."
+    "receipt_sha256": "3e24f4af7f11912a8c7ed8f77057e74ce65e9344a160172b900a30aef06c8390",
+    "root_input_review_sha256": "38bdfcd74970e6bdf5ec250fb871e89c2bd1d4f4c29191fd8abac9f2582c5c6e",
+    "scope": "Compiler-only coherent full six-assembly/464-source snapshot including three current changed C# sources. All unchanged inputs match immutable0889 Git base. No engine/product/NUnit DLL execution."
   },
   "isolated_contracts": {
     "status": "PASS",
     "counts_by_scope": {
-      "cache_input_and_lifetime_source_extracted_system_dto": 107,
-      "player_obstacle_source_extracted_system_dto": 47,
-      "full_guide_source_controlled_system_dto": 29
+      "cache_input_lifetime_and_native_update_source_extracted_system_dto": 114,
+      "player_obstacle_actual_readback_source_extracted_system_dto": 169
     },
-    "scope": "Separate controlled software proofs. Native Unity mesh/data/physical/query/graph and NUnit fixtures are not executed by these checks. Timer-only Builder and NUnit fixture edits are byte-pinned and coherently compiled. Actual physical/native/fullcase outcomes require final head remote CI.",
-    "receipt_sha256": "285d487f01a8181e32156bf8d1fb07f7e749405743b5bbaa5810326906a94f44",
+    "totalScopedChecks": 283,
+    "scope": "Separate controlled software scopes only. Native update/hashing/physical/query/graph and NUnit fixture methods are not executed locally. Fixture edits byte-pinned and coherently compiled. Actual startup, incremental timing and full case outcomes require final-head remote CI.",
+    "receipt_sha256": "c2e62454f3e4b88fcf9465275357c0b9067524226472c4fd8fb0d210df032929",
     "lane_receipt_sha256": {
-      "A": "691964e1eb5306bc699a9b95690f8e5e5242a486ef08a5ec178f91eb5df2716a",
-      "B": "1c3e8e2d749c05171fa94a70ea82a1514bce22bbfeca1d6aea8cd772434987b4",
-      "C": "b99c98f353b20ae24dc92de026fe35a83639aab538aa6faed27abc0be177ccd3"
+      "A": "902529a15abfcb7b28fd008aa74907120950bc71c848acfa28ab3dcfb0e5be68",
+      "B": "1f2beb59295a52cc0420226e2c8d3d4a0f7548639559cfd49265ea18695aafbe"
+    },
+    "unchanged_guide_historical_proof": {
+      "checks": 29,
+      "receipt_sha256": "b99c98f353b20ae24dc92de026fe35a83639aab538aa6faed27abc0be177ccd3",
+      "scope": "Guide source is unchanged from0889 and compiled in current full snapshot. Prior controlled29 proof was not rerun or counted in current283."
     }
   },
   "source_evidence": {
@@ -198,7 +201,12 @@
     "followup28_A_bake_input_review_sha256": "205d8aa53e0999730dfeabc34f69e3a7cc2312f2eb2e75a8c8f6fc33f7c2c7d2",
     "followup28_A_lifetime_review_sha256": "451bb850a48be34e9a7c38eab442cda2bbf888871c2dfcc113781b74b8728a22",
     "followup28_B_root_review_sha256": "855290f2fc2cca1828919fa647fe3d7ee8925af3fda142be09c0c6fc8afcf5a7",
-    "followup28_C_root_review_sha256": "310a9cfcddafbb5b39dfabdb6c26066910657350f626e9ce05ee9f30c4f65193"
+    "followup28_C_root_review_sha256": "310a9cfcddafbb5b39dfabdb6c26066910657350f626e9ce05ee9f30c4f65193",
+    "followup30_A_root_review_sha256": "0cf921fc2d9291afe728985019257336740289205d04fc7c71ded44401bed2e4",
+    "followup30_A_independent_review_sha256": "a47e8fdbd397d2d956b65022ef69f836096f6003d3d5c6e1a3d65cf76f67c312",
+    "followup30_B_root_review_sha256": "c397a97101509470f8e2092a0197413fc427419652849e5f0bd3a92033c3de4c",
+    "followup30_B_independent_review_sha256": "0662081e895e634b632e4439e3356d5599b44179ce7b4c7603277093b34d1e33",
+    "followup30_coherent_source_snapshot_sha256": "a3820d4718edbbccc7d6050654dfd2a21a7b54783d4a6b79a9abcc7b2502b8a6"
   },
   "reflection_test_helper_contracts": {
     "status": "PASS",
@@ -226,9 +234,10 @@
     "actualFailureLimit": "Actual point46 delta logged without before/after known inputs; growth is proven sourceconfound, not exclusive observed cause."
   },
   "player_obstacle_lifecycle": {
-    "actualCause": "Three prior native CI failures logged duplicate NavMeshObstacle Add on retained test player, then StartWorld null dereference. Player survives additive shift restart.",
-    "repair": "Configure only newly added exact-player component. Reuse compatible same-player enabled Capsule/.3 radius/1.8 height/(0,.9,0) center/noncarving with zero writes. Incompatible/disabled/owner/Add/API errors remain hard.",
-    "regression": "Existing restart paths additionally assert same player, same single obstacle and full relevant state; original requests/assertions/timeouts unchanged. Actual native outcomes pending final-head CI."
+    "actualCause": "Prior d073 nativeCI logged duplicate NavMeshObstacle Add on retained player then null dereference. Subsequent0889 failed combined compatibility guard; first/reuse branch and property values were not logged, so its exact predicate/canonicalization cause remains unknown.",
+    "repair": "Keep original five Capsule/.3/1.8/(0,.9,0)/noncarving setter requests/order on a newly added exact-player component. Validate actual finitepositive/enabled/Capsule/noncarving readbacks and store immutable exact owned player/component snapshot. Reuse requires exact same managed player/component and unchanged Float/Vector3.Equals readbacks with zero writes. Foreign/missing/replaced/tampered/API failures remain hard.",
+    "lifetime": "Player-keyed ConditionalWeakTable follows managed wrapper identity. Wrapper/record loss never adopts an existing obstacle; it fails closed.",
+    "regression": "Only Followup28-added literal getter checks become exact pre/post restart native-baseline invariants. All original cases/requests/assertions/budgets/timeouts preserved; native result remains pending CI."
   },
   "guide_contained_start": {
     "sourceGap": "Normal nearest-root helper examined at most six nearest roots before removing blocked roots. A contained start could lose all starts before existing escape validator. Controlled same-start/target baseline passes and old contained case fails. Actual prior CI did not log coordinates/branch; not proof of exclusive actual cause.",
