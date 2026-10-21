@@ -299,7 +299,7 @@ jobs:
 
       - name: Upload results and logs
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: unity-tests-${{ matrix.os }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/unity
@@ -397,7 +397,7 @@ jobs:
           echo "dist=$dist" >> "$GITHUB_OUTPUT"
 
       - name: Upload the macOS player
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: player-macos
           path: ${{ steps.package.outputs.dist }}/macos
@@ -405,7 +405,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload the Windows player
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: player-windows
           path: ${{ steps.package.outputs.dist }}/windows
@@ -413,7 +413,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload the Linux player
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: player-linux
           path: ${{ steps.package.outputs.dist }}/linux
@@ -430,7 +430,7 @@ jobs:
 
       - name: Upload build log
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: unity-build-logs-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/unity
@@ -465,7 +465,7 @@ jobs:
           sparse-checkout: .github
           persist-credentials: false
 
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: player-${{ matrix.os }}
           path: ${{ runner.temp }}/player
@@ -506,7 +506,7 @@ jobs:
 
       - name: Upload report and player log
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: player-smoke-${{ matrix.os }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/smoke
@@ -524,7 +524,7 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: step-security/harden-runner@351661ca32ac09a36dc5ee2d536e3128f2a3c8ed # v2.22.0
+      - uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
           egress-policy: audit
 
@@ -542,7 +542,7 @@ jobs:
             exit 1
           }
 
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: player-*
           path: dist
