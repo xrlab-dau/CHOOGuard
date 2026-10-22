@@ -435,7 +435,12 @@ class HttpTests(AuthTests):
         self.assertEqual(200,status,result)
         sent=json.loads(next(call[3] for call in self.transport.calls if call[1]==s.RESOURCE+'/responses'))
         self.assertEqual(content,sent['input'][0]['content'])
-        self.assertEqual(413,self.request('POST','/session',raw=b' '*524289,headers={'Cookie':'chooguard_ui='+self.p.ui_cookie,'Origin':self.p.endpoint})[0])
+        # The server rejects an oversized Content-Length before reading the body.
+        # Send headers only so the client's body write cannot race the server close.
+        status,error,_=self.request('POST','/session',raw=b'',headers={
+            'Cookie':'chooguard_ui='+self.p.ui_cookie,'Origin':self.p.endpoint,'Content-Length':'524289'})
+        self.assertEqual(413,status)
+        self.assertEqual('request_body_too_large',error['error']['code'])
 
     def test_http_capability_host_origin_json_and_generation(self):
         self.assertEqual(401,self.request('GET','/status')[0]);self.assertEqual(200,self.request('GET','/status',headers=self.native())[0])
