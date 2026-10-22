@@ -81,7 +81,9 @@ jobs:
         with:
           python-version: "3.14"
           cache: pip
-          cache-dependency-path: .github/requirements/physics.txt
+          cache-dependency-path: |
+            .github/requirements/physics.txt
+            .github/requirements/provider-auth.txt
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -97,6 +99,16 @@ jobs:
 
       - name: Offline JEV connection evidence diagnostics
         run: python -m unittest discover -s workers/learning -p 'test_diagnose_jev.py' -v
+
+      - name: Mock provider authentication and native control
+        run: |
+          python -m venv "$RUNNER_TEMP/provider-auth-venv"
+          auth_python="$RUNNER_TEMP/provider-auth-venv/bin/python"
+          "$auth_python" -m pip install --require-hashes --no-deps --only-binary=:all: -r .github/requirements/provider-auth.txt
+          "$auth_python" -m pip install --dry-run --no-index --no-deps -r workers/simulator/provider_auth/requirements.txt
+          "$auth_python" -m pip check
+          cd workers/simulator/provider_auth
+          "$auth_python" -m unittest -v test_sidecar test_multi_provider test_native_control test_multi_ui
 
       - name: Install the physics core (locked, without JuPedSim's GUI stack)
         run: python -m pip install --require-hashes --no-deps -r .github/requirements/physics.txt
