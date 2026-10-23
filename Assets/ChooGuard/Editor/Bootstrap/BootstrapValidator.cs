@@ -37,6 +37,9 @@ namespace ChooGuard.Editor.Bootstrap
     public static class BootstrapValidator
     {
         public const string ScenePath = "Assets/ChooGuard/Scenes/Bootstrap.unity";
+        // The approved station optimization is a quality override, not a replacement
+        // for Bootstrap's graphics default or its owned renderer/global settings.
+        public const string OptimizedPipelinePath = "Assets/ChooGuard/Art/StationInterior/SceneLosslessOptimization20261019/FpsStationSharedMeshInstancedURP.asset";
         public static readonly string[] RequiredPackages = { "com.unity.render-pipelines.universal", "com.unity.ugui", "com.unity.textmeshpro", "com.unity.inputsystem", "com.unity.test-framework" };
         public static BootstrapSnapshot Capture(string projectRoot)
         {
@@ -129,20 +132,34 @@ namespace ChooGuard.Editor.Bootstrap
         public static bool HasOwnedUrpReferences()
         {
             var pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(BootstrapProject.PipelinePath);
+            var optimized = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(OptimizedPipelinePath);
             var renderer = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(BootstrapProject.RendererPath);
             var global = AssetDatabase.LoadAssetAtPath<RenderPipelineGlobalSettings>(BootstrapProject.GlobalPath);
             if (pipeline == null || renderer == null || global == null || GraphicsSettings.defaultRenderPipeline != pipeline ||
                 EditorGraphicsSettings.GetRenderPipelineGlobalSettingsAsset<UniversalRenderPipeline>() != global) return false;
-            var serialized = new SerializedObject(pipeline);
-            var list = serialized.FindProperty("m_RendererDataList");
-            if (list.arraySize != 1 || list.GetArrayElementAtIndex(0).objectReferenceValue != renderer) return false;
-            for (var i = 0; i < QualitySettings.names.Length; i++) if (QualitySettings.GetRenderPipelineAssetAt(i) != pipeline) return false;
+            if (!HasOwnedRenderer(pipeline, renderer) || (optimized != null && !HasOwnedRenderer(optimized, renderer))) return false;
+            for (var i = 0; i < QualitySettings.names.Length; i++)
+            {
+                var quality = QualitySettings.GetRenderPipelineAssetAt(i);
+                // Only these exact persistent assets are owned. Null, an arbitrary
+                // URP asset, a transient clone or a foreign renderer remains invalid.
+                if (quality == null || (quality != pipeline && quality != optimized)) return false;
+            }
             VolumeProfile profile;
             try { profile = BootstrapProject.DefaultVolumeSettings(global).volumeProfile; }
             catch (InvalidOperationException) { return false; }
             return profile != null && AssetDatabase.GetAssetPath(profile) == BootstrapProject.GlobalPath &&
                 profile.components.All(c => c != null && AssetDatabase.GetAssetPath(c) == BootstrapProject.GlobalPath) &&
                 !AssetDatabase.GetDependencies(BootstrapProject.GlobalPath, true).Any(p => p.StartsWith("Assets/", StringComparison.Ordinal) && p != BootstrapProject.GlobalPath);
+        }
+
+        private static bool HasOwnedRenderer(UniversalRenderPipelineAsset pipeline, UniversalRendererData renderer)
+        {
+            var serialized = new SerializedObject(pipeline);
+            var list = serialized.FindProperty("m_RendererDataList");
+            var index = serialized.FindProperty("m_DefaultRendererIndex");
+            return list != null && list.arraySize == 1 && list.GetArrayElementAtIndex(0).objectReferenceValue == renderer &&
+                index != null && index.intValue == 0;
         }
 
         public static BootstrapValidationReport Validate(BootstrapSnapshot snapshot)

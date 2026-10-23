@@ -19,6 +19,20 @@ This is a pluggable registry with truthful support states, **not a claim that ev
 
 ## Helper lifecycle and diagnostic web page
 
+Install [requirements.txt](requirements.txt) in a task-local virtual environment. The
+`cryptography` pin includes the fixes for the four dependency alerts affecting the
+previous 46.0.7 pin; this does not establish that those vulnerable APIs were reachable
+through this helper. See the [upstream changes](https://cryptography.io/en/50.0.2/changelog/).
+The helper still requires POSIX `fcntl`; native Windows execution is not supported.
+Upstream 49+ also removed Intel macOS and 32-bit Windows support, so use a supported
+64-bit Linux or Apple Silicon macOS environment for this helper.
+
+CI installs the same runtime pins through the hash-locked
+[provider-auth requirements](../../../.github/requirements/provider-auth.txt) in an
+isolated environment and runs the existing mock OAuth/JWT, multi-provider, localhost
+native-control and UI tests. These tests use synthetic accounts and transports;
+they do not log in to a provider or consume model quota.
+
 Deployment state is recorded in the dated [activation receipt](desktop-upgrade-activation.json). On 2026-10-14 the user explicitly requested execution, and the app-owned helper was upgraded to the multi-provider implementation while retaining its existing account file bytes. The current model selection and subscription consent are empty until the user explicitly chooses them. Service activation and automatic desktop browser opening are separate results; see that receipt for the macOS browser-opening limitation.
 
 For an isolated fresh app-private directory and port, with no existing credentials:

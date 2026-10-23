@@ -1,0 +1,3 @@
+# R21 north-west field-derived shop proposal
+
+13 concrete review MODEL regions saved in JSON/GeoJSON. Current R19 columns and exterior footprint anchor geometry; colored commercial marks supply identity/order only. Photos distinguish north cafe rooms, perpendicular Hawaiian return, shallow bread counter, small west popups, and connected pharmacy/American/Kijang service row. Actual individual tenant limits are inferred, not measurements. Exa returned402; retained Naver originals and web fallback used, including5 reacquired source03 images. Wrong1F Artbox source excluded. Root integrated north storefronts behind actual hall-column north faces and weak partitions as dashed/groups; no contradiction with viewed photos. Scene/Assets/currentCAD unchanged.

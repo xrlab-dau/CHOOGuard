@@ -1,0 +1,215 @@
+{
+  "schema": "chooguard.r24.west.blue_only.precise_native_vector.v1",
+  "utc": "2026-10-19T06:15:58.892237+00:00",
+  "status": "REVIEW_VECTOR_ONLY_NO_SCENE_MUTATION",
+  "only_blue_xrefs": [
+    105,
+    106,
+    107,
+    108
+  ],
+  "coordinate_system": "actualR19 CAD [qx,-qy] metres",
+  "appearance_interpretation": {
+    "source": ".state/ACTIVE-2F-BLUE-ONLY-VECTOR-CONSTRUCTION-R24/inputs/USER-MARKED-R23-LATEST.png",
+    "crop": ".state/ACTIVE-2F-BLUE-ONLY-VECTOR-CONSTRUCTION-R24/west-blue-lane/WEST-BLUE-APPEARANCE-CROP.png",
+    "image_viewed": true,
+    "shape": "Four edges: full upper cap, right return, short lower-right cap, diagonal lower-left cutoff. No new left vertical edge.",
+    "xref_roles": "105 top;106 diagonal;107 bottom;108 right, classified by actual annotation appearance/rect location. Raw Line.vertices for106/107/108 are stale or rotated and do not define final geometry.",
+    "handdrawn_shape_not_metric_authority": true
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          -64.33962319524883,
+          34.22497779376522
+        ],
+        [
+          -61.08680476598159,
+          34.209041831830724
+        ],
+        [
+          -61.10304824133285,
+          30.893454345170632
+        ],
+        [
+          -62.44352194537284,
+          30.900021492518782
+        ],
+        [
+          -64.33962319524883,
+          34.22497779376522
+        ]
+      ]
+    ]
+  },
+  "segments": [
+    {
+      "source_blue_xref": 105,
+      "role": "TOP_NORMAL_FROM_NATIVE_BEND",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -64.33962319524883,
+            34.22497779376522
+          ],
+          [
+            -61.08680476598159,
+            34.209041831830724
+          ]
+        ]
+      },
+      "length_MODEL_m": 3.2528574651624984
+    },
+    {
+      "source_blue_xref": 108,
+      "role": "RIGHT_RETURN_FACE_EXTENSION",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -61.08680476598159,
+            34.209041831830724
+          ],
+          [
+            -61.10304824133285,
+            30.893454345170632
+          ]
+        ]
+      },
+      "length_MODEL_m": 3.31562727582406
+    },
+    {
+      "source_blue_xref": 107,
+      "role": "BOTTOM_NORMAL_FROM_NATIVE_FRAME_VERTEX",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -61.10304824133285,
+            30.893454345170632
+          ],
+          [
+            -62.44352194537284,
+            30.900021492518782
+          ]
+        ]
+      },
+      "length_MODEL_m": 1.340489790579165
+    },
+    {
+      "source_blue_xref": 106,
+      "role": "ACTUAL_NATIVE_DIAGONAL",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -62.44352194537284,
+            30.900021492518782
+          ],
+          [
+            -64.33962319524883,
+            34.22497779376522
+          ]
+        ]
+      },
+      "length_MODEL_m": 3.8276016452838597
+    }
+  ],
+  "corners": {
+    "top_left_native_bend": [
+      -64.33962319524883,
+      34.22497779376522
+    ],
+    "top_right_intersection": [
+      -61.08680476598159,
+      34.209041831830724
+    ],
+    "bottom_right_intersection": [
+      -61.10304824133285,
+      30.893454345170632
+    ],
+    "bottom_left_native_diagonal_vertex": [
+      -62.44352194537284,
+      30.900021492518782
+    ]
+  },
+  "MODEL_area_m2": 7.614913724234325,
+  "anchors": [
+    {
+      "id": "NATIVE_VERTICAL_DIAGONAL_CORNER",
+      "object_id": "GlobalObjectId_V1-2-7518d664dafa749f2b6d5cba42bb798c-1413895473-0",
+      "object_path": "FPSWorld/공식 자료 부산역 역사/PlatformsParking/OfficialStation_-부산역_선로상층부_0",
+      "worldY_section": 8.4,
+      "point": [
+        -64.33962319524883,
+        34.22497779376522
+      ],
+      "selection": "Nearest actual native vertex to blue upper-left neighborhood, not annotation endpoint."
+    },
+    {
+      "id": "NATIVE_NEXT_DIAGONAL_FRAME_VERTEX",
+      "object_id": "GlobalObjectId_V1-2-7518d664dafa749f2b6d5cba42bb798c-1413895473-0",
+      "worldY_section": 8.4,
+      "point": [
+        -62.44352194537284,
+        30.900021492518782
+      ]
+    },
+    {
+      "id": "ACTUAL_NORTH_ENTRY_RETURN",
+      "object_id": "GlobalObjectId_V1-2-7518d664dafa749f2b6d5cba42bb798c-1413895473-0",
+      "worldY_section": 8.4,
+      "segment": [
+        [
+          -61.01859347064644,
+          48.13220250844756
+        ],
+        [
+          -60.996829352749,
+          52.574653116984834
+        ]
+      ],
+      "operation": "Rigid southward line extension; native geometry unchanged."
+    },
+    {
+      "id": "NATIVE_LAYER0_5_COMPACT_SUPPORT",
+      "object_id": "GlobalObjectId_V1-2-7518d664dafa749f2b6d5cba42bb798c-829381564-0",
+      "classification": "Nearby compact support at about[-63.885,30.954], remains outside/west of diagonal cutoff; not used as a newly invented shop corner."
+    }
+  ],
+  "formulas": {
+    "return_tangent_T": [
+      0.004899065546266437,
+      0.9999879995063808
+    ],
+    "return_normal_N": [
+      0.9999879995063808,
+      -0.004899065546266437
+    ],
+    "return_equation": "dot(N,q) = dot(N,R0)",
+    "return_d": -61.253664032379895,
+    "top_equation": "dot(T,q) = dot(T,A)",
+    "top_d": 33.90936304588198,
+    "bottom_equation": "dot(T,q) = dot(T,B)",
+    "bottom_d": 30.593735770057922,
+    "diagonal_equation": "q=A+u*(B-A), 0<=u<=1",
+    "top_right": "solve([N;T]*q=[N.R0,T.A])",
+    "bottom_right": "solve([N;T]*q=[N.R0,T.B])"
+  },
+  "existing_red_green_handling": {
+    "unchanged": true,
+    "delete_or_move_nonblue_annotations": false,
+    "note": "Actual native bend nearqY34.225 replaces blue approximateqY33.96 only; the original red annotation is retained verbatim, not moved to hide this~0.26m source-locator difference."
+  },
+  "protection": [
+    "No previous R22 tenant polygon was loaded or restored.",
+    "No native mesh/TRS/material/column/floor changed.",
+    "Native return/accessqY48.1..52.88 stays unaffected.",
+    "Platform ceiling owner is used only for its actual matching-level fixed facade/frame edges, not as2Ffloor occupancy authority."
+  ],
+  "Scene_Assets_changed": false,
+  "baseCAD_changed": false
+}

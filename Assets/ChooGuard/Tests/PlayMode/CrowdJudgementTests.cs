@@ -14,7 +14,7 @@ namespace ChooGuard.Tests.PlayMode
 {
     // 승객 실시간 판단(2026-09-30): JEV 없는 근무(TYPESAFE_API_KEY=off)에서도 사람들은 지역 규칙으로 움직이고, 사건에 반응하고,
     // 요청 한 건 없이 서 있는 채 굳지 않는다. 실제 JEV 를 쓰는 측정은 게이트웨이(플레이 근무)에서 한다.
-    public sealed class CrowdJudgementTests
+    public sealed class CrowdJudgementTests : RetainedEmergencySessionFixture
     {
         private string savedKey;
 

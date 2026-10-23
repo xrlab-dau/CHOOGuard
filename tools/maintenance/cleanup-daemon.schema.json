@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CHOOGuard root-approved cleanup configuration",
+  "type": "object",
+  "required": ["schema_version", "project_root", "enabled", "allowed_roots", "approved_manifests", "protected_paths", "active_plans"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "project_root": {"type": "string", "pattern": "^/"},
+    "enabled": {"type": "boolean"},
+    "allowed_roots": {"type": "array", "items": {"type": "string"}},
+    "protected_paths": {"type": "array", "items": {"type": "string"}},
+    "active_plans": {"type": "array", "items": {"type": "string"}},
+    "approved_manifests": {
+      "type": "array", "maxItems": 128,
+      "items": {
+        "type": "object", "required": ["path", "sha256"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^\\.state/cleanup-daemon/retirements/.+\\.json$"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "recurring_expired_files": {
+      "type": "array", "maxItems": 8,
+      "items": {
+        "type": "object", "required": ["path", "quiet_seconds", "reason"],
+        "properties": {
+          "path": {"type": "string"},
+          "quiet_seconds": {"type": "integer", "minimum": 3600},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "quiet_seconds": {"type": "integer", "minimum": 3600},
+    "normal_free_bytes": {"type": "integer", "minimum": 1},
+    "critical_free_bytes": {"type": "integer", "minimum": 1},
+    "max_entries_per_cycle": {"type": "integer", "minimum": 1, "maximum": 20000},
+    "max_files_per_cycle": {"type": "integer", "minimum": 1, "maximum": 5000},
+    "max_bytes_per_cycle": {"type": "integer", "minimum": 1, "maximum": 34359738368},
+    "max_seconds_per_cycle": {"type": "integer", "minimum": 1, "maximum": 30},
+    "log_max_bytes": {"type": "integer", "minimum": 4096, "maximum": 1048576},
+    "log_backups": {"type": "integer", "minimum": 1, "maximum": 3}
+  }
+}

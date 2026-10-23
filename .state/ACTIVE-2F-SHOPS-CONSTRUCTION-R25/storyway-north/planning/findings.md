@@ -1,0 +1,5 @@
+User-selected north CVS neighborhood; source candidate is navigation only. Native columns 029/028 and transport clearance must define usable bay. Preserve native shell and other stores.
+
+Live web exact employment source 2026-10-13 calls this Busan2F new-hall CVS opposite Pascucci, not Korail Lounge. Root source search found under sources/ (not missing). Koreatodo-front viewed; Busan CVS proven but individual branch not yet bound, cannot use as north interior authority. May2026 east image/contact excluded for north geometry.
+
+Exact branch DIRECTLY_SUPPORTED: jihui__-01 and wnqkf517-09 reflect CAFE PASCUCCI in north CVS glass. Both show low independent acoustic grid ceiling, black flat fascia, yellow rear upper wall, FAST FOOD open left chiller and COOL DRINK glass right cases, white central grocery gondola, white wire entry rack. daytour_88-09 shows glass end entrance and the same yellow wall. Other 1F tall glazing and east ribbed storefront photos excluded. Holiday decoration is seasonal (2023-12), not fixed new fixture.

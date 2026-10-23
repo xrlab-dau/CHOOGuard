@@ -18,7 +18,7 @@ namespace ChooGuard.Tests.PlayMode
     // 길 안내는 플레이어가 아는 것과 구워 둔 역만으로 그려야 한다: 불이 깎은 navmesh·잠긴 문·닫힌 에스컬레이터·경로 그래프의 실시간 막힘은
     // 아직 모르는 위험이다. 이 시험은 그 소비자 관점 불변식을 본다(경로 모양·도착·대상), 문구나 화면 구조는 보지 않는다.
     // 합성된 사건이 없는 실행(JEV off)에서 위험은 시험이 직접 만든다: 규칙 시험이라 특정 Hazard 를 만들어도 된다.
-    public sealed class Issue256NavigationSmokeTests
+    public sealed class Issue256NavigationSmokeTests : RetainedEmergencySessionFixture
     {
         private const BindingFlags Members = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
@@ -317,10 +317,11 @@ namespace ChooGuard.Tests.PlayMode
 
             // 다른 알려진 위험 안쪽에서 출발해도 길은 있다: 이미 들어와 있는 자리에서 나가는 길이 길이다.
             var platform = world.Points.Of(PointKind.PlatformWait)[0].Position;
+            var start = StationWorld.OnNavMesh(platform, 2f);
+            Assert.That(guide.Plan(start, target, route), Is.EqualTo(GuideRoute.Outcome.Route), "precondition: the same start and target must have a route before adding the other known hazard");
             var other = Fire(shift, "other", platform, .6f);
             other.SpreadSmoke(10f);
             guide.Hazards.Add(other);
-            var start = StationWorld.OnNavMesh(platform, 2f);
             Assert.That(other.Blocks(start), Is.True, "precondition: the staff member stands in the other hazard's danger");
             Assert.That(guide.Plan(start, target, route), Is.EqualTo(GuideRoute.Outcome.Route), "being inside one known hazard must not make the way to another vanish");
             Assert.That(route.Count, Is.GreaterThanOrEqualTo(2));
@@ -410,6 +411,10 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(worldGuide.Visible, Is.True, "the dotted route must appear on the floor without opening the map");
             var route = shift.GuidePath.ToList();
             var message = shift.GuideMessage;
+            var knownTargetScene = fire.Scene;
+            float knownTargetIntensity = fire.Intensity;
+            float knownTargetSmoke = fire.SmokeRadius;
+            float knownTargetApproach = fire.ApproachRadius;
 
             // 경로 위에 놓인, 보이지 않는 곳의 위험과 닫힘: 화면은 그대로여야 한다.
             var origin = shift.Player.transform.position;
@@ -424,9 +429,17 @@ namespace ChooGuard.Tests.PlayMode
             HazardRegistry.Add(unseen);
             world.Closed.Add((PointAlong(route, .3f), 4f, "아직 모르는 통제 구역"));
             foreach (var escalator in world.Escalators) escalator.Close();
-            yield return Carved(shift, unseen.Position);
+            // 실제 carve는 기다리되, 이미 아는 화재의 성장까지 비교 입력을 바꾸지는 않는다.
+            bool directorWasEnabled = director.enabled;
+            director.enabled = false;
+            try { yield return Carved(shift, unseen.Position); }
+            finally { director.enabled = directorWasEnabled; }
             // 기다리는 동안 역무원이 밀려 움직였더라도 같은 자리에서 다시 묻는다(비교하는 것은 모르는 위험의 영향뿐이다).
             Place(shift, origin);
+            Assert.That(fire.Scene.Equals(knownTargetScene), Is.True, "precondition: the known target scene changed while waiting for an unseen obstacle");
+            Assert.That(fire.Intensity, Is.EqualTo(knownTargetIntensity), "precondition: the known fire grew while waiting for an unseen obstacle");
+            Assert.That(fire.SmokeRadius, Is.EqualTo(knownTargetSmoke), "precondition: known smoke changed while waiting for an unseen obstacle");
+            Assert.That(fire.ApproachRadius, Is.EqualTo(knownTargetApproach), "precondition: the known target approach ring changed while waiting for an unseen obstacle");
             shift.RefreshGuide();
             Assert.That(shift.GuideStatus, Is.EqualTo(EmergencySession.GuideState.Guiding));
             Assert.That(shift.GuideMessage, Is.EqualTo(message), "what the map says changed because of something the staff member does not know");

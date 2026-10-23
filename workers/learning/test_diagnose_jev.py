@@ -51,6 +51,33 @@ class DiagnosticsTests(unittest.TestCase):
         self.assertEqual(classify(record(answers={"outside": {"Score": 1}}))[2], "unexpected_answer_ids")
         self.assertEqual(classify(complete(http=503))[2], "http_server_error")
 
+    def test_duplicate_fields_are_invalid_evidence_not_complete_answers(self):
+        original = json.dumps(complete())
+        replacements = (
+            ('"http": 200', '"http": 504, "http": 200'),
+            ('"a": {"type": "score"}',
+             '"a": {"type": "choice"}, "a": {"type": "score"}'),
+            ('"a": {"Score": 1}', '"a": {"Score": 0}, "a": {"Score": 1}'),
+        )
+        for old, new in replacements:
+            with self.subTest(replacement=new):
+                self.path.write_text(original.replace(old, new) + "\n", encoding="utf-8")
+                result = diagnose([self.path])
+                self.assertFalse(result["evidence_valid"])
+                self.assertEqual(result["totals"], {})
+                self.assertEqual(result["files"][0]["input_problems"], {"invalid_json": 1})
+
+    def test_duplicate_private_key_is_rejected_without_echoing_it(self):
+        # Synthetic member name: verify arbitrary input text never reaches CLI output.
+        member_marker = "DUPLICATE_MEMBER_TEST_MARKER"
+        text = json.dumps(complete())[:-1] + f', "{member_marker}": 1, "{member_marker}": 2}}\n'
+        self.path.write_text(text, encoding="utf-8")
+        script = Path(__file__).with_name("diagnose_jev.py")
+        result = subprocess.run([sys.executable, str(script), str(self.path)], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 1)
+        self.assertFalse(json.loads(result.stdout)["evidence_valid"])
+        self.assertNotIn(member_marker, result.stdout + result.stderr)
+
     def test_invalid_numbers_and_answer_shapes_are_rejected(self):
         for changes in ({"http": True}, {"http": "200"}, {"http": 600}, {"http": 99},
                         {"seconds": True}, {"seconds": -1}, {"seconds": float("inf")},

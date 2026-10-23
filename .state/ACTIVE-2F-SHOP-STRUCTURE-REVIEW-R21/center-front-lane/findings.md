@@ -1,0 +1,1 @@
+R21 첫완성본: 21점포 identity/morphology, 6 sourcefamilies, 2 actualcurrentfrontages. 2026위니비니 네이버사진과 2024전면상가 고해상도사진 신규확보/직접검토. 원본굿즈도면은 33㎡, 기존각기둥포함/별빛샌드-올리브영연속. Flowers/Bok는기존wallcell의점포이고아일랜드박스아님. Native0빈셸은개별사진매칭전newduplicatebox금지.

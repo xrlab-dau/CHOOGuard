@@ -6,11 +6,71 @@ https://docs.github.com/en/rest/git/trees#get-a-tree
 """
 from __future__ import annotations
 
+import errno
 import http.client
 import json
+import socket
+import ssl
+import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
+
+
+REQUEST_TIMEOUT = 60
+MAX_ATTEMPTS = 3
+RETRY_DELAYS = (1, 2)
+TRANSIENT_HTTP = frozenset((408, 429, 500, 502, 503, 504))
+TRANSIENT_ERRNOS = frozenset((errno.ECONNRESET, errno.ECONNREFUSED, errno.ECONNABORTED,
+                             errno.EHOSTUNREACH, errno.ENETUNREACH, errno.ETIMEDOUT, errno.EPIPE))
+
+
+def _transient(error: BaseException) -> bool:
+    if isinstance(error, urllib.error.HTTPError):
+        return error.code in TRANSIENT_HTTP
+    reason = error.reason if isinstance(error, urllib.error.URLError) else error
+    if isinstance(reason, ssl.SSLCertVerificationError):
+        return False
+    if isinstance(reason, socket.gaierror):
+        return reason.errno == socket.EAI_AGAIN
+    return (isinstance(reason, (TimeoutError, ConnectionError, http.client.IncompleteRead, http.client.RemoteDisconnected))
+            or isinstance(reason, OSError) and reason.errno in TRANSIENT_ERRNOS)
+
+
+def _failure_label(error: BaseException) -> str:
+    # Never print URLs, authorization, response bodies or raw exception reasons.
+    if isinstance(error, urllib.error.HTTPError):
+        return f"HTTP {error.code}" if type(error.code) is int else "HTTPError"
+    if isinstance(error, urllib.error.URLError):
+        return "URLError/" + type(error.reason).__name__
+    return type(error).__name__
+
+
+def _diagnostic(message: str) -> None:
+    print("GitHub tree sizes: " + message, file=sys.stderr)
+
+
+def _request_json(request: urllib.request.Request, recursive: bool, tree_sha: str):
+    kind = "recursive" if recursive else "non-recursive"
+    tree_hint = tree_sha[:12] if len(tree_sha) in (40, 64) and all(c in "0123456789abcdefABCDEF" for c in tree_sha) else "<tree>"
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+                return json.load(response)
+        except (urllib.error.URLError, http.client.HTTPException, OSError) as error:
+            if isinstance(error, urllib.error.HTTPError):
+                error.close()
+            transient = _transient(error)
+            retry = transient and attempt < MAX_ATTEMPTS
+            detail = f"{kind} listing tree {tree_hint}: {_failure_label(error)} on attempt {attempt}/{MAX_ATTEMPTS}"
+            if not retry:
+                reason = "retry limit reached" if transient else "non-transient failure"
+                _diagnostic(detail + f"; {reason}; complete sizes unavailable (no partial result accepted).")
+                raise
+            delay = RETRY_DELAYS[attempt - 1]
+            _diagnostic(detail + f"; retrying in {delay}s.")
+            time.sleep(delay)
 
 
 class _InvalidTree(ValueError):
@@ -36,8 +96,7 @@ def api_blob_sizes(repo: str, sha: str, token: str) -> dict[str, int] | None:
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         })
-        with urllib.request.urlopen(request, timeout=60) as response:
-            payload = json.load(response)
+        payload = _request_json(request, recursive, tree_sha)
         if not isinstance(payload, dict) or type(payload.get("truncated")) is not bool or not isinstance(payload.get("tree"), list):
             raise _InvalidTree("Invalid tree response")
         entries = payload["tree"]
@@ -102,7 +161,15 @@ def api_blob_sizes(repo: str, sha: str, token: str) -> dict[str, int] | None:
         if (not isinstance(repo, str) or len(repo.split("/")) != 2
                 or any(part in ("", ".", "..") for part in repo.split("/"))
                 or not isinstance(sha, str) or not sha or not isinstance(token, str) or not token):
+            _diagnostic("invalid request inputs; complete sizes unavailable.")
             return None
         return complete(sha)
-    except (urllib.error.URLError, http.client.HTTPException, OSError, ValueError, RecursionError):
+    except _InvalidTree as error:
+        _diagnostic(f"{error}; complete sizes unavailable (no partial result accepted).")
+        return None
+    except (urllib.error.URLError, http.client.HTTPException, OSError):
+        # The request diagnostic above identifies the sanitized transport cause.
+        return None
+    except (ValueError, RecursionError) as error:
+        _diagnostic(f"{type(error).__name__} while reading or validating tree data; complete sizes unavailable (no partial result accepted).")
         return None

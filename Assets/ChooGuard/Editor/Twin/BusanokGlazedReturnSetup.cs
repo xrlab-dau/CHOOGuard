@@ -142,8 +142,13 @@ namespace ChooGuard.Editor.Twin
             var indices=profile.SelectMany(o=>s.Triangles.Skip(o*3).Take(3)).Distinct();
             var values=indices.Select(i=>s.Vertices[i][axis]).ToArray();return(values.Min(),values.Max());
         }
-        static Mesh Retain(Source wall)
+        static Mesh Retain(Source wall) => RetainNativeWall(wall.Mesh);
+        // Pure installer stage; no Scene owner, material, source witness or geometry is created.
+        public static Mesh RetainNativeWall(Mesh source)
         {
+            Require(source!=null&&source.isReadable&&source.subMeshCount==1,"Readable original wall required");
+            var wall=new Source{Mesh=source,Vertices=source.vertices,Triangles=source.triangles};
+
             Require(wall.Vertices.Length==24&&wall.Triangles.Length==36,"original wall is not exact12-face owner");
             for(int o=8;o<12;o++)foreach(int i in wall.Triangles.Skip(o*3).Take(3))Require(Mathf.Abs(wall.Vertices[i].x-36.5f)<Epsilon,"selected face is not v36.5");
             var mesh=UnityEngine.Object.Instantiate(wall.Mesh);mesh.name="Busanok_Walls_retained8faces";mesh.SetTriangles(wall.Triangles.Take(24).ToArray(),0,false);

@@ -14,7 +14,7 @@ namespace ChooGuard.Tests.PlayMode
 {
     // JEV 가 답하지 않는 동안(접속 끊김): 판단을 기다리는 사람이 서서 굳지 않고 여정 목적대로 걷는다. 지역 규칙이 아니라(그건 키 없음·off 전용)
     // 근무 시작 때 사람들이 걷는 여정 그대로다. 요청은 보내지만 전부 답 없이 돌아오는 경로를 CrowdMind.Transport 로 근무를 적재하기 전에 끼워 넣는다(진짜 서버로는 아무것도 나가지 않는다).
-    public sealed class CrowdOutageTests
+    public sealed class CrowdOutageTests : RetainedEmergencySessionFixture
     {
         private string savedKey;
 

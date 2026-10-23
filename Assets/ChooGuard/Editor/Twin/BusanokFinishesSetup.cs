@@ -227,8 +227,19 @@ namespace ChooGuard.Editor.Twin
                 Require((actual.Count == 0 ? 0 : mesh.GetVertexAttributeDimension((VertexAttribute)((int)VertexAttribute.TexCoord0 + u))) == s.UvDimensions[u], "UV dimension changed");
             }
         }
-        static Mesh CeilingRetained(Source s)
+        static Mesh CeilingRetained(Source source) => RetainNativeCeiling(source.Mesh);
+        // Same native-ceiling filtering stage, independent of a historical installed Scene.
+        public static Mesh RetainNativeCeiling(Mesh source)
         {
+            Require(source!=null&&source.isReadable&&source.subMeshCount==1,"Readable original ceiling required");
+            var s=new Source{Mesh=source,Vertices=source.vertices,Normals=source.normals,Tangents=source.tangents,
+                Colors=source.colors,Colors32=source.colors32,Triangles=source.triangles};
+            for(int channel=0;channel<8;channel++)
+            {
+                s.Uv[channel]=new List<Vector4>();source.GetUVs(channel,s.Uv[channel]);
+                s.UvDimensions[channel]=s.Uv[channel].Count==0?0:source.GetVertexAttributeDimension((VertexAttribute)((int)VertexAttribute.TexCoord0+channel));
+            }
+
             Require(s.Vertices.Length == 20 && s.Triangles.Length == 30 && s.Triangles.Take(6).Distinct().OrderBy(i => i).SequenceEqual(new[] { 0, 1, 2, 3 }), "shared ceiling native faces changed");
             foreach (int i in s.Triangles.Take(6)) Require(Mathf.Abs(s.Vertices[i].y - 15.64f) < Epsilon && s.Normals[i].y < -.99f, "Busanok ceiling plane changed");
             var mesh = UnityEngine.Object.Instantiate(s.Mesh); mesh.name = "Busanok_ceiling_retained_other4shops_8faces";

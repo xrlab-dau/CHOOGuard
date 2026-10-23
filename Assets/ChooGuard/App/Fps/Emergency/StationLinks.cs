@@ -67,9 +67,10 @@ namespace ChooGuard.App.Fps.Emergency
         private float[] distance;
         private float length;
 
-        public void Setup(StationPoints.EscalatorEntry entry)
+        public void Setup(StationPoints.EscalatorEntry entry, bool sourceNavigationAvailable = true)
         {
             Entry = entry;
+            NavigationAvailable = sourceNavigationAvailable;
             distance = new float[entry.path.Length];
             for (int i = 1; i < entry.path.Length; i++) distance[i] = distance[i - 1] + Vector3.Distance(entry.path[i - 1], entry.path[i]);
             length = distance[distance.Length - 1];
@@ -93,8 +94,19 @@ namespace ChooGuard.App.Fps.Emergency
             TravelDistance += BeltSpeed * (double)deltaSeconds;
         }
 
+        /// <summary>Logical controls remain available; only supplied physical machinery grants a path link.</summary>
+        public bool NavigationAvailable { get; private set; } = true;
+        public bool HasNavigationLink => NavMesh.IsLinkValid(link);
+        public void SetNavigationAvailable(bool available)
+        {
+            NavigationAvailable=available;
+            if(!available) { if(NavMesh.IsLinkValid(link))NavMesh.RemoveLink(link); }
+            else if(!Closed&&!EntryBarred&&!NavMesh.IsLinkValid(link))AddLink();
+        }
+
         private void AddLink()
         {
+            if(!NavigationAvailable||Closed||EntryBarred||NavMesh.IsLinkValid(link))return;
             link = NavMesh.AddLink(new NavMeshLinkData { startPosition = Start, endPosition = End, width = 0, bidirectional = false, area = 3, costModifier = -1 });
             if (NavMesh.IsLinkValid(link)) NavMesh.SetLinkOwner(link, this);
         }
@@ -290,7 +302,10 @@ namespace ChooGuard.App.Fps.Emergency
 
         public StationPoints.ElevatorEntry Entry { get; private set; }
         public string Label => Entry.label;
-        public bool Running { get; private set; } = true;
+        private bool serviceRunning = true;
+        public bool Running => serviceRunning && NavigationAvailable;
+        public bool NavigationAvailable { get; private set; }
+        public string NavigationIssue { get; private set; } = "CURRENT_SOURCE_NOT_QUALIFIED";
         public readonly List<PersonBody> Inside = new List<PersonBody>();
         public int Waiting { get; private set; }
 
@@ -298,29 +313,101 @@ namespace ChooGuard.App.Fps.Emergency
         private float carFreeAt, carY, lookAgainAt;
         private Facilities.ElevatorCar car;
         private int[] landing;
+        private bool currentSourceRequired, currentSourceQualified;
 
-        public void Setup(StationPoints.ElevatorEntry entry)
+        public void Setup(StationPoints.ElevatorEntry entry, bool sourceNavigationAvailable = true)
         {
+            ReleaseLinks();NavigationAvailable=false;car=null;landing=null;
+            currentSourceRequired=!sourceNavigationAvailable;currentSourceQualified=false;
             Entry = entry;
             carY = entry.stops[0].door.y;
-            for (int i = 0; i < entry.stops.Length; i++)
-                for (int j = i + 1; j < entry.stops.Length; j++)
-                {
-                    var link = NavMesh.AddLink(new NavMeshLinkData { startPosition = entry.stops[i].door, endPosition = entry.stops[j].door, width = 0, bidirectional = true, area = 4, costModifier = -1 });
-                    if (NavMesh.IsLinkValid(link)) { NavMesh.SetLinkOwner(link, this); links.Add(link); }
-                }
+            SetNavigationAvailable(sourceNavigationAvailable,sourceNavigationAvailable?"SUPPLIED_DATA_NAVIGATION":"CURRENT_SOURCE_NOT_QUALIFIED");
         }
 
-        private void OnDestroy()
+        internal static string CurrentSourceDecision(int stops,int matchedStops,bool uniqueCompleteBank)
         {
-            foreach (var link in links) if (NavMesh.IsLinkValid(link)) NavMesh.RemoveLink(link);
+            if(stops<2||matchedStops<0||matchedStops>stops)throw new System.ArgumentException("Invalid current elevator source partition");
+            if(matchedStops==0)return "UNBOUND_NO_CURRENT_ELEVATOR_LANDING_SOURCE";
+            if(matchedStops!=stops||!uniqueCompleteBank)
+                throw new System.InvalidOperationException("Current elevator source bank is incomplete or ambiguous");
+            return "BOUND_CURRENT_ELEVATOR_SOURCE";
         }
+
+        internal static void RequireCurrentLanding(bool navigationFound,float verticalDelta,string identity)
+        {
+            if(!navigationFound||float.IsNaN(verticalDelta)||float.IsInfinity(verticalDelta)||System.Math.Abs(verticalDelta)>.35f)
+                throw new System.InvalidOperationException("Current source elevator landing is not on its own storey: "+identity);
+        }
+
+        /// <summary>Match the same authored landing-door/cabin bank used by the canonical Editor survey. Catalog coordinates alone supply no machinery.</summary>
+        internal bool TryBindCurrentSource(UnityEngine.SceneManagement.Scene sourceScene)
+        {
+            SetNavigationAvailable(false,"CURRENT_SOURCE_NOT_QUALIFIED");car=null;landing=null;currentSourceQualified=false;
+            if(!sourceScene.IsValid()||!sourceScene.isLoaded)throw new System.InvalidOperationException("Current elevator source scene is absent");
+            var doors=new List<Facilities.StationDoor>();
+            foreach(var root in sourceScene.GetRootGameObjects())
+                foreach(var door in root.GetComponentsInChildren<Facilities.StationDoor>(true))
+                    if(door.Kind==Facilities.StationDoor.DoorKind.Elevator)doors.Add(door);
+            var matched=new Facilities.StationDoor[Entry.stops.Length];int count=0;
+            for(int stop=0;stop<Entry.stops.Length;stop++)
+            {
+                foreach(var door in doors)
+                {
+                    // StationSurvey.Elevators uses this actual door front and an .8m
+                    // navigation query. This is source association only; the current
+                    // landing's .6m/.35m navigation guard remains separate and strict.
+                    var front=door.World(new Vector3(0,0,1f));
+                    if(Vector3.Distance(front,Entry.stops[stop].door)>.8f||Mathf.Abs(front.y-Entry.stops[stop].door.y)>.35f)continue;
+                    if(matched[stop]!=null)throw new System.InvalidOperationException("Ambiguous current elevator landing owner: "+Entry.id);
+                    matched[stop]=door;
+                }
+                if(matched[stop]!=null)count++;
+            }
+            var status=CurrentSourceDecision(Entry.stops.Length,count,count==Entry.stops.Length);
+            if(count==0){NavigationIssue=status;return false;}
+            var source=matched[0].Car;var map=new int[matched.Length];var unique=new HashSet<Facilities.StationDoor>();
+            for(int stop=0;stop<matched.Length;stop++)
+            {
+                var door=matched[stop];
+                if(!door.isActiveAndEnabled||!door.Usable||door.Cabin==null||string.IsNullOrEmpty(door.CarId)||
+                    source==null||!source.isActiveAndEnabled||source.gameObject.scene!=sourceScene||door.Car!=source||source.Id!=door.CarId||
+                    !unique.Add(door)||(map[stop]=source.IndexOf(door))<0)
+                    throw new System.InvalidOperationException("Current elevator landing has no complete authored live source bank: "+Entry.id);
+            }
+            if(source.Landings.Count!=matched.Length)throw new System.InvalidOperationException("Current elevator catalog/source stop count differs: "+Entry.id);
+            car=source;landing=map;
+            if(!serviceRunning)car.Stop();
+            currentSourceQualified=true;NavigationIssue=status;return true;
+        }
+
+        internal void SetNavigationAvailable(bool available,string issue)
+        {
+            if(available&&currentSourceRequired&&!currentSourceQualified)throw new System.InvalidOperationException("Current elevator navigation requires its complete source bank");
+            NavigationIssue=issue;
+            if(NavigationAvailable==available)return;
+            NavigationAvailable=available;
+            if(!available){ReleaseLinks();return;}
+            for(int i=0;i<Entry.stops.Length;i++)for(int j=i+1;j<Entry.stops.Length;j++)
+            {
+                var link=NavMesh.AddLink(new NavMeshLinkData {startPosition=Entry.stops[i].door,endPosition=Entry.stops[j].door,width=0,bidirectional=true,area=4,costModifier=-1});
+                if(NavMesh.IsLinkValid(link)){NavMesh.SetLinkOwner(link,this);links.Add(link);}
+            }
+        }
+
+        private void ReleaseLinks()
+        {
+            foreach(var link in links)if(NavMesh.IsLinkValid(link))NavMesh.RemoveLink(link);
+            links.Clear();
+        }
+        private void OnDestroy()=>ReleaseLinks();
 
         /// <summary>The twin's car serving every stop of this elevator (landing doors within 2.5 m of each stop), if any.</summary>
         public Facilities.ElevatorCar Car
         {
             get
             {
+                if (!NavigationAvailable) return null;
+                if (currentSourceRequired) return car;
                 if (car != null || Time.time < lookAgainAt) return car;
                 lookAgainAt = Time.time + 5;
                 foreach (var candidate in Facilities.ElevatorCar.All)
@@ -341,7 +428,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Earthquake, power loss or a fault: the car stops where it is (between floors when moving); nobody enters.</summary>
         public void Stop()
         {
-            Running = false;
+            serviceRunning = false;
             var working = Car;
             if (working != null) working.Stop();
         }
@@ -349,7 +436,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Back in service (a technician's rescue run, power restored): the car goes on to where it was going.</summary>
         public void Resume()
         {
-            Running = true;
+            serviceRunning = true;
             var working = Car;
             if (working != null) working.Resume();
         }
@@ -371,6 +458,8 @@ namespace ChooGuard.App.Fps.Emergency
 
         public IEnumerator Traverse(PersonBody body, OffMeshLinkData data)
         {
+            if(!NavigationAvailable)throw new System.InvalidOperationException("Elevator navigation is unavailable: "+NavigationIssue);
+            if(currentSourceRequired&&Car==null)throw new System.InvalidOperationException("Bound current elevator source car was lost");
             int a = Nearest(data.startPos), b = Nearest(data.endPos);
             int from = Vector3.Distance(body.transform.position, Entry.stops[a].door) <= Vector3.Distance(body.transform.position, Entry.stops[b].door) ? a : b;
             int to = from == a ? b : a;

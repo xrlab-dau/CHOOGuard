@@ -18,6 +18,7 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 
 MAX_FAILURES_LISTED = 25
+FOCUSED_ROUTE_TEST = "ChooGuard.Tests.PlayMode.RouteGraphTests.BakedGraph_SitsOnTheNavmeshAndJoinsEveryPlaceToAnExitWithoutTheElevator"
 
 
 @dataclass
@@ -57,6 +58,19 @@ def evaluate(mode: str, xml_path: str, exit_code: str) -> ModeResult:
         if case.get("result") == "Failed":
             message = (case.findtext("failure/message") or case.get("label") or "failed").strip()
             result.failures.append((case.get("fullname") or case.get("name") or "?", message))
+    if mode == "RouteGraph":
+        # A filter typo or a skipped fixture must not turn the early route verdict green.
+        if (result.total, result.passed, result.failed, result.skipped, result.inconclusive) != (1, 1, 0, 0, 0):
+            result.errors.append("focused RouteGraph run must report exactly one passed test without skips or inconclusive results")
+        cases = list(run.iter("test-case"))
+        if len(cases) != 1:
+            result.errors.append(f"focused RouteGraph run contains {len(cases)} test-case records; expected exactly one")
+        elif cases[0].get("fullname") != FOCUSED_ROUTE_TEST:
+            result.errors.append(f"focused RouteGraph fullname mismatch: expected {FOCUSED_ROUTE_TEST}, got {cases[0].get('fullname', '<missing>')}")
+        elif cases[0].get("result") != "Passed":
+            result.errors.append("focused RouteGraph test-case result must be Passed")
+        if run.get("result") != "Passed":
+            result.errors.append("focused RouteGraph test-run result must be Passed")
     if result.total == 0:
         result.errors.append("0 tests ran (filtered out, or the test assemblies did not load)")
     if result.failed:
@@ -124,4 +138,8 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
+    # Actions consumes UTF-8, while Windows may default redirected Python output
+    # to cp1252. Keep non-ASCII test names/messages readable in failed verdicts.
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     sys.exit(main(sys.argv[1:]))

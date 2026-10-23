@@ -1,0 +1,3 @@
+# Findings
+
+3 actual2Frelatedpanoramas directlyviewed;22derivedpinholeviews. Pascucci/Storyway/cornerESCstructurerelations observed; Sourcecameraworldtransform absent. 2026Goodsidentity notvisible. ExactR19pillars021/018/014 bound toactualIDs andprofiles, rootdimensionedGoodsproposal includes021; thisisindependentof360.

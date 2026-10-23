@@ -36,7 +36,7 @@ namespace ChooGuard.Tests.PlayMode
     ///
     /// 조건은 실패하는 시험과 같게 맞춘다(같은 시드, JEV 응답을 침묵으로). 다르게 맞추면 다른 것을 재게 된다.
     /// </remarks>
-    public sealed class FrozenSpotProbeTests
+    public sealed class FrozenSpotProbeTests : RetainedEmergencySessionFixture
     {
         private const string OutFolder = ".planning/2026-10-05-frozen-spot";
 

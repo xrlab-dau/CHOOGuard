@@ -1,0 +1,7 @@
+# Findings
+
+Parent explicitly elects existing generated1117893400 front as bounded sourceMODEL. Actual2013 front and independentlyretrievedKORAILmap support policeleftofcommon201202entry. Current2026dooralias and unmeasuredsizes remain qualified.
+
+Actual2013sourcefront and2025contractorcontact visuallyinspected. 2025showsinteriorrenovationonly: no boxes/ladders/hiddeninterior copied. Frozenpacket contains104individualparts,5closedphysicalglyphsets24sourcepolygons; narrower5.45mfinishpatch vs7.24mhostbay. Singleleaf1.00x2.23mopening and0.90x1.06mbarredwindow are explicit human/source-proportionedMODEL; original2013campaignposter/unreadablefineprint omitted. CurrentCAD007hasno separate old generic door/sign objects withinownhostband; onlyhostmesh111 changed locally.
+
+Source-only continuedtracing found woodenplaquequad included neighboringwhitewall and threshold110 mergedblackCJKwithdarkwood. Exactsourcequad147..177.5px plusblackinkthreshold45 isolates45physicalglyphcomponents/counterholes. Prepared immutable003to correct onlyownplaqueclosedglyphmesh after002settled; no changedplacement/wall/door or addedverificationstage.

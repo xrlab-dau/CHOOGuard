@@ -1,0 +1,28 @@
+{
+  "utc": "2026-10-19T09:30:18.719470+00:00",
+  "request": "r25-banwoldang-apply-001",
+  "status": "UNKNOWN_NATIVE_RESULT_NO_ACTUAL_EXIT_PROVEN",
+  "grant_nonce": "f1017a7362014286af5c540fa91ea22f",
+  "request_file": ".state/SCENE-WORKER-C180/requests/r25-banwoldang-apply-001.json",
+  "native_result_file": ".state/SCENE-WORKER-C180/results/r25-banwoldang-apply-001--228a0aefd3724dc18eb041b2f4ad424b.json",
+  "frozen_script": ".state/SCENE-WORKER-C180/sources/r25-banwoldang-apply-001--228a0aefd3724dc18eb041b2f4ad424b/000__ApplyStoreR25.cs",
+  "frozen_sha256": "d9eb9527ab05408e4d4758fdaf065e7897b7347fce007c2f5e4fa9d0db2cb35c",
+  "source_sha256": "d9eb9527ab05408e4d4758fdaf065e7897b7347fce007c2f5e4fa9d0db2cb35c",
+  "frozen_inputs_untouched": true,
+  "native_stdout_error": "{\n  \"success\": false,\n  \"command\": \"unity command run_script\",\n  \"data\": null,\n  \"errors\": [\n    {\n      \"code\": \"COMMAND_FAILED\",\n      \"message\": \"Pipeline server returned 400 Bad Request: Internal Server Error. Main thread operation timed out after 120000ms\"\n    }\n  ],\n  \"warnings\": []\n}\n",
+  "process": "Native CLI completed rc6 after HTTP main-thread timeout; Unity editor pid4294 remains alive. No lifecycle conclusion from process existence.",
+  "actual_saved_receipt_exists": false,
+  "own_import_asset_directory_exists": false,
+  "native_log_exact_frozen_source_occurrences": 0,
+  "native_log_timeout_line": 72777,
+  "current_writer": {
+    "status": "ACTIVE",
+    "sole_writer_thread": "classic:/root/r25_banwoldang",
+    "scope": "C180_R25_BANWOLDANG_APPLY_001",
+    "Native_inflight": true,
+    "scene_worker_grant_nonce": "f1017a7362014286af5c540fa91ea22f"
+  },
+  "dispatcher_source_findings": "Current package Dispatcher.Invoke invokes TryCancel on timeout, which only prevents a still queued item; already started work continues. No per-request TryCancel outcome observed, so not sufficient actual-exit evidence.",
+  "new_native_calls": 0,
+  "retry_or_reclaim": false
+}
