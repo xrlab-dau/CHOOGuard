@@ -12,12 +12,24 @@ namespace ChooGuard.App.Fps.Emergency
         public AedUnit Unit { get; private set; }
         public bool Stored { get; private set; }
 
-        /// <summary>Makes the cabinet on a fixture marker (collider box facing +z) and puts its AED inside, behind the glass.</summary>
-        public static AedCabinet Build(GameObject marker, StaffHands hands)
+        /// <summary>
+        /// Makes the cabinet on a fixture marker (collider box facing +z) and puts its AED inside, behind the glass. With
+        /// <see cref="EmergencyArt.AedCabinetModel"/> the Meshy cabinet model (31 x 42 x 20 cm, origin at its centre, door facing +z)
+        /// is placed on the marker; without it the marker's own visual stays as it was.
+        /// </summary>
+        public static AedCabinet Build(GameObject marker, StaffHands hands, EmergencyArt art = null)
         {
             var cabinet = marker.AddComponent<AedCabinet>();
             cabinet.Hands = hands;
-            cabinet.Unit = AedUnit.Build(hands, cabinet);
+            if (art != null && art.AedCabinetModel != null)
+            {
+                var visual = Object.Instantiate(art.AedCabinetModel, marker.transform);
+                visual.name = "AED 보관함 (모델)";
+                visual.transform.localPosition = Vector3.zero;
+                visual.transform.localRotation = Quaternion.identity;
+                foreach (var collider in visual.GetComponentsInChildren<Collider>()) Object.Destroy(collider);   // the marker's collider is the aim target
+            }
+            cabinet.Unit = AedUnit.Build(hands, cabinet, art);
             cabinet.Store();
             return cabinet;
         }
@@ -79,13 +91,29 @@ namespace ChooGuard.App.Fps.Emergency
         public AedCabinet Home { get; private set; }
         public bool Held { get; set; }
 
-        /// <summary>A carry case about 32 x 26 x 11 cm: yellow body, green lid band, grey handle. Procedural, no asset.</summary>
-        public static AedUnit Build(StaffHands hands, AedCabinet home)
+        /// <summary>
+        /// The carry case. With <see cref="EmergencyArt.AedUnitModel"/> it is the Meshy model (31 x 24 x 27 cm, origin at the bottom
+        /// centre) under a box collider on its bounds; otherwise a procedural case about 32 x 26 x 11 cm: yellow body, green lid band, grey handle.
+        /// </summary>
+        public static AedUnit Build(StaffHands hands, AedCabinet home, EmergencyArt art = null)
         {
             var root = new GameObject("자동심장충격기(AED)");
             var unit = root.AddComponent<AedUnit>();
             unit.Hands = hands;
             unit.Home = home;
+            if (art != null && art.AedUnitModel != null)
+            {
+                var visual = Object.Instantiate(art.AedUnitModel, root.transform);
+                visual.name = "본체 (모델)";
+                visual.transform.localPosition = Vector3.zero;
+                visual.transform.localRotation = Quaternion.identity;
+                foreach (var collider in visual.GetComponentsInChildren<Collider>()) Object.Destroy(collider);
+                var bounds = Props.LocalBounds(root.transform);
+                var box = root.AddComponent<BoxCollider>();
+                box.center = bounds.center;
+                box.size = bounds.size;
+                return unit;
+            }
             var shader = Shader.Find("Universal Render Pipeline/Lit");
             Material Paint(string name, Color colour)
             {

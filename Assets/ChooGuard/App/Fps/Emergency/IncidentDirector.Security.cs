@@ -78,7 +78,8 @@ namespace ChooGuard.App.Fps.Emergency
             var spot = Floor(owner.transform.position + owner.transform.right * .55f);
             if (!InsideBuilding(spot)) spot = Floor(owner.transform.position);
             if (!InsideBuilding(spot)) return;
-            var bag = new SuspiciousItemHazard("bag-" + ++serial, spot, owner.transform.rotation * Quaternion.Euler(0, 90, 0), owner, art, root) { Where = world.Describe(spot) };
+            // Every third item is a sealed parcel: decided by the serial, not by a random draw, so seeded runs keep their sequence.
+            var bag = new SuspiciousItemHazard("bag-" + ++serial, spot, owner.transform.rotation * Quaternion.Euler(0, 90, 0), owner, art, root, serial % 3 == 0) { Where = world.Describe(spot) };
             bags.Add(bag);
             ownerLeaves[bag] = (Time.time + world.Range(12, 30), magnitude >= .5f);
             CordonMarker(bag, bag.View, "주인 없는 여행가방");
@@ -92,7 +93,7 @@ namespace ChooGuard.App.Fps.Emergency
             var spot = Floor(StationWorld.OnNavMesh(near + new Vector3(world.Range(-1.5f, 1.5f), 0, world.Range(-1.5f, 1.5f)), 2f));
             if (!InsideBuilding(spot)) spot = Floor(near);
             if (!InsideBuilding(spot)) return;
-            var bag = new SuspiciousItemHazard("bag-" + ++serial, spot, Quaternion.Euler(0, world.Range(0, 360), 0), null, art, root) { Where = world.Describe(spot) };
+            var bag = new SuspiciousItemHazard("bag-" + ++serial, spot, Quaternion.Euler(0, world.Range(0, 360), 0), null, art, root, serial % 3 == 0) { Where = world.Describe(spot) };
             bags.Add(bag);
             CordonMarker(bag, bag.View, "주인 없는 여행가방");
             Register(bag);

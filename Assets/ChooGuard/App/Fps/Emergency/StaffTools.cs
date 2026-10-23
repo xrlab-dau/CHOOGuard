@@ -245,7 +245,7 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var fixture in Object.FindObjectsByType<Facilities.StationFixture>(FindObjectsSortMode.None))
             {
                 if (fixture.Kind == Facilities.StationFixture.FixtureKind.Hydrant) fixture.gameObject.AddComponent<HydrantHose>().Hands = this;
-                else if (fixture.Kind == Facilities.StationFixture.FixtureKind.Aed) AedCabinet.Build(fixture.gameObject, this);
+                else if (fixture.Kind == Facilities.StationFixture.FixtureKind.Aed) AedCabinet.Build(fixture.gameObject, this, art);
             }
         }
 
