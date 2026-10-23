@@ -405,20 +405,24 @@ class Provider:
             if model and model not in [m['slug'] for m in self.catalog.get(account_id,[])]:raise Failure('model_not_in_selected_account_catalog')
             enabled=body.get('cloud_enabled',False if changed else self.cloud_enabled)
             if not isinstance(enabled,bool):raise Failure('explicit_cloud_choice_required')
-            if body.get('resume_after_usage_review'):
-                if not self.quota_for(account_id):raise Failure('usage_review_must_match_stopped_account',403)
-                self.quotas.pop(account_id,None);self.store.data['quota_stops']=self.quotas
-                if self.quota and self.quota.get('account_id')==account_id:self.quota=None;self.store.data.pop('quota_stop',None)
+            resume_review=body.get('resume_after_usage_review',False)
+            if not isinstance(resume_review,bool):raise Failure('explicit_usage_review_required')
+            quota=self.quota;account_quota=self.quota_for(account_id)
+            if resume_review:
+                if not account_quota:raise Failure('usage_review_must_match_stopped_account',403)
+                if quota and quota.get('account_id')==account_id:quota=None
+                account_quota=None
             if enabled:
-                if (self.quota and not self.account_scoped_quota) or self.quota_for(account_id):raise Failure('subscription_usage_paused',429)
+                if (quota and not self.account_scoped_quota) or account_quota:raise Failure('subscription_usage_paused',429)
                 if not account or not account.get('access_token'):raise Failure('sign_in_required',401)
                 if self.contract.required_scope not in account.get('scopes',[]):raise Failure('chatgpt_plan_permission_required',403)
+            limits=self.limits
             if 'limits' in body:
                 limits=body['limits']
                 if not isinstance(limits,dict) or set(limits)!=set(MAX_BUDGET):raise Failure('complete_budget_limits_required')
                 for key,value in limits.items():
                     if isinstance(value,bool) or not isinstance(value,int) or not 1<=value<=MAX_BUDGET[key]:raise Failure('invalid_budget_limit')
-                self.limits=dict(limits)
+                limits=dict(limits)
             allowance=None
             if 'initial_world_allowance' in body:
                 allowance=body['initial_world_allowance']
@@ -427,6 +431,12 @@ class Provider:
                 if not isinstance(allowance,dict) or set(allowance)!={'input_tokens','output_tokens'}:raise Failure('complete_initial_allowance_required')
                 for key,maximum in (('input_tokens',MAX_INITIAL_INPUT_UNITS),('output_tokens',4096)):
                     if isinstance(allowance[key],bool) or not isinstance(allowance[key],int) or not 1<=allowance[key]<=maximum:raise Failure('invalid_initial_allowance')
+            # Rejected settings must not clear a usage stop or partially replace limits.
+            if resume_review:
+                self.quotas.pop(account_id,None);self.store.data['quota_stops']=self.quotas
+                self.quota=quota
+                if quota is None:self.store.data.pop('quota_stop',None)
+            self.limits=limits
             if changed or model!=self.selected_model or enabled!=self.cloud_enabled:self.rotate()
             if allowance is not None:self.initial_allowance=dict(allowance);self.initial_remaining=True
             self.store.data['active']=account_id;self.selected_model=model;self.cloud_enabled=enabled;self.last_error=None;self.store.save()

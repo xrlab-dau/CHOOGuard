@@ -201,5 +201,20 @@ class NativeControlTests(unittest.TestCase):
         self.assertEqual([],self.a.calls+self.b.calls+self.device.calls)
         status,error=self.request('POST','/native/v1/consent',{'subscription_enabled':True});self.assertEqual(403,status)
 
+    def test_rejected_consent_keeps_quota_stop_and_selection(self):
+        self.ready();self.native('POST','/consent',{'subscription_enabled':True})
+        adapter=self.p.selected()
+        self.a.infer_error=s.upstream_failure(429,{'error':{'code':'subscription_sharing_usage_limit_exceeded'}})
+        with self.assertRaises(s.Failure):
+            adapter.chat({'model':'second','messages':[{'role':'user','content':'Mock plan'}],'max_tokens':32},adapter.generation)
+        account=self.p.selected_account;before_quota=dict(adapter.quota_for(account));before_selection=self.p.selection()
+        before_generation=self.p.generation;before_calls=len(self.a.calls)
+        status,error=self.request('POST','/native/v1/consent',{
+            'subscription_enabled':True,'resume_after_usage_review':True,
+            'initial_world_allowance':{'input_tokens':0,'output_tokens':128}})
+        self.assertEqual(400,status);self.assertEqual('invalid_initial_allowance',error['error']['code'])
+        self.assertEqual(before_quota,adapter.quota_for(account));self.assertEqual(before_selection,self.p.selection())
+        self.assertEqual(before_generation,self.p.generation);self.assertEqual(before_calls,len(self.a.calls))
+
 
 if __name__=='__main__':unittest.main()
