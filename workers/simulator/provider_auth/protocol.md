@@ -23,6 +23,10 @@ The immutable selection has exactly eight string fields:
 
 Browser-only `POST /session` accepts `provider_id`, `account_id`, `model`, optional `catalog_version` compare-and-set, `cloud_enabled` (wire compatibility name; UI says subscription use), bounded `limits`, `initial_world_allowance` and same-account `resume_after_usage_review`. It validates the whole selection before committing. Login/start/cancel/logout are browser-only. Device authorization uses browser-only `POST /auth/device/poll` with `provider_id` and opaque state; no OAuth token or device code is returned to Unity/browser JSON.
 
+`resume_after_usage_review` must be a JSON boolean. Only `true` requests removal of
+the selected account's usage stop. All settings are validated before changing
+selection, consent, limits or usage stops; a rejected request preserves those states.
+
 Native `POST /v1/chat/completions` requires the private native Bearer capability, `X-ChooGuard-Session`, and `chooguard_selection` containing that exact eight-field object. Missing, partial, mismatched or stale bindings fail before inference. `chooguard_purpose` is `initial_world` or `npc_plan`; both route to the same selected account/model. The facade checks the same snapshot after refresh and after upstream success **or failure**. A changed snapshot returns HTTP409; an old response never applies to a new play selection. Nonselected account login/logout/catalog work preserves the active selection. No automatic fallback exists.
 
 Completion `chooguard.selection` echoes the bound object and `billing:user_subscription`. Its opaque account UUID is not a secret; raw completion tapes may retain it. The canonical C# selection record hashes account identity and binds cache/replay metadata to the selected tuple. Never record account labels/email, OAuth tokens, local capability, browser cookies or callback queries. External outputs are recorded for deterministic local replay; model seed support is not claimed.
