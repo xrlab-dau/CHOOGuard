@@ -137,6 +137,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Starts the person mid-routine at their current spot (population present at shift start).</summary>
         public void StartAt(Activity activity, StationPoints.Point at, float seconds)
         {
+            Crowd?.World?.RequireActiveDestination(at);
             place = at;
             stepSeconds = seconds;
             switch (activity)
@@ -520,6 +521,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Walks to <paramref name="toward"/> and leaves (a greeter and the passenger they met).</summary>
         public void LeaveWith(StationPoints.Point toward)
         {
+            Crowd?.World?.RequireActiveDestination(toward);
             ReleasePlace();
             exit = toward;
             WalkTo(toward.Position, Activity.Leave, walkSpeed * .95f);
@@ -842,6 +844,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Staff instruction or public announcement to leave through <paramref name="toward"/>.</summary>
         public void Instruct(StationPoints.Point toward, bool direct)
         {
+            Crowd?.World?.RequireActiveDestination(toward);
             if (Hurt || Hostile || Current == Activity.OnTrack || Current == Activity.Evacuate) return;
             Instructed = true;
             exit = toward;
@@ -1087,6 +1090,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>Restrained and led out by the police: walks to <paramref name="toward"/> and leaves the station.</summary>
         public void LedAway(StationPoints.Point toward)
         {
+            Crowd?.World?.RequireActiveDestination(toward);
             exit = toward;
             WalkTo(toward.Position, Activity.Leave, Mathf.Min(walkSpeed, 1.1f));
         }
@@ -1172,7 +1176,7 @@ namespace ChooGuard.App.Fps.Emergency
                 ? " hasPath=" + agent.hasPath + " status=" + agent.pathStatus + " stopped=" + agent.isStopped + " remaining=" + agent.remainingDistance.ToString("0.0") + " speed=" + agent.velocity.magnitude.ToString("0.0") + " link=" + agent.isOnOffMeshLink
                 : "";
             return "at=" + Where(transform.position) + " (" + World.Area(transform.position) + ") goal=" + Where(Body.Goal) + " onNavMesh=" + Body.OnNavMesh + at + " planning=" + Body.Planning + " noRoute=" + Body.NoRoute +
-                " step=" + Body.Step + "/" + Body.Chain.Count + " leg=" + leg + "/" + legs.Count + " seat=" + Body.Seat + " riding=" + (Body.Riding != null);
+                " step=" + Body.Step + "/" + Body.Chain.Count + " leg=" + leg + "/" + legs.Count + " seat=" + Body.Seat + " riding=" + (Body.Riding != null) + Body.RouteRecoveryState;
         }
 
         private static string Where(Vector3 v) => "(" + v.x.ToString("0.0") + ", " + v.y.ToString("0.0") + ", " + v.z.ToString("0.0") + ")";
@@ -1281,6 +1285,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         internal void EndEscort(StationPoints.Point reached)
         {
+            Crowd?.World?.RequireActiveDestination(reached);
             // An injury/reflex that ended the escort owns the resulting pose and activity.
             if (Current != Activity.Escorted) return;
             Body.Stop();

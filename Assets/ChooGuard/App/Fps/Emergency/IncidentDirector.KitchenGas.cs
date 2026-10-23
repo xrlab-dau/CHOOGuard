@@ -75,7 +75,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (!kitchens.TryGetValue(shopId, out var kitchen))
             {
-                kitchens[shopId] = kitchen = new Kitchen { ShopId = shopId, Label = world.Points.All.First(p => p.Id == shopId).Label };
+                kitchens[shopId] = kitchen = new Kitchen { ShopId = shopId, Label = world.SourcePoints.All.First(p => p.Id == shopId).Label };
                 kitchenList.Add(kitchen);
             }
             return kitchen;

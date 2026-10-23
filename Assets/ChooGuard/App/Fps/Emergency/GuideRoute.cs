@@ -216,6 +216,31 @@ namespace ChooGuard.App.Fps.Emergency
             }
         }
 
+        /// <summary>When already inside known danger, the graph starts beyond it; the complete lead still has to escape without entering any other danger or re-entering this one.</summary>
+        private void NearEscapingStart(Vector3 at)
+        {
+            starts.Clear();
+            // Same ordering as RouteGraph.Nearest, excluding blocked roots before
+            // selection. At most three linear scans; no native query per node.
+            for (int pick = 0; pick < NodeTries; pick++)
+            {
+                RouteGraph.Node best = null, bestAnyStorey = null;
+                float bestDistance = float.PositiveInfinity, bestAny = float.PositiveInfinity;
+                for (int i = 0; i < graph.Nodes.Count; i++)
+                {
+                    var node = graph.Nodes[i];
+                    if (starts.Contains(node) || NodeBlocked(node)) continue;
+                    var d = node.Position - at;
+                    float squared = d.x * d.x + d.z * d.z + 4f * d.y * d.y;
+                    if (Mathf.Abs(d.y) < 2.5f && squared < bestDistance) { bestDistance = squared; best = node; }
+                    if (squared < bestAny) { bestAny = squared; bestAnyStorey = node; }
+                }
+                var nearest = best ?? bestAnyStorey;
+                if (nearest == null) break;
+                starts.Add(nearest);
+            }
+        }
+
         // ── 바닥으로 바로 ──────────────────────────────────────────────────
 
         /// <summary>A ring point near enough on the same storey is walked to directly; the shortest walk that known ground leaves free.</summary>
@@ -250,7 +275,8 @@ namespace ChooGuard.App.Fps.Emergency
 
         private bool ByGraph(Vector3 start, List<Vector3> route)
         {
-            Near(start, starts);
+            if (Blocked(start)) NearEscapingStart(start);
+            else Near(start, starts);
             if (starts.Count == 0) return false;
             bool fresh = false;
             for (int attempt = 0; attempt < Attempts; attempt++)

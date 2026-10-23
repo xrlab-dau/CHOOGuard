@@ -1,0 +1,78 @@
+{
+  "schema": "C180_NATIVE_EXECUTION_RECEIPT_V1",
+  "request": "r25-bnc-east-exact-branch-correction-003",
+  "thread": "classic:/root/r25_bnc_east",
+  "scope": "C180_R25_BNC_EAST_SOURCE_CORRECTION_003",
+  "grant_nonce": "2fe6a838228845adb1a368cb77c58d4e",
+  "grant_file": ".state/SCENE-WORKER-C180/grants/r25-bnc-east-exact-branch-correction-003--0f68760a96fc49ccb527a2138da76cf6.json",
+  "command_source_hash": "65f02ff2439bd2090d6f788f8eae21bf4cc27b685511e6351bf82e2cdc7ce6ac",
+  "settled": false,
+  "status": "UNKNOWN_KEEP_ACTIVE_NO_NEXT_WRITER",
+  "steps": [
+    {
+      "index": 0,
+      "command": [
+        "/Users/um-yunsang/.unity/bin/unity",
+        "--json",
+        "command",
+        "--project-path",
+        "/Users/um-yunsang/CHOOGuard",
+        "--timeout",
+        "150",
+        "run_script",
+        "--file",
+        "/Users/um-yunsang/CHOOGuard/.state/SCENE-WORKER-C180/sources/r25-bnc-east-exact-branch-correction-003--0f68760a96fc49ccb527a2138da76cf6/000__ApplyEastCorrection003.cs",
+        "--entry",
+        "StoreBuilderR25.Apply",
+        "--timeout_ms",
+        "120000"
+      ],
+      "original_script": ".state/ACTIVE-2F-SHOPS-CONSTRUCTION-R25/bnc-east/east-correction003/ApplyEastCorrection003.cs",
+      "source_sha256": "8782f21349a60b620e65dc27fc03a04d3f76a4af392eec29afc99cd62ad08956",
+      "frozen_script": ".state/SCENE-WORKER-C180/sources/r25-bnc-east-exact-branch-correction-003--0f68760a96fc49ccb527a2138da76cf6/000__ApplyEastCorrection003.cs",
+      "frozen_sha256": "8782f21349a60b620e65dc27fc03a04d3f76a4af392eec29afc99cd62ad08956",
+      "started_utc": "2026-10-19T08:51:36.028140+00:00",
+      "ended_utc": "2026-10-19T08:53:36.122667+00:00",
+      "returncode": 6,
+      "stdout": "{\n  \"success\": false,\n  \"command\": \"unity command run_script\",\n  \"data\": null,\n  \"errors\": [\n    {\n      \"code\": \"COMMAND_FAILED\",\n      \"message\": \"Pipeline server returned 400 Bad Request: Internal Server Error. Main thread operation timed out after 120000ms\"\n    }\n  ],\n  \"warnings\": []\n}\n",
+      "stderr": "",
+      "parsed": {
+        "settled": false,
+        "success": false,
+        "reason": "MISSING_INNER_BOOLEAN",
+        "packet": {
+          "success": false,
+          "command": "unity command run_script",
+          "data": null,
+          "errors": [
+            {
+              "code": "COMMAND_FAILED",
+              "message": "Pipeline server returned 400 Bad Request: Internal Server Error. Main thread operation timed out after 120000ms"
+            }
+          ],
+          "warnings": []
+        }
+      }
+    }
+  ],
+  "created_utc": "2026-10-19T08:51:36.016035+00:00",
+  "active_step": 0,
+  "active_command": [
+    "/Users/um-yunsang/.unity/bin/unity",
+    "--json",
+    "command",
+    "--project-path",
+    "/Users/um-yunsang/CHOOGuard",
+    "--timeout",
+    "150",
+    "run_script",
+    "--file",
+    "/Users/um-yunsang/CHOOGuard/.state/SCENE-WORKER-C180/sources/r25-bnc-east-exact-branch-correction-003--0f68760a96fc49ccb527a2138da76cf6/000__ApplyEastCorrection003.cs",
+    "--entry",
+    "StoreBuilderR25.Apply",
+    "--timeout_ms",
+    "120000"
+  ],
+  "active_step_started_utc": "2026-10-19T08:51:36.027233+00:00",
+  "updated_utc": "2026-10-19T08:53:36.122748+00:00"
+}

@@ -4,6 +4,7 @@
 #   unity_ci.sh activate            serial activation (UNITY_SERIAL, UNITY_EMAIL, UNITY_PASSWORD)
 #   unity_ci.sh test EditMode|PlayMode
 #                                   EditMode also gets CSBOOT0101's boundary fixture (-cgFixtureRoot, -cgBuildLinkFixture)
+#   unity_ci.sh routegraph          one exact RouteGraph PlayMode test, with separate XML/log and strict verdict
 #   unity_ci.sh build               ChooGuard.Editor.PlayerBuild.BuildAll: macOS, Windows and Linux players, the same
 #                                   entry points as the editor's ChooGuard/Build menu
 #   unity_ci.sh bootstrap           CS-BOOT.01.01's real build: BuildBaseline.Build of the Bootstrap scene with a receipt
@@ -16,7 +17,7 @@
 # uploaded and every uploadable log is scrubbed first.
 set -euo pipefail
 
-usage() { echo "usage: $0 activate | test EditMode|PlayMode | build | bootstrap | return | scrub" >&2; exit 64; }
+usage() { echo "usage: $0 activate | test EditMode|PlayMode | routegraph | build | bootstrap | return | scrub" >&2; exit 64; }
 [[ $# -ge 1 ]] || usage
 : "${RUNNER_TEMP:?}"
 logs="${UNITY_LOGS:-$RUNNER_TEMP/unity}"           # uploaded as an artifact after `scrub`
@@ -60,11 +61,21 @@ activate)
   echo "::error title=Unity licence::$reason"
   exit 1
   ;;
-test)
-  platform="${2:-}"
-  [[ $platform == EditMode || $platform == PlayMode ]] || usage
+test|routegraph)
+  if [[ $1 == routegraph ]]; then
+    [[ $# -eq 1 ]] || usage
+    platform=PlayMode
+    result_name=RouteGraph
+  else
+    platform="${2:-}"
+    [[ $platform == EditMode || $platform == PlayMode ]] || usage
+    result_name="$platform"
+  fi
   args=(-batchmode -projectPath "$project" -runTests -testPlatform "$platform"
-        -testResults "$logs/$platform-results.xml" -logFile "$logs/$platform.log")
+        -testResults "$logs/$result_name-results.xml" -logFile "$logs/$result_name.log")
+  if [[ $1 == routegraph ]]; then
+    args+=(-testFilter "ChooGuard.Tests.PlayMode.RouteGraphTests.BakedGraph_SitsOnTheNavmeshAndJoinsEveryPlaceToAnExitWithoutTheElevator")
+  fi
   # EditMode needs no GPU. PlayMode keeps a real device (Metal, Direct3D/WARP, OpenGL on a virtual X display) so
   # rendering paths run as they do on the team's machines.
   runner=()
@@ -96,7 +107,7 @@ PY
   status=0
   ${runner[@]+"${runner[@]}"} "$UNITY_EDITOR" "${args[@]}" || status=$?
   echo "exit_code=$status" >> "${GITHUB_OUTPUT:-/dev/null}"
-  echo "Unity $platform exited $status (verdict comes from unity_results.py)"
+  echo "Unity $result_name exited $status (verdict comes from unity_results.py)"
   ;;
 build)
   status=0

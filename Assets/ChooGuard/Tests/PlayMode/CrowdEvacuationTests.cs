@@ -15,7 +15,7 @@ namespace ChooGuard.Tests.PlayMode
     // 굳음은 CrowdMind 의 감시가 센다(걷기·물러서기·나가기·대피 중 0.5 m 도 못 움직인 채 20 초, 목적지 3 m 안은 제외).
     // 프레임 시간이 짧은 배치 실행에서도 길 안내 지연이 가려지지 않도록 게임 1초를 30 프레임으로 고정한다(길찾기 예산은 프레임 단위).
     // 828e30b3 에서는 1층 승객이 에스컬레이터 앞에서 굳고 일부는 길 요청이 밀려 굳었다.
-    public sealed class CrowdEvacuationTests
+    public sealed class CrowdEvacuationTests : RetainedEmergencySessionFixture
     {
         private const int FramesPerSecond = 30;
         private string savedKey;

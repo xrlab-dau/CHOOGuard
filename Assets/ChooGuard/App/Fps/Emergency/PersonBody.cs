@@ -211,6 +211,29 @@ namespace ChooGuard.App.Fps.Emergency
             if (Fresh && !Queued && WantsRoute) Paths?.Enqueue(this);
         }
 
+        // An active route may outlive an interrupted side step. A stopped agent
+        // is excluded by both existing stalled/lost watchers, so request a fresh
+        // validated leg instead of resuming the old path or moving the body here.
+        internal static bool ShouldReplanStoppedRoute(bool wantsRoute, bool planning, bool noRoute,
+            bool sidestepping, bool traversing, bool riding, bool stopped, bool hasPath,
+            bool pathPending, bool onLink, NavMeshPathStatus status, float goalDistanceSquared) =>
+            wantsRoute && !planning && !noRoute && !sidestepping && !traversing && !riding &&
+            stopped && hasPath && !pathPending && !onLink && status == NavMeshPathStatus.PathComplete &&
+            !float.IsNaN(goalDistanceSquared) && !float.IsInfinity(goalDistanceSquared) && goalDistanceSquared > 4f;
+
+        private void ResumeStoppedRoute()
+        {
+            if (!OnNavMesh) return;
+            if (ShouldReplanStoppedRoute(WantsRoute, Planning, NoRoute, sidestep != Vector3.zero,
+                traversal != null, Riding != null, Agent.isStopped, Agent.hasPath, Agent.pathPending,
+                Agent.isOnOffMeshLink, Agent.pathStatus, (goal - transform.position).sqrMagnitude)) Replan();
+        }
+
+        internal string RouteRecoveryState => " hasGoal=" + hasGoal + " goalPending=" + goalPending +
+            " sideStepping=" + (sidestep != Vector3.zero) + " sidestep=" + sidestep.ToString("F4") +
+            " traversal=" + (traversal != null) + " stuckTier=" + stuckStage +
+            " pathPending=" + (OnNavMesh && Agent.pathPending);
+
         private float lostSince = -1;
         private int lostRetries;
         private Vector3 lostFrom;
@@ -719,6 +742,7 @@ namespace ChooGuard.App.Fps.Emergency
             WatchStranded();
             ResumeGoal();
             ResumeDroppedRequest();
+            ResumeStoppedRoute();
             WatchLostPath();
             WatchStuck();
             FollowRoute();
@@ -778,6 +802,17 @@ namespace ChooGuard.App.Fps.Emergency
             Replan();
         }
 
+        // The actual side step is horizontal. A vertical-only sample must not
+        // satisfy the minimum move and stop the agent with no step left to run.
+        internal static bool TryHorizontalSidestep(Vector3 from, Vector3 to, out Vector3 step)
+        {
+            step = to - from; step.y = 0;
+            float squared = step.sqrMagnitude;
+            if (!float.IsNaN(squared) && !float.IsInfinity(squared) && squared >= .04f) return true;
+            step = Vector3.zero;
+            return false;
+        }
+
         private float stuckSince = -1;
         private int stuckStage;
         private Vector3 stuckFrom;
@@ -807,9 +842,8 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 var probe = transform.position + Quaternion.Euler(0, turn, 0) * direction * .6f;
                 if (!NavMesh.SamplePosition(probe, out var hit, .4f, NavMesh.AllAreas) || Mathf.Abs(hit.position.y - transform.position.y) > .4f) continue;
-                if (Vector3.Distance(hit.position, transform.position) < .2f) continue;
-                sidestep = hit.position - transform.position;
-                sidestep.y = 0;
+                if (!TryHorizontalSidestep(transform.position, hit.position, out var side)) continue;
+                sidestep = side;
                 Agent.isStopped = true;
                 return;
             }

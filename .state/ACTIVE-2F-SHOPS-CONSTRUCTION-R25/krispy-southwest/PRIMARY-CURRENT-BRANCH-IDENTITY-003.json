@@ -1,0 +1,157 @@
+{
+  "schema": "chooguard.r25.primary_branch_identity_followup003.v1",
+  "utc": "2026-10-19T09:43:05.896547+00:00",
+  "store_key": "krispy-southwest",
+  "status": "SOURCE_BINDING_UNRESOLVED",
+  "scope": "Read-only bounded primary-source identity followup. Existing selected room fixed.",
+  "primary_sources": [
+    {
+      "id": "KORAIL-100083811",
+      "url": "https://www.korailretail.com/board/boardDetail.do?boardTypeNum=4&boardNum=100083811",
+      "access": "live direct HTTP200; web reader unavailable",
+      "publication_kst": "2026-10-07 16:06:45",
+      "title": "[부산경남본부] 2026년 제11차 전문점(단기) 운영 제휴업체 모집공고",
+      "attachment_file": "202610070406457135.pdf",
+      "attachment_origin_name": "[붙임3]대상매장위치도.pdf",
+      "local_original": "asset-library/research-public/2026-10-09/floor2-architectural-pdf-search/official-100083811-store-plan.pdf",
+      "sha256": "e43f640490af6d1fb20f3c58607cc3933398b8a1690383be8e73ed0d09350f4b",
+      "pdf_metadata": {
+        "author": "korail",
+        "creator": "Microsoft® PowerPoint® 2016",
+        "creationDate": "D:20261007111135+09'00'",
+        "modDate": "D:20261007111135+09'00'",
+        "page_count": 2
+      },
+      "page1_evidence": "부산역2층 map contains both north 크리스피 크림도넛 and southwest 크리스피크림도넛. R20 selected25 is internal locator order, not an official lease/store ID.",
+      "tender_unit": "11-01, 부산2층선상통로, 기타,10.0m2(4.0x2.5)",
+      "limit": "10.0m2 is the separately arrow-marked11-01 recruitment unit, not evidence of selected25 store area. PDF creation/publication date is not an occupancy survey or renovation-completion date."
+    },
+    {
+      "id": "LOTTE-PUBLIC-BRAND-FINDER",
+      "url": "https://www.lotteeatz.com/searchStore?divcd=40&brandCode=KKD",
+      "public_read_api": "https://www.lotteeatz.com/api/v1/stores/search?brandList=40&brandCodeList=KKD&storeName=%EB%B6%80%EC%82%B0%EC%97%AD&page=1&size=100",
+      "api_status": 200,
+      "exact_station_query_total": 1,
+      "exact_station_query_hasNext": false,
+      "busan_brand_query_total": 12,
+      "busan_brand_query_hasNext": false,
+      "matching_station_record": {
+        "storecd": "42074",
+        "storeNm": "부산역사점",
+        "engStoreNm": "7687 Busan station",
+        "address": {
+          "adres": "부산 동구 중앙대로",
+          "detailAdres": "206",
+          "zipNo": "48760",
+          "telno": "051-442-1937 ",
+          "faxNo": null
+        },
+        "status": "NORMAL",
+        "operYn": "Y",
+        "published_hours": "06:00–22:30",
+        "coordinates": {
+          "lat": 35.1150685324591,
+          "lng": 129.042063723912
+        },
+        "sourceImageUrl": "https://img.lotteeatz.com/upload/storeImg/2023/02/01/20230201103822865_4.jpg",
+        "createDt": null,
+        "endDt": null,
+        "area_m2": null,
+        "floor_or_hall": null
+      },
+      "response_sha256": "b41e50c703cfbb168531ca4e44a3f643458c59cbf4864e4de523079ee051eb64",
+      "limit": "One record returned for 부산역, but catalog absence cannot prove a separate concession is closed/nonexistent. Address206, phone and brand identity alone do not bind the existing selected Native0 room. No second current central/선상 branch ID or floor/area supplied."
+    },
+    {
+      "id": "KORAIL-PUBLIC-BUSAN-STORE-INDEX",
+      "url": "https://www.korailretail.com/store/selectBoardList.do?searchCnd=0&searchWrd=%EB%B6%80%EC%82%B0&pageIndex=1",
+      "access": "live direct HTTP200",
+      "result_count": 8,
+      "rows_summary": "Six Storyway convenience stores, Pascucci, KorailLounge CafeStoryway. Neither Krispy nor Dain appears.",
+      "limit": "Known specialist tenants are omitted; this is insufficient coverage to infer either tenant has ceased operation or that selected25 is vacant.",
+      "sha256": "8169f7dbc6e0ab889e6113ced967556ba1c2eb773b7dd5d41fd7438e525c9ce2"
+    },
+    {
+      "id": "KORAIL-100083825",
+      "url": "https://www.korailretail.com/board/boardDetail.do?boardTypeNum=4&boardNum=100083825",
+      "publication_kst": "2026-10-14 14:17:53",
+      "access": "live direct HTTP200",
+      "title": "[부산경남본부] 2026년 제12차 전문점(단기) 운영 제휴업체 모집공고",
+      "tender_unit": "부산2층선상통로, 기타,10.0m2",
+      "map_attachment": "202610140217538275.pdf",
+      "map_download_result": {
+        "url": "https://www.korailretail.com/board/fileDown2.do?dirName=upload%2Frecru%2F4%2F202609%2F&fileName=202610140217538275.pdf&originName=%5B%EB%B6%99%EC%9E%843%5D%EB%8C%80%EC%83%81%EB%A7%A4%EC%9E%A5%EC%9C%84%EC%B9%98%EB%8F%84.pdf",
+        "status": 200,
+        "bytes": 0,
+        "content_type": null
+      },
+      "limit": "Newer publication confirms a10m2 recruitment unit only. Public map download returned0bytes; no changed tenant labels or current selected25 occupancy can be claimed."
+    }
+  ],
+  "newly_confirmed": [
+    {
+      "classification": "directly_supported",
+      "finding": "Original100083811 document is an Oct7 2026 publication; local original metadata was created/modified Oct7 11:11:35KST by korail/PowerPoint2016. Southwest Krispy glyph is present in this original, so it is not merely a stale worker relabel."
+    },
+    {
+      "classification": "directly_supported",
+      "finding": "Live official brand finder exposes 부산역사점 code42074, central206,051-442-1937; exact 부산역 query returns1 record, all부산12. No current separate central/선상 branch identity record obtained."
+    },
+    {
+      "classification": "directly_supported",
+      "finding": "Live Korail100083825 Oct14 post exists for10m2 other-category recruitment; public location-PDF request again returnedHTTP200/0bytes."
+    }
+  ],
+  "counterevidence": [
+    {
+      "classification": "contradicts_premise",
+      "finding": "Official10m2 tender area belongs to arrowed11-01 and cannot establish selected25 footprint."
+    },
+    {
+      "classification": "contradicts_premise",
+      "finding": "One brand-finder entry and absence from a limited8-row Korail index do not prove the other branch closed or that Dain is current."
+    },
+    {
+      "classification": "contradicts_premise",
+      "finding": "Previously directly viewed northern cafe next to Artbox/track10 cannot be reused as selected25 fitout. No such images recollected in003."
+    }
+  ],
+  "still_unconfirmed": [
+    "Whether southwest map label denotes a separately operating Krispy concession today, a renaming/relocation, a planned conversion or stale map identity.",
+    "Current selected25 tenant Krispy versus Dain and conversion epoch.",
+    "Separate current branch store/lease ID, exact selected area, original floor/ceiling/elevation/furniture design.",
+    "Current exact Flowers/Oden/sharedNative0-frontchain photo/video corresponding to selected25."
+  ],
+  "carryover_aliases_not_primary_verified": [
+    "부산2층중앙통로 크리스피도넛; secondary2005-10-17 permit51.6m2, addressfloor3F conflicts with name2F.",
+    "부산2층선상통로(단기)크리스피크림도넛; secondary mileage label. Neither alias is linked to brand storecd42074 or selectedNative0 room by primary evidence."
+  ],
+  "construction_decision": {
+    "supported": false,
+    "reason": "Document epoch is confirmed; current selected tenant and exact branch-to-native/photo correspondence remain unconfirmed. Retain selected25 pending; do not clone north cafe or construct Dain as Krispy.",
+    "existing_native_anchor_reference": "MODEL-PLACEMENT-BASIS-R25.json",
+    "current_physical_source_reference": "SOURCE-EVIDENCE-R25.json; May18 Oden/Dain frontage is source-epoch observation only.",
+    "root_additional_evidence": "ROOT-ADDITIONAL-PANORAMA-AND-BRANCH-RESEARCH-002.json reported no current selected fitout; no repeated collection."
+  },
+  "stop_condition": {
+    "official_paths_checked": [
+      "lotteeatz.com official public store finder/API",
+      "korailretail.com official store index and current recruitment documents"
+    ],
+    "targeted_query_count": 8,
+    "targeted_queries": [
+      "site.lotteeatz.com 크리스피 부산역사점",
+      "site.korailretail.com \"부산\" \"크리스피\"",
+      "site.korailretail.com \"부산2층\" \"크리스피\"",
+      "site.korailretail.com \"부산역\" \"다인명가\"",
+      "site.lotteeatz.com/searchStore \"부산역\"",
+      "site.korail.com \"부산\" \"크리스피\"",
+      "site.letskorail.com \"부산2층\" \"크리스피\"",
+      "site.korailretail.com \"중앙통로\" \"크리스피\""
+    ],
+    "additional_original_or_photo_downloads": 0,
+    "scene_assets_C180_native_calls": 0,
+    "account_paid_service_or_external_mutations": 0,
+    "outcome": "Two official paths and8targetedqueries exhausted without independent exact selected current branch/design binding; stop."
+  }
+}

@@ -14,11 +14,16 @@ namespace ChooGuard.Tests.EditMode
         [TestCase("Kit_Frame_Canopy_Dark")]
         [TestCase("Kit_Clad_wall_painted_gypsum_fine")]
         [TestCase("Kit_Fascia_Kit_Paint_1E2226")]
-        public void ActualFourViewCutPreservesUnrelatedFacesAndInterpolatesOriginalUV(string leaf)
+        public void BarycentricCutPreservesUnrelatedSourceFacesAndInterpolatesOriginalUV(string leaf)
         {
-            string owner = "실내 트윈 마감/1F/" + leaf;
             var source = AssetDatabase.LoadAssetAtPath<Mesh>("Assets/ChooGuard/Art/StationInterior/Kit/1F/" + leaf + ".asset");
-            var cuts = ObservedFrontageRepair.ReadRemainders(owner);
+            // Deterministic half-face fixture, not a renewed photograph/as-built verdict.
+            // The independent cut polygon removes half the original unit triangle.
+            var cuts = new[] { new ObservedFrontageRepair.FaceRemainder {
+                Ordinal = 0, RemainingAreaFraction = .5f,
+                CutPolygon = new[] { Vector2.zero, new Vector2(.5f, 0), Vector2.up, Vector2.zero },
+                Triangles = new[] { new[] { new Vector3(.5f, .5f, 0), Vector3.up, Vector3.forward } }
+            } };
             var sourceIndices = source.triangles; var sourceVertices = source.vertices; var sourceUV = source.uv;
             var result = ObservedFrontageRepair.KeepObservedRemainder(source, cuts);
             try

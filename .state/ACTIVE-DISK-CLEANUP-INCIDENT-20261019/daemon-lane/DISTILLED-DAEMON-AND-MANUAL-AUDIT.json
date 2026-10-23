@@ -1,0 +1,63 @@
+{
+  "audit_utc": "2026-10-19T03:16:42.115200+00:00",
+  "finding": "NO_MATCHING_R15_OR_R17_DELETE_IN_ROOT_DAEMON_RECORDS_OR_PRESERVED_EXACT_MANUAL_RECEIPTS",
+  "daemon_last_four_cycles": [
+    {
+      "utc": "2026-10-19T02:56:41.686863+00:00",
+      "status": "complete",
+      "deleted_files": 5,
+      "scanned": 9
+    },
+    {
+      "utc": "2026-10-19T03:01:41.702778+00:00",
+      "status": "complete",
+      "deleted_files": 0,
+      "scanned": 9
+    },
+    {
+      "utc": "2026-10-19T03:06:41.767114+00:00",
+      "status": "complete",
+      "deleted_files": 0,
+      "scanned": 9
+    },
+    {
+      "utc": "2026-10-19T03:11:41.807663+00:00",
+      "status": "native_writer_busy",
+      "deleted_files": 0,
+      "scanned": 0
+    }
+  ],
+  "last_four_cycle_total_deleted_files": 5,
+  "last_four_cycle_deleted_paths": [
+    ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/geometry/ACTUAL-CURRENT-STRUCTURAL-REGION-CONTEXT-R14.png",
+    ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/source/PRIMARY-20240321-BUSAN-201-PAGE3.png",
+    ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/research/root-search-0.json",
+    ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/research/root-search-1.json",
+    ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14/research/root-search-2.json"
+  ],
+  "last_four_cycle_total_deleted_logical_bytes": 472755,
+  "R15_R17_logged_deletions": [],
+  "registered_manifests_count": 2,
+  "registered_exact_leaf_count": 7,
+  "approved_manifest_hashes_match": true,
+  "allowed_roots": [
+    "Logs",
+    ".planning/2026-10-19-2f-guide-photo-wall-reconstruction-r14"
+  ],
+  "R15_explicitly_protected_in_current_config": true,
+  "R17_path_cannot_match_registered_allowed_root_or_exact_entry": true,
+  "recursive_directory_delete_in_daemon_or_service": false,
+  "preserved_manual_root_receipts_count": 3,
+  "preserved_manual_R15_R17_matches": [],
+  "manual_audit_gap": {
+    "current_03_03_recovery_state_pointer_exists": true,
+    "its_final_manual_receipt": ".planning/2026-10-19-aggressive-disk-recovery/COMPLETED-DISK-RECOVERY.json",
+    "final_manual_receipt_exists": false,
+    "consequence": "Cannot independently audit all03:03 manual cleanup paths from the missing final receipt. Do not conclude no root/manual deletion from daemon-only evidence."
+  },
+  "additional_direct_observation": ".planning/2026-10-19-aggressive-disk-recovery and continuous-disk-cleanup directories existed but contained no files at audit start; own earlier inventory artifacts were also absent. Cause is unassigned.",
+  "no_deletion_restore_native_state_or_process_mutations": true,
+  "report_relocated_utc": "2026-10-19T03:17:03.669353+00:00",
+  "current_report_directory": ".state/ACTIVE-DISK-CLEANUP-INCIDENT-20261019/daemon-lane",
+  "planning_recreation_after_new_instruction": false
+}

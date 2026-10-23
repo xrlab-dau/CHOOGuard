@@ -1,0 +1,234 @@
+{
+  "schema": "R25builder1",
+  "coordinate_system": "q is [qx,-qy] metres of approved drawing; y is height above actualfloor7m; rootrotation applied by factory. No sourceboxes rescale.",
+  "packet": {
+    "store_key": "gijang",
+    "origin_q": [
+      0,
+      0
+    ],
+    "floor_world_y": 7,
+    "source_packet": "SOURCE-EVIDENCE-R25.json",
+    "materials": {
+      "white": {
+        "color": [
+          0.9,
+          0.9,
+          0.9,
+          1
+        ],
+        "metallic": 0,
+        "smoothness": 0.4
+      },
+      "glass": {
+        "color": [
+          0.7,
+          0.85,
+          0.9,
+          0.13
+        ],
+        "transparent": true,
+        "smoothness": 0.93
+      }
+    },
+    "objects": []
+  },
+  "objects_examples": [
+    {
+      "kind": "box",
+      "id": "counter_body",
+      "group": "Counter",
+      "q": [
+        0,
+        0
+      ],
+      "y": 0.45,
+      "size": [
+        1,
+        0.9,
+        0.5
+      ],
+      "yaw": 0,
+      "material": "white",
+      "source_ids": [
+        "PHOTO01"
+      ],
+      "collider": true
+    },
+    {
+      "kind": "edge",
+      "id": "fixed_glass",
+      "group": "Booth",
+      "a": [
+        0,
+        0
+      ],
+      "b": [
+        3,
+        0
+      ],
+      "bottom": 0.12,
+      "height": 2.25,
+      "thickness": 0.015,
+      "material": "glass",
+      "source_ids": [
+        "PHOTO01"
+      ],
+      "cast_shadows": false
+    },
+    {
+      "kind": "cylinder",
+      "id": "round_leg",
+      "q": [
+        0,
+        0
+      ],
+      "y": 0.4,
+      "size": [
+        0.06,
+        0.4,
+        0.06
+      ],
+      "material": "white",
+      "collider": false,
+      "note": "builtinCylinderheight2; sizeY is HALF desired height"
+    },
+    {
+      "kind": "asset",
+      "id": "chair",
+      "group": "Seating",
+      "q": [
+        0,
+        0
+      ],
+      "y": 0,
+      "fit_size": [
+        0.45,
+        0.9,
+        0.48
+      ],
+      "yaw": 0,
+      "asset": "Assets/.../chair.fbx",
+      "material": "white",
+      "source_ids": [
+        "PHOTO02"
+      ],
+      "note": "asset anchor is bottom center;fit_size actualdesiredLOCALXYZdimensions; material override optional"
+    },
+    {
+      "kind": "mesh",
+      "id": "shape",
+      "group": "Booth",
+      "q": [
+        0,
+        0
+      ],
+      "y": 0,
+      "vertices": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0
+        ]
+      ],
+      "triangles": [
+        0,
+        1,
+        2
+      ],
+      "uv": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "material": "white",
+      "collider": false,
+      "note": "vertices LOCAL above q,y pivot. Doublefaceifnecessary. use own explicit extrusionmesh for polygon ceiling/shelves."
+    },
+    {
+      "kind": "text",
+      "id": "sign",
+      "group": "Signs",
+      "q": [
+        0,
+        0
+      ],
+      "y": 2.7,
+      "yaw": 0,
+      "text": "기장특산품",
+      "width": 2.8,
+      "height": 0.4,
+      "color": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "note": "TMPtext lies in localXYplane, forward is local+Z. yaw180 if textfaceslocal-Z; euler[x,y,z] ifneeded. NotoKorean font copiedstatic, geometryautosizedtowidthheight."
+    },
+    {
+      "kind": "light",
+      "id": "interior_light",
+      "q": [
+        0,
+        0
+      ],
+      "y": 2.8,
+      "range": 3,
+      "intensity": 0.25,
+      "color": [
+        1,
+        0.94,
+        0.85,
+        1
+      ],
+      "note": "small observed ownlightonly; no global scene light edits"
+    }
+  ],
+  "compile_apply": {
+    "template": "StoreBuilderR25.template.cs",
+    "replace_placeholders": [
+      "__STORE_KEY__",
+      "__WORKER_THREAD__",
+      "__EXACT_SCOPE__",
+      "__PACKET_PATH__",
+      "__PACKET_SHA256__"
+    ],
+    "output": "ownstore/ApplyStoreR25.cs",
+    "entry": "StoreBuilderR25.Apply",
+    "author_thread": "classic:/root/<agentname>",
+    "scope_prefix": "perstore registered byroot",
+    "command": "python3 .state/SCENE-WORKER-C180/active-broker/scene_worker.py run --thread THREAD --scope EXACT --file OWN/ApplyStoreR25.cs --entry StoreBuilderR25.Apply --name unique --timeout-ms 120000",
+    "creation_receipt": "ownstore/APPLIED-STORE-R25.json"
+  },
+  "restrictions": [
+    "No unobserved fullhiddenkitchen asbuilt claims.",
+    "Preserve approved footprint and nativebodies/openings/floors; sourcegeometryguards in own packet builder.",
+    "Do not copy sourceasset files or modify existingSceneobjects.",
+    "Allobjects are separatelyeditable; allmaterials ownassets.",
+    "Do not alter template while otherworkerqueued; copy stablelatest first.",
+    "Author appliesandsaves directly, noQA/reopen/Play/tests/captures."
+  ],
+  "template_v2": "StoreBuilderR25-v2.template.cs",
+  "text_front": "Input yaw/euler describes intended outward +Z normal; v2 internally adds180 since TMP glyph front is -Z. Do not manually add180 again.",
+  "font": "v2 creates own static NotoOTF font containing all packet text chars/material/atlas; no original SDF edit."
+}

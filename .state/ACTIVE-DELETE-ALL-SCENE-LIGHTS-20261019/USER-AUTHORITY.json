@@ -1,0 +1,20 @@
+{
+  "status": "EXPLICIT_USER_DELETE_ALL_CURRENT_SCENE_LIGHTS_AUTHORIZED",
+  "utc": "2026-10-19T08:49:37.030307+00:00",
+  "user_instruction": "지금 조명때문에 리소스 사용량이 너무 무거워 조명 전부 삭제해줘",
+  "author_thread": "01a15356-cffc-7d10-98f2-0dfa569c689c",
+  "scope": "C180_USER_DELETE_ALL_SCENE_LIGHTS_20261019",
+  "scene": "Assets/ChooGuard/Scenes/FpsStation.unity",
+  "actions": [
+    "Delete every Light component in current scene, including inactive lights",
+    "Delete light-only leaf GameObjects and associated additional light data",
+    "Apply and save current scene; retain exact deletion tombstones"
+  ],
+  "preserve": [
+    "Architecture, fixture and furniture meshes, colliders and all non-light children",
+    "Original source Assets, prefabs, current user geometry edits and prior tombstones",
+    "Runtime emergency/elevator code and all unrelated scene settings"
+  ],
+  "no_added_agent_QA_Play_reopen_probes_captures": true,
+  "future_restore_rule": "Historical generated store/sign/optimization packets must not recreate deleted scene lights without new user instruction."
+}

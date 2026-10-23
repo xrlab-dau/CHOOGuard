@@ -13,7 +13,7 @@ namespace ChooGuard.Tests.EditMode.Stories
     public class CSBOOT0201Tests
     {
         private const string ProductRoot = "Assets/ChooGuard";
-        private const string ContractPath = "docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts/assembly-layout.json";
+        private const string ContractPath = "docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts/assembly-layout.current.json";
         private const string EditModeName = "ChooGuard.EditModeTests";
         private const string PlayModeName = "ChooGuard.PlayModeTests";
         private static readonly string[] UiReferences = { "UnityEngine.UI", "Unity.TextMeshPro", "Unity.InputSystem" };
@@ -21,10 +21,10 @@ namespace ChooGuard.Tests.EditMode.Stories
         private static string ProjectRoot => Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, ".."));
 
         [Test]
-        public void SubmittedAssemblies_MatchThirteenModulesAndTwoTestBoundaries()
+        public void SubmittedAssemblies_MatchFourteenModulesAndTwoTestBoundaries()
         {
             var snapshot = Capture();
-            Assert.That(snapshot.Modules.Length, Is.EqualTo(13));
+            Assert.That(snapshot.Modules.Length, Is.EqualTo(14));
             Assert.That(snapshot.Modules.Count(module => !module.engineReferences), Is.EqualTo(9));
             Assert.That(Validate(snapshot), Is.Empty);
         }
@@ -185,12 +185,13 @@ namespace ChooGuard.Tests.EditMode.Stories
             Assert.That(Validate(snapshot), Does.Contain("unowned-source:" + path));
         }
 
-        [Test]
-        public void MissingModuleDefinition_IsRejectedEvenWhenTheModuleIsEmpty()
+        [TestCase("ChooGuard.Domain")]
+        [TestCase("ChooGuard.Seeded")]
+        public void MissingModuleDefinition_IsRejectedEvenWhenTheModuleIsEmpty(string name)
         {
             var snapshot = Capture();
-            snapshot.Definitions.Remove("ChooGuard.Domain");
-            Assert.That(Validate(snapshot), Does.Contain("missing-assembly:ChooGuard.Domain"));
+            snapshot.Definitions.Remove(name);
+            Assert.That(Validate(snapshot), Does.Contain("missing-assembly:" + name));
         }
 
         [Test]
@@ -212,20 +213,23 @@ namespace ChooGuard.Tests.EditMode.Stories
             Assert.That(Validate(snapshot), Does.Contain("assembly-reference-asset:" + ProductRoot + "/Domain/Bypass.asmref"));
         }
 
-        [Test]
-        public void RuntimeAssembly_RejectsEditorDependencyAndEditorOnlyPlatform()
+        [TestCase("ChooGuard.Presentation")]
+        [TestCase("ChooGuard.Seeded")]
+        public void RuntimeAssembly_RejectsEditorDependencyAndEditorOnlyPlatform(string name)
         {
             var snapshot = Capture();
-            var presentation = snapshot.Definitions["ChooGuard.Presentation"];
-            presentation.references = presentation.references.Concat(new[] { "ChooGuard.Editor" }).ToArray();
-            presentation.includePlatforms = new[] { "Editor" };
+            var runtime = snapshot.Definitions[name];
+            runtime.references = runtime.references.Concat(new[] { "ChooGuard.Editor" }).ToArray();
+            runtime.includePlatforms = new[] { "Editor" };
             var errors = Validate(snapshot);
-            Assert.That(errors, Does.Contain("editor-reference:ChooGuard.Presentation:ChooGuard.Editor"));
-            Assert.That(errors, Does.Contain("platform-boundary:ChooGuard.Presentation"));
+            Assert.That(errors, Does.Contain("editor-reference:" + name + ":ChooGuard.Editor"));
+            Assert.That(errors, Does.Contain("platform-boundary:" + name));
         }
 
         [TestCase("ChooGuard.Presentation", "Assembly-CSharp.dll", "default-reference")]
         [TestCase("ChooGuard.Presentation", "UnityEditor.CoreModule.dll", "editor-reference")]
+        [TestCase("ChooGuard.Seeded", "Assembly-CSharp.dll", "default-reference")]
+        [TestCase("ChooGuard.Seeded", "UnityEditor.CoreModule.dll", "editor-reference")]
         [TestCase(PlayModeName, "ChooGuard.Editor.dll", "editor-reference")]
         public void PrecompiledReference_RejectsDefaultAndEditorBoundaryBypass(string name, string reference, string error)
         {
@@ -245,6 +249,7 @@ namespace ChooGuard.Tests.EditMode.Stories
         }
 
         [TestCase("ChooGuard.Content")]
+        [TestCase("ChooGuard.App")]
         [TestCase("ChooGuard.Application")]
         [TestCase("ChooGuard.Domain")]
         [TestCase("ChooGuard.World")]
@@ -255,7 +260,7 @@ namespace ChooGuard.Tests.EditMode.Stories
             var snapshot = Capture();
             var definition = snapshot.Definitions[EditModeName];
             // 제출 파일을 바꾸지 않고 필수 참조 누락과 미허용 Simulation 참조를 검사한다.
-            definition.references = new[] { "ChooGuard.Contracts", "ChooGuard.Presentation", "ChooGuard.Editor", "ChooGuard.Content", "ChooGuard.Application", "ChooGuard.Domain", "ChooGuard.World", "ChooGuard.Persistence" }
+            definition.references = new[] { "ChooGuard.Contracts", "ChooGuard.Presentation", "ChooGuard.Editor", "ChooGuard.Content", "ChooGuard.Application", "ChooGuard.Domain", "ChooGuard.World", "ChooGuard.Persistence", "ChooGuard.App" }
                 .Concat(UiReferences).Concat(RenderReferences).ToArray();
             Assert.That(Validate(snapshot), Does.Not.Contain("references:" + EditModeName));
             definition.references = missingReference != null
@@ -315,7 +320,10 @@ namespace ChooGuard.Tests.EditMode.Stories
                 if (!module.engineReferences && (!definition.overrideReferences || Values(definition.precompiledReferences).Length != 0))
                     errors.Add("plugin-boundary:" + module.name);
                 // FPS 전환 뒤 App 은 게임 층(HUD·입력·렌더 설정)이라 UI·입력·URP 패키지를 쓴다. 순수 모듈 경계는 그대로다.
-                var external = module.name == "ChooGuard.Presentation" ? UiReferences :
+                // Seeded declares its exact package references in the current contract;
+                // it is an engine-backed runtime owner, never an ignored extra assembly.
+                var external = module.name == "ChooGuard.Seeded" ? Array.Empty<string>() :
+                    module.name == "ChooGuard.Presentation" ? UiReferences :
                     module.editorOnly || module.name == "ChooGuard.App" ? UiReferences.Concat(RenderReferences).ToArray() : Array.Empty<string>();
                 CheckReferences(definition, module.references.Concat(external), errors);
                 CheckPlatforms(definition, module.editorOnly, errors);
@@ -339,7 +347,7 @@ namespace ChooGuard.Tests.EditMode.Stories
                 var references = new[] { "ChooGuard.Contracts", "ChooGuard.Presentation" }.Concat(UiReferences);
                 // PlayMode 시험은 FPS 게임 층(App)과 역 세계(World)를 직접 돌린다.
                 if (!editMode) references = references.Concat(new[] { "ChooGuard.App", "ChooGuard.World" });
-                if (editMode) references = references.Concat(new[] { "ChooGuard.Editor", "ChooGuard.Content", "ChooGuard.Application", "ChooGuard.Domain", "ChooGuard.World", "ChooGuard.Persistence" }).Concat(RenderReferences);
+                if (editMode) references = references.Concat(new[] { "ChooGuard.Editor", "ChooGuard.Content", "ChooGuard.Application", "ChooGuard.Domain", "ChooGuard.World", "ChooGuard.Persistence", "ChooGuard.App" }).Concat(RenderReferences);
                 CheckReferences(definition, references, errors);
                 CheckPlatforms(definition, editMode, errors);
                 if (definition.autoReferenced || definition.noEngineReferences ||

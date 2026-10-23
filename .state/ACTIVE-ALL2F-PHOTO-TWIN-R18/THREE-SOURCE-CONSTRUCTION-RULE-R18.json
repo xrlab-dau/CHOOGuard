@@ -1,0 +1,34 @@
+{
+  "schema": "chooguard.all2f.three_source_construction.v1",
+  "user_instruction": "전문점 도면과 2층 원본도면 자료들로 3중 체크하면서 작업하면 돼",
+  "active_scope": "ALL Busan Station2F indoor digital twin",
+  "source_families": {
+    "field": "Same actual location/branch photos and continuous video; observed shape, material and adjacency; record capture/publication epoch.",
+    "specialist_drawing": "Original specialist-store plan, section/elevation, door/opening and store boundary entities; record printed floor and proposal/asbuilt epoch, not a filename inference.",
+    "original_2f": "Uncut original2F architectural source and user annotations; preserve known missing drawing area and source identity, compare columns, shafts, wall continuity and circulation."
+  },
+  "for_each_construction_region": [
+    "Bind structural neighbours to actual fixed current columns, EV/stair/ESC landings and corresponding native wall/floor boundaries.",
+    "Record exact source path/SHA/page or local-frame time and evidence classification for each of the three families.",
+    "Separate source-supported identity/topology from MODEL dimensions/material parameters.",
+    "Resolve explicit contradictions using same place, storey and epoch; unavailable or insufficient source is recorded, never counted as passing.",
+    "Make bounded source-supported own-generated Scene/Assets changes under serialized C180 and actual save receipt; continue next region."
+  ],
+  "not_an_added_agent_validation_gate": true,
+  "user_owns_scene_validation": true,
+  "scene_QA_tests_probes_reopen_comparison_captures": false,
+  "known_current_contradiction": {
+    "BnC_retained_2f_filename": "Printed pages19/20 say1F proposed construction; not2F guide30 placement authority."
+  },
+  "preserve_floor_trim": ".state/USER-REMOVED-2F-GLASS-FLOOR-OVERFLOW-R17.json",
+  "original_pages_register_pending": "research/three-source-drawings/CONSTRUCTION-PACKET.json",
+  "all2F_complete": false,
+  "fidelity_measured_percent": null,
+  "current_vector_CAD_cross_reference": {
+    "user_instruction": "2층 벡터 cad 도면도 확인해야해",
+    "required": "Compare current metric vectorCAD lines/columns/openings with the same actual-scene geometry used by construction, in addition to the three source families.",
+    "cad": ".state/ACTIVE-ALL2F-PHOTO-TWIN-R18/cad/CURRENT-CAD-CONSTRUCTION-RECEIPT-R18.json",
+    "old_missing_pointers": "R10/C177G/R6 actual files absent; unitless sourcepixelDXF is not current metricCAD",
+    "current_geometry_includes": "CurrentR17trim, actualactive2FWC/walls/columns/EV/guards and actualnative/C158references;72exactLOD1variants excluded."
+  }
+}

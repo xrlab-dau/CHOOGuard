@@ -1,0 +1,202 @@
+{
+  "schema": "chooguard.r18.bounded_upper_r2.correction_packet.v1",
+  "status": "READY_CORRECT_FIRST_OWN_APPEND_AND_ADD_TWO_BOUNDED_FINISHES",
+  "utc": "2026-10-19T03:55:19.372976+00:00",
+  "error_and_withdrawal": "The donor gray material's global minimum8.12 came from other faces and was incorrectly promoted to the fascia minimum. That lower extent was not authorized. All new finish in8.12<=Y<9.38 is explicitly withdrawn.",
+  "authorized_scope": "Shared UPPER architectural band only: Y>=9.38. No lower tenant/frontage/entry edits.",
+  "frozen_input_payloads": [
+    {
+      "path": ".state/ACTIVE-ALL2F-PHOTO-TWIN-R18/research/northwest/UPPER-BAND-MESH-PAYLOAD-R18.json",
+      "sha256": "152ecb4024dec9f374a4159676aaf0fb2961733b26c4aaa331ab016ead8eb2c5"
+    },
+    {
+      "path": ".state/ACTIVE-ALL2F-PHOTO-TWIN-R18/research/northwest/next-band/NEXT-BAND-MESH-PAYLOAD-R18.json",
+      "sha256": "05a2a8e9683e2f6c709351be5c51ce0413abe4226b6018a3f0e37237c3fb5cf0"
+    }
+  ],
+  "frozen_input_files_modified": false,
+  "root_application_order": [
+    "Resolve the already-applied FIRST own new append renderer by its source name/parent, fresh-read its current native identity, then replace only that finish mesh with corrected geometry1922317721. Do not replace its base wall renderer or collider.",
+    "Add bounded new finish children1967088396 and1327299834 from this corrected payload. Retain the existing WC-adjacent0.403m exclusion and all original end/cap joins."
+  ],
+  "payload": {
+    "path": ".state/ACTIVE-ALL2F-PHOTO-TWIN-R18/research/northwest/bounded-upper-r2/BOUNDED-UPPER-R2-PAYLOAD.json",
+    "sha256": "c45288bcafbba376e4917bb9e3f6e780842a1c7f121a74294332fe1d683dfda3",
+    "corrected_mesh_count": 3
+  },
+  "meshes": [
+    {
+      "base_owner_id": "GlobalObjectId_V1-2-7518d664dafa749f2b6d5cba42bb798c-1922317721-0",
+      "operation": "REPLACE_ONLY_ALREADY_APPLIED_NEW_APPEND_FINISH_MESH",
+      "existing_append_renderer_name": "R18_NW_NEXT_DIAGONAL_SHARED_UPPER_FASCIA_AND_FLUTES_MODEL",
+      "new_renderer_name": "R18_NW_NEXT_DIAGONAL_SHARED_UPPER_FASCIA_AND_FLUTES_MODEL_BOUNDED_UPPER_R2",
+      "geometry_file": {
+        "path": ".state/ACTIVE-ALL2F-PHOTO-TWIN-R18/research/northwest/bounded-upper-r2/meshes/1922317721-BOUNDED-UPPER-R2.json",
+        "sha256": "86bb94b8e9d9a3c3ff9ad53f9d124f637ecebbe82d85c7a3fbb2bae7dd81a093"
+      },
+      "world_y_min": 9.38,
+      "world_y_max": 12.0999947,
+      "new_vertex_count": 2241,
+      "new_triangle_count": 1121,
+      "exact_clip": {
+        "halfspace": "worldY >= 9.38",
+        "world_y_min": 9.38,
+        "scope": "Only the source new finish mesh. No base wall/native/WC/collider is clipped.",
+        "all_remaining_source_vertex_positions_UV_normals_preserved": true,
+        "intersections": "Exact source triangle edge intersections with interpolated UV/normals.",
+        "fully_retained_source_triangles": 1118,
+        "fully_removed_source_triangles": 0,
+        "clipped_source_triangles": [
+          {
+            "submesh": 0,
+            "source_triangle_index": 0,
+            "source_vertex_indices": [
+              0,
+              1,
+              2
+            ],
+            "output_triangle_start": 0,
+            "output_triangle_count": 1,
+            "new_boundary_world_y": 9.38,
+            "UV_interpolation": "original edge-linear"
+          },
+          {
+            "submesh": 0,
+            "source_triangle_index": 1,
+            "source_vertex_indices": [
+              0,
+              2,
+              3
+            ],
+            "output_triangle_start": 1,
+            "output_triangle_count": 2,
+            "new_boundary_world_y": 9.38,
+            "UV_interpolation": "original edge-linear"
+          }
+        ],
+        "created_clip_vertices": 3
+      }
+    },
+    {
+      "base_owner_id": "GlobalObjectId_V1-2-7518d664dafa749f2b6d5cba42bb798c-1967088396-0",
+      "operation": "ADD_NEW_FINISH_CHILD_ONLY",
+      "existing_append_renderer_name": null,
+      "new_renderer_name": "R18_NW_NEXT_SHARED_UPPER_BAND_1967088396_BOUNDED_UPPER_R2",
+      "geometry_file": {
+        "path": ".state/ACTIVE-ALL2F-PHOTO-TWIN-R18/research/northwest/bounded-upper-r2/meshes/1967088396-BOUNDED-UPPER-R2.json",
+        "sha256": "83893362953a7c0db14e1a7a26fb15872efffd3239540348e69ddd77c1a56500"
+      },
+      "world_y_min": 9.38,
+      "world_y_max": 12.0999947,
+      "new_vertex_count": 297,
+      "new_triangle_count": 149,
+      "exact_clip": {
+        "halfspace": "worldY >= 9.38",
+        "world_y_min": 9.38,
+        "scope": "Only the source new finish mesh. No base wall/native/WC/collider is clipped.",
+        "all_remaining_source_vertex_positions_UV_normals_preserved": true,
+        "intersections": "Exact source triangle edge intersections with interpolated UV/normals.",
+        "fully_retained_source_triangles": 146,
+        "fully_removed_source_triangles": 0,
+        "clipped_source_triangles": [
+          {
+            "submesh": 0,
+            "source_triangle_index": 0,
+            "source_vertex_indices": [
+              0,
+              1,
+              2
+            ],
+            "output_triangle_start": 0,
+            "output_triangle_count": 1,
+            "new_boundary_world_y": 9.38,
+            "UV_interpolation": "original edge-linear"
+          },
+          {
+            "submesh": 0,
+            "source_triangle_index": 1,
+            "source_vertex_indices": [
+              0,
+              2,
+              3
+            ],
+            "output_triangle_start": 1,
+            "output_triangle_count": 2,
+            "new_boundary_world_y": 9.38,
+            "UV_interpolation": "original edge-linear"
+          }
+        ],
+        "created_clip_vertices": 3
+      }
+    },
+    {
+      "base_owner_id": "GlobalObjectId_V1-2-7518d664dafa749f2b6d5cba42bb798c-1327299834-0",
+      "operation": "ADD_NEW_FINISH_CHILD_ONLY",
+      "existing_append_renderer_name": null,
+      "new_renderer_name": "R18_NW_NEXT_SHARED_UPPER_BAND_1327299834_BOUNDED_UPPER_R2",
+      "geometry_file": {
+        "path": ".state/ACTIVE-ALL2F-PHOTO-TWIN-R18/research/northwest/bounded-upper-r2/meshes/1327299834-BOUNDED-UPPER-R2.json",
+        "sha256": "1be6ff3eaeac4a0e2ef7ff9e6bc59dfc302c82fe01de08233c37a3b9932e5f3e"
+      },
+      "world_y_min": 9.38,
+      "world_y_max": 12.0999947,
+      "new_vertex_count": 1017,
+      "new_triangle_count": 509,
+      "exact_clip": {
+        "halfspace": "worldY >= 9.38",
+        "world_y_min": 9.38,
+        "scope": "Only the source new finish mesh. No base wall/native/WC/collider is clipped.",
+        "all_remaining_source_vertex_positions_UV_normals_preserved": true,
+        "intersections": "Exact source triangle edge intersections with interpolated UV/normals.",
+        "fully_retained_source_triangles": 506,
+        "fully_removed_source_triangles": 0,
+        "clipped_source_triangles": [
+          {
+            "submesh": 0,
+            "source_triangle_index": 0,
+            "source_vertex_indices": [
+              0,
+              1,
+              2
+            ],
+            "output_triangle_start": 0,
+            "output_triangle_count": 1,
+            "new_boundary_world_y": 9.38,
+            "UV_interpolation": "original edge-linear"
+          },
+          {
+            "submesh": 0,
+            "source_triangle_index": 1,
+            "source_vertex_indices": [
+              0,
+              2,
+              3
+            ],
+            "output_triangle_start": 1,
+            "output_triangle_count": 2,
+            "new_boundary_world_y": 9.38,
+            "UV_interpolation": "original edge-linear"
+          }
+        ],
+        "created_clip_vertices": 3
+      }
+    }
+  ],
+  "preserved": [
+    "every base wall and its UV/materials/TRS/colliders",
+    "actual donor67985992",
+    "rear259783080",
+    "upper rib pitch/width/depth/gap andY9.8..12.0",
+    "topcapY12.0..12.0999947",
+    "lower tenants/counters/glass/entries",
+    "all native/Native6/1F/WC/floor/columns/EVs/deletions"
+  ],
+  "source_investigation_performed": false,
+  "new_original_downloads": 0,
+  "Scene_Assets_Unity_UI_changes": false,
+  "QA_tests_probes_captures": false,
+  "applied_or_saved": false,
+  "all2F_complete": false,
+  "99percent_achieved_or_measured": false,
+  "builder": ".state/ACTIVE-ALL2F-PHOTO-TWIN-R18/research/northwest/bounded-upper-r2/clip_upper_only_r2.py"
+}

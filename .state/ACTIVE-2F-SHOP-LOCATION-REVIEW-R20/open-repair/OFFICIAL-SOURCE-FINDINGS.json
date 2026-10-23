@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-19T04:51:09.289183+00:00",
+  "scope": "Read-only official OpenAI upstream issue research for Preview launch from Codex daemon; 4 minute limit",
+  "system_mutations": false,
+  "observations_from_root": [
+    "open -a Preview -10827",
+    "default open -10661",
+    "launchctl print gui/501 141 Reentrancy avoided",
+    "SecItemCopyMatching -25291",
+    "NSWorkspace cannot resolve actual live Preview PID",
+    "AppleEvent -600",
+    "UID matches console UID501; app files present"
+  ],
+  "exact_same_error_cluster_found": false,
+  "evidence": [
+    {
+      "url": "https://github.com/openai/codex/issues/30043",
+      "classification": "near_match_only",
+      "supported": "Multiple reporters reproduce GUI application registration failure from Codex-spawned processes with explicit LaunchServices and WindowServer mach-lookup denials; interactive applications remain healthy. A reported relay to an existing running GUI process avoided direct launch failure.",
+      "limit": "Predominantly workspace-write, mostly crashes; does not directly prove current full-access daemon Preview failure or bootstrap namespace root cause."
+    },
+    {
+      "url": "https://github.com/openai/codex/issues/46405",
+      "classification": "near_match_only",
+      "supported": "Codex-hosted macOS XPC/Mach transport can fail despite approved escalation; specific observed mechanism was denied-read preservation retaining Seatbelt.",
+      "limit": "If current disabled filesystem policy truly contains zero denied reads, that particular mechanism is ruled out by the issue source analysis. Do not change credentials or broad policy based on this report."
+    },
+    {
+      "url": "https://github.com/openai/codex/issues/23840",
+      "classification": "near_match_only",
+      "supported": "The same installed binary succeeds from normal Terminal and fails under Codex hosting; earlier AppKit crash discussed as improper Aqua-session context.",
+      "limit": "The final visible initialize timeout also had a possible separate stdio-buffering explanation; not an exact Preview fix."
+    }
+  ],
+  "bounded_recommendation": {
+    "action": "Use an already healthy GUI-session host for a single exact-file open -a Preview dispatch, preserving the user-required Preview markup workflow. Root has selected existing Unity GUI host through serialized C180, without Scene/Assets reads or changes.",
+    "basis": "Inference from outside-origin/GUI relay success in upstream reports; no exact current fix is claimed proven.",
+    "requires_root_execution": true
+  },
+  "not_supported_by_research": [
+    "Global LaunchServices reset",
+    "Keychain replacement or reset",
+    "App resigning/quarantine stripping",
+    "SIP modification",
+    "Killing or restarting Preview/WindowServer/Codex",
+    "Assuming danger-full-access repairs an inherited session boundary"
+  ],
+  "search_closed": true
+}

@@ -44,6 +44,13 @@ jobs:
       build: ${{ steps.decide.outputs.build }}
       reason: ${{ steps.decide.outputs.reason }}
     steps:
+      - name: Check out the CI gate script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          filter: blob:none
+          sparse-checkout: .github
+          persist-credentials: false
+
       - id: decide
         name: Decide what runs
         env:
@@ -56,15 +63,17 @@ jobs:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           BEFORE: ${{ github.event.before }}
           AFTER: ${{ github.sha }}
           OS_INPUT: ${{ inputs.os }}
           BUILD_INPUT: ${{ inputs.build }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          # The Unity project plus the files its EditMode tests read from the repository root (fixtures, the assembly
-          # contract, build receipts). Keep in sync with the project checkout in the tests job.
-          unity_paths='^(Assets|Packages|ProjectSettings|content|docs/build|docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts)/'
+          # Compare immutable Git subtree IDs, independent of PR diff readiness,
+          # changed_files metadata, missing pagination links or truncated file lists.
+          # unity_tree_inputs.py keeps the same narrow test inputs as the project checkout.
           all='["windows","macos","linux"]'
           # Pull requests cover the team's development OSes; Linux runs on develop, nightly and release tags.
           pr='["windows","macos"]'
@@ -76,12 +85,11 @@ jobs:
           elif [[ $EVENT == pull_request && $PR_REPO != "$REPO" ]]; then
             reason="pull requests from forks receive no licence secrets"
           elif [[ $EVENT == pull_request ]]; then
-            # The files API stops at 3000 entries, and GitHub refuses to list the files of a diff it cannot generate in
-            # time (HTTP 422 "this diff is taking too long to generate"); either way the change is treated as touching Unity.
-            if ! files=$(gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" --jq '.[].filename'); then
-              echo "::notice title=Unity lane gate::GitHub could not list the pull request's files; treating it as touching Unity"
+            if ! changed=$(python3 .github/scripts/unity_tree_inputs.py "$REPO" "$PR_BASE_SHA" "$PR_HEAD_SHA"); then
+              echo "::notice title=Unity lane gate::Git input tree comparison unavailable; treating the pull request as touching Unity"
               tests=$pr
-            elif grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 3000 )); then
+            elif [[ -n $changed ]]; then
+              echo "Unity input tree changed: $changed"
               tests=$pr
             else
               reason="the pull request does not touch the Unity project or its test inputs"
@@ -92,10 +100,11 @@ jobs:
             if [[ $BEFORE =~ ^0+$ ]]; then
               tests=$all build=true
             else
-              if ! files=$(gh api "repos/$REPO/compare/$BEFORE...$AFTER" --jq '.files[].filename'); then
-                echo "::notice title=Unity lane gate::GitHub could not compare the push; treating it as touching Unity"
+              if ! changed=$(python3 .github/scripts/unity_tree_inputs.py "$REPO" "$BEFORE" "$AFTER"); then
+                echo "::notice title=Unity lane gate::Git input tree comparison unavailable; treating the push as touching Unity"
                 tests=$all build=true
-              elif grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 300 )); then
+              elif [[ -n $changed ]]; then
+                echo "Unity input tree changed: $changed"
                 tests=$all build=true
               else
                 reason="the push does not touch the Unity project or its test inputs"
@@ -123,7 +132,7 @@ jobs:
       matrix:
         os: ${{ fromJSON(needs.gate.outputs.tests) }}
     runs-on: ${{ fromJSON('{"windows":"windows-2025","macos":"macos-26","linux":"ubuntu-24.04"}')[matrix.os] }}
-    timeout-minutes: 240
+    timeout-minutes: 360
     concurrency:
       group: unity-licence
       cancel-in-progress: false
@@ -147,8 +156,13 @@ jobs:
           sparse-checkout: .github
           persist-credentials: false
 
+      - name: Enable long Windows paths before project checkout
+        if: matrix.os == 'windows'
+        working-directory: ${{ github.workspace }}
+        run: git config --global core.longpaths true
+
       # Test inputs outside Assets come along (content/fixtures, the assembly contract, docs/build receipts);
-      # the gate's unity_paths lists the same directories.
+      # unity_tree_inputs.py INPUTS lists the same directories.
       - name: Check out the project
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -162,6 +176,13 @@ jobs:
             docs/build
             docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts
           persist-credentials: false
+
+      - name: Hydrate tracked Unity project LFS objects
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          py=$(command -v python3 || command -v python)
+          "$py" .github/scripts/hydrate_unity_lfs.py
 
       - id: unity
         uses: ./.github/actions/setup-unity
@@ -200,10 +221,37 @@ jobs:
           UNITY_PROJECT: ${{ github.workspace }}/${{ env.PROJECT }}
         run: .github/scripts/unity_ci.sh test EditMode
 
+      - id: editverdict
+        name: EditMode verdict
+        if: always() && steps.activate.outcome == 'success'
+        env:
+          EDIT_EXIT: ${{ steps.editmode.outputs.exit_code }}
+        run: |
+          py=$(command -v python3 || command -v python)
+          "$py" .github/scripts/unity_results.py "EditMode:$RUNNER_TEMP/unity/EditMode-results.xml:$EDIT_EXIT"
+
+      - id: routegraph
+        name: Focused RouteGraph test
+        if: always() && steps.activate.outcome == 'success' && steps.editverdict.outcome == 'success'
+        timeout-minutes: 15
+        env:
+          UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
+          UNITY_PROJECT: ${{ github.workspace }}/${{ env.PROJECT }}
+        run: .github/scripts/unity_ci.sh routegraph
+
+      - id: routeverdict
+        name: Focused RouteGraph verdict
+        if: always() && steps.activate.outcome == 'success' && steps.editverdict.outcome == 'success'
+        env:
+          ROUTE_EXIT: ${{ steps.routegraph.outputs.exit_code }}
+        run: |
+          py=$(command -v python3 || command -v python)
+          "$py" .github/scripts/unity_results.py "RouteGraph:$RUNNER_TEMP/unity/RouteGraph-results.xml:$ROUTE_EXIT"
+
       - id: playmode
         name: PlayMode tests
-        if: always() && steps.activate.outcome == 'success'
-        timeout-minutes: 60
+        if: always() && steps.activate.outcome == 'success' && steps.editverdict.outcome == 'success' && steps.routeverdict.outcome == 'success'
+        timeout-minutes: 240
         env:
           UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
           UNITY_PROJECT: ${{ github.workspace }}/${{ env.PROJECT }}
@@ -212,7 +260,7 @@ jobs:
       # CS-BOOT.01.01's real build (BuildBaseline: validator, Development player of the Bootstrap scene, receipt with
       # output hashes) inside the same activation. BuildBaseline builds macOS and Windows targets, each on its own host.
       - name: Bootstrap build (BuildBaseline)
-        if: steps.activate.outcome == 'success' && matrix.os != 'linux' && (github.event_name == 'schedule' || inputs.bootstrap)
+        if: steps.activate.outcome == 'success' && steps.editverdict.outcome == 'success' && matrix.os != 'linux' && (github.event_name == 'schedule' || inputs.bootstrap)
         timeout-minutes: 60
         env:
           UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
@@ -233,11 +281,13 @@ jobs:
         env:
           EDIT_EXIT: ${{ steps.editmode.outputs.exit_code }}
           PLAY_EXIT: ${{ steps.playmode.outputs.exit_code }}
+          ROUTE_EXIT: ${{ steps.routegraph.outputs.exit_code }}
         run: |
           py=$(command -v python3 || command -v python)
           "$py" .github/scripts/unity_results.py \
             "EditMode:$RUNNER_TEMP/unity/EditMode-results.xml:$EDIT_EXIT" \
-            "PlayMode:$RUNNER_TEMP/unity/PlayMode-results.xml:$PLAY_EXIT"
+            "PlayMode:$RUNNER_TEMP/unity/PlayMode-results.xml:$PLAY_EXIT" \
+            "RouteGraph:$RUNNER_TEMP/unity/RouteGraph-results.xml:$ROUTE_EXIT"
 
       - name: Remove credentials from logs
         if: always()
@@ -249,7 +299,7 @@ jobs:
 
       - name: Upload results and logs
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: unity-tests-${{ matrix.os }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/unity
@@ -288,6 +338,13 @@ jobs:
             Packages
             ProjectSettings
           persist-credentials: false
+
+      - name: Hydrate tracked Unity project LFS objects
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          py=$(command -v python3 || command -v python)
+          "$py" .github/scripts/hydrate_unity_lfs.py
 
       - id: unity
         uses: ./.github/actions/setup-unity
@@ -340,7 +397,7 @@ jobs:
           echo "dist=$dist" >> "$GITHUB_OUTPUT"
 
       - name: Upload the macOS player
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: player-macos
           path: ${{ steps.package.outputs.dist }}/macos
@@ -348,7 +405,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload the Windows player
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: player-windows
           path: ${{ steps.package.outputs.dist }}/windows
@@ -356,7 +413,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload the Linux player
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: player-linux
           path: ${{ steps.package.outputs.dist }}/linux
@@ -373,7 +430,7 @@ jobs:
 
       - name: Upload build log
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: unity-build-logs-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/unity
@@ -408,7 +465,7 @@ jobs:
           sparse-checkout: .github
           persist-credentials: false
 
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: player-${{ matrix.os }}
           path: ${{ runner.temp }}/player
@@ -449,7 +506,7 @@ jobs:
 
       - name: Upload report and player log
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: player-smoke-${{ matrix.os }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/smoke
@@ -467,7 +524,7 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: step-security/harden-runner@351661ca32ac09a36dc5ee2d536e3128f2a3c8ed # v2.22.0
+      - uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
           egress-policy: audit
 
@@ -485,7 +542,7 @@ jobs:
             exit 1
           }
 
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: player-*
           path: dist

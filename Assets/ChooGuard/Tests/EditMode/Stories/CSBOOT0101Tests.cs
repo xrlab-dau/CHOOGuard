@@ -14,6 +14,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -208,11 +209,12 @@ namespace ChooGuard.Tests.EditMode.Stories
         }
         private static string[] BuildArgs(string root, string output, string target = "StandaloneOSX") =>
             new[] { "-cgBuildTarget", target, "-cgBuildRoot", root, "-cgBuildOutput", output };
-        private static object InvokeBuild(string method, string[] args)
+        private static object InvokeBuild(string method, string[] args) => InvokeBuildMethod(method, new object[] { args });
+        private static object InvokeBuildMethod(string method, object[] args)
         {
             var helper = typeof(BuildBaseline).GetMethod(method, BindingFlags.NonPublic | BindingFlags.Static);
             Assert.That(helper, Is.Not.Null);
-            try { return helper.Invoke(null, new object[] { args }); }
+            try { return helper.Invoke(null, args); }
             catch (TargetInvocationException exception) when (exception.InnerException != null)
             {
                 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
@@ -331,7 +333,8 @@ namespace ChooGuard.Tests.EditMode.Stories
             Directory.CreateDirectory(root);
             return root;
         }
-        private static string[] ReceiptFiles() => Directory.GetFiles(Path.Combine(ProjectRoot,
+        private static string[] ReceiptFiles() => ReceiptFiles(ProjectRoot);
+        private static string[] ReceiptFiles(string root) => Directory.GetFiles(Path.Combine(root,
             "docs/build/evidence/CS-BOOT.01.01"), "build-receipt.json", SearchOption.AllDirectories).OrderBy(x => x).ToArray();
         private static void RejectBuild(string[] args)
         {
@@ -448,15 +451,27 @@ namespace ChooGuard.Tests.EditMode.Stories
             if (global::UnityEngine.Application.platform == RuntimePlatform.WindowsEditor)
                 Assert.Ignore("A Windows host performs the real Windows build; this NOT_RUN oracle applies to macOS and Linux hosts.");
             var root = BuildFixture();
+            var evidenceRoot = BuildFixture();
             var previous = GraphicsSettings.defaultRenderPipeline;
             var target = EditorUserBuildSettings.activeBuildTarget;
             try
             {
+                // Host rejection is the subject here. Hash a complete bounded evidence fixture with
+                // the production digest/receipt code instead of rescanning the multi-gigabyte project.
+                foreach (var folder in new[] { "Assets", "Packages", "ProjectSettings", "docs/build/evidence/CS-BOOT.01.01" })
+                    Directory.CreateDirectory(Path.Combine(evidenceRoot, folder));
+                File.WriteAllText(Path.Combine(evidenceRoot, "Assets/sentinel.txt"), "bounded wrong-host source fixture");
+                File.WriteAllText(Path.Combine(evidenceRoot, "Packages/packages-lock.json"), "{}");
+                File.WriteAllText(Path.Combine(evidenceRoot, "ProjectSettings/ProjectVersion.txt"), "fixture");
+                File.WriteAllText(Path.Combine(evidenceRoot, "docs/build/baseline.schema.json"), "{}");
+                var sourceDigest = (string)InvokeBuildMethod("SourceTreeDigestAt", new object[] { evidenceRoot });
+                var projectReceipts = ReceiptFiles();
                 GraphicsSettings.defaultRenderPipeline = null;
                 Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.False, "Static validator would reject this in-memory fixture");
-                var before = ReceiptFiles();
-                InvokeBuild("BuildFromArguments", BuildArgs(root, Path.Combine(root, "new.exe"), "StandaloneWindows64"));
-                var added = ReceiptFiles().Except(before).ToArray();
+                var before = ReceiptFiles(evidenceRoot);
+                InvokeBuildMethod("BuildFromArgumentsAt", new object[] {
+                    BuildArgs(root, Path.Combine(root, "new.exe"), "StandaloneWindows64"), evidenceRoot });
+                var added = ReceiptFiles(evidenceRoot).Except(before).ToArray();
                 Assert.That(added.Length, Is.EqualTo(1));
                 var receipt = JsonUtility.FromJson<BuildReceipt>(File.ReadAllText(added[0]));
                 Assert.That(receipt.requestedTarget, Is.EqualTo("StandaloneWindows64"));
@@ -464,11 +479,22 @@ namespace ChooGuard.Tests.EditMode.Stories
                 Assert.That(receipt.runStatus, Is.EqualTo("NOT_RUN"));
                 Assert.That(receipt.outputs, Is.Empty);
                 Assert.That(receipt.reason, Does.Contain("no validator, build, target fallback"));
+                Assert.That(receipt.sourceTreeDigest, Is.EqualTo(sourceDigest), "Receipt fingerprints the explicit complete fixture, not the real project");
+                Assert.That(receipt.packageLockSha256, Is.EqualTo(BuildBaseline.HashFile(Path.Combine(evidenceRoot, "Packages/packages-lock.json"))));
+                File.AppendAllText(Path.Combine(evidenceRoot, "Assets/sentinel.txt"), " changed");
+                Assert.That((string)InvokeBuildMethod("SourceTreeDigestAt", new object[] { evidenceRoot }), Is.Not.EqualTo(receipt.sourceTreeDigest),
+                    "The bounded fixture must still fingerprint actual source bytes, not a placeholder digest");
                 Assert.That(Directory.GetFileSystemEntries(root), Is.Empty);
+                Assert.That(ReceiptFiles(), Is.EqualTo(projectReceipts), "The bounded fixture must not write real-project receipts");
                 Assert.That(EditorUserBuildSettings.activeBuildTarget, Is.EqualTo(target));
-                TestContext.WriteLine("Unsupported-host receipt=" + added[0]);
+                TestContext.WriteLine("Unsupported-host bounded-fixture receipt=" + added[0] + "; not actual project/build acceptance evidence");
             }
-            finally { GraphicsSettings.defaultRenderPipeline = previous; Directory.Delete(root, true); }
+            finally
+            {
+                GraphicsSettings.defaultRenderPipeline = previous;
+                Directory.Delete(root, true);
+                Directory.Delete(evidenceRoot, true);
+            }
         }
         [Test]
         public void DuplicateEventSystem_IsRejected()
@@ -566,6 +592,52 @@ namespace ChooGuard.Tests.EditMode.Stories
             finally { GraphicsSettings.defaultRenderPipeline = previous; }
             Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.True);
         }
+        [Test]
+        public void QualityOverride_RejectsMissingOrUnownedPipelineAndRestoresTheApprovedOverride()
+        {
+            var level = QualitySettings.GetQualityLevel();
+            var previous = QualitySettings.renderPipeline;
+            var renderer = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(BootstrapProject.RendererPath);
+            var unowned = UniversalRenderPipelineAsset.Create(renderer);
+            try
+            {
+                QualitySettings.renderPipeline = null;
+                Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.False, "A missing quality asset is not an owned override");
+                QualitySettings.renderPipeline = unowned;
+                Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.False, "A matching renderer does not make a transient pipeline owned");
+            }
+            finally
+            {
+                QualitySettings.SetQualityLevel(level, false);
+                QualitySettings.renderPipeline = previous;
+                Object.DestroyImmediate(unowned);
+            }
+            Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.True);
+        }
+
+        [TestCase(BootstrapProject.PipelinePath)]
+        [TestCase(BootstrapValidator.OptimizedPipelinePath)]
+        public void OwnedPipeline_RejectsRendererDriftAndRestoresTheReference(string path)
+        {
+            var pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(path);
+            Assert.That(pipeline, Is.Not.Null, path);
+            var serialized = new SerializedObject(pipeline);
+            var reference = Required(serialized, "m_RendererDataList").GetArrayElementAtIndex(0);
+            var previous = reference.objectReferenceValue;
+            try
+            {
+                reference.objectReferenceValue = null;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.False, path);
+            }
+            finally
+            {
+                reference.objectReferenceValue = previous;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+            }
+            Assert.That(BootstrapValidator.HasOwnedUrpReferences(), Is.True);
+        }
+
         [Test]
         public void OwnedUrpGlobal_HasClosedVolumeDependenciesAndNoExcludedDefaults()
         {

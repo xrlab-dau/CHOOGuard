@@ -57,6 +57,9 @@ namespace ChooGuard.Tests.PlayMode
         {
             var go=new GameObject("관측 · "+id);
             go.transform.SetParent(facilityObject.transform,false);
+            // Real raycasts must identify two physically separate surfaces. Equal
+            // overlapping colliders have no stable first-hit identity in PhysX.
+            go.transform.localPosition=Vector3.right*(id=="serial"?-.2f:.2f);
             var box=go.AddComponent<BoxCollider>();box.isTrigger=false;box.size=Vector3.one*.1f;
             return new FacilityInspectable.InspectionPoint{Id=id,Label=id,Surface=box,RequiredDwellSeconds=.5f};
         }
@@ -114,7 +117,9 @@ namespace ChooGuard.Tests.PlayMode
             yield return null;
             responder.SetExternalInputMode(true);
             Assert.IsTrue(responder.Resume(false),"외부 입력 모드에서 재개되어야 한다");
+            Physics.SyncTransforms();
             var plate=facility.Point("serial").Surface;
+            Assert.IsFalse(plate.bounds.Intersects(facility.Point("spec-plate").Surface.bounds));
             var camera=responder.PlayerCamera.transform;
             camera.rotation=Quaternion.LookRotation((plate.bounds.center-camera.position).normalized,Vector3.up);
             responder.RefreshInteraction();

@@ -101,8 +101,15 @@ namespace ChooGuard.Editor.Twin
             if (StairInfillOmissionRegistry.HasCorrection(originalAsset)) return StairInfillOmissionRegistry.ResolveForRebuild(generated, originalAsset, owner, worldMatrix);
             Mesh installedComposite;
             if (NamcheonSourceFrontRegistry.TryResolveInstalled(generated, originalAsset, out installedComposite)) return installedComposite;
+            return NamcheonSourceFrontRegistry.VerifyArchitecturalIntermediate(
+                ResolveStructuralStageForRebuild(generated, originalAsset, owner, worldMatrix), originalAsset);
+        }
+        // Single structural stage for deterministic asset/attribute contracts.
+        // Builders must call ResolveForRebuild to retain every downstream composition guard.
+        public static Mesh ResolveStructuralStageForRebuild(Mesh generated, string originalAsset, string owner, Matrix4x4 worldMatrix)
+        {
             var matches = ((JArray)Read()["entries"]).Where(row => SameSource((string)row["source_asset"],originalAsset)).ToArray();
-            if (matches.Length == 0) return NamcheonSourceFrontRegistry.VerifyArchitecturalIntermediate(generated, originalAsset);
+            if (matches.Length == 0) return generated;
             if (matches.Length != 1) throw new InvalidDataException("Ambiguous canonical structural correction");
             var row = matches[0];
             string digest = ChannelDigest(generated);
@@ -165,7 +172,7 @@ namespace ChooGuard.Editor.Twin
                     if(!float.IsFinite(matrix[r,c])||!float.IsFinite((float)dependency["world_matrix"][r][c])||Mathf.Abs(matrix[r,c]-(float)dependency["world_matrix"][r][c])>.00002f)
                         throw new InvalidDataException("Observed fixed collision frame changed");
             }
-            return NamcheonSourceFrontRegistry.VerifyArchitecturalIntermediate(replacement, originalAsset);
+            return replacement;
         }
         // Opt-in replay of directly attached, saved derived surfaces. Validate the existing
         // source correction before calling this during a batch rebuild; never infer geometry.

@@ -35,22 +35,44 @@ namespace ChooGuard.Circulation
         private EscalatorMotion motion;
         private double boundDistance;
         private bool prepared;
+        private bool sourceAbsent;
+        public bool SourceAvailable { get; private set; }
+        public bool IsBound => prepared;
         public double CurrentPhase { get; private set; }
         public int AnimatedOriginalPartCount => parts.Length;
         public bool HasInventedReturnRoute => false;
 
+        /// <summary>Borrowed immutable source buffer; ownership remains with this run and its source asset.</summary>
+        public Mesh GetOriginalSourceMesh(int index)
+        {
+            if (!prepared || !SourceAvailable) throw new InvalidOperationException("An available prepared native source run is required");
+            if (index < 0 || index >= parts.Length) throw new ArgumentOutOfRangeException(nameof(index));
+            var original = parts[index].Original;
+            if (original == null) throw new InvalidOperationException("Retained original native tread mesh was lost");
+            return original;
+        }
+
         private void Awake() { if (Application.isPlaying) Prepare(); }
         private void OnEnable() { if (Application.isPlaying) Prepare(); }
-        private void LateUpdate() => ApplyMotion();
+        private void LateUpdate() { if (!sourceAbsent) ApplyMotion(); }
         private void OnDisable() => Restore();
         private void OnDestroy() => Restore();
 
         public void Prepare()
         {
-            if (prepared) return;
+            if (prepared || sourceAbsent) return;
             if (Treads == null || ObservedOrigins == null || Treads.Length < 2 || Treads.Length != ObservedOrigins.Length ||
                 SourcePitch <= .001f || ExposureAxis.sqrMagnitude < .999f || ExposureMaximum <= ExposureMinimum)
                 throw new InvalidOperationException("An exact observed tread run and exposed source footprint are required");
+            // A retained controller can outlive all of its source treads. An entirely
+            // empty source is unbound, not prepared motion. Partial loss still follows
+            // the strict per-tread guards below; no geometry is reconstructed or guessed.
+            bool hasReference = false;
+            foreach (var tread in Treads) if (tread != null) { hasReference = true; break; }
+            SourceAvailable = hasReference || GetComponentsInChildren<MeshFilter>(true).Length != 0 ||
+                GetComponentsInChildren<Renderer>(true).Length != 0 || GetComponentsInChildren<Terrain>(true).Length != 0 ||
+                GetComponentsInChildren<MeshCollider>(true).Length != 0;
+            if (!SourceAvailable) { sourceAbsent = true; CurrentPhase = 0; return; }
             motion = GetComponent<EscalatorMotion>();
             boundDistance = motion != null && motion.Drive != null ? motion.Drive.TravelDistance : 0;
             parts = new Part[Treads.Length];
@@ -78,6 +100,7 @@ namespace ChooGuard.Circulation
         public void ApplyMotion()
         {
             if (!prepared) Prepare();
+            if (sourceAbsent) return;
             var drive = motion == null ? null : motion.Drive;
             if (drive == null) return;
             ApplyDistance(drive.TravelDistance - boundDistance);
@@ -87,6 +110,7 @@ namespace ChooGuard.Circulation
         public void ApplyDistance(double distance)
         {
             if (!prepared) Prepare();
+            if (sourceAbsent) return;
             if (double.IsNaN(distance) || double.IsInfinity(distance)) return;
             double periods = distance / SourcePitch;
             double phase = periods - Math.Floor(periods);
@@ -134,7 +158,7 @@ namespace ChooGuard.Circulation
 
         public void Restore()
         {
-            if (!prepared) return;
+            if (!prepared) { sourceAbsent = false; SourceAvailable = false; return; }
             for (int i = 0; i < parts.Length; i++)
             {
                 var part = parts[i];
@@ -152,7 +176,7 @@ namespace ChooGuard.Circulation
                     if (Application.isPlaying) Destroy(boundary.Transform.gameObject); else DestroyImmediate(boundary.Transform.gameObject);
                 }
             }
-            parts = Array.Empty<Part>(); boundary = null; prepared = false; CurrentPhase = 0;
+            parts = Array.Empty<Part>(); boundary = null; prepared = false; sourceAbsent = false; SourceAvailable = false; CurrentPhase = 0;
         }
         private static void DisposeMesh(Mesh mesh) { if (mesh == null) return; if (Application.isPlaying) Destroy(mesh); else DestroyImmediate(mesh); }
 

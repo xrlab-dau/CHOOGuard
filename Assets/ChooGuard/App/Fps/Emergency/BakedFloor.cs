@@ -18,13 +18,24 @@ namespace ChooGuard.App.Fps.Emergency
 
         private NavMeshDataInstance instance;
         private readonly List<NavMeshLinkInstance> walkingLinks = new List<NavMeshLinkInstance>();
-        private readonly StationWalkingRouteEntry[] walkingRoutes = StationWalkingRoutes.Load();
+        private readonly StationWalkingRouteEntry[] walkingRoutes;
         private readonly NavMeshPath path = new NavMeshPath();
         private readonly Vector3[] corners = new Vector3[128];
 
-        public BakedFloor(NavMeshData data)
+        public BakedFloor(NavMeshData data):this(data,StationWalkingRoutes.Load()) { }
+
+        internal BakedFloor(NavMeshData data,IReadOnlyList<StationWalkingRouteEntry> suppliedWalkingRoutes)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
+            if(suppliedWalkingRoutes==null)throw new ArgumentNullException(nameof(suppliedWalkingRoutes));
+            walkingRoutes=new StationWalkingRouteEntry[suppliedWalkingRoutes.Count];
+            var ids=new HashSet<string>(StringComparer.Ordinal);
+            for(int i=0;i<walkingRoutes.Length;i++)
+            {
+                var entry=suppliedWalkingRoutes[i]??throw new InvalidOperationException("Null supplied reference walking route");
+                entry.Validate();if(!ids.Add(entry.id))throw new InvalidOperationException("Duplicate supplied reference walking route: "+entry.id);
+                walkingRoutes[i]=entry;
+            }
             instance = NavMesh.AddNavMeshData(data, Shift, Quaternion.identity);
             if (!instance.valid) throw new InvalidOperationException("기준 바닥(navmesh 사본)을 올리지 못했습니다.");
             try

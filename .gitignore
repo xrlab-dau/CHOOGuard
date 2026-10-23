@@ -83,3 +83,48 @@ __pycache__/
 /Runs/
 /target/
 /.state/SUBSCRIPTION-CHOICE.json
+
+# Local construction transport, temporary jobs and downloaded evidence copies.
+# Saved Scene/Assets, source-evidence, compact authorities and current CAD remain versioned.
+/.state/ACTIVE-INTERIOR-PR-20261019/
+/.state/SCENE-WORKER-QUEUE-C180.*
+/.state/SCENE-WORKER-C180/requests/
+/.state/SCENE-WORKER-C180/grants/
+/.state/SCENE-WORKER-C180/sources/
+/.state/SCENE-WORKER-C180/results/
+/.state/SCENE-WORKER-C180/releases/
+/.state/SCENE-WORKER-C180/native-launch/
+/.state/**/vendor/
+/.state/**/site-packages/
+/.state/**/*.log
+/.state/**/*.jsonl
+/.state/**/*.html
+/.state/**/*.zip
+/.state/**/*.blend
+/.state/**/*.glb
+/.state/**/*.gltf
+/.state/**/*.fbx
+/.state/**/*.obj
+/.state/**/*.mtl
+/.state/**/*.exr
+/.state/**/*.npz
+/.state/**/*.mp4
+/.state/**/*.jpg
+/.state/**/*.JPG
+/.state/**/*.jpeg
+/.state/**/*.png
+/.state/**/*.pdf
+/.state/**/*.dxf
+/.state/**/*.bin.gz
+/.state/**/cad/output-*/
+/.state/**/cad/snapshot-*/
+!/.state/ACTIVE-ALL2F-COMPLETION-R26/cad/output-008/
+!/.state/ACTIVE-ALL2F-COMPLETION-R26/cad/output-008/**
+!/.state/ACTIVE-ALL2F-COMPLETION-R26/cad/snapshot-008/
+!/.state/ACTIVE-ALL2F-COMPLETION-R26/cad/snapshot-008/**
+
+# Retained source allowlist must not reinclude operating-system junk.
+/source-evidence/**/.DS_Store
+
+# Private machine-specific daemon identity; preserve local state.
+/.state/cleanup-daemon/service.json

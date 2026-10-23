@@ -16,7 +16,7 @@ namespace ChooGuard.Tests.PlayMode
     // 길 안내(PathService)는 요청을 처리하는 순간 몸이 걷지 못하면(에스컬레이터를 타는 중, 앉는 중, 발밑 길이 잠깐 사라짐) 그 요청을
     // 버린다. 새 길을 기다리는 몸을 아무도 다시 묻지 않으면 그 자리에 서 버린다(CI macOS 2026-09-30: 대피하던 승객이 20 s 동안
     // planning=True 로 서 있었다). 걸을 수 있게 되면 요청이 다시 줄을 서야 한다.
-    public sealed class PathRequestTests
+    public sealed class PathRequestTests : RetainedEmergencySessionFixture
     {
         private string savedKey;
 
@@ -65,6 +65,51 @@ namespace ChooGuard.Tests.PlayMode
                 }
             Assert.Fail("no two waiting places 12-22 m apart on one floor");
             return default;
+        }
+
+        // Fixed actual8a2f #93 state, independent of population/model admission.
+        // The observed log did not record its side-step owner; this fixture covers
+        // the proven ownerless stopped state, not a claimed native trigger replay.
+        [Test]
+        public void FrozenEvacuee93_CompleteStoppedRouteNeedsAValidatedFreshRequest()
+        {
+            var from = new Vector3(64.2f, 7f, 21.6f);
+            var goal = new Vector3(-104.4f, .8f, 61f);
+            var method = typeof(PersonBody).GetMethod("ShouldReplanStoppedRoute", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            object[] observed = { true, false, false, false, false, false, true, true, false, false,
+                NavMeshPathStatus.PathComplete, (goal - from).sqrMagnitude };
+            Assert.That(method.Invoke(null, observed), Is.True, "the fixed complete/stopped/not-planning state needs a fresh validated leg");
+            // Preserve every intentional owner/wait/error state. RemainingInfinity
+            // is the actual reported distance and cannot itself prevent recovery.
+            foreach (int blocked in new[] { 1, 2, 3, 4, 5, 8, 9 })
+            {
+                var state = (object[])observed.Clone(); state[blocked] = true;
+                Assert.That(method.Invoke(null, state), Is.False, "active stop/wait owner at input " + blocked);
+            }
+            foreach (int required in new[] { 0, 6, 7 })
+            {
+                var state = (object[])observed.Clone(); state[required] = false;
+                Assert.That(method.Invoke(null, state), Is.False, "missing active route input " + required);
+            }
+            foreach (var status in new[] { NavMeshPathStatus.PathPartial, NavMeshPathStatus.PathInvalid })
+            {
+                var state = (object[])observed.Clone(); state[10] = status;
+                Assert.That(method.Invoke(null, state), Is.False, "this recovery does not bless incomplete/invalid paths");
+            }
+        }
+
+        [Test]
+        public void StuckRecoveryRejectsVerticalOnlyStepBeforeStoppingAgent()
+        {
+            var method = typeof(PersonBody).GetMethod("TryHorizontalSidestep", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            var from = new Vector3(64.2f, 7f, 21.6f);
+            object[] vertical = { from, from + Vector3.up * .3f, Vector3.zero };
+            Assert.That(method.Invoke(null, vertical), Is.False);
+            Assert.That((Vector3)vertical[2], Is.EqualTo(Vector3.zero));
+            object[] horizontal = { from, from + Vector3.right * .3f + Vector3.up * .1f, Vector3.zero };
+            Assert.That(method.Invoke(null, horizontal), Is.True);
+            Assert.That(((Vector3)horizontal[2]).y, Is.Zero);
+            Assert.That(((Vector3)horizontal[2]).sqrMagnitude, Is.GreaterThanOrEqualTo(.04f));
         }
 
         [UnityTest, Timeout(600000)]
