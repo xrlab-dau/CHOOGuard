@@ -355,6 +355,50 @@ class AuthTests(unittest.TestCase):
         self.fails('local_session_budget_exceeded',lambda:self.p.chat(self.body(),self.p.generation))
         self.assertEqual(before,len(self.transport.calls));self.assertEqual({'requests':0,'input_tokens':0,'output_tokens':0},self.p.reserved)
 
+    def test_rejected_session_keeps_limits_and_initial_consent(self):
+        self.enable();self.p.session({'initial_world_allowance':{'input_tokens':1000,'output_tokens':128}})
+        before_limits=dict(self.p.limits);before_generation=self.p.generation
+        before_allowance=dict(self.p.initial_allowance);before_calls=len(self.transport.calls)
+        self.fails('invalid_initial_allowance',lambda:self.p.session({
+            'model':'first','limits':{'requests':1,'input_tokens':1000,'output_tokens':100},
+            'initial_world_allowance':{'input_tokens':0,'output_tokens':128}}))
+        self.assertEqual(before_limits,self.p.limits);self.assertEqual(before_generation,self.p.generation)
+        self.assertEqual(before_allowance,self.p.initial_allowance);self.assertTrue(self.p.initial_remaining)
+        self.assertEqual('second',self.p.selected_model);self.assertEqual(before_calls,len(self.transport.calls))
+
+    def test_rejected_usage_resume_keeps_account_quota_stop(self):
+        self.enable();self.transport.infer_error=s.upstream_failure(429,{'error':{'code':'subscription_sharing_usage_limit_exceeded'}})
+        self.fails('subscription_sharing_usage_limit_exceeded',lambda:self.p.chat(self.body(),self.p.generation))
+        before_quota=dict(self.p.quota);before_stops=dict(self.p.quotas);before_generation=self.p.generation
+        self.fails('invalid_budget_limit',lambda:self.p.session({'cloud_enabled':True,'resume_after_usage_review':True,
+            'limits':{'requests':0,'input_tokens':1000,'output_tokens':100}}))
+        self.assertEqual(before_quota,self.p.quota);self.assertEqual(before_stops,self.p.quotas)
+        self.assertEqual(before_stops,self.store.data['quota_stops']);self.assertEqual(before_generation,self.p.generation)
+        self.fails('subscription_usage_paused',lambda:self.p.guard())
+
+    def test_usage_review_requires_explicit_boolean(self):
+        self.enable();self.transport.infer_error=s.upstream_failure(429,{'error':{'code':'subscription_sharing_usage_limit_exceeded'}})
+        self.fails('subscription_sharing_usage_limit_exceeded',lambda:self.p.chat(self.body(),self.p.generation))
+        before_quota=dict(self.p.quota)
+        for value in ('false','true',0,1,[],{},None):
+            with self.subTest(value=value):
+                self.fails('explicit_usage_review_required',lambda:self.p.session({'resume_after_usage_review':value}))
+                self.assertEqual(before_quota,self.p.quota)
+        self.p.session({'resume_after_usage_review':False})
+        self.assertEqual(before_quota,self.p.quota)
+
+    def test_valid_combined_resume_commits_limits_and_initial_consent(self):
+        self.enable();self.transport.infer_error=s.upstream_failure(429,{'error':{'code':'subscription_sharing_usage_limit_exceeded'}})
+        self.fails('subscription_sharing_usage_limit_exceeded',lambda:self.p.chat(self.body(),self.p.generation))
+        before_calls=len(self.transport.calls)
+        limits={'requests':1,'input_tokens':1000,'output_tokens':100}
+        allowance={'input_tokens':1000,'output_tokens':128}
+        self.p.session({'cloud_enabled':True,'resume_after_usage_review':True,'limits':limits,'initial_world_allowance':allowance})
+        self.assertIsNone(self.p.quota_for(self.store.data['active']));self.assertEqual({},self.store.data['quota_stops'])
+        self.assertNotIn('quota_stop',self.store.data);self.assertTrue(self.p.cloud_enabled)
+        self.assertEqual(limits,self.p.limits);self.assertEqual(allowance,self.p.initial_allowance)
+        self.assertTrue(self.p.initial_remaining);self.assertEqual(before_calls,len(self.transport.calls))
+
     def test_initial_wholeworld_requires_explicit_separate_allowance(self):
         self.enable();body=self.body(chooguard_purpose='initial_world',max_tokens=1024,messages=[{'role':'user','content':'x'*30000}])
         self.fails('initial_world_allowance_not_enabled',lambda:self.p.chat(body,self.p.generation))
@@ -435,7 +479,12 @@ class HttpTests(AuthTests):
         self.assertEqual(200,status,result)
         sent=json.loads(next(call[3] for call in self.transport.calls if call[1]==s.RESOURCE+'/responses'))
         self.assertEqual(content,sent['input'][0]['content'])
-        self.assertEqual(413,self.request('POST','/session',raw=b' '*524289,headers={'Cookie':'chooguard_ui='+self.p.ui_cookie,'Origin':self.p.endpoint})[0])
+        # The server rejects an oversized Content-Length before reading the body.
+        # Send headers only so the client's body write cannot race the server close.
+        status,error,_=self.request('POST','/session',raw=b'',headers={
+            'Cookie':'chooguard_ui='+self.p.ui_cookie,'Origin':self.p.endpoint,'Content-Length':'524289'})
+        self.assertEqual(413,status)
+        self.assertEqual('request_body_too_large',error['error']['code'])
 
     def test_http_capability_host_origin_json_and_generation(self):
         self.assertEqual(401,self.request('GET','/status')[0]);self.assertEqual(200,self.request('GET','/status',headers=self.native())[0])
