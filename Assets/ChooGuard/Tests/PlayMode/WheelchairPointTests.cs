@@ -35,6 +35,7 @@ namespace ChooGuard.Tests.PlayMode
             made.Add(chairObject);
             var box = chairObject.AddComponent<BoxCollider>();
             box.center = new Vector3(0, .45f, 0); box.size = new Vector3(.65f, .9f, .83f);
+            // A verified placement would carry this record from the spawner; a hand-placed scene chair has none.
             var equipment = chairObject.AddComponent<StationEquipment>();
             equipment.Assign("wheelchair-test-01", "wheelchair", "휠체어", "hall2f");
             equipment.Interactable = true; equipment.Batchable = false;
@@ -56,6 +57,8 @@ namespace ChooGuard.Tests.PlayMode
         public void TheChairIsRegisteredAsWheelchairEquipmentAndStartsParked()
         {
             Assert.That(EquipmentRegistry.OfKind("wheelchair"), Does.Contain(chair.Equipment));
+            Assert.That(chair.Equipment.Kind, Is.EqualTo("wheelchair"));
+            Assert.That(chair.Equipment.IndependentlyVerified, Is.False, "no survey certificate: never admitted to emergency composition");
             Assert.That(chair.Equipment.State, Is.EqualTo(WheelchairPoint.StateParked));
             Assert.That(chair.InteractionPrompt, Is.EqualTo("휠체어 밀기"));
             Assert.That(chair.CanInteract(staff, out _), Is.True);
@@ -67,7 +70,7 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(chair.TryInteract(staff, out var feedback), Is.True);
             Assert.That(feedback, Does.Contain("밀고"));
             Assert.That(chair.Pushing, Is.True);
-            Assert.That(chair.transform.parent, Is.EqualTo(staff.transform));
+            Assert.That(chair.transform.parent, Is.Null, "the chair follows the staff member without being parented, so the interaction raycast can still aim at it");
             Assert.That(chair.Equipment.State, Is.EqualTo(WheelchairPoint.StateMoving));
             Assert.That(chair.InteractionPrompt, Is.EqualTo("휠체어 놓기"));
 

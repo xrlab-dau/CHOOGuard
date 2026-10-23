@@ -5,14 +5,49 @@
   "scene_sha256_before": "c6aa5fab378a0fd03d95dc8bebf52ab035b1bd5d4a3d6b2e352d3ed09f7ec078",
   "scene_sha256_after": "da385df76682539ebfa534b3a5a41fe730b1ec73024fac9cbe9f8ab9b71dc4bb",
   "root": "FPSWorld/Architecture/2F/MAIN2F_STATION_OFFICE_WHEELCHAIR_20261023",
-  "object": {"id": "wheelchair-office2f-01", "kind": "wheelchair", "label": "휠체어", "zone": "hall2f", "prefab": "Assets/ChooGuard/Art/Emergency/Equipment/Models/wheelchair/Wheelchair.prefab",
-             "position": [27.791, 7, -7.797], "rotation_euler": [0, 290.334, 0], "size_m": [0.65, 0.90, 0.83]},
-  "anchor": {"station_point": "office-door", "label": "역무실", "position": [27.0, 7.06, -9.5], "side": "+along", "wall_collider": "R11-WALL-FOOTPRINT-035_P1_1"},
+  "object": {
+    "id": "wheelchair-office2f-01",
+    "kind": "wheelchair",
+    "label": "휠체어",
+    "zone": "hall2f",
+    "prefab": "Assets/ChooGuard/Art/Emergency/Equipment/Models/wheelchair/Wheelchair.prefab",
+    "position": [
+      27.791,
+      7,
+      -7.797
+    ],
+    "rotation_euler": [
+      0,
+      290.334,
+      0
+    ],
+    "size_m": [
+      0.65,
+      0.9,
+      0.83
+    ]
+  },
+  "anchor": {
+    "station_point": "office-door",
+    "label": "역무실",
+    "position": [
+      27.0,
+      7.06,
+      -9.5
+    ],
+    "side": "+along",
+    "wall_collider": "R11-WALL-FOOTPRINT-035_P1_1"
+  },
   "basis": "Korail accessibility services (wheelchair users, 승하차 도우미) are handled at the station office; the twin's station-points office-door point marks the 2F 맞이방 역무실 front. The chair is placed beside that door against the office front glazing, outside the door swing.",
   "site_accuracy_verified": false,
   "placement_verified": false,
   "independently_verified": false,
   "not_claimed": "No field photo or survey of a wheelchair at this exact spot was found (web search 2026-10-23: Korail/부산역 pages do not publish a storage location). Not admitted to emergency composition until a PlacementVerification certificate exists.",
-  "model": {"source": "Meshy AI (Meshy 6 Lite text-to-3D + AI texturing, CC BY 4.0)", "sidecar": "Assets/ChooGuard/Art/Emergency/Equipment/Models/wheelchair/wheelchair.json"},
-  "interaction": "WheelchairPoint: E 밀기 / E 놓기 (stage 1); occupant, helper and route links pending"
+  "model": {
+    "source": "Meshy AI (Meshy 6 Lite text-to-3D + AI texturing, CC BY 4.0)",
+    "sidecar": "Assets/ChooGuard/Art/Emergency/Equipment/Models/wheelchair/wheelchair.json"
+  },
+  "interaction": "WheelchairPoint: E 밀기 / E 놓기 (stage 1). The chair follows the staff member without being parented so the interaction raycast can still aim at it; released on pause or shift end. Occupant, helper and route links pending.",
+  "registration": "No StationEquipment record: MeasuredTwinBuildGate rejects any StationEquipment without a field-survey certificate when the scene is processed (player build and editor Play mode), and none exists for this chair. WheelchairPoint uses a StationEquipment record only when one is present (verified spawn or test); until a PlacementVerification certificate exists the chair is an interactable prop that JevWorldInventory does not count.",
+  "runtime_pin": "Assets/ChooGuard/Seeded/Resources/WorldSnapshotPrefabManifest.json boundSceneSha256 re-pinned from c6aa5fab378a0fd03d95dc8bebf52ab035b1bd5d4a3d6b2e352d3ed09f7ec078 to the saved scene hash da385df76682539ebfa534b3a5a41fe730b1ec73024fac9cbe9f8ab9b71dc4bb; inventory objects and transforms unchanged (one new root added under Architecture/2F)."
 }
