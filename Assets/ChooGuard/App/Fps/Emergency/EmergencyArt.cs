@@ -35,6 +35,10 @@ namespace ChooGuard.App.Fps.Emergency
         public GameObject SuitcaseModel;
         public GameObject HandbagModel;
         public GameObject MedicalBagModel;
+        [Header("Meshy AI 생성 소품(CC BY 4.0, Art/Emergency/Equipment/Models): 방치 소포, AED 보관함과 본체. 비어 있으면 종전 절차 형상을 쓴다")]
+        public GameObject ParcelModel;
+        public GameObject AedCabinetModel;
+        public GameObject AedUnitModel;
         [Header("출동 장비(Objaverse·Sketchfab CC BY, ThirdParty/Models/Objaverse)")]
         public GameObject NozzleModel;
         public GameObject CotModel;
