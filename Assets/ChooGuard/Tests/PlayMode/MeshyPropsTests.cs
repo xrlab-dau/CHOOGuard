@@ -98,7 +98,7 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(cabinet.Unit.transform.parent, Is.EqualTo(cabinet.transform));
             // The 27 cm deep case stands upright, scaled down, in the lower part of the cabinet: fully behind the glass and below the heart.
             Assert.That(cabinet.StoredScale, Is.LessThan(1f).And.GreaterThan(.25f));
-            Assert.That(Quaternion.Angle(cabinet.Unit.transform.localRotation, Quaternion.Euler(0, 0, 90)), Is.LessThan(.5f));
+            Assert.That(Quaternion.Angle(cabinet.Unit.transform.localRotation, Quaternion.Euler(90, 0, 0)), Is.LessThan(.5f), "top of the case faces the glass");
             Assert.That(cabinet.Unit.transform.localScale.x, Is.EqualTo(cabinet.StoredScale).Within(1e-4f));
             var cabinetBounds = Props.LocalBounds(cabinet.transform.Find("AED 보관함 (모델)"));
             var unitWorld = cabinet.transform.worldToLocalMatrix;

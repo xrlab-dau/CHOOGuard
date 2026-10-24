@@ -25,7 +25,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             var cabinet = marker.AddComponent<AedCabinet>();
             cabinet.Hands = hands;
-            if (art != null && art.AedCabinetModel != null)
+            if (art != null && art.AedCabinetModel != null && marker.transform.Find("AED 보관함 (모델)") == null)   // a saved fixture may already carry the model
             {
                 var visual = Object.Instantiate(art.AedCabinetModel, marker.transform);
                 visual.name = "AED 보관함 (모델)";
@@ -41,9 +41,9 @@ namespace ChooGuard.App.Fps.Emergency
 
         /// <summary>
         /// With both Meshy models the AED case (31 × 24 × 27 cm) is deeper than the cabinet (20 cm) and would sit over the heart
-        /// on the glass. The stored unit stands upright on its side (90° about z), scaled down uniformly to the lower part of the
-        /// cabinet's inner volume (80 % of width, 40 % of height, 60 % of depth), so the heart on the door stays visible.
-        /// Rotation and scale are restored the moment it is taken in hand.
+        /// on the glass. The stored unit lies with its top (handle side) towards the glass (90° about x), scaled down uniformly
+        /// to the lower part of the cabinet's inner volume (80 % of width, 40 % of height, 60 % of depth), so the heart on the
+        /// door stays visible. Rotation and scale are restored the moment it is taken in hand.
         /// </summary>
         private void FitStoredUnit()
         {
@@ -53,7 +53,7 @@ namespace ChooGuard.App.Fps.Emergency
             var cabinet = Props.LocalBounds(transform);          // cabinet model, marker space (the unit is not a child yet)
             var unitBounds = Props.LocalBounds(Unit.transform);   // unit model, unit space (origin at the bottom centre)
             if (cabinet.size.x <= 0 || unitBounds.size.x <= 0) return;
-            var upright = Quaternion.Euler(0, 0, 90);
+            var upright = Quaternion.Euler(90, 0, 0);   // local +y (top of the case) -> +z (towards the glass)
             var rotated = new Bounds(upright * unitBounds.center, Vector3.zero);
             for (int i = 0; i < 8; i++)
                 rotated.Encapsulate(upright * (unitBounds.center + Vector3.Scale(unitBounds.extents, new Vector3((i & 1) == 0 ? -1 : 1, (i & 2) == 0 ? -1 : 1, (i & 4) == 0 ? -1 : 1))));
