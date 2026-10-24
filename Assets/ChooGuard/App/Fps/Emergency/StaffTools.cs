@@ -261,6 +261,7 @@ namespace ChooGuard.App.Fps.Emergency
             unit.SetColliders(false);
             foreach (var renderer in unit.GetComponentsInChildren<Renderer>()) renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             unit.transform.SetParent(view, false);
+            unit.transform.localScale = Vector3.one;   // a stored unit may be scaled down to fit its cabinet
             unit.transform.localPosition = new Vector3(.3f, -.46f, .5f);
             unit.transform.localRotation = Quaternion.Euler(8, 162, 0);
             session.Log.Add("AED 를 들었다 · " + session.World.Describe(session.Player.transform.position));

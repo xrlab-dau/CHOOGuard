@@ -96,6 +96,20 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(box.size.y, Is.EqualTo(.24f).Within(.01f));
             Assert.That(cabinet.Stored, Is.True);
             Assert.That(cabinet.Unit.transform.parent, Is.EqualTo(cabinet.transform));
+            // The 27 cm deep case is scaled down to sit fully behind the 20 cm cabinet's glass.
+            Assert.That(cabinet.StoredScale, Is.LessThan(1f).And.GreaterThan(.3f));
+            Assert.That(cabinet.Unit.transform.localScale.x, Is.EqualTo(cabinet.StoredScale).Within(1e-4f));
+            var cabinetBounds = Props.LocalBounds(cabinet.transform.Find("AED 보관함 (모델)"));
+            var unitWorld = cabinet.transform.worldToLocalMatrix;
+            foreach (var filter in cabinet.Unit.GetComponentsInChildren<MeshFilter>())
+            {
+                var b = filter.sharedMesh.bounds; var toCabinet = cabinet.transform.worldToLocalMatrix * filter.transform.localToWorldMatrix;
+                for (int i = 0; i < 8; i++)
+                {
+                    var corner = toCabinet.MultiplyPoint3x4(b.center + Vector3.Scale(b.extents, new Vector3((i & 1) == 0 ? -1 : 1, (i & 2) == 0 ? -1 : 1, (i & 4) == 0 ? -1 : 1)));
+                    Assert.That(cabinetBounds.Contains(corner), Is.True, "stored AED must sit inside the cabinet: " + corner);
+                }
+            }
             Assert.That(cabinet.InteractionPrompt, Is.EqualTo("AED 꺼내기"));
             Assert.That(cabinet.Unit.DisplayName, Is.EqualTo("자동심장충격기(AED)"));
         }

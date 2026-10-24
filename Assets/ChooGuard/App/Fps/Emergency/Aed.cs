@@ -11,6 +11,9 @@ namespace ChooGuard.App.Fps.Emergency
         public StaffHands Hands;
         public AedUnit Unit { get; private set; }
         public bool Stored { get; private set; }
+        /// <summary>Where the stored AED sits (cabinet local) and how much it is scaled down to fit behind the glass; 1 = as modelled.</summary>
+        public Vector3 StoredLocalPosition { get; private set; } = new Vector3(0, -.1f, -.01f);
+        public float StoredScale { get; private set; } = 1f;
 
         /// <summary>
         /// Makes the cabinet on a fixture marker (collider box facing +z) and puts its AED inside, behind the glass. With
@@ -30,8 +33,28 @@ namespace ChooGuard.App.Fps.Emergency
                 foreach (var collider in visual.GetComponentsInChildren<Collider>()) Object.Destroy(collider);   // the marker's collider is the aim target
             }
             cabinet.Unit = AedUnit.Build(hands, cabinet, art);
+            cabinet.FitStoredUnit();
             cabinet.Store();
             return cabinet;
+        }
+
+        /// <summary>
+        /// With both Meshy models the AED case (31 × 24 × 27 cm) is deeper than the cabinet (20 cm): the stored unit is scaled down
+        /// uniformly to fit the cabinet's inner volume (80 % of width/height, 60 % of depth, behind the glass) and centred in it.
+        /// The scale is restored to 1 the moment it is taken in hand.
+        /// </summary>
+        private void FitStoredUnit()
+        {
+            var cabinetVisual = transform.Find("AED 보관함 (모델)");
+            var unitVisual = Unit != null ? Unit.transform.Find("본체 (모델)") : null;
+            if (cabinetVisual == null || unitVisual == null) return;
+            var cabinet = Props.LocalBounds(transform);          // cabinet model, marker space (the unit is not a child yet)
+            var unitBounds = Props.LocalBounds(Unit.transform);   // unit model, unit space (origin at the bottom centre)
+            if (cabinet.size.x <= 0 || unitBounds.size.x <= 0) return;
+            var inner = Vector3.Scale(cabinet.size, new Vector3(.80f, .80f, .60f));
+            float scale = Mathf.Min(1f, inner.x / unitBounds.size.x, inner.y / unitBounds.size.y, inner.z / unitBounds.size.z);
+            StoredScale = scale;
+            StoredLocalPosition = cabinet.center - unitBounds.center * scale - new Vector3(0, 0, .01f);
         }
 
         /// <summary>The AED goes back behind the glass (lower half of the cabinet).</summary>
@@ -40,8 +63,9 @@ namespace ChooGuard.App.Fps.Emergency
             Stored = true;
             Unit.Held = false;
             Unit.transform.SetParent(transform, false);
-            Unit.transform.localPosition = new Vector3(0, -.1f, -.01f);
+            Unit.transform.localPosition = StoredLocalPosition;
             Unit.transform.localRotation = Quaternion.identity;
+            Unit.transform.localScale = Vector3.one * StoredScale;
             Unit.SetColliders(false);
         }
 
