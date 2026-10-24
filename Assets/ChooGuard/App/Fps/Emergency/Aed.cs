@@ -13,6 +13,7 @@ namespace ChooGuard.App.Fps.Emergency
         public bool Stored { get; private set; }
         /// <summary>Where the stored AED sits (cabinet local) and how much it is scaled down to fit behind the glass; 1 = as modelled.</summary>
         public Vector3 StoredLocalPosition { get; private set; } = new Vector3(0, -.1f, -.01f);
+        public Quaternion StoredLocalRotation { get; private set; } = Quaternion.identity;
         public float StoredScale { get; private set; } = 1f;
 
         /// <summary>
@@ -39,9 +40,10 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         /// <summary>
-        /// With both Meshy models the AED case (31 × 24 × 27 cm) is deeper than the cabinet (20 cm): the stored unit is scaled down
-        /// uniformly to fit the cabinet's inner volume (80 % of width/height, 60 % of depth, behind the glass) and centred in it.
-        /// The scale is restored to 1 the moment it is taken in hand.
+        /// With both Meshy models the AED case (31 × 24 × 27 cm) is deeper than the cabinet (20 cm) and would sit over the heart
+        /// on the glass. The stored unit stands upright on its side (90° about z), scaled down uniformly to the lower part of the
+        /// cabinet's inner volume (80 % of width, 40 % of height, 60 % of depth), so the heart on the door stays visible.
+        /// Rotation and scale are restored the moment it is taken in hand.
         /// </summary>
         private void FitStoredUnit()
         {
@@ -51,10 +53,16 @@ namespace ChooGuard.App.Fps.Emergency
             var cabinet = Props.LocalBounds(transform);          // cabinet model, marker space (the unit is not a child yet)
             var unitBounds = Props.LocalBounds(Unit.transform);   // unit model, unit space (origin at the bottom centre)
             if (cabinet.size.x <= 0 || unitBounds.size.x <= 0) return;
-            var inner = Vector3.Scale(cabinet.size, new Vector3(.80f, .80f, .60f));
-            float scale = Mathf.Min(1f, inner.x / unitBounds.size.x, inner.y / unitBounds.size.y, inner.z / unitBounds.size.z);
+            var upright = Quaternion.Euler(0, 0, 90);
+            var rotated = new Bounds(upright * unitBounds.center, Vector3.zero);
+            for (int i = 0; i < 8; i++)
+                rotated.Encapsulate(upright * (unitBounds.center + Vector3.Scale(unitBounds.extents, new Vector3((i & 1) == 0 ? -1 : 1, (i & 2) == 0 ? -1 : 1, (i & 4) == 0 ? -1 : 1))));
+            var inner = Vector3.Scale(cabinet.size, new Vector3(.80f, .40f, .60f));
+            float scale = Mathf.Min(1f, inner.x / rotated.size.x, inner.y / rotated.size.y, inner.z / rotated.size.z);
+            var target = new Vector3(cabinet.center.x, cabinet.min.y + cabinet.size.y * .07f + rotated.extents.y * scale, cabinet.center.z - .01f);
             StoredScale = scale;
-            StoredLocalPosition = cabinet.center - unitBounds.center * scale - new Vector3(0, 0, .01f);
+            StoredLocalRotation = upright;
+            StoredLocalPosition = target - rotated.center * scale;
         }
 
         /// <summary>The AED goes back behind the glass (lower half of the cabinet).</summary>
@@ -64,7 +72,7 @@ namespace ChooGuard.App.Fps.Emergency
             Unit.Held = false;
             Unit.transform.SetParent(transform, false);
             Unit.transform.localPosition = StoredLocalPosition;
-            Unit.transform.localRotation = Quaternion.identity;
+            Unit.transform.localRotation = StoredLocalRotation;
             Unit.transform.localScale = Vector3.one * StoredScale;
             Unit.SetColliders(false);
         }

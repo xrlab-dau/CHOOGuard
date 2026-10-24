@@ -96,8 +96,9 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(box.size.y, Is.EqualTo(.24f).Within(.01f));
             Assert.That(cabinet.Stored, Is.True);
             Assert.That(cabinet.Unit.transform.parent, Is.EqualTo(cabinet.transform));
-            // The 27 cm deep case is scaled down to sit fully behind the 20 cm cabinet's glass.
-            Assert.That(cabinet.StoredScale, Is.LessThan(1f).And.GreaterThan(.3f));
+            // The 27 cm deep case stands upright, scaled down, in the lower part of the cabinet: fully behind the glass and below the heart.
+            Assert.That(cabinet.StoredScale, Is.LessThan(1f).And.GreaterThan(.25f));
+            Assert.That(Quaternion.Angle(cabinet.Unit.transform.localRotation, Quaternion.Euler(0, 0, 90)), Is.LessThan(.5f));
             Assert.That(cabinet.Unit.transform.localScale.x, Is.EqualTo(cabinet.StoredScale).Within(1e-4f));
             var cabinetBounds = Props.LocalBounds(cabinet.transform.Find("AED 보관함 (모델)"));
             var unitWorld = cabinet.transform.worldToLocalMatrix;
@@ -108,6 +109,7 @@ namespace ChooGuard.Tests.PlayMode
                 {
                     var corner = toCabinet.MultiplyPoint3x4(b.center + Vector3.Scale(b.extents, new Vector3((i & 1) == 0 ? -1 : 1, (i & 2) == 0 ? -1 : 1, (i & 4) == 0 ? -1 : 1)));
                     Assert.That(cabinetBounds.Contains(corner), Is.True, "stored AED must sit inside the cabinet: " + corner);
+                    Assert.That(corner.y, Is.LessThan(cabinetBounds.center.y), "stored AED must stay below the heart at the cabinet's centre: " + corner);
                 }
             }
             Assert.That(cabinet.InteractionPrompt, Is.EqualTo("AED 꺼내기"));
