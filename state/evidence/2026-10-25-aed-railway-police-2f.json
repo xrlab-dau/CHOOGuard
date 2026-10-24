@@ -1,0 +1,17 @@
+{
+  "schema": "chooguard.fixture.scene_placement.v1",
+  "utc": "2026-10-24T19:34:49.7387086Z",
+  "scene": "Assets/ChooGuard/Scenes/FpsStation.unity",
+  "scene_sha256_before": "54434fdaaf996c8fc6a0bcf3847a8705e8e36f36362c1f3e0887fde67a9c107c",
+  "scene_sha256_after": "1a0eebd1f6675e3041c8462c4297085bb2e69513a5f205db98a37efff9944bbc",
+  "root": "MAIN2F_RAILWAY_POLICE_AED_20261025 (scene root, outside FPSWorld so the saved native census stays exact)",
+  "object": {"id": "aed-police2f-01", "component": "StationFixture(Kind=Aed)", "label": "자동심장충격기(AED)", "cabinet_model": "Assets/ChooGuard/Art/Emergency/Equipment/Models/aed_cabinet/aed_cabinet.prefab",
+             "position": [-22.609, 8.35, -62.054], "rotation_euler": [0, 110.324, 0], "marker_size_m": [0.31, 0.42, 0.20], "mount_height_m": 1.35},
+  "anchor": {"police_front": "R29_POLICE_EXISTING_FRONT111_SOURCE_MODEL", "police_centre": [-21.605, 8.758, -58.551], "side": "-z", "wall_collider": "R11-WALL-FOOTPRINT-058_P5_1"},
+  "basis": "Public AED registry (국립중앙의료원 E-Gen data as listed on live.heartisense.com/aed/busan/동구, read 2026-10-25): 한국철도공사 부산역 — 철도경찰 옆(신원문고 앞). The twin's 2F railway-police front (R29) is the only modelled anchor; 신원문고 is not modelled, so the cabinet is mounted on the wall immediately beside the police front.",
+  "site_accuracy_verified": false,
+  "placement_verified": false,
+  "not_claimed": "The registry gives the place, not a surveyed pose; the exact side of the police front and mounting height (1.35 m) are inferred. No PlacementVerification certificate.",
+  "runtime": "StaffHands.Setup finds the StationFixture at shift start and attaches AedCabinet/AedUnit (Meshy models, stored case lying with its top towards the glass, scaled to the lower cabinet).",
+  "runtime_pin": "WorldSnapshotPrefabManifest.json boundSceneSha256 and App/Resources/CurrentStationPointSources.json sourceSceneSha256 re-pinned to scene_sha256_after."
+}
