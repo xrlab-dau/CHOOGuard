@@ -11,6 +11,21 @@ python3 -m unittest discover -s workers/simulator/world_inventory -p test_snapsh
 
 A completed snapshot is immutable. Rebuilding the same scene hash refuses to overwrite an existing receipt. `--output <new-parent>` permits a separate reproduction packet. Concurrent source writes fail the stability gate; obtain a new stable snapshot rather than rolling back the original scene.
 
+For offline guard checks, use an isolated Python environment and run from the
+repository root:
+
+```sh
+python3 -m pip install --require-hashes --no-deps --only-binary=:all: -r .github/requirements/snapshot.txt
+cd workers/simulator/world_inventory
+python3 -m unittest -v test_snapshot.FixtureTests test_snapshot.SnapshotTargetTests test_snapshot.StagingFreshnessTests
+```
+
+CI runs these synthetic suites against temporary scenes, dependencies and authority
+files. They check stale/missing source rejection, dependency integrity and staging
+guards without launching Unity or exporting a project snapshot. The separate
+`FrozenSnapshotTests` in the full suite above still require the actual current saved
+source and its matching packet; synthetic CI success does not certify that map.
+
 The final packet is `output/simulator/world-snapshot/ec2f5f3b6097bcc7/`:
 
 - `world-objects.json`: all 4,115 saved objects, including inactive objects, with stable Unity scene GUID/fileID identity, parent, local TRS, world matrix, flags and typed component identities. Geometry references are allowlisted. MonoBehaviours expose script identity and unsupported status only.

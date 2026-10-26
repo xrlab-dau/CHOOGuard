@@ -30,8 +30,10 @@ Upstream 49+ also removed Intel macOS and 32-bit Windows support, so use a suppo
 CI installs the same runtime pins through the hash-locked
 [provider-auth requirements](../../../.github/requirements/provider-auth.txt) in an
 isolated environment and runs the existing mock OAuth/JWT, multi-provider, localhost
-native-control and UI tests. These tests use synthetic accounts and transports;
-they do not log in to a provider or consume model quota.
+native-control and UI tests, plus the temporary helper upgrade and runtime lifecycle
+tests. These tests use synthetic accounts and transports; they do not log in to a
+provider or consume model quota. Lifecycle tests start and stop their own localhost
+helper processes in temporary private directories, leaving installed helpers alone.
 
 Deployment state is recorded in the dated [activation receipt](desktop-upgrade-activation.json). On 2026-10-14 the user explicitly requested execution, and the app-owned helper was upgraded to the multi-provider implementation while retaining its existing account file bytes. The current model selection and subscription consent are empty until the user explicitly chooses them. Service activation and automatic desktop browser opening are separate results; see that receipt for the macOS browser-opening limitation.
 

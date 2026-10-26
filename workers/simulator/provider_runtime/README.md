@@ -60,6 +60,12 @@ python3 workers/simulator/provider_runtime/test_runtime.py
 
 The current runtime tests use actual local HTTP and a scoped subprocess, synthetic RSA/OAuth/catalog/Responses, negative proposal fixtures, local consent boundaries, stale-session guards, safe reports, protected files and PID cleanup. Synthetic success is explicitly labeled and cannot become live-inference evidence.
 
+CI runs this suite with `python -m unittest -v test_runtime` from this directory,
+using the isolated, hash-locked provider-auth environment. It also runs
+`test_upgrade_helper` from `provider_auth`. Module invocation does not overwrite the
+local `test-report.json`; these tests only manage their own temporary helpers and
+never upgrade an installed user session.
+
 The reader also accepts the lossless `prefix-column-v1` graph: UTF-16 ordinal prefix identities, exact group columns, integer numeric columns divided by 10000, nullable parent references and shared identity references for links/visuals. It validates the complete entity/visual counts after decoding and retains the original compact JSON unchanged in the outgoing user message. Proposals may contain exactly one of `entity_ref` or `entity_id`; references are resolved before type/range/duplicate validation. Exported completion changes use canonical `entity_id` values for replay compatibility. Unknown or untyped references cannot create hazards. Legacy graph tests remain active.
 
 Actual acceptance receipts include the protected process launch record's active sidecar hash separately from current disk source hashes. A pending UI fix on disk does not imply a running helper loaded that fix. Do not restart a helper with a user's pending one-shot allowance just to deploy UI changes; preserve the live session until that action is finished or explicitly cancelled.
