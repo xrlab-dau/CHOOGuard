@@ -27,6 +27,34 @@ namespace ChooGuard.App.Fps.Emergency
         public bool Held { get; set; }
         public float SprayedSeconds { get; set; }
 
+        /// <summary>Name of the model child a bare scene marker gets from <see cref="Dress"/>.</summary>
+        public const string ModelChildName = "소화기 (모델)";
+
+        /// <summary>
+        /// Gives a scene extinguisher marker that has no visual of its own the Meshy body (<see cref="EmergencyArt.ExtinguisherModel"/>,
+        /// 3.3 kg ABC powder unit, origin at the bottom centre) and a collider on it, so the marker can be aimed at and picked up.
+        /// A marker that already shows something (a sourced model, an earlier dressing) is left as it is.
+        /// </summary>
+        public static GameObject Dress(GameObject marker, EmergencyArt art)
+        {
+            if (marker == null) return null;
+            var existing = marker.transform.Find(ModelChildName);
+            if (existing != null) return existing.gameObject;
+            if (marker.GetComponentInChildren<Renderer>(true) != null || art == null || art.ExtinguisherModel == null) return null;
+            var body = Object.Instantiate(art.ExtinguisherModel, marker.transform);
+            body.name = ModelChildName;
+            body.transform.localPosition = Vector3.zero;
+            body.transform.localRotation = Quaternion.identity;
+            foreach (var c in body.GetComponentsInChildren<Collider>()) Object.DestroyImmediate(c);   // at once: the marker's own box must be the only aim target this frame
+            if (marker.GetComponent<Collider>() == null)
+            {
+                var bounds = Props.LocalBounds(marker.transform);
+                var box = marker.AddComponent<BoxCollider>();
+                box.center = bounds.center; box.size = bounds.size;
+            }
+            return body;
+        }
+
         public string DisplayName => (Type == ExtinguishAgent.WetChemical ? "K급 소화기 · " : "소화기 · ") + Serial;
         public string InteractionPrompt => Held ? "" : Agent <= .01f ? "빈 소화기" : "소화기 들기";
         public string StateText => Agent <= .01f ? "비어 있음" : PinPulled ? "안전핀 빠짐" : "";
@@ -236,6 +264,7 @@ namespace ChooGuard.App.Fps.Emergency
             // 역사 소화기를 게임용 도구로 바꾼다. 점검 상태(압력·결함)는 그대로 가져온다. 씬 자산은 바뀌지 않는다.
             foreach (var inspectable in Object.FindObjectsByType<Work.FacilityInspectable>(FindObjectsSortMode.None))
             {
+                Extinguisher.Dress(inspectable.gameObject, art);
                 var tool = inspectable.gameObject.AddComponent<Extinguisher>();
                 tool.Serial = inspectable.SerialNumber;
                 tool.Defective = inspectable.PressureOutOfRange || inspectable.MechanicallyDefective;

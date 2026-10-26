@@ -173,7 +173,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// relative to the belt end at that landing (side of a rider, height, distance out onto the landing, distance from the centre line).
         /// A landing with no record gets no button.
         /// </summary>
-        public void AddStopButtons(IReadOnlyList<EscalatorStopSurvey.Record> records)
+        public void AddStopButtons(IReadOnlyList<EscalatorStopSurvey.Record> records, GameObject buttonModel = null)
         {
             // 경로는 타는 쪽 계단참 → 벨트 시작 … 벨트 끝 → 내리는 쪽 계단참이다. 계단참 점은 navmesh 로 옆으로 비켜 있을 수 있어
             // 벨트 끝(디딤판이 계단참 바닥과 만나는 곳)과 벨트 전체 방향을 기준으로 삼는다.
@@ -189,7 +189,7 @@ namespace ChooGuard.App.Fps.Emergency
                 var landing = atStart ? Entry.path[beltStart] : Entry.path[beltEnd];
                 var outward = atStart ? -travel : travel;
                 var position = landing + outward * record.along + right * ((record.OnLeft ? -1f : 1f) * record.offset) + Vector3.up * record.height;
-                EscalatorStopButton.Build(this, position, outward);
+                EscalatorStopButton.Build(this, position, outward, buttonModel);
                 StopButtons++;
             }
         }

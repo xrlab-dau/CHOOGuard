@@ -39,6 +39,9 @@ namespace ChooGuard.App.Fps.Emergency
         public GameObject ParcelModel;
         public GameObject AedCabinetModel;
         public GameObject AedUnitModel;
+        [Header("Meshy AI 생성 설비(CC BY 4.0): 역사 분말 소화기(씬의 FacilityInspectable 표식에 붙는 모델), 에스컬레이터 비상정지 버튼 판(자식 '버튼'이 눌리는 부분). 비어 있으면 종전 형상을 쓴다")]
+        public GameObject ExtinguisherModel;
+        public GameObject EscalatorStopModel;
         [Header("출동 장비(Objaverse·Sketchfab CC BY, ThirdParty/Models/Objaverse)")]
         public GameObject NozzleModel;
         public GameObject CotModel;

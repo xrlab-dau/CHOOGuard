@@ -24,9 +24,37 @@ namespace ChooGuard.App.Fps.Emergency
         private float held = -1f, knobIn;
         private bool pressedHere;
 
-        /// <summary>The button plate at <paramref name="position"/>, its face toward <paramref name="facing"/> (out onto the landing).</summary>
-        public static void Build(Escalator escalator, Vector3 position, Vector3 facing)
+        /// <summary>Name of the pressed part inside a supplied button model (<see cref="EmergencyArt.EscalatorStopModel"/>).</summary>
+        public const string KnobName = "버튼";
+        /// <summary>How far the model's knob goes in when pressed (m, along the plate's -z, into the mount).</summary>
+        public const float ModelKnobTravel = .008f;
+
+        /// <summary>
+        /// The button plate at <paramref name="position"/>, its face toward <paramref name="facing"/> (out onto the landing). With
+        /// <paramref name="model"/> (the Meshy plate, origin at the back face centre, +z out of the mount, child <see cref="KnobName"/>
+        /// = the red knob) that model is the plate and its knob is what goes in; without one a steel plate and red knob are primitives.
+        /// </summary>
+        public static void Build(Escalator escalator, Vector3 position, Vector3 facing, GameObject model = null)
         {
+            if (model != null)
+            {
+                var plateModel = Object.Instantiate(model, escalator.transform);
+                plateModel.name = "비상정지 버튼 · " + escalator.Label;
+                plateModel.transform.SetPositionAndRotation(position, Quaternion.LookRotation(facing, Vector3.up));
+                var modelKnob = plateModel.transform.Find(KnobName);
+                if (modelKnob != null) foreach (var c in modelKnob.GetComponentsInChildren<Collider>()) DestroyImmediate(c);   // the plate's collider is the aim target
+                if (plateModel.GetComponent<Collider>() == null)
+                {
+                    // One collider on the plate root is the aim target; part colliders of the model would hit the wrong object.
+                    foreach (var c in plateModel.GetComponentsInChildren<Collider>()) DestroyImmediate(c);
+                    var bounds = Props.LocalBounds(plateModel.transform);
+                    var box = plateModel.AddComponent<BoxCollider>();
+                    if (bounds.size.sqrMagnitude > 0) { box.center = bounds.center; box.size = bounds.size; }
+                    else { box.size = new Vector3(.12f, .12f, .03f); box.center = new Vector3(0, 0, .015f); }
+                }
+                plateModel.AddComponent<EscalatorStopButton>().Bind(escalator, modelKnob, new Vector3(0, 0, -ModelKnobTravel));
+                return;
+            }
             var plate = GameObject.CreatePrimitive(PrimitiveType.Cube);
             plate.name = "비상정지 버튼 · " + escalator.Label;
             plate.transform.SetParent(escalator.transform, false);
