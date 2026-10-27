@@ -28,6 +28,9 @@ import xml.etree.ElementTree as ET
 args = sys.argv[1:]
 with open(os.environ["FAKE_EDITOR_ARGS"], "a", encoding="utf-8") as out:
     out.write(json.dumps(args, ensure_ascii=False) + "\\n")
+if "FAKE_ACTIVATION_LOG" in os.environ:
+    Path(args[args.index("-logFile") + 1]).write_text(os.environ["FAKE_ACTIVATION_LOG"], encoding="utf-8")
+    sys.exit(int(os.environ.get("FAKE_EDITOR_EXIT", "1")))
 name = args[args.index("-testFilter") + 1] if "-testFilter" in args else "Full.Suite.Test"
 root = ET.Element("test-run", total="1", passed="1", failed="0", skipped="0", inconclusive="0", result="Passed")
 ET.SubElement(root, "test-case", fullname=name, result="Passed")
@@ -102,6 +105,42 @@ sys.exit(int(os.environ.get("FAKE_EDITOR_EXIT", "0")))
         result, calls = self.run_shell("routegraph", "Other.Test")
         self.assertEqual(result.returncode, 64)
         self.assertEqual(calls, [])
+
+    def activate_with_log(self, message):
+        # Synthetic command-line echo mirrors Unity's log header; never use real credentials.
+        self.environment.update(UNITY_SERIAL="fixture-serial", UNITY_EMAIL="fixture@example.invalid",
+                                UNITY_PASSWORD="fixture-password", PROGRAMDATA=(self.root / "program-data").as_posix(),
+                                LOCALAPPDATA=(self.root / "local-data").as_posix(),
+                                FAKE_ACTIVATION_LOG="COMMAND LINE ARGUMENTS:\n-password\nfixture-password\n" + message)
+        result, _ = self.run_shell("activate", editor_exit="1")
+        self.assertEqual(result.returncode, 1)
+        return result.stdout.decode("utf-8")
+
+    def test_password_argument_and_token_or_entitlement_errors_do_not_prove_bad_credentials(self):
+        for message in ("[Licensing::Module] Error: Access token is unavailable; failed to update\n",
+                        "[Licensing::Module] Error: Failed to activate entitlement license\n",
+                        "[Licensing::Module] Error: Entitlement request unauthorized\n"):
+            with self.subTest(message=message):
+                output = self.activate_with_log(message)
+                self.assertIn("activation failed (editor exit 1)", output)
+                self.assertNotIn("UNITY_EMAIL / UNITY_PASSWORD were rejected", output)
+                self.assertNotIn("fixture-password", output)
+
+    def test_explicit_login_rejections_are_still_identified(self):
+        for message in ("[Licensing::Client] Invalid username or password\n",
+                        "[Licensing::Client] Incorrect password\n",
+                        "[Licensing::Client] Login failed: invalid credentials\n"):
+            with self.subTest(message=message):
+                output = self.activate_with_log(message)
+                self.assertIn("UNITY_EMAIL / UNITY_PASSWORD were rejected", output)
+
+    def test_activation_limit_and_invalid_serial_keep_their_distinct_diagnostics(self):
+        for message, expected in (("[Licensing::Client] Maximum number of activations reached\n", "the seat has no free activation"),
+                                  ("[Licensing::Client] Serial is invalid\n", "UNITY_SERIAL was rejected")):
+            with self.subTest(message=message):
+                output = self.activate_with_log(message)
+                self.assertIn(expected, output)
+                self.assertNotIn("UNITY_EMAIL / UNITY_PASSWORD were rejected", output)
 
 
 class FocusedRouteWorkflowTests(unittest.TestCase):
