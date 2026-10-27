@@ -14,11 +14,13 @@ namespace ChooGuard.App.Fps.Emergency
     /// </summary>
     public sealed class EscalatorStopButton : MonoBehaviour, IFpsInteraction, IFpsNamed, IFpsStated, IFpsSecondaryInteraction, IFpsHoldInteraction, IFpsObservable
     {
-        private const float KnobPressedZ = .55f, KnobRestZ = .9f, NoticedPress = .15f;
+        private const float NoticedPress = .15f;
+        // 작은 빨간 버튼: 지름 5 cm, 받침에서 2 cm 나와 있고 1.2 cm 들어간다. 받침은 지름 7.5 cm, 1 cm 두께의 어두운 원판. 받침 뒷면 중심이 원점, +z 가 난간 밖.
+        private const float BaseDiameter = .075f, BaseThickness = .01f, KnobDiameter = .05f, KnobLength = .02f, KnobTravel = .012f;
 
         private Escalator escalator;
         private string name_;
-        private static Material red, steel;
+        private static Material red, dark;
         // 눌린 버튼은 정지가 이어지는 동안 들어가 있다.
         private Transform knob;
         private Vector3 knobRestPosition, knobTravel;
@@ -33,7 +35,8 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>
         /// The button plate at <paramref name="position"/>, its face toward <paramref name="facing"/> (out onto the landing). With
         /// <paramref name="model"/> (the Meshy plate, origin at the back face centre, +z out of the mount, child <see cref="KnobName"/>
-        /// = the red knob) that model is the plate and its knob is what goes in; without one a steel plate and red knob are primitives.
+        /// = the red knob) that model is the plate and its knob is what goes in; without one it is a small red button on a dark round
+        /// base (primitives), the base's back on the mount.
         /// </summary>
         public static void Build(Escalator escalator, Vector3 position, Vector3 facing, GameObject model = null)
         {
@@ -56,23 +59,31 @@ namespace ChooGuard.App.Fps.Emergency
                 plateModel.AddComponent<EscalatorStopButton>().Bind(escalator, modelKnob, new Vector3(0, 0, -ModelKnobTravel));
                 return;
             }
-            var plate = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            plate.name = "비상정지 버튼 · " + escalator.Label;
+            // 작은 빨간 버튼이 어두운 받침에 앉아 난간 끝 아래쪽에 붙는다(버튼 본체는 이 역 영상에서 보이지 않았다: 표지 아래의 작은 비상정지 버튼으로 둔다).
+            var plate = new GameObject("비상정지 버튼 · " + escalator.Label);
             plate.transform.SetParent(escalator.transform, false);
             plate.transform.SetPositionAndRotation(position, Quaternion.LookRotation(facing, Vector3.up));
-            plate.transform.localScale = new Vector3(.12f, .12f, .02f);
-            // 스테인리스 판에 빨간 버튼(이 역에서 버튼 본체가 보인 유일한 기록, 현대 에스컬레이터의 뉴얼 판. 다른 기종의 버튼 모양은 아직 관찰되지 않았다).
-            plate.GetComponent<MeshRenderer>().sharedMaterial = Lamp(ref steel, "비상정지 버튼 판 (스테인리스)", new Color(.72f, .73f, .75f));
-            var knob = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            knob.name = "버튼";
-            Destroy(knob.GetComponent<Collider>());
-            knob.transform.SetParent(plate.transform, false);
-            knob.transform.localPosition = new Vector3(0, 0, KnobRestZ);
-            knob.transform.localRotation = Quaternion.Euler(90, 0, 0);
-            knob.transform.localScale = new Vector3(.45f, 1.2f, .45f);
-            knob.GetComponent<MeshRenderer>().sharedMaterial = Lamp(ref red, "비상정지 버튼 (빨강)", new Color(.85f, .06f, .05f));
+            var aim = plate.AddComponent<BoxCollider>();   // the one aim target: base and knob together
+            aim.center = new Vector3(0, 0, (BaseThickness + KnobLength) / 2);
+            aim.size = new Vector3(BaseDiameter, BaseDiameter, BaseThickness + KnobLength);
+            Disc(plate.transform, "받침", BaseThickness / 2, BaseThickness, BaseDiameter, Lamp(ref dark, "비상정지 버튼 받침 (검정)", new Color(.12f, .12f, .13f)));
+            var knob = Disc(plate.transform, KnobName, BaseThickness + KnobLength / 2, KnobLength, KnobDiameter, Lamp(ref red, "비상정지 버튼 (빨강)", new Color(.85f, .06f, .05f)));
             var button = plate.AddComponent<EscalatorStopButton>();
-            button.Bind(escalator, knob.transform, new Vector3(0, 0, KnobPressedZ - KnobRestZ));
+            button.Bind(escalator, knob.transform, new Vector3(0, 0, -KnobTravel));
+        }
+
+        /// <summary>A cylinder along the plate's z: its centre at <paramref name="centreZ"/>, <paramref name="length"/> long, no collider of its own.</summary>
+        private static Transform Disc(Transform plate, string name, float centreZ, float length, float diameter, Material material)
+        {
+            var disc = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            disc.name = name;
+            DestroyImmediate(disc.GetComponent<Collider>());   // at once: the plate's box must be the only aim target this frame
+            disc.transform.SetParent(plate, false);
+            disc.transform.localPosition = new Vector3(0, 0, centreZ);
+            disc.transform.localRotation = Quaternion.Euler(90, 0, 0);
+            disc.transform.localScale = new Vector3(diameter, length / 2, diameter);
+            disc.GetComponent<MeshRenderer>().sharedMaterial = material;
+            return disc.transform;
         }
 
         /// <summary>Connect a separated surveyed button and its local travel without creating a plate or changing its placement.</summary>
