@@ -82,7 +82,7 @@ namespace ChooGuard.App.Fps.Emergency
             var bag = new SuspiciousItemHazard("bag-" + ++serial, spot, owner.transform.rotation * Quaternion.Euler(0, 90, 0), owner, art, root, serial % 3 == 0) { Where = world.Describe(spot) };
             bags.Add(bag);
             ownerLeaves[bag] = (Time.time + world.Range(12, 30), magnitude >= .5f);
-            CordonMarker(bag, bag.View, "주인 없는 여행가방");
+            CordonMarker(bag, bag.View, bag.ItemName);
             // 가방은 주인이 떠나야 위험이 된다: 사건의 시작으로 기록은 하되 위험 목록에는 주인이 멀어질 때 올린다.
             Register(bag);
         }
@@ -95,9 +95,9 @@ namespace ChooGuard.App.Fps.Emergency
             if (!InsideBuilding(spot)) return;
             var bag = new SuspiciousItemHazard("bag-" + ++serial, spot, Quaternion.Euler(0, world.Range(0, 360), 0), null, art, root, serial % 3 == 0) { Where = world.Describe(spot) };
             bags.Add(bag);
-            CordonMarker(bag, bag.View, "주인 없는 여행가방");
+            CordonMarker(bag, bag.View, bag.ItemName);
             Register(bag);
-            log.Add("주인 없는 여행가방이 놓여 있음 · " + bag.Where);
+            log.Add(bag.ItemName + (bag.IsParcel ? "가" : "이") + " 놓여 있음 · " + bag.Where);
         }
 
         private void StartDisturbance(Passenger person, float magnitude)
