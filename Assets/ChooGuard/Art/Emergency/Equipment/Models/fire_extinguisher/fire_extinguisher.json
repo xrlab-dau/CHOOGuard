@@ -24,5 +24,21 @@
   "normal": "fire_extinguisher_Normal.png",
   "metallicSmoothness": "fire_extinguisher_MetallicSmoothness.png (R=metallic, A=1-roughness)"
  },
- "post_process": "Blender 4.5.10 decimate + scale to 0.5 m height + origin bottom (prep_meshy.py)"
+ "post_process": "Blender 4.5.10 decimate + scale to 0.5 m height + origin bottom (prep_meshy.py) + clipped hose split into child '호스' with origin at the valve outlet (prep_fx_hose.py)",
+ "parts": {
+  "body": "fire_extinguisher",
+  "hose": "호스",
+  "hose_faces": 771,
+  "hose_origin": "top end of the clipped loop at the valve outlet (body space, Blender z-up m)",
+  "hose_outlet_m": [
+   -0.049,
+   0.0,
+   0.407
+  ],
+  "hose_clip_m": [
+   -0.049,
+   -0.001,
+   0.05
+  ]
+ }
 }

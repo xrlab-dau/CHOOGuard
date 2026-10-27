@@ -7,7 +7,8 @@ namespace ChooGuard.App.Fps.Emergency
     /// <summary>
     /// The red emergency stop button at an escalator landing. Anyone may press it when someone falls (research E1, E3); the
     /// station staff member restarts the belt with the key switch once the steps are clear (research E2, JEV 010). It exists only
-    /// where a survey record observed it (<see cref="EscalatorStopSurvey"/>), at the place the record gives.
+    /// where a survey record observed it (<see cref="EscalatorStopSurvey"/>), on the twin's own escalator face nearest the place the
+    /// record gives (<see cref="Escalator.MountOnTwin"/>).
     /// Holding E presses it in: it goes in at <see cref="CallPointButton.PressSeconds"/>, and letting go earlier presses nothing.
     /// A single E press (simple controls) presses it at once.
     /// </summary>
