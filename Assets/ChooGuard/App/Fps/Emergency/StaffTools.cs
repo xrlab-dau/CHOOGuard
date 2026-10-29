@@ -27,6 +27,55 @@ namespace ChooGuard.App.Fps.Emergency
         public bool Held { get; set; }
         public float SprayedSeconds { get; set; }
 
+        /// <summary>Name of the model child a bare scene marker gets from <see cref="Dress"/>.</summary>
+        public const string ModelChildName = "소화기 (모델)";
+        /// <summary>
+        /// Name of the body model's clipped-on discharge hose (<see cref="EmergencyArt.ExtinguisherModel"/>: the loop from the valve outlet
+        /// down to the base clip, its origin at the outlet). <see cref="StaffHands"/> hides it once the pin is out and shows the hose
+        /// unfolded to the nozzle in the other hand instead.
+        /// </summary>
+        public const string HoseChildName = "호스";
+
+        private Transform clippedHose;
+        private bool clippedHoseLooked;
+
+        /// <summary>The clipped hose of the body model, its position the valve outlet (null when the model has none).</summary>
+        public Transform ClippedHose
+        {
+            get
+            {
+                if (clippedHoseLooked) return clippedHose;
+                clippedHoseLooked = true;
+                foreach (var t in GetComponentsInChildren<Transform>(true)) if (t != transform && t.name == HoseChildName) { clippedHose = t; break; }
+                return clippedHose;
+            }
+        }
+
+        /// <summary>
+        /// Gives a scene extinguisher marker that has no visual of its own the Meshy body (<see cref="EmergencyArt.ExtinguisherModel"/>,
+        /// 3.3 kg ABC powder unit, origin at the bottom centre) and a collider on it, so the marker can be aimed at and picked up.
+        /// A marker that already shows something (a sourced model, an earlier dressing) is left as it is.
+        /// </summary>
+        public static GameObject Dress(GameObject marker, EmergencyArt art)
+        {
+            if (marker == null) return null;
+            var existing = marker.transform.Find(ModelChildName);
+            if (existing != null) return existing.gameObject;
+            if (marker.GetComponentInChildren<Renderer>(true) != null || art == null || art.ExtinguisherModel == null) return null;
+            var body = Object.Instantiate(art.ExtinguisherModel, marker.transform);
+            body.name = ModelChildName;
+            body.transform.localPosition = Vector3.zero;
+            body.transform.localRotation = Quaternion.identity;
+            foreach (var c in body.GetComponentsInChildren<Collider>()) Object.DestroyImmediate(c);   // at once: the marker's own box must be the only aim target this frame
+            if (marker.GetComponent<Collider>() == null)
+            {
+                var bounds = Props.LocalBounds(marker.transform);
+                var box = marker.AddComponent<BoxCollider>();
+                box.center = bounds.center; box.size = bounds.size;
+            }
+            return body;
+        }
+
         public string DisplayName => (Type == ExtinguishAgent.WetChemical ? "K급 소화기 · " : "소화기 · ") + Serial;
         public string InteractionPrompt => Held ? "" : Agent <= .01f ? "빈 소화기" : "소화기 들기";
         public string StateText => Agent <= .01f ? "비어 있음" : PinPulled ? "안전핀 빠짐" : "";
@@ -188,6 +237,12 @@ namespace ChooGuard.App.Fps.Emergency
         // 소화기 쓸기(튜닝 대상): 불 바닥을 가로로 5칸으로 나눠, 최근 1.2초 안에 물줄기가 지난 칸의 비율이 효과를 정한다(한 칸도 안 지나면 0.35배).
         private const int SweepCells = 5;
         private const float SweepWindow = 1.2f, SweepFloor = .35f, SweepMinWidth = .3f;
+        // 안전핀을 뽑으면 본체에 걸려 있던 호스가 앞으로 펼쳐진다(튜닝 대상): 펼쳐지는 시간, 노즐 길이(m), 다른 손에 든 노즐의 시선 좌표계 자리.
+        private const float UnfoldSeconds = .45f, NozzleLength = .11f, HoseWidth = .018f;
+        private const int HosePoints = 14;
+        private static readonly Vector3 NozzleInHand = new Vector3(-.09f, -.21f, .56f);
+        // 모델에 걸린 호스가 없을 때 본체 좌표계에서 밸브 출구로 치는 자리(바닥 중앙 원점, 0.5 m 본체).
+        private static readonly Vector3 OutletFallback = new Vector3(-.05f, .41f, 0);
 
         public Extinguisher Held { get; private set; }
         public HydrantHose Hose { get; private set; }
@@ -202,6 +257,10 @@ namespace ChooGuard.App.Fps.Emergency
         private LineRenderer hoseLine;
         private bool trigger, warnedEmpty;
         private float pinHold;
+        private Transform nozzle;
+        private LineRenderer hoseOut;
+        private float unfold;
+        private static Material rubber;
         private readonly List<Renderer> heldRenderers = new List<Renderer>();
         private float hoseCharge, nextPatternAt, jetCone;
         private ParticleSystem.MinMaxCurve jetSpeed, jetSize, jetLifetime;
@@ -211,8 +270,21 @@ namespace ChooGuard.App.Fps.Emergency
         {
             session = owner;
             view = owner.Player.PlayerCamera.transform;
-            powder = Particles.Powder(view, art.Smoke);
-            powder.transform.localPosition = new Vector3(.16f, -.26f, .75f);
+            // 약제는 다른 손에 든 노즐 끝에서 나온다. 노즐은 안전핀이 빠진 동안만 보인다.
+            nozzle = BuildNozzle(view);
+            powder = Particles.Powder(nozzle, art.Smoke);
+            powder.transform.localPosition = new Vector3(0, 0, NozzleLength);
+            hoseOut = new GameObject("소화기 호스").AddComponent<LineRenderer>();
+            hoseOut.transform.SetParent(view, false);
+            hoseOut.useWorldSpace = false;
+            hoseOut.positionCount = HosePoints;
+            hoseOut.widthMultiplier = HoseWidth;
+            hoseOut.numCapVertices = 2;
+            hoseOut.numCornerVertices = 3;
+            hoseOut.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            hoseOut.sharedMaterial = Rubber();
+            hoseOut.enabled = false;
+            nozzle.gameObject.SetActive(false);
             water = Particles.Water(view, art.Smoke);
             water.transform.localPosition = new Vector3(.12f, -.3f, .8f);
             // 직사의 물줄기 값은 방수 입자가 처음 가진 값이다: 분무는 거기서 퍼뜨린다.
@@ -236,6 +308,7 @@ namespace ChooGuard.App.Fps.Emergency
             // 역사 소화기를 게임용 도구로 바꾼다. 점검 상태(압력·결함)는 그대로 가져온다. 씬 자산은 바뀌지 않는다.
             foreach (var inspectable in Object.FindObjectsByType<Work.FacilityInspectable>(FindObjectsSortMode.None))
             {
+                Extinguisher.Dress(inspectable.gameObject, art);
                 var tool = inspectable.gameObject.AddComponent<Extinguisher>();
                 tool.Serial = inspectable.SerialNumber;
                 tool.Defective = inspectable.PressureOutOfRange || inspectable.MechanicallyDefective;
@@ -245,7 +318,7 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var fixture in Object.FindObjectsByType<Facilities.StationFixture>(FindObjectsSortMode.None))
             {
                 if (fixture.Kind == Facilities.StationFixture.FixtureKind.Hydrant) fixture.gameObject.AddComponent<HydrantHose>().Hands = this;
-                else if (fixture.Kind == Facilities.StationFixture.FixtureKind.Aed) AedCabinet.Build(fixture.gameObject, this);
+                else if (fixture.Kind == Facilities.StationFixture.FixtureKind.Aed) AedCabinet.Build(fixture.gameObject, this, art);
             }
         }
 
@@ -261,6 +334,7 @@ namespace ChooGuard.App.Fps.Emergency
             unit.SetColliders(false);
             foreach (var renderer in unit.GetComponentsInChildren<Renderer>()) renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             unit.transform.SetParent(view, false);
+            unit.transform.localScale = Vector3.one;   // a stored unit may be scaled down to fit its cabinet
             unit.transform.localPosition = new Vector3(.3f, -.46f, .5f);
             unit.transform.localRotation = Quaternion.Euler(8, 162, 0);
             session.Log.Add("AED 를 들었다 · " + session.World.Describe(session.Player.transform.position));
@@ -337,6 +411,7 @@ namespace ChooGuard.App.Fps.Emergency
             Held = tool;
             tool.Held = true;
             sweep.Clear();
+            unfold = 0f;   // 핀이 이미 빠진 소화기는 들자마자 호스가 펼쳐진다
             foreach (var collider in tool.GetComponentsInChildren<Collider>()) collider.enabled = false;
             heldRenderers.Clear();
             tool.GetComponentsInChildren(heldRenderers);
@@ -366,6 +441,7 @@ namespace ChooGuard.App.Fps.Emergency
             sweep.Clear();
             Spraying = false;
             SetEmission(0);
+            FoldHose(tool);
             tool.Held = false;
             tool.transform.SetParent(null, true);
             var ahead = view.position + Vector3.ProjectOnPlane(view.forward, Vector3.up).normalized * .7f;
@@ -545,6 +621,86 @@ namespace ChooGuard.App.Fps.Emergency
                 fire.SuppressWith(ExtinguishAgent.Water, quality, Time.deltaTime);
                 session.Log.Sprayed(fire, quality, Time.deltaTime);
                 if (fire.Extinguished) session.Incidents.OnFireOut(fire, "역무원 옥내소화전");
+            }
+        }
+
+        // ── 호스 펼치기 ──────────────────────────────────────────────────────
+
+        /// <summary>How far the held unit's hose has unfolded from the body to the hand (0..1); 1 once the pin is out and the nozzle points ahead.</summary>
+        public float HoseUnfolded => unfold;
+
+        /// <summary>The nozzle in the other hand while the hose is unfolded (inactive otherwise); the powder leaves its tip.</summary>
+        public Transform Nozzle => nozzle;
+
+        private static Transform BuildNozzle(Transform view)
+        {
+            var root = new GameObject("소화기 노즐").transform;
+            root.SetParent(view, false);
+            // 호스 끝의 가는 관과 그 앞의 넓은 분사구. +z 가 앞이다.
+            NozzlePart(root, "호스 끝", NozzleLength * .3f, NozzleLength * .3f, .024f);
+            NozzlePart(root, "분사구", NozzleLength * .8f, NozzleLength * .2f, .042f);
+            return root;
+        }
+
+        private static void NozzlePart(Transform root, string name, float centreZ, float halfLength, float diameter)
+        {
+            var part = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            part.name = name;
+            Object.Destroy(part.GetComponent<Collider>());
+            part.transform.SetParent(root, false);
+            part.transform.localRotation = Quaternion.Euler(90, 0, 0);
+            part.transform.localPosition = new Vector3(0, 0, centreZ);
+            part.transform.localScale = new Vector3(diameter, halfLength, diameter);
+            var renderer = part.GetComponent<MeshRenderer>();
+            renderer.sharedMaterial = Rubber();
+            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        }
+
+        private static Material Rubber()
+        {
+            if (rubber != null) return rubber;
+            rubber = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = "소화기 호스 (검은 고무)" };
+            rubber.SetColor("_BaseColor", new Color(.07f, .07f, .07f));
+            rubber.SetFloat("_Smoothness", .45f);
+            return rubber;
+        }
+
+        /// <summary>Puts the hose back on the body's clip (the unit is let go) and hides the nozzle.</summary>
+        private void FoldHose(Extinguisher tool)
+        {
+            unfold = 0f;
+            var clipped = tool != null ? tool.ClippedHose : null;
+            if (clipped != null) clipped.gameObject.SetActive(true);
+            if (nozzle != null) nozzle.gameObject.SetActive(false);
+            if (hoseOut != null) hoseOut.enabled = false;
+        }
+
+        // 본체는 시선에 매달려 있으므로 시선 좌표계에서 계산한다: 카메라가 돌아도 호스가 한 프레임 늦게 따라오지 않는다.
+        private void LateUpdate()
+        {
+            if (nozzle == null) return;
+            var tool = Held;
+            bool pinOut = tool != null && tool.PinPulled;
+            unfold = Mathf.MoveTowards(unfold, pinOut ? 1f : 0f, Time.deltaTime / UnfoldSeconds);
+            bool show = tool != null && unfold > 0f;
+            var clipped = tool != null ? tool.ClippedHose : null;
+            if (clipped != null && clipped.gameObject.activeSelf == show) clipped.gameObject.SetActive(!show);
+            if (nozzle.gameObject.activeSelf != show) nozzle.gameObject.SetActive(show);
+            hoseOut.enabled = show;
+            if (!show) return;
+            // 밸브 출구에서 시작해 본체를 따라 내려가던 호스가 다른 손의 노즐까지 늘어지고, 노즐은 본체 아래쪽을 향하던 데서 시선 앞으로 돌아선다.
+            var outlet = view.InverseTransformPoint(clipped != null ? clipped.position : tool.transform.TransformPoint(OutletFallback));
+            var downBody = view.InverseTransformDirection(-tool.transform.up);
+            float e = Mathf.SmoothStep(0f, 1f, unfold);
+            nozzle.localPosition = Vector3.Lerp(outlet, NozzleInHand, e);
+            nozzle.localRotation = Quaternion.Slerp(Quaternion.LookRotation(downBody, Vector3.forward), Quaternion.identity, e);
+            var rear = nozzle.localPosition;
+            var c1 = outlet + downBody * .10f;
+            var c2 = rear - nozzle.localRotation * Vector3.forward * .12f + Vector3.down * (.05f * e);
+            for (int i = 0; i < HosePoints; i++)
+            {
+                float t = i / (float)(HosePoints - 1), u = 1f - t;
+                hoseOut.SetPosition(i, u * u * u * outlet + 3f * u * u * t * c1 + 3f * u * t * t * c2 + t * t * t * rear);
             }
         }
 
