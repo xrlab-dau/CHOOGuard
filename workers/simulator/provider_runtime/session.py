@@ -101,7 +101,8 @@ def start(private, port):
             except LocalFailure:
                 pass
             time.sleep(.1)
-        if not identity:
+        else:
+            # Only the matching-port readiness break can establish ownership.
             raise LocalFailure('local_helper_start_timeout')
         write_json(private / OWNER_FILE, {'schema': 1, 'pid': child.pid, 'process_identity': identity,
                                           'sidecar_path': str(SIDECAR), 'sidecar_sha256': digest(SIDECAR.read_bytes()),

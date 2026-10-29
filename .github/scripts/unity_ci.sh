@@ -54,7 +54,9 @@ activate)
     reason="the seat has no free activation. Return one at id.unity.com > My Account > My Seats (the maintainer's Mac holds one, CI needs the other)"
   elif grep -qiE 'invalid serial|serial .*(not valid|invalid)' "$private/activate.log"; then
     reason="UNITY_SERIAL was rejected. Use the Student-plan licence key from Unity's email"
-  elif grep -qiE 'credentials|password|log ?in failed|unauthori' "$private/activate.log"; then
+  # Unity echoes -password in every activation log. A missing token or unauthorized
+  # entitlement alone also does not establish that the supplied login was rejected.
+  elif grep -qiE '(invalid|incorrect|wrong)[[:space:]]+(user(name)?|e-?mail|password|credentials)|(log[ -]?in|sign[ -]?in|authentication)[[:space:]]+(failed|failure)|failed[[:space:]]+to[[:space:]]+(log[ -]?in|sign[ -]?in|authenticate)' "$private/activate.log"; then
     reason="UNITY_EMAIL / UNITY_PASSWORD were rejected"
   fi
   grep -iE 'licens|entitlement|activation' "$private/activate.log" | grep -viE 'password|serial' | tail -20 || true

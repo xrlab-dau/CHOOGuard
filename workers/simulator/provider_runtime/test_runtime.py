@@ -332,6 +332,53 @@ class RuntimeTests(unittest.TestCase):
 
 
 class LifecycleTests(unittest.TestCase):
+    def test_start_timeout_never_claims_a_helper_on_the_wrong_port(self):
+        for later_failure in (False, True):
+            with self.subTest(later_failure=later_failure), tempfile.TemporaryDirectory(prefix='chooguard-start-synthetic-') as directory:
+                private = Path(directory) / 'private'
+                child = mock.Mock(pid=12345)
+                child.poll.return_value = None
+                client = mock.Mock(port=18955, endpoint='http://127.0.0.1:18955')
+                client.status.side_effect = [{}, c.LocalFailure('unavailable')] if later_failure else [{}]
+                clock = [0, 0, 1, 9] if later_failure else [0, 0, 9]
+                with mock.patch.object(session, 'status', side_effect=c.LocalFailure('unavailable')), \
+                     mock.patch.object(session, 'owned_process', return_value=None), \
+                     mock.patch.object(session.subprocess, 'Popen', return_value=child), \
+                     mock.patch.object(session.LocalClient, 'load', return_value=client), \
+                     mock.patch.object(session, 'process_identity', return_value='synthetic child'), \
+                     mock.patch.object(session, 'public_status', return_value={}), \
+                     mock.patch.object(session.time, 'monotonic', side_effect=clock), \
+                     mock.patch.object(session.time, 'sleep'):
+                    with self.assertRaises(c.LocalFailure) as error:
+                        session.start(private, 18954)
+                self.assertEqual('local_helper_start_timeout', error.exception.code)
+                self.assertFalse((private / session.OWNER_FILE).exists())
+                child.send_signal.assert_called_once_with(session.signal.SIGTERM)
+                child.wait.assert_called_once_with(timeout=4)
+                child.kill.assert_not_called()
+
+    def test_start_waits_for_requested_port_before_recording_ownership(self):
+        with tempfile.TemporaryDirectory(prefix='chooguard-start-synthetic-') as directory:
+            private = Path(directory) / 'private'
+            child = mock.Mock(pid=12345)
+            child.poll.return_value = None
+            wrong = mock.Mock(port=18955, endpoint='http://127.0.0.1:18955')
+            ready = mock.Mock(port=18954, endpoint='http://127.0.0.1:18954')
+            with mock.patch.object(session, 'status', side_effect=c.LocalFailure('unavailable')), \
+                 mock.patch.object(session, 'owned_process', return_value=None), \
+                 mock.patch.object(session.subprocess, 'Popen', return_value=child), \
+                 mock.patch.object(session.LocalClient, 'load', side_effect=[wrong, ready]), \
+                 mock.patch.object(session, 'process_identity', return_value='synthetic child'), \
+                 mock.patch.object(session, 'public_status', return_value={}), \
+                 mock.patch.object(session.time, 'monotonic', side_effect=[0, 0, 1]), \
+                 mock.patch.object(session.time, 'sleep'):
+                result = session.start(private, 18954)
+            self.assertTrue(result['started_new_process'])
+            self.assertEqual('http://127.0.0.1:18954/', result['local_ui'])
+            self.assertEqual(12345, c.strict_json((private / session.OWNER_FILE).read_bytes())['pid'])
+            child.send_signal.assert_not_called()
+            child.wait.assert_not_called()
+
     def test_actual_scoped_child_start_reopen_stop_retains_mock_registration_and_cleans_descriptor(self):
         with tempfile.TemporaryDirectory(prefix='chooguard-lifecycle-synthetic-') as directory:
             private = Path(directory) / 'private'
