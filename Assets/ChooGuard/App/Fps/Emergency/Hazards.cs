@@ -439,11 +439,12 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>A sealed parcel instead of the black suitcase (every third bag; same handling, different words).</summary>
         public bool IsParcel { get; }
         private string Noun => IsParcel ? "소포" : "여행가방";
+        public string ItemName => "주인 없는 " + Noun;
         public override string Visible => (IsParcel ? "주인 없이 놓인 테이프로 봉한 소포" : "주인 없이 놓인 검은 여행가방") + (Time.time - UnattendedAt > 60 ? " (1분 넘게 그대로)" : "");
 
         public override Agency Command => Agency.Police;
         public override Agency? CitizenCalls => Agency.Police;
-        public override string ToldByPassenger => Where + "에 주인 없는 " + (IsParcel ? "상자" : "가방") + "이 한참 놓여 있어요.";
+        public override string ToldByPassenger => Where + "에 주인 없는 " + (IsParcel ? "상자가" : "가방이") + " 한참 놓여 있어요.";
         public override string ReportLine => "역무실, " + Where + "에 주인 없는 " + Noun + " 있습니다.";
         public override string OfficeReply => "역무실 수신. 112와 철도경찰에 신고하겠습니다. " + (IsParcel ? "소포는" : "가방은") + " 건드리지 말고 주변 접근을 통제하십시오.";
         public override PaRequest Announcement => new PaRequest("안내방송(주변 대피) 요청", PaLine.SuspiciousItem,
@@ -451,7 +452,7 @@ namespace ChooGuard.App.Fps.Emergency
         public override string State => Cordoned ? "통제 중" : "확인 필요";
         public override string BoardState => Cordoned ? "통제선 안" : "그대로 놓여 있음";
         public override bool UnderControl => Cordoned;
-        public override string Handover => (Touched ? "승객이 " + Noun + "을 만졌음" : Noun + "은 아무도 만지지 않았음") + (Cordoned ? " · 통제선 설치" : " · 통제선 없음");
+        public override string Handover => (Touched ? "승객이 " + Noun + (IsParcel ? "를" : "을") + " 만졌음" : Noun + (IsParcel ? "는" : "은") + " 아무도 만지지 않았음") + (Cordoned ? " · 통제선 설치" : " · 통제선 없음");
         public override bool Cordonable => true;
 
         public SuspiciousItemHazard(string id, Vector3 position, Quaternion rotation, Passenger owner, EmergencyArt art, Transform parent, bool parcel = false)
@@ -466,7 +467,7 @@ namespace ChooGuard.App.Fps.Emergency
             View = IsParcel ? Props.Parcel(parent, position, rotation, art) : Props.Suitcase(parent, position, rotation, art);
             var marker = View.AddComponent<HazardMarker>();
             marker.Hazard = this;
-            marker.Name = "주인 없는 " + Noun;
+            marker.Name = ItemName;
         }
 
         public void MarkUnattended()
