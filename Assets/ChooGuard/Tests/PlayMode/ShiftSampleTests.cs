@@ -459,7 +459,7 @@ namespace ChooGuard.Tests.PlayMode
         /// 기본은 꺼짐이다. 수집 실행에서 프레임을 쓰면 디스크와 시간을 먹고, 무엇보다
         /// 측정 대상(근무)에 없던 부하를 더한다.
         /// </remarks>
-        private sealed class Recorder
+        internal sealed class Recorder
         {
             private const int Width = 854, Height = 480;
             private readonly string folder;
