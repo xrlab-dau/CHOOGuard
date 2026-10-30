@@ -294,8 +294,11 @@ namespace ChooGuard.Editor
             }
 
             // ③ 역무원이 **그 건만** 인지한다. 실제 플레이에서는 보거나 듣거나 신고를 받아야 하는 자리를,
-            //    프로토타입에서는 하네스가 대신한다.
-            foreach (var hazard in fresh) know.Invoke(director, new object[] { hazard, "practice" });
+            //    프로토타입에서는 하네스가 대신한다. 손 떼기(CG_PRACTICE_HANDS_OFF=1)면 인지·무전을 역무원
+            //    (사람 또는 시험의 오토파일럿)에게 남긴다 — 제품의 E·Q 경로로 직접 확인하고 보고하게.
+            bool handsOff = Environment.GetEnvironmentVariable("CG_PRACTICE_HANDS_OFF") == "1";
+            record["handsOff"] = handsOff;
+            if (!handsOff) foreach (var hazard in fresh) know.Invoke(director, new object[] { hazard, "practice" });
             yield return null;
 
             // ④ **대응 지시를 받아 적는다.** 이것이 연습의 정답이고, 이미 제품 코드에 있다.
@@ -326,14 +329,15 @@ namespace ChooGuard.Editor
             }
             record["radioOpen"] = new JArray(open.Select(o => o.Label));
             var sent = new JArray();
-            foreach (var hazard in fresh)
-            {
-                if (!hazard.Reportable) continue;
-                int at = open.FindIndex(o => o.Label != null && o.Label.EndsWith(hazard.ReportOption, StringComparison.Ordinal));
-                if (at < 0) continue;
-                open[at].Send?.Invoke();
-                sent.Add(open[at].Label);
-            }
+            if (!handsOff)
+                foreach (var hazard in fresh)
+                {
+                    if (!hazard.Reportable) continue;
+                    int at = open.FindIndex(o => o.Label != null && o.Label.EndsWith(hazard.ReportOption, StringComparison.Ordinal));
+                    if (at < 0) continue;
+                    open[at].Send?.Invoke();
+                    sent.Add(open[at].Label);
+                }
             record["radioSent"] = sent;
 
             // ⑥ 역할 경계: 이 연습은 수리를 시도하지 않는다. 지시문이 그렇게 말한다 —
@@ -362,6 +366,14 @@ namespace ChooGuard.Editor
                 }
             }
 
+            // ⑧ 손 떼기면 역무원의 대응이 끝날 때까지 기록을 미룬다: 구급대가 처치했거나, 역무원 쪽이 끝났다고
+            //    알리거나(CG_PRACTICE_PLAYER_DONE=1, 같은 프로세스의 시험이 둔다), 상한(CG_PRACTICE_RECORD_AFTER)이 지나면.
+            if (handsOff && casualty != null)
+            {
+                float cap = session.ShiftSeconds + Seconds("CG_PRACTICE_RECORD_AFTER", 600f);
+                while (session.ShiftSeconds < cap && casualty.Active && !casualty.Treated
+                       && Environment.GetEnvironmentVariable("CG_PRACTICE_PLAYER_DONE") != "1") yield return null;
+            }
             yield return null;
             if (casualty != null)
             {
@@ -372,8 +384,13 @@ namespace ChooGuard.Editor
                 // 악화형에서 악화가 안 일어난 이유를 가리기 위해: 구급대가 먼저 처치했으면 올리지 않는 것이 맞다.
                 record["treated"] = casualty.Treated;
             }
-            record["timeline"] = Timeline(session, timelineFrom);
-            record["result"] = sent.Count > 0 ? "reported" : "known_not_reported";
+            var timeline = Timeline(session, timelineFrom);
+            record["timeline"] = timeline;
+            // 손 떼기에서는 역무원이 무전했는지를 근무 타임라인("역무실에 … 보고")으로 안다 — 하네스가 보낸 것이 아니다.
+            bool reported = sent.Count > 0
+                            || (handsOff && timeline.Any(entry => ((string)entry["text"] ?? "").StartsWith("역무실에 ", StringComparison.Ordinal)
+                                                                   && ((string)entry["text"]).Contains("보고")));
+            record["result"] = reported ? "reported" : "known_not_reported";
             Save(record);
         }
 

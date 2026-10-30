@@ -67,3 +67,9 @@
 - [ ] 수용 기준 (a)~(e) 점검표 작성 — (e) 기존 8/8 은 이 환경에서 아직 안 돌림
 - [ ] progress/findings 정리 → ECC 리뷰(csharp-reviewer·code-reviewer) → 커밋 (브랜치 `feat/cardiac-arrest-drill`, `47502ed32` 위)
 - [ ] 사용자: 구 `C:\Users\박효원\Choo` 삭제 (아직 존재, 이번 세션 cwd 가 그 폴더라 종료 후 실행)
+
+## Phase 4 — 오토파일럿 완주 촬영 (2026-10-31 사용자 지시: "너가 직접 플레이를 진행해서 사건발생 -> 대처 -> 사건완료 까지 완성시키고 영상으로 찍어")
+설계: 하네스가 자리·인지·보고를 대신하던 것을 끄고(`CG_PRACTICE_HANDS_OFF=1`), 시험 쪽 오토파일럿(`CG_PRACTICE_AUTOPILOT=1`)이 제품의 입력 경로(`FirstPersonResponder.StepInput`/`TryInteract`)로 역무원을 움직인다. 텔레포트는 걷기 실패 시 최후 수단으로만 쓰고 로그에 남긴다.
+- [ ] PracticeDrill: 손 떼기 모드 — ③ 인지·⑤ 무전 생략, 저장은 처치/근무 종료(`CG_PRACTICE_PLAYER_DONE`)/상한까지 기다린 뒤
+- [ ] 시험: Autopilot(대기 → 환자에게 걷기 → E 확인 → 무전 보고 → AED 보관함까지 걷기 → E 꺼내기 → 환자에게 복귀 → E 곁에 두기 → 구급대 대기 → 구급대장에게 인계) + 단정(aedAt·handover "AED 곁에 둠")
+- [ ] 컴파일 → stage8 촬영 실행(take3) → mp4 → 사용자 전달
