@@ -26,5 +26,9 @@
   "normal": "aed_open_Normal.png",
   "metallicSmoothness": "aed_open_MetallicSmoothness.png (R=metallic, A=1-roughness)"
  },
- "post_process": "Blender 4.5 decimate + scale (x extent -> 0.311 m) + origin bottom (prep_meshy2.py)"
+ "post_process": "Blender 4.5 decimate + scale (x extent -> 0.311 m) + origin bottom (prep_meshy2.py) + split into body/lid (prep_split_lid.py, rim z 0.079, hinge y 0.130, lid 2398 tris)",
+ "parts": {
+  "body": "aed_open",
+  "lid": "뚜껑 (origin on the hinge line: back edge, rim height; swung shut by AedUnit while the device is off)"
+ }
 }

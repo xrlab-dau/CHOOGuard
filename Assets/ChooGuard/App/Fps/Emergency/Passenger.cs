@@ -1051,9 +1051,26 @@ namespace ChooGuard.App.Fps.Emergency
                 if (down && !Body.Scripted) Body.SetDown(true);
                 else { Body.SetCrouch(true); Body.SetCough(true); }
             }
-            else if (down) Body.SetSlump(true);
+            else if (down && !LieOnFloor()) Body.SetSlump(true);
             if (Current != Activity.InTrain) Current = Activity.Injured;
             Crowd.OnInjured(this, cause);
+        }
+
+        /// <summary>
+        /// A person who collapses on a station seat is laid on the floor in front of it, on their back — where a rescuer does
+        /// compressions and puts the AED pads (2026-10-31: the slump-in-seat pose kept the casualty sitting through the whole
+        /// drill, take6~take9). Train seats keep the slump. Returns false when there was no seat to leave.
+        /// </summary>
+        public bool LieOnFloor()
+        {
+            if (Body == null || Body.Seat == PersonBody.SeatPhase.None || TrainSeat != null || Current == Activity.InTrain || Body.Scripted) return false;
+            var floor = Body.SeatFront;
+            ReleasePlace();
+            if (!Body.ReturnToNavMesh(floor)) return false;
+            Body.ClearPoses();
+            Body.Stop();
+            Body.SetDown(true);
+            return true;
         }
 
         /// <summary>Gets up and walks off to <paramref name="destination"/>, lingers there, then leaves the station.</summary>
@@ -1109,6 +1126,20 @@ namespace ChooGuard.App.Fps.Emergency
             if (Hurt) return;
             Body.ClearPoses();
             Begin(Activity.Stand, World.Range(4, 8));
+        }
+
+        /// <summary>A helper crouched at a casualty gets up and steps back to <paramref name="distance"/> m from <paramref name="from"/> (the paramedics are here), then watches.</summary>
+        public void StandBack(Vector3 from, float distance)
+        {
+            if (!helping || Hurt || BeingEscorted) return;
+            helping = false;
+            Body.SetCrouch(false);
+            var away = transform.position - from;
+            away.y = 0;
+            if (away.sqrMagnitude < 1e-3f) away = -transform.forward;
+            var spot = Crowd.SpotAt(from + away.normalized * distance, this, away);
+            Current = Activity.MoveAway;
+            Body.GoTo(spot, walkSpeed);
         }
 
         private void AfterWatching()

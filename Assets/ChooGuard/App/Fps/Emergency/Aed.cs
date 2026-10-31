@@ -147,6 +147,11 @@ namespace ChooGuard.App.Fps.Emergency
         private readonly System.Collections.Generic.List<Renderer> lamp = new System.Collections.Generic.List<Renderer>();
         private MaterialPropertyBlock lampBlock;
         private Transform lidPivot;
+        /// <summary>The open model's own lid part ("뚜껑", origin on its hinge), swung shut while off; null when the model is one piece.</summary>
+        private Transform lidPart;
+        private Quaternion lidPartOpen;
+        private Vector3 lidHingeLocal;
+        private float lidClosedDegrees;
         private GameObject closedVisual, openVisual;
         /// <summary>The case collider follows the visible case: the closed box while off, the open case's body (lid excluded) while on, so the pads on the body stand proud of it.</summary>
         private Bounds closedBox, openBox;
@@ -224,6 +229,7 @@ namespace ChooGuard.App.Fps.Emergency
                 unit.closedBox = top;
                 if (OpenCaseBody(open, out var body)) top = body;
                 unit.openBox = top;
+                unit.FindLidPart(open, top);
                 open.SetActive(false);
                 unit.openVisual = open;
             }
@@ -268,6 +274,51 @@ namespace ChooGuard.App.Fps.Emergency
                 if (!any) { body = new Bounds(q, Vector3.zero); any = true; } else body.Encapsulate(q);
             }
             return any;
+        }
+
+        /// <summary>
+        /// With a lid part in the open model (the Meshy case split in Blender: body + "뚜껑" hinged on the back edge) the one model
+        /// serves closed and open: the lid is swung down over the body's rim while the device is off, and the closed Meshy case
+        /// is not shown at all. The closing angle is read from the meshes: the turn about the hinge (the case's x axis) that
+        /// lays the lid's centre flat over the body.
+        /// </summary>
+        private void FindLidPart(GameObject open, Bounds body)
+        {
+            Transform lid = null;
+            foreach (var t in open.GetComponentsInChildren<Transform>(true)) if (t.name == LidName) { lid = t; break; }
+            if (lid == null) return;
+            var toUnit = transform.worldToLocalMatrix;
+            var points = new System.Collections.Generic.List<Vector3>();
+            foreach (var filter in lid.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (filter.sharedMesh == null || !filter.sharedMesh.isReadable) continue;
+                var toWorld = filter.transform.localToWorldMatrix;
+                foreach (var v in filter.sharedMesh.vertices) points.Add(toUnit.MultiplyPoint3x4(toWorld.MultiplyPoint3x4(v)));
+            }
+            if (points.Count == 0) return;
+            var centre = Vector3.zero;
+            foreach (var p in points) centre += p;
+            centre /= points.Count;
+            var pivot = toUnit.MultiplyPoint3x4(lid.position);
+            var lidDir = centre - pivot;
+            var flat = new Vector3(body.center.x, pivot.y, body.center.z) - pivot;   // across the rim, horizontal
+            if (lidDir.sqrMagnitude < 1e-6f || flat.sqrMagnitude < 1e-6f) return;
+            lidClosedDegrees = Vector3.SignedAngle(lidDir, flat, Vector3.right);
+            lidPart = lid;
+            lidPartOpen = lid.localRotation;
+            lidHingeLocal = lid.parent != null ? lid.parent.InverseTransformDirection(transform.right) : Vector3.right;
+            float thickness = Mathf.Min(Mathf.Abs(Vector3.Dot(lidDir, Vector3.up)), .06f);
+            closedBox = new Bounds(body.center + Vector3.up * thickness * .5f, body.size + Vector3.up * thickness);
+            if (closedVisual != null) closedVisual.SetActive(false);
+            open.SetActive(true);
+            SwingLid(0f);
+        }
+
+        /// <summary>Puts the lid part at <paramref name="fraction"/> of the way open (0 = shut over the rim, 1 = as modelled).</summary>
+        private void SwingLid(float fraction)
+        {
+            if (lidPart == null) return;
+            lidPart.localRotation = Quaternion.AngleAxis(lidClosedDegrees * (1f - Mathf.Clamp01(fraction)), lidHingeLocal) * lidPartOpen;
         }
 
         /// <summary>The shock button on the top: the Meshy button model (origin at its base) when given, else a small round lamp. Its colour is the device's state.</summary>
@@ -553,6 +604,9 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (lampBlock == null) return;
             lampBlock.SetColor("_BaseColor", colour);
+            // 모델 버튼(URP Lit, _EMISSION 켜짐)은 상태 색으로 빛난다; 절차 램프(Unlit)는 바탕색만 쓴다. 꺼짐(어두운 회색)은 빛나지 않는다.
+            float glow = Mathf.Max(colour.r, colour.g, colour.b) > .3f ? 2.5f : 0f;
+            lampBlock.SetColor("_EmissionColor", colour * glow);
             foreach (var renderer in lamp) if (renderer != null) renderer.SetPropertyBlock(lampBlock);
         }
 
@@ -562,7 +616,7 @@ namespace ChooGuard.App.Fps.Emergency
             // 열린 본체 모델이 있으면 판 뚜껑 대신 닫힌 본체 ↔ 열린 본체를 바꿔 보인다.
             bool on = Procedure.Current != AedProcedure.Stage.Off;
             float lidTarget = on ? LidOpenDegrees : 0f;
-            if (openVisual != null && openVisual.activeSelf != on)
+            if (openVisual != null && lidPart == null && openVisual.activeSelf != on)
             {
                 openVisual.SetActive(on);
                 if (closedVisual != null) closedVisual.SetActive(!on);
@@ -578,6 +632,13 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 lidAngle = Mathf.MoveTowards(lidAngle, lidTarget, LidOpenDegrees / LidSeconds * Time.deltaTime);
                 if (lidPivot != null) lidPivot.localRotation = Quaternion.Euler(-lidAngle, 0, 0);
+                SwingLid(lidAngle / LidOpenDegrees);
+                if (lidPart != null)
+                {
+                    var box = GetComponent<BoxCollider>();
+                    var shape = on ? openBox : closedBox;
+                    if (box != null) { box.center = shape.center; box.size = shape.size; }
+                }
                 bool show = LidOpen;
                 foreach (var pad in pads) if (pad != null && pad.Where == AedPad.Place.Lid && pad.gameObject.activeSelf != show) pad.gameObject.SetActive(show);
             }

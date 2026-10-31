@@ -96,3 +96,11 @@ Meshy 웹앱(Free, CC BY 4.0, 사용자 로그인) Text to 3D(Meshy 6 Lite) + AI
 - [x] Unity: MeshyAedParts.Build(프리팹·머티리얼·EmergencyArt 배정) + 단위 시험 15/15 → take6(패드 집기 E 19회 실패: 본체 충돌체가 패드를 가림, 대체 2건) → 켜지면 충돌체를 열린 본체 몸통으로 바꿈 → take7 통과, 대체 호출 0건
 - [x] 애니메이션 이상 정리 `animation-notes.md`(A1~A6 환자·주변, B1~B7 AED·손, 우선순위)
 - [x] 직접 플레이 준비 `play/play-cardiac-drill.cmd`(환경변수 + 에디터 실행) + `play/play-guide.md`(실행 순서·조작표·대응 순서)
+
+## Phase 7 — 애니메이션 이상 수정 (2026-10-31 사용자 지시: "일단 커밋 후 애니메이션 이상 고쳐")
+커밋 5a5ebba65 뒤 작업. 결과는 `animation-notes.md` C 표.
+- [x] A1 앉은 채 쓰러진 승객을 바닥에 눕힘(`Passenger.LieOnFloor`) + 바닥 쓰러짐 자세를 반듯이 누운 자세로(`BuildSupineClip`, 군중 애니메이터 재빌드; 재생성 노이즈 48개 파일은 되돌림)
+- [x] A3·A5 구급대 도착 시 돕는 승객 물러남(`StandBackFrom`), A4 무릎 꿇기 보강(`KneelNow`)
+- [x] B1 열린 본체 몸통/뚜껑 분리 + 힌지 회전, B2 손 패드 위치, B4 버튼 발광
+- [x] take8(눕기 실패: 곡선 누락) → take9(눕기 실패: 원인이 앉은 채 늘어짐) → **take10 통과, 대체 호출 0건**, 환자 반듯이 누움·구급대 양옆 무릎
+- [ ] 커밋(사용자 확인 대기)

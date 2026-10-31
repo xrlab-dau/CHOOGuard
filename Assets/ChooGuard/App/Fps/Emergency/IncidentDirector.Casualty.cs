@@ -301,7 +301,7 @@ namespace ChooGuard.App.Fps.Emergency
                 body.ClearPoses();
                 if (down) body.SetDown(true); else { body.SetCrouch(true); body.SetCough(true); }
             }
-            else if (down != wasDown && body.Seat != PersonBody.SeatPhase.None) body.SetSlump(down);
+            else if (down != wasDown && body.Seat != PersonBody.SeatPhase.None && !(down && casualty.Person.LieOnFloor())) body.SetSlump(down);
             log.Add((step > 0 ? "환자 상태 악화 · " : "환자 상태 조금 나아짐 · ") + casualty.Where + " — " + condition.States[level]);
         }
 

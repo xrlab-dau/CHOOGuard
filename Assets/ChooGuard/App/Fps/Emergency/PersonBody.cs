@@ -385,6 +385,19 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void Wave() { if (Animator != null) Animator.SetTrigger(WaveId); }
 
+        /// <summary>
+        /// Goes straight into the kneel when Treat is on but the walk never settled (the crowd solver kept the agent's
+        /// speed above the transition's threshold while helpers pressed round the casualty — take7).
+        /// </summary>
+        public void KneelNow()
+        {
+            if (Animator == null || !Animator.GetBool(TreatId)) return;
+            int state = Animator.GetCurrentAnimatorStateInfo(0).shortNameHash;
+            if (state == KneelDownState || state == TreatState || Animator.IsInTransition(0)) return;
+            Animator.SetFloat(SpeedId, 0);
+            Animator.CrossFadeInFixedTime(KneelDownState, .25f);
+        }
+
         public void ClearPoses()
         {
             SetCrouch(false); SetPhone(false); SetCough(false); SetFilm(false); SetIdle(0); SetDown(false); SetSlump(false); SetTreat(false);

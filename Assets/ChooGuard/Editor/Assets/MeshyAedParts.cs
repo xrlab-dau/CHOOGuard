@@ -25,6 +25,13 @@ namespace ChooGuard.Editor.Assets
             ("aed_shock_button", nameof(EmergencyArt.AedShockButtonModel)),
         };
 
+        /// <summary>Batch: the crowd animator (supine pose) and the AED parts in one editor run.</summary>
+        public static void BuildAfterCrowd()
+        {
+            CrowdAssetBuilder.Build();
+            Build();
+        }
+
         [MenuItem("ChooGuard/Assets/Build Meshy AED Parts")]
         public static void Build()
         {
@@ -72,6 +79,13 @@ namespace ChooGuard.Editor.Assets
             material.SetFloat("_Smoothness", 1f);
             material.EnableKeyword("_NORMALMAP");
             material.EnableKeyword("_METALLICSPECGLOSSMAP");
+            if (name == "aed_shock_button")
+            {
+                // 상태 색(초록·주황·빨강)을 AedUnit 이 _EmissionColor 로 넣는다: 키워드는 머티리얼에 있어야 한다.
+                material.EnableKeyword("_EMISSION");
+                material.SetColor("_EmissionColor", Color.black);
+                material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
+            }
             EditorUtility.SetDirty(material);
 
             var model = AssetDatabase.LoadAssetAtPath<GameObject>(fbx) ?? throw new FileNotFoundException(fbx);

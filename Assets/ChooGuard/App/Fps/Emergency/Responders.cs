@@ -558,8 +558,12 @@ namespace ChooGuard.App.Fps.Emergency
                 body.SetTreat(true);
                 treatUntil = Time.time + 8f;
                 SetDownBag();
+                // 곁에 쪼그린 승객들은 물러난다: 그 자리에 무릎을 꿇어야 한다.
+                EmergencySession.Current?.Crowd?.StandBackFrom(patient.transform.position);
             }
             body.Face(chest);
+            // 걸음이 가라앉지 않아(승객들에 밀려) 무릎 꿇기로 안 넘어가면 1.5초 뒤 바로 꿇는다.
+            if (Time.time > treatUntil - 6.5f && !body.Kneeling) body.KneelNow();
             if (Time.time > treatUntil)
             {
                 director.OnTreated(patient);

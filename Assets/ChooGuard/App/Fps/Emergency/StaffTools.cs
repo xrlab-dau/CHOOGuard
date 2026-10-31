@@ -323,8 +323,9 @@ namespace ChooGuard.App.Fps.Emergency
             Pad = pad;
             pad.transform.SetParent(view, false);
             pad.transform.localScale = Vector3.one;
-            pad.transform.localPosition = new Vector3(.26f, -.28f, .5f);
-            pad.transform.localRotation = Quaternion.Euler(-70, 12, 0);
+            // 화면 오른쪽 아래, 손에 쥔 높이: (.26,-.28,.5) 는 세로 FOV 밖이라 보이지 않았다(take7).
+            pad.transform.localPosition = new Vector3(.17f, -.16f, .40f);
+            pad.transform.localRotation = Quaternion.Euler(-55, 18, 0);
             foreach (var renderer in pad.GetComponentsInChildren<Renderer>()) renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
 
