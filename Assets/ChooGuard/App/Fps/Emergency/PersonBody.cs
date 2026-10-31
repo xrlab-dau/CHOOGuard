@@ -350,6 +350,27 @@ namespace ChooGuard.App.Fps.Emergency
             if (flat.sqrMagnitude > .01f) FaceYaw(Quaternion.LookRotation(flat), degreesPerSecond);
         }
 
+        /// <summary>
+        /// Turns the body so that the pose itself faces <paramref name="point"/>: the facing is read from the hip bones (the
+        /// line between the upper legs), so a clip whose pose stands at an angle to the root (the kneeling take, 2026-10-31)
+        /// still ends up square to the point. Without humanoid bones it is <see cref="Face"/>.
+        /// </summary>
+        public void FacePose(Vector3 point, float degreesPerSecond = 360)
+        {
+            var left = Animator != null && Animator.isHuman ? Animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg) : null;
+            var right = Animator != null && Animator.isHuman ? Animator.GetBoneTransform(HumanBodyBones.RightUpperLeg) : null;
+            if (left == null || right == null) { Face(point, degreesPerSecond); return; }
+            var across = right.position - left.position;
+            across.y = 0;
+            var forward = Vector3.Cross(across, Vector3.up);
+            var wanted = point - (left.position + right.position) * .5f;
+            wanted.y = 0;
+            if (forward.sqrMagnitude < 1e-4f || wanted.sqrMagnitude < 1e-4f) { Face(point, degreesPerSecond); return; }
+            float error = Vector3.SignedAngle(forward, wanted, Vector3.up);
+            float step = Mathf.Clamp(error, -degreesPerSecond * Time.deltaTime, degreesPerSecond * Time.deltaTime);
+            transform.rotation = Quaternion.AngleAxis(step, Vector3.up) * transform.rotation;
+        }
+
         public void FaceYaw(Quaternion rotation, float degreesPerSecond = 360) =>
             transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, degreesPerSecond * Time.deltaTime);
 
@@ -384,6 +405,19 @@ namespace ChooGuard.App.Fps.Emergency
         }
 
         public void Wave() { if (Animator != null) Animator.SetTrigger(WaveId); }
+
+        /// <summary>
+        /// Goes straight into the kneel when Treat is on but the walk never settled (the crowd solver kept the agent's
+        /// speed above the transition's threshold while helpers pressed round the casualty — take7).
+        /// </summary>
+        public void KneelNow()
+        {
+            if (Animator == null || !Animator.GetBool(TreatId)) return;
+            int state = Animator.GetCurrentAnimatorStateInfo(0).shortNameHash;
+            if (state == KneelDownState || state == TreatState || Animator.IsInTransition(0)) return;
+            Animator.SetFloat(SpeedId, 0);
+            Animator.CrossFadeInFixedTime(KneelDownState, .25f);
+        }
 
         public void ClearPoses()
         {

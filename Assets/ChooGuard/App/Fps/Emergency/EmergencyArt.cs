@@ -39,6 +39,10 @@ namespace ChooGuard.App.Fps.Emergency
         public GameObject ParcelModel;
         public GameObject AedCabinetModel;
         public GameObject AedUnitModel;
+        [Header("Meshy AI AED 조작 부품(CC BY 4.0): 뚜껑 열린 본체(켜진 동안 닫힌 본체 대신), 패드 한 장(두 번 씀), 충격 버튼. 비어 있으면 절차 형상(판 뚜껑·흰 패드·원형 램프)")]
+        public GameObject AedOpenModel;
+        public GameObject AedPadModel;
+        public GameObject AedShockButtonModel;
         [Header("출동 장비(Objaverse·Sketchfab CC BY, ThirdParty/Models/Objaverse)")]
         public GameObject NozzleModel;
         public GameObject CotModel;

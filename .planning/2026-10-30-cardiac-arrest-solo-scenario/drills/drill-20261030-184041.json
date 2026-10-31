@@ -1,0 +1,78 @@
+{
+  "at": "2026-10-30T18:39:40.1463943Z",
+  "family": "심정지",
+  "shiftSeconds": 30.1,
+  "zone": "southgate",
+  "indoorOnly": true,
+  "candidates": {
+    "family": 1,
+    "outdoor": 0,
+    "unknownPosition": 0
+  },
+  "kind": "chest_pain",
+  "key": "chest_pain_2",
+  "description": "passenger #2 (woman), standing and waiting (2F south boarding gate) at 2F south boarding gate, 2층 남측 게이트(타는 곳), clutches their chest in sudden pain.",
+  "levels": [
+    "chest tightness, sits down to rest",
+    "severe chest pain and cold sweat, sits on the floor",
+    "chest pain, then faints",
+    "collapses unconscious but breathing",
+    "collapses and is not breathing normally (cardiac arrest)"
+  ],
+  "magnitude": 1.0,
+  "onset": "immediate",
+  "guidance": [
+    {
+      "label": "응급 환자",
+      "where": "2층 남측 게이트(타는 곳)",
+      "visible": "승객이 의식을 잃고 숨을 제대로 쉬지 않음",
+      "reportable": true,
+      "reportOption": "2층 남측 게이트(타는 곳) 응급 환자 보고",
+      "reportLine": "역무실, 2층 남측 게이트(타는 곳)에 가슴 통증을 호소하는 승객 있습니다. 승객이 의식을 잃고 숨을 제대로 쉬지 않음.",
+      "officeReply": "역무실 수신. 119 구급 요청하겠습니다. 환자 곁을 지키고 주변을 비워 주십시오. 가까운 자동심장충격기를 가져와 환자 곁에 두십시오."
+    }
+  ],
+  "radioOpen": [
+    "역무실 · 2층 남측 게이트(타는 곳) 응급 환자 보고"
+  ],
+  "radioSent": [
+    "역무실 · 2층 남측 게이트(타는 곳) 응급 환자 보고"
+  ],
+  "roleBoundary": {
+    "repairAttempted": false
+  },
+  "startLevel": 4,
+  "worsenedAt": null,
+  "level": 4,
+  "notBreathingNormally": true,
+  "aedAt": null,
+  "handover": "2층 남측 게이트(타는 곳) 응급 환자 처치 전",
+  "timeline": [
+    {
+      "t": 30.1,
+      "clock": "14:00:30",
+      "text": "승객 1명 부상 (의식을 잃고 숨을 제대로 쉬지 않음) · 2층 남측 게이트(타는 곳)"
+    },
+    {
+      "t": 30.1,
+      "clock": "14:00:30",
+      "text": "응급 환자 · 2층 남측 게이트(타는 곳) — 의식을 잃고 숨을 제대로 쉬지 않음"
+    },
+    {
+      "t": 30.3,
+      "clock": "14:00:30",
+      "text": "역무원 인지 · 응급 환자 · 2층 남측 게이트(타는 곳) (practice)"
+    },
+    {
+      "t": 30.4,
+      "clock": "14:00:30",
+      "text": "역무실에 응급 환자 보고 · 2층 남측 게이트(타는 곳)"
+    },
+    {
+      "t": 30.4,
+      "clock": "14:00:30",
+      "text": "구급대 출동 요청 (역무실 신고)"
+    }
+  ],
+  "result": "reported"
+}

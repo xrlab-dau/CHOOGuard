@@ -208,6 +208,62 @@ namespace ChooGuard.App.Fps.Emergency
 
         // ── 자리 예약 ──────────────────────────────────────────────────────
 
+        // ── 대합실 의자 자리와 지금 서 있는 의자 ─────────────────────────────────
+
+        /// <summary>Name part of the hall bench banks placed on 2026-10-19 (R31); each bank root carries its parts as children.</summary>
+        public const string HallBenchName = "PUBLIC_WAITING_BENCH_WB";
+
+        private bool benchesIndexed;
+        private readonly HashSet<StationPoints.Point> seatsWithoutBench = new HashSet<StationPoints.Point>();
+
+        /// <summary>
+        /// A seat point is only handed out when a bench actually stands under its hips (2026-10-31: the catalog's seat points were
+        /// measured on the bench layout before R31, and 538 of 792 lie where no bench is now, so people sat in the air). The
+        /// catalog and its bindings are not changed; the benches are read from the scene as they are, each point's anchor is
+        /// tested against the bank's own footprint (its parts' bounds in the bank's frame, 5 cm slack). Without any bench in
+        /// the scene every seat stays usable.
+        /// </summary>
+        public bool SeatHasBench(StationPoints.Point seat)
+        {
+            IndexBenches();
+            return !seatsWithoutBench.Contains(seat);
+        }
+
+        private void IndexBenches()
+        {
+            if (benchesIndexed) return;
+            benchesIndexed = true;
+            var banks = new Dictionary<Transform, (Vector3 min, Vector3 max)>();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                Transform bank = null;
+                for (var t = renderer.transform; t != null; t = t.parent) if (t.name.Contains(HallBenchName)) { bank = t; break; }
+                if (bank == null) continue;
+                var b = renderer.bounds;
+                var box = banks.TryGetValue(bank, out var seen) ? seen : (Vector3.positiveInfinity, Vector3.negativeInfinity);
+                for (int i = 0; i < 8; i++)
+                {
+                    var corner = b.center + Vector3.Scale(b.extents, new Vector3((i & 1) == 0 ? -1 : 1, (i & 2) == 0 ? -1 : 1, (i & 4) == 0 ? -1 : 1));
+                    var local = bank.InverseTransformPoint(corner);
+                    box = (Vector3.Min(box.Item1, local), Vector3.Max(box.Item2, local));
+                }
+                banks[bank] = box;
+            }
+            if (banks.Count == 0) { Debug.Log("CG_SEATS 대합실 의자(" + HallBenchName + ")가 씬에 없어 자료의 의자 자리를 모두 씁니다"); return; }
+            int kept = 0;
+            foreach (var seat in Points.Of(PointKind.Seat))
+            {
+                bool over = false;
+                foreach (var pair in banks)
+                {
+                    var local = pair.Key.InverseTransformPoint(seat.Anchor);
+                    if (local.x >= pair.Value.min.x - .05f && local.x <= pair.Value.max.x + .05f && local.z >= pair.Value.min.z - .05f && local.z <= pair.Value.max.z + .05f) { over = true; break; }
+                }
+                if (over) kept++; else seatsWithoutBench.Add(seat);
+            }
+            Debug.Log("CG_SEATS 대합실 의자 " + banks.Count + "개 · 자료의 의자 자리 " + Points.Of(PointKind.Seat).Count + "곳 중 의자 위 " + kept + "곳만 씀 (의자 없는 자리 " + seatsWithoutBench.Count + ")");
+        }
+
         /// <summary>A free bench side near <paramref name="near"/> (random among the closest few), reserved for the caller.</summary>
         public StationPoints.Point ReserveSeat(Vector3 near, float maxDistance = 1e4f) => ReserveSlot(PointKind.Seat, near, maxDistance, 18);
 
@@ -221,6 +277,7 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var seat in Points.Of(kind))
             {
                 if (takenSlots.Contains(seat.Slot) || IsClosed(seat.Anchor, 1.5f)) continue;
+                if (kind == PointKind.Seat && !SeatHasBench(seat)) continue;
                 if (filter != null && !filter(seat)) continue;
                 float distance = Vector3.Distance(seat.Position, near);
                 if (distance > maxDistance) continue;

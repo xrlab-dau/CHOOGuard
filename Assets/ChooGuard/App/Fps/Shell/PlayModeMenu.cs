@@ -29,7 +29,7 @@ namespace ChooGuard.App.Fps.Shell
             title.text="어떻게 플레이할까요?";title.fontStyle=FontStyles.Bold;
             var lead=FpsUiFactory.Text(view.panel,font,"안내",new Vector2(0,1),new Vector2(0,-74),new Vector2(1120,42),19,TextAlignmentOptions.TopLeft);
             lead.text="조작을 익히는 실습부터 시작하거나, 변화하는 비상상황에 바로 대응해보세요.";lead.color=FpsUiFactory.TextDim;
-            view.TutorialButton=Card(view.panel,font,"튜토리얼",new Vector2(0,1),"차근차근 익히기","장비 조작과 대응 순서를\n안내와 실습으로 익힙니다.","승무원 열차점검 · 13단계\nAI 연결 없이 플레이","튜토리얼 고르기  →",FpsUiFactory.Staff,()=>tutorial?.Invoke());
+            view.TutorialButton=Card(view.panel,font,"튜토리얼",new Vector2(0,1),"차근차근 익히기","장비 조작과 대응 순서를\n안내와 실습으로 익힙니다.","승무원 열차점검 · 심정지 환자 대응\nAI 연결 없이 플레이","튜토리얼 고르기  →",FpsUiFactory.Staff,()=>tutorial?.Invoke());
             view.EmergencyButton=Card(view.panel,font,"랜덤 비상상황 대응",new Vector2(1,1),"현장에서 대응하기","승객과 주변의 이상을 살피고\n상황 변화에 맞춰 대응합니다.","AI 초기 조건 · NPC 행동\n부산역 순회와 비상 대응","비상상황 플레이 준비  →",FpsUiFactory.Accent,()=>emergency?.Invoke());
             view.connection=FpsUiFactory.Text(view.panel,font,"AI 연결 상태",new Vector2(0,1),new Vector2(0,-524),new Vector2(1120,38),16,TextAlignmentOptions.TopLeft);
             view.connection.color=FpsUiFactory.TextDim;view.connection.richText=false;
