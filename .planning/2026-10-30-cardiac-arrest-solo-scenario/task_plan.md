@@ -112,4 +112,7 @@ Meshy 웹앱(Free, CC BY 4.0, 사용자 로그인) Text to 3D(Meshy 6 Lite) + AI
 - [x] 튜토리얼 고르기에 "심정지 환자 대응"(TutorialCatalog, SceneName FpsStation): `PracticeShift`(provider 유예 seam·루트 끄기·연습용 역무원, 런타임) + `IncidentDirector.Practice`(30초 뒤 2층 맞이방의 chest_pain 후보 하나를 Execute, JEV 구성 중지) + TitleScreen 분기, PlayModeMenu 문구
 - [x] 환자 E 뒤 길 안내가 AED 보관함으로(`TryAedErrand` → `AedWaypoint`), AED 를 들면 다시 환자로
 - [x] 시험 22/22(AedProcedure·MeshyProps·Issue281CrewTutorial)
-- [ ] 지도 2층 사라짐: StationMap2F.png·StationEmergency 씬 참조는 정상 — 사용자 화면 확인 필요
+- [x] 지도 2층: 사용자 답은 "역 안 2층 바닥". 씬 파일에는 바닥 객체(MAIN2F_*_FLOOR*)가 있고 촬영 드릴에서도 바닥이 그려진다. 에디터가 크래시 복구 씬(Assets/_Recovery/0.unity, 55 MB 부분 씬)을 열었던 세션에서 본 것으로 추정 — 복구 폴더는 C:\Choo\_parked 로 치우고 D3D11 로 다시 열었다. 다시 보이면 스크린샷 필요
+- [x] 공중에 앉기 2차(플레이 보고): 진짜 원인은 애니메이터가 아니라 **자료의 의자 자리**. station-points.json 의 의자 자리 792곳은 R31 이전 의자 배치 기준이라 538곳이 지금 의자(R31 PUBLIC_WAITING_BENCH 28개) 밖에 있다. 카탈로그(provider 경로의 해시 검증 대상)는 손대지 않고, `StationWorld.SeatHasBench`: 의자 뿌리의 부품 경계(의자 좌표계) 위에 엉덩이 자리가 있는 자리만 ReserveSeat 에서 내준다
+- [x] 구급대원 처치 방향(플레이 보고): 꿇은 자세가 뿌리와 어긋나 Face 로는 옆을 봄 → `PersonBody.FacePose`(허벅지 뼈로 자세의 정면을 읽어 환자 가슴을 보게 돌림), 처치 중 적용
+- [x] 시험 19/19(AedProcedure·MeshyProps·EmergencyRules) → take14 통과, 대체 0건: CG_SEATS 의자 28개 · 자리 792곳 중 의자 위 128곳만 사용, 승객이 의자 위에 앉고 구급대원이 환자 가슴을 보고 무릎

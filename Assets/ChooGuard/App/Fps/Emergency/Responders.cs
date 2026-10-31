@@ -561,7 +561,8 @@ namespace ChooGuard.App.Fps.Emergency
                 // 곁에 쪼그린 승객들은 물러난다: 그 자리에 무릎을 꿇어야 한다.
                 EmergencySession.Current?.Crowd?.StandBackFrom(patient.transform.position);
             }
-            body.Face(chest);
+            // 무릎을 꿇은 자세가 환자 가슴을 정면으로 보게(자세 자체의 방향으로; 꿇는 클립은 몸통이 뿌리와 어긋나 있어 Face 로는 옆을 봤다).
+            if (body.Kneeling) body.FacePose(chest, 240); else body.Face(chest);
             // 걸음이 가라앉지 않아(승객들에 밀려) 무릎 꿇기로 안 넘어가면 1.5초 뒤 바로 꿇는다.
             if (Time.time > treatUntil - 6.5f && !body.Kneeling) body.KneelNow();
             if (Time.time > treatUntil)
