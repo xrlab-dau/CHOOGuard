@@ -229,9 +229,9 @@ namespace ChooGuard.App.Fps.Emergency
                 unit.closedBox = top;
                 if (OpenCaseBody(open, out var body)) top = body;
                 unit.openBox = top;
-                unit.FindLidPart(open, top);
-                open.SetActive(false);
+                open.SetActive(false);   // one-piece open model: shown only while on (swapped with the closed case in Update)
                 unit.openVisual = open;
+                unit.FindLidPart(open, top);   // split model: shown always, lid swung shut (hides the closed case instead)
             }
             // 버튼은 오른쪽 끝(패드 두 장 옆), 패드는 왼쪽부터 나란히: 31 cm 폭에 12 cm 패드 두 장과 4 cm 버튼이 겹치지 않게 들어간다.
             unit.AddLamp(new Vector3(top.max.x - .03f, top.max.y + .002f, top.center.z), art != null ? art.AedShockButtonModel : null);
@@ -312,6 +312,8 @@ namespace ChooGuard.App.Fps.Emergency
             if (closedVisual != null) closedVisual.SetActive(false);
             open.SetActive(true);
             SwingLid(0f);
+            var box = GetComponent<BoxCollider>();
+            if (box != null) { box.center = closedBox.center; box.size = closedBox.size; }
         }
 
         /// <summary>Puts the lid part at <paramref name="fraction"/> of the way open (0 = shut over the rim, 1 = as modelled).</summary>

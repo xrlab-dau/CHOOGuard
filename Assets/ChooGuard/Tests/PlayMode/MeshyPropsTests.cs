@@ -131,6 +131,76 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(cabinet.Unit.PadSize, Is.EqualTo(AedUnit.DefaultPadSize));
         }
 
+        /// <summary>
+        /// A stand-in split open case: a flat body with a thin lid standing up on its back edge (+z), the lid's pivot on the
+        /// hinge line, as prep_split_lid.py exports the Meshy case. The lid stands on +z so the unit must turn it to -z.
+        /// </summary>
+        private GameObject SplitOpenCase()
+        {
+            var open = new GameObject("open-split");
+            open.transform.position = new Vector3(0, -100, 0);
+            var body = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            body.name = "body";
+            body.transform.SetParent(open.transform, false);
+            body.transform.localPosition = new Vector3(0, .05f, 0);
+            body.transform.localScale = new Vector3(.31f, .10f, .26f);
+            var lid = new GameObject(AedUnit.LidName);
+            lid.transform.SetParent(open.transform, false);
+            lid.transform.localPosition = new Vector3(0, .10f, .13f);   // hinge: back edge at rim height
+            var plate = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            plate.transform.SetParent(lid.transform, false);
+            plate.transform.localPosition = new Vector3(0, .12f, 0);   // standing up from the hinge
+            plate.transform.localScale = new Vector3(.31f, .24f, .02f);
+            made.Add(open);
+            return open;
+        }
+
+        [UnityTest]
+        public IEnumerator ASplitOpenCaseIsShownAtOnceWithItsLidShutAndSwingsItOpenWhenSwitchedOn()
+        {
+            art.AedOpenModel = SplitOpenCase();
+            art.AedPadModel = Model("pad", new Vector3(.10f, .01f, .12f));
+            var marker = new GameObject("aed fixture split");
+            marker.transform.SetParent(root.transform, false);
+            marker.AddComponent<BoxCollider>();
+            var cabinet = AedCabinet.Build(marker, null, art);
+            var unit = cabinet.Unit;
+            var closed = unit.transform.Find("본체 (모델)");
+            var open = unit.transform.Find("본체 열림 (모델)");
+            Assert.That(open, Is.Not.Null);
+            Assert.That(open.gameObject.activeSelf, Is.True, "the split case is the one case shown, lid shut — take10 play: only pads and button were visible");
+            Assert.That(closed.gameObject.activeSelf, Is.False, "the closed Meshy case is not used beside a split case");
+            Assert.That(Mathf.Abs(Mathf.DeltaAngle(open.localEulerAngles.y, 180f)), Is.LessThan(1f), "a lid standing on +z is turned to the back (-z)");
+            Transform lid = null;
+            foreach (var t in open.GetComponentsInChildren<Transform>(true)) if (t.name == AedUnit.LidName) lid = t;
+            Assert.That(lid, Is.Not.Null);
+            var shut = lid.localRotation;
+            Assert.That(Quaternion.Angle(shut, Quaternion.identity), Is.GreaterThan(60f).And.LessThan(120f), "shut, the lid is turned about 90° from its modelled (open) pose");
+            var plateShut = lid.GetChild(0).position - unit.transform.position;
+            Assert.That(plateShut.y, Is.LessThan(.16f), "shut, the lid plate lies over the rim, not standing up");
+
+            // 켜면 뚜껑이 열리고(모델 자세로 돌아감), 패드는 보이고, 충돌체는 몸통 크기가 된다.
+            var box = unit.GetComponent<BoxCollider>();
+            float shutHeight = box.size.y;
+            unit.Held = false;
+            cabinet.Release();
+            unit.transform.SetParent(null, true);
+            unit.transform.position = Vector3.zero;
+            unit.Landed(null, null);
+            Assert.That(unit.Procedure.OpenLid(), Is.True);
+            float waited = 0;
+            while (waited < 1.5f) { waited += Time.deltaTime; yield return null; }
+            Assert.That(Quaternion.Angle(lid.localRotation, Quaternion.identity), Is.LessThan(1f), "open, the lid is back in its modelled pose");
+            Assert.That(open.gameObject.activeSelf, Is.True);
+            Assert.That(unit.LidOpen, Is.True);
+            Assert.That(unit.Pads[0].gameObject.activeSelf, Is.True, "the pads show once the lid is open");
+            Assert.That(box.size.y, Is.LessThan(shutHeight), "on, the collider is the body only, so the pads on it stand proud");
+            unit.Procedure.PowerOff();
+            waited = 0;
+            while (waited < 1.5f) { waited += Time.deltaTime; yield return null; }
+            Assert.That(Quaternion.Angle(lid.localRotation, shut), Is.LessThan(1f), "off again, the lid is shut");
+        }
+
         [UnityTest]
         public IEnumerator TheOpenedAedShowsTheOpenModelAndUsesThePadAndButtonModels()
         {
