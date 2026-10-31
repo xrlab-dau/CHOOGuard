@@ -12,7 +12,20 @@
 ### 1-b. 에디터 메뉴에서 (환경변수로 세부 설정)
 
 1. 같은 프로젝트에 배치 Unity(시험·촬영)가 돌고 있지 않은지 확인한다. 에디터는 한 번에 하나만 뜬다.
-2. `play-cardiac-drill.cmd` 를 더블클릭한다. 연습 설정(심정지 즉시형, 2층 대합실·본관, 손 떼기)은 환경변수로 들어가므로 Hub 로 열면 적용되지 않는다.
+2. `play-cardiac-drill.cmd` 를 더블클릭한다. 연습 설정(심정지 즉시형, 2층 대합실·본관, 손 떼기)은 환경변수로 들어가므로 Hub 로 열면 적용되지 않는다. 이 파일은 저장소에 두지 않는다(`.planning` 은 md·json·cs 만 추적, CI 정책). 없으면 아래 내용을 CP949(ANSI)로 저장해 만든다:
+
+```bat
+@echo off
+set CG_PRACTICE_FAMILY=심정지
+set CG_PRACTICE_ONSET=immediate
+set CG_PRACTICE_HANDS_OFF=1
+set CG_PRACTICE_ZONES=hall2f,main2f
+set CG_PRACTICE_INDOOR=1
+set CG_PRACTICE_RECORD_AFTER=900
+set TYPESAFE_API_KEY=off
+if exist "C:\Choo\CHOOGuard\Temp\UnityLockfile" del /q "C:\Choo\CHOOGuard\Temp\UnityLockfile"
+start "" "C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe" -force-d3d11 -projectPath "C:\Choo\CHOOGuard"
+```
 3. 에디터가 뜨면 메뉴 **ChooGuard > Practice > 심정지 환자 한 건**. 타이틀 씬이 열리고 재생이 시작된다.
 4. 타이틀에서 **플레이 시작 → 랜덤 비상상황 대응**. 근무가 준비되면 30초쯤 뒤 2층 대합실 어딘가에서 승객 한 명이 쓰러진다(이 건만 일어난다).
 5. 손 떼기 모드라 역무원이 직접 알아내야 한다: 주변 승객이 다가와 알려 주거나(약 20초 뒤), 직접 보고 찾는다.
