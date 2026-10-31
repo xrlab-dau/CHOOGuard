@@ -287,7 +287,26 @@ namespace ChooGuard.App.Fps.Emergency
             if (Aed == null) return null;
             var toward = session.Player.transform.position - person.transform.position;
             toward.y = 0;
-            var spot = person.transform.position + (toward.sqrMagnitude > 1e-4f ? toward.normalized : Vector3.forward) * .6f;
+            if (toward.sqrMagnitude < 1e-4f) toward = Vector3.forward;
+            toward.Normalize();
+            // 누운 사람(엉덩이→머리 축이 수평)이면 어깨 옆, 역무원 쪽: 다리 위에 놓이던 것(take11)과 구급대가 무릎 꿇는 가슴 옆자리(±.62 m)를 피한다.
+            // 앉거나 웅크린 사람이면 종전대로 역무원 쪽 .6 m.
+            var animator = person.Body != null ? person.Body.Animator : null;
+            var hips = animator != null ? animator.GetBoneTransform(HumanBodyBones.Hips) : null;
+            var head = animator != null ? animator.GetBoneTransform(HumanBodyBones.Head) : null;
+            var chest = animator != null ? animator.GetBoneTransform(HumanBodyBones.Chest) : null;
+            Vector3 spot;
+            var axis = hips != null && head != null ? head.position - hips.position : Vector3.zero;
+            if (axis.sqrMagnitude > .09f && Mathf.Abs(axis.normalized.y) < .5f)
+            {
+                axis.y = 0;
+                axis.Normalize();
+                var side = Vector3.Cross(Vector3.up, axis);
+                if (Vector3.Dot(side, toward) < 0) side = -side;
+                var centre = chest != null ? chest.position : person.transform.position;
+                spot = centre + axis * .35f + side * .55f;
+            }
+            else spot = person.transform.position + toward * .6f;
             return SetDownAed(spot) ?? "AED 를 내려놓았습니다";
         }
 
