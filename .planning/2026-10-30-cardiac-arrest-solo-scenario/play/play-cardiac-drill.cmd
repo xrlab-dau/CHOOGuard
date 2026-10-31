@@ -13,4 +13,4 @@ set CG_PRACTICE_RECORD_AFTER=900
 set TYPESAFE_API_KEY=off
 
 if exist "C:\Choo\CHOOGuard\Temp\UnityLockfile" del /q "C:\Choo\CHOOGuard\Temp\UnityLockfile"
-start "" "C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe" -projectPath "C:\Choo\CHOOGuard"
+start "" "C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe" -force-d3d11 -projectPath "C:\Choo\CHOOGuard"

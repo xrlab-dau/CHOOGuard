@@ -106,3 +106,10 @@ Meshy 웹앱(Free, CC BY 4.0, 사용자 로그인) Text to 3D(Meshy 6 Lite) + AI
 - [x] 커밋 6bec3434e
 - [x] 바닥 AED 본체 안 보임(플레이 보고): Build 순서 버그 수정 + 분리 뚜껑 대역 시험 → 14/14
 - [x] take11(본체 보임, 그러나 AED 가 환자 다리 위) → B7 놓는 자리를 어깨 옆으로 → take12 통과, 대체 0건
+
+## Phase 8 — 튜토리얼 연결·길 안내·좌석 버그 (2026-10-31 사용자 지시)
+- [x] 공중에 앉은 사람: 원인은 Phase 7 의 군중 애니메이터 재빌드(빌더 코드가 저장소의 컨트롤러와 달라 앉기 상태가 바뀜). 컨트롤러·오버라이드·Slumped 클립을 5a5ebba65 로 되돌리고 누운 자세 클립(Person_Lying, GUID 동일)만 유지
+- [x] 튜토리얼 고르기에 "심정지 환자 대응"(TutorialCatalog, SceneName FpsStation): `PracticeShift`(provider 유예 seam·루트 끄기·연습용 역무원, 런타임) + `IncidentDirector.Practice`(30초 뒤 2층 맞이방의 chest_pain 후보 하나를 Execute, JEV 구성 중지) + TitleScreen 분기, PlayModeMenu 문구
+- [x] 환자 E 뒤 길 안내가 AED 보관함으로(`TryAedErrand` → `AedWaypoint`), AED 를 들면 다시 환자로
+- [x] 시험 22/22(AedProcedure·MeshyProps·Issue281CrewTutorial)
+- [ ] 지도 2층 사라짐: StationMap2F.png·StationEmergency 씬 참조는 정상 — 사용자 화면 확인 필요

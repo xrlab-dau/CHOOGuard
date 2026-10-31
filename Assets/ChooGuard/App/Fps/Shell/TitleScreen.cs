@@ -88,7 +88,15 @@ namespace ChooGuard.App.Fps.Shell
             jevPanel = JevKeyPanel.Create(root, KoreanFont, () => { jevPanel.Hide(); menu.gameObject.SetActive(true); StartButton.Select(); });
             jevPanel.Changed += CheckJev;
             tutorials = TutorialMenu.Create(root, KoreanFont, Resources.Load<ChooGuard.App.Fps.Tutorial.TutorialCatalog>(ChooGuard.App.Fps.Tutorial.TutorialCatalog.ResourceName),
-                category => SceneFlow.StartTutorial(category.SceneName, KoreanFont, Background),
+                category =>
+                {
+                    // 역 씬에서 하는 연습(심정지 환자 대응)은 튜토리얼 씬이 아니라 보존 근무로 든다: 한 건만 일어나고 JEV 키가 필요 없다.
+                    var family = ChooGuard.App.Fps.Emergency.PracticeShift.FamilyOf(category.Id);
+                    if (family == null) { SceneFlow.StartTutorial(category.SceneName, KoreanFont, Background); return; }
+                    if (SceneFlow.Loading || !ChooGuard.App.Fps.Emergency.PracticeShift.Arm(family)) return;
+                    tutorials.Hide();
+                    SceneFlow.StartShift(KoreanFont, Background);
+                },
                 () => { tutorials.Hide(); modes.Show(); });
             providerMenu=gameObject.AddComponent<TitleProviderMenuHost>();providerMenu.Initialize(KoreanFont);
             modes=PlayModeMenu.Create(root,KoreanFont,

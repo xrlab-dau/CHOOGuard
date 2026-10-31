@@ -108,8 +108,8 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void Compose()
         {
-            // 비상상황은 JEV 만 만든다. JEV 가 없으면 후보를 만들지도 않는다.
-            if (jev == null || !jev.Available || session.Player.IsPaused) return;
+            // 비상상황은 JEV 만 만든다. JEV 가 없으면 후보를 만들지도 않는다. 연습 근무는 그 한 건 말고 아무것도 짓지 않는다.
+            if (Practicing || jev == null || !jev.Available || session.Player.IsPaused) return;
             float now = session.ShiftSeconds;
             if (now >= nextBeat) beatWanted = true;
             if (now >= nextWatch)

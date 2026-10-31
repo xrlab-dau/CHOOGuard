@@ -369,6 +369,63 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>The active casualty (collapse, illness or fall) of <paramref name="person"/>, or null.</summary>
         public CollapseHazard CollapseOf(Passenger person) => casualties.Find(c => c.Active && c.Person == person);
 
+        // ── AED 심부름 길 안내 ───────────────────────────────────────────────
+
+        /// <summary>
+        /// A place the route guide points at that is not an incident: the AED cabinet the staff member should fetch from.
+        /// Never registered, never known, never reported; only <see cref="IncidentDirector.TryGetKnownGuideTarget"/> hands it out.
+        /// </summary>
+        private sealed class AedWaypoint : Hazard
+        {
+            public AedWaypoint() { Id = "aed-waypoint"; Kind = HazardKind.Collapse; }
+            public void Place(Vector3 at, string where) { Position = at; Where = where; }
+            public override string Label => "AED 보관함";
+            public override float NoticeRadius => 0;
+            public override float DangerRadius => 0;
+            public override float ApproachRadius => 3f;
+            public override string Visible => "자동심장충격기 보관함";
+            public override bool Reportable => false;
+            public override Agency Command => Agency.Medical;
+            public override string ReportLine => "";
+            public override string OfficeReply => "";
+            public override PaRequest Announcement => default;
+            public override string State => "가져올 것";
+            public override bool Blocks(Vector3 position) => false;
+        }
+
+        private AedWaypoint aedWaypoint;
+        private AedCabinet[] aedCabinets;
+
+        /// <summary>
+        /// The staff member has checked a collapsed person who is unconscious (level 3+), no AED stands beside them yet and none is
+        /// in hand: the route guide should lead to the nearest cabinet that still holds its AED. With the AED in hand the ordinary
+        /// guide (to the known casualty) applies again. False when there is no such errand.
+        /// </summary>
+        private bool TryAedErrand(out Hazard errand)
+        {
+            errand = null;
+            var hands = session != null ? session.Hands : null;
+            if (hands == null || hands.Aed != null) return false;
+            CollapseHazard need = null;
+            foreach (var casualty in casualties)
+                if (casualty.Active && !casualty.Treated && casualty.AedAt < 0 && casualty.Level >= 3 && known.Contains(casualty)) { need = casualty; break; }
+            if (need == null) return false;
+            if (aedCabinets == null || aedCabinets.Length == 0 || System.Array.Exists(aedCabinets, c => c == null)) aedCabinets = UnityEngine.Object.FindObjectsByType<AedCabinet>(FindObjectsSortMode.None);
+            AedCabinet best = null;
+            float bestDistance = float.PositiveInfinity;
+            foreach (var cabinet in aedCabinets)
+            {
+                if (cabinet == null || !cabinet.Stored) continue;
+                float d = Vector3.Distance(cabinet.transform.position, session.Player.transform.position);
+                if (d < bestDistance) { bestDistance = d; best = cabinet; }
+            }
+            if (best == null) return false;
+            aedWaypoint ??= new AedWaypoint();
+            aedWaypoint.Place(best.transform.position, world.Describe(best.transform.position));
+            errand = aedWaypoint;
+            return true;
+        }
+
         /// <summary>
         /// The staff member set the AED down at <paramref name="at"/>. Beside a collapsed person (2.5 m, same floor) it waits for
         /// the paramedics: the first delivery goes to the shift log with the time since the collapse (JEV 011 carry_and_hand_over,
