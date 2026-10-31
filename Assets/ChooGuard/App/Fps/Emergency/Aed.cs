@@ -11,15 +11,58 @@ namespace ChooGuard.App.Fps.Emergency
         public StaffHands Hands;
         public AedUnit Unit { get; private set; }
         public bool Stored { get; private set; }
+        /// <summary>Where the stored AED sits (cabinet local) and how much it is scaled down to fit behind the glass; 1 = as modelled.</summary>
+        public Vector3 StoredLocalPosition { get; private set; } = new Vector3(0, -.1f, -.01f);
+        public Quaternion StoredLocalRotation { get; private set; } = Quaternion.identity;
+        public float StoredScale { get; private set; } = 1f;
 
-        /// <summary>Makes the cabinet on a fixture marker (collider box facing +z) and puts its AED inside, behind the glass.</summary>
-        public static AedCabinet Build(GameObject marker, StaffHands hands)
+        /// <summary>
+        /// Makes the cabinet on a fixture marker (collider box facing +z) and puts its AED inside, behind the glass. With
+        /// <see cref="EmergencyArt.AedCabinetModel"/> the Meshy cabinet model (31 x 42 x 20 cm, origin at its centre, door facing +z)
+        /// is placed on the marker; without it the marker's own visual stays as it was.
+        /// </summary>
+        public static AedCabinet Build(GameObject marker, StaffHands hands, EmergencyArt art = null)
         {
             var cabinet = marker.AddComponent<AedCabinet>();
             cabinet.Hands = hands;
-            cabinet.Unit = AedUnit.Build(hands, cabinet);
+            if (art != null && art.AedCabinetModel != null && marker.transform.Find("AED 보관함 (모델)") == null)   // a saved fixture may already carry the model
+            {
+                var visual = Object.Instantiate(art.AedCabinetModel, marker.transform);
+                visual.name = "AED 보관함 (모델)";
+                visual.transform.localPosition = Vector3.zero;
+                visual.transform.localRotation = Quaternion.identity;
+                foreach (var collider in visual.GetComponentsInChildren<Collider>()) Object.Destroy(collider);   // the marker's collider is the aim target
+            }
+            cabinet.Unit = AedUnit.Build(hands, cabinet, art);
+            cabinet.FitStoredUnit();
             cabinet.Store();
             return cabinet;
+        }
+
+        /// <summary>
+        /// With both Meshy models the AED case (31 × 24 × 27 cm) is deeper than the cabinet (20 cm) and would sit over the heart
+        /// on the glass. The stored unit lies with its top (handle side) towards the glass (90° about x), scaled down uniformly
+        /// to the lower part of the cabinet's inner volume (80 % of width, 40 % of height, 60 % of depth), so the heart on the
+        /// door stays visible. Rotation and scale are restored the moment it is taken in hand.
+        /// </summary>
+        private void FitStoredUnit()
+        {
+            var cabinetVisual = transform.Find("AED 보관함 (모델)");
+            var unitVisual = Unit != null ? Unit.transform.Find("본체 (모델)") : null;
+            if (cabinetVisual == null || unitVisual == null) return;
+            var cabinet = Props.LocalBounds(transform);          // cabinet model, marker space (the unit is not a child yet)
+            var unitBounds = Props.LocalBounds(Unit.transform);   // unit model, unit space (origin at the bottom centre)
+            if (cabinet.size.x <= 0 || unitBounds.size.x <= 0) return;
+            var upright = Quaternion.Euler(90, 0, 0);   // local +y (top of the case) -> +z (towards the glass)
+            var rotated = new Bounds(upright * unitBounds.center, Vector3.zero);
+            for (int i = 0; i < 8; i++)
+                rotated.Encapsulate(upright * (unitBounds.center + Vector3.Scale(unitBounds.extents, new Vector3((i & 1) == 0 ? -1 : 1, (i & 2) == 0 ? -1 : 1, (i & 4) == 0 ? -1 : 1))));
+            var inner = Vector3.Scale(cabinet.size, new Vector3(.80f, .40f, .60f));
+            float scale = Mathf.Min(1f, inner.x / rotated.size.x, inner.y / rotated.size.y, inner.z / rotated.size.z);
+            var target = new Vector3(cabinet.center.x, cabinet.min.y + cabinet.size.y * .07f + rotated.extents.y * scale, cabinet.center.z - .01f);
+            StoredScale = scale;
+            StoredLocalRotation = upright;
+            StoredLocalPosition = target - rotated.center * scale;
         }
 
         /// <summary>The AED goes back behind the glass (lower half of the cabinet).</summary>
@@ -28,8 +71,9 @@ namespace ChooGuard.App.Fps.Emergency
             Stored = true;
             Unit.Held = false;
             Unit.transform.SetParent(transform, false);
-            Unit.transform.localPosition = new Vector3(0, -.1f, -.01f);
-            Unit.transform.localRotation = Quaternion.identity;
+            Unit.transform.localPosition = StoredLocalPosition;
+            Unit.transform.localRotation = StoredLocalRotation;
+            Unit.transform.localScale = Vector3.one * StoredScale;
             Unit.SetColliders(false);
         }
 
@@ -79,13 +123,29 @@ namespace ChooGuard.App.Fps.Emergency
         public AedCabinet Home { get; private set; }
         public bool Held { get; set; }
 
-        /// <summary>A carry case about 32 x 26 x 11 cm: yellow body, green lid band, grey handle. Procedural, no asset.</summary>
-        public static AedUnit Build(StaffHands hands, AedCabinet home)
+        /// <summary>
+        /// The carry case. With <see cref="EmergencyArt.AedUnitModel"/> it is the Meshy model (31 x 24 x 27 cm, origin at the bottom
+        /// centre) under a box collider on its bounds; otherwise a procedural case about 32 x 26 x 11 cm: yellow body, green lid band, grey handle.
+        /// </summary>
+        public static AedUnit Build(StaffHands hands, AedCabinet home, EmergencyArt art = null)
         {
             var root = new GameObject("자동심장충격기(AED)");
             var unit = root.AddComponent<AedUnit>();
             unit.Hands = hands;
             unit.Home = home;
+            if (art != null && art.AedUnitModel != null)
+            {
+                var visual = Object.Instantiate(art.AedUnitModel, root.transform);
+                visual.name = "본체 (모델)";
+                visual.transform.localPosition = Vector3.zero;
+                visual.transform.localRotation = Quaternion.identity;
+                foreach (var collider in visual.GetComponentsInChildren<Collider>()) Object.Destroy(collider);
+                var bounds = Props.LocalBounds(root.transform);
+                var box = root.AddComponent<BoxCollider>();
+                box.center = bounds.center;
+                box.size = bounds.size;
+                return unit;
+            }
             var shader = Shader.Find("Universal Render Pipeline/Lit");
             Material Paint(string name, Color colour)
             {
