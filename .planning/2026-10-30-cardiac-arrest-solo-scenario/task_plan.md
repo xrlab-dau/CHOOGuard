@@ -73,3 +73,26 @@
 - [ ] PracticeDrill: 손 떼기 모드 — ③ 인지·⑤ 무전 생략, 저장은 처치/근무 종료(`CG_PRACTICE_PLAYER_DONE`)/상한까지 기다린 뒤
 - [ ] 시험: Autopilot(대기 → 환자에게 걷기 → E 확인 → 무전 보고 → AED 보관함까지 걷기 → E 꺼내기 → 환자에게 복귀 → E 곁에 두기 → 구급대 대기 → 구급대장에게 인계) + 단정(aedAt·handover "AED 곁에 둠")
 - [ ] 컴파일 → stage8 촬영 실행(take3) → mp4 → 사용자 전달
+
+## Phase 5 — AED 사용 세분화 (2026-10-31 사용자 지시: "aed사용을 좀 더 세분화 하자")
+설계: SIM_CONTROLS_BENCHMARK §6.8 5항(기기 음성이 유일한 지시)을 그대로 코드로. 기기 절차는 Unity 를 모르는 `AedProcedure` 로 두고, `AedUnit` 이 뚜껑·램프·패드(`AedPad`)·케이블·HUD 음성(Toast)을 맡는다. 가슴압박은 환자에 R(빈손, 물러나면 중단). 충격 권고는 환자 상태(4단계·처치 전)에서 결정적, 환자 결과는 JEV 그대로.
+조작 순서(2026-10-31 사용자 지정 "aed 조작" 8단계): ① 바닥에 두기(환자에 E / G) ② 뚜껑 열기(AED 에 E, 전원 켜짐) ③ 패드 하나를 집기(뚜껑 안 패드에 E) ④ 붙이기(환자에 E) ⑤ 한 번 더 ⑥ 손 떼며 "물러나세요" 외치기(환자에 E, 압박 중이면 멈춤) → 분석 5초 ⑦ "제세동이 필요합니다" → 충전 3초 → AED 버튼(E) ⑧ 충격을 가했거나 "전기충격이 필요없습니다"면 가슴압박 계속(환자에 R) → 120초 뒤 기기가 다시 물러나라 함(⑥부터).
+- [x] `AedProcedure.cs`(새 파일): Off → PadsWanted(TakePad/ReturnPad/AttachPad, PadInHand) → ClearWanted(StandClear, ClearCalls) → Analysing → ShockAdvised | Compressions → ClearWanted … + 단위 시험 `AedProcedureTests` 7건
+- [x] `Aed.cs` AedUnit: Landed/Lifted, 뚜껑(뒤로 젖혀짐, 절차용 손잡이는 뚜껑에), 패드 2장은 뚜껑 안의 독립 표적 `AedPad`("패드 들기"), 램프·케이블, 음성 Toast, 기록(쓰러진 지 N초); 홀드 조작 제거(클릭 순서가 사용자 지정)
+- [x] `Hazards.cs` CollapseHazard: AedPadsAt·Aed·Compressing·CompressionSeconds, 인계 문구, 압박 자동 중단(1.8 m)
+- [x] `IncidentDirector.Casualty.cs`: CasualtyNear·StandClear·ToggleCompressions(패드 든 손도 바쁨)·CompressingCasualty·ResuscitationWords(JEV staff_response, 물러나기·분석 횟수 포함)
+- [x] `Passenger.cs` E 분기(패드 붙이기 / "물러나세요!" 외치기 / AED 곁에 두기 / 상태 확인), R "가슴압박 시작/멈추기"; `StaffTools.cs` Pad 손(HoldPad/PutDownPad/AttachPadTo, G 되돌리기, 손 칸)
+- [x] `PracticeDrill.cs` 기록: aedPadsAt·aedClearCalls·aedAnalyses·aedShocks·aedShockAdvised·compressionSeconds
+- [x] 오토파일럿: Place → Aed(뚜껑 E → 패드 E·환자 E ×2 → 환자 E 외침 → 버튼 E → R) → WaitEms 에서도 기기 따르기; 단정(패드·외침≥1·분석≥1·즉시형 충격≥1·압박>0)
+- [x] 1차(켜기 E·패드 E 홀드 방식) 컴파일·시험 13 통과 → stage10 통과, 대체 호출 0건
+- [x] 2차(사용자 8단계 순서) 컴파일·시험(AedProcedureTests 7 + 인접 7 = 14 통과) → stage11(`drill-20261031-043411.json`) 통과, 대체 호출 0건, 모든 E 가 첫 시도에 수행 → progress 기록
+
+## Phase 6 — Meshy AED 조작 부품 (2026-10-31 사용자 지시: "meshai를 이용해서 aed열었을 때, 패드, 전기충격 버튼 만들어")
+Meshy 웹앱(Free, CC BY 4.0, 사용자 로그인) Text to 3D(Meshy 6 Lite) + AI Texturing, 크레딧 70 → 0. Blender `prep_meshy2.py`(폭 기준 스케일·두께 압축·부품 추출) → `Art/Emergency/Equipment/Models/{aed_open,aed_pad,aed_shock_button}` → 에디터 `MeshyAedParts.Build`(URP Lit 머티리얼·프리팹·EmergencyArt 배정).
+- [x] `EmergencyArt.AedOpenModel/AedPadModel/AedShockButtonModel` + `AedUnit` 연결(열린 본체는 켜진 동안 닫힌 본체와 교체, 뚜껑이 +z 에 서면 180° 돌림(정점 읽기), 패드는 모델 크기로 충돌체, 버튼 모델에 상태 색) + `MeshyPropsTests` 대역 시험 1건
+- [x] aed_open: task 01a19053(preview)/01a19054(texture), 폭 0.311 m(닫힌 본체와 동일), 6000 tris
+- [x] aed_pad: 1차(01a19056)는 둥근 통으로 나와 폐기, 2차 01a19057/01a19058 사용, 길이 0.12 m·두께 8 mm 압축, 2000 tris
+- [x] aed_shock_button: 새 버튼(01a1905a/01a1905b)은 생성·텍스처까지 됐으나 Free 플랜 다운로드 한도(10회)로 내려받지 못함 → 기존 escalator_stop(01a17935)의 빨간 손잡이 부품만 추출(지름 4 cm)해 사용. 사이드카에 기록.
+- [x] Unity: MeshyAedParts.Build(프리팹·머티리얼·EmergencyArt 배정) + 단위 시험 15/15 → take6(패드 집기 E 19회 실패: 본체 충돌체가 패드를 가림, 대체 2건) → 켜지면 충돌체를 열린 본체 몸통으로 바꿈 → take7 통과, 대체 호출 0건
+- [x] 애니메이션 이상 정리 `animation-notes.md`(A1~A6 환자·주변, B1~B7 AED·손, 우선순위)
+- [x] 직접 플레이 준비 `play/play-cardiac-drill.cmd`(환경변수 + 에디터 실행) + `play/play-guide.md`(실행 순서·조작표·대응 순서)

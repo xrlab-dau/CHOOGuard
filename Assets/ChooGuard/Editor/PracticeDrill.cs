@@ -380,6 +380,14 @@ namespace ChooGuard.Editor
                 record["level"] = casualty.Level;
                 record["notBreathingNormally"] = casualty.NotBreathingNormally;
                 record["aedAt"] = casualty.AedAt >= 0 ? (JToken)Math.Round(casualty.AedAt - casualty.StartedAt, 1) : JValue.CreateNull();
+                // AED 절차(뚜껑 → 패드 2장 집어 붙이기 → "물러나세요" → 분석 → 충격 → 가슴압박)와 가슴압박의 사실. 기기 수치는 기기가 센 것이고,
+                // 환자가 어떻게 됐는지는 여기 없다(JEV 판단).
+                record["aedPadsAt"] = casualty.AedPadsAt >= 0 ? (JToken)Math.Round(casualty.AedPadsAt - casualty.StartedAt, 1) : JValue.CreateNull();
+                record["aedClearCalls"] = casualty.Aed != null ? casualty.Aed.ClearCalls : 0;
+                record["aedAnalyses"] = casualty.Aed != null ? casualty.Aed.Analyses : 0;
+                record["aedShocks"] = casualty.Aed != null ? casualty.Aed.Shocks : 0;
+                record["aedShockAdvised"] = casualty.Aed != null && casualty.Aed.LastAdvice.HasValue ? (JToken)casualty.Aed.LastAdvice.Value : JValue.CreateNull();
+                record["compressionSeconds"] = Math.Round(casualty.CompressionSeconds, 1);
                 record["handover"] = casualty.Handover;
                 // 악화형에서 악화가 안 일어난 이유를 가리기 위해: 구급대가 먼저 처치했으면 올리지 않는 것이 맞다.
                 record["treated"] = casualty.Treated;

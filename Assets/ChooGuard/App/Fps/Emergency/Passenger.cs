@@ -1223,15 +1223,40 @@ namespace ChooGuard.App.Fps.Emergency
             get
             {
                 if (BeingEscorted) return "동행 승객 확인";
-                if (Hurt) return CarriesAedFor() ? "AED 곁에 두기" : "상태 확인";
+                if (Hurt)
+                {
+                    switch (AedStepFor())
+                    {
+                        case AedStep.Attach: return "패드 붙이기";
+                        case AedStep.Clear: return "\"물러나세요!\" 외치기";
+                        case AedStep.Place: return "AED 곁에 두기";
+                        default: return "상태 확인";
+                    }
+                }
                 if (Current == Activity.Aggressive) return "말로 진정시키기";
                 if (Current == Activity.OnTrack) return "움직이지 말라고 안내";
                 return Crowd != null && Crowd.Session.Incidents.PlayerKnowsIncident ? "대피 안내" : "말 걸기";
             }
         }
 
-        /// <summary>The staff member carries the AED and this is a collapsed or fallen person.</summary>
-        private bool CarriesAedFor() => Crowd != null && Crowd.Session.Hands != null && Crowd.Session.Hands.Aed != null && Crowd.Session.Incidents.CollapseOf(this) != null;
+        private enum AedStep { None, Place, Attach, Clear }
+
+        /// <summary>
+        /// What E on this collapsed person does for the AED (2026-10-31 order of operations): with the AED in hand it goes down
+        /// beside them; with a pad in hand the pad goes on their chest; with both pads on and the device asking everyone off, the
+        /// staff member calls "물러나세요"; otherwise E is the ordinary check.
+        /// </summary>
+        private AedStep AedStepFor()
+        {
+            if (Crowd == null || Crowd.Session == null || Crowd.Session.Hands == null || Crowd.Session.Incidents == null) return AedStep.None;
+            var collapse = Crowd.Session.Incidents.CollapseOf(this);
+            if (collapse == null) return AedStep.None;
+            var hands = Crowd.Session.Hands;
+            if (hands.Pad != null) return AedStep.Attach;
+            if (collapse.Aed != null && collapse.Aed.Current == AedProcedure.Stage.ClearWanted && hands.Aed == null) return AedStep.Clear;
+            if (hands.Aed != null) return AedStep.Place;
+            return AedStep.None;
+        }
 
         public bool CanInteract(FirstPersonResponder responder, out string reason)
         {
@@ -1245,8 +1270,16 @@ namespace ChooGuard.App.Fps.Emergency
             feedback = null;
             if (!CanInteract(responder, out feedback)) return false;
             if (BeingEscorted) { feedback = Escort.StateText + " · R로 동행 안내 마침"; return true; }
-            if (Hurt && CarriesAedFor()) { feedback = Crowd.Session.Hands.PlaceAedBeside(this); return true; }
-            if (Hurt) { feedback = Crowd.Session.Incidents.CheckInjured(this); return true; }
+            if (Hurt)
+            {
+                switch (AedStepFor())
+                {
+                    case AedStep.Attach: feedback = Crowd.Session.Hands.AttachPadTo(this); return feedback != null;
+                    case AedStep.Clear: feedback = Crowd.Session.Incidents.StandClear(this); return feedback != null;
+                    case AedStep.Place: feedback = Crowd.Session.Hands.PlaceAedBeside(this); return true;
+                    default: feedback = Crowd.Session.Incidents.CheckInjured(this); return true;
+                }
+            }
             // 난동 승객은 직접 제지하지 않는다: 말은 걸 수 있지만 듣지 않는다(공개 행동요령: 거리를 두고 신고).
             if (Current == Activity.Aggressive) { feedback = "승객이 소리를 지르며 말을 듣지 않습니다 · 거리를 두고 경찰을 기다리세요"; Crowd.Session.Log.Once("calm-" + Number, "역무원이 난동 승객에게 말로 진정을 권함"); return true; }
             if (Current == Activity.OnTrack) { feedback = "선로 위 승객에게 움직이지 말고 구조를 기다리라고 안내했습니다"; Crowd.Session.Log.Once("track-" + Number, "역무원이 선로 위 승객에게 움직이지 말라고 안내"); return true; }
@@ -1261,12 +1294,23 @@ namespace ChooGuard.App.Fps.Emergency
             return true;
         }
 
-        public string SecondaryPrompt => BeingEscorted ? "동행 안내 마침" : Escort != null && !Hurt && !Hostile && Body != null && Body.Visible && !Body.Scripted && Body.Seat == PersonBody.SeatPhase.None && Body.OnNavMesh && Current != Activity.OnTrack && Current != Activity.InTrain && Current != Activity.Board && Current != Activity.Alight ? "동행 안내" : "";
+        public string SecondaryPrompt => BeingEscorted ? "동행 안내 마침" : Hurt ? CompressionsPrompt() : Escort != null && !Hostile && Body != null && Body.Visible && !Body.Scripted && Body.Seat == PersonBody.SeatPhase.None && Body.OnNavMesh && Current != Activity.OnTrack && Current != Activity.InTrain && Current != Activity.Board && Current != Activity.Alight ? "동행 안내" : "";
+
+        /// <summary>R on a collapsed person who is unconscious (level 3+) and not yet in the paramedics' hands: start or stop chest compressions.</summary>
+        private string CompressionsPrompt()
+        {
+            if (Crowd == null || Crowd.Session == null || Crowd.Session.Incidents == null) return "";
+            var collapse = Crowd.Session.Incidents.CollapseOf(this);
+            if (collapse == null || collapse.Level < 3 || collapse.Treated) return "";
+            return collapse.Compressing ? "가슴압박 멈추기" : "가슴압박 시작";
+        }
 
         public bool TrySecondary(FirstPersonResponder responder, out string feedback)
         {
+            if (BeingEscorted && Escort != null) return Escort.Release(responder, out feedback);
+            if (Hurt && CompressionsPrompt().Length > 0) { feedback = Crowd.Session.Incidents.ToggleCompressions(this); return feedback != null; }
             if (Escort == null) { feedback = "지금은 동행 안내할 수 없습니다"; return false; }
-            return BeingEscorted ? Escort.Release(responder, out feedback) : Escort.Begin(responder, out feedback);
+            return Escort.Begin(responder, out feedback);
         }
 
         internal void BeginEscort()

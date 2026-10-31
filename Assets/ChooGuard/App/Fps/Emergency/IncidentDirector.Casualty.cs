@@ -376,8 +376,33 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         public string AedSetDown(Vector3 at)
         {
+            var best = CasualtyNear(at);
+            if (best == null) return null;
+            if (best.AedAt >= 0) return "AED 가 이미 환자 곁에 있습니다";
+            best.AedAt = Time.time;
+            log.Add("AED 를 환자 곁에 둠 · 쓰러진 지 " + Mathf.RoundToInt(best.AedAt - best.StartedAt) + "초 · " + best.Where);
+            return treated.Contains(best.Person) ? "AED 를 구급대원 곁에 두었습니다" : "AED 를 환자 곁에 두었습니다 · 뚜껑을 열고(E) 음성 안내를 따르십시오";
+        }
+
+        /// <summary>
+        /// E on a collapsed person whose AED has both pads on and asks everyone off: the staff member takes their hands off (any
+        /// compressions stop) and calls "물러나세요"; the device starts its analysis. Returns the feedback line, or null when the
+        /// device is not waiting for that.
+        /// </summary>
+        public string StandClear(Passenger person)
+        {
+            var casualty = CollapseOf(person);
+            if (casualty == null || casualty.Aed == null || casualty.Aed.Current != AedProcedure.Stage.ClearWanted) return null;
+            if (casualty.Compressing) casualty.StopCompressions("\"물러나세요\" 외침");
+            if (!casualty.Aed.StandClear()) return null;
+            return "\"물러나세요!\" · AED 가 심장 리듬을 분석합니다 · 환자에게서 손을 떼십시오";
+        }
+
+        /// <summary>The active collapsed person within <paramref name="within"/> m of <paramref name="at"/> on the same floor (1.5 m), nearest first; null when nobody.</summary>
+        public CollapseHazard CasualtyNear(Vector3 at, float within = 2.5f)
+        {
             CollapseHazard best = null;
-            float bestDistance = 2.5f;
+            float bestDistance = within;
             foreach (var casualty in casualties)
             {
                 if (!casualty.Active || casualty.Person == null) continue;
@@ -386,11 +411,50 @@ namespace ChooGuard.App.Fps.Emergency
                 d.y = 0;
                 if (d.magnitude < bestDistance) { bestDistance = d.magnitude; best = casualty; }
             }
-            if (best == null) return null;
-            if (best.AedAt >= 0) return "AED 가 이미 환자 곁에 있습니다";
-            best.AedAt = Time.time;
-            log.Add("AED 를 환자 곁에 둠 · 쓰러진 지 " + Mathf.RoundToInt(best.AedAt - best.StartedAt) + "초 · " + best.Where);
-            return treated.Contains(best.Person) ? "AED 를 구급대원 곁에 두었습니다" : "AED 를 환자 곁에 두었습니다 · 구급대에 인계합니다";
+            return best;
+        }
+
+        /// <summary>
+        /// R on a collapsed person: the staff member starts chest compressions (hands empty) or stops them. The guideline's
+        /// rhythm is not scored; what is kept is when and for how long (shift log, handover). Pressing while the AED analyses
+        /// is allowed and has its consequence (the device stops the analysis and says so). Returns the feedback line, or null
+        /// when there is nothing to toggle.
+        /// </summary>
+        public string ToggleCompressions(Passenger person)
+        {
+            var casualty = CollapseOf(person);
+            if (casualty == null || casualty.Treated) return null;
+            if (casualty.Compressing)
+            {
+                casualty.StopCompressions("역무원이 멈춤");
+                return "가슴압박을 멈췄습니다 · " + Mathf.RoundToInt(casualty.CompressionSeconds) + "초";
+            }
+            if (casualty.Level < 3) return "환자가 의식이 있습니다 · 가슴압박은 반응과 정상 호흡이 없을 때";
+            var hands = session.Hands;
+            if (hands != null && (hands.Held != null || hands.Hose != null || hands.Aed != null || hands.Pad != null)) return "손에 든 것을 먼저 내려놓으십시오";
+            casualty.StartCompressions();
+            return "가슴압박 시작 · 가슴 가운데를 분당 100~120회, 5~6 cm · R 로 멈춤";
+        }
+
+        /// <summary>The collapsed person the staff member is compressing now, or null.</summary>
+        public CollapseHazard CompressingCasualty => casualties.Find(c => c.Compressing);
+
+        /// <summary>For JEV: what the staff member's hands have done at a collapsed person's side (compressions, AED), in words.</summary>
+        private string ResuscitationWords()
+        {
+            foreach (var casualty in casualties)
+            {
+                if (!casualty.Active) continue;
+                var parts = new List<string>();
+                if (casualty.Compressing) parts.Add("the staff member is giving chest compressions");
+                else if (casualty.CompressionSeconds >= 1f) parts.Add("chest compressions were given for about " + Mathf.RoundToInt(casualty.CompressionSeconds) + " seconds");
+                if (casualty.Aed != null && casualty.Aed.Pads >= AedProcedure.PadsNeeded)
+                    parts.Add("AED pads are on, the rescuer called everyone clear " + casualty.Aed.ClearCalls + " time(s), the device analysed " + casualty.Aed.Analyses + " time(s), "
+                              + (casualty.Aed.Shocks == 0 ? "no shock given yet" : casualty.Aed.Shocks + " shock(s) given"));
+                else if (casualty.AedAt >= 0) parts.Add("an AED stands beside the person");
+                if (parts.Count > 0) return string.Join("; ", parts);
+            }
+            return "none";
         }
 
         /// <summary>
@@ -425,7 +489,8 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var casualty in casualties)
             {
                 if (casualty.Person != person || !casualty.Active) continue;
-                if (casualty.AedAt >= 0) log.Add("구급대 인계 · 역무원이 곁에 둔 AED 포함");
+                if (casualty.Compressing) casualty.StopCompressions("구급대 인계");
+                if (casualty.AedAt >= 0) log.Add("구급대 인계 · 역무원이 곁에 둔 AED 포함" + casualty.ResuscitationWords);
                 casualty.Treated = true;
                 casualty.End();
                 HazardRegistry.Remove(casualty);

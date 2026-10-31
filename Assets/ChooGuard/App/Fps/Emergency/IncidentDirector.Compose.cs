@@ -633,6 +633,7 @@ namespace ChooGuard.App.Fps.Emergency
                     staff_member_knows_of_an_emergency = PlayerKnowsIncident, station_office_informed = reported.Count > 0, station_announcement_made = announced,
                     area_cordoned_off = cordoned, fire_alarm_ringing = alarm, train_held_at_platform = holdRequested,
                     agencies_on_the_way = called, agencies_on_scene = onScene,
+                    resuscitation_at_a_collapsed_person = ResuscitationWords(),
                 },
                 ["last_new_emergency"] = lastEmergencyAt < 0 ? "no emergency has happened yet this shift" : now - lastEmergencyAt < 60 ? "a new emergency began moments ago" : now - lastEmergencyAt < 300 ? "a new emergency began a little while ago" : "the last new emergency began a long while ago",
             };

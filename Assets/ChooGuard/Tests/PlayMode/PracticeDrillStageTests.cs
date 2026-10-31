@@ -219,6 +219,17 @@ namespace ChooGuard.Tests.PlayMode
                         Assert.That(pilot.Done, Is.True, "오토파일럿이 끝까지 가지 못했습니다 · 단계 " + pilot.PhaseName);
                         Assert.That(record["aedAt"].Type, Is.Not.EqualTo(Newtonsoft.Json.Linq.JTokenType.Null), "AED 가 환자 곁에 놓이지 않았습니다.");
                         Assert.That((string)record["handover"], Does.Contain("AED 곁에 둠"), "인계 문구에 AED 가 없습니다: " + record["handover"]);
+                        // 기기 절차: 패드가 붙고 분석이 한 번은 돌아야 한다. 즉시형(호흡 비정상)이면 기기가 충격을 권고하고 역무원이 버튼을 눌러
+                        // 충격 1회 이상, 그 뒤 가슴압박(R)이 기록돼야 한다. 악화형은 3단계(숨은 쉼)에서 분석하면 충격 불필요가 맞다.
+                        Assert.That(record["aedPadsAt"].Type, Is.Not.EqualTo(Newtonsoft.Json.Linq.JTokenType.Null), "AED 패드가 붙지 않았습니다.");
+                        Assert.That((int)record["aedClearCalls"], Is.GreaterThanOrEqualTo(1), "역무원이 \"물러나세요\"를 외치지 않았습니다.");
+                        Assert.That((int)record["aedAnalyses"], Is.GreaterThanOrEqualTo(1), "AED 가 리듬 분석을 하지 않았습니다.");
+                        if (!worsen)
+                        {
+                            Assert.That((int)record["aedShocks"], Is.GreaterThanOrEqualTo(1), "즉시형이면 충격이 1회 이상이어야 합니다: " + record["handover"]);
+                            Assert.That((string)record["handover"], Does.Contain("심장충격"), "인계 문구에 심장충격 횟수가 없습니다: " + record["handover"]);
+                            Assert.That((double)record["compressionSeconds"], Is.GreaterThan(0), "충격 뒤 가슴압박이 기록되지 않았습니다.");
+                        }
                     }
                 }
             }
@@ -296,7 +307,7 @@ namespace ChooGuard.Tests.PlayMode
         /// </summary>
         private sealed class Autopilot
         {
-            private enum Phase { Wait, GoPatient, Check, Report, GoAed, TakeAed, Return, Place, WaitEms, GoLead, HandOver, Done }
+            private enum Phase { Wait, GoPatient, Check, Report, GoAed, TakeAed, Return, Place, Aed, WaitEms, GoLead, HandOver, Done }
 
             private const float TurnDegreesPerSecond = 180f, FaceToWalkDegrees = 60f, CornerRadius = .7f, StuckSeconds = 3f;   // 꺾임점 반경이 크면 기둥을 질러 끼인다(take3 실측)
             private static readonly float[] AimHeights = { .9f, .5f, 1.3f };   // 쓰러진 몸의 콜라이더는 선 키 그대로다. 못 맞추면 높이를 바꿔 본다.
@@ -307,6 +318,9 @@ namespace ChooGuard.Tests.PlayMode
             private CollapseHazard casualty;
             private Passenger patient;
             private AedCabinet cabinet;
+            private AedUnit unit;
+            private int aedKey = -1;
+            private float aedSince;
             private Responder lead;
             private Vector3[] corners = Array.Empty<Vector3>();
             private Vector3 planned, lastSeen;
@@ -372,10 +386,22 @@ namespace ChooGuard.Tests.PlayMode
                         if (Interact(() => patient.transform.position + Vector3.up * AimHeights[tries % AimHeights.Length],
                                      () => casualty.AedAt >= 0, dt, 12f,
                                      () => session.Hands.PlaceAedBeside(patient), "AED 곁에 두기"))
-                            Enter(Phase.WaitEms, "AED 를 환자 곁에 둠 · 쓰러진 지 " + Mathf.RoundToInt(casualty.AedAt - casualty.StartedAt) + "초 · 구급대 대기");
+                        {
+                            unit = cabinet != null ? cabinet.Unit : UnityEngine.Object.FindFirstObjectByType<AedUnit>();
+                            Enter(Phase.Aed, "AED 를 환자 곁에 둠 · 쓰러진 지 " + Mathf.RoundToInt(casualty.AedAt - casualty.StartedAt) + "초 · 기기 절차 시작");
+                        }
+                        break;
+                    case Phase.Aed:
+                        // 기기 음성이 시키는 대로: 뚜껑 열기(E) → 패드 집기(패드에 E)·붙이기(환자에 E) 두 번 → "물러나세요"(환자에 E) → 분석 → 충격 버튼(E) → 가슴압박(R). 한 주기가 끝나면 구급대를 기다리며 계속 따른다.
+                        aedSince += dt;
+                        if (unit == null || unit.Patient == null) { Fallback("AED 가 환자 곁에 있지 않음(Patient 없음)"); Enter(Phase.WaitEms, "AED 절차 없이 구급대 대기"); break; }
+                        if (RunAed(dt)) Enter(Phase.WaitEms, "AED 절차 1주기 · 분석 " + unit.Procedure.Analyses + "회 · 충격 " + unit.Procedure.Shocks + "회 · 가슴압박 " + (casualty.Compressing ? "중" : "없음") + " · 구급대 대기");
+                        else if (aedSince > 120f) { Fallback("AED 절차가 120초 안에 한 주기를 못 끝냄 · 단계 " + unit.Procedure.Current); Enter(Phase.WaitEms, "AED 절차 중단 · 구급대 대기"); }
                         break;
                     case Phase.WaitEms:
-                        Aim(patient.transform.position + Vector3.up * .6f, dt);
+                        // 구급대가 올 때까지 기기를 계속 따른다(재분석이면 손 떼기, 충격 권고면 버튼, 압박 지시면 R).
+                        if (unit != null && unit.Patient != null && !casualty.Treated) RunAed(dt);
+                        else Aim(patient.transform.position + Vector3.up * .6f, dt);
                         if (lead == null)
                         {
                             foreach (var responder in UnityEngine.Object.FindObjectsByType<Responder>(FindObjectsSortMode.None))
@@ -437,6 +463,95 @@ namespace ChooGuard.Tests.PlayMode
             {
                 var collider = cabinet.GetComponent<Collider>() ?? cabinet.GetComponentInChildren<Collider>();
                 return collider != null ? collider.bounds.center : cabinet.transform.position + Vector3.up * 1.2f;
+            }
+
+            private Vector3 UnitAim()
+            {
+                var collider = unit.GetComponent<Collider>() ?? unit.GetComponentInChildren<Collider>();
+                return collider != null ? collider.bounds.center : unit.transform.position + Vector3.up * .1f;
+            }
+
+            private Vector3 PatientAim() => patient.transform.position + Vector3.up * AimHeights[tries % AimHeights.Length];
+
+            private Vector3 PadAim(AedPad pad)
+            {
+                var collider = pad.GetComponent<Collider>();
+                return collider != null ? collider.bounds.center : pad.transform.position;
+            }
+
+            /// <summary>
+            /// Works the AED the way its voice says (2026-10-31 order): E on the case opens the lid, E on a pad in the lid takes it,
+            /// E on the patient sticks it on (twice), E on the patient calls "물러나세요", E on the case presses the shock button,
+            /// R on the patient gives compressions; hands off while it analyses. Each change of the device's state starts a fresh
+            /// try count and timeout. True once compressions are under way (or the paramedics have the patient) after an analysis.
+            /// </summary>
+            private bool RunAed(float dt)
+            {
+                var device = unit.Procedure;
+                int key = (int)device.Current * 10 + device.Pads + (device.PadInHand ? 5 : 0) + (casualty.Compressing ? 100 : 0) + (device.Charged ? 1000 : 0);
+                if (key != aedKey)
+                {
+                    aedKey = key; sincePhase = 0; sinceTry = 0; tries = 0;
+                    Debug.Log("CG_AUTOPILOT AED t=" + session.ShiftSeconds.ToString("0.0") + "s · " + device.Current + " · " + device.StateText + (casualty.Compressing ? " · 가슴압박 중" : ""));
+                }
+                switch (device.Current)
+                {
+                    case AedProcedure.Stage.Off:
+                        Interact(() => UnitAim(), () => device.Current != AedProcedure.Stage.Off, dt, 12f, () => device.OpenLid(), "AED 뚜껑 열기");
+                        return false;
+                    case AedProcedure.Stage.PadsWanted:
+                    {
+                        int pads = device.Pads;
+                        if (!device.PadInHand)
+                        {
+                            var pad = unit.PadInLid();
+                            if (pad == null) { Fallback("기기는 패드를 기다리는데 뚜껑에 패드가 없음"); return false; }
+                            Interact(() => PadAim(pad), () => device.PadInHand || device.Current != AedProcedure.Stage.PadsWanted, dt, 12f, () => unit.TakePad(pad, out _), "패드 " + (pads + 1) + " 집기");
+                        }
+                        else Interact(() => PatientAim(), () => device.Pads > pads || device.Current != AedProcedure.Stage.PadsWanted, dt, 12f, () => session.Hands.AttachPadTo(patient), "패드 " + (pads + 1) + "장째 붙이기");
+                        return false;
+                    }
+                    case AedProcedure.Stage.ClearWanted:
+                        Interact(() => PatientAim(), () => device.Current != AedProcedure.Stage.ClearWanted, dt, 12f, () => session.Incidents.StandClear(patient), "\"물러나세요\" 외치기");
+                        return false;
+                    case AedProcedure.Stage.Analysing:
+                        if (casualty.Compressing) InteractSecondary(() => PatientAim(), () => !casualty.Compressing, dt, 8f, () => casualty.StopCompressions("오토파일럿 대체"), "가슴압박 멈추기(분석 중)");
+                        else Aim(UnitAim(), dt);
+                        return false;
+                    case AedProcedure.Stage.ShockAdvised:
+                        if (casualty.Compressing) { InteractSecondary(() => PatientAim(), () => !casualty.Compressing, dt, 8f, () => casualty.StopCompressions("오토파일럿 대체"), "가슴압박 멈추기(충격 전)"); return false; }
+                        if (!device.Charged) { Aim(UnitAim(), dt); return false; }
+                        Interact(() => UnitAim(), () => device.Current != AedProcedure.Stage.ShockAdvised, dt, 12f, () => device.PressShock(), "충격 버튼 누르기");
+                        return false;
+                    case AedProcedure.Stage.Compressions:
+                        if (casualty.Treated || !casualty.Active) return true;
+                        if (casualty.Compressing) { Aim(PatientAim(), dt); return true; }
+                        return InteractSecondary(() => PatientAim(), () => casualty.Compressing, dt, 12f, () => casualty.StartCompressions(), "가슴압박 시작(R)");
+                    default:
+                        return true;   // 구급대 인계
+                }
+            }
+
+            /// <summary>Like <see cref="Interact"/> with R (the secondary action) instead of E.</summary>
+            private bool InteractSecondary(Func<Vector3> aim, Func<bool> done, float dt, float timeout, Action fallback, string label)
+            {
+                if (done()) return true;
+                if (!Aim(aim(), dt)) return false;
+                sinceTry += dt;
+                if (sinceTry >= .6f)
+                {
+                    sinceTry = 0; tries++;
+                    bool performed = player.TrySecondary();
+                    Debug.Log("CG_AUTOPILOT R · " + label + " · " + (performed ? "수행" : "불가") + " · 프롬프트 '" + player.CurrentSecondaryPrompt + "' · " + player.LastFeedback);
+                }
+                if (done()) return true;
+                if (sincePhase > timeout)
+                {
+                    Fallback(label + " R " + tries + "회 실패 → 제품 API 직접 호출 (프롬프트 '" + player.CurrentSecondaryPrompt + "')");
+                    fallback();
+                    return done();
+                }
+                return false;
             }
 
             /// <summary>NavMesh 경로의 꺾임점을 따라 걷는다. 도착하면 true. 막히면 경로를 다시 잡고, 세 번 막히면 텔레포트(대체 기록).</summary>

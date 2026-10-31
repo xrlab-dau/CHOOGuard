@@ -192,6 +192,8 @@ namespace ChooGuard.App.Fps.Emergency
         public Extinguisher Held { get; private set; }
         public HydrantHose Hose { get; private set; }
         public AedUnit Aed { get; private set; }
+        /// <summary>An AED pad taken out of the lid and not yet on the patient's chest.</summary>
+        public AedPad Pad { get; private set; }
         public bool Spraying { get; private set; }
         /// <summary>The nozzle's pattern while the hose is out (the mouse wheel changes it).</summary>
         public NozzlePattern Pattern { get; private set; }
@@ -254,8 +256,10 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (Hose != null) RewindHose();
             if (Held != null) Drop();
+            if (Pad != null) PutDownPad();
             if (Aed != null && Aed != unit) SetDownAed(null);
             if (unit.Home != null && unit.Home.Stored) unit.Home.Release();
+            unit.Lifted();   // a switched-on device goes off, its pads come back into the lid and the lid shuts
             Aed = unit;
             unit.Held = true;
             unit.SetColliders(false);
@@ -302,12 +306,55 @@ namespace ChooGuard.App.Fps.Emergency
             unit.transform.SetPositionAndRotation(floor, Quaternion.Euler(0, view.eulerAngles.y + 180, 0));
             unit.SetColliders(true);
             foreach (var renderer in unit.GetComponentsInChildren<Renderer>()) renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-            return session.Incidents.AedSetDown(floor);
+            var line = session.Incidents.AedSetDown(floor);
+            // 쓰러진 사람 곁이면 기기가 그 사람을 환자로 알고 음성 절차를 시작할 수 있다(뚜껑은 역무원이 연다).
+            unit.Landed(session, session.Incidents.CasualtyNear(floor));
+            return line;
+        }
+
+        // ── AED 패드 ───────────────────────────────────────────────────────
+
+        /// <summary>A pad out of the AED's lid goes into the hand (called by <see cref="AedUnit.TakePad"/>); it rides in front of the camera on its cable.</summary>
+        public void HoldPad(AedPad pad)
+        {
+            if (pad == null) return;
+            if (Held != null) Drop();
+            if (Pad != null && Pad != pad) PutDownPad();
+            Pad = pad;
+            pad.transform.SetParent(view, false);
+            pad.transform.localScale = Vector3.one;
+            pad.transform.localPosition = new Vector3(.26f, -.28f, .5f);
+            pad.transform.localRotation = Quaternion.Euler(-70, 12, 0);
+            foreach (var renderer in pad.GetComponentsInChildren<Renderer>()) renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        }
+
+        /// <summary>The pad in hand goes back into the AED's lid (G, or something else taken in hand).</summary>
+        public void PutDownPad()
+        {
+            if (Pad == null) return;
+            var pad = Pad;
+            Pad = null;
+            foreach (var renderer in pad.GetComponentsInChildren<Renderer>()) renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+            if (pad.Unit != null) pad.Unit.ReturnPad(pad);
+        }
+
+        /// <summary>E on a collapsed person with a pad in hand: the pad goes on their chest. Returns the feedback line, or null when no pad is held.</summary>
+        public string AttachPadTo(Passenger person)
+        {
+            if (Pad == null) return null;
+            var pad = Pad;
+            var unit = pad.Unit;
+            if (unit == null || unit.Patient == null || unit.Patient.Person != person) return "AED 가 이 환자 곁에 있지 않습니다 · 패드는 곁에 둔 AED 의 환자에게만 붙습니다";
+            if (!unit.AttachPad(pad, out var feedback)) return feedback ?? "지금은 패드를 붙일 수 없습니다";
+            Pad = null;
+            foreach (var renderer in pad.GetComponentsInChildren<Renderer>()) renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+            return feedback;
         }
 
         public void TakeHose(HydrantHose hose)
         {
             if (Held != null) Drop();
+            if (Pad != null) PutDownPad();
             if (Aed != null) SetDownAed(null);
             if (Hose != null) RewindHose();
             Hose = hose;
@@ -333,6 +380,7 @@ namespace ChooGuard.App.Fps.Emergency
         public void PickUp(Extinguisher tool)
         {
             if (Hose != null) RewindHose();
+            if (Pad != null) PutDownPad();
             if (Aed != null) SetDownAed(null);
             if (Held != null) Drop();
             Held = tool;
@@ -355,6 +403,7 @@ namespace ChooGuard.App.Fps.Emergency
         public void Drop()
         {
             if (Hose != null) { session.Log.Add("옥내소화전 호스를 되감았다"); RewindHose(); return; }
+            if (Pad != null) { PutDownPad(); session.Hud.Toast("패드를 AED 뚜껑에 되돌려 놓았습니다"); return; }
             if (Aed != null)
             {
                 var handover = SetDownAed(null);
@@ -385,7 +434,18 @@ namespace ChooGuard.App.Fps.Emergency
                 return new GameHud.Slot { Label = spray ? "옥내소화전 관창 · 분무" : "옥내소화전 관창 · 직사", Hint = "좌클릭 방수  휠 노즐  G 되감기", Fill = 1 - Mathf.Clamp01(used), Active = Spraying };
             }
             if (Aed != null) return new GameHud.Slot { Label = "자동심장충격기(AED)", Hint = "쓰러진 사람 곁에 E · 내려놓기  G · 놓기", Fill = 1, Active = false };
-            if (Held == null) return null;
+            if (Pad != null)
+            {
+                bool first = Pad.Unit == null || Pad.Unit.Procedure.Pads == 0;
+                return new GameHud.Slot { Label = "AED 패드 (" + (first ? "1" : "2") + "/2)", Hint = (first ? "오른쪽 빗장뼈 아래" : "왼쪽 옆구리") + " · 환자에 E · 붙이기  G · 뚜껑에 되돌리기", Fill = 1, Active = false };
+            }
+            if (Held == null)
+            {
+                // 빈손으로 환자 곁에 무릎 꿇고 가슴압박 중이면 그 사실이 손 칸에 보인다.
+                var compressing = session != null && session.Incidents != null ? session.Incidents.CompressingCasualty : null;
+                if (compressing == null) return null;
+                return new GameHud.Slot { Label = "가슴압박 중 · " + compressing.Where, Hint = "R · 멈추기   AED 가 물러나라 하면 환자에 E · \"물러나세요\"", Fill = 1, Active = true };
+            }
             string hint = !Held.PinPulled ? "좌클릭 길게 · 안전핀" : Held.Agent <= .01f ? "약제 없음 · G 놓기" : "좌클릭 · 분사  G · 놓기";
             return new GameHud.Slot { Label = (Held.Type == ExtinguishAgent.WetChemical ? "K급 소화기 " : "소화기 ") + Held.Serial.Replace("BSN-CONC-", ""), Hint = hint, Fill = Held.Agent, Active = Spraying };
         }

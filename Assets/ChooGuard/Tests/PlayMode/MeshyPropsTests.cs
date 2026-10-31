@@ -1,7 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using ChooGuard.App.Fps.Emergency;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace ChooGuard.Tests.PlayMode
 {
@@ -124,7 +126,44 @@ namespace ChooGuard.Tests.PlayMode
             marker.transform.SetParent(root.transform, false);
             var cabinet = AedCabinet.Build(marker, null, art);
             Assert.That(cabinet.transform.Find("AED 보관함 (모델)"), Is.Null);
-            Assert.That(cabinet.Unit.transform.Find("본체"), Is.Not.Null, "procedural yellow case");
+            Assert.That(cabinet.Unit.transform.Find("본체 (절차)/본체"), Is.Not.Null, "procedural yellow case");
+            Assert.That(cabinet.Unit.transform.Find(AedUnit.LidName), Is.Not.Null, "procedural hinged lid");
+            Assert.That(cabinet.Unit.PadSize, Is.EqualTo(AedUnit.DefaultPadSize));
+        }
+
+        [UnityTest]
+        public IEnumerator TheOpenedAedShowsTheOpenModelAndUsesThePadAndButtonModels()
+        {
+            art.AedOpenModel = Model("open", new Vector3(.31f, .40f, .27f));
+            art.AedPadModel = Model("pad", new Vector3(.10f, .01f, .12f));
+            art.AedShockButtonModel = Model("button", new Vector3(.04f, .015f, .04f));
+            var marker = new GameObject("aed fixture models");
+            marker.transform.SetParent(root.transform, false);
+            marker.AddComponent<BoxCollider>();
+            var unit = AedCabinet.Build(marker, null, art).Unit;
+            var closed = unit.transform.Find("본체 (모델)");
+            var open = unit.transform.Find("본체 열림 (모델)");
+            Assert.That(open, Is.Not.Null);
+            Assert.That(unit.transform.Find(AedUnit.LidName), Is.Null, "with an open model there is no procedural lid");
+            Assert.That(closed.gameObject.activeSelf, Is.True);
+            Assert.That(open.gameObject.activeSelf, Is.False);
+            // 패드: 모델 크기가 패드 크기이고, 충돌체가 그 크기로 뿌리에 붙는다. 버튼: 모델이 램프 자리에 선다.
+            Assert.That(unit.PadSize.x, Is.EqualTo(.10f).Within(.005f));
+            Assert.That(unit.PadSize.z, Is.EqualTo(.12f).Within(.005f));
+            Assert.That(unit.Pads[1].GetComponent<BoxCollider>().size.x, Is.EqualTo(unit.PadSize.x).Within(1e-4f));
+            Assert.That(unit.Pads[1].transform.Find("패드 (모델)"), Is.Not.Null);
+            var button = unit.transform.Find(AedUnit.LampName);
+            Assert.That(button, Is.Not.Null);
+            Assert.That(button.GetComponent<MeshRenderer>(), Is.Not.Null, "the stand-in button model is the lamp");
+
+            Assert.That(unit.Procedure.OpenLid(), Is.True);
+            yield return null;
+            Assert.That(open.gameObject.activeSelf, Is.True, "switched on, the open case shows");
+            Assert.That(closed.gameObject.activeSelf, Is.False);
+            unit.Procedure.PowerOff();
+            yield return null;
+            Assert.That(open.gameObject.activeSelf, Is.False);
+            Assert.That(closed.gameObject.activeSelf, Is.True);
         }
     }
 }

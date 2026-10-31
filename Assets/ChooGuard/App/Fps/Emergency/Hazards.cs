@@ -542,6 +542,13 @@ namespace ChooGuard.App.Fps.Emergency
         public bool NotBreathingNormally => Level >= 4;
         /// <summary>When an AED was set down beside the person (-1: not yet). Logged only (JEV 011).</summary>
         public float AedAt { get; set; } = -1;
+        /// <summary>When both AED pads went on the chest (-1: not yet).</summary>
+        public float AedPadsAt { get; set; } = -1;
+        /// <summary>The AED's own course beside this person (<see cref="AedProcedure"/>); its counts stay after the unit is lifted. Null before one is set down.</summary>
+        public AedProcedure Aed { get; set; }
+        /// <summary>The staff member is doing chest compressions now (R on the person); the seconds of compressions so far.</summary>
+        public bool Compressing { get; private set; }
+        public float CompressionSeconds { get; private set; }
         /// <summary>The escalator the person fell on, if any (the facility team is involved and the belt can be stopped).</summary>
         public Escalator Escalator { get; set; }
         public bool Treated { get; set; }
@@ -569,10 +576,15 @@ namespace ChooGuard.App.Fps.Emergency
             (NotBreathingNormally ? " 가까운 자동심장충격기를 가져와 환자 곁에 두십시오." : "");
         public override PaRequest Announcement => new PaRequest("안내방송(통로 비우기) 요청", PaLine.Medical,
             "안내 말씀 드립니다. " + Where + "에 응급 환자가 있습니다. 통로를 비워 주시고 구급대 진입에 협조해 주십시오.", PaScope.ClearAround, 15);
-        public override string State => Treated ? "처치 중" : "처치 필요";
+        public override string State => Treated ? "처치 중" : Compressing ? "가슴압박 중" : "처치 필요";
         public override string BoardState => visible;
         public override bool UnderControl => Treated || !Active;
-        public override string Handover => Named + (Treated ? " 처치 중" : " 처치 전") + (AedAt >= 0 ? " · AED 곁에 둠(쓰러진 지 " + Mathf.RoundToInt(AedAt - StartedAt) + "초)" : "");
+        public override string Handover => Named + (Treated ? " 처치 중" : " 처치 전") + (AedAt >= 0 ? " · AED 곁에 둠(쓰러진 지 " + Mathf.RoundToInt(AedAt - StartedAt) + "초)" : "") + ResuscitationWords;
+        /// <summary>What the staff member's hands did at this person's side, for the handover and the log: pads, shocks, compressions.</summary>
+        public string ResuscitationWords =>
+            (AedPadsAt >= 0 ? " · 패드 부착(쓰러진 지 " + Mathf.RoundToInt(AedPadsAt - StartedAt) + "초)" : "")
+            + (Aed != null && Aed.Shocks > 0 ? " · 심장충격 " + Aed.Shocks + "회" : "")
+            + (CompressionSeconds >= 1f ? " · 가슴압박 " + Mathf.RoundToInt(CompressionSeconds) + "초" : "");
 
         public CollapseHazard(string id, Passenger person, string label, string cause, string causeEn, string visible, int level = -1)
         {
@@ -599,6 +611,28 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (Person == null) { End(); return; }
             Position = Person.transform.position;
+            if (!Compressing) return;
+            // 압박은 환자 곁에 무릎 꿇고 하는 일이다: 물러나거나 구급대가 넘겨받으면 끝난다.
+            var player = EmergencySession.Current != null ? EmergencySession.Current.Player : null;
+            if (Treated || !Active) { StopCompressions("구급대 인계"); return; }
+            if (player == null || Vector3.Distance(player.transform.position, Position) > 1.8f) { StopCompressions("환자에게서 물러남"); return; }
+            CompressionSeconds += deltaSeconds;
+        }
+
+        /// <summary>The staff member starts chest compressions (R on the person). Logged with the time since the collapse; the rhythm is not scored.</summary>
+        public void StartCompressions()
+        {
+            if (Compressing) return;
+            Compressing = true;
+            EmergencySession.Current?.Log?.Add("가슴압박 시작 · 쓰러진 지 " + Mathf.RoundToInt(Time.time - StartedAt) + "초 · " + Where);
+        }
+
+        /// <summary>Compressions end (R again, stepping away, the AED's analysis, the paramedics taking over): the total so far is logged.</summary>
+        public void StopCompressions(string why)
+        {
+            if (!Compressing) return;
+            Compressing = false;
+            EmergencySession.Current?.Log?.Add("가슴압박 중단 · " + Mathf.RoundToInt(CompressionSeconds) + "초 · " + why);
         }
     }
 
