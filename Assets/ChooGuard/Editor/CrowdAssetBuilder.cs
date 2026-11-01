@@ -203,11 +203,13 @@ namespace ChooGuard.Editor
             fall.canTransitionToSelf = false;
             fall.AddCondition(AnimatorConditionMode.If, 0, "Collapse");
             var down = machine.AddState("쓰러짐");
-            down.motion = BuildLyingClip((AnimationClip)falling.motion);
+            // 2026-10-31: 넘어진 끝 자세(Death01 마지막 프레임)는 바닥에 앉아 숙인 모습이라 심정지 환자로 보이지 않았다(take6·take7).
+            // 쓰러진 뒤에는 반듯이 눕는다(가슴압박·패드 자세). 넘어짐 → 누움은 .5초 블렌드.
+            down.motion = BuildSupineClip((AnimationClip)falling.motion, Universal("Idle_Loop"));
             var lie = falling.AddTransition(down);
             lie.hasExitTime = true;
-            lie.exitTime = 1f;
-            lie.duration = 0;
+            lie.exitTime = .9f;
+            lie.duration = .5f;
             Link(falling, locomotion, .5f, ("Down", AnimatorConditionMode.IfNot, 0));
             Link(down, locomotion, .8f, ("Down", AnimatorConditionMode.IfNot, 0));
             // 구급 처치: 쓰러진 사람 곁에 무릎 꿇고, 두 손으로 처치를 이어 가다, 끝나면 일어선다.
@@ -233,31 +235,52 @@ namespace ChooGuard.Editor
         }
 
         /// <summary>
-        /// Lying where they fell: the last frame of the fall held still, so the fall ends in it without a blend. Rocketbox has
-        /// no such clip. Travel is not part of the fall, so the body lies over the agent position.
+        /// Lying on the back where they fell (supine, the position for chest compressions and AED pads): the muscles of the
+        /// standing idle's first frame (arms by the sides, legs straight), the body turned onto its back and lowered to the
+        /// floor. Rocketbox and the Universal library have no such clip. Travel is not part of it, so the body lies over the
+        /// agent position; the clip settings follow the fall so the orientation reads the same way.
         /// </summary>
-        private static AnimationClip BuildLyingClip(AnimationClip fall)
+        private static AnimationClip BuildSupineClip(AnimationClip fall, AnimationClip idle)
         {
             var clip = new AnimationClip { name = "Person_Lying" };
-            foreach (var binding in AnimationUtility.GetCurveBindings(fall))
+            foreach (var binding in AnimationUtility.GetCurveBindings(idle))
             {
-                // 근육·몸 위치(RootT/Q)·손발 IK 목표만 마지막 프레임 값으로 옮긴다. 이동량(Motion)은 두지 않는다.
                 if (binding.type != typeof(Animator) || binding.propertyName.StartsWith("Motion", StringComparison.Ordinal)) continue;
-                AnimationUtility.SetEditorCurve(clip, binding, AnimationCurve.Constant(0, 1, AnimationUtility.GetEditorCurve(fall, binding).Evaluate(fall.length)));
+                float value = AnimationUtility.GetEditorCurve(idle, binding).Evaluate(0);
+                // 몸 방향: 등을 바닥에, 얼굴을 위로(x 축 -90°). 몸 높이: 엉덩이가 바닥에서 약 12 cm. 손발 IK 목표(RightFootT 등)는 근육을 따르게 뺀다.
+                if (binding.propertyName.EndsWith("T.x", StringComparison.Ordinal) && !binding.propertyName.StartsWith("Root", StringComparison.Ordinal)) continue;
+                if ((binding.propertyName.EndsWith("T.y", StringComparison.Ordinal) || binding.propertyName.EndsWith("T.z", StringComparison.Ordinal) || binding.propertyName.Contains("Q.")) && !binding.propertyName.StartsWith("Root", StringComparison.Ordinal)) continue;
+                var supine = Quaternion.Euler(-90, 0, 0);
+                switch (binding.propertyName)
+                {
+                    case "RootT.x": value = 0; break;
+                    case "RootT.y": value = .12f; break;
+                    case "RootT.z": value = 0; break;
+                    case "RootQ.x": value = supine.x; break;
+                    case "RootQ.y": value = supine.y; break;
+                    case "RootQ.z": value = supine.z; break;
+                    case "RootQ.w": value = supine.w; break;
+                }
+                AnimationUtility.SetEditorCurve(clip, binding, AnimationCurve.Constant(0, 1, value));
             }
             // 몸 방향·높이를 넘어짐과 같은 기준(원본 기준, 자세에 굽기)으로 읽어야 넘어진 그 방향 그대로 눕는다.
             var from = AnimationUtility.GetAnimationClipSettings(fall);
             var settings = AnimationUtility.GetAnimationClipSettings(clip);
+            // 몸 방향·높이 곡선은 원본(Idle)에 없을 수 있으니 반드시 넣는다(take8: 곡선이 없어 선 채로 "누웠다"). 등을 바닥에,
+            // 얼굴을 위로(x 축 -90°), 엉덩이는 바닥에서 12 cm. 회전·높이를 자세에 굽고(bake), 원본 기준으로 읽는다.
+            var supineQ = Quaternion.Euler(-90, 0, 0);
+            foreach (var (property, value) in new (string, float)[] { ("RootT.x", 0), ("RootT.y", .12f), ("RootT.z", 0), ("RootQ.x", supineQ.x), ("RootQ.y", supineQ.y), ("RootQ.z", supineQ.z), ("RootQ.w", supineQ.w) })
+                AnimationUtility.SetEditorCurve(clip, EditorCurveBinding.FloatCurve("", typeof(Animator), property), AnimationCurve.Constant(0, 1, value));
             settings.loopTime = true;
-            settings.loopBlendOrientation = from.loopBlendOrientation;
-            settings.loopBlendPositionY = from.loopBlendPositionY;
-            settings.loopBlendPositionXZ = from.loopBlendPositionXZ;
-            settings.keepOriginalOrientation = from.keepOriginalOrientation;
-            settings.keepOriginalPositionY = from.keepOriginalPositionY;
-            settings.keepOriginalPositionXZ = from.keepOriginalPositionXZ;
-            settings.heightFromFeet = from.heightFromFeet;
-            settings.orientationOffsetY = from.orientationOffsetY;
-            settings.level = from.level;
+            settings.loopBlendOrientation = true;
+            settings.loopBlendPositionY = true;
+            settings.loopBlendPositionXZ = true;
+            settings.keepOriginalOrientation = true;
+            settings.keepOriginalPositionY = true;
+            settings.keepOriginalPositionXZ = true;
+            settings.heightFromFeet = false;
+            settings.orientationOffsetY = 0;
+            settings.level = 0;
             AnimationUtility.SetAnimationClipSettings(clip, settings);
             if (File.Exists(LyingClipPath)) AssetDatabase.DeleteAsset(LyingClipPath);
             AssetDatabase.CreateAsset(clip, LyingClipPath);

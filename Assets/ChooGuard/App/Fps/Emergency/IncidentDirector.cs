@@ -43,6 +43,8 @@ namespace ChooGuard.App.Fps.Emergency
         {
             target = null;
             if (!PlayerKnowsIncident || Stage != Phase.Incident) return false;
+            // 쓰러진 사람을 확인했고 AED 가 아직 곁에 없으면 길 안내는 먼저 AED 보관함으로 간다(2026-10-31).
+            if (TryAedErrand(out var errand)) { target = errand; return true; }
             if (Main != null && GuideTarget(Main)) { target = Main; return true; }
             foreach (var hazard in all)
                 if (GuideTarget(hazard)) { target = hazard; return true; }
@@ -140,7 +142,8 @@ namespace ChooGuard.App.Fps.Emergency
             session.Observer = Observe;
             session.Hud.Radio.Posted += OnRadioPosted;
             Facilities.StationSignals.CallPointPressed += CallPoint;
-            if (jev == null || !jev.Available)
+            BeginPractice();
+            if (!Practicing && (jev == null || !jev.Available))
             {
                 // 비상상황은 JEV 만 만든다. 키가 없으면 근무는 평온하게 흐르고, 그 사실을 처음부터 알린다.
                 session.Hud.Toast(jev != null && jev.Source == JevKeySource.Off ? "JEV 가 꺼져 있어(TYPESAFE_API_KEY=off) 비상상황이 만들어지지 않습니다" : "JEV 키가 없어 비상상황이 만들어지지 않습니다 · 타이틀의 'JEV 연결'에서 키를 입력하세요", 9f);

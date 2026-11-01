@@ -1,0 +1,34 @@
+{
+ "source": "Meshy AI Text to 3D (Meshy 6 Lite) + AI Texturing (Meshy 6 Lite, PBR)",
+ "generated": "2026-10-31",
+ "plan": "Free",
+ "license": "CC BY 4.0 (attribution: Meshy)",
+ "kind": "aed_open",
+ "meshy_task_ids": {
+  "preview": "01a19053-277d-7426-bcf0-d0fa53f73a1c",
+  "texture": "01a19054-4144-77c2-91b1-9e3ced303c14"
+ },
+ "prompt": "portable automated external defibrillator AED, compact yellow hard carry case standing on the floor with its lid hinged fully open and folded back, inside the open case a flat dark grey control panel with a small round speaker grille and an empty shallow pad compartment, green band on the lid, rounded corners, no pads, no cables, no text, no letters, game asset, realistic",
+ "note": "shown in place of aed_unit while the device is switched on; width matched to aed_unit (0.311 m)",
+ "name": "aed_open",
+ "triangles_source": 170462,
+ "triangles": 6000,
+ "decimate_ratio": 0.0352,
+ "size_m": [
+  0.311,
+  0.259,
+  0.334
+ ],
+ "origin": "bottom centre",
+ "units": "metres",
+ "textures": {
+  "baseColor": "aed_open_BaseColor.png",
+  "normal": "aed_open_Normal.png",
+  "metallicSmoothness": "aed_open_MetallicSmoothness.png (R=metallic, A=1-roughness)"
+ },
+ "post_process": "Blender 4.5 decimate + scale (x extent -> 0.311 m) + origin bottom (prep_meshy2.py) + split into body/lid (prep_split_lid.py, rim z 0.079, hinge y 0.130, lid 2398 tris)",
+ "parts": {
+  "body": "aed_open",
+  "lid": "뚜껑 (origin on the hinge line: back edge, rim height; swung shut by AedUnit while the device is off)"
+ }
+}

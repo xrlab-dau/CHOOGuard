@@ -1,0 +1,94 @@
+{
+  "at": "2026-10-30T19:32:37.8724147Z",
+  "family": "심정지",
+  "shiftSeconds": 30.0,
+  "zone": "hall2f",
+  "indoorOnly": true,
+  "zones": [
+    "hall2f",
+    "main2f"
+  ],
+  "candidates": {
+    "family": 2,
+    "outdoor": 0,
+    "unknownPosition": 0,
+    "otherZone": 1
+  },
+  "kind": "chest_pain",
+  "key": "chest_pain_3",
+  "description": "passenger #3 (woman, elderly, bag), sitting on a bench (2F waiting hall) at 2F waiting hall, 2층 맞이방 대합실 의자 구역, clutches their chest in sudden pain.",
+  "levels": [
+    "chest tightness, sits down to rest",
+    "severe chest pain and cold sweat, sits on the floor",
+    "chest pain, then faints",
+    "collapses unconscious but breathing",
+    "collapses and is not breathing normally (cardiac arrest)"
+  ],
+  "magnitude": 0.75,
+  "onset": "worsen",
+  "guidance": [
+    {
+      "label": "응급 환자",
+      "where": "2층 맞이방 대합실 의자 구역",
+      "visible": "승객이 의식을 잃고 쓰러짐(숨은 쉼)",
+      "reportable": true,
+      "reportOption": "2층 맞이방 대합실 의자 구역 응급 환자 보고",
+      "reportLine": "역무실, 2층 맞이방 대합실 의자 구역에 가슴 통증을 호소하는 승객 있습니다. 승객이 의식을 잃고 쓰러짐(숨은 쉼).",
+      "officeReply": "역무실 수신. 119 구급 요청하겠습니다. 환자 곁을 지키고 주변을 비워 주십시오."
+    }
+  ],
+  "radioOpen": [
+    "역무실 · 2층 맞이방 대합실 의자 구역 응급 환자 보고"
+  ],
+  "radioSent": [
+    "역무실 · 2층 맞이방 대합실 의자 구역 응급 환자 보고"
+  ],
+  "roleBoundary": {
+    "repairAttempted": false
+  },
+  "startLevel": 3,
+  "worsenedAt": 90.2,
+  "level": 4,
+  "notBreathingNormally": true,
+  "aedAt": null,
+  "handover": "2층 맞이방 대합실 의자 구역 응급 환자 처치 전",
+  "treated": false,
+  "timeline": [
+    {
+      "t": 30.0,
+      "clock": "14:00:30",
+      "text": "승객 1명 부상 (의식을 잃고 쓰러짐(숨은 쉼)) · 2층 맞이방 대합실 의자 구역"
+    },
+    {
+      "t": 30.0,
+      "clock": "14:00:30",
+      "text": "응급 환자 · 2층 맞이방 대합실 의자 구역 — 의식을 잃고 쓰러짐(숨은 쉼)"
+    },
+    {
+      "t": 30.2,
+      "clock": "14:00:30",
+      "text": "역무원 인지 · 응급 환자 · 2층 맞이방 대합실 의자 구역 (practice)"
+    },
+    {
+      "t": 30.2,
+      "clock": "14:00:30",
+      "text": "역무실에 응급 환자 보고 · 2층 맞이방 대합실 의자 구역"
+    },
+    {
+      "t": 30.2,
+      "clock": "14:00:30",
+      "text": "구급대 출동 요청 (역무실 신고)"
+    },
+    {
+      "t": 30.4,
+      "clock": "14:00:30",
+      "text": "역무원이 부상 승객을 확인 · 2층 맞이방 대합실 의자 구역"
+    },
+    {
+      "t": 90.2,
+      "clock": "14:01:30",
+      "text": "환자 상태 악화 · 2층 맞이방 대합실 의자 구역 — 의식을 잃고 숨을 제대로 쉬지 않음"
+    }
+  ],
+  "result": "reported"
+}

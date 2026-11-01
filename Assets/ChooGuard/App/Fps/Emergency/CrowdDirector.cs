@@ -297,6 +297,26 @@ namespace ChooGuard.App.Fps.Emergency
             return Claim(best, who);
         }
 
+        /// <summary>
+        /// The helpers crouched at a casualty step back to <paramref name="distance"/> m when the paramedics arrive, so the team
+        /// can kneel at the chest without pushing through them (take6/take7: the lead stood in a helper and never knelt).
+        /// Returns how many stepped back.
+        /// </summary>
+        public int StandBackFrom(Vector3 point, float distance = 2.2f)
+        {
+            int moved = 0;
+            foreach (var person in People)
+            {
+                if (person == null || !person.Helping || person.Focus == null) continue;
+                var d = person.Focus.Position - point;
+                d.y = 0;
+                if (d.sqrMagnitude > 9f) continue;
+                person.StandBack(point, distance);
+                moved++;
+            }
+            return moved;
+        }
+
         /// <summary>Holds <paramref name="spot"/> for <paramref name="who"/> for a few seconds so nobody else is sent there meanwhile.</summary>
         public Vector3 Claim(Vector3 spot, Passenger who)
         {
