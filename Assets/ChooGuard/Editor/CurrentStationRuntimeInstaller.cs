@@ -81,11 +81,11 @@ namespace ChooGuard.Editor
             runtime.AddComponent<StationPlayPanel>();runtime.SetActive(true);
             EditorSceneManager.MarkSceneDirty(scene);
             if(!EditorSceneManager.SaveScene(scene))throw new IOException("Could not save current station runtime.");
-            EditorSceneManager.playModeStartScene=AssetDatabase.LoadAssetAtPath<SceneAsset>("Assets/ChooGuard/Scenes/Bootstrap.unity"); // Product entry always offers the requested mode choice.
+            EditorSceneManager.playModeStartScene=null; // Play the selected presentation scene directly.
             AssetDatabase.SaveAssets();
             var receipt=new JObject{["status"]="APPLIED_AND_SAVED",["scene"]=ScenePath,["sceneSha256"]=Hash(ScenePath),["sourceInventorySceneSha256"]=(string)expected["sourceSceneSha256"],
                 ["currentSourceObjects"]=references.Count,["runtimeRoot"]=runtime.name,["passengerModels"]=simulator.PassengerModels.Length,["providerFont"]=AssetDatabase.GetAssetPath(font),
-                ["playModeStartScene"]="Bootstrap mode selection",["agentPlayOrValidationRun"]=false,["sourceGeometryRebuilt"]=false,["modelRequests"]=0};
+                ["playModeStartScene"]="Selected presentation scene",["agentPlayOrValidationRun"]=false,["sourceGeometryRebuilt"]=false,["modelRequests"]=0};
             File.WriteAllText(ReceiptPath,receipt.ToString());
             authority=JObject.Parse(File.ReadAllText(".state/WRITER-AUTHORITY.json"));
             authority["latest_scene_sha256"]=(string)receipt["sceneSha256"];authority["current_scene_state"]="CURRENT_STATION_PROVIDER_NPC_RUNTIME_APPLIED_AND_SAVED";
