@@ -1,3 +1,7 @@
+// Movement action lifecycle and composite adapted from Unity-Technologies/InputSystem
+// 54b1581acb600c1f00998505af19a644795ef9b8 (1.20.2), SimpleDemo samples.
+// Input System © 2023 Unity Technologies. Unity Companion License for Unity-dependent
+// projects; see foundation-references/InputSystem-LICENSE.md (source-available, not MIT).
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +23,7 @@ namespace ChooGuard.App.Fps
         public bool ExternalInputMode { get; private set; }
         public bool SuppressLookInput { get; set; }
         public bool SuppressInteractionInput { get; set; }
+        public bool MovementBlocked { get; set; }
         public bool HasFocus { get; private set; }
         public bool HasTarget=>targetBehaviour!=null;
         public IFpsInteraction CurrentInteraction=>target;
@@ -42,6 +47,7 @@ namespace ChooGuard.App.Fps
         public float YawDegrees=>yaw;
         public event Action<bool> PauseChanged;
         public event Action<string> FeedbackChanged;
+        private InputAction moveAction;
         private CharacterController body;
         private MonoBehaviour targetBehaviour;
         private IFpsInteraction target;
@@ -59,6 +65,15 @@ namespace ChooGuard.App.Fps
         private static bool Finite(float f)=>!float.IsNaN(f)&&!float.IsInfinity(f);
         private void Awake()
         {
+            // SimpleControls.inputactions up/down/left/right composite, with arrows added
+            // as alternate controls of the SAME parts: mixed keys combine, duplicates do not add.
+            // Digital mode retains the existing Simulate ClampMagnitude normalization.
+            moveAction=new InputAction("Move",InputActionType.Value,expectedControlType:"Vector2");
+            moveAction.AddCompositeBinding("2DVector(mode=1)")
+                .With("up","<Keyboard>/w").With("up","<Keyboard>/upArrow")
+                .With("down","<Keyboard>/s").With("down","<Keyboard>/downArrow")
+                .With("left","<Keyboard>/a").With("left","<Keyboard>/leftArrow")
+                .With("right","<Keyboard>/d").With("right","<Keyboard>/rightArrow");
             body=GetComponent<CharacterController>();
             body.height=Mathf.Clamp(BodyHeight,1.4f,2.1f);body.radius=Mathf.Clamp(BodyRadius,.2f,.4f);body.center=Vector3.up*(body.height*.5f);body.skinWidth=.025f;body.stepOffset=.28f;body.slopeLimit=45;body.minMoveDistance=0;
             if(PlayerCamera==null){var cameraObject=new GameObject("FirstPersonCamera",typeof(Camera));cameraObject.transform.SetParent(transform,false);PlayerCamera=cameraObject.GetComponent<Camera>();}
@@ -66,8 +81,9 @@ namespace ChooGuard.App.Fps
             PlayerCamera.transform.localPosition=new Vector3(0,Mathf.Clamp(EyeHeight,1.2f,body.height-.05f),0);PlayerCamera.nearClipPlane=.05f;
             yaw=transform.eulerAngles.y;pitch=0;PlayerCamera.transform.localRotation=Quaternion.identity;
         }
-        private void OnEnable(){HasFocus=UnityEngine.Application.isFocused;IsPaused=true;firstCaptureFrame=Time.frameCount+1;UnlockPointer();}
-        private void OnDisable(){Pause();UnlockPointer();}
+        private void OnEnable(){moveAction.Enable();HasFocus=UnityEngine.Application.isFocused;IsPaused=true;firstCaptureFrame=Time.frameCount+1;UnlockPointer();}
+        private void OnDisable(){moveAction.Disable();Pause();UnlockPointer();}
+        private void OnDestroy(){moveAction?.Dispose();}
         // External input (verification adapter) does not come from this window, so losing OS focus must not pause it.
         private void OnApplicationFocus(bool focused){HasFocus=focused;if(!focused&&!ExternalInputMode){suppressCaptureUntilRelease=true;Pause();}}
         private void OnApplicationPause(bool paused){if(paused&&!ExternalInputMode){suppressCaptureUntilRelease=true;Pause();}}
@@ -111,8 +127,7 @@ namespace ChooGuard.App.Fps
                 if(Time.frameCount>=firstCaptureFrame&&mouse!=null&&mouse.leftButton.wasPressedThisFrame&&(EventSystem.current==null||!EventSystem.current.IsPointerOverGameObject()))Resume();return;
             }
             if(Cursor.lockState!=CursorLockMode.Locked){Pause();return;}
-            Vector2 movement=Vector2.zero;
-            if(keyboard!=null){if(keyboard.wKey.isPressed)movement.y++;if(keyboard.sKey.isPressed)movement.y--;if(keyboard.dKey.isPressed)movement.x++;if(keyboard.aKey.isPressed)movement.x--;}
+            Vector2 movement=MovementBlocked?Vector2.zero:moveAction.ReadValue<Vector2>();
             if(Time.deltaTime>MaxFrameSeconds){ShowFeedback("긴 화면 지연으로 일시 정지되었습니다. 클릭하여 계속하세요");Pause();return;}
             float wheel=mouse==null?0f:mouse.scroll.ReadValue().y/120f;
             Simulate(movement,mouse==null?Vector2.zero:mouse.delta.ReadValue()*LookDegreesPerPixel,keyboard!=null&&(keyboard.leftShiftKey.isPressed||keyboard.rightShiftKey.isPressed),keyboard!=null&&keyboard.eKey.isPressed,keyboard!=null&&keyboard.spaceKey.isPressed,Time.deltaTime,keyboard!=null&&keyboard.rKey.isPressed,wheel);
@@ -130,7 +145,7 @@ namespace ChooGuard.App.Fps
             if(SuppressLookInput||holding!=null)look=Vector2.zero;
             int steps=Mathf.CeilToInt(deltaSeconds/MaxStepSeconds);float dt=deltaSeconds/steps;yaw=Mathf.Repeat(yaw+Mathf.Clamp(look.x,-45,45),360);pitch=Mathf.Clamp(pitch-Mathf.Clamp(look.y,-45,45),-85,85);
             transform.rotation=Quaternion.Euler(0,yaw,0);PlayerCamera.transform.localRotation=Quaternion.Euler(pitch,0,0);
-            movement=Vector2.ClampMagnitude(movement,1);float speed=Mathf.Clamp(sprint&&!SprintBlocked?SprintSpeed:WalkSpeed,0,5);
+            movement=MovementBlocked?Vector2.zero:Vector2.ClampMagnitude(movement,1);float speed=Mathf.Clamp(sprint&&!SprintBlocked?SprintSpeed:WalkSpeed,0,5);
             bool jumpEdge=jump&&!jumpHeld;jumpHeld=jump;
             LastCollisionFlags=CollisionFlags.None;
             for(int step=0;step<steps;step++)
@@ -179,22 +194,14 @@ namespace ChooGuard.App.Fps
         public void RefreshInteraction()
         {
             ClearTarget();if(IsPaused||PlayerCamera==null)return;
-            // Only the nearest real solid collider is considered. A wall cannot be skipped.
-            // The player's own body is not a wall: a downward gaze clips the character capsule, and a
-            // single-hit raycast used to abandon the query there, making every target below roughly
-            // eye level minus 35 degrees silently unreachable. Self colliders are excluded, not fatal.
-            int count=Physics.RaycastNonAlloc(PlayerCamera.transform.position,PlayerCamera.transform.forward,hitBuffer,Mathf.Clamp(InteractionDistance,.25f,3),InteractionMask,QueryTriggerInteraction.Ignore);
-            if(count==hitBuffer.Length){CurrentPrompt="차폐를 확정할 수 없어 조작을 보류합니다";return;}
-            int nearest=-1;float nearestDistance=float.PositiveInfinity;
-            for(int i=0;i<count;i++)
+            // Preserve legacy self-only filtering and the caller's interaction layer mask.
+            if(!NearestSolidRay.TryCast(PlayerCamera.transform.position,PlayerCamera.transform.forward,
+                Mathf.Clamp(InteractionDistance,.25f,3),InteractionMask,hitBuffer,transform,null,null,
+                out var hit,out bool saturated))
             {
-                var candidateCollider=hitBuffer[i].collider;
-                if(candidateCollider==null||candidateCollider.transform.IsChildOf(transform))continue;
-                if(hitBuffer[i].distance>=nearestDistance)continue;
-                nearest=i;nearestDistance=hitBuffer[i].distance;
+                if(saturated)CurrentPrompt="차폐를 확정할 수 없어 조작을 보류합니다";
+                return;
             }
-            if(nearest<0)return;
-            var hit=hitBuffer[nearest];
             if(cachedCollider!=hit.collider||cachedInteraction==null)
             {
                 cachedCollider=hit.collider;cachedInteraction=null;interactionComponents.Clear();
