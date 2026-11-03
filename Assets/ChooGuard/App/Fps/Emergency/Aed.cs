@@ -86,6 +86,8 @@ namespace ChooGuard.App.Fps.Emergency
 
         public bool CanInteract(FirstPersonResponder responder, out string reason)
         {
+            var lesson = EmergencySession.Current?.CardiacLesson;
+            if (Stored && lesson != null && !lesson.MayFetchAed) { reason = "이 학습에서는 먼저 직접 압박한 뒤 동료의 실제 교대를 확인하세요."; return false; }
             reason = null;
             if (Hands == null || responder == null || responder.IsPaused) { reason = ""; return false; }
             if (Stored || Hands.Aed == Unit) return true;
@@ -140,6 +142,7 @@ namespace ChooGuard.App.Fps.Emergency
         public CollapseHazard Patient { get; private set; }
         /// <summary>The two pads, in the lid, in a hand or on the chest.</summary>
         public AedPad[] Pads => pads;
+        public AedShockControl ShockControl { get; private set; }
         /// <summary>The lid stands open (far enough that the pads inside can be reached).</summary>
         public bool LidOpen => lidAngle >= LidOpenDegrees * .6f;
 
@@ -351,6 +354,9 @@ namespace ChooGuard.App.Fps.Emergency
             }
             button.name = LampName;
             button.transform.localPosition = localPosition;
+            var control = new GameObject("충격 버튼 조작부"); control.transform.SetParent(transform, false);
+            control.transform.localPosition = localPosition;
+            ShockControl = control.AddComponent<AedShockControl>(); ShockControl.Unit = this;
             lampBlock = new MaterialPropertyBlock();
         }
 
@@ -474,7 +480,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (Patient == null) return;
             Patient.Aed = Procedure;
             Procedure.Shockable = () => Patient != null && Patient.Active && Patient.NotBreathingNormally && !Patient.Treated;
-            Procedure.HandsOn = () => Patient != null && Patient.Compressing;
+            Procedure.HandsOn = () => Patient != null && Patient.AnyoneCompressing;
             if (!wired)
             {
                 wired = true;
@@ -494,7 +500,8 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void Speak(string line)
         {
-            if (session != null && session.Hud != null) session.Hud.Toast("AED 음성 · " + line, 5f);
+            session?.CardiacLesson?.ReceiveDeviceInstruction(line);
+            if (session != null && session.Hud != null) session.Hud.Toast("AED 안내 · " + line, 5f);
         }
 
         private void Note(string fact)
@@ -560,6 +567,7 @@ namespace ChooGuard.App.Fps.Emergency
             var hips = animator != null ? animator.GetBoneTransform(HumanBodyBones.Hips) : null;
             var head = animator != null ? animator.GetBoneTransform(HumanBodyBones.Head) : null;
             var chest = animator != null ? animator.GetBoneTransform(HumanBodyBones.Chest) : null;
+            if (chest == null && session?.CardiacLesson != null && animator != null) chest = animator.GetBoneTransform(HumanBodyBones.UpperChest);
             var anchor = chest != null ? chest : Patient.Person.transform;
             var axis = hips != null && head != null ? (head.position - hips.position).normalized : Vector3.forward;
             var side = Vector3.Cross(Vector3.up, axis);
@@ -568,6 +576,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (up.y < 0) up = -up;
             var centre = chest != null ? chest.position : Patient.Person.transform.position + Vector3.up * .25f;
             var at = spot == 0 ? centre + axis * .10f - side * .09f + up * .03f : centre - axis * .08f + side * .13f + up * .03f;
+            if (session?.CardiacLesson != null && session.CardiacLesson.Patient == Patient) at = session.CardiacLesson.PadSite(spot);
             pad.Where = AedPad.Place.Chest;
             pad.transform.SetParent(anchor, true);
             pad.transform.position = at;
@@ -694,6 +703,8 @@ namespace ChooGuard.App.Fps.Emergency
                     feedback = "AED 뚜껑을 열었습니다 · 전원이 켜졌습니다 · 음성 안내를 따르십시오";
                     return true;
                 case AedProcedure.Stage.ShockAdvised:
+                    if (session?.CardiacLesson != null && responder.CurrentInteraction != ShockControl)
+                    { feedback = "깜빡이는 충격 버튼을 바라보고 E로 누르세요."; return false; }
                     if (!Procedure.PressShock()) { feedback = Patient.Compressing ? "가슴압박을 멈추고(R) 환자에게서 떨어진 뒤 누르십시오" : "아직 충전 중입니다"; return false; }
                     feedback = "전기충격 " + Procedure.Shocks + "회 · 즉시 가슴압박 계속(R)";
                     return true;
@@ -708,6 +719,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             feedback = null;
             if (SecondaryPrompt.Length == 0 || responder == null || responder.IsPaused) return false;
+            if (session?.CardiacLesson != null && !session.CardiacLesson.GuardAedLift(out feedback)) return false;
             bool wasOn = Procedure.Current != AedProcedure.Stage.Off;
             Hands.TakeAed(this);
             feedback = wasOn ? "AED 전원을 끄고 패드를 거둬 들었습니다" : "AED 를 들었습니다";

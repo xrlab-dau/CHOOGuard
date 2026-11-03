@@ -34,6 +34,7 @@ namespace ChooGuard.App.Fps.Hud
         private FirstPersonResponder responder;
         private Canvas canvas;
         private Image dot, holdRing, observeRing, vignette;
+        public bool HideTargetPrompt { get; set; }
         private TMP_Text targetName, targetAction, toast, observation, clock, situation, hints, agencyStatus;
         private readonly List<SlotView> slots = new List<SlotView>();
         private RectTransform slotRow;
@@ -213,6 +214,7 @@ namespace ChooGuard.App.Fps.Hud
             bool paused = responder.IsPaused;
             canvas.enabled = !paused;
             if (paused) return;
+            targetName.enabled = targetAction.enabled = !HideTargetPrompt;
 
             // 손잡이를 잡은 동안은 시선이 문짝을 벗어나도 잡고 있는 것을 보인다.
             bool holding = responder.Holding;
