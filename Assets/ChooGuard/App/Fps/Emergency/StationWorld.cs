@@ -91,7 +91,7 @@ namespace ChooGuard.App.Fps.Emergency
                     go.transform.SetParent(links.transform, false);
                     var escalator = go.AddComponent<Escalator>();
                     escalator.Setup(entry,!useCurrentSource);
-                    escalator.AddStopButtons(stops);
+                    escalator.AddStopButtons(stops, art.EscalatorStopModel);
                     Escalators.Add(escalator);
                 }
                 foreach (var entry in useCurrentSource?Array.Empty<StationPoints.ElevatorEntry>():Points.Elevators)
