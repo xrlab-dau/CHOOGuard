@@ -148,6 +148,8 @@ namespace ChooGuard.App.Fps.Emergency
 
         private Passenger Spawn(Vector3 position, float yaw, Passenger.Purpose trip)
         {
+            if (Session.IsCardiacTutorial && Mathf.Abs(position.y - 7f) < 2f &&
+                Vector3.Distance(position, new Vector3(-22.61f, 7f, -62.05f)) < 9f) return null;
             bool female = World.Chance(.5f);
             var pool = female ? catalog.FemalePassengers : catalog.MalePassengers;
             if (pool == null || pool.Length == 0) return null;
@@ -164,6 +166,18 @@ namespace ChooGuard.App.Fps.Emergency
             Spawned++;
             person.Setup(this, Spawned, trip, World.Random);
             if (trip == Passenger.Purpose.Depart) Book(person);
+            People.Add(person);
+            return person;
+        }
+
+        public Passenger SpawnLessonPatient(Vector3 position, Vector3 facing)
+        {
+            if (!Session.IsCardiacTutorial || catalog.MalePassengers.Length == 0) return null;
+            var go = Instantiate(catalog.MalePassengers[0], position, Quaternion.LookRotation(facing), root);
+            go.name = "학습 대상 · 반응 없는 승객";
+            var person = go.AddComponent<Passenger>();
+            Spawned++;
+            person.Setup(this, Spawned, Passenger.Purpose.Visit, World.Random);
             People.Add(person);
             return person;
         }

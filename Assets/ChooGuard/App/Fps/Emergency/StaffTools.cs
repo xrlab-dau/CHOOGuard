@@ -435,6 +435,8 @@ namespace ChooGuard.App.Fps.Emergency
         public string AttachPadTo(Passenger person)
         {
             if (Pad == null) return null;
+            if (session.CardiacLesson != null && !session.CardiacLesson.AimingAtPadSite())
+                return "표시된 가슴 부위를 바라보고 E로 패드 부착을 연습하세요. 의복 제거 표현은 미구현입니다.";
             var pad = Pad;
             var unit = pad.Unit;
             if (unit == null || unit.Patient == null || unit.Patient.Person != person) return "AED 가 이 환자 곁에 있지 않습니다 · 패드는 곁에 둔 AED 의 환자에게만 붙습니다";
@@ -539,6 +541,7 @@ namespace ChooGuard.App.Fps.Emergency
                 // 빈손으로 환자 곁에 무릎 꿇고 가슴압박 중이면 그 사실이 손 칸에 보인다.
                 var compressing = session != null && session.Incidents != null ? session.Incidents.CompressingCasualty : null;
                 if (compressing == null) return null;
+                if (session.CardiacLesson != null) return new GameHud.Slot { Label = "가슴압박 중", Hint = "환자에 R · 멈추기", Fill = 1, Active = true };
                 return new GameHud.Slot { Label = "가슴압박 중 · " + compressing.Where, Hint = "R · 멈추기   AED 가 물러나라 하면 환자에 E · \"물러나세요\"", Fill = 1, Active = true };
             }
             string hint = !Held.PinPulled ? "좌클릭 길게 · 안전핀" : Held.Agent <= .01f ? "약제 없음 · G 놓기" : "좌클릭 · 분사  G · 놓기";
