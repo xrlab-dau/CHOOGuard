@@ -173,7 +173,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// relative to the belt end at that landing (side of a rider, height, distance out onto the landing, distance from the centre line).
         /// A landing with no record gets no button.
         /// </summary>
-        public void AddStopButtons(IReadOnlyList<EscalatorStopSurvey.Record> records)
+        public void AddStopButtons(IReadOnlyList<EscalatorStopSurvey.Record> records, GameObject buttonModel = null)
         {
             // 경로는 타는 쪽 계단참 → 벨트 시작 … 벨트 끝 → 내리는 쪽 계단참이다. 계단참 점은 navmesh 로 옆으로 비켜 있을 수 있어
             // 벨트 끝(디딤판이 계단참 바닥과 만나는 곳)과 벨트 전체 방향을 기준으로 삼는다.
@@ -188,10 +188,108 @@ namespace ChooGuard.App.Fps.Emergency
                 bool atStart = record.AtBottom == startIsBottom;
                 var landing = atStart ? Entry.path[beltStart] : Entry.path[beltEnd];
                 var outward = atStart ? -travel : travel;
-                var position = landing + outward * record.along + right * ((record.OnLeft ? -1f : 1f) * record.offset) + Vector3.up * record.height;
-                EscalatorStopButton.Build(this, position, outward);
+                var sideways = right * (record.OnLeft ? -1f : 1f);
+                var surveyed = landing + outward * record.along + sideways * record.offset + Vector3.up * record.height;
+                if (!MountOnNamedTwin(record.mountObject, landing, outward, sideways, record.height, out var position, out var facing))
+                    MountOnTwin(surveyed, outward, sideways, out position, out facing);
+                EscalatorStopButton.Build(this, position, facing, buttonModel);
                 StopButtons++;
             }
+        }
+
+        /// <summary>How far from the surveyed point the twin's own escalator surface may be for the plate to be put on it (m).</summary>
+        public const float MountReach = .6f;
+        // 이름이 주어진 트윈 메시에서 난간 끝을 찾는 범위: 벨트 끝에서 앞뒤로 이 거리(m)까지, 이 간격으로 훑는다. 옆으로는 이만큼 떨어진 곳에서 쏜다.
+        private const float NewelSpan = 5f, NewelStep = .1f, NewelAcross = 8f;
+        private static readonly float[] NewelInsets = { .005f, .02f, .04f, .07f, .1f, .14f, .2f };
+
+        /// <summary>
+        /// Puts the plate on the named twin mesh's balustrade end at this landing, on the record's side: from out on the landing inward,
+        /// a horizontal probe across the lane at the record's height finds where that mesh's balustrade face on that side begins (the
+        /// newel), and a probe from the landing back toward the belt finds its end face; the plate goes on the end face (facing out onto
+        /// the landing), or on the balustrade face itself when there is no end face. The twin's donor escalator models may stand some
+        /// metres from the navmesh belt path (2F-3F pair, 2026-10-27), so the path's own offsets are not trusted here. False when no
+        /// collider of that name is in the scene or the mesh has no such face within <see cref="NewelSpan"/> of the landing.
+        /// </summary>
+        public static bool MountOnNamedTwin(string meshName, Vector3 landing, Vector3 outward, Vector3 sideways, float height, out Vector3 mounted, out Vector3 facing)
+        {
+            mounted = landing; facing = outward;
+            if (string.IsNullOrEmpty(meshName)) return false;
+            Collider twin = null;
+            float nearest = float.PositiveInfinity;
+            foreach (var c in Object.FindObjectsByType<Collider>(FindObjectsSortMode.None))
+            {
+                if (c.name != meshName) continue;
+                float d = c.bounds.SqrDistance(landing);
+                if (d < nearest) { nearest = d; twin = c; }
+            }
+            if (twin == null) { Debug.LogWarning("[EscalatorStops] 붙일 트윈 메시를 찾지 못함: " + meshName); return false; }
+            float y = landing.y + height;
+            for (float a = NewelSpan; a >= -NewelSpan; a -= NewelStep)
+            {
+                var from = landing + outward * a + sideways * NewelAcross; from.y = y;
+                if (!FaceOf(twin, from, -sideways, NewelAcross * 2f, sideways, out var side)) continue;
+                // 끝면: 바깥면에서 조금씩 안쪽으로 들어간 선을 따라 승강장 쪽에서 벨트 쪽으로 쏜다(유리 끝은 얇고 둥글어 한 줄로는 비껴간다).
+                foreach (float inset in NewelInsets)
+                {
+                    var endFrom = side.point - sideways * inset + outward * .6f;
+                    if (FaceOf(twin, endFrom, -outward, 1.5f, outward, out var end)) { Mount(end, out mounted, out facing); return true; }
+                }
+                Mount(side, out mounted, out facing);
+                return true;
+            }
+            Debug.LogWarning("[EscalatorStops] " + meshName + " 에서 벨트 끝 " + landing.ToString("F1") + " 근처의 난간 면을 찾지 못함");
+            return false;
+        }
+
+        /// <summary>The nearest face of <paramref name="twin"/> along the ray whose normal leans toward <paramref name="wantNormal"/>.</summary>
+        private static bool FaceOf(Collider twin, Vector3 origin, Vector3 direction, float length, Vector3 wantNormal, out RaycastHit face)
+        {
+            face = default;
+            float best = float.PositiveInfinity;
+            foreach (var hit in Physics.RaycastAll(origin, direction, length, ~(1 << 2), QueryTriggerInteraction.Ignore))
+            {
+                if (hit.collider != twin || hit.distance >= best || Vector3.Dot(hit.normal, wantNormal) < .5f) continue;
+                best = hit.distance; face = hit;
+            }
+            return best < float.PositiveInfinity;
+        }
+
+        private static void Mount(RaycastHit face, out Vector3 mounted, out Vector3 facing)
+        {
+            facing = face.normal; facing.y = 0; facing.Normalize();
+            mounted = face.point + facing * .003f;
+        }
+
+        /// <summary>
+        /// Puts the plate on the twin's own escalator geometry next to the surveyed point (a record gives the place to a few centimetres,
+        /// the mesh the exact face): a horizontal probe through the point from out on the landing toward the belt finds the newel end;
+        /// failing that, probes from the centre line outward and from outside inward find the balustrade faces. The hit nearest the
+        /// point within <see cref="MountReach"/> is the mount, its face normal the plate's facing. Nothing near: the surveyed point stands.
+        /// </summary>
+        public static bool MountOnTwin(Vector3 point, Vector3 outward, Vector3 sideways, out Vector3 mounted, out Vector3 facing)
+        {
+            mounted = point; facing = outward;
+            var probes = new[] { (point + outward * MountReach, -outward), (point - sideways * MountReach, sideways), (point + sideways * MountReach, -sideways) };
+            for (int p = 0; p < probes.Length; p++)
+            {
+                float best = MountReach;
+                bool found = false;
+                foreach (var hit in Physics.RaycastAll(probes[p].Item1, probes[p].Item2, MountReach * 2f, ~(1 << 2), QueryTriggerInteraction.Ignore))
+                {
+                    if (Mathf.Abs(hit.normal.y) > .7f) continue;   // 데크 윗면·바닥은 붙일 곳이 아니다
+                    float away = Vector3.Distance(hit.point, point);
+                    if (away >= best) continue;
+                    if (hit.collider.GetComponentInParent<Escalator>() != null || hit.collider.GetComponentInParent<PersonBody>() != null || hit.collider.GetComponentInParent<FirstPersonResponder>() != null) continue;
+                    var face = hit.normal; face.y = 0;
+                    if (face.sqrMagnitude < 1e-4f) continue;
+                    best = away; found = true;
+                    facing = face.normalized;
+                    mounted = hit.point + facing * .003f;
+                }
+                if (found) return true;   // 뉴얼 끝면이 있으면 그곳, 없을 때만 난간 옆면
+            }
+            return false;
         }
 
         private static Vector3 Horizontal(Vector3 v) { v.y = 0; return v.sqrMagnitude > 1e-6f ? v.normalized : Vector3.forward; }

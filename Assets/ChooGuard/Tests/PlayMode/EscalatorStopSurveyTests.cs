@@ -45,6 +45,33 @@ namespace ChooGuard.Tests.PlayMode
         }
 
         [Test]
+        public void ARecordNamingTheTwinMeshPutsTheButtonOnThatMeshesNewelEnd()
+        {
+            // 올라가는 에스컬레이터: 벨트는 (0,0,0)에서 +z 로 (0,7,12)까지. 타는 사람의 오른쪽은 +x, 아래 승강장의 바깥은 -z.
+            // 트윈의 난간(이름 있는 메시)은 경로에서 옆으로 비켜 x 1.0..1.4 에 서서 승강장 쪽으로 z -0.5 까지 나와 있다. 기록의 offset 0.8 은 그 안쪽이라 믿지 않는다.
+            root = new GameObject("시험 에스컬레이터");
+            var newel = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            newel.name = "시험 난간 메시";
+            newel.transform.SetParent(root.transform, false);
+            newel.transform.position = new Vector3(1.2f, .4f, 1.25f);
+            newel.transform.localScale = new Vector3(.4f, .8f, 3.5f);
+            var escalator = new GameObject("상행").AddComponent<Escalator>();
+            escalator.transform.SetParent(root.transform, false);
+            escalator.Setup(new StationPoints.EscalatorEntry { id = "esc-test", label = "시험", path = new[] { new Vector3(0, 0, 0), new Vector3(0, 7, 12) } });
+            Physics.SyncTransforms();
+            escalator.AddStopButtons(EscalatorStopSurvey.Load(Records(
+                "{\"escalator\":\"esc-test\",\"landing\":\"bottom\",\"side\":\"right\",\"mount\":\"newel\",\"height\":0.3,\"along\":0.2,\"offset\":0.8,\"mountObject\":\"시험 난간 메시\",\"placementEvidence\":\"test fixture only\"}")));
+
+            var button = root.GetComponentInChildren<EscalatorStopButton>();
+            Assert.That(button, Is.Not.Null);
+            // 난간 바깥면(x 1.4) 바로 안쪽, 승강장 쪽 끝면(z -0.5) 위, 기록의 높이 0.3 에, 승강장(-z)을 향한다.
+            Assert.That(button.transform.position.x, Is.EqualTo(1.395f).Within(.02f));
+            Assert.That(button.transform.position.y, Is.EqualTo(.3f).Within(.02f));
+            Assert.That(button.transform.position.z, Is.EqualTo(-.5f).Within(.02f));
+            Assert.That(Vector3.Dot(button.transform.forward, Vector3.back), Is.GreaterThan(.99f));
+        }
+
+        [Test]
         public void AnEscalatorWithoutRecordsHasNoStopButton()
         {
             root = new GameObject("시험 에스컬레이터");
