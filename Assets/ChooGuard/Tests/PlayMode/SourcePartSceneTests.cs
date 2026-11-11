@@ -19,7 +19,10 @@ namespace ChooGuard.Tests.PlayMode
         {
             using(new ProviderAwakeDeferral(Type.GetType(RetainedEmergencySessionFixture.ProviderTypeName,true)))
             {
-                yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(ChooGuard.App.Fps.Shell.SceneFlow.StationScene,UnityEngine.SceneManagement.LoadSceneMode.Single);
+                // Inspect the actual source map independently of the shipping scene list.
+                yield return UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(
+                    "Assets/ChooGuard/Scenes/FpsStation.unity",
+                    new UnityEngine.SceneManagement.LoadSceneParameters(UnityEngine.SceneManagement.LoadSceneMode.Single));
                 yield return null;
             }
             var runs=UnityEngine.Object.FindObjectsByType<ChooGuard.Circulation.PlatformEscalatorRun>(FindObjectsInactive.Include,FindObjectsSortMode.None);

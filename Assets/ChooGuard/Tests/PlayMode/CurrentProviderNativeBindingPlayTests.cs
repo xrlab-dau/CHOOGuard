@@ -15,7 +15,7 @@ using UnityEngine.TestTools;
 namespace ChooGuard.Tests.PlayMode
 {
     // This fixture deliberately does NOT inherit the retained-session selector.
-    // Its one integration test executes the actual default provider preparation.
+    // Its integration test explicitly selects the installed provider for preparation.
     public sealed class CurrentProviderNativeBindingPlayTests
     {
         const BindingFlags Members=BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic;
@@ -114,13 +114,28 @@ namespace ChooGuard.Tests.PlayMode
             var native=new Dictionary<GameObject,(bool self,bool hierarchy)>();
             using(deferral=new ProviderAwakeDeferral(providerType))
             {
+                // Source-contract tests inspect the saved map even when the shipping
+                // build profile contains only the train demonstration.
+#if UNITY_EDITOR
+                yield return UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(
+                    "Assets/ChooGuard/Scenes/FpsStation.unity",new LoadSceneParameters(LoadSceneMode.Single));
+#else
                 yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene,LoadSceneMode.Single);
+#endif
                 scene=SceneManager.GetSceneByName(SceneFlow.StationScene);
                 Assert.That(scene.isLoaded,Is.True);
                 var providerRoots=scene.GetRootGameObjects().Where(root=>root.GetComponent(providerType)!=null).ToArray();
                 Assert.That(providerRoots.Length,Is.EqualTo(1));
                 Assert.That(providerRoots[0].name,Is.EqualTo(RetainedEmergencySessionFixture.ProviderRootName));
-                Assert.That(providerRoots[0].activeInHierarchy,Is.True,"The current-provider fixture must keep the default provider active.");
+                // The demonstration saves this optional control root inactive. Enable
+                // only that geometry-free root while Awake preparation is deferred.
+                var control=providerRoots[0];
+                Assert.That(control.GetComponentsInChildren<Renderer>(true),Is.Empty);
+                Assert.That(control.GetComponentsInChildren<Collider>(true),Is.Empty);
+                Assert.That(control.GetComponentsInChildren<MeshFilter>(true),Is.Empty);
+                Assert.That(control.GetComponentsInChildren<Terrain>(true),Is.Empty);
+                control.SetActive(true);
+                Assert.That(control.activeInHierarchy,Is.True,"The fixture must explicitly activate the installed provider.");
                 provider=providerRoots[0].GetComponent(providerType);
                 Assert.That((bool)Property(provider,"IsPrepared"),Is.False,"Capture native objects before provider-created supports or agents.");
                 adapter=Field(provider,"WorldSnapshot");Assert.That(adapter,Is.Not.Null);
