@@ -16,6 +16,46 @@ namespace ChooGuard.Tests.PlayMode
         static readonly Dictionary<string,string> hashes=new Dictionary<string,string>();
         internal static JObject Read(string name)=>JObject.Parse(File.ReadAllText("content/fixtures/architecture/"+name+".json"));
         static string Norm(string value)=>value.Normalize(System.Text.NormalizationForm.FormC);
+        static List<Vector4> VertexChannel(Mesh mesh,int attribute)
+        {
+            var values=new List<Vector4>();
+            if(attribute==0)values.AddRange(mesh.vertices.Select(value=>new Vector4(value.x,value.y,value.z,0)));
+            else if(attribute==1)values.AddRange(mesh.normals.Select(value=>new Vector4(value.x,value.y,value.z,0)));
+            else if(attribute==2)values.AddRange(mesh.tangents);
+            else if(attribute==3)values.AddRange(mesh.colors.Select(value=>new Vector4(value.r,value.g,value.b,value.a)));
+            else mesh.GetUVs(attribute-4,values);
+            return values;
+        }
+        // Ignore unused vertices and index renumbering, while retaining every
+        // oriented primitive, material slot and referenced vertex channel.
+        internal static string IndexedChannels(Mesh mesh)
+        {
+            var channels=Enumerable.Range(0,12).Select(attribute=>VertexChannel(mesh,attribute)).ToArray();
+            using(var memory=new MemoryStream())
+            {
+                using(var writer=new BinaryWriter(memory,System.Text.Encoding.UTF8,true))
+                {
+                    writer.Write(mesh.subMeshCount);
+                    for(int sub=0;sub<mesh.subMeshCount;sub++)
+                    {
+                        var indices=mesh.GetIndices(sub);
+                        writer.Write((int)mesh.GetTopology(sub));writer.Write(indices.Length);
+                        for(int attribute=0;attribute<channels.Length;attribute++)
+                        {
+                            var values=channels[attribute];
+                            writer.Write(values.Count==0?0:mesh.GetVertexAttributeDimension((UnityEngine.Rendering.VertexAttribute)attribute));
+                            if(values.Count==0)continue;
+                            foreach(int index in indices)
+                            {
+                                var value=values[index];
+                                writer.Write(value.x);writer.Write(value.y);writer.Write(value.z);writer.Write(value.w);
+                            }
+                        }
+                    }
+                }
+                using(var sha=System.Security.Cryptography.SHA256.Create())return BitConverter.ToString(sha.ComputeHash(memory.ToArray())).Replace("-","").ToLowerInvariant();
+            }
+        }
         static string Channels(Mesh mesh)
         {
             using(var memory=new MemoryStream())
@@ -25,12 +65,7 @@ namespace ChooGuard.Tests.PlayMode
                     writer.Write(mesh.vertexCount);
                     for(int attribute=0;attribute<12;attribute++)
                     {
-                        var values=new List<Vector4>();
-                        if(attribute==0)values.AddRange(mesh.vertices.Select(value=>new Vector4(value.x,value.y,value.z,0)));
-                        else if(attribute==1)values.AddRange(mesh.normals.Select(value=>new Vector4(value.x,value.y,value.z,0)));
-                        else if(attribute==2)values.AddRange(mesh.tangents);
-                        else if(attribute==3)values.AddRange(mesh.colors.Select(value=>new Vector4(value.r,value.g,value.b,value.a)));
-                        else mesh.GetUVs(attribute-4,values);
+                        var values=VertexChannel(mesh,attribute);
                         writer.Write(values.Count);writer.Write(values.Count==0?0:mesh.GetVertexAttributeDimension((UnityEngine.Rendering.VertexAttribute)attribute));
                         foreach(var value in values){writer.Write(value.x);writer.Write(value.y);writer.Write(value.z);writer.Write(value.w);}
                     }
@@ -77,7 +112,13 @@ namespace ChooGuard.Tests.PlayMode
                 Assert.That(Norm(part.SourcePath),Is.EqualTo(Norm((string)pin["source_path"])));Assert.That(Norm(part.SourceDefinition),Is.EqualTo(Norm((string)pin["source_definition"])));
                 Assert.That(part.OperationStatus,Is.EqualTo((string)pin["operation_status"]));
                 Assert.That(part.PreservedTriangles,Is.EqualTo((int)pin["preserved_triangles"]));
-                var expected=Mesh(pin);var filter=part.GetComponent<MeshFilter>();Assert.That(filter,Is.Not.Null);
+                var original=Mesh(pin);var expected=original;
+                if(pin["current_mesh"]!=null)
+                {
+                    expected=Mesh(pin["current_mesh"]);
+                    Assert.That(IndexedChannels(expected),Is.EqualTo(IndexedChannels(original)),"Pinned compaction must preserve every indexed source channel and oriented submesh primitive");
+                }
+                var filter=part.GetComponent<MeshFilter>();Assert.That(filter,Is.Not.Null);
                 Assert.That(filter.sharedMesh,Is.SameAs(expected));Assert.That(expected.triangles.Length/3,Is.EqualTo(part.PreservedTriangles));
                 Assert.That(expected.uv.Length,Is.EqualTo(expected.vertexCount));
             }
