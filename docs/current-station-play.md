@@ -1,5 +1,13 @@
 # 현재 역사 플레이와 튜토리얼
 
+## 2026-11-12 현재 씬 및 등록 목록 갱신
+
+현재 배포 씬은 `TrainDepartureDemo`이고 `FpsStation`은 맵 편집·소개용으로 남아 있다. FpsStation의 provider 제어 루트는 저장 상태에서 비활성이다. 아래 2026-10-16 진입 설명과 실행 기록은 당시 구현 이력이며 현재 배포 진입 경로를 뜻하지 않는다.
+
+`CurrentStationInventorySupplement.ExportBatch`는 현재 저장 씬의 live anchor 아래에 추가된 KTX 메시 전용 자식을 읽기 전용으로 추출한다. Unity 명령줄의 `-executeMethod ChooGuard.Editor.CurrentStationInventorySupplement.ExportBatch -inventoryOutput <빈 외부 출력 폴더>`로 실행한다. 기존 객체의 식별자·활성 상태·위치·부모 관계가 다르거나 새 객체가 지원 범위를 벗어나면 중단한다. 씬을 저장하거나 기존 목록을 자동으로 덮어쓰지 않는다.
+
+출력의 `receipt.json`과 원본 보존을 확인한 뒤 `WorldSnapshotInventory.json`과 `WorldSnapshotPrefabManifest.json`을 함께 검토·적용하고 `CurrentProviderNativeBindingPlayTests`를 실행한다. 과거 `sourceSnapshot`·`currentFloorProvenance` 및 의미 연결은 보존되며, 추가 객체의 실제 저장 씬 근거와 전체 개수는 `currentNativeCensus`에 기록된다. 새 메시의 등록은 화재·조작 등의 능력을 부여하지 않는다. 동일한 부모 메시를 사용하는 깊이 렌더링 자식은 별도 검증된 목록으로 기록하여 추가 충돌면을 생성하지 않는다. 전체 구조 변경이나 collider/behaviour 추가에는 이 제한된 보충 도구를 사용하지 않는다.
+
 2026-10-16 현재 역사 씬에는 provider 기반 초기 조건 생성·NPC 행동 런타임을 연결했다. 현재 오브젝트8075개를 입력 목록으로 사용하며, 기존 승객 모델13종과 한국어 폰트를 참조한다. 기존 공식 자원과 승인된 건축 형상을 새 prefab으로 대체하지 않는다.
 
 ## 역사 근무
