@@ -204,7 +204,23 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(sourceIds.Any(id=>id.Contains(":prefab:")),Is.True,"The current full native census must retain resolved prefab-instance identities.");
             Assert.That(records.Contains("unity:7518d664dafa749f2b6d5cba42bb798c:461453"),Is.False,"The explicitly retired WC door must never be rebound or restored.");
             var manifest=JObject.Parse(((TextAsset)Field(adapter,"SnapshotManifest")).text);
-            Assert.That(native.Count,Is.EqualTo((int)manifest["currentFloorProvenance"]["fullNativeObjectCount"]));
+            // The original floor evidence remains historical. A supplemental saved
+            // render census identifies the current complete anchor population.
+            Assert.That(native.Count,Is.EqualTo((int)manifest["currentNativeCensus"]["objectCount"]));
+            Assert.That((string)manifest["currentNativeCensus"]["sceneSha256"],Is.EqualTo((string)manifest["boundSceneSha256"]));
+            var renderOnly=manifest["renderOnlyDerivedObjectIds"].Values<string>().ToArray();
+            Assert.That(renderOnly,Is.Not.Empty);Assert.That(renderOnly.Distinct(StringComparer.Ordinal).Count(),Is.EqualTo(renderOnly.Length));
+            var identitiesById=identities.ToDictionary(value=>(string)idField.GetValue(value),StringComparer.Ordinal);
+            foreach(string id in renderOnly)
+            {
+                Assert.That(sourceIds.Contains(id),Is.True,"Depth-only render children remain registered source objects");
+                var identity=identitiesById[id];
+                Assert.That(supportParents.Contains(identity.gameObject),Is.False,"A depth-only duplicate must not acquire a collision support");
+                var provenance=(JObject)Property(records[id],"GeometryProvenance");
+                Assert.That((string)provenance["renderOnlyDerivedGeometry"],Is.EqualTo("opaque-texel-depth"));
+                Assert.That(identity.GetComponents<Collider>(),Is.Empty);
+                Assert.That(identity.GetComponent<MeshFilter>().sharedMesh,Is.SameAs(identity.transform.parent.GetComponent<MeshFilter>().sharedMesh));
+            }
             Assert.That((string)manifest["liveBindingSchema"],Is.EqualTo("chooguard.live-root-child-indices.v1"));
             CollectionAssert.AreEquivalent(manifest["liveBindingRoots"].Values<string>().ToArray(),anchorIds);
             Assert.That(((GameObject[])Field(adapter,"LiveObjects")).SequenceEqual(anchors),Is.True);
