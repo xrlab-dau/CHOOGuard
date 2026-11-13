@@ -182,6 +182,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void UpdateConsequences()
         {
+            if (session.IsCardiacTutorial) return; // The lesson explicitly presents the later agency arrival; no unattended ending.
             if (Stage != Phase.Incident) return;
             // 역무실은 감지기 동작이나 지진 뒤 일정 시간 보고가 없으면 스스로 판단해 부른다. 표준·실전은 그사이 역무원이 무전으로 응답했으면 부르지 않는다.
             if (officeFollowUp > 0 && Time.time > officeFollowUp && !Shaking)

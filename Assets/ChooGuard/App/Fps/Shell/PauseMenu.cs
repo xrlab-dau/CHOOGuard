@@ -45,6 +45,8 @@ namespace ChooGuard.App.Fps.Shell
             FpsUiFactory.Button(pause.menu, font, "설정", new Vector2(0, 1), new Vector2(0, -316), new Vector2(360, 56), pause.OnSettings, 24);
             FpsUiFactory.Button(pause.menu, font, "타이틀로", new Vector2(0, 1), new Vector2(0, -382), new Vector2(360, 56), SceneFlow.ToTitle, 24);
             FpsUiFactory.Button(pause.menu, font, "게임 종료", new Vector2(0, 1), new Vector2(0, -448), new Vector2(360, 56), SceneFlow.Quit, 24);
+            if (Emergency.PracticeShift.Family == Emergency.PracticeShift.CardiacFamily)
+                FpsUiFactory.Button(pause.menu, font, "연습 중단 · 미이수", new Vector2(0, 1), new Vector2(385, -316), new Vector2(260, 56), () => Emergency.EmergencySession.Current?.CardiacLesson?.StopPractice(), 20);
             pause.settings = SettingsPanel.Create(root, font, () => { pause.settings.Hide(); pause.menu.gameObject.SetActive(true); });
             pause.heading.text = briefingTitle;
             pause.body.text = briefingBody;
@@ -64,7 +66,9 @@ namespace ChooGuard.App.Fps.Shell
         }
 
         /// <summary>The controls for the current guidance level (견학 keeps one key press per action).</summary>
-        private static string ControlsText() => GameSettings.Guided
+        private static string ControlsText() => Emergency.EmergencySession.Current != null && Emergency.EmergencySession.Current.IsCardiacTutorial
+            ? "WASD 이동 · E 반응·호흡 확인 / AED·패드 조작 / 인계 · 환자에 R 압박 시작·멈춤 · AED에 R 다시 들기\nQ 누른 채 좌클릭으로 묶음 열기, 항목 선택 후 Q 놓아 송신 · G 내려놓기\n화면의 현재 목표를 따르세요. 오래 걸려도 자동 인계나 자동 종료가 없습니다."
+            : GameSettings.Guided
             ? "WASD 이동 · 마우스 시점 · Shift 빠르게 · E 상호작용 · R 역무원 열쇠(운전 모드·재가동)\n좌클릭 손에 든 장비 사용 · G 내려놓기\nTab 상황판 · M 역사 안내도 · Q 무전(누른 채 선택)"
             : "WASD 이동 · 마우스 시점 · Shift 빠르게(무거운 장비를 들면 걷기만) · E 상호작용 · E 누른 채 마우스·휠로 손잡이 조작 · R 열쇠\n우클릭 누른 채 살펴보기 · 휠 클릭 내 표시 · 좌클릭 손에 든 장비 사용 · 휠 노즐(관창) · G 내려놓기\nTab 수첩 · M 역사 안내도 · Q 무전(누른 채 좌클릭으로 묶음 열기, 우클릭 뒤로, 떼면 보냄)";
 

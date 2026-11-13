@@ -107,6 +107,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private string ReviewAndHandOver(Responder responder)
         {
+            if (session.CardiacLesson != null) return session.CardiacLesson.TryHandover(responder);
             if (responder == null || !CanHandOver(responder)) return "현장 지휘 기관의 도착한 팀장에게 인계해야 합니다";
             handoverReview.Update(HandoverSections());
             if (!reviewingHandover)

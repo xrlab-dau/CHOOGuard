@@ -50,6 +50,8 @@ namespace ChooGuard.App.Fps.Emergency
         public TrainService Train { get; private set; }
         public ShiftLog Log { get; private set; }
         public StationSound Sound { get; private set; }
+        public bool IsCardiacTutorial { get; private set; }
+        public CardiacTutorialLesson CardiacLesson { get; private set; }
 
         /// <summary>Radio messages the wheel offers right now in the guided shift (견학). Owners register providers; order is preserved.</summary>
         public readonly List<Func<IEnumerable<RadioOption>>> RadioProviders = new List<Func<IEnumerable<RadioOption>>>();
@@ -159,7 +161,9 @@ namespace ChooGuard.App.Fps.Emergency
             Board = BoardOverlay.Create(transform, KoreanFont);
             Map = MapOverlay.Create(transform, KoreanFont, StationMap, StationMapBounds, Player.PlayerCamera != null ? Player.PlayerCamera.transform : Player.transform, StationMapLabel);
             Wheel = RadioWheel.Create(transform, KoreanFont);
-            Pause = PauseMenu.Create(transform, KoreanFont, Player, "근무 시작",
+            IsCardiacTutorial = PracticeShift.Family == PracticeShift.CardiacFamily;
+            Pause = PauseMenu.Create(transform, KoreanFont, Player, IsCardiacTutorial ? "심정지 대응 · 조작 학습" : "근무 시작", IsCardiacTutorial ?
+                "바로 앞 승객의 반응을 확인하며 시작합니다. 화면의 목표·이유·조작 안내를 따라 직접 행동하세요.\n반응 확인 → 도움 요청 → 호흡 확인 → 압박·동료 교대 → 기존 AED 사용 → 구급대 인계\n" + CardiacTutorialLesson.ModelLimitation :
                 "부산역 오후 근무입니다. 서울에서 KTX가 곧 5·6 타는 곳에 들어옵니다.\n승객들은 각자의 여정대로 움직입니다. 무슨 일이 언제, 어디서 일어날지는 정해져 있지 않습니다.\n이상을 발견하면 알리고, 사람들을 지키고, 도착한 기관에 인계하세요.\n" +
                 "<size=15>안내 수준 " + GameSettings.Label(GameSettings.Guidance) + " · " + GameSettings.Describe(GameSettings.Guidance) + " (설정에서 바꿀 수 있습니다)</size>");
             Player.PauseChanged += OnPauseChanged;
@@ -243,7 +247,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void StartWorld()
         {
             if (Art == null) { Debug.LogError("[EmergencySession] EmergencyArt 가 연결되지 않았습니다. ChooGuard/Emergency/Build session scene and title 을 실행하세요.", this); return; }
-            int seed = NextSeed != 0 ? NextSeed : Seed != 0 ? Seed : Environment.TickCount & 0x7fffffff;
+            int seed = IsCardiacTutorial ? CardiacTutorialLesson.FixedSeed : NextSeed != 0 ? NextSeed : Seed != 0 ? Seed : Environment.TickCount & 0x7fffffff;
             NextSeed = 0;
             World = StationWorld.FromCurrentScene(Art, seed, transform);
             Map.SetLandmarks(World.Points);
@@ -261,19 +265,24 @@ namespace ChooGuard.App.Fps.Emergency
             Log = new ShiftLog(this);
             var logFolder = System.IO.Path.Combine(UnityEngine.Application.persistentDataPath, "jev-runs");
             System.IO.Directory.CreateDirectory(logFolder);
-            Jev = new JevClient(System.IO.Path.Combine(logFolder, "jev-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss") + ".jsonl"));
+            Jev = new JevClient(System.IO.Path.Combine(logFolder, "jev-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss") + ".jsonl"), !IsCardiacTutorial);
             StartCoroutine(Jev.Warm());
             // 승객이 역무원을 사람으로 피해 가도록 한다(길찾기 장애물, 길을 깎지는 않는다).
             EnsurePlayerObstacle(Player.gameObject);
             Hands = gameObject.AddComponent<StaffHands>();
             Hands.Setup(this, Art);
             Incidents = gameObject.AddComponent<IncidentDirector>();
+            if (IsCardiacTutorial) CardiacLesson = gameObject.AddComponent<CardiacTutorialLesson>();
             Crowd = gameObject.AddComponent<CrowdDirector>();
             Crowd.Target = Passengers;
             Incidents.Begin(this, World, Crowd, Jev, Art, Log);
-            var spawn = PlayerSpawn.Pick(World.Points, Player.GetComponent<CharacterController>(), seed);
-            Player.RestorePhysicalPose(spawn, Player.YawDegrees, 0);
+            if (!IsCardiacTutorial)
+            {
+                var spawn = PlayerSpawn.Pick(World.Points, Player.GetComponent<CharacterController>(), seed);
+                Player.RestorePhysicalPose(spawn, Player.YawDegrees, 0);
+            }
             Crowd.Begin(this, World, Art.Crowd, Jev);
+            if (IsCardiacTutorial) CardiacLesson.Initialize(this);
             Sound = gameObject.AddComponent<StationSound>();
             Sound.Setup(this);
             gameObject.AddComponent<StationSoundscape>().Setup(this);
@@ -469,6 +478,11 @@ namespace ChooGuard.App.Fps.Emergency
             if (Map == null || Hud == null || World == null || Incidents == null || Player == null) return;
             GuideTarget = null;
             guideRoute.Clear();
+            if (IsCardiacTutorial)
+            {
+                GuideStatus = GuideState.Off; GuideMessage = "고정 학습 목표의 경로 안내를 따르세요";
+                Hud.Compass.RemoveMarker("guide-next"); worldGuide?.Clear(); return;
+            }
             if (!GameSettings.ShowRoute) { ShowGuide(GuideState.Off, "길 안내 꺼짐 · 설정에서 켤 수 있습니다"); return; }
             if (!Incidents.PlayerKnowsIncident) { ShowGuide(GuideState.Unaware, "사고를 인지하면 이동 안내가 나타납니다"); return; }
             if (!Incidents.TryGetKnownGuideTarget(out var target)) { ShowGuide(GuideState.NoTarget, "이동해서 확인할 사고 현장이 없습니다 · 역 전체에 걸친 상황이거나 이미 정리되었습니다"); return; }
@@ -513,7 +527,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void OpenWheel()
         {
             wheelGroup = -1;
-            wheelGrouped = !GameSettings.Guided && RadioGroupProviders.Count > 0;
+            wheelGrouped = (IsCardiacTutorial || !GameSettings.Guided) && RadioGroupProviders.Count > 0;
             if (wheelGrouped)
             {
                 wheelGroups.Clear();

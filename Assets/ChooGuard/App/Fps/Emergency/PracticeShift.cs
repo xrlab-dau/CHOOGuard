@@ -103,6 +103,7 @@ namespace ChooGuard.App.Fps.Emergency
             var camera = cameraObject.GetComponent<Camera>();
             camera.nearClipPlane = .05f; camera.farClipPlane = 1500; camera.fieldOfView = 70;
             responder.PlayerCamera = camera; responder.BodyHeight = 1.72f; responder.EyeHeight = 1.60f; responder.EnableJump = false;
+            if (UnityEngine.Object.FindFirstObjectByType<AudioListener>() == null) cameraObject.AddComponent<AudioListener>();
             player.SetActive(true);
             Debug.Log("[연습] 역무원이 없어 연습용 플레이어를 두었습니다.");
         }
