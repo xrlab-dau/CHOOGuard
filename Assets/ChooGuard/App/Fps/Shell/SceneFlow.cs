@@ -23,14 +23,18 @@ namespace ChooGuard.App.Fps.Shell
         public static void StartTutorial(string sceneName, TMP_FontAsset font, Texture background) => Load(TutorialScene);
         public static void StartShift(TMP_FontAsset font, Texture background) => Load(StationScene);
         public static void ToTitle() => Load(TitleScene);
-        public static void ToTutorialMenu() => Load(TutorialScene);
-        private static void Load(string sceneName)
+        /// <summary>Back to the train-departure menu with its "비상상황 연습" list open (a practice's result screen).</summary>
+        public static void ToTutorialMenu() { if (Load(TutorialScene)) PracticeMenuRequested = true; }
+        /// <summary>Set by <see cref="ToTutorialMenu"/>; the menu reads and clears it when it builds.</summary>
+        public static bool ConsumePracticeMenuRequest() { bool requested = PracticeMenuRequested; PracticeMenuRequested = false; return requested; }
+        private static bool PracticeMenuRequested;
+        private static bool Load(string sceneName)
         {
-            if (Loading) return;
+            if (Loading) return false;
             if (!UnityEngine.Application.CanStreamedLevelBeLoaded(sceneName))
             {
                 Debug.LogError("Presentation scene is not registered: " + sceneName);
-                return;
+                return false;
             }
             Time.timeScale = 1;
             Loading = true;
@@ -39,10 +43,11 @@ namespace ChooGuard.App.Fps.Shell
                 // Unity 6000.3 AsyncOperation.completed sample: associate completion with
                 // this operation, rather than any sceneLoaded event in the process.
                 var loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-                if (loadOp == null) { Loading = false; return; }
+                if (loadOp == null) { Loading = false; return false; }
                 loadOp.completed += OnLoaded;
             }
             catch { Loading = false; throw; }
+            return true;
         }
         private static void OnLoaded(AsyncOperation operation)
         {

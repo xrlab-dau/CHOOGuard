@@ -24,8 +24,8 @@ namespace ChooGuard.Tests.PlayMode
             key = Environment.GetEnvironmentVariable(JevKey.Variable);
             Environment.SetEnvironmentVariable(JevKey.Variable, "cardiac-tutorial-test-no-network");
             Assert.That(PracticeShift.Arm(PracticeShift.CardiacFamily), Is.True);
+            // PracticeShift builds the session from its Resources template once the armed station loads (no StationEmergency scene since #323).
             yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
-            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
             for (int i = 0; i < 300 && (EmergencySession.Current == null || EmergencySession.Current.CardiacLesson == null); i++) yield return null;
             session = EmergencySession.Current;
             Assert.That(session, Is.Not.Null);
@@ -44,7 +44,7 @@ namespace ChooGuard.Tests.PlayMode
             yield return null;
         }
 
-        [UnityTest]
+        [UnityTest, Timeout(900000)] // the whole lesson runs in real time (colleague ~40 s, paramedic approach); NUnit default is 180 s
         public IEnumerator ReliefDoesNotDeadlockWhenAgentArrivesWithinNormalFootTolerance()
         {
             var lesson = session.CardiacLesson;
@@ -70,7 +70,7 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(lesson.Patient.Compressing, Is.False);
         }
 
-        [UnityTest]
+        [UnityTest, Timeout(900000)] // the whole lesson runs in real time (colleague ~40 s, paramedic approach); NUnit default is 180 s
         public IEnumerator RealSceneLessonRequiresHandsOnActionsAndCanReachHandover()
         {
             var lesson = session.CardiacLesson;

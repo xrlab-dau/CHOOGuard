@@ -171,7 +171,7 @@ namespace ChooGuard.App.Fps.Emergency
                 "\n패드 부착 조작 이력 " + appliedPads + "/2 · 물러나기 " + (p?.ClearCalls ?? 0) + "회 · 분석 " + (p?.Analyses ?? 0) + "회 · 충격 " + (p?.Shocks ?? 0) + "회\n\n" +
                 ModelLimitation + "\n\n압박 시간과 구급대 도착 대기는 조작 학습을 위해 축약했습니다. 실제로는 회복 징후나 구조대 교대까지 압박과 AED 지시를 이어갑니다.\n이 연습은 가슴압박 조작과 AED 조작을 다루며, 인공호흡·임상 깊이·효과 판정이나 자격 인증을 제공하지 않습니다.";
             FpsUiFactory.Button(go.transform, Session.KoreanFont, "다시 연습", new Vector2(.5f, .5f), new Vector2(-170, -300), new Vector2(300, 56), Restart, 24);
-            FpsUiFactory.Button(go.transform, Session.KoreanFont, "튜토리얼 목록", new Vector2(.5f, .5f), new Vector2(170, -300), new Vector2(300, 56), SceneFlow.ToTutorialMenu, 24);
+            FpsUiFactory.Button(go.transform, Session.KoreanFont, "연습 목록", new Vector2(.5f, .5f), new Vector2(170, -300), new Vector2(300, 56), SceneFlow.ToTutorialMenu, 24);
         }
     }
 }

@@ -74,6 +74,7 @@ namespace ChooGuard.App.Fps.TrainDeparture
             actions = Node(content, "Actions");
             Stretch(actions);
             ShowMain();
+            if (SceneFlow.ConsumePracticeMenuRequest()) ShowPractice();
         }
 
         static RectTransform Node(Transform parent, string name)
