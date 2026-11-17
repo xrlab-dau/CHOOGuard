@@ -175,6 +175,38 @@ namespace ChooGuard.Tests.PlayMode
             yield return Act(() => lead.transform.position + Vector3.up * 1.2f, typeof(Responder));
             Assert.That(lesson.Step, Is.EqualTo(CardiacLessonStep.Complete), session.Player.LastFeedback);
             Assert.That(session.Incidents.Stage, Is.EqualTo(IncidentDirector.Phase.Ended));
+            // Only the two skip attempts this test makes on purpose at the start cost points; the in-order path costs none.
+            Assert.That(lesson.Mistakes.Select(m => m.Key), Is.EqualTo(new[] { CardiacTutorialLesson.Mistake.CompressBeforeBreathing.Key, CardiacTutorialLesson.Mistake.ReliefBeforePractice.Key }));
+            Assert.That(lesson.OrderScore, Is.EqualTo(CardiacTutorialLesson.FullScore - 15));
+        }
+
+        [UnityTest, Timeout(900000)]
+        public IEnumerator OutOfOrderActionsCostPointsOnceAndAppearOnTheResult()
+        {
+            var lesson = session.CardiacLesson;
+            Assert.That(lesson.OrderScore, Is.EqualTo(CardiacTutorialLesson.FullScore));
+            var requests = session.RadioGroupProviders.SelectMany(p => p()).First(g => g.Label == "요청 · 기관");
+            requests.Options[1].Send(); // 119 before the response check, twice: counted twice, deducted once
+            requests.Options[1].Send();
+            Assert.That(lesson.HelpRequested, Is.False);
+            yield return Act(() => lesson.PatientChest, typeof(Passenger)); // response check, in order
+            Assert.That(lesson.ResponseChecked, Is.True);
+            yield return Act(() => lesson.PatientChest, typeof(Passenger)); // breathing before the 119 call
+            Assert.That(lesson.BreathingChecked, Is.False);
+            session.Incidents.ToggleCompressions(lesson.Patient.Person); // compressions before the breathing check
+            Assert.That(lesson.Patient.Compressing, Is.False);
+            Assert.That(lesson.Mistakes.Select(m => m.Key), Is.EqualTo(new[]
+            {
+                CardiacTutorialLesson.Mistake.HelpBeforeResponse.Key, CardiacTutorialLesson.Mistake.BreathingBeforeHelp.Key,
+                CardiacTutorialLesson.Mistake.CompressBeforeBreathing.Key,
+            }));
+            Assert.That(lesson.Mistakes[0].Count, Is.EqualTo(2));
+            Assert.That(lesson.OrderScore, Is.EqualTo(CardiacTutorialLesson.FullScore - 30));
+            lesson.StopPractice();
+            for (int i = 0; i < 5; i++) yield return null;
+            var score = UnityEngine.Object.FindObjectsByType<TMPro.TMP_Text>(FindObjectsSortMode.None).FirstOrDefault(t => t.gameObject.name == "순서 점수");
+            Assert.That(score, Is.Not.Null, "The result screen shows the order score");
+            Assert.That(score.text, Does.Contain("<b>70</b> / 100").And.Contain("반응 확인 전에 119 요청 (2회").And.Contain("호흡 확인 전에 가슴압박"));
         }
 
         IEnumerator Until(Func<bool> predicate, float seconds, string message)

@@ -47,6 +47,8 @@ namespace ChooGuard.App.Fps
         public float YawDegrees=>yaw;
         public event Action<bool> PauseChanged;
         public event Action<string> FeedbackChanged;
+        /// <summary>E was pressed on a target that refused it (its reason is shown as feedback). The cardiac lesson scores some refusals.</summary>
+        public event Action<IFpsInteraction,string> InteractionRefused;
         private InputAction moveAction;
         private CharacterController body;
         private MonoBehaviour targetBehaviour;
@@ -230,7 +232,7 @@ namespace ChooGuard.App.Fps
         public bool TryInteract()
         {
             if(IsPaused||SuppressInteractionInput)return false;RefreshInteraction();if(targetBehaviour==null||target==null)return false;
-            if(!target.CanInteract(this,out var reason)){if(!string.IsNullOrEmpty(reason))ShowFeedback(reason);return false;}
+            if(!target.CanInteract(this,out var reason)){if(!string.IsNullOrEmpty(reason))ShowFeedback(reason);InteractionRefused?.Invoke(target,reason);return false;}
             bool performed=target.TryInteract(this,out var feedback);if(performed)SuccessfulInteractions++;if(!string.IsNullOrEmpty(feedback))ShowFeedback(feedback);RefreshInteraction();return performed;
         }
         public bool TrySecondary()

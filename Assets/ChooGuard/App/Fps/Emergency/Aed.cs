@@ -721,6 +721,8 @@ namespace ChooGuard.App.Fps.Emergency
             if (SecondaryPrompt.Length == 0 || responder == null || responder.IsPaused) return false;
             if (session?.CardiacLesson != null && !session.CardiacLesson.GuardAedLift(out feedback)) return false;
             bool wasOn = Procedure.Current != AedProcedure.Stage.Off;
+            if (wasOn && session?.CardiacLesson != null && session.CardiacLesson.Patient == Patient)
+                session.CardiacLesson.RecordOrderMistake(CardiacTutorialLesson.Mistake.AedLiftedInUse);
             Hands.TakeAed(this);
             feedback = wasOn ? "AED 전원을 끄고 패드를 거둬 들었습니다" : "AED 를 들었습니다";
             return true;

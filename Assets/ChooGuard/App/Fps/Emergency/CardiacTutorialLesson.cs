@@ -94,6 +94,7 @@ namespace ChooGuard.App.Fps.Emergency
                 colleagueVisual.Initialize(Colleague, person.Body);
                 if (!colleagueVisual.Ready) throw new InvalidOperationException(colleagueVisual.FailureReason);
                 Ready = true;
+                session.Player.InteractionRefused += OnInteractionRefused;
                 SetStep(CardiacLessonStep.Response);
                 Note("fixed-patient-and-player-ready; original-aed=" + Cabinet.transform.position);
             }
@@ -129,7 +130,7 @@ namespace ChooGuard.App.Fps.Emergency
                 Note("player-checked-response; no-response", "반응 없음 직접 확인");
                 return "불러도 반응이 없습니다. Q → 요청·기관 → 119 구급으로 신고와 동료 지원을 요청하세요.";
             }
-            if (!HelpRequested) return "반응 없음 확인 · 먼저 Q로119 신고와 AED 도움을 요청하세요.";
+            if (!HelpRequested) { RecordOrderMistake(Mistake.BreathingBeforeHelp); return "반응 없음 확인 · 먼저 Q로119 신고와 AED 도움을 요청하세요."; }
             if (!BreathingChecked)
             {
                 BreathingChecked = true;
@@ -166,7 +167,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void RequestRelief()
         {
-            if (!Ready || !firstPracticeDone) { Session.Hud.Toast("이 연습에서는 먼저 직접 압박을 익힌 뒤 동료에게 교대를 요청합니다."); return; }
+            if (!Ready || !firstPracticeDone) { RecordOrderMistake(Mistake.ReliefBeforePractice); Session.Hud.Toast("이 연습에서는 먼저 직접 압박을 익힌 뒤 동료에게 교대를 요청합니다."); return; }
             if (helperWorking || ReliefRequested && !reliefEstablished) { Session.Hud.Toast(helperWorking ? "동료가 환자 곁에서 압박을 이어가고 있습니다." : "동료가 환자 곁으로 이동 중입니다. 압박을 이어가세요."); return; }
             ReliefRequested = true;
             reliefEstablished = false;
@@ -182,7 +183,8 @@ namespace ChooGuard.App.Fps.Emergency
         public bool CanStartPlayerCompressions(out string reason)
         {
             reason = !BreathingChecked ? "이 연습에서는 반응·신고 요청·호흡 확인을 먼저 익힙니다. 현재 목표를 확인하세요." : "";
-            if (!BreathingChecked) return false;
+            // Called only on the player's R press (ToggleCompressions), so a refusal here is an attempt, not a prompt check.
+            if (!BreathingChecked) { RecordOrderMistake(Mistake.CompressBeforeBreathing); return false; }
             if (medicalTakenOver) { reason = "구급대가 처치를 이어받았습니다. 구급대장에게 확인한 상황을 전달하세요."; return false; }
             if (helperWorking) { reason = "동료가 압박을 이어가고 있습니다. 현재 AED 조작 목표를 수행하세요."; return false; }
             if (!SurfaceReady) { reason = "환자가 바닥에 누운 자세를 잡는 중입니다. 가슴 곁에서 잠시 확인하세요."; return false; }
@@ -197,6 +199,9 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void PlayerStartedCompressions()
         {
+            var device = Patient?.Aed;
+            if (device != null && (device.Current == AedProcedure.Stage.Analysing || device.Current == AedProcedure.Stage.ShockAdvised))
+                RecordOrderMistake(Mistake.ContactDuringAnalysis);
             compressionFeet = Session.Player.transform.position;
             if (!helperWorking) return;
             Patient.AssistedCompressions = false;
@@ -348,6 +353,7 @@ namespace ChooGuard.App.Fps.Emergency
         }
         void OnDestroy()
         {
+            if (Session != null && Session.Player != null) Session.Player.InteractionRefused -= OnInteractionRefused;
             RestorePosture();
             if (wiredDevice != null) wiredDevice.Voice -= DeviceSaid;
             if (Patient != null) Patient.AssistedCompressions = false;

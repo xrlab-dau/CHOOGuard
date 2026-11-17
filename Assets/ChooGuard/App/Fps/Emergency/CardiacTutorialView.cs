@@ -163,7 +163,11 @@ namespace ChooGuard.App.Fps.Emergency
             FpsUiFactory.Stretch(shade.rectTransform); shade.raycastTarget = true;
             var title = FpsUiFactory.Label(go.transform, Session.KoreanFont, "결과 제목", new Vector2(0, 280), new Vector2(1040, 70), 36);
             title.text = ending == "tutorial_completed" ? "심정지 조작 학습 완료" : "연습 중단 · 미이수";
-            var text = FpsUiFactory.Label(go.transform, Session.KoreanFont, "실제 수행과 한계", new Vector2(0, 10), new Vector2(1000, 430), 22, TextAlignmentOptions.TopLeft);
+            var text = FpsUiFactory.Label(go.transform, Session.KoreanFont, "실제 수행과 한계", new Vector2(-215, 10), new Vector2(660, 430), 20, TextAlignmentOptions.TopLeft);
+            var score = FpsUiFactory.Label(go.transform, Session.KoreanFont, "순서 점수", new Vector2(355, 10), new Vector2(420, 430), 20, TextAlignmentOptions.TopLeft);
+            score.text = ScoreReport();
+            // Two columns: the record wraps inside its own width instead of running under the score.
+            text.textWrappingMode = TextWrappingModes.Normal; score.textWrappingMode = TextWrappingModes.Normal;
             var p = Patient?.Aed;
             text.text = "직접 확인: 반응 " + (ResponseChecked ? "확인" : "미확인") + " · 호흡 " + (BreathingChecked ? "확인" : "미확인") +
                 "\n119·동료 지원 요청 " + (HelpRequested ? "실시" : "미실시") + " · 동료 교대 " + (ReliefRequested ? "요청" : "미요청") +

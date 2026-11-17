@@ -17,7 +17,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             var lesson = session.CardiacLesson;
             if (lesson == null) return false;
-            if (!lesson.CanRequestHelp(out var reason)) { session.Hud.Toast(reason); return true; }
+            if (!lesson.CanRequestHelp(out var reason)) { lesson.RecordOrderMistake(CardiacTutorialLesson.Mistake.HelpBeforeResponse); session.Hud.Toast(reason); return true; }
             var target = lesson.Patient;
             reported.Add(target); lastReported = target; focus = target;
             Say("역무실, " + target.Where + "에 반응 없는 승객1명 있습니다. 119 신고와 AED 지원 바랍니다. " +
