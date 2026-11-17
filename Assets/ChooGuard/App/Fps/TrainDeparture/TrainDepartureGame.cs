@@ -115,6 +115,8 @@ namespace ChooGuard.App.Fps.TrainDeparture
             MenuCamera.enabled=true;Player.PlayerCamera.enabled=false;View.ShowMain();
         }
         public void ExitApplication(){ReleaseInput();SceneFlow.Quit();}
+        /// <summary>Lets go of input and sound before another scene replaces this one (the "비상상황 연습" menu).</summary>
+        public void ReleaseForSceneChange(){ReleaseInput();voice?.Stop();}
         void ReleaseInput(){ContextActions?.Cancel();ItemSlots?.CancelTransition();input?.Release();SignalEmote?.SetPaused(true);AnimationRig?.SetPaused(true);}
         void Receive(bool value){Receiving=value;RadioChanged?.Invoke(Receiving,Transmitting);}
         void Transmit(bool value){Transmitting=value;RadioChanged?.Invoke(Receiving,Transmitting);}
