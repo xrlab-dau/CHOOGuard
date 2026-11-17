@@ -345,12 +345,13 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void CasualtyTick()
         {
+            if (session.IsCardiacTutorial) return;
             if (Stage != Phase.Incident) return;
             foreach (var casualty in casualties)
                 if (casualty.Active && Time.time - casualty.StartedAt > 90 && CountAware(casualty) >= 2) CitizenCall(null, casualty);
         }
 
-        public string CheckInjured(Passenger person)
+        public string CheckInjured(Passenger person, bool directInteraction = false)
         {
             if (injuredKnown.Add(person))
             {
@@ -358,6 +359,8 @@ namespace ChooGuard.App.Fps.Emergency
                 session.SetMarker("injured-" + person.Number, person.transform.position, MarkerKind.Task, "부상자");
                 foreach (var casualty in casualties) if (casualty.Person == person) Know(casualty, "부상자 직접 확인");
             }
+            var teaching = directInteraction ? session.CardiacLesson?.CheckPatient(person) : null;
+            if (teaching != null) return teaching;
             if (treated.Contains(person)) return "구급대원이 처치 중입니다";
             // 부르면 대답하지 못하는 사람은 말 대신 보이는 상태를 알려 준다(반응·호흡).
             var collapse = CollapseOf(person);
@@ -451,6 +454,7 @@ namespace ChooGuard.App.Fps.Emergency
             var casualty = CollapseOf(person);
             if (casualty == null || casualty.Aed == null || casualty.Aed.Current != AedProcedure.Stage.ClearWanted) return null;
             if (casualty.Compressing) casualty.StopCompressions("\"물러나세요\" 외침");
+            session.CardiacLesson?.StandClear();
             if (!casualty.Aed.StandClear()) return null;
             return "\"물러나세요!\" · AED 가 심장 리듬을 분석합니다 · 환자에게서 손을 떼십시오";
         }
@@ -486,9 +490,11 @@ namespace ChooGuard.App.Fps.Emergency
                 casualty.StopCompressions("역무원이 멈춤");
                 return "가슴압박을 멈췄습니다 · " + Mathf.RoundToInt(casualty.CompressionSeconds) + "초";
             }
-            if (casualty.Level < 3) return "환자가 의식이 있습니다 · 가슴압박은 반응과 정상 호흡이 없을 때";
+            if (!casualty.NotBreathingNormally) return "가슴압박은 반응과 정상 호흡이 없을 때 실시합니다. 현재 환자의 상태를 확인하세요.";
+            if (session.CardiacLesson != null && !session.CardiacLesson.CanStartPlayerCompressions(out var reason)) return reason;
             var hands = session.Hands;
             if (hands != null && (hands.Held != null || hands.Hose != null || hands.Aed != null || hands.Pad != null)) return "손에 든 것을 먼저 내려놓으십시오";
+            session.CardiacLesson?.PlayerStartedCompressions();
             casualty.StartCompressions();
             return "가슴압박 시작 · 가슴 가운데를 분당 100~120회, 5~6 cm · R 로 멈춤";
         }
@@ -541,6 +547,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         public void OnTreated(Passenger person)
         {
+            if (session.CardiacLesson != null && !session.CardiacLesson.AllowsAgencyTreatment) return;
             if (!treated.Add(person)) return;
             log.Add("구급대가 부상 승객 1명을 처치");
             foreach (var casualty in casualties)

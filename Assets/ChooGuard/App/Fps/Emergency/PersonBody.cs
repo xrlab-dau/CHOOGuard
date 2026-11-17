@@ -404,6 +404,8 @@ namespace ChooGuard.App.Fps.Emergency
             }
         }
 
+        public bool TreatmentPoseSettled => Animator != null && !Animator.IsInTransition(0) && Animator.GetCurrentAnimatorStateInfo(0).shortNameHash == TreatState;
+
         public void Wave() { if (Animator != null) Animator.SetTrigger(WaveId); }
 
         /// <summary>

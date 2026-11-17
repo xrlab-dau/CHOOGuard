@@ -32,6 +32,7 @@ namespace ChooGuard.App.Fps.Emergency
             var family = PracticeShift.Take();
             if (family == null || !PracticeFamilies.ContainsKey(family)) return;
             practiceFamily = family;
+            if (session.IsCardiacTutorial) { log.Add("고정 심정지 조작 학습 · 사건 대기 및 자동 인계 없음"); return; }
             log.Add("연습 근무 · " + family + " 한 건만 일어난다 (튜토리얼)");
             session.Hud.Toast("연습 근무 · 잠시 뒤 2층 맞이방에서 " + family + " 환자가 생깁니다. 승객의 알림이나 순찰로 찾아 확인(E)하고 역무실에 보고(Q)하십시오.", 10f);
             StartCoroutine(RunPractice(family));

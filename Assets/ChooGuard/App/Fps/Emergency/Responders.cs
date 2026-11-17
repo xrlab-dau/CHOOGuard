@@ -40,6 +40,7 @@ namespace ChooGuard.App.Fps.Emergency
         private Vector3 kneelAt, chest;
         private EmergencyArt art;
         private GameObject medicalBag;
+        private CardiacColleagueCompressionVisual cardiacCare;
 
         // 장비: 손에 든 것(뼈 위치를 따라가되 몸 기준으로 곧게), 밀고 가는 들것, 곁에서 가는 로봇, 바닥에 깐 호스·표지.
         private readonly List<(GameObject Prop, HumanBodyBones Bone, Vector3 Offset, Quaternion Rotation)> held = new List<(GameObject, HumanBodyBones, Vector3, Quaternion)>();
@@ -77,6 +78,14 @@ namespace ChooGuard.App.Fps.Emergency
             target = hazard;
             this.art = art;
             body = GetComponent<PersonBody>();
+            var lesson = EmergencySession.Current?.CardiacLesson;
+            if (agency == Agency.Medical && !Lead && lesson != null)
+            {
+                body.Animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                body.Agent.stoppingDistance = .04f;
+                cardiacCare = gameObject.AddComponent<CardiacColleagueCompressionVisual>();
+                cardiacCare.Initialize(body, lesson.Patient.Person.Body);
+            }
             body.Home = transform.parent;
             // 출동한 사람은 길 요청이 군중 뒤에 줄을 서지 않는다(수십 명의 대피·일상 요청 뒤에서 몇십 초씩 서 있었다).
             body.Rescuer = true;
@@ -517,8 +526,15 @@ namespace ChooGuard.App.Fps.Emergency
             return d.magnitude;
         }
 
+        public bool ProvidingCareTo(Passenger person) => patient == person && treatUntil > 0 && body != null && body.TreatmentPoseSettled &&
+            Vector3.Distance(transform.position, person.transform.position) < 1.3f && cardiacCare != null && cardiacCare.IsPresenting;
+        public string CardiacCareDiagnostics => "goal=" + kneelAt + "; remaining=" + (body != null && body.Agent.isOnNavMesh ? body.Agent.remainingDistance : -1) + "; treating=" + treatUntil + "; settled=" + (body != null && body.TreatmentPoseSettled) + "; contact=" + cardiacCare?.FailureReason;
+
         private void TreatInjured()
         {
+            var lesson = EmergencySession.Current?.CardiacLesson;
+            if (lesson != null && !lesson.AllowsAgencyTreatment) return;
+            if (lesson != null && Lead) { body.Face(director.PlayerPosition); return; }
             if (patient == null || !patient.Hurt)
             {
                 // 처치를 마쳤으면 일어선 뒤에 다음 환자에게 걷는다.
@@ -548,7 +564,8 @@ namespace ChooGuard.App.Fps.Emergency
                 }
                 if (reach >= 3f) nearSince = -1;
                 else if (nearSince < 0) nearSince = Time.time;
-                bool close = new Vector2(gap.x, gap.z).magnitude < .35f || body.Arrived(.3f) && reach < 3.5f || nearSince >= 0 && Time.time - nearSince > 4f && reach < 2.5f;
+                bool close = lesson != null ? new Vector2(gap.x, gap.z).magnitude < .22f && reach < 1.3f :
+                    new Vector2(gap.x, gap.z).magnitude < .35f || body.Arrived(.3f) && reach < 3.5f || nearSince >= 0 && Time.time - nearSince > 4f && reach < 2.5f;
                 if (!close)
                 {
                     if (Time.time > nextRepath) { nextRepath = Time.time + 1; kneelAt = KneelSpot(patient, out chest); body.GoTo(kneelAt, 2f); }
@@ -565,8 +582,16 @@ namespace ChooGuard.App.Fps.Emergency
             if (body.Kneeling) body.FacePose(chest, 240); else body.Face(chest);
             // 걸음이 가라앉지 않아(승객들에 밀려) 무릎 꿇기로 안 넘어가면 1.5초 뒤 바로 꿇는다.
             if (Time.time > treatUntil - 6.5f && !body.Kneeling) body.KneelNow();
+            if (lesson != null && cardiacCare != null)
+            {
+                var hips = lesson.Patient.Person.Body.Animator.GetBoneTransform(HumanBodyBones.Hips);
+                var head = lesson.Patient.Person.Body.Animator.GetBoneTransform(HumanBodyBones.Head);
+                cardiacCare.Present(lesson.PatientChest, head.position - hips.position, body.TreatmentPoseSettled, Time.time);
+                if (!cardiacCare.IsPresenting || !lesson.Finished) treatUntil = Time.time + 2f;
+            }
             if (Time.time > treatUntil)
             {
+                cardiacCare?.Hide();
                 director.OnTreated(patient);
                 patient = null;
                 treatUntil = 0;
@@ -598,10 +623,17 @@ namespace ChooGuard.App.Fps.Emergency
             var head = animator != null ? animator.GetBoneTransform(HumanBodyBones.Head) : null;
             var upper = animator != null ? animator.GetBoneTransform(HumanBodyBones.Chest) : null;
             chestAt = upper != null ? upper.position : person.transform.position;
+            if (EmergencySession.Current?.CardiacLesson is CardiacTutorialLesson lesson) chestAt = lesson.PatientChest;
             var axis = hips != null && head != null ? head.position - hips.position : Vector3.zero;
             axis.y = 0;
             var side = axis.sqrMagnitude > .09f ? Vector3.Cross(Vector3.up, axis.normalized) : person.transform.right;
-            var spot = chestAt + side * (Lead ? .62f : -.62f);
+            Vector3 spot;
+            if (EmergencySession.Current?.CardiacLesson != null)
+            {
+                if (Vector3.Dot(side, director.PlayerPosition - chestAt) > 0) side = -side;
+                spot = chestAt + side * .48f;
+            }
+            else spot = chestAt + side * (Lead ? .62f : -.62f);
             spot.y = person.transform.position.y;
             return StationWorld.OnNavMesh(spot, 1f);
         }

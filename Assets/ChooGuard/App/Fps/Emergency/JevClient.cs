@@ -148,9 +148,12 @@ namespace ChooGuard.App.Fps.Emergency
         private int pendingRequests;
         private readonly int[] preparingByLane = new int[3];
 
-        public JevClient(string runLogPath)
+        public JevClient(string runLogPath) : this(runLogPath, true) { }
+
+        public JevClient(string runLogPath, bool allowRemoteJudgement)
         {
-            key = JevKey.Load(out var source);
+            var source = JevKeySource.Off;
+            key = allowRemoteJudgement ? JevKey.Load(out source) : null;
             authorization = key == null ? null : "Bearer " + key;
             Source = source;
             logPath = runLogPath;
@@ -159,6 +162,7 @@ namespace ChooGuard.App.Fps.Emergency
                 key == null ? "JEV 키 없음 · 비상상황을 만들 수 없음" :
                 JevKey.KnownFor(key) == JevKeyCheck.Rejected ? "JEV 키 거부 · 타이틀의 JEV 연결에서 다시 입력" : "JEV 연결 준비";
             if (key != null && JevKey.KnownFor(key) == JevKeyCheck.Rejected) disabled = true;
+            if (!allowRemoteJudgement) initialStatus = "조작 학습 · 준비됨";
         }
 
         /// <summary>True when a request of <paramref name="lane"/> may be sent now under the lane's in-flight limit and the shared budget.</summary>
