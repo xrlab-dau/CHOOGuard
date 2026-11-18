@@ -86,7 +86,7 @@ namespace ChooGuard.App.Fps.TrainDeparture
             foreach(var door in Doors)door.Capture();
             Flow.StageChanged+=OnStage;
             Player.Pause();AnimationRig?.SetPaused(true);Player.PlayerCamera.enabled=false;MenuCamera.enabled=true;
-            View.Game=this;View.Build();View.ShowMain();
+            View.Game=this;View.Build();
             var hud=GetComponent<DeparturePlayHud>();if(hud!=null){hud.Game=this;hud.Build();}
         }
         public void Begin()

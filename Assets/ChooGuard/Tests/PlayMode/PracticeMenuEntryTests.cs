@@ -19,6 +19,37 @@ namespace ChooGuard.Tests.PlayMode
     /// </summary>
     public sealed class PracticeMenuEntryTests
     {
+        [UnityTest, Timeout(600000)]
+        public IEnumerator ReturningToPracticeListPreservesThePageAndTrainCanStillStart()
+        {
+            yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene, LoadSceneMode.Single);
+            yield return null;
+            SceneFlow.ToTutorialMenu();
+            float until = Time.realtimeSinceStartup + 300;
+            while (SceneFlow.Loading && Time.realtimeSinceStartup < until) yield return null;
+            Assert.That(SceneFlow.Loading, Is.False, "Returning to the practice list did not finish loading.");
+            yield return null;
+
+            var view = Object.FindFirstObjectByType<DepartureGameView>();
+            Assert.That(view, Is.Not.Null);
+            Assert.That(Labels(view), Does.Contain("심정지 환자 대응").And.Contain("돌아가기"),
+                "The title must preserve the practice-list request after all Awake/Start callbacks.");
+            Assert.That(Labels(view), Does.Not.Contain("기차 튜토리얼"));
+            Assert.That(SceneFlow.ConsumePracticeMenuRequest(), Is.False, "The request must be consumed only once.");
+            Assert.That(view.HandleCancel(), Is.True);
+            Assert.That(Labels(view), Does.Contain("기차 튜토리얼"));
+
+            var game = Object.FindFirstObjectByType<TrainDepartureGame>();
+            Assert.That(game, Is.Not.Null);
+            game.Player.SetExternalInputMode(true);
+            Button(view, "기차 튜토리얼").onClick.Invoke();
+            Assert.That(game.Started, Is.True, "Returning from practice must still allow the train tutorial to start.");
+            Assert.That(view.MenuVisible, Is.False);
+            game.Restart();
+            Assert.That(Labels(view), Does.Contain("기차 튜토리얼"), "Restarting the train must open its main menu.");
+            Assert.That(PracticeShift.Armed, Is.False);
+        }
+
         [UnityTest, Timeout(1200000)]
         public IEnumerator TheTrainMenuLeadsToTheCardiacPracticeAndBack()
         {
