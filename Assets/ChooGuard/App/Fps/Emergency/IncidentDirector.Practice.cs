@@ -21,6 +21,8 @@ namespace ChooGuard.App.Fps.Emergency
         {
             ["질환"] = new[] { "collapse", "seizure", "chest_pain", "breathing", "low_blood_sugar" },
             [PracticeShift.CardiacFamily] = new[] { "chest_pain" },
+            // 맞이방(2층 맞이방·메인 2층)의 작은 불만 고른다: 휴지통·분리수거함·보조배터리(docs/fire-tutorial.md "1-1").
+            [PracticeShift.FireFamily] = new[] { "bin_fire", "bin_battery_fire", "overheat" },
         };
 
         private string practiceFamily;
@@ -34,7 +36,9 @@ namespace ChooGuard.App.Fps.Emergency
             practiceFamily = family;
             if (session.IsCardiacTutorial) { log.Add("고정 심정지 조작 학습 · 사건 대기 및 자동 인계 없음"); return; }
             log.Add("연습 근무 · " + family + " 한 건만 일어난다 (튜토리얼)");
-            session.Hud.Toast("연습 근무 · 잠시 뒤 2층 맞이방에서 " + family + " 환자가 생깁니다. 승객의 알림이나 순찰로 찾아 확인(E)하고 역무실에 보고(Q)하십시오.", 10f);
+            session.Hud.Toast(family == PracticeShift.FireFamily
+                ? "연습 근무 · 잠시 뒤 2층 맞이방에서 작은 불이 생깁니다. 연기나 불을 찾아 확인(E)하고 역무실에 보고(Q)하십시오."
+                : "연습 근무 · 잠시 뒤 2층 맞이방에서 " + family + " 환자가 생깁니다. 승객의 알림이나 순찰로 찾아 확인(E)하고 역무실에 보고(Q)하십시오.", 10f);
             StartCoroutine(RunPractice(family));
         }
 
@@ -65,7 +69,8 @@ namespace ChooGuard.App.Fps.Emergency
                 yield break;
             }
             // 심정지는 4단계(의식 없음·호흡 비정상)가 곧 심정지: 크기 1.0. 질환 계열은 가운데.
-            float magnitude = family == PracticeShift.CardiacFamily ? 1f : .5f;
+            // 화재는 "1-1. 맞이방 화재(작은 불)" 범위로 묶어 둔다: 손 소화기로 진화되는 낮은 크기로 시작한다.
+            float magnitude = family == PracticeShift.CardiacFamily ? 1f : family == PracticeShift.FireFamily ? .2f : .5f;
             int before = all.Count;
             Execute(chosen, magnitude, 1, "practice");
             yield return null;

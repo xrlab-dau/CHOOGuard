@@ -389,7 +389,8 @@ namespace ChooGuard.App.Fps.Emergency
                 "역사 밖으로 대피  " + crowd.Evacuated + "명\n" +
                 "역 안에 남은 승객  " + crowd.InStation + "명\n" +
                 "부상  " + crowd.Injured.Count + "명\n" +
-                "소화 약제 분사  " + log.SprayedSeconds.ToString("0") + "초 (" + log.ExtinguishersUsed + "대)\n\n" +
+                "소화 약제 분사  " + log.SprayedSeconds.ToString("0") + "초 (" + log.ExtinguishersUsed + "대)\n" +
+                (session.FireLesson != null ? "\n" + session.FireLesson.ScoreReport() + "\n" : "\n") +
                 "<color=#ffffff88>상황 판단  JEV " + log.Director.Rounds + "회 (후보 " + log.Director.Judged + "건 평가" + (log.Director.Unanswered > 0 ? " · 응답 없음 " + log.Director.Unanswered : "") + ")\n" +
                 "일어난 사건  " + log.Events + "건 (새 비상상황 " + log.NewEmergencies + ")\n" +
                 "승객 판단  JEV " + log.JevDecisions + " · 지연 시 규칙 " + log.LocalDecisions + "\n" +

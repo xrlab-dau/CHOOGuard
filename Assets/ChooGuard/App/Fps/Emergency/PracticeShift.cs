@@ -21,6 +21,9 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>The tutorial catalog category that starts the cardiac-arrest practice.</summary>
         public const string CardiacCategory = "cardiac-arrest-practice";
         public const string CardiacFamily = "심정지";
+        /// <summary>The tutorial catalog category that starts the fire practice (맞이방 화재, docs/fire-tutorial.md).</summary>
+        public const string FireCategory = "fire-practice";
+        public const string FireFamily = "화재";
         private const string ProviderRootName = "CHOOGuard Provider Runtime";
         private const string ProviderTypeName = "ChooGuard.Seeded.Unity.PlatformSeededSimulator, ChooGuard.Seeded";
         private const string DeferralProperty = "DeferPreparationForLegacyTests";
@@ -35,7 +38,7 @@ namespace ChooGuard.App.Fps.Emergency
         private static PropertyInfo deferral;
 
         /// <summary>The practice family a tutorial category stands for, or null when the category is an ordinary tutorial scene.</summary>
-        public static string FamilyOf(string categoryId) => categoryId == CardiacCategory ? CardiacFamily : null;
+        public static string FamilyOf(string categoryId) => categoryId == CardiacCategory ? CardiacFamily : categoryId == FireCategory ? FireFamily : null;
 
         /// <summary>Arms a practice of <paramref name="family"/> for the shift about to load. False when the provider seam cannot be taken.</summary>
         public static bool Arm(string family)

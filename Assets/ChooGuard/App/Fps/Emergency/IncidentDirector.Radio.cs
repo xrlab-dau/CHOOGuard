@@ -570,6 +570,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (falseAlarm != null && !falseAlarm.Cleared) falseAlarm.Clear();
             ResetReceiver("역무원 요청");
             if (!alarm) Office("역무실 수신. 수신기 복구했습니다.");
+            session.FireLesson?.OnReceiverResetRequested();
         }
 
         private static string ScopeName(PaScope scope)
