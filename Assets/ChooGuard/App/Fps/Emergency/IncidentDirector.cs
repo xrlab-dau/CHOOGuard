@@ -620,7 +620,7 @@ namespace ChooGuard.App.Fps.Emergency
             Say("역무실, 안내방송 요청합니다.");
             session.Announce(pa.Line, pa.Text);
             ApplyAnnouncement(pa.Scope, Main.Position, pa.Radius, Main);
-            if (Main is FireHazard) session.FireLesson?.OnEvacuationAnnounced();
+            if (Main is FireHazard && (pa.Scope == PaScope.EvacuateArea || pa.Scope == PaScope.EvacuateStation)) session.FireLesson?.OnEvacuationAnnounced();
         }
 
         /// <summary>

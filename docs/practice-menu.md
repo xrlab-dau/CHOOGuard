@@ -32,8 +32,8 @@
 | 가슴 통증 | 선택 가능 | `chest_pain` | 2층 맞이방 | 90초 |  |
 | 호흡곤란 | 선택 가능 | `breathing` | 2층 맞이방 | 90초 |  |
 | 저혈당 | 선택 가능 | `low_blood_sugar` | 2층 맞이방 | 90초 |  |
-| 계단·여행가방 넘어짐 | 선택 가능 | `stairs_fall` · `suitcase_tumble` | 역 전체 | 90초 |  |
-| 에스컬레이터 사고 | 선택 가능 | `escalator_fall` · `escalator_caught` | 역 전체 | 90초 |  |
+| 계단·여행가방 넘어짐 | 선택 가능 | `stairs_fall` · `suitcase_tumble` | 역 전체 | 3분 |  |
+| 에스컬레이터 사고 | 선택 가능 | `escalator_fall` · `escalator_caught` | 역 전체 | 3분 |  |
 
 ## 보안
 

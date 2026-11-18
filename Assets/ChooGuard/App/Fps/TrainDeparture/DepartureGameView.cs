@@ -207,9 +207,21 @@ namespace ChooGuard.App.Fps.TrainDeparture
         /// <summary>One row of a practice list: focusing it (keyboard or pointer) shows <paramref name="about"/> in the detail box.</summary>
         Button Row(string label, float y, Action action, string about, bool primary = false)
         {
-            var button = Action(label, y, action, primary, RowHeight, RowFont);
+            // No "primary" blue row in a list: the focused row is the only highlight, so the detail box always matches it.
+            var button = Action(label, y, action, false, RowHeight, RowFont);
+            var colors = button.colors;
+            colors.selectedColor = colors.highlightedColor = Blue;
+            button.colors = colors;
             button.gameObject.AddComponent<MenuHint>().Show = () => ShowDetail(about);
             return button;
+        }
+        /// <summary>A 준비 중 row: grey text and a grey (not blue) focus, still focusable so its reason shows in the detail box.</summary>
+        static void Dim(Button row)
+        {
+            var colors = row.colors;
+            colors.selectedColor = colors.highlightedColor = colors.pressedColor = new Color(.24f, .24f, .24f);
+            row.colors = colors;
+            row.GetComponentInChildren<TMP_Text>().color = new Color(.55f, .55f, .53f);
         }
         void ShowDetail(string text)
         {
@@ -236,7 +248,7 @@ namespace ChooGuard.App.Fps.TrainDeparture
                 bool open = chosen.Scenarios.Any(scenario => scenario.Available);
                 var row = Row(open ? chosen.Title : chosen.Title + " · 준비 중", y, () => ShowScenarios(chosen), About(chosen), y == FirstRow);
                 row.gameObject.name = chosen.Title;
-                if (!open) row.GetComponentInChildren<TMP_Text>().color = new Color(.55f, .55f, .53f);
+                if (!open) Dim(row);
                 y -= RowStep;
             }
             Row("돌아가기", y - 12, ShowMain, null);
@@ -253,11 +265,7 @@ namespace ChooGuard.App.Fps.TrainDeparture
                 var chosen = scenario;
                 var row = Row(chosen.Available ? chosen.Title : chosen.Title + " · 준비 중", y, () => StartPractice(group, chosen), About(chosen), y == FirstRow && chosen.Available);
                 row.gameObject.name = chosen.Title;
-                if (!chosen.Available)
-                {
-                    row.interactable = false;
-                    row.GetComponentInChildren<TMP_Text>().color = new Color(.55f, .55f, .53f);
-                }
+                if (!chosen.Available) Dim(row);
                 y -= RowStep;
             }
             Row("돌아가기", y - 12, ShowPractice, null);

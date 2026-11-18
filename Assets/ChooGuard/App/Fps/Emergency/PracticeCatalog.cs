@@ -133,15 +133,15 @@ namespace ChooGuard.App.Fps.Emergency
                     {
                         Id = "환자·넘어짐", Title = "계단·여행가방 넘어짐",
                         Description = "계단에서 넘어지거나 여행가방에 걸려 다친 승객. 움직이지 않게 하고 주변을 통제한 뒤 구급대에 인계합니다.",
-                        Kinds = new[] { "stairs_fall", "suitcase_tumble" },
-                        Onset = "잠시 뒤 역 안에서 승객이 넘어져 다칩니다. 다친 승객을" + Find,
+                        Kinds = new[] { "stairs_fall", "suitcase_tumble" }, OfferSeconds = 180,
+                        Onset = "계단이나 맞이방에서 승객이 넘어져 다칩니다(최대 3분). 다친 승객을" + Find,
                     },
                     new PracticeScenario
                     {
                         Id = "환자·에스컬레이터", Title = "에스컬레이터 사고",
                         Description = "에스컬레이터에서 넘어지거나 끼인 승객. 비상정지 버튼으로 멈추고 승강기 담당과 구급대를 부릅니다.",
-                        Kinds = new[] { "escalator_fall", "escalator_caught" },
-                        Onset = "잠시 뒤 에스컬레이터에서 사고가 납니다. 다친 승객을" + Find,
+                        Kinds = new[] { "escalator_fall", "escalator_caught" }, OfferSeconds = 180,
+                        Onset = "에스컬레이터에서 사고가 납니다(최대 3분). 다친 승객을" + Find,
                     },
                 },
             },
