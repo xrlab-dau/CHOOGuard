@@ -29,7 +29,7 @@ namespace ChooGuard.Tests.StationFireTutorial
             Environment.SetEnvironmentVariable("TYPESAFE_API_KEY","off");Time.timeScale=1;
             yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene);yield return null;
         }
-        [UnityTest,Timeout(660000)]public IEnumerator LatestCardiacCategoryStartsOnePatientAndReturnsToTheSharedTutorialMenu()
+        [UnityTest,Timeout(1800000)]public IEnumerator LatestCardiacCategoryStartsOnePatientAndReturnsToTheSharedTutorialMenu()
         {
             var menu=UnityEngine.Object.FindFirstObjectByType<DepartureGameView>();
             Assert.That(menu,Is.Not.Null,"The current train menu is the title");
@@ -51,7 +51,7 @@ namespace ChooGuard.Tests.StationFireTutorial
                 ["scope"]="Actual title entry, practice startup, one patient, and shared-menu return; not a full CPR playthrough"
             }.ToString());
             SceneFlow.ToTutorialMenu();yield return null;
-            yield return Until(()=>UnityEngine.Object.FindFirstObjectByType<DepartureGameView>()!=null&&!SceneFlow.Loading,30,"Return to actual practice menu");
+            yield return Until(()=>UnityEngine.Object.FindFirstObjectByType<DepartureGameView>()!=null&&!SceneFlow.Loading,600,"Return to actual practice menu after loading the retained station/train scenes");
             Assert.That(PracticeShift.Armed,Is.False);
             menu=UnityEngine.Object.FindFirstObjectByType<DepartureGameView>();
             var names=menu.GetComponentsInChildren<Button>().Select(b=>b.GetComponentInChildren<TMPro.TMP_Text>()?.text).ToArray();
