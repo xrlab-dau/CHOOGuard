@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ChooGuard.App.Fps.Emergency;
 using ChooGuard.App.Fps.Shell;
+using ChooGuard.App.Fps.StationFireTutorial;
 using ChooGuard.App.Fps.Tutorial;
 using TMPro;
 using UnityEngine;
@@ -188,7 +189,8 @@ namespace ChooGuard.App.Fps.TrainDeparture
         {
             var catalog = Resources.Load<TutorialCatalog>(TutorialCatalog.ResourceName);
             if (catalog == null || catalog.Categories == null) return Array.Empty<TutorialCategory>();
-            return catalog.Categories.Where(category => category != null && PracticeShift.FamilyOf(category.Id) != null).ToArray();
+            return catalog.Categories.Where(category => category != null &&
+                (PracticeShift.FamilyOf(category.Id) != null || category.Id == StationFireTutorialSession.CategoryId)).ToArray();
         }
         public void ShowPractice()
         {
@@ -210,6 +212,18 @@ namespace ChooGuard.App.Fps.TrainDeparture
         }
         void StartPractice(TutorialCategory category)
         {
+            if (SceneFlow.Loading) return;
+            if (category.Id == StationFireTutorialSession.CategoryId)
+            {
+                if (!UnityEngine.Application.CanStreamedLevelBeLoaded(category.SceneName) ||
+                    !UnityEngine.Application.CanStreamedLevelBeLoaded(SceneFlow.StationScene))
+                { Debug.LogError("[연습] 화재 튜토리얼 또는 역사 씬이 빌드 목록에 없습니다."); return; }
+                Game.ReleaseForSceneChange();
+                menu.interactable = false;
+                title.text = "불러오는 중";
+                SceneFlow.StartTutorial(category.SceneName, Font, null);
+                return;
+            }
             var family = PracticeShift.FamilyOf(category.Id);
             if (family == null || SceneFlow.Loading) return;
             if (!UnityEngine.Application.CanStreamedLevelBeLoaded(SceneFlow.StationScene))

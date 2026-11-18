@@ -86,7 +86,7 @@ namespace ChooGuard.Seeded.Unity
 
         void Awake()
         {
-            if (DeferPreparationForLegacyTests) return;
+            if (DeferPreparationForLegacyTests || OfflineStationStartupScope.IsDeferred) return;
             try{if(string.IsNullOrEmpty(InitialSeed))NewSeed();Prepare();}
             catch(Exception e){Status="역 준비 실패: "+e.Message;Debug.LogException(e);}
         }

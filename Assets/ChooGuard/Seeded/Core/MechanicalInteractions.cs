@@ -64,7 +64,8 @@ namespace ChooGuard.Seeded
     /// </summary>
     public sealed class MechanicalInteractions
     {
-        public const string Version = "chooguard.mechanical.v1";
+        public const string Version = "chooguard.mechanical.v2";
+        public const string CatalogSchemaVersion = "chooguard.mechanical.v1";
         public const string Claim = "INFERRED_TRAINING";
         readonly World world;
         readonly SortedDictionary<string, MechanicalProfile> profiles;
@@ -90,11 +91,11 @@ namespace ChooGuard.Seeded
         }
         public static string DefaultProfilesJson() => CatalogJson(Defaults());
         static string CatalogJson(IEnumerable<MechanicalProfile> values) => new JObject
-        { ["schemaVersion"] = Version, ["claim"] = Claim, ["profiles"] = JArray.FromObject(values.OrderBy(p => p.Id, StringComparer.Ordinal)) }.ToString(Formatting.Indented);
+        { ["schemaVersion"] = CatalogSchemaVersion, ["claim"] = Claim, ["profiles"] = JArray.FromObject(values.OrderBy(p => p.Id, StringComparer.Ordinal)) }.ToString(Formatting.Indented);
         static IEnumerable<MechanicalProfile> ParseProfiles(string json)
         {
             var root = JObject.Parse(json);
-            if ((string)root["schemaVersion"] != Version || (string)root["claim"] != Claim || !(root["profiles"] is JArray)) throw new ArgumentException("Mechanical catalog schema/claim");
+            if ((string)root["schemaVersion"] != CatalogSchemaVersion || (string)root["claim"] != Claim || !(root["profiles"] is JArray)) throw new ArgumentException("Mechanical catalog schema/claim");
             var result = root["profiles"].ToObject<List<MechanicalProfile>>();
             if (result.Count == 0 || result.Any(p => p == null || string.IsNullOrWhiteSpace(p.Id) || p.Claim != Claim || string.IsNullOrWhiteSpace(p.Provenance) || !Finite(p.Confidence) || p.Confidence < 0 || p.Confidence > 1 || p.Parts == null || p.Parts.Count == 0) || result.Select(p => p.Id).Distinct().Count() != result.Count) throw new ArgumentException("Mechanical profile identity/provenance");
             foreach (var p in result)
@@ -153,6 +154,13 @@ namespace ChooGuard.Seeded
             var e = world.Entities[ownerId]; e.Set("mech.center.x", x); e.Set("mech.center.y", y); e.Set("mech.center.z", z); e.Set("mech.center.qualified", 1);
         }
         public bool HasProfile(string ownerId) => ownerId != null && owners.ContainsKey(ownerId);
+        /// <summary>Input capture loss releases physical grips; it never restores charge or device preparation.</summary>
+        public void ReleaseActorGrips(string actorId)
+        {
+            if (!world.Entities.TryGetValue(actorId, out var actor)) return;
+            foreach (var key in actor.State.Keys.Where(k => k.StartsWith("mech.grip.", StringComparison.Ordinal)).ToArray()) actor.Set(key, 0);
+            foreach (var ownerId in owners.Keys) Project(world.Entities[ownerId]);
+        }
         public IReadOnlyList<MechanicalPart> Parts(string ownerId) => owners.ContainsKey(ownerId) ? profiles[owners[ownerId]].Parts.Select(ClonePart).ToArray() : Array.Empty<MechanicalPart>();
         static MechanicalPart ClonePart(MechanicalPart p) => JsonConvert.DeserializeObject<MechanicalPart>(JsonConvert.SerializeObject(p));
         public double Position(string ownerId, string partId) => world.Entities[ownerId].Get("mech.part." + partId);
@@ -242,6 +250,8 @@ namespace ChooGuard.Seeded
                 if (input.Analog > 0 && owner.Get("mech.tagged") > 0) return "lockout_tag_blocks_reenergizing";
             }
             if (part.Id == "lever" && Position(owner.Id, "pin") < .95) return "safety_pin_engaged";
+            if (part.Id == "lever" && owner.Get("mech.discharge-enabled", 1) <= 0) return "supervised_safe_handoff_required";
+            if (part.Id == "lever" && owner.Get("mech.require-nozzle-ready") > 0 && Position(owner.Id, "nozzle") < .95) return "nozzle_not_secured";
             if (part.Id == "lever" && owner.Get("mech.charge") <= 0) return "empty_charge";
             if (part.Id == "ptt" && (Position(owner.Id, "power") < .5 || owner.Get("power", 1) <= 0 || owner.Get("mech.charge") <= 0)) return "radio_unpowered";
             if (part.Id == "coupler" && Position(owner.Id, "plug") < .95) return "insert_plug_first";
@@ -332,6 +342,8 @@ namespace ChooGuard.Seeded
         void Consume(Entity owner, double duration, MechanicalOutcome result)
         {
             string profile = owners[owner.Id]; double rate = 0;
+            if (profile == "extinguisher" && !AnyHeld(owner.Id, "lever") || profile == "radio" && !AnyHeld(owner.Id, "ptt")) return;
+            if (profile == "extinguisher" && (owner.Get("mech.discharge-enabled", 1) <= 0 || owner.Get("mech.require-nozzle-ready") > 0 && Position(owner.Id, "nozzle") < .95)) return;
             if (profile == "extinguisher" && Position(owner.Id, "pin") >= .95) rate = Position(owner.Id, "lever") * .07;
             if (profile == "radio" && Position(owner.Id, "power") >= .5) rate = Position(owner.Id, "ptt") * .002;
             if (rate <= 0) return;
@@ -350,7 +362,7 @@ namespace ChooGuard.Seeded
                 double on = Position(e.Id, "switch") > .5 ? 1 : 0;
                 e.Set("power.isolated", 1 - on); e.Set("power", on * e.Get("supply.available", 1));
             }
-            if (profile == "extinguisher") e.Set("mech.flow", Position(e.Id, "pin") >= .95 && e.Get("mech.charge") > 0 ? Position(e.Id, "lever") : 0);
+            if (profile == "extinguisher") e.Set("mech.flow", AnyHeld(e.Id, "lever") && Position(e.Id, "pin") >= .95 && e.Get("mech.charge") > 0 && e.Get("mech.discharge-enabled", 1) > 0 && (e.Get("mech.require-nozzle-ready") <= 0 || Position(e.Id, "nozzle") >= .95) ? Position(e.Id, "lever") : 0);
             if (profile == "radio")
             {
                 bool contactKnown = e.State.Any(s => s.Key.StartsWith("mech.radio-contact.", StringComparison.Ordinal) && s.Value > 0);
@@ -360,7 +372,7 @@ namespace ChooGuard.Seeded
                 });
                 bool available = e.Get("communications.available", 1) > 0 && receiverAvailable;
                 if (!available) { e.Set("radio.contact", 0); e.Set("mech.radio-contact-progress", 0); }
-                e.Set("radio.transmitting", Position(e.Id, "power") >= .5 && e.Get("power", 1) > 0 && e.Get("mech.charge") > 0 && Position(e.Id, "ptt") >= .6 ? 1 : 0);
+                e.Set("radio.transmitting", AnyHeld(e.Id, "ptt") && Position(e.Id, "power") >= .5 && e.Get("power", 1) > 0 && e.Get("mech.charge") > 0 && Position(e.Id, "ptt") >= .6 ? 1 : 0);
                 e.Set("radio.delivered", e.Get("radio.transmitting") * e.Get("radio.contact") * (available ? 1 : 0));
             }
         }

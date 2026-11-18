@@ -20,7 +20,7 @@ namespace ChooGuard.App.Fps.Shell
         public static bool OpenTutorialMenuOnTitle => false;
         public static event Action QuitRequested;
         public static void ConsumeTutorialMenuRequest() { }
-        public static void StartTutorial(string sceneName, TMP_FontAsset font, Texture background) => Load(TutorialScene);
+        public static void StartTutorial(string sceneName, TMP_FontAsset font, Texture background) => Load(sceneName);
         public static void StartShift(TMP_FontAsset font, Texture background) => Load(StationScene);
         public static void ToTitle() => Load(TitleScene);
         /// <summary>Back to the train-departure menu with its "비상상황 연습" list open (a practice's result screen).</summary>
