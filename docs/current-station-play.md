@@ -1,5 +1,13 @@
 # 현재 역사 플레이와 튜토리얼
 
+## 2026-11-12 현재 씬 및 등록 목록 갱신
+
+현재 배포 씬은 `TrainDepartureDemo`이고 `FpsStation`은 맵 편집·소개용으로 남아 있다. FpsStation의 provider 제어 루트는 저장 상태에서 비활성이다. 아래 2026-10-16 진입 설명과 실행 기록은 당시 구현 이력이며 현재 배포 진입 경로를 뜻하지 않는다.
+
+`CurrentStationInventorySupplement.ExportBatch`는 현재 저장 씬의 live anchor 아래에 추가된 KTX 메시 전용 자식을 읽기 전용으로 추출한다. Unity 명령줄의 `-executeMethod ChooGuard.Editor.CurrentStationInventorySupplement.ExportBatch -inventoryOutput <빈 외부 출력 폴더>`로 실행한다. 기존 객체의 식별자·활성 상태·위치·부모 관계가 다르거나 새 객체가 지원 범위를 벗어나면 중단한다. 씬을 저장하거나 기존 목록을 자동으로 덮어쓰지 않는다.
+
+출력의 `receipt.json`과 원본 보존을 확인한 뒤 `WorldSnapshotInventory.json`과 `WorldSnapshotPrefabManifest.json`을 함께 검토·적용하고 `CurrentProviderNativeBindingPlayTests`를 실행한다. 과거 `sourceSnapshot`·`currentFloorProvenance` 및 의미 연결은 보존되며, 추가 객체의 실제 저장 씬 근거와 전체 개수는 `currentNativeCensus`에 기록된다. 새 메시의 등록은 화재·조작 등의 능력을 부여하지 않는다. 동일한 부모 메시를 사용하는 깊이 렌더링 자식은 별도 검증된 목록으로 기록하여 추가 충돌면을 생성하지 않는다. 전체 구조 변경이나 collider/behaviour 추가에는 이 제한된 보충 도구를 사용하지 않는다.
+
 2026-10-16 현재 역사 씬에는 provider 기반 초기 조건 생성·NPC 행동 런타임을 연결했다. 현재 오브젝트8075개를 입력 목록으로 사용하며, 기존 승객 모델13종과 한국어 폰트를 참조한다. 기존 공식 자원과 승인된 건축 형상을 새 prefab으로 대체하지 않는다.
 
 ## 역사 근무
@@ -8,9 +16,9 @@ Editor Play는 `Bootstrap` 타이틀에서 시작한다. `플레이 시작` → 
 
 WASD로 이동하고 Shift로 빠르게 이동한다. E는 대상 조작, Esc는 포인터 해제, F8은 계정·모델 메뉴다. 랜덤 비상상황의 시작 버튼은 AI 준비와 초기 생성 허용을 확인하며, 연결이 준비되지 않았으면 계정 메뉴로 안내한다. 계정·모델 변경은 근무를 종료한 뒤 가능하다.
 
-## 승무원 열차점검
+## 열차 튜토리얼
 
-타이틀 → 튜토리얼 → 승무원 열차점검, 또는 `CrewTrainTutorial` 씬에서 직접 Play한다. 이 교육은13단계의 오프라인 장비 실습이며 provider 로그인이나 JEV 키를 요구하지 않는다. 역사 씬 강제 시작 설정으로 튜토리얼 씬을 덮어쓰지 않는다.
+기존 열차 튜토리얼은 2026-11-02 사용자 요청으로 제거했다. 기존 13단계·결과 확인 UI·전용 씬의 진입 경로는 더 이상 제공하지 않는다.
 
 ## 구현 근거와 상태 경계
 
@@ -19,8 +27,6 @@ WASD로 이동하고 Shift로 빠르게 이동한다. E는 대상 조작, Esc는
 현재 씬 적용/저장과 실제 플레이 검증, 현장 절차/효과 검증을 구분한다. 최초 설치는 추론 없이 수행했다. 이후 사용자가 GPT-6-Luna와 구독 사용을 명시적으로 선택했다. 구버전 helper를 앱 소유권 확인 후 갱신했고 기존 로그인 파일을 byte-exact 보존했다. 같은 계정·모델·허용을 복원해 현행 추론 계약을 확인했다. 승인된 시드/가정은 현장 측정이나 군중 행동의 효과 증거가 아니다.
 
 건축 편집 후에는 새 현재 씬 inventory와 native object correspondence를 갱신해야 한다. 기존 frozen snapshot으로 되돌리지 않는다. 원본 runtime의 설치본은 `Assets/ChooGuard/Seeded`, 별도 simulator 연구 소스는 `workers/simulator`이며, 변경을 자동 양방향 동기화하지 않는다.
-
-2026-10-16 PR289 확인: 로컬에 머지 커밋이 포함돼 있으며, 실제 PlayMode에서 전체13단계 이동/조작·메뉴 복귀·인터폰·일시정지·재시작·무전 등8개 개별 항목이 통과했다. 묶음 실행 중단 후 남은 항목은 분리 실행했다. 근거: `.planning/2026-10-16-game-provider-npc/TUTORIAL-VERIFICATION.json`. 현재 역사 전체의 NPC 이동/추론 실효성 검증과는 구분한다.
 
 2026-10-16 최신 진입 UX: 사용자는 Play 시작 뒤 튜토리얼/랜덤 비상상황 대응을 선택한다. Editor Play 기본 진입도 Bootstrap으로 설정한다. 이는 앞선 직접 튜토리얼 진입용 설정보다 우선하는 최신 사용자 요청이다. 타이틀의 계정 메뉴는 역사 형상을 불러오지 않고 계정·모델 설정만 처리한다. ChatGPT GPT-6-Luna 선택, 구독 사용 허용, 초기 생성1회 허용 적용 완료; 동의 자체는 추론을 실행하지 않는다.
 

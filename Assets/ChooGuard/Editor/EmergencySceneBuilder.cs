@@ -97,7 +97,7 @@ namespace ChooGuard.Editor
                 new EditorBuildSettingsScene(StationScenePath, true),
                 new EditorBuildSettingsScene(EmergencyScenePath, true),
             };
-            var tutorials = AssetDatabase.LoadAssetAtPath<ChooGuard.App.Fps.Tutorial.TutorialCatalog>(TrainTutorialSceneBuilder.CatalogPath);
+            var tutorials = AssetDatabase.LoadAssetAtPath<ChooGuard.App.Fps.Tutorial.TutorialCatalog>("Assets/ChooGuard/Resources/TutorialCatalog.asset");
             if (tutorials != null && tutorials.Validate(out _))
                 foreach (var category in tutorials.Categories)
                 {

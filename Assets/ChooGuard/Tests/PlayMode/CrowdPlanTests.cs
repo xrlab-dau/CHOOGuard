@@ -59,10 +59,7 @@ namespace ChooGuard.Tests.PlayMode
         [UnityTest, Timeout(300000)]
         public IEnumerator ClosingBoundExit_DoesNotCarryItsJudgementToAnotherExit()
         {
-            var station = SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
-            while (!station.isDone) yield return null;
-            var loading = SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
-            while (!loading.isDone) yield return null;
+            yield return LoadRetainedStationAndSession();
             float deadline = Time.realtimeSinceStartup + 120;
             while ((EmergencySession.Current == null || EmergencySession.Current.Crowd == null) && Time.realtimeSinceStartup < deadline) yield return null;
             var shift = EmergencySession.Current;
