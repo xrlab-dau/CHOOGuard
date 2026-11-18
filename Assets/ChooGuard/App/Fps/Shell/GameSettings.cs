@@ -23,6 +23,12 @@ namespace ChooGuard.App.Fps.Shell
     {
         private const string SensitivityKey = "chooguard.mouseSensitivity";
         private const string VolumeKey = "chooguard.masterVolume";
+        private const string PerformanceKey = "chooguard.presentationPerformance";
+        public static bool PerformanceMode
+        {
+            get => PlayerPrefs.GetInt(PerformanceKey,1)!=0;
+            set { PlayerPrefs.SetInt(PerformanceKey,value?1:0);PlayerPrefs.Save();PerformanceRendering.Apply(value);Changed?.Invoke(); }
+        }
         private const string GuidanceKey = "chooguard.guidance";
         // 안내 수준을 바꾸면 그 수준의 기본값으로 돌아가는 개별 설정(바꾸기 전까지는 수준을 따른다).
         private const string RouteKey = "chooguard.showRoute.v2";
@@ -119,6 +125,7 @@ namespace ChooGuard.App.Fps.Shell
                 responder.SimpleControls = SimpleControls;
             }
             AudioListener.volume = MasterVolume;
+            PerformanceRendering.Apply(PerformanceMode);
         }
     }
 }

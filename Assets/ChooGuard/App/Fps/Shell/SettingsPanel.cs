@@ -14,52 +14,56 @@ namespace ChooGuard.App.Fps.Shell
         private static readonly GuidanceLevel[] Levels = { GuidanceLevel.Guided, GuidanceLevel.Standard, GuidanceLevel.Expert };
 
         private Action close;
-        private TMP_Text sensitivityValue, volumeValue, routeValue, simpleValue, guidanceText;
+        private TMP_Text sensitivityValue, volumeValue, routeValue, simpleValue, guidanceText, performanceValue;
         private readonly Image[] levelButtons = new Image[3];
         private readonly TMP_Text[] levelCaptions = new TMP_Text[3];
 
         public static SettingsPanel Create(RectTransform parent, TMP_FontAsset font, Action onClose)
         {
             var root = FpsUiFactory.Node(parent, "설정");
-            FpsUiFactory.Place(root, new Vector2(0, .5f), new Vector2(72, 0), new Vector2(520, 660));
+            FpsUiFactory.Place(root, new Vector2(0, .5f), new Vector2(72, 0), new Vector2(520, 696));
             var panel = root.gameObject.AddComponent<SettingsPanel>();
             panel.close = onClose;
             var heading = FpsUiFactory.Text(root, font, "제목", new Vector2(0, 1), Vector2.zero, new Vector2(520, 60), 40, TextAlignmentOptions.BottomLeft);
             heading.text = "설정";
             heading.fontStyle = FontStyles.Bold;
 
-            var sensLabel = FpsUiFactory.Text(root, font, "감도 제목", new Vector2(0, 1), new Vector2(0, -96), new Vector2(360, 30), 20, TextAlignmentOptions.Left);
+            var sensLabel = FpsUiFactory.Text(root, font, "감도 제목", new Vector2(0, 1), new Vector2(0, -76), new Vector2(360, 30), 20, TextAlignmentOptions.Left);
             sensLabel.text = "마우스 감도";
-            panel.sensitivityValue = FpsUiFactory.Text(root, font, "감도 값", new Vector2(0, 1), new Vector2(380, -96), new Vector2(120, 30), 20, TextAlignmentOptions.Right);
-            FpsUiFactory.Slider(root, "감도", new Vector2(0, 1), new Vector2(0, -134), new Vector2(500, 28), .2f, 3f, GameSettings.MouseSensitivity,
+            panel.sensitivityValue = FpsUiFactory.Text(root, font, "감도 값", new Vector2(0, 1), new Vector2(380, -76), new Vector2(120, 30), 20, TextAlignmentOptions.Right);
+            FpsUiFactory.Slider(root, "감도", new Vector2(0, 1), new Vector2(0, -114), new Vector2(500, 28), .2f, 3f, GameSettings.MouseSensitivity,
                 v => { GameSettings.MouseSensitivity = v; panel.Refresh(); });
 
-            var volLabel = FpsUiFactory.Text(root, font, "음량 제목", new Vector2(0, 1), new Vector2(0, -186), new Vector2(360, 30), 20, TextAlignmentOptions.Left);
+            var volLabel = FpsUiFactory.Text(root, font, "음량 제목", new Vector2(0, 1), new Vector2(0, -156), new Vector2(360, 30), 20, TextAlignmentOptions.Left);
             volLabel.text = "전체 음량";
-            panel.volumeValue = FpsUiFactory.Text(root, font, "음량 값", new Vector2(0, 1), new Vector2(380, -186), new Vector2(120, 30), 20, TextAlignmentOptions.Right);
-            FpsUiFactory.Slider(root, "음량", new Vector2(0, 1), new Vector2(0, -224), new Vector2(500, 28), 0f, 1f, GameSettings.MasterVolume,
+            panel.volumeValue = FpsUiFactory.Text(root, font, "음량 값", new Vector2(0, 1), new Vector2(380, -156), new Vector2(120, 30), 20, TextAlignmentOptions.Right);
+            FpsUiFactory.Slider(root, "음량", new Vector2(0, 1), new Vector2(0, -194), new Vector2(500, 28), 0f, 1f, GameSettings.MasterVolume,
                 v => { GameSettings.MasterVolume = v; panel.Refresh(); });
 
-            var guidanceLabel = FpsUiFactory.Text(root, font, "안내 수준 제목", new Vector2(0, 1), new Vector2(0, -272), new Vector2(500, 30), 20, TextAlignmentOptions.Left);
+            var guidanceLabel = FpsUiFactory.Text(root, font, "안내 수준 제목", new Vector2(0, 1), new Vector2(0, -232), new Vector2(500, 30), 20, TextAlignmentOptions.Left);
             guidanceLabel.text = "안내 수준";
             for (int i = 0; i < Levels.Length; i++)
             {
                 var level = Levels[i];
-                var button = FpsUiFactory.Button(root, font, GameSettings.Label(level), new Vector2(0, 1), new Vector2(i * 170, -310), new Vector2(160, 44),
+                var button = FpsUiFactory.Button(root, font, GameSettings.Label(level), new Vector2(0, 1), new Vector2(i * 170, -270), new Vector2(160, 44),
                     () => { GameSettings.Guidance = level; panel.Refresh(); }, 20);
                 panel.levelButtons[i] = (Image)button.targetGraphic;
                 panel.levelCaptions[i] = button.GetComponentInChildren<TMP_Text>();
             }
-            panel.guidanceText = FpsUiFactory.Text(root, font, "안내 수준 설명", new Vector2(0, 1), new Vector2(0, -364), new Vector2(500, 56), 15, TextAlignmentOptions.TopLeft);
+            panel.guidanceText = FpsUiFactory.Text(root, font, "안내 수준 설명", new Vector2(0, 1), new Vector2(0, -324), new Vector2(500, 68), 15, TextAlignmentOptions.TopLeft);
             panel.guidanceText.color = FpsUiFactory.TextDim;
 
-            var routeButton = FpsUiFactory.Button(root, font, "길 안내 표시", new Vector2(0, 1), new Vector2(0, -432), new Vector2(500, 48),
+            var routeButton = FpsUiFactory.Button(root, font, "길 안내 표시", new Vector2(0, 1), new Vector2(0, -400), new Vector2(500, 48),
                 () => { GameSettings.ShowRoute = !GameSettings.ShowRoute; panel.Refresh(); }, 20);
             panel.routeValue = FpsUiFactory.Text(routeButton.transform, font, "상태", new Vector2(1, .5f), new Vector2(-20, 0), new Vector2(100, 34), 18, TextAlignmentOptions.Right);
-            var simpleButton = FpsUiFactory.Button(root, font, "간편 조작 (손잡이를 E 한 번으로)", new Vector2(0, 1), new Vector2(0, -490), new Vector2(500, 48),
+            var simpleButton = FpsUiFactory.Button(root, font, "간편 조작 (손잡이를 E 한 번으로)", new Vector2(0, 1), new Vector2(0, -458), new Vector2(500, 48),
                 () => { GameSettings.SimpleControls = !GameSettings.SimpleControls; panel.Refresh(); }, 20);
             panel.simpleValue = FpsUiFactory.Text(simpleButton.transform, font, "상태", new Vector2(1, .5f), new Vector2(-20, 0), new Vector2(100, 34), 18, TextAlignmentOptions.Right);
-            FpsUiFactory.Button(root, font, "돌아가기", new Vector2(0, 1), new Vector2(0, -564), new Vector2(260, 52), () => panel.close?.Invoke(), 22);
+            var performanceButton=FpsUiFactory.Button(root,font,"화면 설정",new Vector2(0,1),new Vector2(0,-516),new Vector2(500,48),
+                ()=>{GameSettings.PerformanceMode=!GameSettings.PerformanceMode;panel.Refresh();},20);
+            panel.performanceValue=FpsUiFactory.Text(performanceButton.transform,font,"화면 모드",new Vector2(1,.5f),new Vector2(-20,0),new Vector2(260,34),18,TextAlignmentOptions.Right);
+            FpsUiFactory.Text(root,font,"화면 설정 설명",new Vector2(0,1),new Vector2(0,-572),new Vector2(500,40),15,TextAlignmentOptions.TopLeft).text="시연용: 화면 부하를 줄이고 글자는 선명하게 유지합니다.";
+            FpsUiFactory.Button(root, font, "돌아가기", new Vector2(0, 1), new Vector2(0, -620), new Vector2(260, 52), () => panel.close?.Invoke(), 22);
             panel.Refresh();
             root.gameObject.SetActive(false);
             return panel;
@@ -70,6 +74,7 @@ namespace ChooGuard.App.Fps.Shell
 
         private void Refresh()
         {
+            if(performanceValue!=null)performanceValue.text=GameSettings.PerformanceMode?"시연용 · 성능 우선":"원본 화질";
             if (sensitivityValue != null) sensitivityValue.text = GameSettings.MouseSensitivity.ToString("0.00") + "×";
             if (volumeValue != null) volumeValue.text = Mathf.RoundToInt(GameSettings.MasterVolume * 100) + "%";
             if (routeValue != null) routeValue.text = GameSettings.ShowRoute ? "켜짐" : "꺼짐";

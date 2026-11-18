@@ -104,7 +104,7 @@ namespace ChooGuard.App.Fps.Shell
             private IEnumerator LoadTutorial(string sceneName)
             {
                 var operation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-                while (!operation.isDone) { Report(operation.progress, "열차점검 준비 중"); yield return null; }
+                while (!operation.isDone) { Report(operation.progress, "튜토리얼 준비 중"); yield return null; }
                 Report(1, "튜토리얼 시작");
                 Loading = false;
                 Destroy(gameObject);

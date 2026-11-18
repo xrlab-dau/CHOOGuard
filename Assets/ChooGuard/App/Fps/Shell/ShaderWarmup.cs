@@ -56,6 +56,8 @@ namespace ChooGuard.App.Fps.Shell
             var collection = trace == null ? Resources.Load<GraphicsStateCollection>(ResourcePath) : null;
             if (collection == null || collection.isWarmedUp || collection.runtimePlatform != UnityEngine.Application.platform || collection.graphicsDeviceType != SystemInfo.graphicsDeviceType)
             {
+                if(trace==null&&SystemInfo.graphicsDeviceType==UnityEngine.Rendering.GraphicsDeviceType.Direct3D11)
+                    yield return WarmVisibleViews(progress);
                 progress?.Invoke(1);
                 yield break;
             }
@@ -74,6 +76,39 @@ namespace ChooGuard.App.Fps.Shell
             handle.Complete();
             progress?.Invoke(1);
             Debug.Log("CG_PSO warmed " + collection.completedWarmupCount + "/" + collection.totalGraphicsStateCount + " states in " + (Time.realtimeSinceStartup - started).ToString("F1") + " s");
+        }
+        // D3D11 cannot consume Metal PSO data. Render the real loaded materials
+        // behind the loading screen, restoring each camera before the next frame.
+        static IEnumerator WarmVisibleViews(Action<float> progress)
+        {
+            var cameras=Camera.allCameras;
+            var target=RenderTexture.GetTemporary(256,144,24,RenderTextureFormat.ARGB32);
+            var request=new UnityEngine.Rendering.RenderPipeline.StandardRequest{destination=target};
+            int rendered=0;
+            try
+            {
+                foreach(var camera in cameras)
+                {
+                    if(camera==null||!camera.isActiveAndEnabled||camera.cameraType!=CameraType.Game||camera.targetTexture!=null||
+                       !UnityEngine.Rendering.RenderPipeline.SupportsRenderRequest(camera,request))continue;
+                    var original=camera.transform.rotation;
+                    for(int i=0;i<8;i++)
+                    {
+                        bool failed=false;
+                        try
+                        {
+                            camera.transform.rotation=Quaternion.Euler(0,i*45,0)*original;
+                            UnityEngine.Rendering.RenderPipeline.SubmitRenderRequest(camera,request);rendered++;
+                        }
+                        catch(Exception error){failed=true;Debug.LogWarning("화면 사전 준비 생략: "+error.Message);}
+                        finally{camera.transform.rotation=original;}
+                        if(failed)break;
+                        progress?.Invoke((i+1)/8f);yield return null;
+                    }
+                }
+            }
+            finally{RenderTexture.ReleaseTemporary(target);}
+            Debug.Log("CG_D3D11 prepared "+rendered+" views before play");
         }
     }
 }
