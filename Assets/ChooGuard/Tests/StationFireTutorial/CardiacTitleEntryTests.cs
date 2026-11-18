@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using ChooGuard.App.Fps.Emergency;
 using ChooGuard.App.Fps.Shell;
+using ChooGuard.App.Fps.TrainDeparture;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using UnityEngine;
@@ -26,15 +27,14 @@ namespace ChooGuard.Tests.StationFireTutorial
         {
             previousKey=Environment.GetEnvironmentVariable("TYPESAFE_API_KEY");
             Environment.SetEnvironmentVariable("TYPESAFE_API_KEY","off");Time.timeScale=1;
-            yield return SceneManager.LoadSceneAsync("Bootstrap");yield return null;
+            yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene);yield return null;
         }
         [UnityTest,Timeout(660000)]public IEnumerator LatestCardiacCategoryStartsOnePatientAndReturnsToTheSharedTutorialMenu()
         {
-            var title=UnityEngine.Object.FindFirstObjectByType<TitleScreen>();
-            yield return Until(()=>title!=null&&title.Built,15,"Actual title ready");
-            title.StartButton.onClick.Invoke();title.Modes.TutorialButton.onClick.Invoke();
-            var menu=UnityEngine.Object.FindFirstObjectByType<TutorialMenu>();
-            menu.GetComponentsInChildren<Button>().Single(b=>b.name=="심정지 환자 대응").onClick.Invoke();
+            var menu=UnityEngine.Object.FindFirstObjectByType<DepartureGameView>();
+            Assert.That(menu,Is.Not.Null,"The current train menu is the title");
+            menu.ShowPractice();
+            menu.GetComponentsInChildren<Button>().Single(b=>b.GetComponentInChildren<TMPro.TMP_Text>()?.text=="심정지 환자 대응").onClick.Invoke();
             yield return Until(()=>EmergencySession.Current!=null&&EmergencySession.Current.Incidents!=null&&EmergencySession.Current.Incidents.Practicing,
                 360,"Cardiac category enters the retained practice session");
             var session=EmergencySession.Current;
@@ -51,15 +51,15 @@ namespace ChooGuard.Tests.StationFireTutorial
                 ["scope"]="Actual title entry, practice startup, one patient, and shared-menu return; not a full CPR playthrough"
             }.ToString());
             SceneFlow.ToTutorialMenu();yield return null;
-            yield return Until(()=>UnityEngine.Object.FindFirstObjectByType<TitleScreen>()?.Built==true,30,"Return to actual tutorial menu");
+            yield return Until(()=>UnityEngine.Object.FindFirstObjectByType<DepartureGameView>()!=null&&!SceneFlow.Loading,30,"Return to actual practice menu");
             Assert.That(PracticeShift.Armed,Is.False);
-            menu=UnityEngine.Object.FindFirstObjectByType<TutorialMenu>();
-            var names=menu.GetComponentsInChildren<Button>().Select(b=>b.name).ToArray();
+            menu=UnityEngine.Object.FindFirstObjectByType<DepartureGameView>();
+            var names=menu.GetComponentsInChildren<Button>().Select(b=>b.GetComponentInChildren<TMPro.TMP_Text>()?.text).ToArray();
             Assert.That(names,Does.Contain("역무원 화재대응"));Assert.That(names,Does.Contain("심정지 환자 대응"));
         }
         [UnityTearDown]public IEnumerator Cleanup()
         {
-            Time.timeScale=1;yield return SceneManager.LoadSceneAsync("Bootstrap");yield return null;
+            Time.timeScale=1;yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene);yield return null;
             Environment.SetEnvironmentVariable("TYPESAFE_API_KEY",previousKey);
         }
     }

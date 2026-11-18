@@ -41,7 +41,7 @@ namespace ChooGuard.Editor
             lesson.ReplyVoice=Enumerable.Range(0,8).Select(i=>AssetDatabase.LoadAssetAtPath<AudioClip>(Art+"/Audio/reply-"+i+".wav")).ToArray();
             if(lesson.PassengerPrefabs.Any(p=>p==null)||lesson.StaffPrefab==null||lesson.SpecialistPrefab==null)throw new FileNotFoundException("Existing actor model missing");
             EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene,ScenePath);
-            var catalog=AssetDatabase.LoadAssetAtPath<TutorialCatalog>(TrainTutorialSceneBuilder.CatalogPath);
+            var catalog=AssetDatabase.LoadAssetAtPath<TutorialCatalog>("Assets/ChooGuard/Resources/TutorialCatalog.asset");
             if(catalog==null)throw new FileNotFoundException("Existing tutorial catalog missing");
             var categories=catalog.Categories.Where(c=>c.Id!="station-fire-response").ToList();
             categories.Add(new TutorialCategory{Id="station-fire-response",Title="역무원 화재대응",Description="기존 역사에서 승객 안내와 Q 보고, 비치 소화기 사용과 후속 상황 전달을 연습합니다.",SceneName="StationFireTutorial",ExpectedMinSeconds=420,ExpectedMaxSeconds=600});

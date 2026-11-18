@@ -302,6 +302,7 @@ namespace ChooGuard.App.Fps.Emergency
             yield return new EmergencySession.RadioGroup { Label = "보고", Options = ReportOptions() };
             var teams = new List<EmergencySession.RadioOption>(TeamRequests.Length);
             for (int i = 0; i < TeamRequests.Length; i++) { int index = i; teams.Add(Option(TeamRequests[i], () => RequestTeam(index))); }
+            if (session.IsCardiacTutorial) teams.Add(Option("동료 · 압박 이어받기", () => session.CardiacLesson.RequestRelief()));
             yield return new EmergencySession.RadioGroup { Label = "요청 · 기관", Options = teams };
             var measures = new List<EmergencySession.RadioOption>(MeasureRequests.Length);
             for (int i = 0; i < MeasureRequests.Length; i++) { int index = i; measures.Add(Option(MeasureRequests[i], () => RequestMeasure(index))); }
@@ -435,6 +436,7 @@ namespace ChooGuard.App.Fps.Emergency
 
         private void RequestTeam(int index)
         {
+            if (session.IsCardiacTutorial && index == 1 && RequestCardiacHelp()) return;
             Spoke();
             string label = TeamRequests[index];
             Agency agency;

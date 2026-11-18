@@ -19,6 +19,8 @@ namespace ChooGuard.App.Fps.StationFireTutorial
     /// <summary>One authored offline lesson. Progress observes real equipment and people; it does not execute their actions.</summary>
     public sealed partial class StationFireTutorialSession : MonoBehaviour, IDetailedManipulationHost
     {
+        public const string CategoryId = "station-fire-response";
+        public const string SceneName = "StationFireTutorial";
         public TMP_FontAsset KoreanFont;
         public GameObject ExtinguisherPrefab, StaffPrefab, SpecialistPrefab;
         public GameObject[] PassengerPrefabs;
@@ -70,7 +72,7 @@ namespace ChooGuard.App.Fps.StationFireTutorial
         bool paused = true, externalInteraction;
         string feedback = "역사 장면을 준비하고 있습니다";
 
-        void Awake() { safetyPath=new NavMeshPath();Current = this; Time.timeScale = 1; }
+        void Awake() { safetyPath=new NavMeshPath();Current = this; Time.timeScale = 1; PerformanceRendering.Apply(GameSettings.PerformanceMode); }
         IEnumerator Start()
         {
             CreateView();
@@ -232,10 +234,11 @@ namespace ChooGuard.App.Fps.StationFireTutorial
         void SetStep(StationFireStep value) { Step = value; UpdateCoaching(true); Record("step:" + value); }
         void Record(string evidence) { Evidence.Add(State == null ? evidence : State.Tick + ":" + evidence); }
         void Fail(string reason) { Failure = reason; feedback = reason; Ready = false; UpdateCoaching(false); }
-        public void RestartLesson() { Time.timeScale = 1; SceneManager.LoadScene("StationFireTutorial", LoadSceneMode.Single); }
+        public void RestartLesson() { Time.timeScale = 1; SceneManager.LoadScene(SceneName, LoadSceneMode.Single); }
         public void ExitLesson() { Time.timeScale = 1; SceneFlow.ToTutorialMenu(); }
         void OnDestroy()
         {
+            PerformanceRendering.Apply(false);
             SceneManager.sceneLoaded -= IsolateSourceScene; startup?.Dispose();
             if (WorldSnapshot != null) WorldSnapshot.Dispose();
             Time.timeScale = 1; if (Current == this) Current = null;

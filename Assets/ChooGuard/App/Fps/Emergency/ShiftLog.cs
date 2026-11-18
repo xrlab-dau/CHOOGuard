@@ -350,6 +350,13 @@ namespace ChooGuard.App.Fps.Emergency
     {
         public static ShiftResult Show(EmergencySession session, string heading, string ending)
         {
+            if (session.CardiacLesson != null)
+            {
+                session.CardiacLesson.ShowResult(ending);
+                var saved = session.Log.Save(ending);
+                if (saved != null) Debug.Log("CG_SHIFT_LOG " + saved);
+                return null;
+            }
             var canvas = FpsUiFactory.InteractiveCanvas("근무 결과", session.transform, 60);
             var result = canvas.AddComponent<ShiftResult>();
             var root = (RectTransform)canvas.transform;

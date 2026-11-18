@@ -64,7 +64,7 @@ namespace ChooGuard.App.Fps.StationFireTutorial
             CreateReviewTabs();
             resumeButton=FpsUiFactory.Button(pausePanel.transform,KoreanFont,"계속",new Vector2(.5f,.5f),new Vector2(0,-210),new Vector2(450,54),ResumeLesson);
             FpsUiFactory.Button(pausePanel.transform,KoreanFont,"처음부터 다시",new Vector2(.5f,.5f),new Vector2(0,-278),new Vector2(450,54),RestartLesson);
-            FpsUiFactory.Button(pausePanel.transform,KoreanFont,"튜토리얼 메뉴",new Vector2(.5f,.5f),new Vector2(0,-342),new Vector2(450,54),ExitLesson);
+            FpsUiFactory.Button(pausePanel.transform,KoreanFont,"연습 목록",new Vector2(.5f,.5f),new Vector2(0,-342),new Vector2(450,54),ExitLesson);
             replyAudio=gameObject.AddComponent<AudioSource>();replyAudio.spatialBlend=0;replyAudio.volume=.7f;
             resumeButton.interactable=false;
             // Only the compact goal and active subtitle have local contrast support.

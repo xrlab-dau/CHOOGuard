@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using ChooGuard.App.Fps.StationFireTutorial;
 using ChooGuard.App.Fps.Shell;
+using ChooGuard.App.Fps.TrainDeparture;
 using ChooGuard.Seeded.Unity;
 using NUnit.Framework;
 using UnityEngine;
@@ -136,13 +137,12 @@ namespace ChooGuard.Tests.StationFireTutorial
         }
         IEnumerator BeginOriginalMapLesson()
         {
-            yield return SceneManager.LoadSceneAsync("Bootstrap");yield return null;
-            var title=UnityEngine.Object.FindFirstObjectByType<TitleScreen>();
-            yield return WaitFor(()=>title!=null&&title.Built,15,"Actual title ready");
-            title.StartButton.onClick.Invoke();title.Modes.TutorialButton.onClick.Invoke();
-            var menu=UnityEngine.Object.FindFirstObjectByType<TutorialMenu>();var cards=menu.GetComponentsInChildren<Button>();
-            Assert.That(cards.Any(c=>c.name=="심정지 환자 대응"),Is.True);
-            cards.Single(c=>c.name=="역무원 화재대응").onClick.Invoke();
+            yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene);yield return null;
+            var menu=UnityEngine.Object.FindFirstObjectByType<DepartureGameView>();
+            Assert.That(menu,Is.Not.Null,"Current train-departure title ready");
+            menu.ShowPractice();var cards=menu.GetComponentsInChildren<Button>();
+            Assert.That(cards.Any(c=>c.GetComponentInChildren<TMPro.TMP_Text>()?.text=="심정지 환자 대응"),Is.True);
+            cards.Single(c=>c.GetComponentInChildren<TMPro.TMP_Text>()?.text=="역무원 화재대응").onClick.Invoke();
             yield return WaitFor(()=>StationFireTutorialSession.Current!=null,300,"Actual fire menu entry");lesson=StationFireTutorialSession.Current;
             yield return WaitFor(()=>lesson.Ready||lesson.Failure.Length>0,600,"Original-map incident ready");
             Assert.That(lesson.Failure,Is.Empty);
@@ -245,7 +245,7 @@ namespace ChooGuard.Tests.StationFireTutorial
                     .Concat(new[]{"player="+lesson.Player.transform.position,"extinguisher="+lesson.ExtinguisherBody.position,"visibleAim="+lesson.VisibleAimPoint,"carry="+lesson.Controls.CarryObservation,"hint="+lesson.Controls.Hint}));
                 if(lesson.State!=null)File.WriteAllText(Path.Combine(folder,"last-input-world.json"),ChooGuard.Seeded.WorldStateCodec.Serialize(lesson.State));
             }
-            Time.timeScale=1;yield return SceneManager.LoadSceneAsync("Bootstrap");
+            Time.timeScale=1;yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene);
         }
     }
 }

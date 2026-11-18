@@ -1,5 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using ChooGuard.App.Fps.Emergency;
+using ChooGuard.App.Fps.Shell;
+using ChooGuard.App.Fps.StationFireTutorial;
+using ChooGuard.App.Fps.Tutorial;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,6 +14,8 @@ using UnityEngine.InputSystem.UI;
 namespace ChooGuard.App.Fps.TrainDeparture
 {
     // The live train is the dominant image. This canvas contains menus only; the game owns its HUD.
+    // The main page is also the game's title: "기차 튜토리얼" starts this scene's departure game, "비상상황 연습" lists the
+    // practice categories of the tutorial catalog and loads the station for the chosen one (PracticeShift).
     public sealed class DepartureGameView : MonoBehaviour
     {
         public TrainDepartureGame Game;
@@ -22,10 +29,10 @@ namespace ChooGuard.App.Fps.TrainDeparture
         readonly List<Selectable> controls = new List<Selectable>();
         CanvasGroup menu;
         RectTransform actions;
-        TMP_Text title;
+        TMP_Text title, subtitle;
         Button settingsButton;
         bool built;
-        enum Page { None, Main, Pause, Settings, Complete }
+        enum Page { None, Main, Pause, Settings, Complete, Practice }
         Page page, settingsOrigin;
 
         public void Build()
@@ -64,10 +71,11 @@ namespace ChooGuard.App.Fps.TrainDeparture
             Label(content, "CHOOGuard", 300, 26, Ink);
             title = Label(content, "출발 준비", 202, 60, Ink, 90);
             title.fontStyle = FontStyles.Bold;
-            Label(content, "부산역·열차팀장", 127, 24, new Color(.70f, .70f, .68f));
+            subtitle = Label(content, "부산역·열차팀장", 127, 24, new Color(.70f, .70f, .68f));
             actions = Node(content, "Actions");
             Stretch(actions);
             ShowMain();
+            if (SceneFlow.ConsumePracticeMenuRequest()) ShowPractice();
         }
 
         static RectTransform Node(Transform parent, string name)
@@ -124,6 +132,7 @@ namespace ChooGuard.App.Fps.TrainDeparture
             menu.alpha = 1; menu.interactable = menu.blocksRaycasts = true;
             title.text = heading;
             title.fontSize = next == Page.Complete ? 48 : 60;
+            subtitle.text = next == Page.Main ? "부산역" : next == Page.Practice ? "부산역·역무원" : "부산역·열차팀장";
         }
         Button Action(string label, float y, Action action, bool primary = false)
         {
@@ -168,11 +177,62 @@ namespace ChooGuard.App.Fps.TrainDeparture
         }
         public void ShowMain()
         {
-            Open(Page.Main, "출발 준비");
-            Action("시작", 16, () => Game.Begin(), true);
-            settingsButton = Action("설정", -72, ShowSettings);
-            Action("종료", -160, () => Game.ExitApplication());
+            Open(Page.Main, "훈련 선택");
+            Action("기차 튜토리얼", 16, () => Game.Begin(), true);
+            Action("비상상황 연습", -72, ShowPractice);
+            settingsButton = Action("설정", -160, ShowSettings);
+            Action("종료", -248, () => Game.ExitApplication());
             Finish();
+        }
+        /// <summary>Catalog categories that start a practice shift in the station (every catalog entry but the train scene).</summary>
+        public static TutorialCategory[] PracticeCategories()
+        {
+            var catalog = Resources.Load<TutorialCatalog>(TutorialCatalog.ResourceName);
+            if (catalog == null || catalog.Categories == null) return Array.Empty<TutorialCategory>();
+            return catalog.Categories.Where(category => category != null &&
+                (PracticeShift.FamilyOf(category.Id) != null || category.Id == StationFireTutorialSession.CategoryId)).ToArray();
+        }
+        public void ShowPractice()
+        {
+            Open(Page.Practice, "비상상황 연습");
+            float y = 16;
+            foreach (var category in PracticeCategories())
+            {
+                var chosen = category;
+                Action(chosen.Title, y, () => StartPractice(chosen), y == 16);
+                var about = Label(actions, chosen.Duration + " · " + chosen.Description, y - 74, 19, new Color(.70f, .70f, .68f), 70);
+                about.rectTransform.sizeDelta = new Vector2(ControlWidth + 40, 70);
+                about.enableWordWrapping = true;
+                about.alignment = TextAlignmentOptions.TopLeft;
+                y -= 170;
+            }
+            if (y == 16) { Label(actions, "준비된 연습이 없습니다.", y, 24, new Color(.70f, .70f, .68f)); y -= 88; }
+            Action("돌아가기", y, ShowMain);
+            Finish();
+        }
+        void StartPractice(TutorialCategory category)
+        {
+            if (SceneFlow.Loading) return;
+            if (category.Id == StationFireTutorialSession.CategoryId)
+            {
+                if (!UnityEngine.Application.CanStreamedLevelBeLoaded(category.SceneName) ||
+                    !UnityEngine.Application.CanStreamedLevelBeLoaded(SceneFlow.StationScene))
+                { Debug.LogError("[연습] 화재 튜토리얼 또는 역사 씬이 빌드 목록에 없습니다."); return; }
+                Game.ReleaseForSceneChange();
+                menu.interactable = false;
+                title.text = "불러오는 중";
+                SceneFlow.StartTutorial(category.SceneName, Font, null);
+                return;
+            }
+            var family = PracticeShift.FamilyOf(category.Id);
+            if (family == null || SceneFlow.Loading) return;
+            if (!UnityEngine.Application.CanStreamedLevelBeLoaded(SceneFlow.StationScene))
+            { Debug.LogError("[연습] 역 씬(" + SceneFlow.StationScene + ")이 빌드 목록에 없습니다."); return; }
+            if (!PracticeShift.Arm(family)) return;
+            Game.ReleaseForSceneChange();
+            menu.interactable = false;
+            title.text = "불러오는 중";
+            SceneFlow.StartShift(Font, null);
         }
         public void ShowPause()
         {
@@ -261,6 +321,7 @@ namespace ChooGuard.App.Fps.TrainDeparture
         {
             if (!MenuVisible) return false;
             if (page == Page.Settings) ReturnFromSettings();
+            else if (page == Page.Practice) ShowMain();
             else if (page == Page.Pause) Game.Resume();
             return true;
         }
