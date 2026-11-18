@@ -29,15 +29,24 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(view.MenuVisible, Is.True);
             Assert.That(Labels(view), Does.Contain("기차 튜토리얼").And.Contain("비상상황 연습"));
 
-            var categories = DepartureGameView.PracticeCategories();
-            Assert.That(categories.Select(category => category.Id), Does.Contain(PracticeShift.CardiacCategory));
+            Assert.That(PracticeCatalog.GroupOf(PracticeShift.CardiacFamily)?.Title, Is.EqualTo("환자 발생"));
             Button(view, "비상상황 연습").onClick.Invoke();
             yield return null;
-            Assert.That(Labels(view), Does.Contain("심정지 환자 대응").And.Contain("돌아가기"));
+            Assert.That(Labels(view), Is.SupersetOf(PracticeCatalog.Groups.Select(group => group.Title)).And.Contain("돌아가기"));
             Assert.That(Labels(view), Does.Not.Contain("기차 튜토리얼"));
 
+            Button(view, "환자 발생").onClick.Invoke();
+            yield return null;
+            Assert.That(Labels(view), Does.Contain("심정지 · AED").And.Contain("경련").And.Contain("돌아가기"));
+            Assert.That(Labels(view), Does.Not.Contain("화재"), "세부 상황 목록에 카테고리가 남아 있습니다.");
+            Assert.That(view.HandleCancel(), Is.True);
+            yield return null;
+            Assert.That(Labels(view), Does.Contain("화재").And.Contain("환자 발생"), "Esc 가 카테고리 목록으로 돌아가지 않았습니다.");
+            Button(view, "환자 발생").onClick.Invoke();
+            yield return null;
+
             Assert.That(Application.CanStreamedLevelBeLoaded(SceneFlow.StationScene), Is.True, "FpsStation 이 빌드 목록에 없습니다.");
-            Button(view, "심정지 환자 대응").onClick.Invoke();
+            Button(view, "심정지 · AED").onClick.Invoke();
             Assert.That(PracticeShift.Armed, Is.True);
 
             float until = Time.realtimeSinceStartup + 900;
