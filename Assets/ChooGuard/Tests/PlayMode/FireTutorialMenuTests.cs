@@ -28,16 +28,16 @@ namespace ChooGuard.Tests.PlayMode
             var view = Object.FindFirstObjectByType<DepartureGameView>();
             Assert.That(view, Is.Not.Null, "열차 시연 씬에 메뉴가 없습니다.");
 
-            var categories = DepartureGameView.PracticeCategories();
-            Assert.That(categories.Select(category => category.Id), Does.Contain(PracticeShift.FireCategory));
-            Assert.That(PracticeShift.FamilyOf(PracticeShift.FireCategory), Is.EqualTo(PracticeShift.FireFamily));
+            Assert.That(PracticeCatalog.Scenario(PracticeShift.FireFamily)?.Lesson, Is.EqualTo(PracticeLesson.Fire));
 
             Button(view, "비상상황 연습").onClick.Invoke();
             yield return null;
-            Assert.That(Labels(view), Does.Contain("맞이방 화재 대응"));
+            Button(view, "화재").onClick.Invoke();
+            yield return null;
+            Assert.That(Labels(view), Does.Contain("맞이방 작은 불").And.Contain("주방 기름 화재").And.Contain("전기 설비 화재"));
 
             Assert.That(Application.CanStreamedLevelBeLoaded(SceneFlow.StationScene), Is.True, "FpsStation 이 빌드 목록에 없습니다.");
-            Button(view, "맞이방 화재 대응").onClick.Invoke();
+            Button(view, "맞이방 작은 불").onClick.Invoke();
             Assert.That(PracticeShift.Armed, Is.True);
 
             float until = Time.realtimeSinceStartup + 900;

@@ -4,7 +4,7 @@ PR #333이 들여온 "비상상황 연습" 메뉴(심정지 환자 대응)와 �
 
 ## 들어가는 길
 
-시작 화면 → **훈련 선택 → 비상상황 연습 → 맞이방 화재 대응**. `PracticeShift.FireCategory`("fire-practice")가 `Resources/TutorialCatalog.asset`의 항목이고, `PracticeShift.FamilyOf`가 이를 `PracticeShift.FireFamily`("화재")로 바꾼다. 심정지와 동일한 `IncidentDirector.Practice.cs`의 `PracticeFamilies` 메커니즘을 재사용한다: 근무가 자리잡으면(`PracticeSettleSeconds`) 2층 맞이방(`hall2f`/`main2f`)에서 `bin_fire`·`bin_battery_fire`·`overheat` 중 첫 후보를 낮은 크기(0.2)로 실제로 일어나게 한다 — JEV 합성이나 다른 사건 없이 이 한 건만.
+시작 화면 → **훈련 선택 → 비상상황 연습 → 화재 → 맞이방 작은 불**. 메뉴는 `PracticeCatalog`(카테고리 → 세부 상황, `docs/practice-menu.md`)에서 만들고, 이 항목의 Id는 `PracticeShift.FireFamily`("화재"), `Lesson`은 `PracticeLesson.Fire`라 `FireTutorialLesson`이 붙는다. 같은 화재 카테고리의 전기 설비·주방·열차 하부 화재는 순서 채점 없이 사건 한 건만 일어난다. 사건 고르기는 심정지와 같은 `IncidentDirector.Practice.cs`를 쓴다: 근무가 자리잡으면(`PracticeSettleSeconds`) 2층 맞이방(`hall2f`/`main2f`)에서 `bin_fire`·`bin_battery_fire`·`overheat` 중 첫 후보를 낮은 크기(0.2)로 실제로 일어나게 한다 — JEV 합성이나 다른 사건 없이 이 한 건만.
 
 ## 조작
 
@@ -47,7 +47,7 @@ PR #333이 들여온 "비상상황 연습" 메뉴(심정지 환자 대응)와 �
 **이번 기틀은 노트북에서 작성했고 Unity 플레이로 검증하지 못했다.** 데스크톱에서 다음을 확인해야 한다.
 
 - 컴파일 오류 여부(특히 `EmergencySession.cs`, `IncidentDirector.*.cs`, `StaffTools.cs`, `ShiftLog.cs`에 추가한 `session.FireLesson?.OnX()` 훅).
-- 메뉴에 "맞이방 화재 대응"이 뜨고, 선택하면 2층 맞이방에서 작은 불이 실제로 생기는지(`PracticeOfferSeconds`=90초 안에 후보가 없을 수 있음 — 재시도 필요할 수 있다).
+- 메뉴 "화재" 아래에 "맞이방 작은 불"이 뜨고, 선택하면 2층 맞이방에서 작은 불이 실제로 생기는지(`PracticeOfferSeconds`=90초 안에 후보가 없을 수 있음 — 재시도 필요할 수 있다).
 - 보고 → 소화기 → 분사 → 진화 → 소방대 도착 → 인계 → 수신기 복구까지 끝까지 흐르는지.
 - 순서를 어겼을 때 토스트와 결과 화면 점수가 맞게 나오는지.
 - `Assets/ChooGuard/Tests/PlayMode/FireTutorialMenuTests.cs`의 PlayMode 테스트 통과 여부.
