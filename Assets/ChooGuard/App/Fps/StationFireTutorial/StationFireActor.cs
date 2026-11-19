@@ -28,7 +28,8 @@ namespace ChooGuard.App.Fps.StationFireTutorial
             if (visualPrefab == null) throw new ArgumentNullException(nameof(visualPrefab));
             var visual = Instantiate(visualPrefab, transform, false);
             visual.name = "기존 인물 모델";
-            foreach (var behaviour in visual.GetComponentsInChildren<MonoBehaviour>(true)) behaviour.enabled = false;
+            foreach (var behaviour in visual.GetComponentsInChildren<MonoBehaviour>(true))
+                if (behaviour != null) behaviour.enabled = false;
             foreach (var navigation in visual.GetComponentsInChildren<NavMeshAgent>(true)) navigation.enabled = false;
             foreach (var collider in visual.GetComponentsInChildren<Collider>(true)) collider.enabled = false;
             animator = visual.GetComponentInChildren<Animator>(true);
