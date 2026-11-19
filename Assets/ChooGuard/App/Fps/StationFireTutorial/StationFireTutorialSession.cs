@@ -108,6 +108,8 @@ namespace ChooGuard.App.Fps.StationFireTutorial
             {
                 foreach (var behaviour in root.GetComponentsInChildren<MonoBehaviour>(true))
                 {
+                    // Saved source maps can contain missing-script slots in the Editor.
+                    if (behaviour == null) continue;
                     if(behaviour is FirstPersonResponder || behaviour is SeededFpsController)
                     {var body=behaviour.GetComponent<CharacterController>();if(body!=null)body.enabled=false;}
                     if (behaviour is PlatformSeededSimulator || behaviour is FirstPersonResponder ||
