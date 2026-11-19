@@ -548,6 +548,8 @@ namespace ChooGuard.App.Fps.Emergency
         public AedProcedure Aed { get; set; }
         /// <summary>The staff member is doing chest compressions now (R on the person); the seconds of compressions so far.</summary>
         public bool Compressing { get; private set; }
+        public bool AssistedCompressions { get; set; }
+        public bool AnyoneCompressing => Compressing || AssistedCompressions;
         public float CompressionSeconds { get; private set; }
         /// <summary>The escalator the person fell on, if any (the facility team is involved and the belt can be stopped).</summary>
         public Escalator Escalator { get; set; }

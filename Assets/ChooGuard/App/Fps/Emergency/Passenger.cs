@@ -1308,7 +1308,7 @@ namespace ChooGuard.App.Fps.Emergency
                     case AedStep.Attach: feedback = Crowd.Session.Hands.AttachPadTo(this); return feedback != null;
                     case AedStep.Clear: feedback = Crowd.Session.Incidents.StandClear(this); return feedback != null;
                     case AedStep.Place: feedback = Crowd.Session.Hands.PlaceAedBeside(this); return true;
-                    default: feedback = Crowd.Session.Incidents.CheckInjured(this); return true;
+                    default: feedback = Crowd.Session.Incidents.CheckInjured(this, true); return true;
                 }
             }
             // 난동 승객은 직접 제지하지 않는다: 말은 걸 수 있지만 듣지 않는다(공개 행동요령: 거리를 두고 신고).
@@ -1332,7 +1332,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             if (Crowd == null || Crowd.Session == null || Crowd.Session.Incidents == null) return "";
             var collapse = Crowd.Session.Incidents.CollapseOf(this);
-            if (collapse == null || collapse.Level < 3 || collapse.Treated) return "";
+            if (collapse == null || !collapse.NotBreathingNormally || collapse.Treated) return "";
             return collapse.Compressing ? "가슴압박 멈추기" : "가슴압박 시작";
         }
 
