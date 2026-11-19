@@ -16,12 +16,12 @@ namespace ChooGuard.App.Fps.Emergency
     /// Order-score keeper for the fixed "맞이방 화재 대응" practice (Issue333 후속; docs/fire-tutorial.md "1-1"). Unlike
     /// CardiacTutorialLesson it stages nothing of its own: IncidentDirector.Practice.cs already draws a real bin/power-bank
     /// fire in the 2층 맞이방 for the "화재" practice family, and every verb this class scores — 발신기, 역무실 보고(119 포함),
-    /// 소화기, 대피방송, 수신기 복구, 현장 인계 — is the same free-roam interaction a real shift already has
-    /// (StaffTools.Extinguisher, IncidentDirector.Fire/Radio/Workflow.cs). This class only watches the order they happen in,
-    /// the way CardiacTutorialScore watches the cardiac lesson, and never blocks an action itself.
-    /// 1-2(소화전 사용)·1-3(전기설비 화재)·1-4(주방 기름·가스 화재) 분기와 2(외치기)·6(진화 판단 표시)·10(중단 판정)·
-    /// 13(잔류자 확인) 단계는 게임에 아직 없는 조작이라 범위 밖이다. 추가하려면 이 파일에 OnX 메서드를 늘리고 해당 실제
-    /// 조작이 생긴 자리에서 호출한다.
+    /// 대피방송·승객 대피 안내, 소화기, 수신기 복구, 현장 인계 — is the same free-roam interaction a real shift already has
+    /// (StaffTools.Extinguisher, Passenger.TryInteract, IncidentDirector.Fire/Radio/Workflow.cs). This class only watches the
+    /// order they happen in, the way CardiacTutorialScore watches the cardiac lesson, and never blocks an action itself.
+    /// 순서(2026-11-20)는 코레일 역사 합동소방훈련의 신고 → 대피 유도 → 초기 진압을 따른다(docs/emergency-lesson-steps.md 1-1).
+    /// 1-2(소화전 사용)·1-3(전기설비 화재)·1-4(주방 기름·가스 화재) 분기와 외치기·진화 판단 표시·중단 판정·잔류자 확인
+    /// 단계는 게임에 아직 없는 조작이라 범위 밖이다. 추가하려면 이 파일에 OnX 메서드를 늘리고 해당 실제 조작이 생긴 자리에서 호출한다.
     /// </summary>
     public sealed class FireTutorialLesson
     {
@@ -36,6 +36,9 @@ namespace ChooGuard.App.Fps.Emergency
         public bool Extinguished { get; private set; }
         public bool ExtinguishReported { get; private set; }
         public bool EvacuationAnnounced { get; private set; }
+        public bool PassengersGuided { get; private set; }
+        /// <summary>대피 유도를 했는가: 대피방송이든 승객에게 직접 대피 방향을 안내했든.</summary>
+        public bool EvacuationGuided => EvacuationAnnounced || PassengersGuided;
         public bool ReceiverReset { get; private set; }
         public bool HandedOver { get; private set; }
 
@@ -43,7 +46,7 @@ namespace ChooGuard.App.Fps.Emergency
         public static class Mistake
         {
             public static readonly (string Key, string Label, int Penalty) ExtinguisherBeforeReport = ("extinguisher-before-report", "역무실 보고 전에 소화기 사용", 10);
-            public static readonly (string Key, string Label, int Penalty) EvacuationBeforeAttempt = ("evacuation-before-attempt", "진화 시도 전에 대피방송", 10);
+            public static readonly (string Key, string Label, int Penalty) ExtinguisherBeforeEvacuation = ("extinguisher-before-evacuation", "승객 대피 유도 전에 소화기 사용", 10);
             public static readonly (string Key, string Label, int Penalty) ReceiverResetBeforeHandover = ("receiver-reset-before-handover", "소방대 인계 전에 수신기 복구", 10);
         }
 
@@ -88,16 +91,17 @@ namespace ChooGuard.App.Fps.Emergency
             Note("reported", "역무실 보고(119 신고 포함) · " + hazard.Where);
         }
 
-        /// <summary>단계 7 · 소화기 들기.</summary>
+        /// <summary>단계 9 · 소화기 들기. 보고(4·5)와 대피 유도(6·7) 전이면 각각 감점.</summary>
         public void OnExtinguisherPicked()
         {
             if (ExtinguisherPicked) return;
             ExtinguisherPicked = true;
             if (!Reported) RecordOrderMistake(Mistake.ExtinguisherBeforeReport);
+            if (!EvacuationGuided) RecordOrderMistake(Mistake.ExtinguisherBeforeEvacuation);
             Note("extinguisher-picked", "소화기 들기");
         }
 
-        /// <summary>단계 8 · 안전핀. 분사는 안전핀이 빠지기 전엔 StaffTools 자체가 막아 두므로 여기서 추가로 거절하지 않는다.</summary>
+        /// <summary>단계 10 · 안전핀. 분사는 안전핀이 빠지기 전엔 StaffTools 자체가 막아 두므로 여기서 추가로 거절하지 않는다.</summary>
         public void OnPinPulled()
         {
             if (PinPulled) return;
@@ -105,7 +109,7 @@ namespace ChooGuard.App.Fps.Emergency
             Note("pin-pulled", "안전핀 뽑음");
         }
 
-        /// <summary>단계 9 · 분사.</summary>
+        /// <summary>단계 11 · 분사.</summary>
         public void OnSpraying()
         {
             if (Sprayed) return;
@@ -121,7 +125,7 @@ namespace ChooGuard.App.Fps.Emergency
             Note("extinguished", "초기 진화 성공");
         }
 
-        /// <summary>단계 14 · 진화 보고.</summary>
+        /// <summary>단계 13 · 진화 보고.</summary>
         public void OnExtinguishReported()
         {
             if (ExtinguishReported) return;
@@ -129,13 +133,20 @@ namespace ChooGuard.App.Fps.Emergency
             Note("extinguish-reported", "초기 진화 완료 보고");
         }
 
-        /// <summary>단계 11 · 대피방송. 이 연습의 작은 불은 손 소화기로 진화되는 것을 기대하므로, 진화를 시도하기도 전의 대피방송은 과잉 대응으로 감점한다.</summary>
+        /// <summary>단계 6 · 대피 유도(방송). 진화 전에 해도 감점하지 않는다: 코레일 역사 훈련은 신고 → 대피 유도 → 초기 진압 순이다.</summary>
         public void OnEvacuationAnnounced()
         {
             if (EvacuationAnnounced) return;
             EvacuationAnnounced = true;
-            if (!PinPulled && !Sprayed) RecordOrderMistake(Mistake.EvacuationBeforeAttempt);
             Note("evacuation-announced", "대피방송");
+        }
+
+        /// <summary>단계 7 · 대피 유도(직접 안내). 승객에게 E "대피 안내"로 대피 방향을 알렸다.</summary>
+        public void OnPassengersGuided(int told)
+        {
+            if (PassengersGuided) return;
+            PassengersGuided = true;
+            Note("passengers-guided; told=" + told, "승객 대피 방향 안내");
         }
 
         /// <summary>단계 16 · 수신기 복구. 공식 절차는 소방대 인계로 불이 꺼진 것이 확실해진 뒤에 복구하라고 명시한다.</summary>

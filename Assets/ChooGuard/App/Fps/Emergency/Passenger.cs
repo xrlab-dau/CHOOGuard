@@ -1317,6 +1317,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (Crowd.Session.Incidents.PlayerKnowsIncident)
             {
                 int told = Crowd.InstructAround(transform.position, responder.transform.position);
+                Crowd.Session.FireLesson?.OnPassengersGuided(told);
                 feedback = told > 1 ? "주변 승객 " + told + "명에게 대피 방향을 안내했습니다" : "승객에게 대피 방향을 안내했습니다";
                 return true;
             }
