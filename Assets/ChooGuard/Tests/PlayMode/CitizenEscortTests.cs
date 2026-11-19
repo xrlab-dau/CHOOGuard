@@ -60,8 +60,7 @@ namespace ChooGuard.Tests.PlayMode
         [UnityTest, Timeout(300000)]
         public IEnumerator RealPassenger_WalksThroughExistingRoute_OneLeaderOwnsOneEscort_ReleaseRestoresMovement()
         {
-            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
-            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+            yield return LoadRetainedStationAndSession();
             float deadline = Time.realtimeSinceStartup + 120;
             while ((EmergencySession.Current == null || EmergencySession.Current.Crowd == null || EmergencySession.Current.Crowd.People.Count == 0) && Time.realtimeSinceStartup < deadline) yield return null;
             var shift = EmergencySession.Current;

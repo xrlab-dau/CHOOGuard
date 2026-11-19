@@ -144,8 +144,7 @@ namespace ChooGuard.Tests.PlayMode
         [UnityTest, Timeout(240000)]
         public IEnumerator LiveOriginsStayInside_ExpiredLocationsAreRejected_AndDifferentSourcesCanShareAKind()
         {
-            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
-            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+            yield return LoadRetainedStationAndSession();
             float until = Time.realtimeSinceStartup + 100;
             while ((EmergencySession.Current == null || EmergencySession.Current.Crowd == null) && Time.realtimeSinceStartup < until) yield return null;
             var session = EmergencySession.Current;
