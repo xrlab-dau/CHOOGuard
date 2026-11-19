@@ -27,7 +27,7 @@ namespace ChooGuard.Tests.PlayMode
             var view = Object.FindFirstObjectByType<DepartureGameView>();
             Assert.That(view, Is.Not.Null, "열차 시연 씬에 메뉴가 없습니다.");
             Assert.That(view.MenuVisible, Is.True);
-            Assert.That(Labels(view), Does.Contain("기차 튜토리얼").And.Contain("비상상황 연습"));
+            Assert.That(Labels(view), Does.Contain("실습하기").And.Contain("기차 튜토리얼").And.Contain("비상상황 연습"));
 
             Assert.That(PracticeCatalog.GroupOf(PracticeShift.CardiacFamily)?.Title, Is.EqualTo("환자 발생"));
             Button(view, "비상상황 연습").onClick.Invoke();

@@ -197,11 +197,25 @@ namespace ChooGuard.App.Fps.TrainDeparture
         public void ShowMain()
         {
             Open(Page.Main, "훈련 선택");
-            Action("기차 튜토리얼", 16, () => Game.Begin(), true);
-            Action("비상상황 연습", -72, ShowPractice);
-            settingsButton = Action("설정", -160, ShowSettings);
-            Action("종료", -248, () => Game.ExitApplication());
+            Action("실습하기", 16, StartFreeShift, true);
+            Action("기차 튜토리얼", -66, () => Game.Begin());
+            Action("비상상황 연습", -148, ShowPractice);
+            settingsButton = Action("설정", -230, ShowSettings);
+            Action("종료", -312, () => Game.ExitApplication());
             Finish();
+        }
+        /// <summary>"실습하기": an ordinary shift at the station, incidents drawn by JEV as they come (no practice scenario).</summary>
+        void StartFreeShift()
+        {
+            if (SceneFlow.Loading) return;
+            if (!UnityEngine.Application.CanStreamedLevelBeLoaded(SceneFlow.StationScene))
+            { Debug.LogError("[실습] 역 씬(" + SceneFlow.StationScene + ")이 빌드 목록에 없습니다."); return; }
+            if (!PracticeShift.ArmFree()) return;
+            Game.ReleaseForSceneChange();
+            menu.interactable = false;
+            ShowDetail(null);
+            title.text = "불러오는 중";
+            SceneFlow.StartShift(Font, null);
         }
         const float RowStep = 54, RowHeight = 48, RowFont = 24, FirstRow = 60;
         /// <summary>One row of a practice list: focusing it (keyboard or pointer) shows <paramref name="about"/> in the detail box.</summary>
@@ -392,6 +406,12 @@ namespace ChooGuard.App.Fps.TrainDeparture
     {
         public Action Show;
         public void OnSelect(BaseEventData data) => Show?.Invoke();
-        public void OnPointerEnter(PointerEventData data) => Show?.Invoke();
+        // Hovering moves the selection itself, so the blue row and the detail box always name the same row.
+        public void OnPointerEnter(PointerEventData data)
+        {
+            if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != gameObject)
+                EventSystem.current.SetSelectedGameObject(gameObject); // → OnSelect → Show
+            else Show?.Invoke();
+        }
     }
 }

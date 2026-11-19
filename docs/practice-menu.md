@@ -1,5 +1,7 @@
 # 비상상황 연습 메뉴 (카테고리 → 세부 상황)
 
+훈련 선택 첫 줄의 **실습하기**는 연습 시나리오 없이 역 근무를 시작한다(`PracticeShift.ArmFree`). 사건은 평소 근무처럼 JEV가 만들기 때문에 JEV 키(`TYPESAFE_API_KEY` 또는 `~/.chooguard/typesafe.key`)가 없으면 아무 사건도 일어나지 않는다.
+
 훈련 선택 → **비상상황 연습**은 두 단계다. 먼저 카테고리를 고르고, 그 아래 세부 상황을 고르면 역 씬이 뜬다. 목록 옆 상자에 포커스한 줄의 설명과 예상 시간이 나온다. Esc나 "돌아가기"는 한 단계 위로 간다. 연습 결과 화면의 "연습 목록"은 마지막으로 고른 카테고리로 돌아온다.
 
 - 목록의 출처: `Assets/ChooGuard/App/Fps/Emergency/PracticeCatalog.cs`. 순서와 묶음은 `docs/emergency-lesson-steps.md`를 따랐다.
