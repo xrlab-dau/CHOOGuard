@@ -43,7 +43,8 @@ namespace ChooGuard.Tests.StationFireTutorial
             Assert.That(lesson.IncidentSourceName, Is.EqualTo("C165_S01_OBSERVED_CHAIR_1_0_1"));
             Assert.That(lesson.ExtinguisherSourceName, Is.EqualTo("C165_S01_P5_SOURCE_LEFT_ENTRY_PORTABLE_EXTINGUISHER"));
             Assert.That(lesson.Controls, Is.Not.Null);
-            Assert.That(OfflineStationStartupScope.IsDeferred, Is.True);
+            Assert.That(OfflineStationStartupScope.IsDeferred, Is.False,
+                "The startup-only guard must be released once the lesson has prepared");
             lesson.SetVerificationInput(true);
             lesson.ResumeLesson();
             yield return null;
