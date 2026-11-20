@@ -45,10 +45,10 @@ PR #333이 들여온 "비상상황 연습" 메뉴(심정지 환자 대응)와 �
 
 ## 검수
 
-**이번 기틀은 노트북에서 작성했고 Unity 플레이로 검증하지 못했다.** 데스크톱에서 다음을 확인해야 한다.
+최초 기틀은 노트북에서 작성했다. 현재 자동 PlayMode 검사는 메뉴 진입, 준비 중 항목 차단, 실제 화재 발생과 순서 채점을 확인하며, 실행 결과는 PR 검증 기록에 남긴다. 아래 전체 조작 흐름의 수동 완주 확인은 별도다.
 
 - 컴파일 오류 여부(특히 `EmergencySession.cs`, `IncidentDirector.*.cs`, `StaffTools.cs`, `ShiftLog.cs`에 추가한 `session.FireLesson?.OnX()` 훅).
-- 메뉴 "화재" 아래에 "맞이방 작은 불"이 뜨고, 선택하면 2층 맞이방에서 작은 불이 실제로 생기는지(`PracticeOfferSeconds`=90초 안에 후보가 없을 수 있음 — 재시도 필요할 수 있다).
+- 메뉴 "화재" 아래에 "맞이방 작은 불"이 뜨고, 선택 후 근무를 시작하면 2층 맞이방에서 작은 불이 실제로 생기는지(`PracticeScenario.OfferSeconds`=90초 안에 후보가 없을 수 있음 — 재시도 필요할 수 있다).
 - 보고 → 소화기 → 분사 → 진화 → 소방대 도착 → 인계 → 수신기 복구까지 끝까지 흐르는지.
 - 순서를 어겼을 때 토스트와 결과 화면 점수가 맞게 나오는지.
 - `Assets/ChooGuard/Tests/PlayMode/FireTutorialMenuTests.cs`의 PlayMode 테스트 통과 여부.
