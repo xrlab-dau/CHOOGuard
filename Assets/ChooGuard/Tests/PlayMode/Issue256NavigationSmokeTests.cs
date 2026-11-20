@@ -65,12 +65,9 @@ namespace ChooGuard.Tests.PlayMode
 
         // ── 준비 ─────────────────────────────────────────────────────────────
 
-        private static IEnumerator StartShift(Action<EmergencySession> ready)
+        private IEnumerator StartShift(Action<EmergencySession> ready)
         {
-            var station = SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
-            while (!station.isDone) yield return null;
-            var session = SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
-            while (!session.isDone) yield return null;
+            yield return LoadRetainedStationAndSession();
             float giveUp = Time.realtimeSinceStartup + 120;
             while ((EmergencySession.Current == null || EmergencySession.Current.Crowd == null || EmergencySession.Current.Map == null) && Time.realtimeSinceStartup < giveUp) yield return null;
             Assert.That(EmergencySession.Current, Is.Not.Null, "the shift did not start");

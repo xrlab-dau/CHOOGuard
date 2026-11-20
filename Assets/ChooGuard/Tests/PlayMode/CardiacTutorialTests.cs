@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 namespace ChooGuard.Tests.PlayMode
 {
@@ -207,6 +208,65 @@ namespace ChooGuard.Tests.PlayMode
             var score = UnityEngine.Object.FindObjectsByType<TMPro.TMP_Text>(FindObjectsSortMode.None).FirstOrDefault(t => t.gameObject.name == "순서 점수");
             Assert.That(score, Is.Not.Null, "The result screen shows the order score");
             Assert.That(score.text, Does.Contain("<b>70</b> / 100").And.Contain("반응 확인 전에 119 요청 (2회").And.Contain("호흡 확인 전에 가슴압박"));
+        }
+
+        [UnityTest, Timeout(1200000)]
+        public IEnumerator ResultButtonsRestartACleanLessonAndReturnToThePracticeList()
+        {
+            PracticeCatalog.LastGroupId = PracticeCatalog.GroupOf(PracticeShift.CardiacFamily).Id;
+            var previous = session;
+            var lesson = session.CardiacLesson;
+            var requests = session.RadioGroupProviders.SelectMany(p => p()).First(g => g.Label == "요청 · 기관");
+            requests.Options[1].Send();
+            Assert.That(lesson.OrderScore, Is.EqualTo(CardiacTutorialLesson.FullScore - 10));
+            lesson.StopPractice();
+            yield return null;
+            Assert.That(lesson.Step, Is.EqualTo(CardiacLessonStep.Stopped));
+            ResultButton("다시 연습").onClick.Invoke();
+
+            float until = Time.realtimeSinceStartup + 900;
+            while ((EmergencySession.Current == null || EmergencySession.Current == previous ||
+                    EmergencySession.Current.CardiacLesson == null || !EmergencySession.Current.CardiacLesson.Ready || SceneFlow.Loading)
+                   && Time.realtimeSinceStartup < until) yield return null;
+            Assert.That(SceneFlow.Loading, Is.False);
+            session = EmergencySession.Current;
+            Assert.That(session, Is.Not.Null, "Retry did not create a fresh emergency session.");
+            Assert.That(session, Is.Not.SameAs(previous));
+            lesson = session.CardiacLesson;
+            Assert.That(lesson, Is.Not.Null);
+            Assert.That(lesson.Ready, Is.True, lesson.PreparationFailure);
+            Assert.That(lesson.Step, Is.EqualTo(CardiacLessonStep.Response));
+            Assert.That(lesson.OrderScore, Is.EqualTo(CardiacTutorialLesson.FullScore));
+            Assert.That(lesson.Mistakes, Is.Empty, "Retry must not retain deductions from the previous attempt.");
+            Assert.That(lesson.ResponseChecked || lesson.HelpRequested || lesson.BreathingChecked || lesson.CorePracticeComplete, Is.False);
+            Assert.That(lesson.Cabinet.Stored, Is.True);
+            Assert.That(session.Jev.Available, Is.False);
+            Assert.That(UnityEngine.Object.FindObjectsByType<EmergencySession>(FindObjectsSortMode.None).Length, Is.EqualTo(1));
+            Assert.That(PracticeShift.Armed, Is.False);
+
+            lesson.StopPractice();
+            yield return null;
+            ResultButton("연습 목록").onClick.Invoke();
+            until = Time.realtimeSinceStartup + 300;
+            while ((SceneFlow.Loading || EmergencySession.Current != null || SceneManager.GetActiveScene().name != SceneFlow.TitleScene)
+                   && Time.realtimeSinceStartup < until) yield return null;
+            Assert.That(SceneFlow.Loading, Is.False);
+            Assert.That(EmergencySession.Current, Is.Null);
+            Assert.That(SceneManager.GetSceneByName(SceneFlow.StationScene).isLoaded, Is.False);
+            yield return null;
+            var view = UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Fps.TrainDeparture.DepartureGameView>();
+            Assert.That(view, Is.Not.Null);
+            var labels = view.GetComponentsInChildren<Button>().Where(b => b.gameObject.activeInHierarchy).Select(b => b.gameObject.name).ToArray();
+            Assert.That(labels, Does.Contain("심정지 · AED").And.Contain("돌아가기"));
+            Assert.That(labels, Does.Not.Contain("기차 튜토리얼"));
+            Assert.That(PracticeShift.Armed, Is.False);
+        }
+
+        Button ResultButton(string label)
+        {
+            var button = session.GetComponentsInChildren<Button>().SingleOrDefault(b => b.gameObject.activeInHierarchy && b.gameObject.name == label);
+            Assert.That(button, Is.Not.Null, "Missing result button: " + label);
+            return button;
         }
 
         IEnumerator Until(Func<bool> predicate, float seconds, string message)
