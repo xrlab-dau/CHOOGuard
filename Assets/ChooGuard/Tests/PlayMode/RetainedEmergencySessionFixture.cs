@@ -26,8 +26,8 @@ namespace ChooGuard.Tests.PlayMode
         readonly List<GameObject> ownedPlayers=new List<GameObject>();
         Scene ownedStationScene,ownedSessionScene;
 
-        // Retained regression sessions are test-owned. The presentation build no
-        // longer registers FpsStation or ships the old StationEmergency scene.
+        // Retained regression sessions are test-owned and independent of the
+        // shipping build list. StationEmergency is no longer a scene asset.
         // Loading the saved station and composing a transient session here must
         // not recreate a scene asset or change the player's build scene list.
         protected IEnumerator LoadRetainedStationAndSession()
