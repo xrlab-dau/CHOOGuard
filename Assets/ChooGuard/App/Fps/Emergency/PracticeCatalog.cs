@@ -60,13 +60,13 @@ namespace ChooGuard.App.Fps.Emergency
         /// without site evidence was removed, so no kitchen, electric-plaza, detector, sprinkler or shutter piece is placed and
         /// their causes are never offered. PracticeCatalogTests fails when one of them starts being offered again.
         /// </summary>
-        public const string NoEquipment = "역 설비 배치 자료가 비어 있어(현장 근거 없는 배치 후보를 2026-10-23에 모두 지움) 아직 일어나지 않습니다. 설비 배치가 확인되면 열립니다.";
+        public const string NoEquipment = "이 연습에 필요한 역 설비가 아직 준비되지 않았습니다. 다른 상황을 선택해 주세요.";
         /// <summary>
         /// Train and elevator causes depend on the KTX standing at 5·6 or riders in a running elevator. In the 2026-11-18 build
         /// PracticeCatalogTests watched a practice shift for 8 minutes and the station never offered one of them, so they stay shut
         /// until that is explained; the test fails as soon as one is offered.
         /// </summary>
-        public const string NotOffered = "지금 역에서는 8분을 지켜봐도 이 사건의 후보가 나오지 않습니다(열차 정차·승강기 탑승이 확인되지 않음). 원인을 확인한 뒤 열립니다.";
+        public const string NotOffered = "이 역의 열차·승강기 연습은 준비 중입니다. 다른 상황을 선택해 주세요.";
 
         public static readonly PracticeGroup[] Groups =
         {

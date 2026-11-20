@@ -21,15 +21,16 @@ PR #333이 들여온 "비상상황 연습" 메뉴(심정지 환자 대응)와 �
 
 ## 순서 점수 (기틀)
 
-`FireTutorialLesson`(`Assets/ChooGuard/App/Fps/Emergency/FireTutorialLesson.cs`)이 100점에서 시작해, 아래 세 가지 순서 위반을 종류당 한 번만 감점한다(심정지의 `CardiacTutorialScore`와 같은 방식). 막는 판정이 아니라 기록만 한다 — 게임이 이미 막아 둔 것(안전핀 전 분사 등)은 다시 막지 않는다.
+`FireTutorialLesson`(`Assets/ChooGuard/App/Fps/Emergency/FireTutorialLesson.cs`)이 100점에서 시작해, 아래 두 가지 연습 규칙 위반을 종류당 한 번만 감점한다(심정지의 `CardiacTutorialScore`와 같은 방식). 막는 판정이 아니라 기록만 한다 — 게임이 이미 막아 둔 것(안전핀 전 분사 등)은 다시 막지 않는다.
 
 | 감점 | 조작 |
 |---|---|
 | 10 | 역무실 보고 전에 소화기 사용 |
-| 10 | 진화 시도 전에 대피방송 |
 | 10 | 소방대 인계 전에 수신기 복구 |
 
 감점 값은 교육용 가중치이며 공식 평가 기준이 아니다. 결과 화면(`ShiftResult.Show`, 기존 "근무 결과" 화면 그대로)의 수치 칸에 점수와 감점 내역이 덧붙는다. 심정지처럼 따로 만든 결과 화면은 없다.
+
+대피방송은 소화기를 먼저 사용했는지와 관계없이 기록하며 감점하지 않는다. [행정안전부 안전한TV의 다중이용시설 화재 대응 설명](https://www.safetv.go.kr/base/video/view?idx=1114&playlistManagementIdx=&searchCategory=)(04:38)은 직원의 대피 안내와 다른 근무자의 신고·초기 진화를 병행하도록 설명한다. 따라서 이 프로젝트는 소화 시도를 대피 안내의 선행 조건으로 강제하지 않는다. 이 자료를 역무원 전용 매뉴얼이나 16단계 전체의 출처로 간주하지 않는다. 수신기 복구 등 나머지 세부 절차는 현장 기준의 추가 확인이 필요하다.
 
 ## 범위 밖(명시적 미구현)
 
@@ -40,7 +41,7 @@ PR #333이 들여온 "비상상황 연습" 메뉴(심정지 환자 대응)와 �
 - 10 · 중단 판정(진화 실패 시 중단 신호)
 - 13 · 잔류자 확인
 
-1-2(소화전 사용)·1-3(전기 설비 화재)·1-4(주방 기름·가스 화재) 분기도 이번 범위 밖이다. 추가하려면 `IncidentDirector.Practice.cs`의 `PracticeFamilies["화재"]` 후보 목록과 `FireTutorialLesson`의 `OnX` 메서드를 늘리고, 해당 분기의 실제 조작(소화전 밸브, 전원 차단 요청, K급 소화기 등)이 이미 있는 자리(`IncidentDirector.FireSafety.*.cs`, `IncidentDirector.KitchenGas.cs`, `IncidentDirector.ElectricPlaza.cs`)에서 훅을 호출한다.
+1-2(소화전 사용)·1-3(전기 설비 화재)·1-4(주방 기름·가스 화재) 분기도 이번 범위 밖이다. 추가하려면 `PracticeCatalog`의 해당 상황과 `FireTutorialLesson`의 `OnX` 메서드를 검토하고, 해당 분기의 실제 조작(소화전 밸브, 전원 차단 요청, K급 소화기 등)이 이미 있는 자리(`IncidentDirector.FireSafety.*.cs`, `IncidentDirector.KitchenGas.cs`, `IncidentDirector.ElectricPlaza.cs`)에서 훅을 호출한다.
 
 ## 검수
 

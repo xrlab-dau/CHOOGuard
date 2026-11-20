@@ -107,6 +107,52 @@ namespace ChooGuard.Tests.PlayMode
             Assert.That(Labels(back), Does.Contain("기차 튜토리얼"));
         }
 
+        [UnityTest, Timeout(1200000)]
+        public IEnumerator FreeShiftStartsWithoutAPracticeAndReleasesItsStateOnReturn()
+        {
+            string key = System.Environment.GetEnvironmentVariable(JevKey.Variable);
+            System.Environment.SetEnvironmentVariable(JevKey.Variable, "free-menu-test-no-network");
+            try
+            {
+                yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene, LoadSceneMode.Single);
+                yield return null;
+                var view = Object.FindFirstObjectByType<DepartureGameView>();
+                Assert.That(view, Is.Not.Null);
+                Button(view, "실습하기").onClick.Invoke();
+                Assert.That(PracticeShift.Free, Is.True);
+                Assert.That(PracticeShift.Armed, Is.False);
+
+                float until = Time.realtimeSinceStartup + 900;
+                while ((EmergencySession.Current == null || EmergencySession.Current.Incidents == null || SceneFlow.Loading)
+                       && Time.realtimeSinceStartup < until) yield return null;
+                Assert.That(SceneFlow.Loading, Is.False);
+                var session = EmergencySession.Current;
+                Assert.That(session, Is.Not.Null);
+                Assert.That(session.Incidents, Is.Not.Null);
+                Assert.That(session.Incidents.Practicing, Is.False);
+                Assert.That(session.IsCardiacTutorial || session.IsFireTutorial, Is.False);
+                Assert.That(session.CardiacLesson, Is.Null);
+                Assert.That(session.FireLesson, Is.Null);
+                Assert.That(session.Jev.Available, Is.False, "This regression must not make external requests.");
+                Assert.That(PracticeShift.Free, Is.True);
+
+                SceneFlow.ToTitle();
+                until = Time.realtimeSinceStartup + 300;
+                while ((SceneFlow.Loading || EmergencySession.Current != null || SceneManager.GetActiveScene().name != SceneFlow.TitleScene)
+                       && Time.realtimeSinceStartup < until) yield return null;
+                Assert.That(SceneFlow.Loading, Is.False);
+                Assert.That(EmergencySession.Current, Is.Null);
+                Assert.That(PracticeShift.Free || PracticeShift.Armed, Is.False);
+                Assert.That(SceneManager.GetSceneByName(SceneFlow.StationScene).isLoaded, Is.False);
+                yield return null;
+                Assert.That(Labels(Object.FindFirstObjectByType<DepartureGameView>()), Does.Contain("실습하기").And.Contain("비상상황 연습"));
+            }
+            finally
+            {
+                System.Environment.SetEnvironmentVariable(JevKey.Variable, key);
+            }
+        }
+
         private static string[] Labels(DepartureGameView view) =>
             view.GetComponentsInChildren<Button>(false).Where(button => button.gameObject.activeInHierarchy).Select(button => button.gameObject.name).ToArray();
 

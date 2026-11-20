@@ -43,7 +43,6 @@ namespace ChooGuard.App.Fps.Emergency
         public static class Mistake
         {
             public static readonly (string Key, string Label, int Penalty) ExtinguisherBeforeReport = ("extinguisher-before-report", "역무실 보고 전에 소화기 사용", 10);
-            public static readonly (string Key, string Label, int Penalty) EvacuationBeforeAttempt = ("evacuation-before-attempt", "진화 시도 전에 대피방송", 10);
             public static readonly (string Key, string Label, int Penalty) ReceiverResetBeforeHandover = ("receiver-reset-before-handover", "소방대 인계 전에 수신기 복구", 10);
         }
 
@@ -129,16 +128,15 @@ namespace ChooGuard.App.Fps.Emergency
             Note("extinguish-reported", "초기 진화 완료 보고");
         }
 
-        /// <summary>단계 11 · 대피방송. 이 연습의 작은 불은 손 소화기로 진화되는 것을 기대하므로, 진화를 시도하기도 전의 대피방송은 과잉 대응으로 감점한다.</summary>
+        /// <summary>단계 11 · 대피방송. 대피 안내는 초기 진화와 병행할 수 있으므로 소화기 사용을 선행 조건으로 채점하지 않는다.</summary>
         public void OnEvacuationAnnounced()
         {
             if (EvacuationAnnounced) return;
             EvacuationAnnounced = true;
-            if (!PinPulled && !Sprayed) RecordOrderMistake(Mistake.EvacuationBeforeAttempt);
             Note("evacuation-announced", "대피방송");
         }
 
-        /// <summary>단계 16 · 수신기 복구. 공식 절차는 소방대 인계로 불이 꺼진 것이 확실해진 뒤에 복구하라고 명시한다.</summary>
+        /// <summary>단계 16 · 수신기 복구. 이 연습에서는 소방대 인계 이후 복구하도록 채점한다(공식 절차 확인은 별도).</summary>
         public void OnReceiverResetRequested()
         {
             if (ReceiverReset) return;
