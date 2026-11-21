@@ -56,14 +56,14 @@ namespace ChooGuard.Tests.PlayMode
             var lesson = new FireTutorialLesson(null);
             lesson.OnExtinguisherPicked();
             lesson.OnReceiverResetRequested();
-            Assert.That(lesson.OrderScore, Is.EqualTo(80));
+            Assert.That(lesson.OrderScore, Is.EqualTo(70));
             lesson.OnEvacuationAnnounced();
-            Assert.That(lesson.OrderScore, Is.EqualTo(80));
+            Assert.That(lesson.OrderScore, Is.EqualTo(70));
             Assert.That(lesson.Mistakes.Select(m => m.Key), Is.EquivalentTo(new[]
-                { "extinguisher-before-report", "receiver-reset-before-handover" }));
+                { "extinguisher-before-report", "extinguisher-before-evacuation", "receiver-reset-before-handover" }));
             lesson.OnHandedOver();
             lesson.RecordOrderMistake(FireTutorialLesson.Mistake.ExtinguisherBeforeReport);
-            Assert.That(lesson.OrderScore, Is.EqualTo(80));
+            Assert.That(lesson.OrderScore, Is.EqualTo(70));
             Assert.That(lesson.Mistakes.All(m => m.Count == 1), Is.True);
         }
 

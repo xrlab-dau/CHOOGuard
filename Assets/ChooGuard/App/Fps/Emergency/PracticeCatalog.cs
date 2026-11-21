@@ -78,7 +78,7 @@ namespace ChooGuard.App.Fps.Emergency
                     new PracticeScenario
                     {
                         Id = PracticeShift.FireFamily, Title = "맞이방 작은 불", Lesson = PracticeLesson.Fire,
-                        Description = "2층 맞이방의 휴지통·보조배터리에서 난 작은 불. 발신기, 보고, 소화기 초기 진화, 소방대 인계 순서를 채점합니다.",
+                        Description = "2층 맞이방의 휴지통·보조배터리에서 난 작은 불. 신고(발신기·보고) → 승객 대피 유도 → 소화기 초기 진압 → 소방대 인계 순서를 채점합니다.",
                         Kinds = new[] { "bin_fire", "bin_battery_fire", "overheat" }, Zones = WaitingHall, Magnitude = .2f,
                         Onset = "잠시 뒤 2층 맞이방에서 작은 불이 납니다. 연기나 불을" + Find, ExpectedMinSeconds = 150, ExpectedMaxSeconds = 360,
                     },
