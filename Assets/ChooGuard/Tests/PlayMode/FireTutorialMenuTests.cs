@@ -26,7 +26,7 @@ namespace ChooGuard.Tests.PlayMode
         public void PreventExternalRequests()
         {
             key = System.Environment.GetEnvironmentVariable(JevKey.Variable);
-            System.Environment.SetEnvironmentVariable(JevKey.Variable, "fire-tutorial-test-no-network");
+            System.Environment.SetEnvironmentVariable(JevKey.Variable, "off");
         }
 
         [TearDown]

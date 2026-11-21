@@ -111,7 +111,7 @@ namespace ChooGuard.Tests.PlayMode
         public IEnumerator FreeShiftStartsWithoutAPracticeAndReleasesItsStateOnReturn()
         {
             string key = System.Environment.GetEnvironmentVariable(JevKey.Variable);
-            System.Environment.SetEnvironmentVariable(JevKey.Variable, "free-menu-test-no-network");
+            System.Environment.SetEnvironmentVariable(JevKey.Variable, "off");
             try
             {
                 yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene, LoadSceneMode.Single);
