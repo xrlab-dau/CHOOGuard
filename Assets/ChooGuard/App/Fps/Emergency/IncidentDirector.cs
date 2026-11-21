@@ -609,6 +609,7 @@ namespace ChooGuard.App.Fps.Emergency
             foreach (var agency in hazard.Dispatch) Call(agency, "역무실 신고");
             var hold = hazard.TrainHold;
             if (hold != null && Train != null) Train.Holds.Add(hold);
+            if (hazard is FireHazard fire) session.FireLesson?.OnReported(fire);
             Reported(hazard);
         }
 
@@ -619,6 +620,7 @@ namespace ChooGuard.App.Fps.Emergency
             Say("역무실, 안내방송 요청합니다.");
             session.Announce(pa.Line, pa.Text);
             ApplyAnnouncement(pa.Scope, Main.Position, pa.Radius, Main);
+            if (Main is FireHazard && (pa.Scope == PaScope.EvacuateArea || pa.Scope == PaScope.EvacuateStation)) session.FireLesson?.OnEvacuationAnnounced();
         }
 
         /// <summary>

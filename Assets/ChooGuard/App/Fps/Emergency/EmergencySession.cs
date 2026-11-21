@@ -52,6 +52,8 @@ namespace ChooGuard.App.Fps.Emergency
         public StationSound Sound { get; private set; }
         public bool IsCardiacTutorial { get; private set; }
         public CardiacTutorialLesson CardiacLesson { get; private set; }
+        public bool IsFireTutorial { get; private set; }
+        public FireTutorialLesson FireLesson { get; private set; }
 
         /// <summary>Radio messages the wheel offers right now in the guided shift (견학). Owners register providers; order is preserved.</summary>
         public readonly List<Func<IEnumerable<RadioOption>>> RadioProviders = new List<Func<IEnumerable<RadioOption>>>();
@@ -161,9 +163,13 @@ namespace ChooGuard.App.Fps.Emergency
             Board = BoardOverlay.Create(transform, KoreanFont);
             Map = MapOverlay.Create(transform, KoreanFont, StationMap, StationMapBounds, Player.PlayerCamera != null ? Player.PlayerCamera.transform : Player.transform, StationMapLabel);
             Wheel = RadioWheel.Create(transform, KoreanFont);
-            IsCardiacTutorial = PracticeShift.Family == PracticeShift.CardiacFamily;
-            Pause = PauseMenu.Create(transform, KoreanFont, Player, IsCardiacTutorial ? "심정지 대응 · 조작 학습" : "근무 시작", IsCardiacTutorial ?
+            var practice = PracticeCatalog.Scenario(PracticeShift.Family);
+            IsCardiacTutorial = practice != null && practice.Lesson == PracticeLesson.Cardiac;
+            IsFireTutorial = practice != null && practice.Lesson == PracticeLesson.Fire;
+            Pause = PauseMenu.Create(transform, KoreanFont, Player, IsCardiacTutorial ? "심정지 대응 · 조작 학습" : practice != null ? "연습 · " + practice.Title : "근무 시작", IsCardiacTutorial ?
                 "바로 앞 승객의 반응을 확인하며 시작합니다. 화면의 목표·이유·조작 안내를 따라 직접 행동하세요.\n반응 확인 → 도움 요청 → 호흡 확인 → 압박·동료 교대 → 기존 AED 사용 → 구급대 인계\n" + CardiacTutorialLesson.ModelLimitation :
+                practice != null ? practice.Description + "\n" + practice.Onset + "\n다른 사건은 일어나지 않습니다. 도착한 기관에 현장을 인계하면 연습이 끝납니다.\n" +
+                "<size=15>안내 수준 " + GameSettings.Label(GameSettings.Guidance) + " · " + GameSettings.Describe(GameSettings.Guidance) + " (설정에서 바꿀 수 있습니다)</size>" :
                 "부산역 오후 근무입니다. 서울에서 KTX가 곧 5·6 타는 곳에 들어옵니다.\n승객들은 각자의 여정대로 움직입니다. 무슨 일이 언제, 어디서 일어날지는 정해져 있지 않습니다.\n이상을 발견하면 알리고, 사람들을 지키고, 도착한 기관에 인계하세요.\n" +
                 "<size=15>안내 수준 " + GameSettings.Label(GameSettings.Guidance) + " · " + GameSettings.Describe(GameSettings.Guidance) + " (설정에서 바꿀 수 있습니다)</size>");
             Player.PauseChanged += OnPauseChanged;
@@ -273,6 +279,7 @@ namespace ChooGuard.App.Fps.Emergency
             Hands.Setup(this, Art);
             Incidents = gameObject.AddComponent<IncidentDirector>();
             if (IsCardiacTutorial) CardiacLesson = gameObject.AddComponent<CardiacTutorialLesson>();
+            if (IsFireTutorial) FireLesson = new FireTutorialLesson(this);
             Crowd = gameObject.AddComponent<CrowdDirector>();
             Crowd.Target = Passengers;
             Incidents.Begin(this, World, Crowd, Jev, Art, Log);

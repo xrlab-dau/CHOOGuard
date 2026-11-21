@@ -494,6 +494,7 @@ namespace ChooGuard.App.Fps.Emergency
             tool.transform.localRotation = grip;
             tool.transform.localPosition = new Vector3(.24f, -.13f, .55f) + grip * pivotFromTop;
             session.Log.Picked(tool);
+            session.FireLesson?.OnExtinguisherPicked();
         }
 
         public void Drop()
@@ -567,6 +568,7 @@ namespace ChooGuard.App.Fps.Emergency
                     hud.SetProgress(null);
                     hud.Toast("안전핀을 뽑았습니다 · 불의 아랫부분을 향해 누른 채 쓸듯이 분사");
                     session.Log.PinPulled(Held);
+                    session.FireLesson?.OnPinPulled();
                     trigger = false;
                 }
                 return;
@@ -584,6 +586,7 @@ namespace ChooGuard.App.Fps.Emergency
             SetEmission(260);
             Held.Agent = Mathf.Max(0, Held.Agent - Time.deltaTime / Extinguisher.DischargeSeconds);
             Held.SprayedSeconds += Time.deltaTime;
+            session.FireLesson?.OnSpraying();
             // 끝에서부터: 불이 꺼지면 OnFireOut 이 그 위험을 목록에서 빼므로 앞으로 돌면 목록이 바뀌었다는 예외가 난다.
             for (int i = HazardRegistry.Active.Count - 1; i >= 0; i--)
             {
