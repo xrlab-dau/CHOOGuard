@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using System.Reflection;
 using ChooGuard.App.Fps.Emergency;
+using ChooGuard.App.Fps.Shell;
 using ChooGuard.App.Fps.Tutorial;
 using ChooGuard.Seeded.Unity;
 using NUnit.Framework;
@@ -21,11 +22,15 @@ namespace ChooGuard.Tests.StationFireTutorial
             var fire=catalog.Categories.Single(c=>c.Id=="station-fire-response");
             Assert.That(cardiac.SceneName,Is.EqualTo("FpsStation"));Assert.That(PracticeShift.FamilyOf(cardiac.Id),Is.EqualTo(PracticeShift.CardiacFamily));
             Assert.That(fire.SceneName,Is.EqualTo("StationFireTutorial"));Assert.That(PracticeShift.FamilyOf(fire.Id),Is.Null);
-            Assert.That(catalog.Categories.Any(c=>c.SceneName=="CrewTrainTutorial"),Is.True);
+            var firePractice=catalog.Categories.Single(c=>c.Id==PracticeShift.FireCategory);
+            Assert.That(firePractice.SceneName,Is.EqualTo(SceneFlow.StationScene));
+            Assert.That(PracticeShift.FamilyOf(firePractice.Id),Is.EqualTo(PracticeShift.FireFamily));
+            Assert.That(Application.CanStreamedLevelBeLoaded(SceneFlow.TutorialScene),Is.True);
+            Assert.That(Application.CanStreamedLevelBeLoaded(SceneFlow.FireTutorialScene),Is.True);
         }
         [UnityTest]public IEnumerator CardiacPracticeDeferralAndFireStartupScopeReleaseTheirOwnState()
         {
-            Time.timeScale=1;yield return SceneManager.LoadSceneAsync("Bootstrap");yield return null;
+            Time.timeScale=1;yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene);yield return null;
             var property=typeof(PlatformSeededSimulator).GetProperty("DeferPreparationForLegacyTests",BindingFlags.NonPublic|BindingFlags.Static);
             Assert.That(property,Is.Not.Null);var before=(bool)property.GetValue(null);
             Assert.That(OfflineStationStartupScope.IsDeferred,Is.False);
@@ -38,7 +43,7 @@ namespace ChooGuard.Tests.StationFireTutorial
                 Assert.That((bool)property.GetValue(null),Is.True,"Consuming a practice does not release its provider protection early");
             }
             Assert.That(OfflineStationStartupScope.IsDeferred,Is.False);
-            yield return SceneManager.LoadSceneAsync("Bootstrap");yield return null;
+            yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene);yield return null;
             Assert.That(PracticeShift.Armed,Is.False);Assert.That((bool)property.GetValue(null),Is.EqualTo(before));
         }
     }

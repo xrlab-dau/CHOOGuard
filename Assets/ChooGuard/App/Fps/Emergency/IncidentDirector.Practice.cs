@@ -15,58 +15,62 @@ namespace ChooGuard.App.Fps.Emergency
     /// </summary>
     public sealed partial class IncidentDirector
     {
-        private const float PracticeSettleSeconds = 30f, PracticeOfferSeconds = 90f;
-        private static readonly string[] PracticeZones = { "hall2f", "main2f" };
-        private static readonly Dictionary<string, string[]> PracticeFamilies = new Dictionary<string, string[]>
-        {
-            ["질환"] = new[] { "collapse", "seizure", "chest_pain", "breathing", "low_blood_sugar" },
-            [PracticeShift.CardiacFamily] = new[] { "chest_pain" },
-        };
+        private const float PracticeSettleSeconds = 30f;
 
-        private string practiceFamily;
+        private PracticeScenario practice;
         /// <summary>A practice shift is running: only the practised cause happens, nothing is composed.</summary>
-        public bool Practicing => practiceFamily != null;
+        public bool Practicing => practice != null;
+        /// <summary>The scenario of the running practice shift (PracticeCatalog), or null in a free shift.</summary>
+        public PracticeScenario Practice => practice;
 
         private void BeginPractice()
         {
-            var family = PracticeShift.Take();
-            if (family == null || !PracticeFamilies.ContainsKey(family)) return;
-            practiceFamily = family;
-            log.Add("연습 근무 · " + family + " 한 건만 일어난다 (튜토리얼)");
-            session.Hud.Toast("연습 근무 · 잠시 뒤 2층 맞이방에서 " + family + " 환자가 생깁니다. 승객의 알림이나 순찰로 찾아 확인(E)하고 역무실에 보고(Q)하십시오.", 10f);
-            StartCoroutine(RunPractice(family));
+            var scenario = PracticeCatalog.Scenario(PracticeShift.Take());
+            if (scenario == null || !scenario.Available) return;
+            practice = scenario;
+            if (session.IsCardiacTutorial) { log.Add("고정 심정지 조작 학습 · 사건 대기 및 자동 인계 없음"); return; }
+            log.Add("연습 근무 · " + scenario.Title + " 한 건만 일어난다 (튜토리얼)");
+            session.Hud.Toast("연습 근무 · " + scenario.Onset, 10f);
+            StartCoroutine(RunPractice(scenario));
         }
 
-        private IEnumerator RunPractice(string family)
+        /// <summary>
+        /// The origin candidates the world offers right now, as (kind, zone id; null when the cause stands nowhere in particular).
+        /// What <see cref="PracticeScenario.Accepts"/> is asked about; PlayMode tests read it to check every menu scenario can happen.
+        /// </summary>
+        public List<(string Kind, string Zone)> PracticeCandidates()
         {
-            var wanted = PracticeFamilies[family];
+            var found = new List<(string Kind, string Zone)>();
+            foreach (var candidate in Origins())
+                found.Add((candidate.Kind, candidate.Subject is Component subject && subject != null ? world.ZoneId(subject.transform.position) : null));
+            return found;
+        }
+
+        private IEnumerator RunPractice(PracticeScenario scenario)
+        {
             while (session.ShiftSeconds < PracticeSettleSeconds) yield return null;
             Transition chosen = null;
-            float deadline = Time.realtimeSinceStartup + PracticeOfferSeconds;
+            float deadline = Time.realtimeSinceStartup + scenario.OfferSeconds;
             while (chosen == null && Time.realtimeSinceStartup < deadline)
             {
                 foreach (var candidate in Origins())
                 {
-                    if (Array.IndexOf(wanted, candidate.Kind) < 0) continue;
-                    if (!(candidate.Subject is Component subject)) continue;
-                    var zone = world.ZoneId(subject.transform.position);
-                    if (StationWorld.IsOutdoorZone(zone)) continue;
-                    if (!Array.Exists(PracticeZones, z => zone.StartsWith(z, StringComparison.Ordinal))) continue;
+                    string zone = candidate.Subject is Component subject && subject != null ? world.ZoneId(subject.transform.position) : null;
+                    if (!scenario.Accepts(candidate.Kind, zone)) continue;
                     chosen = candidate;
                     break;
                 }
-                if (chosen == null) yield return null;
+                if (chosen == null) yield return new WaitForSecondsRealtime(.5f);
             }
             if (chosen == null)
             {
-                log.Add("연습 · " + PracticeOfferSeconds + "초 안에 2층 맞이방의 " + family + " 후보가 없었다");
-                session.Hud.Toast("연습 · 맞이방에 " + family + " 후보가 없어 이번 근무에는 환자가 생기지 않습니다", 8f);
+                log.Add("연습 · " + scenario.OfferSeconds + "초 안에 " + scenario.Title + " 후보가 없었다");
+                session.Hud.Toast("연습 · 이번 근무에는 " + scenario.Title + " 상황을 만들 자리가 없어 아무 일도 생기지 않습니다. Esc → 타이틀로 돌아가 다시 시작하세요.", 8f);
                 yield break;
             }
-            // 심정지는 4단계(의식 없음·호흡 비정상)가 곧 심정지: 크기 1.0. 질환 계열은 가운데.
-            float magnitude = family == PracticeShift.CardiacFamily ? 1f : .5f;
+            // 심정지는 4단계(의식 없음·호흡 비정상)가 곧 심정지: 크기 1.0. 화재는 손 소화기로 진화되는 낮은 크기. 나머지는 가운데.
             int before = all.Count;
-            Execute(chosen, magnitude, 1, "practice");
+            Execute(chosen, scenario.Magnitude, 1, "practice");
             yield return null;
             log.Add(all.Count > before ? "연습 · 발생: " + chosen.Description : "연습 · 후보가 사이에 사라져 아무것도 생기지 않았다: " + chosen.Key);
         }

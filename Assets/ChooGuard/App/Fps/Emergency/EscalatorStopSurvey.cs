@@ -33,6 +33,12 @@ namespace ChooGuard.App.Fps.Emergency
             public float along;
             /// <summary>Sideways from the escalator's centre line toward <see cref="side"/> (m).</summary>
             public float offset;
+            /// <summary>
+            /// Name of the twin's own escalator mesh (a collider in the scene) this button is mounted on, where the twin models the
+            /// escalator as a separate object: the plate goes on that mesh's balustrade end at this landing on <see cref="side"/>
+            /// (<see cref="Escalator.MountOnNamedTwin"/>). Empty: the upright surface nearest the surveyed point (<see cref="Escalator.MountOnTwin"/>).
+            /// </summary>
+            public string mountObject = "";
             /// <summary>What ties this exact button to this landing: source, time or frame, what is seen. Empty: not built.</summary>
             public string placementEvidence = "";
             /// <summary>Which numbers were observed and which are estimates ([INFERENCE]).</summary>

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ChooGuard.App.Fps;
+using ChooGuard.App.Fps.Emergency;
 using ChooGuard.App.Fps.Shell;
 using NUnit.Framework;
 using UnityEngine;
@@ -23,6 +24,50 @@ namespace ChooGuard.Tests.PlayMode
         Type providerType;
         bool subscribed;
         readonly List<GameObject> ownedPlayers=new List<GameObject>();
+        Scene ownedStationScene,ownedSessionScene;
+
+        // Retained regression sessions are test-owned and independent of the
+        // shipping build list. StationEmergency is no longer a scene asset.
+        // Loading the saved station and composing a transient session here must
+        // not recreate a scene asset or change the player's build scene list.
+        protected IEnumerator LoadRetainedStationAndSession()
+        {
+            Assert.That(deferral,Is.Not.Null,"Install the retained fixture before loading its scenes.");
+#if UNITY_EDITOR
+            yield return UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(
+                "Assets/ChooGuard/Scenes/FpsStation.unity",new LoadSceneParameters(LoadSceneMode.Single));
+            ownedStationScene=SceneManager.GetSceneByPath("Assets/ChooGuard/Scenes/FpsStation.unity");
+            Assert.That(EmergencySession.Current,Is.Null,"Another session must not be adopted by this fixture.");
+            Assert.That(SceneManager.GetSceneByName(SceneFlow.EmergencyScene).isLoaded,Is.False);
+            var font=UnityEditor.AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>(
+                "Assets/ChooGuard/Settings/ImportedAssets/Fonts/NotoSansCJKkr SDF.asset");
+            var map=UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>(
+                "Assets/ChooGuard/Art/Emergency/UI/StationMap2F.png");
+            var art=UnityEditor.AssetDatabase.LoadAssetAtPath<EmergencyArt>(
+                "Assets/ChooGuard/Art/Emergency/EmergencyArt.asset");
+            Assert.That(font,Is.Not.Null);Assert.That(map,Is.Not.Null);Assert.That(art,Is.Not.Null);
+            Assert.That(art.StationData,Is.Not.Null);
+            var mapData=JsonUtility.FromJson<SessionMapData>(art.StationData.text);
+            var world=mapData.zones.Single(zone=>zone.id=="world");
+            var scene=SceneManager.CreateScene(SceneFlow.EmergencyScene);
+            ownedSessionScene=scene;
+            var root=new GameObject("Retained EmergencySession test session");root.SetActive(false);
+            SceneManager.MoveGameObjectToScene(root,scene);
+            var session=root.AddComponent<EmergencySession>();
+            session.KoreanFont=font;session.StationMap=map;
+            session.StationMapBounds=Rect.MinMaxRect(world.min.x,world.min.z,world.max.x,world.max.z);
+            session.Art=art;session.Passengers=110;
+            root.SetActive(true);
+            yield return null;
+#else
+            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene,LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene,LoadSceneMode.Additive);
+#endif
+        }
+
+#if UNITY_EDITOR
+        [Serializable] sealed class SessionMapData { public StationPoints.ZoneEntry[] zones; }
+#endif
 
         // Unity's outer enumerable setup runs before regular NUnit setup. Install
         // this hook in the inherited enumerable stage, before derived scene loads.
@@ -90,7 +135,7 @@ namespace ChooGuard.Tests.PlayMode
                 // Derived UnityTearDown runs first. Keep the selector installed through
                 // it and this owned cleanup; regular NUnit teardown runs too early.
                 var emergency=SceneManager.GetSceneByName(SceneFlow.EmergencyScene);
-                if(ownedPlayers.Any(player=>player!=null)&&emergency.isLoaded)
+                if((ownedPlayers.Any(player=>player!=null)||emergency==ownedSessionScene)&&emergency.isLoaded)
                 {
                     var station=SceneManager.GetSceneByName(SceneFlow.StationScene);
                     SceneManager.SetActiveScene(station.isLoaded?station:SceneManager.CreateScene("RetainedSessionSupportScratch"));
@@ -98,8 +143,14 @@ namespace ChooGuard.Tests.PlayMode
                 }
                 foreach(var player in ownedPlayers)if(player!=null)UnityEngine.Object.Destroy(player);
                 ownedPlayers.Clear();yield return null;
+                if(ownedStationScene.IsValid()&&ownedStationScene.isLoaded)
+                {
+                    if(SceneManager.GetActiveScene()==ownedStationScene)
+                        SceneManager.SetActiveScene(SceneManager.CreateScene("RetainedSessionSupportScratch"));
+                    yield return SceneManager.UnloadSceneAsync(ownedStationScene);
+                }
             }
-            finally{ReleaseRetainedEmergencySession();}
+            finally{ownedSessionScene=default;ownedStationScene=default;ReleaseRetainedEmergencySession();}
         }
     }
 

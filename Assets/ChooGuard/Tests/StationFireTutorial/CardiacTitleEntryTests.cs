@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using ChooGuard.App.Fps.Emergency;
 using ChooGuard.App.Fps.Shell;
+using ChooGuard.App.Fps.TrainDeparture;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using UnityEngine;
@@ -26,15 +27,15 @@ namespace ChooGuard.Tests.StationFireTutorial
         {
             previousKey=Environment.GetEnvironmentVariable("TYPESAFE_API_KEY");
             Environment.SetEnvironmentVariable("TYPESAFE_API_KEY","off");Time.timeScale=1;
-            yield return SceneManager.LoadSceneAsync("Bootstrap");yield return null;
+            yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene);yield return null;
         }
-        [UnityTest,Timeout(660000)]public IEnumerator LatestCardiacCategoryStartsOnePatientAndReturnsToTheSharedTutorialMenu()
+        [UnityTest,Timeout(660000)]public IEnumerator LatestCardiacCategoryStartsOnePatientAndReturnsToTheCurrentPracticeMenu()
         {
-            var title=UnityEngine.Object.FindFirstObjectByType<TitleScreen>();
-            yield return Until(()=>title!=null&&title.Built,15,"Actual title ready");
-            title.StartButton.onClick.Invoke();title.Modes.TutorialButton.onClick.Invoke();
-            var menu=UnityEngine.Object.FindFirstObjectByType<TutorialMenu>();
-            menu.GetComponentsInChildren<Button>().Single(b=>b.name=="심정지 환자 대응").onClick.Invoke();
+            yield return Until(()=>UnityEngine.Object.FindFirstObjectByType<DepartureGameView>()?.MenuVisible==true,15,"Actual title ready");
+            var menu=UnityEngine.Object.FindFirstObjectByType<DepartureGameView>();
+            menu.GetComponentsInChildren<Button>().Single(b=>b.name=="비상상황 연습").onClick.Invoke();yield return null;
+            menu.GetComponentsInChildren<Button>().Single(b=>b.name=="환자 발생").onClick.Invoke();yield return null;
+            menu.GetComponentsInChildren<Button>().Single(b=>b.name=="심정지 · AED").onClick.Invoke();
             yield return Until(()=>EmergencySession.Current!=null&&EmergencySession.Current.Incidents!=null&&EmergencySession.Current.Incidents.Practicing,
                 360,"Cardiac category enters the retained practice session");
             var session=EmergencySession.Current;
@@ -51,15 +52,19 @@ namespace ChooGuard.Tests.StationFireTutorial
                 ["scope"]="Actual title entry, practice startup, one patient, and shared-menu return; not a full CPR playthrough"
             }.ToString());
             SceneFlow.ToTutorialMenu();yield return null;
-            yield return Until(()=>UnityEngine.Object.FindFirstObjectByType<TitleScreen>()?.Built==true,30,"Return to actual tutorial menu");
+            yield return Until(()=>UnityEngine.Object.FindFirstObjectByType<DepartureGameView>()?.MenuVisible==true&&!SceneFlow.Loading,30,"Return to actual practice menu");
             Assert.That(PracticeShift.Armed,Is.False);
-            menu=UnityEngine.Object.FindFirstObjectByType<TutorialMenu>();
+            menu=UnityEngine.Object.FindFirstObjectByType<DepartureGameView>();
             var names=menu.GetComponentsInChildren<Button>().Select(b=>b.name).ToArray();
-            Assert.That(names,Does.Contain("역무원 화재대응"));Assert.That(names,Does.Contain("심정지 환자 대응"));
+            Assert.That(names,Does.Contain("심정지 · AED"));
+            menu.GetComponentsInChildren<Button>().Single(b=>b.name=="돌아가기").onClick.Invoke();yield return null;
+            menu.GetComponentsInChildren<Button>().Single(b=>b.name=="돌아가기").onClick.Invoke();yield return null;
+            names=menu.GetComponentsInChildren<Button>().Select(b=>b.name).ToArray();
+            Assert.That(names,Does.Contain("화재 튜토리얼"));Assert.That(names,Does.Contain("기차 튜토리얼"));
         }
         [UnityTearDown]public IEnumerator Cleanup()
         {
-            Time.timeScale=1;yield return SceneManager.LoadSceneAsync("Bootstrap");yield return null;
+            Time.timeScale=1;yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene);yield return null;
             Environment.SetEnvironmentVariable("TYPESAFE_API_KEY",previousKey);
         }
     }

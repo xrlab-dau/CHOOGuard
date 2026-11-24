@@ -47,10 +47,7 @@ namespace ChooGuard.Tests.PlayMode
         [UnityTest, Timeout(900000)]
         public IEnumerator JevNotAnswering_PeopleGoOnWithTheirTripsAndNobodyStandsFrozen()
         {
-            var station = SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
-            while (!station.isDone) yield return null;
-            var loading = SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
-            while (!loading.isDone) yield return null;
+            yield return LoadRetainedStationAndSession();
             float giveUp = Time.realtimeSinceStartup + 120;
             while ((EmergencySession.Current == null || EmergencySession.Current.Crowd == null || EmergencySession.Current.Crowd.People.Count == 0) && Time.realtimeSinceStartup < giveUp) yield return null;
             var shift = EmergencySession.Current;

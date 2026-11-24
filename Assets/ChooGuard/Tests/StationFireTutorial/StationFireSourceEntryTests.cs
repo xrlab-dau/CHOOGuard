@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using ChooGuard.App.Fps.Shell;
+using ChooGuard.App.Fps.TrainDeparture;
 using ChooGuard.App.Fps.StationFireTutorial;
 using ChooGuard.Seeded.Unity;
 using NUnit.Framework;
@@ -22,18 +23,15 @@ namespace ChooGuard.Tests.StationFireTutorial
         }
 
         [UnityTest, Timeout(900000)]
-        public IEnumerator CheckedInScenesStartTheLessonAndReturnToTheTutorialMenu()
+        public IEnumerator CurrentTrainingMenuStartsTheCheckedInLessonAndReturnsToTrainingSelection()
         {
             Time.timeScale = 1;
-            yield return SceneManager.LoadSceneAsync("Bootstrap");
-            yield return Until(() => UnityEngine.Object.FindFirstObjectByType<TitleScreen>()?.Built == true,
+            yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene);
+            yield return Until(() => UnityEngine.Object.FindFirstObjectByType<DepartureGameView>()?.MenuVisible == true,
                 60, "The checked-in title scene must initialize");
-            var title = UnityEngine.Object.FindFirstObjectByType<TitleScreen>();
-            title.StartButton.onClick.Invoke();
-            title.Modes.TutorialButton.onClick.Invoke();
-            var menu = UnityEngine.Object.FindFirstObjectByType<TutorialMenu>();
+            var menu = UnityEngine.Object.FindFirstObjectByType<DepartureGameView>();
             Assert.That(menu, Is.Not.Null);
-            menu.GetComponentsInChildren<Button>().Single(button => button.name == "역무원 화재대응").onClick.Invoke();
+            menu.GetComponentsInChildren<Button>().Single(button => button.name == "화재 튜토리얼").onClick.Invoke();
             yield return Until(() => StationFireTutorialSession.Current != null && !SceneFlow.Loading &&
                 (StationFireTutorialSession.Current.Ready || StationFireTutorialSession.Current.Failure.Length > 0),
                 600, "The PR source must prepare the fire lesson without a prebuilt player");
@@ -52,13 +50,15 @@ namespace ChooGuard.Tests.StationFireTutorial
             lesson.SetPaused(true);
             Assert.That(Time.timeScale, Is.Zero);
             lesson.ExitLesson();
-            yield return Until(() => UnityEngine.Object.FindFirstObjectByType<TitleScreen>()?.Built == true &&
-                UnityEngine.Object.FindFirstObjectByType<TutorialMenu>() != null,
-                180, "Leaving the lesson must return to the source tutorial menu");
-            menu = UnityEngine.Object.FindFirstObjectByType<TutorialMenu>();
+            yield return Until(() => UnityEngine.Object.FindFirstObjectByType<DepartureGameView>()?.MenuVisible == true && !SceneFlow.Loading,
+                180, "Leaving the lesson must return to the current training selection");
+            menu = UnityEngine.Object.FindFirstObjectByType<DepartureGameView>();
             var names = menu.GetComponentsInChildren<Button>().Select(button => button.name).ToArray();
-            Assert.That(names, Does.Contain("역무원 화재대응"));
-            Assert.That(names, Does.Contain("심정지 환자 대응"));
+            Assert.That(names, Does.Contain("화재 튜토리얼"));
+            Assert.That(names, Does.Contain("기차 튜토리얼"));
+            Assert.That(names, Does.Contain("비상상황 연습"));
+            Assert.That(Time.timeScale, Is.EqualTo(1));
+            Assert.That(StationFireTutorialSession.Current, Is.Null);
             Assert.That(OfflineStationStartupScope.IsDeferred, Is.False);
         }
 
@@ -66,7 +66,7 @@ namespace ChooGuard.Tests.StationFireTutorial
         public IEnumerator Cleanup()
         {
             Time.timeScale = 1;
-            yield return SceneManager.LoadSceneAsync("Bootstrap");
+            yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene);
             yield return null;
         }
     }

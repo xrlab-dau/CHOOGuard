@@ -8,20 +8,27 @@ using UnityEngine.SceneManagement;
 namespace ChooGuard.App.Fps.Emergency
 {
     /// <summary>
-    /// A practice shift chosen from the title's tutorial list (2026-10-31): one incident of one family in the retained
-    /// emergency session, nothing else composed. The runtime counterpart of the editor's PracticeDrill: it keeps the station's
-    /// provider runtime from waking (the same deferral seam the PlayMode fixtures and the editor drill use), switches the
-    /// provider root off when the station scene loads, makes sure a first-person staff member exists, and hands the family
-    /// to <see cref="IncidentDirector"/> when the session begins. Leaving to the title releases everything.
+    /// A practice shift chosen from the "비상상황 연습" menu (2026-10-31; menu on the train-departure title since 2026-11-18):
+    /// one incident of one family in the retained emergency session, nothing else composed. The runtime counterpart of the
+    /// editor's PracticeDrill: it keeps the station's provider runtime from waking (the same deferral seam the PlayMode
+    /// fixtures and the editor drill use), switches the provider root off when the station scene loads, makes sure a
+    /// first-person staff member exists, builds the session from <see cref="SessionTemplate"/> in a runtime session scene
+    /// (StationEmergency is no longer a scene asset), and hands the family to <see cref="IncidentDirector"/> when the session
+    /// begins. Leaving to the title releases everything.
     /// </summary>
     public static class PracticeShift
     {
         /// <summary>The tutorial catalog category that starts the cardiac-arrest practice.</summary>
         public const string CardiacCategory = "cardiac-arrest-practice";
         public const string CardiacFamily = "심정지";
+        /// <summary>The tutorial catalog category that starts the fire practice (맞이방 화재, docs/fire-tutorial.md).</summary>
+        public const string FireCategory = "fire-practice";
+        public const string FireFamily = "화재";
         private const string ProviderRootName = "CHOOGuard Provider Runtime";
         private const string ProviderTypeName = "ChooGuard.Seeded.Unity.PlatformSeededSimulator, ChooGuard.Seeded";
         private const string DeferralProperty = "DeferPreparationForLegacyTests";
+        /// <summary>Resources prefab (inactive) of the session object the deleted StationEmergency scene used to hold.</summary>
+        public const string SessionTemplate = "EmergencySessionTemplate";
 
         /// <summary>The family armed for the next session (null when none); <see cref="Take"/> consumes it.</summary>
         public static string Family { get; private set; }
@@ -31,15 +38,28 @@ namespace ChooGuard.App.Fps.Emergency
         private static PropertyInfo deferral;
 
         /// <summary>The practice family a tutorial category stands for, or null when the category is an ordinary tutorial scene.</summary>
-        public static string FamilyOf(string categoryId) => categoryId == CardiacCategory ? CardiacFamily : null;
+        public static string FamilyOf(string categoryId) => categoryId == CardiacCategory ? CardiacFamily : categoryId == FireCategory ? FireFamily : null;
 
         /// <summary>Arms a practice of <paramref name="family"/> for the shift about to load. False when the provider seam cannot be taken.</summary>
         public static bool Arm(string family)
         {
             if (string.IsNullOrEmpty(family)) return false;
             if (!Install(out var problem)) { Debug.LogError("[연습] " + problem); return false; }
-            Family = family;
+            Family = family; Free = false;
             Debug.Log("[연습] 무장 → " + family + " (튜토리얼 목록에서)");
+            return true;
+        }
+
+        /// <summary>
+        /// "실습하기" (2026-11-19): the same retained session with no family, so <see cref="IncidentDirector"/> composes
+        /// incidents through JEV as an ordinary shift does. Stays on until the title, so "다시 근무" starts another free shift.
+        /// </summary>
+        public static bool Free { get; private set; }
+        public static bool ArmFree()
+        {
+            if (!Install(out var problem)) { Debug.LogError("[실습] " + problem); return false; }
+            Family = null; Free = true;
+            Debug.Log("[실습] 자율 근무 (사건은 JEV 가 만듭니다)");
             return true;
         }
 
@@ -86,6 +106,23 @@ namespace ChooGuard.App.Fps.Emergency
                 else { root.SetActive(false); Debug.Log("[연습] 보존 근무 선택 · provider 런타임 비활성화"); }
             }
             EnsureResponder(scene);
+            if (Armed || Free) EnsureSession();
+        }
+
+        /// <summary>Builds the emergency session beside the station, as the old StationEmergency scene did when loaded additively.</summary>
+        private static void EnsureSession()
+        {
+            if (EmergencySession.Current != null) return;
+            var template = Resources.Load<GameObject>(SessionTemplate);
+            if (template == null) { Debug.LogError("[연습] 세션 틀(Resources/" + SessionTemplate + ")이 없습니다."); return; }
+            var sessionScene = SceneManager.GetSceneByName(SceneFlow.EmergencyScene);
+            if (!sessionScene.isLoaded) sessionScene = SceneManager.CreateScene(SceneFlow.EmergencyScene);
+            // 틀은 꺼진 채 저장돼 있어 복제본의 Awake 는 세션 씬으로 옮긴 뒤 켤 때 돈다.
+            var session = UnityEngine.Object.Instantiate(template);
+            session.name = template.name;
+            SceneManager.MoveGameObjectToScene(session, sessionScene);
+            session.SetActive(true);
+            Debug.Log("[연습] 비상대응 세션을 만들었습니다.");
         }
 
         private static void EnsureResponder(Scene scene)
@@ -103,6 +140,7 @@ namespace ChooGuard.App.Fps.Emergency
             var camera = cameraObject.GetComponent<Camera>();
             camera.nearClipPlane = .05f; camera.farClipPlane = 1500; camera.fieldOfView = 70;
             responder.PlayerCamera = camera; responder.BodyHeight = 1.72f; responder.EyeHeight = 1.60f; responder.EnableJump = false;
+            if (UnityEngine.Object.FindFirstObjectByType<AudioListener>() == null) cameraObject.AddComponent<AudioListener>();
             player.SetActive(true);
             Debug.Log("[연습] 역무원이 없어 연습용 플레이어를 두었습니다.");
         }
@@ -113,7 +151,7 @@ namespace ChooGuard.App.Fps.Emergency
             SceneManager.sceneLoaded -= OnSceneLoaded;
             try { if (ownsDeferral) deferral?.SetValue(null, false); }
             catch (Exception problem) { Debug.LogWarning("[연습] provider 준비 유예를 되돌리지 못했습니다: " + problem.Message); }
-            installed = false; ownsDeferral = false; deferral = null; Family = null;
+            installed = false; ownsDeferral = false; deferral = null; Family = null; Free = false;
         }
     }
 }

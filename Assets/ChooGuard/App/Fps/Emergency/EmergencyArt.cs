@@ -43,6 +43,9 @@ namespace ChooGuard.App.Fps.Emergency
         public GameObject AedOpenModel;
         public GameObject AedPadModel;
         public GameObject AedShockButtonModel;
+        [Header("Meshy AI ?? ??(CC BY 4.0): ?? ???? ?????? ???? ??. ?? ??? ?? ??? ??") ]
+        public GameObject ExtinguisherModel;
+        public GameObject EscalatorStopModel;
         [Header("출동 장비(Objaverse·Sketchfab CC BY, ThirdParty/Models/Objaverse)")]
         public GameObject NozzleModel;
         public GameObject CotModel;

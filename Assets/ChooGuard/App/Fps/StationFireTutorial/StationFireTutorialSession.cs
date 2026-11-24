@@ -235,7 +235,7 @@ namespace ChooGuard.App.Fps.StationFireTutorial
         void Record(string evidence) { Evidence.Add(State == null ? evidence : State.Tick + ":" + evidence); }
         void Fail(string reason) { Failure = reason; feedback = reason; Ready = false; UpdateCoaching(false); }
         public void RestartLesson() { Time.timeScale = 1; SceneManager.LoadScene("StationFireTutorial", LoadSceneMode.Single); }
-        public void ExitLesson() { Time.timeScale = 1; SceneFlow.ToTutorialMenu(); }
+        public void ExitLesson() { Time.timeScale = 1; SceneFlow.ToTitle(); }
         void OnDestroy()
         {
             SceneManager.sceneLoaded -= IsolateSourceScene; startup?.Dispose();

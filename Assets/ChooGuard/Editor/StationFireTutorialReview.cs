@@ -27,7 +27,7 @@ namespace ChooGuard.Editor
             {
                 StationFireTutorialSceneBuilder.ScenePath,
                 "Assets/ChooGuard/Scenes/FpsStation.unity",
-                "Assets/ChooGuard/Scenes/Bootstrap.unity"
+                "Assets/ChooGuard/Scenes/TrainDepartureDemo.unity"
             };
             foreach (var path in required)
                 if (AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null ||

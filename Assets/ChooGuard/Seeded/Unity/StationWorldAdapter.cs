@@ -72,6 +72,14 @@ namespace ChooGuard.Seeded.Unity
             if (LiveMode)
             {
                 var current=ResolveLiveReferences(manifest);
+                foreach(string id in (manifest["renderOnlyDerivedObjectIds"]??new JArray()).Values<string>())
+                {
+                    if(!Registry.Objects.TryGetValue(id,out var source)||!renderOnlyAlternatives.Add(id)||
+                       (string)source.GeometryProvenance["renderOnlyDerivedGeometry"]!="opaque-texel-depth"||
+                       (string)source.GeometryProvenance["boundSceneSha256"]!=Registry.BoundSceneSha256||
+                       (string)source.GeometryProvenance["sourceObjectId"]!=source.ParentId||!IsOpaqueDepthOnlySource(current[id]))
+                        throw new InvalidOperationException("Unqualified render-only derivative: "+id);
+                }
                 string trainId = (string)manifest["runtimeRoots"]["ktx"];
                 var platformIds = manifest["runtimeRoots"]["platforms"].Values<string>().ToArray();
                 foreach(var source in Registry.Objects.Values)
@@ -500,6 +508,15 @@ namespace ChooGuard.Seeded.Unity
             bool indexed=submeshIndexCounts.Any(count=>count>0);
             if(indexed&&vertexCount==0)throw new InvalidOperationException("Indexed source mesh has no vertices");
             return indexed;
+        }
+        public static bool IsOpaqueDepthOnlySource(GameObject go)
+        {
+            if(go==null)return false;
+            var parent=go.transform.parent;var filter=go.GetComponent<MeshFilter>();var renderer=go.GetComponent<MeshRenderer>();
+            return go.name=="__KtxOpaqueTexelDepth"&&parent!=null&&go.transform.childCount==0&&go.GetComponents<Component>().Length==3&&
+                go.transform.localPosition==Vector3.zero&&go.transform.localRotation==Quaternion.identity&&go.transform.localScale==Vector3.one&&
+                filter!=null&&filter.sharedMesh!=null&&parent.GetComponent<MeshFilter>()?.sharedMesh==filter.sharedMesh&&renderer!=null&&
+                renderer.sharedMaterials.Length>0&&renderer.sharedMaterials.All(m=>m!=null&&m.shader!=null&&m.shader.name=="ChooGuard/KTX/OpaqueTexelDepth");
         }
         static bool ContainsBounds(Bounds outer,Bounds inner,float tolerance)
         {var low=outer.min-Vector3.one*tolerance;var high=outer.max+Vector3.one*tolerance;return inner.min.x>=low.x&&inner.min.y>=low.y&&inner.min.z>=low.z&&inner.max.x<=high.x&&inner.max.y<=high.y&&inner.max.z<=high.z;}
