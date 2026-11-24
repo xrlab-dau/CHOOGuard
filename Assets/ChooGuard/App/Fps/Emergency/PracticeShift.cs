@@ -21,6 +21,9 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>The tutorial catalog category that starts the cardiac-arrest practice.</summary>
         public const string CardiacCategory = "cardiac-arrest-practice";
         public const string CardiacFamily = "심정지";
+        /// <summary>The tutorial catalog category that starts the fire practice (맞이방 화재, docs/fire-tutorial.md).</summary>
+        public const string FireCategory = "fire-practice";
+        public const string FireFamily = "화재";
         private const string ProviderRootName = "CHOOGuard Provider Runtime";
         private const string ProviderTypeName = "ChooGuard.Seeded.Unity.PlatformSeededSimulator, ChooGuard.Seeded";
         private const string DeferralProperty = "DeferPreparationForLegacyTests";
@@ -35,15 +38,28 @@ namespace ChooGuard.App.Fps.Emergency
         private static PropertyInfo deferral;
 
         /// <summary>The practice family a tutorial category stands for, or null when the category is an ordinary tutorial scene.</summary>
-        public static string FamilyOf(string categoryId) => categoryId == CardiacCategory ? CardiacFamily : null;
+        public static string FamilyOf(string categoryId) => categoryId == CardiacCategory ? CardiacFamily : categoryId == FireCategory ? FireFamily : null;
 
         /// <summary>Arms a practice of <paramref name="family"/> for the shift about to load. False when the provider seam cannot be taken.</summary>
         public static bool Arm(string family)
         {
             if (string.IsNullOrEmpty(family)) return false;
             if (!Install(out var problem)) { Debug.LogError("[연습] " + problem); return false; }
-            Family = family;
+            Family = family; Free = false;
             Debug.Log("[연습] 무장 → " + family + " (튜토리얼 목록에서)");
+            return true;
+        }
+
+        /// <summary>
+        /// "실습하기" (2026-11-19): the same retained session with no family, so <see cref="IncidentDirector"/> composes
+        /// incidents through JEV as an ordinary shift does. Stays on until the title, so "다시 근무" starts another free shift.
+        /// </summary>
+        public static bool Free { get; private set; }
+        public static bool ArmFree()
+        {
+            if (!Install(out var problem)) { Debug.LogError("[실습] " + problem); return false; }
+            Family = null; Free = true;
+            Debug.Log("[실습] 자율 근무 (사건은 JEV 가 만듭니다)");
             return true;
         }
 
@@ -90,7 +106,7 @@ namespace ChooGuard.App.Fps.Emergency
                 else { root.SetActive(false); Debug.Log("[연습] 보존 근무 선택 · provider 런타임 비활성화"); }
             }
             EnsureResponder(scene);
-            if (Armed) EnsureSession();
+            if (Armed || Free) EnsureSession();
         }
 
         /// <summary>Builds the emergency session beside the station, as the old StationEmergency scene did when loaded additively.</summary>
@@ -135,7 +151,7 @@ namespace ChooGuard.App.Fps.Emergency
             SceneManager.sceneLoaded -= OnSceneLoaded;
             try { if (ownsDeferral) deferral?.SetValue(null, false); }
             catch (Exception problem) { Debug.LogWarning("[연습] provider 준비 유예를 되돌리지 못했습니다: " + problem.Message); }
-            installed = false; ownsDeferral = false; deferral = null; Family = null;
+            installed = false; ownsDeferral = false; deferral = null; Family = null; Free = false;
         }
     }
 }

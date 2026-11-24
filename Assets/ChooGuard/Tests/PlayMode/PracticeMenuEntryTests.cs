@@ -22,6 +22,7 @@ namespace ChooGuard.Tests.PlayMode
         [UnityTest, Timeout(600000)]
         public IEnumerator ReturningToPracticeListPreservesThePageAndTrainCanStillStart()
         {
+            PracticeCatalog.LastGroupId = null;
             yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene, LoadSceneMode.Single);
             yield return null;
             SceneFlow.ToTutorialMenu();
@@ -32,7 +33,7 @@ namespace ChooGuard.Tests.PlayMode
 
             var view = Object.FindFirstObjectByType<DepartureGameView>();
             Assert.That(view, Is.Not.Null);
-            Assert.That(Labels(view), Does.Contain("심정지 환자 대응").And.Contain("돌아가기"),
+            Assert.That(Labels(view), Does.Contain("환자 발생").And.Contain("화재").And.Contain("돌아가기"),
                 "The title must preserve the practice-list request after all Awake/Start callbacks.");
             Assert.That(Labels(view), Does.Not.Contain("기차 튜토리얼"));
             Assert.That(SceneFlow.ConsumePracticeMenuRequest(), Is.False, "The request must be consumed only once.");
@@ -58,17 +59,26 @@ namespace ChooGuard.Tests.PlayMode
             var view = Object.FindFirstObjectByType<DepartureGameView>();
             Assert.That(view, Is.Not.Null, "열차 시연 씬에 메뉴가 없습니다.");
             Assert.That(view.MenuVisible, Is.True);
-            Assert.That(Labels(view), Does.Contain("기차 튜토리얼").And.Contain("비상상황 연습"));
+            Assert.That(Labels(view), Does.Contain("실습하기").And.Contain("기차 튜토리얼").And.Contain("비상상황 연습"));
 
-            var categories = DepartureGameView.PracticeCategories();
-            Assert.That(categories.Select(category => category.Id), Does.Contain(PracticeShift.CardiacCategory));
+            Assert.That(PracticeCatalog.GroupOf(PracticeShift.CardiacFamily)?.Title, Is.EqualTo("환자 발생"));
             Button(view, "비상상황 연습").onClick.Invoke();
             yield return null;
-            Assert.That(Labels(view), Does.Contain("심정지 환자 대응").And.Contain("돌아가기"));
+            Assert.That(Labels(view), Is.SupersetOf(PracticeCatalog.Groups.Select(group => group.Title)).And.Contain("돌아가기"));
             Assert.That(Labels(view), Does.Not.Contain("기차 튜토리얼"));
 
+            Button(view, "환자 발생").onClick.Invoke();
+            yield return null;
+            Assert.That(Labels(view), Does.Contain("심정지 · AED").And.Contain("경련").And.Contain("돌아가기"));
+            Assert.That(Labels(view), Does.Not.Contain("화재"), "세부 상황 목록에 카테고리가 남아 있습니다.");
+            Assert.That(view.HandleCancel(), Is.True);
+            yield return null;
+            Assert.That(Labels(view), Does.Contain("화재").And.Contain("환자 발생"), "Esc 가 카테고리 목록으로 돌아가지 않았습니다.");
+            Button(view, "환자 발생").onClick.Invoke();
+            yield return null;
+
             Assert.That(Application.CanStreamedLevelBeLoaded(SceneFlow.StationScene), Is.True, "FpsStation 이 빌드 목록에 없습니다.");
-            Button(view, "심정지 환자 대응").onClick.Invoke();
+            Button(view, "심정지 · AED").onClick.Invoke();
             Assert.That(PracticeShift.Armed, Is.True);
 
             float until = Time.realtimeSinceStartup + 900;
@@ -95,6 +105,52 @@ namespace ChooGuard.Tests.PlayMode
             var back = Object.FindFirstObjectByType<DepartureGameView>();
             Assert.That(back, Is.Not.Null);
             Assert.That(Labels(back), Does.Contain("기차 튜토리얼"));
+        }
+
+        [UnityTest, Timeout(1200000)]
+        public IEnumerator FreeShiftStartsWithoutAPracticeAndReleasesItsStateOnReturn()
+        {
+            string key = System.Environment.GetEnvironmentVariable(JevKey.Variable);
+            System.Environment.SetEnvironmentVariable(JevKey.Variable, "off");
+            try
+            {
+                yield return SceneManager.LoadSceneAsync(SceneFlow.TitleScene, LoadSceneMode.Single);
+                yield return null;
+                var view = Object.FindFirstObjectByType<DepartureGameView>();
+                Assert.That(view, Is.Not.Null);
+                Button(view, "실습하기").onClick.Invoke();
+                Assert.That(PracticeShift.Free, Is.True);
+                Assert.That(PracticeShift.Armed, Is.False);
+
+                float until = Time.realtimeSinceStartup + 900;
+                while ((EmergencySession.Current == null || EmergencySession.Current.Incidents == null || SceneFlow.Loading)
+                       && Time.realtimeSinceStartup < until) yield return null;
+                Assert.That(SceneFlow.Loading, Is.False);
+                var session = EmergencySession.Current;
+                Assert.That(session, Is.Not.Null);
+                Assert.That(session.Incidents, Is.Not.Null);
+                Assert.That(session.Incidents.Practicing, Is.False);
+                Assert.That(session.IsCardiacTutorial || session.IsFireTutorial, Is.False);
+                Assert.That(session.CardiacLesson, Is.Null);
+                Assert.That(session.FireLesson, Is.Null);
+                Assert.That(session.Jev.Available, Is.False, "This regression must not make external requests.");
+                Assert.That(PracticeShift.Free, Is.True);
+
+                SceneFlow.ToTitle();
+                until = Time.realtimeSinceStartup + 300;
+                while ((SceneFlow.Loading || EmergencySession.Current != null || SceneManager.GetActiveScene().name != SceneFlow.TitleScene)
+                       && Time.realtimeSinceStartup < until) yield return null;
+                Assert.That(SceneFlow.Loading, Is.False);
+                Assert.That(EmergencySession.Current, Is.Null);
+                Assert.That(PracticeShift.Free || PracticeShift.Armed, Is.False);
+                Assert.That(SceneManager.GetSceneByName(SceneFlow.StationScene).isLoaded, Is.False);
+                yield return null;
+                Assert.That(Labels(Object.FindFirstObjectByType<DepartureGameView>()), Does.Contain("실습하기").And.Contain("비상상황 연습"));
+            }
+            finally
+            {
+                System.Environment.SetEnvironmentVariable(JevKey.Variable, key);
+            }
         }
 
         private static string[] Labels(DepartureGameView view) =>

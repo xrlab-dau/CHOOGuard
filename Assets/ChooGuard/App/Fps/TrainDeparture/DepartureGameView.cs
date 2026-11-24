@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ChooGuard.App.Fps.Emergency;
 using ChooGuard.App.Fps.Shell;
-using ChooGuard.App.Fps.Tutorial;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,7 +13,8 @@ namespace ChooGuard.App.Fps.TrainDeparture
 {
     // The live train is the dominant image. This canvas contains menus only; the game owns its HUD.
     // The main page is also the game's title: "기차 튜토리얼" starts this scene's departure game, "비상상황 연습" lists the
-    // practice categories of the tutorial catalog and loads the station for the chosen one (PracticeShift).
+    // practice categories (PracticeCatalog: 화재, 환자 발생, …), then the scenarios of the chosen one, and loads the station
+    // for the chosen scenario (PracticeShift). A detail box beside the list describes the focused row.
     public sealed class DepartureGameView : MonoBehaviour
     {
         public TrainDepartureGame Game;
@@ -30,8 +30,10 @@ namespace ChooGuard.App.Fps.TrainDeparture
         RectTransform actions;
         TMP_Text title, subtitle;
         Button settingsButton;
+        RectTransform detail;
+        TMP_Text detailText;
         bool built;
-        enum Page { None, Main, Pause, Settings, Complete, Practice }
+        enum Page { None, Main, Pause, Settings, Complete, Practice, PracticeScenarios }
         Page page, settingsOrigin;
 
         public void Build()
@@ -73,8 +75,25 @@ namespace ChooGuard.App.Fps.TrainDeparture
             subtitle = Label(content, "부산역·열차팀장", 127, 24, new Color(.70f, .70f, .68f));
             actions = Node(content, "Actions");
             Stretch(actions);
+            var box = Graphic(panel, "Practice detail", new Color(Ground.r, Ground.g, Ground.b, .9f));
+            detail = box.rectTransform;
+            detail.anchorMin = detail.anchorMax = new Vector2(.37f, .5f);
+            detail.pivot = new Vector2(0, 1);
+            detail.anchoredPosition = new Vector2(0, 84);
+            detail.sizeDelta = new Vector2(640, 360);
+            detailText = Label(detail, "", 0, 24, Ink, 320);
+            detailText.rectTransform.anchorMin = Vector2.zero; detailText.rectTransform.anchorMax = Vector2.one;
+            detailText.rectTransform.pivot = new Vector2(.5f, .5f);
+            detailText.rectTransform.offsetMin = new Vector2(32, 28); detailText.rectTransform.offsetMax = new Vector2(-32, -28);
+            detailText.enableWordWrapping = true;
+            detailText.alignment = TextAlignmentOptions.TopLeft;
+            detail.gameObject.SetActive(false);
             ShowMain();
-            if (SceneFlow.ConsumePracticeMenuRequest()) ShowPractice();
+            if (SceneFlow.ConsumePracticeMenuRequest())
+            {
+                var last = PracticeCatalog.Group(PracticeCatalog.LastGroupId);
+                if (last != null) ShowScenarios(last); else ShowPractice();
+            }
         }
 
         static RectTransform Node(Transform parent, string name)
@@ -127,19 +146,20 @@ namespace ChooGuard.App.Fps.TrainDeparture
                 child.SetActive(false); Destroy(child);
             }
             page = next; MenuVisible = true;
+            ShowDetail(null);
             menu.gameObject.SetActive(true);
             menu.alpha = 1; menu.interactable = menu.blocksRaycasts = true;
             title.text = heading;
             title.fontSize = next == Page.Complete ? 48 : 60;
-            subtitle.text = next == Page.Main ? "부산역" : next == Page.Practice ? "부산역·역무원" : "부산역·열차팀장";
+            subtitle.text = next == Page.Main ? "부산역" : next == Page.Practice || next == Page.PracticeScenarios ? "부산역·역무원" : "부산역·열차팀장";
         }
-        Button Action(string label, float y, Action action, bool primary = false)
+        Button Action(string label, float y, Action action, bool primary = false, float height = 66, float size = 28)
         {
             var node = TMP_DefaultControls.CreateButton(new TMP_DefaultControls.Resources());
             node.name = label; node.transform.SetParent(actions, false);
             var image = node.GetComponent<Image>();
             image.type = Image.Type.Simple; image.color = Color.white; image.raycastTarget = true;
-            Position(image.rectTransform, y, ControlWidth, 66);
+            Position(image.rectTransform, y, ControlWidth, height);
             var button = node.GetComponent<Button>();
             button.targetGraphic = image;
             var colors = button.colors;
@@ -151,12 +171,12 @@ namespace ChooGuard.App.Fps.TrainDeparture
             button.colors = colors;
             var text = node.GetComponentInChildren<TMP_Text>();
             if (Font != null) text.font = Font;
-            text.text = label; text.fontSize = 28; text.color = Ink;
+            text.text = label; text.fontSize = size; text.color = Ink;
             text.alignment = TextAlignmentOptions.MidlineLeft;
             text.enableWordWrapping = false; text.raycastTarget = false;
-            Position(text.rectTransform, 0, ControlWidth - 44, 66);
+            Position(text.rectTransform, 0, ControlWidth - 44, height);
             text.rectTransform.anchoredPosition = new Vector2(22, 0);
-            text.rectTransform.sizeDelta = new Vector2(ControlWidth - 44, 66);
+            text.rectTransform.sizeDelta = new Vector2(ControlWidth - 44, height);
             button.onClick.AddListener(() => action());
             controls.Add(button);
             return button;
@@ -177,46 +197,105 @@ namespace ChooGuard.App.Fps.TrainDeparture
         public void ShowMain()
         {
             Open(Page.Main, "훈련 선택");
-            Action("기차 튜토리얼", 16, () => Game.Begin(), true);
-            Action("비상상황 연습", -72, ShowPractice);
-            settingsButton = Action("설정", -160, ShowSettings);
-            Action("종료", -248, () => Game.ExitApplication());
+            Action("실습하기", 16, StartFreeShift, true);
+            Action("기차 튜토리얼", -66, () => Game.Begin());
+            Action("비상상황 연습", -148, ShowPractice);
+            settingsButton = Action("설정", -230, ShowSettings);
+            Action("종료", -312, () => Game.ExitApplication());
             Finish();
         }
-        /// <summary>Catalog categories that start a practice shift in the station (every catalog entry but the train scene).</summary>
-        public static TutorialCategory[] PracticeCategories()
+        /// <summary>"실습하기": an ordinary shift at the station, incidents drawn by JEV as they come (no practice scenario).</summary>
+        void StartFreeShift()
         {
-            var catalog = Resources.Load<TutorialCatalog>(TutorialCatalog.ResourceName);
-            if (catalog == null || catalog.Categories == null) return Array.Empty<TutorialCategory>();
-            return catalog.Categories.Where(category => category != null && PracticeShift.FamilyOf(category.Id) != null).ToArray();
+            if (SceneFlow.Loading) return;
+            if (!UnityEngine.Application.CanStreamedLevelBeLoaded(SceneFlow.StationScene))
+            { Debug.LogError("[실습] 역 씬(" + SceneFlow.StationScene + ")이 빌드 목록에 없습니다."); return; }
+            if (!PracticeShift.ArmFree()) return;
+            Game.ReleaseForSceneChange();
+            menu.interactable = false;
+            ShowDetail(null);
+            title.text = "불러오는 중";
+            SceneFlow.StartShift(Font, null);
         }
+        const float RowStep = 54, RowHeight = 48, RowFont = 24, FirstRow = 60;
+        /// <summary>One row of a practice list: focusing it (keyboard or pointer) shows <paramref name="about"/> in the detail box.</summary>
+        Button Row(string label, float y, Action action, string about, bool primary = false)
+        {
+            // No "primary" blue row in a list: the focused row is the only highlight, so the detail box always matches it.
+            var button = Action(label, y, action, false, RowHeight, RowFont);
+            var colors = button.colors;
+            colors.selectedColor = colors.highlightedColor = Blue;
+            button.colors = colors;
+            button.gameObject.AddComponent<MenuHint>().Show = () => ShowDetail(about);
+            return button;
+        }
+        /// <summary>A 준비 중 row: grey text and a grey (not blue) focus, still focusable so its reason shows in the detail box.</summary>
+        static void Dim(Button row)
+        {
+            var colors = row.colors;
+            colors.selectedColor = colors.highlightedColor = colors.pressedColor = new Color(.24f, .24f, .24f);
+            row.colors = colors;
+            row.GetComponentInChildren<TMP_Text>().color = new Color(.55f, .55f, .53f);
+        }
+        void ShowDetail(string text)
+        {
+            if (detail == null) return;
+            detail.gameObject.SetActive(!string.IsNullOrEmpty(text));
+            detailText.text = text ?? "";
+        }
+        static string About(PracticeGroup group) =>
+            "<b><size=30>" + group.Title + "</size></b>\n<color=#ffffffaa>" + group.Scenarios.Length + "가지 상황 · 지금 고를 수 있는 것 " +
+            group.Scenarios.Count(scenario => scenario.Available) + "가지</color>\n\n" + group.Description +
+            "\n\n<size=20><color=#ffffffaa>" + string.Join(" · ", group.Scenarios.Select(scenario => scenario.Title)) + "</color></size>";
+        static string About(PracticeScenario scenario) =>
+            "<b><size=30>" + scenario.Title + "</size></b>\n<color=#ffffffaa>" + (scenario.Available ? scenario.Duration +
+            (scenario.Lesson != PracticeLesson.None ? " · 단계 안내·순서 점수" : " · 사건 한 건") : "준비 중") + "</color>\n\n" + scenario.Description +
+            (scenario.Available ? "" : "\n\n<color=#e0b060>" + scenario.Unavailable + "</color>");
+        /// <summary>The practice categories: 화재, 환자 발생, 보안, 시설 고장, 열차·선로, 지진.</summary>
         public void ShowPractice()
         {
             Open(Page.Practice, "비상상황 연습");
-            float y = 16;
-            foreach (var category in PracticeCategories())
+            float y = FirstRow;
+            foreach (var group in PracticeCatalog.Groups)
             {
-                var chosen = category;
-                Action(chosen.Title, y, () => StartPractice(chosen), y == 16);
-                var about = Label(actions, chosen.Duration + " · " + chosen.Description, y - 74, 19, new Color(.70f, .70f, .68f), 70);
-                about.rectTransform.sizeDelta = new Vector2(ControlWidth + 40, 70);
-                about.enableWordWrapping = true;
-                about.alignment = TextAlignmentOptions.TopLeft;
-                y -= 170;
+                var chosen = group;
+                bool open = chosen.Scenarios.Any(scenario => scenario.Available);
+                var row = Row(open ? chosen.Title : chosen.Title + " · 준비 중", y, () => ShowScenarios(chosen), About(chosen), y == FirstRow);
+                row.gameObject.name = chosen.Title;
+                if (!open) Dim(row);
+                y -= RowStep;
             }
-            if (y == 16) { Label(actions, "준비된 연습이 없습니다.", y, 24, new Color(.70f, .70f, .68f)); y -= 88; }
-            Action("돌아가기", y, ShowMain);
+            Row("돌아가기", y - 12, ShowMain, null);
             Finish();
+            ShowDetail(PracticeCatalog.Groups.Length > 0 ? About(PracticeCatalog.Groups[0]) : null);
         }
-        void StartPractice(TutorialCategory category)
+        /// <summary>The scenarios of one category; choosing one loads the station for it.</summary>
+        public void ShowScenarios(PracticeGroup group)
         {
-            var family = PracticeShift.FamilyOf(category.Id);
-            if (family == null || SceneFlow.Loading) return;
+            Open(Page.PracticeScenarios, group.Title);
+            float y = FirstRow;
+            foreach (var scenario in group.Scenarios)
+            {
+                var chosen = scenario;
+                var row = Row(chosen.Available ? chosen.Title : chosen.Title + " · 준비 중", y, () => StartPractice(group, chosen), About(chosen), y == FirstRow && chosen.Available);
+                row.gameObject.name = chosen.Title;
+                if (!chosen.Available) Dim(row);
+                y -= RowStep;
+            }
+            Row("돌아가기", y - 12, ShowPractice, null);
+            Finish();
+            ShowDetail(group.Scenarios.Length > 0 ? About(group.Scenarios[0]) : null);
+        }
+        void StartPractice(PracticeGroup group, PracticeScenario scenario)
+        {
+            if (scenario == null || !scenario.Available || SceneFlow.Loading) return;
             if (!UnityEngine.Application.CanStreamedLevelBeLoaded(SceneFlow.StationScene))
             { Debug.LogError("[연습] 역 씬(" + SceneFlow.StationScene + ")이 빌드 목록에 없습니다."); return; }
-            if (!PracticeShift.Arm(family)) return;
+            if (!PracticeShift.Arm(scenario.Id)) return;
+            PracticeCatalog.LastGroupId = group.Id;
             Game.ReleaseForSceneChange();
             menu.interactable = false;
+            ShowDetail(null);
             title.text = "불러오는 중";
             SceneFlow.StartShift(Font, null);
         }
@@ -307,6 +386,7 @@ namespace ChooGuard.App.Fps.TrainDeparture
         {
             if (!MenuVisible) return false;
             if (page == Page.Settings) ReturnFromSettings();
+            else if (page == Page.PracticeScenarios) ShowPractice();
             else if (page == Page.Practice) ShowMain();
             else if (page == Page.Pause) Game.Resume();
             return true;
@@ -318,6 +398,20 @@ namespace ChooGuard.App.Fps.TrainDeparture
             if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
             menu.interactable = menu.blocksRaycasts = false;
             menu.gameObject.SetActive(false);
+        }
+    }
+
+    /// <summary>Calls <see cref="Show"/> when its row is focused by keyboard or pointer (the practice detail box).</summary>
+    sealed class MenuHint : MonoBehaviour, ISelectHandler, IPointerEnterHandler
+    {
+        public Action Show;
+        public void OnSelect(BaseEventData data) => Show?.Invoke();
+        // Hovering moves the selection itself, so the blue row and the detail box always name the same row.
+        public void OnPointerEnter(PointerEventData data)
+        {
+            if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != gameObject)
+                EventSystem.current.SetSelectedGameObject(gameObject); // → OnSelect → Show
+            else Show?.Invoke();
         }
     }
 }

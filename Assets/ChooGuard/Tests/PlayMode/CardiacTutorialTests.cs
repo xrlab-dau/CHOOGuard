@@ -213,6 +213,7 @@ namespace ChooGuard.Tests.PlayMode
         [UnityTest, Timeout(1200000)]
         public IEnumerator ResultButtonsRestartACleanLessonAndReturnToThePracticeList()
         {
+            PracticeCatalog.LastGroupId = PracticeCatalog.GroupOf(PracticeShift.CardiacFamily).Id;
             var previous = session;
             var lesson = session.CardiacLesson;
             var requests = session.RadioGroupProviders.SelectMany(p => p()).First(g => g.Label == "요청 · 기관");
@@ -256,7 +257,7 @@ namespace ChooGuard.Tests.PlayMode
             var view = UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Fps.TrainDeparture.DepartureGameView>();
             Assert.That(view, Is.Not.Null);
             var labels = view.GetComponentsInChildren<Button>().Where(b => b.gameObject.activeInHierarchy).Select(b => b.gameObject.name).ToArray();
-            Assert.That(labels, Does.Contain("심정지 환자 대응").And.Contain("돌아가기"));
+            Assert.That(labels, Does.Contain("심정지 · AED").And.Contain("돌아가기"));
             Assert.That(labels, Does.Not.Contain("기차 튜토리얼"));
             Assert.That(PracticeShift.Armed, Is.False);
         }

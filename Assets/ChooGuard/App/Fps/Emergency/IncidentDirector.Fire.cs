@@ -164,6 +164,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             var where = world.Describe(at);
             log.Add("발신기 동작 · " + where);
+            if (session.IsFireTutorial) session.FireLesson?.OnCallPoint();
             if (alarm) { Office("역무실입니다. " + where + " 발신기도 동작했습니다."); return; }
             alarm = true;
             Office("역무실입니다. " + where + " 발신기 동작. 화재 여부 현장 확인 바랍니다.");
@@ -192,6 +193,7 @@ namespace ChooGuard.App.Fps.Emergency
         public void OnFireOut(FireHazard hazard, string by)
         {
             if (!hazard.Extinguished) return;
+            session.FireLesson?.OnExtinguished();
             HazardRegistry.Remove(hazard);
             if (!fires.Exists(f => !f.Extinguished))
             {
@@ -268,6 +270,7 @@ namespace ChooGuard.App.Fps.Emergency
                     Say("역무실, " + f.Where + " 화재 초기 진화했습니다. 연기 남아 있습니다.");
                     Office("역무실 수신. 소방대 도착하면 현장 인계 바랍니다.");
                     log.Add("역무실에 초기 진화 보고");
+                    session.FireLesson?.OnExtinguishReported();
                 });
             }
         }
