@@ -57,6 +57,14 @@ namespace ChooGuard.Tests.StationFireTutorial
             Assert.That(names, Does.Contain("화재 튜토리얼"));
             Assert.That(names, Does.Contain("기차 튜토리얼"));
             Assert.That(names, Does.Contain("비상상황 연습"));
+            foreach (var button in menu.GetComponentsInChildren<Button>())
+            {
+                var rect = button.GetComponent<RectTransform>();
+                Assert.That(rect.anchoredPosition.y - rect.rect.height * rect.pivot.y, Is.GreaterThanOrEqualTo(-350),
+                    button.name + " must remain inside the training menu");
+                Assert.That(rect.anchoredPosition.y + rect.rect.height * (1 - rect.pivot.y), Is.LessThanOrEqualTo(350),
+                    button.name + " must remain inside the training menu");
+            }
             Assert.That(Time.timeScale, Is.EqualTo(1));
             Assert.That(StationFireTutorialSession.Current, Is.Null);
             Assert.That(OfflineStationStartupScope.IsDeferred, Is.False);

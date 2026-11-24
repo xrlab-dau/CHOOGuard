@@ -197,12 +197,12 @@ namespace ChooGuard.App.Fps.TrainDeparture
         public void ShowMain()
         {
             Open(Page.Main, "훈련 선택");
-            Action("실습하기", 16, StartFreeShift, true);
-            Action("기차 튜토리얼", -66, () => Game.Begin());
-            Action("화재 튜토리얼", -148, StartFireTutorial);
-            Action("비상상황 연습", -230, ShowPractice);
-            settingsButton = Action("설정", -312, ShowSettings);
-            Action("종료", -394, () => Game.ExitApplication());
+            Action("실습하기", 70, StartFreeShift, true);
+            Action("기차 튜토리얼", 0, () => Game.Begin());
+            Action("화재 튜토리얼", -70, StartFireTutorial);
+            Action("비상상황 연습", -140, ShowPractice);
+            settingsButton = Action("설정", -210, ShowSettings);
+            Action("종료", -280, () => Game.ExitApplication());
             Finish();
         }
         void StartFireTutorial()
