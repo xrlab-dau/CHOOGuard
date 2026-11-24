@@ -11,6 +11,7 @@ namespace ChooGuard.App.Fps.Shell
     {
         public const string StationScene = "FpsStation";
         public const string TutorialScene = "TrainDepartureDemo";
+        public const string FireTutorialScene = "StationFireTutorial";
         // Leaving a practice ("타이틀로") returns to the train-departure menu, never to the station itself.
         public const string TitleScene = TutorialScene;
         // The session scene is created at runtime for a practice (PracticeShift); no StationEmergency asset is registered.
@@ -20,7 +21,7 @@ namespace ChooGuard.App.Fps.Shell
         public static bool OpenTutorialMenuOnTitle => false;
         public static event Action QuitRequested;
         public static void ConsumeTutorialMenuRequest() { }
-        public static void StartTutorial(string sceneName, TMP_FontAsset font, Texture background) => Load(TutorialScene);
+        public static void StartTutorial(string sceneName, TMP_FontAsset font, Texture background) => Load(sceneName);
         public static void StartShift(TMP_FontAsset font, Texture background) => Load(StationScene);
         public static void ToTitle() => Load(TitleScene);
         /// <summary>Back to the train-departure menu with its "비상상황 연습" list open (a practice's result screen).</summary>
@@ -31,7 +32,7 @@ namespace ChooGuard.App.Fps.Shell
         private static bool Load(string sceneName)
         {
             if (Loading) return false;
-            if (!UnityEngine.Application.CanStreamedLevelBeLoaded(sceneName))
+            if (string.IsNullOrWhiteSpace(sceneName) || !UnityEngine.Application.CanStreamedLevelBeLoaded(sceneName))
             {
                 Debug.LogError("Presentation scene is not registered: " + sceneName);
                 return false;

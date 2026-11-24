@@ -17,6 +17,8 @@ namespace ChooGuard.App.Fps.Hud
         private RectTransform root;
         private readonly List<(Image back, TMP_Text text)> items = new List<(Image, TMP_Text)>();
         private TMP_Text centre;
+        private Image hub;
+        private bool teachingPresentation;
         private Vector2 pointer;
         private int count;
 
@@ -30,13 +32,28 @@ namespace ChooGuard.App.Fps.Hud
             wheel.canvas = canvasObject.GetComponent<Canvas>();
             wheel.font = font;
             wheel.root = (RectTransform)canvasObject.transform;
-            var hub = FpsUiFactory.Panel(wheel.root, "중심", Vector2.zero, new Vector2(120, 120), new Color(0, 0, 0, .55f));
-            hub.sprite = HudSprites.Disc;
+            wheel.hub = FpsUiFactory.Panel(wheel.root, "중심", Vector2.zero, new Vector2(120, 120), new Color(0, 0, 0, .55f));
+            wheel.hub.sprite = HudSprites.Disc;
             wheel.centre = FpsUiFactory.Label(wheel.root, font, "안내", Vector2.zero, new Vector2(110, 60), 15);
             wheel.canvas.enabled = false;
             return wheel;
         }
 
+        // Presentation opt-in for the beginner lesson; selection and steering stay unchanged.
+        public void SetTeachingPresentation(bool enabled)
+        {
+            teachingPresentation=enabled;
+            hub.rectTransform.sizeDelta=enabled?new Vector2(170,140):new Vector2(120,120);
+            centre.rectTransform.sizeDelta=enabled?new Vector2(150,110):new Vector2(110,60);
+            centre.fontSize=enabled?19:15;
+            for(int i=0;i<items.Count;i++)StyleItem(i);
+        }
+        void StyleItem(int i)
+        {
+            items[i].back.rectTransform.sizeDelta=teachingPresentation?new Vector2(340,74):new Vector2(250,52);
+            items[i].text.rectTransform.sizeDelta=teachingPresentation?new Vector2(324,68):new Vector2(236,48);
+            items[i].text.fontSize=teachingPresentation?21:16;
+        }
         public void Show(IReadOnlyList<string> options) => Show(options, "무전\n<size=12>방향을 고른 뒤 떼기</size>");
 
         public void Show(IReadOnlyList<string> options, string centreText, bool preservePointer = false)
@@ -58,6 +75,7 @@ namespace ChooGuard.App.Fps.Hud
                 var direction = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
                 items[i].back.rectTransform.anchoredPosition = direction * Radius;
                 items[i].text.text = options[i];
+                StyleItem(i);
             }
             if (!preservePointer) pointer = Vector2.zero;
             Selected = -1;

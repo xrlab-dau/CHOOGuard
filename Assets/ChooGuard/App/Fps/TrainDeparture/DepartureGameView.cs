@@ -197,12 +197,24 @@ namespace ChooGuard.App.Fps.TrainDeparture
         public void ShowMain()
         {
             Open(Page.Main, "훈련 선택");
-            Action("실습하기", 16, StartFreeShift, true);
-            Action("기차 튜토리얼", -66, () => Game.Begin());
-            Action("비상상황 연습", -148, ShowPractice);
-            settingsButton = Action("설정", -230, ShowSettings);
-            Action("종료", -312, () => Game.ExitApplication());
+            Action("실습하기", 70, StartFreeShift, true);
+            Action("기차 튜토리얼", 0, () => Game.Begin());
+            Action("화재 튜토리얼", -70, StartFireTutorial);
+            Action("비상상황 연습", -140, ShowPractice);
+            settingsButton = Action("설정", -210, ShowSettings);
+            Action("종료", -280, () => Game.ExitApplication());
             Finish();
+        }
+        void StartFireTutorial()
+        {
+            if (SceneFlow.Loading) return;
+            if (!UnityEngine.Application.CanStreamedLevelBeLoaded(SceneFlow.FireTutorialScene))
+            { Debug.LogError("화재 튜토리얼 씬이 빌드 목록에 없습니다."); return; }
+            Game.ReleaseForSceneChange();
+            menu.interactable = false;
+            ShowDetail(null);
+            title.text = "불러오는 중";
+            SceneFlow.StartTutorial(SceneFlow.FireTutorialScene, Font, null);
         }
         /// <summary>"실습하기": an ordinary shift at the station, incidents drawn by JEV as they come (no practice scenario).</summary>
         void StartFreeShift()
