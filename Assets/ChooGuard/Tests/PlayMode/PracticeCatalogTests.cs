@@ -39,7 +39,7 @@ namespace ChooGuard.Tests.PlayMode
         public IEnumerator EveryScenarioFindsACandidateWithinThePracticeWindow()
         {
             string key = Environment.GetEnvironmentVariable(JevKey.Variable);
-            Environment.SetEnvironmentVariable(JevKey.Variable, "practice-catalog-test-no-network");
+            Environment.SetEnvironmentVariable(JevKey.Variable, "off");
             try
             {
                 // A quiet practice keeps the director from composing anything else while the world offers its causes.
@@ -51,6 +51,7 @@ namespace ChooGuard.Tests.PlayMode
                     yield return null;
                 var session = EmergencySession.Current;
                 Assert.That(session, Is.Not.Null, "연습 세션이 생기지 않았습니다.");
+                Assert.That(session.Jev.Available, Is.False, "Catalog observation must not make external requests.");
                 Assert.That(session.Incidents.Practice?.Id, Is.EqualTo("환자·저혈당"));
                 session.Player.SetExternalInputMode(true);
                 Assert.That(session.Player.Resume(false), Is.True);

@@ -144,7 +144,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// <summary>단계 7 · 대피 유도(직접 안내). 승객에게 E "대피 안내"로 대피 방향을 알렸다.</summary>
         public void OnPassengersGuided(int told)
         {
-            if (PassengersGuided) return;
+            if (PassengersGuided || told <= 0) return;
             PassengersGuided = true;
             Note("passengers-guided; told=" + told, "승객 대피 방향 안내");
         }

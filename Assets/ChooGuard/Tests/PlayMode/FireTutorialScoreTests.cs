@@ -52,6 +52,20 @@ namespace ChooGuard.Tests.PlayMode
             lesson.OnReceiverResetRequested();
             Assert.That(Keys(lesson), Is.EqualTo(new[] { FireTutorialLesson.Mistake.ReceiverResetBeforeHandover.Key }));
         }
+
+        [Test]
+        public void NoPassengerReachedDoesNotCompleteGuidanceAndCanBeRetried()
+        {
+            var lesson = new FireTutorialLesson(null);
+            lesson.OnPassengersGuided(0);
+            Assert.That(lesson.PassengersGuided, Is.False,
+                "InstructAround can return zero when nearby passengers are already evacuating or hurt.");
+            Assert.That(lesson.EvacuationGuided, Is.False);
+            lesson.OnPassengersGuided(1);
+            Assert.That(lesson.PassengersGuided, Is.True);
+            lesson.OnExtinguisherPicked();
+            Assert.That(Keys(lesson), Does.Not.Contain(FireTutorialLesson.Mistake.ExtinguisherBeforeEvacuation.Key));
+        }
     }
 }
 #endif
