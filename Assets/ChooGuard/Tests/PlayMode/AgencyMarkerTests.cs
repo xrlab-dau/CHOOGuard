@@ -18,10 +18,8 @@ namespace ChooGuard.Tests.PlayMode
     /// 출동한 기관이 현장으로 **걸어오는 동안** 지도 표식이 그 자리를 따라가는지 본다 (#271).
     /// </summary>
     /// <remarks>
-    /// 지금 코드는 표식을 두 번만 건다 — 팀을 만들 때(<c>SpawnTeam</c>)와 현장에 닿았을 때
-    /// (<c>OnResponderArrived</c>). 그 사이 이동은 반영되지 않는다. **그러므로 이 시험은 지금 실패하는
-    /// 것이 맞다.** 고친 뒤 통과해야 뜻이 생긴다 — 좋은 경우와 나쁜 경우 모두에서 통과하는 검사는
-    /// 아무것도 말해 주지 않는다.
+    /// 팀이 역에 나타나면 지도 표식이 선두 대원을 따라가야 한다. 출동 요청부터 현장 도착까지
+    /// 실제 역 씬에서 표시된 위치와 상태를 확인한다.
     ///
     /// 두 가지를 따로 단정한다.
     /// (1) 팀이 생기기 **전에는 표식이 없어야 한다.** 역 밖 출발지는 구현돼 있지 않으므로, 좌표가
@@ -88,8 +86,7 @@ namespace ChooGuard.Tests.PlayMode
         [UnityTest, Explicit("#271 측정·검수용. -testFilter 로 직접 지정해 돌릴 것."), Timeout(int.MaxValue)]
         public IEnumerator 기관이_현장으로_오는_동안_지도_표식이_따라간다()
         {
-            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
-            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+            yield return LoadRetainedStationAndSession();
 
             float bootUntil = Time.realtimeSinceStartup + Seconds("CG_AGENCY_BOOT", 150f);
             while ((EmergencySession.Current == null || EmergencySession.Current.Incidents == null
@@ -158,7 +155,8 @@ namespace ChooGuard.Tests.PlayMode
 
             float moved = seen.Max(p => Vector3.Distance(p, seen[0]));
             var lead = Lead(director, Agency.Fire);
-            float gap = lead == null ? -1 : Vector3.Distance(seen[seen.Count - 1], lead.transform.position);
+            Assert.That(lead, Is.Not.Null, "이동한 표식과 비교할 소방 선두 대원이 없습니다.");
+            float gap = Vector3.Distance(seen[seen.Count - 1], lead.transform.position);
             Debug.Log("CG_AGENCY 표식 표본 " + seen.Count + "개 · 처음에서 가장 멀어진 거리 " + moved.ToString("0.00")
                       + "m · 마지막 표식과 선두 대원의 거리 " + gap.ToString("0.00")
                       + "m · 현장 도착 " + OnScene(director, Agency.Fire));
@@ -184,8 +182,7 @@ namespace ChooGuard.Tests.PlayMode
         [UnityTest, Explicit("#271 측정·검수용. -testFilter 로 직접 지정해 돌릴 것."), Timeout(int.MaxValue)]
         public IEnumerator 출동_상태_줄이_단계를_따라간다()
         {
-            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
-            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+            yield return LoadRetainedStationAndSession();
 
             float bootUntil = Time.realtimeSinceStartup + Seconds("CG_AGENCY_BOOT", 150f);
             while ((EmergencySession.Current == null || EmergencySession.Current.Incidents == null
@@ -254,8 +251,7 @@ namespace ChooGuard.Tests.PlayMode
         [UnityTest, Explicit("#271 검수용. -testFilter 로 직접 지정해 돌릴 것."), Timeout(int.MaxValue)]
         public IEnumerator 두_기관이_동시에_출동해도_각각_단계를_보인다()
         {
-            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
-            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+            yield return LoadRetainedStationAndSession();
 
             float bootUntil = Time.realtimeSinceStartup + Seconds("CG_AGENCY_BOOT", 150f);
             while ((EmergencySession.Current == null || EmergencySession.Current.Incidents == null
