@@ -97,7 +97,7 @@ namespace ChooGuard.App.Fps.Emergency
         /// </summary>
         private IEnumerable<Transition> EscalatorOrigins()
         {
-            foreach (var escalator in world.Escalators)
+            foreach (var escalator in world.InstalledEscalators)
             {
                 if (!escalator.Running) continue;
                 var riders = RidersOf(escalator);
@@ -567,7 +567,7 @@ namespace ChooGuard.App.Fps.Emergency
             var list = new List<Escalator>();
             foreach (var casualty in casualties) if (casualty.Escalator != null && known.Contains(casualty) && !closedEscalators.Contains(casualty.Escalator) && !list.Contains(casualty.Escalator)) list.Add(casualty.Escalator);
             if (escalatorsStopped && (quake != null && known.Contains(quake) || outage != null && known.Contains(outage)))
-                foreach (var escalator in world.Escalators) if (!closedEscalators.Contains(escalator) && !list.Contains(escalator)) list.Add(escalator);
+                foreach (var escalator in world.InstalledEscalators) if (!closedEscalators.Contains(escalator) && !list.Contains(escalator)) list.Add(escalator);
             return list;
         }
 

@@ -85,7 +85,7 @@ namespace ChooGuard.App.Fps.Emergency
             reverb.maxDistance = 60;
             acoustics.ApplyTo(reverb);
             body = session.Player.GetComponent<CharacterController>();
-            foreach (var escalator in session.World.Escalators)
+            foreach (var escalator in session.World.InstalledEscalators)
             {
                 var source = Point("에스컬레이터 소리 · " + escalator.Label, transform, escalator.Middle, 2f, 16f, .5f);
                 source.clip = art.Escalator;

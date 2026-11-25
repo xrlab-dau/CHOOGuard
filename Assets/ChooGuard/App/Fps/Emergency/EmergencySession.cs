@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ChooGuard.App.Fps.Hud;
 using ChooGuard.App.Fps.Shell;
 using TMPro;
@@ -256,7 +257,7 @@ namespace ChooGuard.App.Fps.Emergency
             int seed = IsCardiacTutorial ? CardiacTutorialLesson.FixedSeed : NextSeed != 0 ? NextSeed : Seed != 0 ? Seed : Environment.TickCount & 0x7fffffff;
             NextSeed = 0;
             World = StationWorld.FromCurrentScene(Art, seed, transform);
-            Map.SetLandmarks(World.Points);
+            Map.SetLandmarks(World.Points, World.InstalledEscalators.Select(lane => lane.Entry));
             GameSettings.RouteChanged += OnSettingsChanged;
             Facilities.StationSignals.FireAlarm = false;
             Facilities.StationSignals.DoorOpen = Art.DoorOpen;

@@ -74,6 +74,10 @@ namespace ChooGuard.Tests.PlayMode
             CollectionAssert.AreEquivalent(bindings.SelectMany(binding => binding.GetComponentsInChildren<ChooGuard.Circulation.EscalatorMotion>(true)), motions);
             var supported = rows.Where(row => (string)row["state"] == "source_present").ToArray();
             CollectionAssert.AreEquivalent(supported.Select(row => (string)row["lane_id"]), bindings.Where(binding => binding.Bound).Select(binding => binding.lane_id));
+            CollectionAssert.AreEquivalent(supported.Select(row => (string)row["lane_id"]),
+                world.InstalledEscalators.Select(lane => lane.Entry.id));
+            foreach (var lane in world.Escalators.Except(world.InstalledEscalators))
+                Assert.That(lane.StopButtons, Is.Zero, lane.Entry.id);
             CollectionAssert.AreEquivalent(pins.Select(pin => (string)pin["source_id"]), supported.SelectMany(row => row["retained_tread_source_ids"].Values<string>()));
             foreach (var row in rows)
             {

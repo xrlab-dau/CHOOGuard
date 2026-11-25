@@ -544,7 +544,7 @@ namespace ChooGuard.App.Fps.Emergency
             var list = InvolvedEscalators();
             // 지각한 위험 가까이(없으면 내가 선 곳 가까이) 있는 에스컬레이터. 역 전체에 걸친 위험이면 모두.
             var at = target != null && target.Localized ? target.Position : PlayerPosition;
-            foreach (var escalator in world.Escalators)
+            foreach (var escalator in world.InstalledEscalators)
                 if (!closedEscalators.Contains(escalator) && !list.Contains(escalator) && (target != null && !target.Localized || Vector3.Distance(escalator.Middle, at) < 15f)) list.Add(escalator);
             Say("역무실, " + (list.Count == 1 ? list[0].Label : "근처 에스컬레이터") + " 운행 정지 요청합니다.");
             if (list.Count == 0) { Office("역무실 수신. 근처에 세울 에스컬레이터가 없습니다."); return; }

@@ -90,7 +90,7 @@ namespace ChooGuard.App.Fps.Facilities
             Escalator best = null;
             float bestDistance = EscalatorSearch;
             var at = transform.position;
-            foreach (var escalator in world.Escalators)
+            foreach (var escalator in world.InstalledEscalators)
             {
                 if (escalator == null || Mathf.Abs(escalator.Start.y - at.y) > 1.5f) continue;
                 var d = escalator.Start - at;

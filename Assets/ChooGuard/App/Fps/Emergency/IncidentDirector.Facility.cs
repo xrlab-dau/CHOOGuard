@@ -198,7 +198,7 @@ namespace ChooGuard.App.Fps.Emergency
         private void StopLifts(string cause)
         {
             escalatorsStopped = true;
-            foreach (var escalator in world.Escalators) if (InsideBuilding(escalator.Middle)) escalator.Stop(cause);
+            foreach (var escalator in world.InstalledEscalators) if (InsideBuilding(escalator.Middle)) escalator.Stop(cause);
             int trapped = 0;
             foreach (var elevator in world.Elevators)
             {
@@ -280,9 +280,9 @@ namespace ChooGuard.App.Fps.Emergency
         {
             yield return new WaitForSeconds(delay);
             int restarted = 0;
-            foreach (var escalator in world.Escalators)
+            foreach (var escalator in world.InstalledEscalators)
                 if (!escalator.Running && escalator.StoppedBy == "정전" && escalator.Restart(out _)) restarted++;
-            if (restarted > 0) { escalatorsStopped = world.Escalators.Exists(e => !e.Running); log.Add("정전 뒤 점검한 에스컬레이터 " + restarted + "대 재가동"); }
+            if (restarted > 0) { escalatorsStopped = world.InstalledEscalators.Any(e => !e.Running); log.Add("정전 뒤 점검한 에스컬레이터 " + restarted + "대 재가동"); }
         }
 
         /// <summary>The receiver is reset: the bell stops and the interlocked doors go back to normal.</summary>
