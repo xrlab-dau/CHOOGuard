@@ -135,6 +135,7 @@ namespace ChooGuard.Tests.PlayMode
                 Assert.That(session.FireLesson, Is.Null);
                 Assert.That(session.Jev.Available, Is.False, "This regression must not make external requests.");
                 Assert.That(PracticeShift.Free, Is.True);
+                yield return WalkFromSouthPlatformBoardingPoint(session);
 
                 SceneFlow.ToTitle();
                 until = Time.realtimeSinceStartup + 300;
@@ -155,6 +156,37 @@ namespace ChooGuard.Tests.PlayMode
 
         private static string[] Labels(DepartureGameView view) =>
             view.GetComponentsInChildren<Button>(false).Where(button => button.gameObject.activeInHierarchy).Select(button => button.gameObject.name).ToArray();
+
+        private static IEnumerator WalkFromSouthPlatformBoardingPoint(EmergencySession session)
+        {
+            const string id = "esc-well-s-34";
+            var lane = session.World.InstalledEscalators.Single(owner => owner.Entry.id == id);
+            var node = session.World.Paths.Graph.ByLabel(id + ":start");
+            Assert.That(node, Is.Not.Null);
+            Assert.That(Vector3.Distance(node.Position, lane.Start), Is.LessThan(.35f));
+            var historical = session.World.SourcePoints.Escalators.Single(entry => entry.id == id);
+            Assert.That(Vector3.Distance(lane.Start, historical.path[0]), Is.GreaterThan(1f));
+
+            var player = session.Player;
+            var heading = lane.Entry.path[1] - node.Position;
+            player.SetExternalInputMode(true);
+            player.RestorePhysicalPose(node.Position + Vector3.up * .05f, Mathf.Atan2(heading.x, heading.z) * Mathf.Rad2Deg, 0);
+            Assert.That(player.Resume(false), Is.True);
+            var start = player.transform.position;
+            float previousCapture = Time.captureDeltaTime;
+            try
+            {
+                Time.captureDeltaTime = .05f;
+                for (int frame = 0; frame < 120; frame++)
+                {
+                    Assert.That(player.StepInput(Vector2.up, Vector2.zero, false, false, false, .05f), Is.True);
+                    yield return null;
+                }
+                Assert.That(start.y - player.transform.position.y, Is.InRange(3f, 7.5f), "Walk onto the descending belt from its route graph node.");
+                Assert.That(Vector3.Dot(player.transform.position - start, Vector3.ProjectOnPlane(heading, Vector3.up).normalized), Is.GreaterThan(5f));
+            }
+            finally { Time.captureDeltaTime = previousCapture; }
+        }
 
         private static Button Button(DepartureGameView view, string label)
         {
