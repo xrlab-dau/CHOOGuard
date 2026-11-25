@@ -72,10 +72,9 @@ namespace ChooGuard.App.Fps.Emergency
             SourceWalkingRoutes=Array.AsReadOnly(walkingEntries);
             Seed = seed;
             Random = new System.Random(seed);
-            Points = StationPoints.Load(art.StationData);
-            SourcePoints=Points;
+            SourcePoints = StationPoints.Load(art.StationData);
+            Points = useCurrentSource ? SourcePoints.WithCurrentBoardingPoint() : SourcePoints;
             InstalledEscalators = Escalators;
-            if(useCurrentSource)SourcePoints.RequireCurrentModelOrigin(); // before current Nav/source queries
             var routes = Resources.Load<TextAsset>(RoutesResource) ?? throw new ArgumentException("경로 그래프(Resources/"+RoutesResource+".json)가 없습니다.");
             // Validate retained source inventory before any navigation/link registration.
             RouteGraph.Load(routes,Array.Empty<Escalator>());
@@ -162,7 +161,7 @@ namespace ChooGuard.App.Fps.Emergency
                     var go=new GameObject(entry.label);go.transform.SetParent(links.transform,false);
                     var walking=go.AddComponent<StationWalkingRoute>();walking.Setup(entry);WalkingRoutes.Add(walking);
                 }
-                var physical=currentNavigation.BindPoints(SourcePoints,art.WorldNavMesh);
+                var physical=currentNavigation.BindPoints(Points,art.WorldNavMesh);
                 var graph=CurrentStationRouteBuilder.Build(physical,actualOwners,Elevators,WalkingRoutes,routes,out var active,
                     binding=>currentNavigation.RequalifyCurrentStandingPoint(binding,art.WorldNavMesh));
                 Points=active;

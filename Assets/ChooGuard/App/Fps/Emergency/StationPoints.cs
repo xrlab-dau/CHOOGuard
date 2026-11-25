@@ -20,7 +20,21 @@ namespace ChooGuard.App.Fps.Emergency
         Point[] sourceMetadata;
         [Serializable] public sealed class ZoneEntry { public string id, label; public Vector3 min, max; public int priority; }
         [Serializable] public sealed class PointEntry { public string id, kind, label, zone, slot; public Vector3 position, anchor; public float yaw; }
-        [Serializable] public sealed class EscalatorEntry { public string id, label, from, to; public bool up, stairs; public Vector3[] path; public Vector3 stairsTop, stairsBottom; }
+        [Serializable] public sealed class EscalatorEntry
+        {
+            public string id, label, from, to;
+            public bool up, stairs;
+            public Vector3[] path;
+            public Vector3 stairsTop, stairsBottom;
+
+            internal EscalatorEntry WithBoardingPoint(Vector3 position)
+            {
+                var entry = (EscalatorEntry)MemberwiseClone();
+                entry.path = (Vector3[])path.Clone();
+                entry.path[0] = position;
+                return entry;
+            }
+        }
         [Serializable] public sealed class ElevatorStop { public string floor, zone; public Vector3 door; public float yaw; }
         [Serializable] public sealed class ElevatorEntry { public string id, label; public ElevatorStop[] stops; }
         [Serializable] public sealed class PlatformEntry { public string id, label; public Vector3 a, b; public float halfWidth; }
@@ -291,6 +305,22 @@ namespace ChooGuard.App.Fps.Emergency
             // physically qualified current exits may become walking/evacuation targets.
             if(view.Of(PointKind.Exit).Count==0)
                 throw new InvalidOperationException("No physically qualified current exit is available");
+            return view;
+        }
+
+        internal StationPoints WithCurrentBoardingPoint()
+        {
+            RequireCurrentModelOrigin();
+            var entries = new List<EscalatorEntry>(Escalators);
+            int index = entries.FindIndex(entry => entry.id == "esc-well-s-34");
+            var lane = entries[index];
+            // #272: the historic boarding point is beside the rail. In the saved station
+            // both player controllers can approach from two metres in front of the first tread.
+            var mount = lane.path[1];
+            var forward = Vector3.ProjectOnPlane(lane.path[2] - mount, Vector3.up).normalized;
+            entries[index] = lane.WithBoardingPoint(mount - 2f * forward);
+            var view = (StationPoints)MemberwiseClone();
+            view.Escalators = entries.AsReadOnly();
             return view;
         }
 
