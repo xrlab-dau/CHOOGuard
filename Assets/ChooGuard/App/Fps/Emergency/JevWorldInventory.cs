@@ -108,7 +108,7 @@ namespace ChooGuard.App.Fps.Emergency
             int signs = 0;
             if (hanging != null) foreach (var item in hanging) if (item != null) signs++;
             int escalators = 0, runningEscalators = 0, escalatorRiders = 0;
-            foreach (var link in world.Escalators)
+            foreach (var link in world.InstalledEscalators)
             {
                 if (link == null || link.Entry == null || !inside(link.Middle)) continue;
                 escalators++;

@@ -22,6 +22,8 @@ namespace ChooGuard.App.Fps.Emergency
         public int Seed { get; }
         public TrainService Train { get; set; }
         public readonly List<Escalator> Escalators = new List<Escalator>();
+        /// <summary>Escalators backed by machinery in this session. Includes stopped and closed belts.</summary>
+        public IReadOnlyList<Escalator> InstalledEscalators { get; }
         public readonly List<Elevator> Elevators = new List<Elevator>();
         public readonly List<StationWalkingRoute> WalkingRoutes = new List<StationWalkingRoute>();
         public IReadOnlyList<StationWalkingRouteEntry> SourceWalkingRoutes {get;}
@@ -72,6 +74,7 @@ namespace ChooGuard.App.Fps.Emergency
             Random = new System.Random(seed);
             Points = StationPoints.Load(art.StationData);
             SourcePoints=Points;
+            InstalledEscalators = Escalators;
             if(useCurrentSource)SourcePoints.RequireCurrentModelOrigin(); // before current Nav/source queries
             var routes = Resources.Load<TextAsset>(RoutesResource) ?? throw new ArgumentException("경로 그래프(Resources/"+RoutesResource+".json)가 없습니다.");
             // Validate retained source inventory before any navigation/link registration.
@@ -83,15 +86,12 @@ namespace ChooGuard.App.Fps.Emergency
             {
                 links = new GameObject("승강 설비");
                 links.transform.SetParent(parent, false);
-                // 비상정지 버튼은 관찰 기록이 있는 승강장에만 둔다(기록 없는 일반 위치에 만들지 않는다).
-                var stops = EscalatorStopSurvey.LoadResource();
                 foreach (var entry in Points.Escalators)
                 {
                     var go = new GameObject(entry.label);
                     go.transform.SetParent(links.transform, false);
                     var escalator = go.AddComponent<Escalator>();
                     escalator.Setup(entry,!useCurrentSource);
-                    escalator.AddStopButtons(stops, art.EscalatorStopModel);
                     Escalators.Add(escalator);
                 }
                 foreach (var entry in useCurrentSource?Array.Empty<StationPoints.ElevatorEntry>():Points.Elevators)
@@ -135,6 +135,7 @@ namespace ChooGuard.App.Fps.Emergency
                 }
                 foreach(var escalator in Escalators)escalator.SetNavigationAvailable(suppliedIds.Contains(escalator.Entry.id));
                 var actualOwners=Escalators.Where(owner=>owner.NavigationAvailable).ToArray();
+                InstalledEscalators = actualOwners;
                 if(bindings.Where(binding=>binding.Bound).GroupBy(binding=>binding.lane_id).Any(group=>group.Count()!=1)||
                     actualOwners.Select(owner=>owner.Entry.id).Distinct().Count()!=actualOwners.Length||
                     !suppliedIds.SetEquals(actualOwners.Select(owner=>owner.Entry.id)))
@@ -168,6 +169,12 @@ namespace ChooGuard.App.Fps.Emergency
                 Paths=new PathService(this,graph);
             }
             else Paths=new PathService(this,RouteGraph.Load(routes,Escalators,WalkingRoutes));
+            if (InstalledEscalators.Count > 0)
+            {
+                var stops = EscalatorStopSurvey.LoadResource();
+                foreach (var escalator in InstalledEscalators)
+                    escalator.AddStopButtons(stops, art.EscalatorStopModel);
+            }
             PersonBody.Paths = Paths;
             }
             catch {Dispose();throw;}

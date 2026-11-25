@@ -96,7 +96,9 @@ namespace ChooGuard.App.Fps.Hud
         public void Toggle() => canvas.enabled = !canvas.enabled;
         public void Hide() => canvas.enabled = false;
 
-        public void SetLandmarks(StationPoints points)
+        public void SetLandmarks(StationPoints points) => SetLandmarks(points, points?.Escalators);
+
+        public void SetLandmarks(StationPoints points, IEnumerable<StationPoints.EscalatorEntry> escalators)
         {
             stationPoints = points;
             foreach (var item in landmarks) Destroy(item);
@@ -121,7 +123,7 @@ namespace ChooGuard.App.Fps.Hud
             }
             var office = points.Of(PointKind.Office);
             if (office.Count > 0) AddLandmark(office[0].Label, office[0].Position, 90);
-            foreach (var link in points.Escalators)
+            foreach (var link in escalators)
             {
                 string label = null;
                 Vector2 offset = Vector2.zero;

@@ -151,7 +151,7 @@ namespace ChooGuard.App.Fps.Emergency
                     if (Train.Stage == TrainService.Phase.Closing) h = h * 31 + (AnyLateBoarder() ? 1 : 0);
                 }
                 int running = 0;
-                foreach (var escalator in world.Escalators) if (escalator.Running) running++;
+                foreach (var escalator in world.InstalledEscalators) if (escalator.Running) running++;
                 h = h * 31 + running;
                 return h * 31 + reported.Count + 7 * calledBy.Count + 13 * arrived.Count + 3 * known.Count + (announced ? 1 : 0) + (alarm ? 2 : 0) + (handedOver ? 4 : 0);
             }
