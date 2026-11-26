@@ -32,19 +32,34 @@ namespace ChooGuard.Tests.PlayMode
         // not recreate a scene asset or change the player's build scene list.
         protected IEnumerator LoadRetainedStationAndSession()
         {
+            yield return LoadRetainedStation();
+            yield return StartRetainedSession();
+        }
+
+        protected IEnumerator LoadRetainedStation()
+        {
             Assert.That(deferral,Is.Not.Null,"Install the retained fixture before loading its scenes.");
 #if UNITY_EDITOR
             yield return UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(
                 "Assets/ChooGuard/Scenes/FpsStation.unity",new LoadSceneParameters(LoadSceneMode.Single));
-            ownedStationScene=SceneManager.GetSceneByPath("Assets/ChooGuard/Scenes/FpsStation.unity");
+#else
+            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene,LoadSceneMode.Single);
+#endif
+            ownedStationScene=SceneManager.GetSceneByName(SceneFlow.StationScene);
+        }
+
+        protected IEnumerator StartRetainedSession()
+        {
+            Assert.That(ownedStationScene.isLoaded,Is.True,"Load the fixture's station before starting a shift.");
             Assert.That(EmergencySession.Current,Is.Null,"Another session must not be adopted by this fixture.");
             Assert.That(SceneManager.GetSceneByName(SceneFlow.EmergencyScene).isLoaded,Is.False);
-            var font=UnityEditor.AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>(
-                "Assets/ChooGuard/Settings/ImportedAssets/Fonts/NotoSansCJKkr SDF.asset");
-            var map=UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>(
-                "Assets/ChooGuard/Art/Emergency/UI/StationMap2F.png");
-            var art=UnityEditor.AssetDatabase.LoadAssetAtPath<EmergencyArt>(
-                "Assets/ChooGuard/Art/Emergency/EmergencyArt.asset");
+            var prefab=Resources.Load<GameObject>(PracticeShift.SessionTemplate);
+            Assert.That(prefab,Is.Not.Null);
+            var template=prefab.GetComponent<EmergencySession>();
+            Assert.That(template,Is.Not.Null);
+            var font=template.KoreanFont;
+            var map=template.StationMap;
+            var art=template.Art;
             Assert.That(font,Is.Not.Null);Assert.That(map,Is.Not.Null);Assert.That(art,Is.Not.Null);
             Assert.That(art.StationData,Is.Not.Null);
             var mapData=JsonUtility.FromJson<SessionMapData>(art.StationData.text);
@@ -59,15 +74,9 @@ namespace ChooGuard.Tests.PlayMode
             session.Art=art;session.Passengers=110;
             root.SetActive(true);
             yield return null;
-#else
-            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene,LoadSceneMode.Single);
-            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene,LoadSceneMode.Additive);
-#endif
         }
 
-#if UNITY_EDITOR
         [Serializable] sealed class SessionMapData { public StationPoints.ZoneEntry[] zones; }
-#endif
 
         // Unity's outer enumerable setup runs before regular NUnit setup. Install
         // this hook in the inherited enumerable stage, before derived scene loads.
