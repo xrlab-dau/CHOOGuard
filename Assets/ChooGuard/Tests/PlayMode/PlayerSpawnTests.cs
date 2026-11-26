@@ -51,8 +51,7 @@ namespace ChooGuard.Tests.PlayMode
             for (int run = 0; run < 2; run++)
             {
                 EmergencySession.NextSeed = 20261009 + run;
-                yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
-                yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+                yield return LoadRetainedStationAndSession();
                 float until = Time.realtimeSinceStartup + 90;
                 while ((EmergencySession.Current == null || EmergencySession.Current.Crowd == null) && Time.realtimeSinceStartup < until) yield return null;
                 var session = EmergencySession.Current;
