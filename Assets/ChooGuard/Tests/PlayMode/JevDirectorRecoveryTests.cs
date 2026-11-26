@@ -34,7 +34,7 @@ namespace ChooGuard.Tests.PlayMode
         {
             savedKey = Environment.GetEnvironmentVariable(JevKey.Variable);
             Environment.SetEnvironmentVariable(JevKey.Variable, "off");
-            yield return SceneManager.LoadSceneAsync(SceneFlow.StationScene, LoadSceneMode.Single);
+            yield return LoadRetainedStation();
             yield return LoadFreshShift();
             // Only this disabled director receives a test client. Crowd/scene JEV stays off.
             Environment.SetEnvironmentVariable(JevKey.Variable, "issue280-offline-test-key");
@@ -51,7 +51,7 @@ namespace ChooGuard.Tests.PlayMode
         private IEnumerator LoadFreshShift()
         {
             EmergencySession.NextSeed = 20261013;
-            yield return SceneManager.LoadSceneAsync(SceneFlow.EmergencyScene, LoadSceneMode.Additive);
+            yield return StartRetainedSession();
             float end = Time.realtimeSinceStartup + 120;
             while ((EmergencySession.Current?.Incidents == null || EmergencySession.Current.Crowd == null) && Time.realtimeSinceStartup < end) yield return null;
             shift = EmergencySession.Current;
