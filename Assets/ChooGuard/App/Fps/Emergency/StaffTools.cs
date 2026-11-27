@@ -976,9 +976,15 @@ namespace ChooGuard.App.Fps.Emergency
                 if (first) { bounds = renderer.bounds; first = false; } else bounds.Encapsulate(renderer.bounds);
             }
             Impact = new Vector3(bounds.center.x, floor, bounds.center.z);
-            var box = gameObject.AddComponent<BoxCollider>();
-            box.center = transform.InverseTransformPoint(bounds.center);
-            box.size = new Vector3(Mathf.Max(.3f, bounds.size.x), Mathf.Max(.3f, bounds.size.y), Mathf.Max(.3f, bounds.size.z));
+            // 판은 기울어 누워 있다. 월드 축의 크기를 판의 로컬 축에 넣으면 상자가 수 m씩 부풀어(3×6×7 m) 빈 곳에서도 조작이 잡힌다.
+            // 월드 축에 맞춘 자식에 월드 크기 그대로 상자를 둔다. 조작(IFpsInteraction)은 부모에서 찾으므로 그대로 된다.
+            var reach = new GameObject("착지 범위");
+            reach.transform.SetParent(transform, false);
+            reach.transform.SetPositionAndRotation(bounds.center, Quaternion.identity);
+            var box = reach.AddComponent<BoxCollider>();
+            box.center = Vector3.zero;
+            var scale = reach.transform.lossyScale;
+            box.size = new Vector3(Mathf.Max(.3f, bounds.size.x) / Mathf.Max(1e-4f, scale.x), Mathf.Max(.3f, bounds.size.y) / Mathf.Max(1e-4f, scale.y), Mathf.Max(.3f, bounds.size.z) / Mathf.Max(1e-4f, scale.z));
             OnLanded?.Invoke(this);
         }
     }

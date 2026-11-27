@@ -561,12 +561,26 @@ namespace ChooGuard.App.Fps.Emergency
                 volume.priority = 200;
                 volume.sharedProfile = profile;
             }
+            // 실내를 어둡게 하는 것은 위 볼륨(노출)이다. 볼륨은 후처리를 켠 카메라에만 보인다. 역무원 카메라는 실행 중에 만든
+            // 평범한 카메라라 후처리가 꺼져 있어서, 정전 동안만 켜고 복구 때 되돌린다.
+            foreach (var camera in Camera.allCameras)
+            {
+                if (camera == null || camera.cameraType != CameraType.Game) continue;
+                var data = camera.GetUniversalAdditionalCameraData();
+                if (data == null || data.renderPostProcessing) continue;
+                data.renderPostProcessing = true;
+                lit.Add(data);
+            }
         }
+
+        private static readonly List<UniversalAdditionalCameraData> lit = new List<UniversalAdditionalCameraData>();
 
         public static void Restore()
         {
             foreach (var light in off) if (light != null) light.enabled = true;
             off.Clear();
+            foreach (var data in lit) if (data != null) data.renderPostProcessing = false;
+            lit.Clear();
             if (root != null) Object.Destroy(root);
             root = null;
         }

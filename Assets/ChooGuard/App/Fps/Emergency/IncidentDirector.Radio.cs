@@ -360,6 +360,7 @@ namespace ChooGuard.App.Fps.Emergency
             log.Add("역무실에 " + hazard.Label + (again ? " 상황 다시 보고 · " : " 보고 · ") + hazard.Where + (state != null ? " (본 것: " + state + ")" : " (상태 미확인)"));
             // 표준·실전의 보고 묶음도 화재 연습의 '역무실 보고' 단계다(견학 Report() 와 같은 훅).
             if (hazard is FireHazard fire) session.FireLesson?.OnReported(fire);
+            session.OrderLesson?.Signal(PracticeSignal.Report, hazard.Label);
             // 표준: 보고한 위험은 나침반에 남는다(실전은 내 표시만).
             if (GameSettings.Guidance == GuidanceLevel.Standard && hazard.Localized) session.Hud.Compass.SetMarker("incident-" + hazard.Id, hazard.Position, MarkerKind.Incident);
             string ack = "역무실 수신. " + hazard.Named + (again ? " 상황 접수했습니다." : " 접수했습니다.");
@@ -441,6 +442,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (session.IsCardiacTutorial && index == 1 && RequestCardiacHelp()) return;
             Spoke();
             string label = TeamRequests[index];
+            session.OrderLesson?.Signal(PracticeSignal.Request, label);
             Agency agency;
             switch (index)
             {
@@ -499,6 +501,7 @@ namespace ChooGuard.App.Fps.Emergency
         {
             Spoke();
             string label = MeasureRequests[index];
+            session.OrderLesson?.Signal(PracticeSignal.Measure, label);
             var target = RequestTarget();
             switch (index)
             {
@@ -621,6 +624,10 @@ namespace ChooGuard.App.Fps.Emergency
                     float d = Vector3.Distance(hazard.Position, centre);
                     if (d < best) { best = d; subject = hazard; }
                 }
+                // 자리가 없는 역 전체 사건(정전·지진·폭발물 협박)은 어디서 방송해도 그 사건의 방송이다. 없으면 방송이 아무 일도 설명하지 못한다.
+                if (subject == null)
+                    foreach (var hazard in known)
+                        if (hazard.Active && !hazard.Localized) { subject = hazard; break; }
             }
             announced = true;
             Say("역무실, " + where + " " + ScopeName(scope) + " 안내방송 요청합니다.");
@@ -630,6 +637,7 @@ namespace ChooGuard.App.Fps.Emergency
             else session.Hud.Radio.Push(RadioChannel.Announcement, BroadcastText(scope, where));
             float radius = subject != null && own.Scope == scope && own.Radius > 0 ? own.Radius : scope == PaScope.ClearAround ? 15f : 30f;
             ApplyAnnouncement(scope, centre, radius, subject);
+            session.OrderLesson?.Signal(PracticeSignal.Broadcast, ScopeName(scope));
             // 화재 연습의 '대피방송' 단계는 대피 범위(구역·역 전체)만 센다. 통로 비우기·침착 안내는 대피방송이 아니다.
             if ((scope == PaScope.EvacuateArea || scope == PaScope.EvacuateStation) && (subject is FireHazard || lastReported is FireHazard))
                 session.FireLesson?.OnEvacuationAnnounced();

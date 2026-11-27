@@ -610,6 +610,7 @@ namespace ChooGuard.App.Fps.Emergency
             var hold = hazard.TrainHold;
             if (hold != null && Train != null) Train.Holds.Add(hold);
             if (hazard is FireHazard fire) session.FireLesson?.OnReported(fire);
+            session.OrderLesson?.Signal(PracticeSignal.Report, hazard.Label);
             Reported(hazard);
         }
 
@@ -621,6 +622,7 @@ namespace ChooGuard.App.Fps.Emergency
             session.Announce(pa.Line, pa.Text);
             ApplyAnnouncement(pa.Scope, Main.Position, pa.Radius, Main);
             if (Main is FireHazard && (pa.Scope == PaScope.EvacuateArea || pa.Scope == PaScope.EvacuateStation)) session.FireLesson?.OnEvacuationAnnounced();
+            session.OrderLesson?.Signal(PracticeSignal.Broadcast, ScopeName(pa.Scope));
         }
 
         /// <summary>
@@ -661,14 +663,14 @@ namespace ChooGuard.App.Fps.Emergency
                 default:
                 {
                     // 알리기만 하는 방송(정전·승강기 점검·오작동 안내): 들은 사람이 각자 판단한다.
+                    // 들은 사람을 센다. 이미 알던 사람도 방송을 듣는다(정전처럼 모두가 겪은 일이면 그렇다). 새로 안 사람만 반응을 새로 정한다.
                     int told = 0;
-                    if (subject != null)
-                        foreach (var person in crowd.People.ToArray())
-                        {
-                            if (person.Hurt || person.Hostile || person.Noticed.Contains(subject)) continue;
-                            person.Notice(subject, true, "an announcement explains what is going on");
-                            told++;
-                        }
+                    foreach (var person in crowd.People.ToArray())
+                    {
+                        if (person.Hurt || person.Hostile || person.Current == Passenger.Activity.InTrain) continue;
+                        if (subject != null && !person.Noticed.Contains(subject)) person.Notice(subject, true, "an announcement explains what is going on");
+                        told++;
+                    }
                     log.Add("안내방송 · " + (subject != null ? subject.Label : "침착 안내") + " (" + told + "명에게 알림)");
                     break;
                 }

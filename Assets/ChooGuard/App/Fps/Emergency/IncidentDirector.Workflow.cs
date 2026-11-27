@@ -118,6 +118,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (!handoverReview.Ready) return "상황이 바뀌었거나 검토가 남았습니다 · Q 업무·인계에서 네 항목을 확인하세요";
             handedOver = true;
             if (Main is FireHazard) session.FireLesson?.OnHandedOver();
+            session.OrderLesson?.Signal(PracticeSignal.Handover, Main != null ? Main.Label : null);
             string team = Teams.Name(responder.Team);
             string summary = string.Join("; ", Enumerable.Range(0, handoverReview.Count).Select(i => ReviewNames[i] + ": " + handoverReview.Section(i)));
             Say(team + "에 인계합니다: " + summary + ".");

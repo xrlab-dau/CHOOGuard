@@ -53,6 +53,7 @@ namespace ChooGuard.Tests.PlayMode
                 Assert.That(session, Is.Not.Null, "연습 세션이 생기지 않았습니다.");
                 Assert.That(session.Jev.Available, Is.False, "Catalog observation must not make external requests.");
                 Assert.That(session.Incidents.Practice?.Id, Is.EqualTo("환자·저혈당"));
+                Assert.That(session.OrderLesson, Is.InstanceOf<LowBloodSugarLesson>(), "연습 근무에 순서 점수 연습이 붙지 않았습니다.");
                 session.Player.SetExternalInputMode(true);
                 Assert.That(session.Player.Resume(false), Is.True);
 

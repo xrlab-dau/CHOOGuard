@@ -55,6 +55,9 @@ namespace ChooGuard.App.Fps.Emergency
         public CardiacTutorialLesson CardiacLesson { get; private set; }
         public bool IsFireTutorial { get; private set; }
         public FireTutorialLesson FireLesson { get; private set; }
+        /// <summary>The order lesson of a practice scenario without a built-in lesson (PracticeScenario.OrderLesson, docs/practice-lessons-plan.md), or null.</summary>
+        public PracticeOrderLesson OrderLesson { get; private set; }
+        private PracticeScenario startedPractice;
 
         /// <summary>Radio messages the wheel offers right now in the guided shift (견학). Owners register providers; order is preserved.</summary>
         public readonly List<Func<IEnumerable<RadioOption>>> RadioProviders = new List<Func<IEnumerable<RadioOption>>>();
@@ -127,11 +130,14 @@ namespace ChooGuard.App.Fps.Emergency
             Current = this;
         }
 
+        private void OnInteractionPerformed(object target, string prompt) => OrderLesson?.Signal(PracticeSignal.Interact, prompt);
+
         private void OnDestroy()
         {
             if (Current == this) Current = null;
             // 역무원(역 씬)이 근무 씬보다 오래 남으면 끊긴 캔버스로 일시정지 알림이 온다.
             if (Player != null) Player.PauseChanged -= OnPauseChanged;
+            if (Player != null) Player.InteractionPerformed -= OnInteractionPerformed;
             GameSettings.RouteChanged -= OnSettingsChanged;
             GameSettings.Changed -= OnOptionsChanged;
             World?.Dispose();
@@ -167,6 +173,7 @@ namespace ChooGuard.App.Fps.Emergency
             var practice = PracticeCatalog.Scenario(PracticeShift.Family);
             IsCardiacTutorial = practice != null && practice.Lesson == PracticeLesson.Cardiac;
             IsFireTutorial = practice != null && practice.Lesson == PracticeLesson.Fire;
+            startedPractice = practice;
             Pause = PauseMenu.Create(transform, KoreanFont, Player, IsCardiacTutorial ? "심정지 대응 · 조작 학습" : practice != null ? "연습 · " + practice.Title : "근무 시작", IsCardiacTutorial ?
                 "바로 앞 승객의 반응을 확인하며 시작합니다. 화면의 목표·이유·조작 안내를 따라 직접 행동하세요.\n반응 확인 → 도움 요청 → 호흡 확인 → 압박·동료 교대 → 기존 AED 사용 → 구급대 인계\n" + CardiacTutorialLesson.ModelLimitation :
                 practice != null ? practice.Description + "\n" + practice.Onset + "\n다른 사건은 일어나지 않습니다. 도착한 기관에 현장을 인계하면 연습이 끝납니다.\n" +
@@ -281,6 +288,11 @@ namespace ChooGuard.App.Fps.Emergency
             Incidents = gameObject.AddComponent<IncidentDirector>();
             if (IsCardiacTutorial) CardiacLesson = gameObject.AddComponent<CardiacTutorialLesson>();
             if (IsFireTutorial) FireLesson = new FireTutorialLesson(this);
+            if (startedPractice != null && startedPractice.Lesson == PracticeLesson.None && startedPractice.OrderLesson != null)
+            {
+                OrderLesson = startedPractice.OrderLesson(this);
+                Player.InteractionPerformed += OnInteractionPerformed;
+            }
             Crowd = gameObject.AddComponent<CrowdDirector>();
             Crowd.Target = Passengers;
             Incidents.Begin(this, World, Crowd, Jev, Art, Log);

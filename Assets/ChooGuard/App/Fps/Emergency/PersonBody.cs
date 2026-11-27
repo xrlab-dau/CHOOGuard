@@ -77,6 +77,8 @@ namespace ChooGuard.App.Fps.Emergency
             if (Animator == null) Animator = GetComponentInChildren<Animator>();
             if (Animator != null) { Animator.applyRootMotion = false; Animator.cullingMode = AnimatorCullingMode.CullUpdateTransforms; }
             GetComponentsInChildren(true, renderers);
+            // 눕거나 앉거나 무릎 꿇은 사람의 조준 몸통을 자세에 맞춘다(서 있는 캡슐이 빈 허공에 남지 않게).
+            if (GetComponent<CapsuleCollider>() != null && GetComponent<PosturedBodyCollider>() == null) gameObject.AddComponent<PosturedBodyCollider>();
         }
 
         public bool OnNavMesh => Agent.isActiveAndEnabled && Agent.isOnNavMesh;

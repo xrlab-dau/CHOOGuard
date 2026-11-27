@@ -49,6 +49,8 @@ namespace ChooGuard.App.Fps
         public event Action<string> FeedbackChanged;
         /// <summary>E was pressed on a target that refused it (its reason is shown as feedback). The cardiac lesson scores some refusals.</summary>
         public event Action<IFpsInteraction,string> InteractionRefused;
+        /// <summary>E or R succeeded on a target. The prompt is the target's own text read before acting, without the "E · " / "R · " key prefix of CurrentPrompt (it often changes afterwards). Practice lessons (PracticeOrderLesson) score these.</summary>
+        public event Action<object,string> InteractionPerformed;
         private InputAction moveAction;
         private CharacterController body;
         private MonoBehaviour targetBehaviour;
@@ -233,13 +235,13 @@ namespace ChooGuard.App.Fps
         {
             if(IsPaused||SuppressInteractionInput)return false;RefreshInteraction();if(targetBehaviour==null||target==null)return false;
             if(!target.CanInteract(this,out var reason)){if(!string.IsNullOrEmpty(reason))ShowFeedback(reason);InteractionRefused?.Invoke(target,reason);return false;}
-            bool performed=target.TryInteract(this,out var feedback);if(performed)SuccessfulInteractions++;if(!string.IsNullOrEmpty(feedback))ShowFeedback(feedback);RefreshInteraction();return performed;
+            string prompt=target.InteractionPrompt;bool performed=target.TryInteract(this,out var feedback);if(performed){SuccessfulInteractions++;InteractionPerformed?.Invoke(targetBehaviour,prompt);}if(!string.IsNullOrEmpty(feedback))ShowFeedback(feedback);RefreshInteraction();return performed;
         }
         public bool TrySecondary()
         {
             if(IsPaused||SuppressInteractionInput)return false;RefreshInteraction();
             if(!(targetBehaviour is IFpsSecondaryInteraction secondary)||CurrentSecondaryPrompt.Length==0)return false;
-            bool performed=secondary.TrySecondary(this,out var feedback);if(performed)SuccessfulInteractions++;if(!string.IsNullOrEmpty(feedback))ShowFeedback(feedback);RefreshInteraction();return performed;
+            string prompt=secondary.SecondaryPrompt;bool performed=secondary.TrySecondary(this,out var feedback);if(performed){SuccessfulInteractions++;InteractionPerformed?.Invoke(targetBehaviour,prompt);}if(!string.IsNullOrEmpty(feedback))ShowFeedback(feedback);RefreshInteraction();return performed;
         }
         public void ShowFeedback(string message){LastFeedback=message??"";FeedbackChanged?.Invoke(LastFeedback);}
         private void ClearTarget(){target=null;targetBehaviour=null;CurrentTargetCollider=null;CurrentPrompt="";CurrentSecondaryPrompt="";CurrentHoldable=false;}
