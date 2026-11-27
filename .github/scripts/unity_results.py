@@ -73,6 +73,8 @@ def evaluate(mode: str, xml_path: str, exit_code: str) -> ModeResult:
             result.errors.append("focused RouteGraph test-run result must be Passed")
     if result.total == 0:
         result.errors.append("0 tests ran (filtered out, or the test assemblies did not load)")
+    elif result.skipped == result.total:
+        result.errors.append("0 tests ran (all selected tests were skipped)")
     if result.failed:
         result.errors.append(f"{result.failed} test(s) failed")
     if code is None:
