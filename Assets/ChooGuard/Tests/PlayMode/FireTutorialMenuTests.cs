@@ -21,6 +21,7 @@ namespace ChooGuard.Tests.PlayMode
     public sealed class FireTutorialMenuTests
     {
         private string key;
+        private bool ownsMenuScenes;
 
         [SetUp]
         public void PreventExternalRequests()
@@ -34,6 +35,22 @@ namespace ChooGuard.Tests.PlayMode
         {
             System.Environment.SetEnvironmentVariable(JevKey.Variable, key);
             Time.timeScale = 1;
+        }
+
+        [UnityTearDown]
+        public IEnumerator UnloadMenuScenes()
+        {
+            if (!ownsMenuScenes) yield break;
+            ownsMenuScenes = false;
+            while (SceneFlow.Loading) yield return null;
+
+            // The menu uses single-scene loads. Leave an empty active scene for the next test.
+            SceneManager.SetActiveScene(SceneManager.CreateScene("FireTutorialMenuScratch"));
+            foreach (var name in new[] { SceneFlow.EmergencyScene, SceneFlow.StationScene, SceneFlow.TutorialScene })
+            {
+                var scene = SceneManager.GetSceneByName(name);
+                if (scene.isLoaded) yield return SceneManager.UnloadSceneAsync(scene);
+            }
         }
 
         [TestCase(false)]
@@ -70,6 +87,7 @@ namespace ChooGuard.Tests.PlayMode
         [UnityTest, Timeout(1200000)]
         public IEnumerator TheTrainMenuListsTheFirePracticeAndStartsIt()
         {
+            ownsMenuScenes = true;
             yield return SceneManager.LoadSceneAsync(SceneFlow.TutorialScene, LoadSceneMode.Single);
             yield return null;
             var view = Object.FindFirstObjectByType<DepartureGameView>();
