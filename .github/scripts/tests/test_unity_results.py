@@ -123,6 +123,17 @@ class VerdictTests(unittest.TestCase):
     def test_zero_tests_fail(self):
         self.assertIn("0 tests ran (filtered out, or the test assemblies did not load)", unity_results.evaluate("EditMode", self.xml(EMPTY), "0").errors)
 
+    def test_all_skipped_fails_even_if_the_editor_exits_successfully(self):
+        xml = self.xml(
+            '<test-run result="Skipped" total="1" passed="0" failed="0" skipped="1">'
+            '<test-case fullname="ChooGuard.Example" result="Skipped" label="Ignored"/>'
+            '</test-run>'
+        )
+        for mode in ("EditMode", "PlayMode"):
+            with self.subTest(mode=mode):
+                result = unity_results.evaluate(mode, xml, "0")
+                self.assertIn("0 tests ran (all selected tests were skipped)", result.errors)
+
     def test_exit_code_must_agree_with_the_results(self):
         crashed_after_passing = unity_results.evaluate("EditMode", self.xml(PASSING), "134")
         self.assertIn("editor exit code 134 disagrees with the results (0 failed)", crashed_after_passing.errors)
