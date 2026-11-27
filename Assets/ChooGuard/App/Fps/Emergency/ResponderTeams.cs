@@ -80,7 +80,7 @@ namespace ChooGuard.App.Fps.Emergency
                 case Team.Ems: return "구급대";
                 case Team.RailwayPolice: return "철도경찰";
                 case Team.Patrol: return "철도경찰·지구대";
-                case Team.BombSquad: return "경찰특공대";
+                case Team.BombSquad: return "철도경찰·경찰특공대";
                 case Team.Elevator: return "승강기 유지보수 기사";
                 case Team.Gas: return "도시가스 안전점검원";
                 case Team.Electric: return "전기 담당";

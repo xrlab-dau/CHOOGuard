@@ -71,8 +71,11 @@ namespace ChooGuard.App.Fps.Emergency
             // 심정지는 4단계(의식 없음·호흡 비정상)가 곧 심정지: 크기 1.0. 화재는 손 소화기로 진화되는 낮은 크기. 나머지는 가운데.
             int before = all.Count;
             Execute(chosen, scenario.Magnitude, 1, "practice");
-            yield return null;
-            log.Add(all.Count > before ? "연습 · 발생: " + chosen.Description : "연습 · 후보가 사이에 사라져 아무것도 생기지 않았다: " + chosen.Key);
+            // 바로 적는다: 한 프레임 기다리면 그사이 역무원의 첫 조작이 먼저 기록된다. 화면 기록은 한국어(위험의 이름과 자리)로 쓰고,
+            // JEV에 주는 영어 설명은 개발 로그에만 남긴다.
+            if (all.Count > before && Main != null) log.Add("연습 · 발생: " + Main.Label + " · " + Main.Where);
+            else log.Add("연습 · 후보가 사이에 사라져 아무것도 생기지 않았다: " + chosen.Key);
+            Debug.Log("CG_PRACTICE_ORIGIN " + chosen.Key + " · " + chosen.Description);
         }
     }
 }

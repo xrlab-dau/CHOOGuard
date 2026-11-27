@@ -440,6 +440,7 @@ namespace ChooGuard.App.Fps.Emergency
             if (best == null) return null;
             if (best.AedAt >= 0) return "AED 가 이미 환자 곁에 있습니다";
             best.AedAt = Time.time;
+            session.OrderLesson?.Signal(PracticeSignal.Interact, PracticeLabel.AedPlace);
             log.Add("AED 를 환자 곁에 둠 · 쓰러진 지 " + Mathf.RoundToInt(best.AedAt - best.StartedAt) + "초 · " + best.Where);
             return treated.Contains(best.Person) ? "AED 를 구급대원 곁에 두었습니다" : "AED 를 환자 곁에 두었습니다 · 뚜껑을 열고(E) 음성 안내를 따르십시오";
         }
